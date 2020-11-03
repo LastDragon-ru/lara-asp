@@ -1,0 +1,7 @@
+<?php
+
+use LastDragon_ru\LaraASP\Migrator\Migrations\RawMigration;
+
+class {{ class }} extends RawMigration {
+    // Please see the associated SQL files
+}
