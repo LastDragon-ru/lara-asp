@@ -1,6 +1,6 @@
 {
   "name": "lastdragon-ru/lara-asp-migrator",
-  "version": "0.0.0",
+  "version": "master",
   "description": "The Awesome Set of Packages for Laravel - The Migrator.",
   "licence": "proprietary",
   "type": "library",
@@ -8,7 +8,8 @@
     "php": ">=7.4.0",
     "ext-intl": "*",
     "ext-json": "*",
-    "laravel/framework": "^8.0"
+    "laravel/framework": "^8.0",
+    "symfony/finder": "^5.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0"
