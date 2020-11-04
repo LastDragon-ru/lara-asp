@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace LastDragon_ru\LaraASP\Migrator;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
-use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
