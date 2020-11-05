@@ -3,15 +3,18 @@
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Seeder;
 use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
 
 abstract class RawSeeder extends Seeder {
     use RawSqlHelper;
 
+    protected Application   $app;
     protected SeederService $service;
 
-    public function __construct(SeederService $service) {
+    public function __construct(Application $app, SeederService $service) {
+        $this->app     = $app;
         $this->service = $service;
     }
 
@@ -72,7 +75,7 @@ abstract class RawSeeder extends Seeder {
     protected function skipped(string $reason = null): void {
         if ($this->command) {
             $this->command->getOutput()
-                ->writeln("<info>         skipped</info>".($reason ? " ({$reason})" : ''));
+                ->writeln("<comment>         skipped</comment>".($reason ? " ({$reason})" : ''));
         }
     }
     // </editor-fold>

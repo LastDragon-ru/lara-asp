@@ -11,8 +11,8 @@ use RuntimeException;
 /**
  * @internal
  *
- * @property \Illuminate\Database\ConnectionResolverInterface $connections
- * @property \Illuminate\Filesystem\Filesystem                $files
+ * @property \Illuminate\Contracts\Foundation\Application $app
+ * @property \Illuminate\Filesystem\Filesystem            $files
  */
 trait RawSqlHelper {
     protected function runRaw(string $type = null) {
@@ -43,14 +43,7 @@ trait RawSqlHelper {
         $connection = $this instanceof Migration
             ? $this->getConnection()
             : null;
-        $connection = $this->connections->connection($connection);
-
-        if (!($connection instanceof Connection)) {
-            // Only `\Illuminate\Database\Connection` supported now
-            //
-            // https://github.com/laravel/framework/issues/35090
-            throw new RuntimeException(sprintf('Connection must be instance of %s.', Connection::class));
-        }
+        $connection = $this->app->make('db')->connection($connection);
 
         return $connection;
     }

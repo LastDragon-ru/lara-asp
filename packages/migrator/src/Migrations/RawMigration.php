@@ -2,23 +2,20 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
-use Illuminate\Database\ConnectionResolverInterface;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
 
-class RawMigration extends Migration {
+abstract class RawMigration extends Migration {
     use RawSqlHelper;
 
-    protected ConnectionResolverInterface $connections;
-    protected Filesystem                  $files;
+    protected Application $app;
+    protected Filesystem  $files;
 
-    public function __construct(
-        ConnectionResolverInterface $resolver,
-        Filesystem $files
-    ) {
-        $this->connections = $resolver;
-        $this->files       = $files;
+    public function __construct(Application $app, Filesystem $files) {
+        $this->app   = $app;
+        $this->files = $files;
     }
 
     // <editor-fold desc="\Illuminate\Database\Migrations\Migration">
