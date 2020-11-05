@@ -19,7 +19,13 @@ class RawMigrationCreator extends MigrationCreator {
     }
 
     protected function getStub($table, $create) {
-        return $this->files->get(__DIR__.'/../../stubs/migration.stub');
+        $custom = $this->customStubPath.'/migration.stub';
+        $path   = !$this->files->exists($custom)
+            ? __DIR__.'/../../stubs/migration.stub'
+            : $custom;
+        $stub   = $this->files->get($path);
+
+        return $stub;
     }
 
     // </editor-fold>
