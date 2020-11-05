@@ -30,13 +30,13 @@ class Provider extends ServiceProvider implements DeferrableProvider {
 
     // <editor-fold desc="Functions">
     // =========================================================================
-    protected function registerMigrator() {
+    protected function registerMigrator(): void {
         $this->app->singleton('migrator', function (Application $app) {
             return new SmartMigrator($app['migration.repository'], $app['db'], $app['files'], $app['events'], $app);
         });
     }
 
-    protected function registerMigrationCreator() {
+    protected function registerMigrationCreator(): void {
         $this->app->singleton('migration.creator', function (Application $app) {
             return new RawMigrationCreator($app['files'], $app->basePath('stubs'));
         });
