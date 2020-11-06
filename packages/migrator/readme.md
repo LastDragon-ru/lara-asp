@@ -2,7 +2,7 @@
 
 ## The Migrator
 
-This package extends standard laravel migrations to support raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳 
+This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳 
 
 ### Important note
 
@@ -29,7 +29,7 @@ It will create the following files in `database/migrations`:
 2020_11_05_170802_my_migration~up.sql
 ```
 
-Usually, you just need to put your SQL into `~up.sql` and `~down.sql` 😇 Note that you still can use standard Laravel migrations, but you should create it by hand. Also, migrations can be placed into subdirectories.
+Usually, you just need to put your SQL into `~up.sql` and `~down.sql` 😇 Note that you still can use standard Laravel migrations, but you should create it manually. Also, migrations can be placed into subdirectories.
 
 
 ### Seeders
