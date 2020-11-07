@@ -1,0 +1,43 @@
+{
+  "name": "lastdragon-ru/lara-asp",
+  "version": "dev-master",
+  "description": "The Awesome Set of Packages for Laravel.",
+  "license": "MIT",
+  "type": "library",
+  "require": {
+    "php": ">=7.4.0",
+    "ext-intl": "*",
+    "ext-json": "*",
+    "composer/composer": "^2.0.0",
+    "doctrine/dbal": "^2.12",
+    "laravel/framework": "^8.0.0",
+    "symfony/finder": "^5.1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0",
+    "symplify/monorepo-builder": "^8.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Database\\Seeders\\": "packages/migrator/database/seeders/",
+      "LastDragon_ru\\LaraASP\\Core\\": "packages/core/src/",
+      "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/"
+    },
+    "optimize-autoloader": true,
+    "exclude-from-classmap": [
+      "packages/core/src/**Test.php"
+    ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "LastDragon_ru\\LaraASP\\Migrator\\Provider",
+        "LastDragon_ru\\LaraASP\\Core\\Provider"
+      ]
+    }
+  },
+  "replace": {
+    "lastdragon-ru/lara-asp-core": "self.version",
+    "lastdragon-ru/lara-asp-migrator": "self.version"
+  }
+}
