@@ -1,6 +1,6 @@
 {
   "name": "lastdragon-ru/lara-asp-migrator",
-  "version": "master",
+  "version": "dev-master",
   "description": "The Awesome Set of Packages for Laravel - The Migrator.",
   "license": "MIT",
   "type": "library",
