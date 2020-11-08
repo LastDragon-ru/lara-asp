@@ -2,30 +2,33 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Concerns;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\SchemaState;
+use Illuminate\Filesystem\Filesystem;
 use ReflectionClass;
 use RuntimeException;
 
 /**
  * @internal
- *
- * @property \Illuminate\Contracts\Foundation\Application $app
- * @property \Illuminate\Filesystem\Filesystem            $files
  */
 trait RawSqlHelper {
+    protected abstract function getApplication(): Application;
+
+    protected abstract function getFilesystem(): Filesystem;
+
     protected function runRaw(string $type = null) {
         $connection = $this->getConnectionInstance();
         $state      = $this->getSchemaState($connection);
         $path       = $this->getRawPath($type);
 
-        if ($this->files->isFile($path)) {
+        if ($this->getFilesystem()->isFile($path)) {
             if (!$connection->pretending()) {
                 $state->load($path);
             }
 
-            $connection->logQuery($this->files->get($path), [], 0);
+            $connection->logQuery($this->getFilesystem()->get($path), [], 0);
         }
     }
 
@@ -43,7 +46,7 @@ trait RawSqlHelper {
         $connection = $this instanceof Migration
             ? $this->getConnection()
             : null;
-        $connection = $this->app->make('db')->connection($connection);
+        $connection = $this->getApplication()->make('db')->connection($connection);
 
         return $connection;
     }

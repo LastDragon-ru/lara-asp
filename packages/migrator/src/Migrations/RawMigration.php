@@ -18,6 +18,17 @@ abstract class RawMigration extends Migration {
         $this->files = $files;
     }
 
+    // <editor-fold desc="\LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper">
+    // =========================================================================
+    protected function getApplication(): Application {
+        return $this->app;
+    }
+
+    protected function getFilesystem(): Filesystem {
+        return $this->files;
+    }
+    // </editor-fold>
+
     // <editor-fold desc="\Illuminate\Database\Migrations\Migration">
     // =========================================================================
     /**

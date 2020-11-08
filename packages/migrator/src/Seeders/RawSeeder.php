@@ -5,18 +5,32 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Seeder;
+use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
 
 abstract class RawSeeder extends Seeder {
     use RawSqlHelper;
 
     protected Application   $app;
+    protected Filesystem    $files;
     protected SeederService $service;
 
-    public function __construct(Application $app, SeederService $service) {
+    public function __construct(Application $app, Filesystem $files, SeederService $service) {
         $this->app     = $app;
+        $this->files   = $files;
         $this->service = $service;
     }
+
+    // <editor-fold desc="\LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper">
+    // =========================================================================
+    protected function getApplication(): Application {
+        return $this->app;
+    }
+
+    protected function getFilesystem(): Filesystem {
+        return $this->files;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Extension">
     // =========================================================================
