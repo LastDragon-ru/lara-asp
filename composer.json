@@ -21,7 +21,8 @@
     "psr-4": {
       "Database\\Seeders\\": "packages/migrator/database/seeders/",
       "LastDragon_ru\\LaraASP\\Core\\": "packages/core/src/",
-      "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/"
+      "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/",
+      "LastDragon_ru\\LaraASP\\Queue\\": "packages/queue/src/"
     },
     "optimize-autoloader": true,
     "exclude-from-classmap": [
@@ -31,8 +32,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "LastDragon_ru\\LaraASP\\Migrator\\Provider",
-        "LastDragon_ru\\LaraASP\\Core\\Provider"
+        "LastDragon_ru\\LaraASP\\Migrator\\Provider"
       ]
     }
   },

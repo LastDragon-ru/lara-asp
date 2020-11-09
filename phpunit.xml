@@ -12,15 +12,20 @@
         <testsuite name="lastdragon-ru/lara-asp-migrator">
             <directory suffix="Test.php">./packages/migrator/src</directory>
         </testsuite>
+        <testsuite name="lastdragon-ru/lara-asp-queue">
+            <directory suffix="Test.php">./packages/queue/src</directory>
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true" cacheDirectory=".phpunit/code-coverage">
         <include>
             <directory suffix=".php">./packages/core/src</directory>
             <directory suffix=".php">./packages/migrator/src</directory>
+            <directory suffix=".php">./packages/queue/src</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./packages/core/src</directory>
             <directory suffix="Test.php">./packages/migrator/src</directory>
+            <directory suffix="Test.php">./packages/queue/src</directory>
         </exclude>
     </coverage>
 </phpunit>
