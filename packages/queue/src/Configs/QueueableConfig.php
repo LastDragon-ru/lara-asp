@@ -18,6 +18,8 @@ use ReflectionClass;
  * - `onConnection()`, `onQueue()`, etc calls
  */
 class QueueableConfig {
+    public const Debug = 'debug';
+
     protected Repository            $global;
     protected ConfigurableQueueable $queueable;
     protected ?array                $config = null;
@@ -29,6 +31,10 @@ class QueueableConfig {
 
     // <editor-fold desc="API">
     // =========================================================================
+    public function all(): array {
+        return $this->config();
+    }
+
     public function get(string $key) {
         return Arr::get($this->config(), $key);
     }
