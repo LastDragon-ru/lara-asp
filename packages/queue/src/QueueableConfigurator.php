@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Mail\Mailable;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\MailableConfig;
@@ -14,23 +14,22 @@ use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
  * Queueable configurator.
  */
 class QueueableConfigurator {
-    protected Application $app;
+    protected Repository $config;
 
-    public function __constructor(Application $app) {
-        $this->app = $app;
+    public function __construct(Repository $config) {
+        $this->config = $config;
     }
 
     public function config(ConfigurableQueueable $queueable): QueueableConfig {
-        $global     = $this->app->make('config');
         $config     = null;
         $properties = $this->getQueueableProperties();
 
         if ($queueable instanceof Mailable) {
-            $config = new MailableConfig($global, $queueable, $properties);
+            $config = new MailableConfig($this->config, $queueable, $properties);
         } elseif ($queueable instanceof Cronable) {
-            $config = new CronableConfig($global, $queueable, $properties);
+            $config = new CronableConfig($this->config, $queueable, $properties);
         } else {
-            $config = new QueueableConfig($global, $queueable, $properties);
+            $config = new QueueableConfig($this->config, $queueable, $properties);
         }
 
         return $config;

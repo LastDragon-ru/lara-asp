@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue\Configs;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Arr;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
+use LastDragon_ru\LaraASP\Queue\Concerns\Configurable;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use ReflectionClass;
 
@@ -50,8 +51,8 @@ class QueueableConfig {
     // =========================================================================
     protected function config(): array {
         if (is_null($this->config)) {
-            $global       = $this->global->get($this->getApplicationConfig());
-            $config       = $this->queueable->getQueueConfig();
+            $global       = (array) $this->global->get($this->getApplicationConfig());
+            $config       = (array) $this->queueable->getQueueConfig();
             $target       = $this->getDefaultConfig() + $config;
             $this->config = (new ConfigRecursiveMerger())->merge($target, $config, $global);
         }
@@ -74,7 +75,7 @@ class QueueableConfig {
         $instance = new ReflectionClass($this->queueable);
 
         while ($instance) {
-            if (in_array(QueueableConfig::class, $instance->getInterfaceNames(), true)) {
+            if (!$instance->isAbstract() && in_array(Configurable::class, $instance->getTraitNames(), true)) {
                 $class = $instance->getName();
                 break;
             }
