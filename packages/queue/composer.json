@@ -12,6 +12,9 @@
   "require-dev": {
     "phpunit/phpunit": "^9.0"
   },
+  "suggest": {
+    "hmazter/laravel-schedule-list": "Package to add a artisan command to list all scheduled artisan commands."
+  },
   "autoload": {
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Queue\\": "src/"

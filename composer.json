@@ -17,6 +17,9 @@
     "phpunit/phpunit": "^9.0",
     "symplify/monorepo-builder": "^8.3"
   },
+  "suggest": {
+    "hmazter/laravel-schedule-list": "Package to add a artisan command to list all scheduled artisan commands."
+  },
   "autoload": {
     "psr-4": {
       "Database\\Seeders\\": "packages/migrator/database/seeders/",
