@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Queue;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Application;
+use Illuminate\Contracts\Foundation\Application;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
@@ -29,6 +29,14 @@ class CronableRegistrator {
         $this->configurator = $configurator;
     }
 
+    /**
+     * Register {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} as
+     * scheduled job. This method shouldn't be used until the app booted.
+     *
+     * @param string $cronable {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} class
+     *
+     * @return void
+     */
     public function register(string $cronable): void {
         // Cronable?
         if (!is_subclass_of($cronable, Cronable::class, true)) {
@@ -38,11 +46,6 @@ class CronableRegistrator {
         // Registration only makes sense when the app running in console.
         if (!$this->app->runningInConsole()) {
             throw new LogicException('The application is not running in console.');
-        }
-
-        // Registration is not possible until boot
-        if (!$this->app->isBooted()) {
-            throw new LogicException('The application is not yet booted.');
         }
 
         // Enabled?
