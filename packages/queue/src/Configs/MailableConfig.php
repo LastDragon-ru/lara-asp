@@ -4,10 +4,12 @@ namespace LastDragon_ru\LaraASP\Queue\Configs;
 
 class MailableConfig extends QueueableConfig {
     public function getDefaultConfig(): array {
-        return [
-            // FIXME [!] Fill properties
-//            'connection' => null,
-//            'queue'      => null,
-        ];
+        /** SEE {@link \Illuminate\Mail\SendQueuedMailable} */
+        $config = parent::getDefaultConfig();
+
+        unset($config['maxExceptions']);
+        unset($config['deleteWhenMissingModels']);
+
+        return $config;
     }
 }

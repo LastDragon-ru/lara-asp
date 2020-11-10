@@ -49,8 +49,15 @@ class QueueableConfigurator {
     }
 
     protected function getQueueableProperties(): array {
+        // TODO [laravel] [update] Check available queue properties.
         return [
-            // FIXME [!] Fill properties
+            'connection',
+            'queue',
+            'timeout',
+            'tries',
+            'maxExceptions',
+            'backoff',
+            'deleteWhenMissingModels',
         ];
     }
 }
