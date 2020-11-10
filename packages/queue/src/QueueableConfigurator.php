@@ -21,15 +21,16 @@ class QueueableConfigurator {
     }
 
     public function config(ConfigurableQueueable $queueable): QueueableConfig {
-        $global = $this->app->make('config');
-        $config = null;
+        $global     = $this->app->make('config');
+        $config     = null;
+        $properties = $this->getQueueableProperties();
 
         if ($queueable instanceof Mailable) {
-            $config = new MailableConfig($global, $queueable);
+            $config = new MailableConfig($global, $queueable, $properties);
         } elseif ($queueable instanceof Cronable) {
-            $config = new CronableConfig($global, $queueable);
+            $config = new CronableConfig($global, $queueable, $properties);
         } else {
-            $config = new QueueableConfig($global, $queueable);
+            $config = new QueueableConfig($global, $queueable, $properties);
         }
 
         return $config;
@@ -37,7 +38,7 @@ class QueueableConfigurator {
 
     public function configure(ConfigurableQueueable $queueable): void {
         $config     = $this->config($queueable);
-        $properties = $this->getQueueableProperties();
+        $properties = array_keys($this->getQueueableProperties());
 
         foreach ($properties as $property) {
             $value = $config->get($property);
@@ -50,14 +51,15 @@ class QueueableConfigurator {
 
     protected function getQueueableProperties(): array {
         // TODO [laravel] [update] Check available queue properties.
+        /** SEE {@link https://laravel.com/docs/8.x/queues} */
         return [
-            'connection',
-            'queue',
-            'timeout',
-            'tries',
-            'maxExceptions',
-            'backoff',
-            'deleteWhenMissingModels',
+            'connection'              => null,  // Connection name for the job
+            'queue'                   => null,  // Queue name for the job
+            'timeout'                 => null,  // Number of seconds the job can run
+            'tries'                   => null,  // Number of times the job may be attempted
+            'maxExceptions'           => null,  // Number of exceptions allowed for the job before fail
+            'backoff'                 => null,  // Retry delay for the failed job
+            'deleteWhenMissingModels' => null,  // Allow deleting the job if the model does not exist anymore
         ];
     }
 }

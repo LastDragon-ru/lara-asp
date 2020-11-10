@@ -22,11 +22,13 @@ class QueueableConfig {
 
     protected Repository            $global;
     protected ConfigurableQueueable $queueable;
+    protected array                 $properties;
     protected ?array                $config = null;
 
-    public function __construct(Repository $global, ConfigurableQueueable $queueable) {
-        $this->global    = $global;
-        $this->queueable = $queueable;
+    public function __construct(Repository $global, ConfigurableQueueable $queueable, array $properties) {
+        $this->global     = $global;
+        $this->queueable  = $queueable;
+        $this->properties = $properties;
     }
 
     // <editor-fold desc="API">
@@ -58,17 +60,9 @@ class QueueableConfig {
     }
 
     public function getDefaultConfig(): array {
-        // SEE https://laravel.com/docs/8.x/queues
-        return [
-            static::Debug             => false, // Not used directly, but you may use it for debug the job
-            'connection'              => null,  // Connection name for the job
-            'queue'                   => null,  // Queue name for the job
-            'timeout'                 => null,  // Number of seconds the job can run
-            'tries'                   => null,  // Number of times the job may be attempted
-            'maxExceptions'           => null,  // Number of exceptions allowed for the job before fail
-            'backoff'                 => null,  // Retry delay for the failed job
-            'deleteWhenMissingModels' => null,  // Allow deleting the job if the model does not exist anymore
-        ];
+        return $this->properties + [
+                static::Debug => false, // Not used directly, but you may use it for debug the job
+            ];
     }
 
     protected function getApplicationConfig(): string {
