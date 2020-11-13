@@ -41,6 +41,7 @@
   },
   "replace": {
     "lastdragon-ru/lara-asp-core": "self.version",
-    "lastdragon-ru/lara-asp-migrator": "self.version"
+    "lastdragon-ru/lara-asp-migrator": "self.version",
+    "lastdragon-ru/lara-asp-queue": "self.version"
   }
 }
