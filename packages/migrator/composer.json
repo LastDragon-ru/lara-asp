@@ -20,7 +20,11 @@
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Migrator\\": "src/",
       "Database\\Seeders\\": "database/seeders/"
-    }
+    },
+    "optimize-autoloader": true,
+    "exclude-from-classmap": [
+      "src/**Test.php"
+    ]
   },
   "extra": {
     "laravel": {
