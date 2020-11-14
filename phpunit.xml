@@ -3,8 +3,7 @@
          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
          cacheResultFile=".phpunit/result.cache"
          executionOrder="random"
-         colors="true"
->
+         colors="true">
     <testsuites>
         <testsuite name="lastdragon-ru/lara-asp-core">
             <directory suffix="Test.php">./packages/core/src</directory>
@@ -15,17 +14,23 @@
         <testsuite name="lastdragon-ru/lara-asp-queue">
             <directory suffix="Test.php">./packages/queue/src</directory>
         </testsuite>
+        <testsuite name="lastdragon-ru/lara-asp-testing">
+            <directory suffix="Test.php">./packages/testing/src</directory>
+        </testsuite>
     </testsuites>
-    <coverage processUncoveredFiles="true" cacheDirectory=".phpunit/code-coverage">
+    <coverage processUncoveredFiles="true"
+              cacheDirectory=".phpunit/code-coverage">
         <include>
             <directory suffix=".php">./packages/core/src</directory>
             <directory suffix=".php">./packages/migrator/src</directory>
             <directory suffix=".php">./packages/queue/src</directory>
+            <directory suffix=".php">./packages/testing/src</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./packages/core/src</directory>
             <directory suffix="Test.php">./packages/migrator/src</directory>
             <directory suffix="Test.php">./packages/queue/src</directory>
+            <directory suffix="Test.php">./packages/testing/src</directory>
         </exclude>
     </coverage>
 </phpunit>
