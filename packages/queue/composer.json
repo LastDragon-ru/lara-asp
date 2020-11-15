@@ -6,7 +6,7 @@
   "type": "library",
   "require": {
     "php": ">=7.4.0",
-    "laravel/framework": "^8.0.0",
+    "laravel/framework": "^8.0",
     "lastdragon-ru/lara-asp-core": "dev-master"
   },
   "require-dev": {
