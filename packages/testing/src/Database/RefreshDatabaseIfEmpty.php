@@ -17,11 +17,13 @@ trait RefreshDatabaseIfEmpty {
     }
 
     protected function refreshTestDatabase() {
-        $connection = $this->app->make('db')->connection();
-        $tables     = $connection->getDoctrineSchemaManager()->listTableNames();
+        if (!RefreshDatabaseState::$migrated) {
+            $connection = $this->app->make('db')->connection();
+            $tables     = $connection->getDoctrineSchemaManager()->listTableNames();
 
-        if ($tables) {
-            RefreshDatabaseState::$migrated = true;
+            if ($tables) {
+                RefreshDatabaseState::$migrated = true;
+            }
         }
 
         $this->laravelRefreshTestDatabase();
