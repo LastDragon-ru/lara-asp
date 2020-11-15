@@ -52,6 +52,9 @@ class DatabaseSeeder extends Seeder {
     protected function getSeedersFromPath(string $path): array {
         $classes = ClassMapGenerator::createMap($path);
         $classes = array_keys($classes);
+        $classes = array_filter($classes, function (string $class) {
+            return is_subclass_of($class, Seeder::class, true);
+        });
 
         sort($classes);
 
