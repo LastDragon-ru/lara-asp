@@ -1,0 +1,23 @@
+{
+  "name": "lastdragon-ru/lara-asp-eloquent",
+  "version": "dev-master",
+  "description": "The Awesome Set of Packages for Laravel - Eloquent Helpers.",
+  "license": "MIT",
+  "type": "library",
+  "require": {
+    "php": ">=7.4.0",
+    "laravel/framework": "^8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\Eloquent\\": "src/"
+    },
+    "optimize-autoloader": true,
+    "exclude-from-classmap": [
+      "src/**Test.php"
+    ]
+  }
+}

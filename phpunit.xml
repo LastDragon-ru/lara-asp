@@ -17,6 +17,9 @@
         <testsuite name="lastdragon-ru/lara-asp-testing">
             <directory suffix="Test.php">./packages/testing/src</directory>
         </testsuite>
+        <testsuite name="lastdragon-ru/lara-asp-eloquent">
+            <directory suffix="Test.php">./packages/eloquent/src</directory>
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true"
               cacheDirectory=".phpunit/code-coverage">
@@ -25,12 +28,14 @@
             <directory suffix=".php">./packages/migrator/src</directory>
             <directory suffix=".php">./packages/queue/src</directory>
             <directory suffix=".php">./packages/testing/src</directory>
+            <directory suffix=".php">./packages/eloquent/src</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./packages/core/src</directory>
             <directory suffix="Test.php">./packages/migrator/src</directory>
             <directory suffix="Test.php">./packages/queue/src</directory>
             <directory suffix="Test.php">./packages/testing/src</directory>
+            <directory suffix="Test.php">./packages/eloquent/src</directory>
         </exclude>
     </coverage>
 </phpunit>
