@@ -11,6 +11,8 @@
     "composer/composer": "^2.0.0",
     "doctrine/dbal": "^2.12",
     "laravel/framework": "^8.0.0",
+    "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
+    "opis/json-schema": "^1.0",
     "symfony/finder": "^5.1.0",
     "symfony/polyfill-php80": "^1.20"
   },
@@ -45,6 +47,9 @@
         "LastDragon_ru\\LaraASP\\Migrator\\Provider"
       ]
     }
+  },
+  "config": {
+    "sort-packages": true
   },
   "replace": {
     "lastdragon-ru/lara-asp-core": "self.version",

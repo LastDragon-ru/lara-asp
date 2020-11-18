@@ -6,8 +6,11 @@
   "type": "library",
   "require": {
     "php": ">=7.4.0",
+    "ext-json": "*",
     "laravel/framework": "^8.0",
-    "doctrine/dbal": "^2.12"
+    "doctrine/dbal": "^2.12",
+    "opis/json-schema": "^1.0",
+    "m1x0n/opis-json-schema-error-presenter": "^0.5.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0"
@@ -20,5 +23,8 @@
     "exclude-from-classmap": [
       "src/**Test.php"
     ]
+  },
+  "config": {
+    "sort-packages": true
   }
 }
