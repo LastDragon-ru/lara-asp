@@ -19,5 +19,8 @@
     "exclude-from-classmap": [
       "src/**Test.php"
     ]
+  },
+  "config": {
+    "sort-packages": true
   }
 }

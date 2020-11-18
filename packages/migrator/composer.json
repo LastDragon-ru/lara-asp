@@ -32,5 +32,8 @@
         "LastDragon_ru\\LaraASP\\Migrator\\Provider"
       ]
     }
+  },
+  "config": {
+    "sort-packages": true
   }
 }
