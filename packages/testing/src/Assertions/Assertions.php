@@ -5,4 +5,5 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions;
 trait Assertions {
     use JsonAssertions;
     use CronableAssertions;
+    use StrictAssertEquals;
 }
