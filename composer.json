@@ -54,7 +54,6 @@
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/"
     },
-    "optimize-autoloader": true,
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
       "packages/migrator/src/**Test.php",
@@ -71,7 +70,8 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "optimize-autoloader": true
   },
   "replace": {
     "lastdragon-ru/lara-asp-core": "self.version",

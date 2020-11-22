@@ -31,12 +31,12 @@
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Queue\\": "src/"
     },
-    "optimize-autoloader": true,
     "exclude-from-classmap": [
       "src/**Test.php"
     ]
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "optimize-autoloader": true
   }
 }

@@ -35,7 +35,6 @@
       "LastDragon_ru\\LaraASP\\Migrator\\": "src/",
       "Database\\Seeders\\": "database/seeders/"
     },
-    "optimize-autoloader": true,
     "exclude-from-classmap": [
       "src/**Test.php"
     ]
@@ -48,6 +47,7 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "optimize-autoloader": true
   }
 }
