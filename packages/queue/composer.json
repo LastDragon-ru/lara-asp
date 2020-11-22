@@ -4,6 +4,7 @@
   "description": "The Awesome Set of Packages for Laravel - Queue Helpers.",
   "license": "MIT",
   "type": "library",
+  "readme": "readme.md",
   "keywords": [
     "queue",
     "laravel-queue",
