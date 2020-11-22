@@ -4,6 +4,7 @@
   "description": "The Awesome Set of Packages for Laravel - The Migrator.",
   "license": "MIT",
   "type": "library",
+  "readme": "readme.md",
   "keywords": [
     "database",
     "database migration",
