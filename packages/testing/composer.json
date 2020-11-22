@@ -4,6 +4,18 @@
   "description": "The Awesome Set of Packages for Laravel - Testing Helpers.",
   "license": "MIT",
   "type": "library",
+  "keywords": [
+    "testing",
+    "laravel-package",
+    "laravel",
+    "phpunit",
+    "phpunit-assertions",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp"
+  },
   "require": {
     "php": ">=7.4.0",
     "ext-json": "*",
@@ -14,6 +26,9 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0"
+  },
+  "conflict": {
+    "phpunit/phpunit": "<9.0"
   },
   "autoload": {
     "psr-4": {

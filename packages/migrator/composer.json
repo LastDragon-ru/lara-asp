@@ -4,12 +4,25 @@
   "description": "The Awesome Set of Packages for Laravel - The Migrator.",
   "license": "MIT",
   "type": "library",
+  "keywords": [
+    "database",
+    "database migration",
+    "laravel-raw-sql-migrator",
+    "laravel-migrator",
+    "laravel-package",
+    "laravel",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp"
+  },
   "require": {
     "php": ">=7.4.0",
     "ext-intl": "*",
     "ext-json": "*",
     "laravel/framework": "^8.0",
-    "symfony/finder": "^5.1.0",
+    "symfony/finder": "^5.1",
     "composer/composer": "^2.0",
     "doctrine/dbal": "^2.12"
   },

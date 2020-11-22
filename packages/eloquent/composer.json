@@ -4,6 +4,16 @@
   "description": "The Awesome Set of Packages for Laravel - Eloquent Helpers.",
   "license": "MIT",
   "type": "library",
+  "keywords": [
+    "laravel-eloquent",
+    "laravel-package",
+    "laravel",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp"
+  },
   "require": {
     "php": ">=7.4.0",
     "laravel/framework": "^8.0"

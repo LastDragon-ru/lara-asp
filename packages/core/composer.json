@@ -4,6 +4,15 @@
   "description": "The Awesome Set of Packages for Laravel - The Core.",
   "license": "MIT",
   "type": "library",
+  "keywords": [
+    "laravel-package",
+    "laravel",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp"
+  },
   "require": {
     "php": ">=7.4.0",
     "symfony/polyfill-php80": "^1.20"

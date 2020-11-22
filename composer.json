@@ -4,16 +4,35 @@
   "description": "The Awesome Set of Packages for Laravel.",
   "license": "MIT",
   "type": "library",
+  "keywords": [
+    "testing",
+    "queue",
+    "laravel-queue",
+    "database",
+    "database migration",
+    "laravel-raw-sql-migrator",
+    "laravel-migrator",
+    "laravel-eloquent",
+    "laravel-package",
+    "laravel",
+    "phpunit",
+    "phpunit-assertions",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp"
+  },
   "require": {
     "php": ">=7.4.0",
     "ext-intl": "*",
     "ext-json": "*",
-    "composer/composer": "^2.0.0",
+    "composer/composer": "^2.0",
     "doctrine/dbal": "^2.12",
-    "laravel/framework": "^8.0.0",
+    "laravel/framework": "^8.0",
     "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
     "opis/json-schema": "^1.0",
-    "symfony/finder": "^5.1.0",
+    "symfony/finder": "^5.1",
     "symfony/polyfill-php80": "^1.20"
   },
   "require-dev": {
@@ -22,6 +41,9 @@
   },
   "suggest": {
     "hmazter/laravel-schedule-list": "Package to add a artisan command to list all scheduled artisan commands."
+  },
+  "conflict": {
+    "phpunit/phpunit": "<9.0"
   },
   "autoload": {
     "psr-4": {
