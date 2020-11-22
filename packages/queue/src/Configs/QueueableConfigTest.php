@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Config\Repository;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Concerns\Configurable;
+use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\QueueableConfigurator;
 use LastDragon_ru\LaraASP\Queue\Queueables\CronJob;
@@ -213,7 +214,7 @@ class QueueableConfigTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class QueueableConfigTest_getQueueClass implements ConfigurableQueueable {
-    use Configurable;
+    use Configurable, WithConfig;
 }
 
 /**
@@ -229,7 +230,7 @@ class QueueableConfigTest_getQueueClass_Extending extends QueueableConfigTest_ge
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class QueueableConfigTest_getQueueClass_Overriding extends QueueableConfigTest_getQueueClass {
-    use Configurable;
+    use WithConfig;
 }
 
 /**

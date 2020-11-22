@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue\Configs;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Arr;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
-use LastDragon_ru\LaraASP\Queue\Concerns\Configurable;
+use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use ReflectionClass;
 
@@ -75,7 +75,7 @@ class QueueableConfig {
         $instance = new ReflectionClass($this->queueable);
 
         while ($instance) {
-            if (!$instance->isAbstract() && in_array(Configurable::class, $instance->getTraitNames(), true)) {
+            if (!$instance->isAbstract() && in_array(WithConfig::class, $instance->getTraitNames(), true)) {
                 $class = $instance->getName();
                 break;
             }
