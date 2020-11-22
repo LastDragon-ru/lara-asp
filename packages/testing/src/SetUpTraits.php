@@ -23,7 +23,7 @@ trait SetUpTraits {
      * @beforeClass
      */
     public static function setUpTraitsSetUp(): void {
-        static::$setUpTraits = array_filter(array_map(function (string $trait) {
+        static::$setUpTraits = array_filter(array_map(function (string $trait): ?string {
             // Self?
             if ($trait === __TRAIT__) {
                 return null;
@@ -48,6 +48,7 @@ trait SetUpTraits {
 
     public function setUp(): void {
         // Parent
+        /** @noinspection PhpUndefinedClassInspection */
         parent::setUp();
 
         // Set traits Up
@@ -67,6 +68,7 @@ trait SetUpTraits {
         }
 
         // Parent
+        /** @noinspection PhpUndefinedClassInspection */
         parent::tearDown();
     }
 }

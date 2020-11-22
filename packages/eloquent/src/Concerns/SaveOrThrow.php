@@ -9,11 +9,10 @@ use Exception;
  */
 trait SaveOrThrow {
     /**
-     * @param array $options
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function save(array $options = []) {
+        /** @noinspection PhpUndefinedClassInspection */
         return tap(parent::save($options), function (bool $result) {
             if (!$result) {
                 throw new Exception('An unknown error occurred while saving the model.');
@@ -22,11 +21,10 @@ trait SaveOrThrow {
     }
 
     /**
-     * @return bool|null
-     *
-     * @throws \Exception
+     * @inheritdoc
      */
     public function delete() {
+        /** @noinspection PhpUndefinedClassInspection */
         return tap(parent::delete(), function (?bool $result) {
             if ($result === false) {
                 throw new Exception('An unknown error occurred while deleting the model.');

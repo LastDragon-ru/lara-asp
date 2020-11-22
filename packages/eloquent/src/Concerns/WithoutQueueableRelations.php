@@ -8,7 +8,8 @@ namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
  */
 trait WithoutQueueableRelations {
     /**
-     * @return array
+     * @inheritdoc
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function getQueueableRelations() {
         // Usually, there are no reasons to save relations while serialization

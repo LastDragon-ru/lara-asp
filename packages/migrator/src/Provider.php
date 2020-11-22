@@ -4,6 +4,9 @@ namespace LastDragon_ru\LaraASP\Migrator;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Database\Console\Seeds\SeederMakeCommand;
+use Illuminate\Database\Migrations\MigrationCreator;
+use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawSeederMakeCommand;
@@ -23,6 +26,10 @@ class Provider extends ServiceProvider implements DeferrableProvider {
 
     // <editor-fold desc="\Illuminate\Contracts\Support\DeferrableProvider">
     // =========================================================================
+    /**
+     * @inheritdoc
+     * @noinspection PhpMissingReturnTypeInspection
+     */
     public function provides() {
         return [...parent::provides(), 'migrator', 'migration.creator', 'command.seeder.make'];
     }
@@ -31,19 +38,19 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function registerMigrator(): void {
-        $this->app->singleton('migrator', function (Application $app) {
+        $this->app->singleton('migrator', function (Application $app): Migrator {
             return new SmartMigrator($app['migration.repository'], $app['db'], $app['files'], $app['events'], $app);
         });
     }
 
     protected function registerMigrationCreator(): void {
-        $this->app->singleton('migration.creator', function (Application $app) {
+        $this->app->singleton('migration.creator', function (Application $app): MigrationCreator {
             return new RawMigrationCreator($app['files'], $app->basePath('stubs'));
         });
     }
 
     protected function registerSeederMakeCommand(): void {
-        $this->app->singleton('command.seeder.make', function (Application $app) {
+        $this->app->singleton('command.seeder.make', function (Application $app): SeederMakeCommand {
             return new RawSeederMakeCommand($app['files']);
         });
     }

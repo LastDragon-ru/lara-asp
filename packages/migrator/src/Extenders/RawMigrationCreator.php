@@ -7,6 +7,10 @@ use Illuminate\Database\Migrations\MigrationCreator;
 class RawMigrationCreator extends MigrationCreator {
     // <editor-fold desc="Illuminate\Database\Migrations\MigrationCreator">
     // =========================================================================
+    /**
+     * @inheritdoc
+     * @noinspection PhpMissingReturnTypeInspection
+     */
     public function create($name, $path, $table = null, $create = false) {
         $path = parent::create($name, $path, $table, $create);
         $raws = $this->getRawFiles($path);
@@ -18,6 +22,10 @@ class RawMigrationCreator extends MigrationCreator {
         return $path;
     }
 
+    /**
+     * @inheritdoc
+     * @noinspection PhpMissingReturnTypeInspection
+     */
     protected function getStub($table, $create) {
         $custom = $this->customStubPath.'/migration.stub';
         $path   = !$this->files->exists($custom)

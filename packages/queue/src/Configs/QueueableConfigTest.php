@@ -24,6 +24,11 @@ class QueueableConfigTest extends TestCase {
     /**
      * @covers ::getQueueClass
      * @dataProvider dataProviderGetQueueClass
+     *
+     * @param string $expected
+     * @param string $class
+     *
+     * @return void
      */
     public function testGetQueueClass(string $expected, string $class): void {
         $repository   = new Repository();

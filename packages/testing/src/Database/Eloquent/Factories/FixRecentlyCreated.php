@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Illuminate\Database\Eloquent\Factories\Factory
  */
 trait FixRecentlyCreated {
+    /**
+     * @inheritdoc
+     * @noinspection PhpMissingReturnTypeInspection
+     */
     public function configure() {
         return parent::configure()->afterCreating(function (Model $model) {
             $model->wasRecentlyCreated = false;

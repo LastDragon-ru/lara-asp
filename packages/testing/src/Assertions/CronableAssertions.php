@@ -21,7 +21,7 @@ trait CronableAssertions {
         );
 
         $schedule = $this->app->make(Schedule::class);
-        $events   = array_filter($schedule->events(), function (Event $event) use ($cronable) {
+        $events   = array_filter($schedule->events(), function (Event $event) use ($cronable): bool {
             return str_contains($event->description ?? '', $cronable);
         });
 

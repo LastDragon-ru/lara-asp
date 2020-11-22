@@ -8,7 +8,7 @@ use InvalidArgumentException;
  * The merger for array-based configs.
  */
 class ConfigRecursiveMerger {
-    private bool $strict = true;
+    private bool $strict;
 
     public function __construct(bool $strict = true) {
         $this->strict = $strict;

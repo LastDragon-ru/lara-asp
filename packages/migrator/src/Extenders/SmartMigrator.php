@@ -45,6 +45,10 @@ class SmartMigrator extends Migrator {
         return $instance;
     }
 
+    /**
+     * @inheritdoc
+     * @noinspection PhpMissingReturnTypeInspection
+     */
     public function getMigrationFiles($paths) {
         foreach ($paths as $path) {
             foreach (Finder::create()->in($path)->directories() as $dir) {

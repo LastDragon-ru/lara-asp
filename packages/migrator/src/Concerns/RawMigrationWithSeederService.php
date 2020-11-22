@@ -13,6 +13,7 @@ trait RawMigrationWithSeederService {
     protected SeederService $seeder;
 
     public function __construct(Application $app, Filesystem $files, SeederService $seeder) {
+        /** @noinspection PhpUndefinedClassInspection */
         parent::__construct($app, $files);
 
         $this->seeder = $seeder;
