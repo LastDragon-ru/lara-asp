@@ -169,13 +169,13 @@ class Formatter {
     }
 
     public function decimal(?float $value, int $decimals = null): string {
-        $type     = static::Decimal;
-        $value    = (float) $value;
-        $decimals = $decimals
-            ?: $this->getOptions($type, 2);
+        $type  = static::Decimal;
+        $value = (float) $value;
 
         return $this
-            ->getIntlNumberFormatter($type, $decimals)
+            ->getIntlNumberFormatter($type, $decimals, function () use ($type, $decimals): int {
+                return $decimals ?: $this->getOptions($type, 2);
+            })
             ->format($value);
     }
 
@@ -205,13 +205,13 @@ class Formatter {
      * @return string
      */
     public function percent(?float $value, int $decimals = null): string {
-        $type     = static::Percent;
-        $value    = $value / 100;
-        $decimals = $decimals
-            ?: $this->getOptions($type, 0);
+        $type  = static::Percent;
+        $value = $value / 100;
 
         return $this
-            ->getIntlNumberFormatter($type, $decimals)
+            ->getIntlNumberFormatter($type, $decimals, function () use ($type, $decimals): int {
+                return $decimals ?: $this->getOptions($type, 0);
+            })
             ->format($value);
     }
 
@@ -251,12 +251,8 @@ class Formatter {
             return '';
         }
 
-        $type   = self::Time;
-        $format = $format
-            ?: $this->getOptions($type, IntlDateFormatter::SHORT);
-
         return $this
-            ->getIntlDateFormatter($type, $format, $tz)
+            ->getIntlDateFormatter(self::Time, $format, $tz)
             ->format($value);
     }
 
@@ -272,12 +268,8 @@ class Formatter {
             return '';
         }
 
-        $type   = self::Date;
-        $format = $format
-            ?: $this->getOptions($type, IntlDateFormatter::SHORT);
-
         return $this
-            ->getIntlDateFormatter($type, $format, $tz)
+            ->getIntlDateFormatter(self::Date, $format, $tz)
             ->format($value);
     }
 
@@ -293,12 +285,8 @@ class Formatter {
             return '';
         }
 
-        $type   = self::DateTime;
-        $format = $format
-            ?: $this->getOptions($type, IntlDateFormatter::SHORT);
-
         return $this
-            ->getIntlDateFormatter($type, $format, $tz)
+            ->getIntlDateFormatter(self::DateTime, $format, $tz)
             ->format($value);
     }
 
@@ -367,10 +355,14 @@ class Formatter {
         return $this->app->make(Repository::class)->get('app.timezone') ?: 'UTC';
     }
 
-    private function getIntlNumberFormatter(string $type, $format = null): NumberFormatter {
-        return $this->getIntlFormatter([$type, $format], function () use ($type, $format): ?NumberFormatter {
+    private function getIntlNumberFormatter(string $type, int $decimals = null, Closure $closure = null): NumberFormatter {
+        return $this->getIntlFormatter([$type, $decimals], function () use ($type, $decimals, $closure): ?NumberFormatter {
             $round     = $this->getOptions(static::Rounding, NumberFormatter::ROUND_HALFUP);
             $formatter = null;
+
+            if ($closure) {
+                $decimals = $closure($type, $decimals);
+            }
 
             switch ($type) {
                 case static::Integer:
@@ -379,14 +371,14 @@ class Formatter {
                     break;
                 case static::Decimal:
                     $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
-                    $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, abs((int) $format));
+                    $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, abs((int) $decimals));
                     break;
                 case static::Currency:
                     $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::CURRENCY);
                     break;
                 case static::Percent:
                     $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::PERCENT);
-                    $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, abs((int) $format));
+                    $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, abs((int) $decimals));
                     break;
                 case static::Scientific:
                     $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SCIENTIFIC);
@@ -424,6 +416,7 @@ class Formatter {
         return $this->getIntlFormatter([$type, $format, $tz], function () use ($type, $format, $tz): ?IntlDateFormatter {
             $formatter = null;
             $pattern   = '';
+            $format    = $format ?: $this->getOptions($type, IntlDateFormatter::SHORT);
             $tz        = $this->getTimezone($tz);
 
             if (is_string($format)) {
