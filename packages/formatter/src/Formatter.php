@@ -179,17 +179,8 @@ class Formatter {
             ->format($value);
     }
 
-    /**
-     * @param string|int|float|null $value
-     * @param string|null           $currency
-     *
-     * @return string
-     */
-    public function currency($value, string $currency = null): string {
+    public function currency(?float $value, string $currency = null): string {
         $type     = static::Currency;
-        $value    = is_string($value)
-            ? (float) str_replace(',', '.', $value)
-            : (float) $value;
         $currency = $currency
             ?: $this->getOptions($type, 'USD');
 
