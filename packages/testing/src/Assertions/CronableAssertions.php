@@ -11,7 +11,11 @@ use function sprintf;
 use function str_contains;
 
 /**
- * @mixin \Illuminate\Foundation\Testing\TestCase
+ * @required {@link \Illuminate\Foundation\Testing\TestCase}
+ *
+ * @property-read \Illuminate\Foundation\Application $app
+ *
+ * @mixin \PHPUnit\Framework\TestCase
  */
 trait CronableAssertions {
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {

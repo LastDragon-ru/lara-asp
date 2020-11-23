@@ -14,7 +14,7 @@ use function str_starts_with;
  * short trait name) for traits after Laravel set up. The `@before`/`@after`
  * cannot be used because they may run before the app was created.
  *
- * @mixin \Illuminate\Foundation\Testing\TestCase
+ * @mixin \PHPUnit\Framework\TestCase
  */
 trait SetUpTraits {
     private static array $setUpTraits = [];

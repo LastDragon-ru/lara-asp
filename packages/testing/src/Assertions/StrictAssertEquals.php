@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\Testing\Comparators\ScalarStrictComparator;
 /**
  * Make `assertEquals` strict (the {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits} is required).
  *
- * @mixin \Illuminate\Foundation\Testing\TestCase
+ * @mixin \PHPUnit\Framework\Test
  */
 trait StrictAssertEquals {
     public function setUpStrictAssertEquals(): void {

@@ -5,7 +5,11 @@ namespace LastDragon_ru\LaraASP\Testing\Database;
 /**
  * Enable QueryLog (the {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits} is required).
  *
- * @mixin \Illuminate\Foundation\Testing\TestCase
+ * @required {@link \Illuminate\Foundation\Testing\TestCase}
+ *
+ * @property-read \Illuminate\Foundation\Application $app
+ *
+ * @mixin \PHPUnit\Framework\TestCase
  */
 trait WithQueryLog {
     private bool $withQueryLogEnabled = false;

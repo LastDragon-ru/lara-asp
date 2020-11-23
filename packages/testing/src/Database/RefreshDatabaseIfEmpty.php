@@ -9,7 +9,11 @@ use Illuminate\Foundation\Testing\RefreshDatabaseState;
  * Unlike {@link \Illuminate\Foundation\Testing\RefreshDatabase} will refresh
  * the database only if it empty (very useful for local testing).
  *
- * @mixin \Illuminate\Foundation\Testing\TestCase
+ * @required {@link \Illuminate\Foundation\Testing\TestCase}
+ *
+ * @property-read \Illuminate\Foundation\Application $app
+ *
+ * @mixin \PHPUnit\Framework\TestCase
  */
 trait RefreshDatabaseIfEmpty {
     use RefreshDatabase {
