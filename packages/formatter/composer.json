@@ -1,0 +1,51 @@
+{
+  "name": "lastdragon-ru/lara-asp-formatter",
+  "version": "dev-master",
+  "description": "The Awesome Set of Packages for Laravel - The Formatter.",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "formatter",
+    "laravel-package",
+    "laravel",
+    "intl",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp"
+  },
+  "require": {
+    "php": ">=7.4.0",
+    "ext-intl": "*",
+    "laravel/framework": "^8.0",
+    "lastdragon-ru/lara-asp-core": "dev-master"
+  },
+  "require-dev": {
+    "lastdragon-ru/lara-asp-testing": "dev-master",
+    "orchestra/testbench": "^6.4",
+    "phpunit/phpunit": "^9.0"
+  },
+  "conflict": {
+    "phpunit/phpunit": "<9.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\Formatter\\": "src/"
+    },
+    "exclude-from-classmap": [
+      "src/**Test.php"
+    ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "LastDragon_ru\\LaraASP\\Formatter\\Provider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}

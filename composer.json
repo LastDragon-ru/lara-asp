@@ -5,6 +5,8 @@
   "license": "MIT",
   "type": "library",
   "keywords": [
+    "intl",
+    "formatter",
     "testing",
     "queue",
     "laravel-queue",
@@ -36,6 +38,7 @@
     "symfony/polyfill-php80": "^1.20"
   },
   "require-dev": {
+    "orchestra/testbench": "^6.4",
     "phpunit/phpunit": "^9.0",
     "symplify/monorepo-builder": "^8.3"
   },
@@ -52,20 +55,23 @@
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/",
       "LastDragon_ru\\LaraASP\\Queue\\": "packages/queue/src/",
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/",
-      "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/"
+      "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
+      "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/"
     },
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
       "packages/migrator/src/**Test.php",
       "packages/queue/src/**Test.php",
       "packages/testing/src/**Test.php",
-      "packages/eloquent/src/**Test.php"
+      "packages/eloquent/src/**Test.php",
+      "packages/formatter/src/**Test.php"
     ]
   },
   "extra": {
     "laravel": {
       "providers": [
-        "LastDragon_ru\\LaraASP\\Migrator\\Provider"
+        "LastDragon_ru\\LaraASP\\Migrator\\Provider",
+        "LastDragon_ru\\LaraASP\\Formatter\\Provider"
       ]
     }
   },
@@ -78,6 +84,7 @@
     "lastdragon-ru/lara-asp-migrator": "self.version",
     "lastdragon-ru/lara-asp-queue": "self.version",
     "lastdragon-ru/lara-asp-testing": "self.version",
-    "lastdragon-ru/lara-asp-eloquent": "self.version"
+    "lastdragon-ru/lara-asp-eloquent": "self.version",
+    "lastdragon-ru/lara-asp-formatter": "self.version"
   }
 }
