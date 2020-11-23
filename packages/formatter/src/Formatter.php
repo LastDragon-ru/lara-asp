@@ -13,6 +13,7 @@ use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Core\Concerns\InstanceCache;
 use Locale;
 use NumberFormatter;
+use OutOfBoundsException;
 use function abs;
 use function is_null;
 use function is_string;
@@ -26,20 +27,71 @@ class Formatter {
     use Macroable;
     use InstanceCache;
 
-    protected const Integer    = 'integer';
-    protected const Scientific = 'scientific';
-    protected const Spellout   = 'spellout';
-    protected const Ordinal    = 'ordinal';
+    /**
+     * Options:
+     * - none
+     *
+     * Locales options:
+     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
+     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
+     *      except {@link NumberFormatter::FRACTION_DIGITS}
+     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     */
+    public const Integer = 'integer';
 
+    /**
+     * Options:
+     * - none
+     *
+     * Locales options:
+     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
+     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()}
+     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     */
+    public const Scientific = 'scientific';
 
+    /**
+     * Options:
+     * - none
+     *
+     * Locales options:
+     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
+     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()}
+     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     */
+    public const Spellout = 'spellout';
+
+    /**
+     * Options:
+     * - none
+     *
+     * Locales options:
+     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
+     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()}
+     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     */
+    public const Ordinal = 'ordinal';
+
+    /**
+     * Options:
+     * - none
+     *
+     * Locales options:
+     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
+     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()}
+     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     */
     public const Duration = 'duration';
 
     /**
      * Options:
      * - `int`: fraction digits
      *
-     * Locale overrides:
-     * - none
+     * Locales options:
+     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
+     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
+     *      except {@link NumberFormatter::FRACTION_DIGITS}
+     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
      *
      * @var string
      */
@@ -49,8 +101,11 @@ class Formatter {
      * Options:
      * - `string`: default currency
      *
-     * Locale overrides:
-     * - none
+     * Locales options:
+     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
+     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
+     *      except {@link NumberFormatter::FRACTION_DIGITS}
+     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
      */
     public const Currency = 'currency';
 
@@ -58,20 +113,23 @@ class Formatter {
      * Options:
      * - `int`: fraction digits
      *
-     * Locale overrides:
-     * - none
+     * Locales options:
+     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
+     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
+     *      except {@link NumberFormatter::FRACTION_DIGITS}
+     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
      *
      * @var string
      */
     public const Percent = 'percent';
 
     /**
-     * Options (on of):
+     * Options (one of):
      * - `int`: {@link \IntlDateFormatter::SHORT}, {@link \IntlDateFormatter::FULL},
      *      {@link \IntlDateFormatter::LONG} or {@link \IntlDateFormatter::MEDIUM}
      * - `string`: the name of custom format
      *
-     * Locale overrides:
+     * Locales options:
      * - `string`: available only for custom formats: locale specific pattern
      *      (key: `locales.<locale>.time.<format>` and/or default pattern
      *      (key: `all.time.<format>`)
@@ -94,7 +152,7 @@ class Formatter {
      * Options:
      * - `int`: fraction digits
      *
-     * Locale overrides:
+     * Locales options:
      * - none
      *
      * @var string
@@ -105,18 +163,12 @@ class Formatter {
      * Options:
      * - `int`: how many characters should be shown
      *
-     * Locale overrides:
+     * Locales options:
      * - none
      *
      * @var string
      */
     public const Secret = 'secret';
-
-    /**
-     * Options:
-     * - `int`: rounding mode, see {@link \NumberFormatter::ROUND_*}
-     */
-    public const Rounding = 'rounding';
 
     protected Application $app;
     private string        $locale;
@@ -348,8 +400,10 @@ class Formatter {
 
     private function getIntlNumberFormatter(string $type, int $decimals = null, Closure $closure = null): NumberFormatter {
         return $this->getIntlFormatter([$type, $decimals], function () use ($type, $decimals, $closure): ?NumberFormatter {
-            $round     = $this->getOptions(static::Rounding, NumberFormatter::ROUND_HALFUP);
-            $formatter = null;
+            $formatter  = null;
+            $attributes = [];
+            $symbols    = [];
+            $texts      = [];
 
             if ($closure) {
                 $decimals = $closure($type, $decimals);
@@ -357,19 +411,25 @@ class Formatter {
 
             switch ($type) {
                 case static::Integer:
-                    $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
-                    $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
+                    $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
+                    $attributes += [
+                        NumberFormatter::FRACTION_DIGITS => 0,
+                    ];
                     break;
                 case static::Decimal:
-                    $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
-                    $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, abs((int) $decimals));
+                    $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
+                    $attributes += [
+                        NumberFormatter::FRACTION_DIGITS => abs((int) $decimals),
+                    ];
                     break;
                 case static::Currency:
                     $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::CURRENCY);
                     break;
                 case static::Percent:
-                    $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::PERCENT);
-                    $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, abs((int) $decimals));
+                    $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::PERCENT);
+                    $attributes += [
+                        NumberFormatter::FRACTION_DIGITS => abs((int) $decimals),
+                    ];
                     break;
                 case static::Scientific:
                     $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SCIENTIFIC);
@@ -389,7 +449,33 @@ class Formatter {
             }
 
             if ($formatter) {
-                $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, $round);
+                $attributes = $attributes
+                    + (array) $this->getLocaleOptions($type, 'intl_attributes')
+                    + (array) $this->getOptions('intl_attributes');
+                $symbols    = $symbols
+                    + (array) $this->getLocaleOptions($type, 'intl_symbols')
+                    + (array) $this->getOptions('intl_symbols');
+                $texts      = $texts
+                    + (array) $this->getLocaleOptions($type, 'intl_text_attributes')
+                    + (array) $this->getOptions('intl_text_attributes');
+
+                foreach ($attributes as $attribute => $value) {
+                    if (!$formatter->setAttribute($attribute, $value)) {
+                        throw new OutOfBoundsException("\\NumberFormatter::setAttribute() failed: '{$attribute}' is unknown/invalid.");
+                    }
+                }
+
+                foreach ($symbols as $symbol => $value) {
+                    if (!$formatter->setSymbol($symbol, $value)) {
+                        throw new OutOfBoundsException("\\NumberFormatter::setSymbol() failed: '{$symbol}' is unknown/invalid.");
+                    }
+                }
+
+                foreach ($texts as $text => $value) {
+                    if (!$formatter->setTextAttribute($text, $value)) {
+                        throw new OutOfBoundsException("\\NumberFormatter::setTextAttribute() failed: '{$text}' is unknown/invalid.");
+                    }
+                }
             }
 
             return $formatter;
@@ -411,7 +497,7 @@ class Formatter {
             $tz        = $this->getTimezone($tz);
 
             if (is_string($format)) {
-                $pattern = (string) $this->getDateTimePattern($type, $format);
+                $pattern = (string) $this->getLocaleOptions($type, $format);
                 $format  = IntlDateFormatter::FULL;
             }
 
@@ -452,13 +538,13 @@ class Formatter {
         return $config->get($key, $default);
     }
 
-    protected function getDateTimePattern(string $type, string $format): ?string {
+    protected function getLocaleOptions(string $type, string $option) {
         $package = Provider::Package;
         $locale  = $this->getLocale();
         $config  = $this->app->make(Repository::class);
         $pattern = null
-            ?? $config->get("{$package}.locales.{$locale}.{$type}.{$format}")
-            ?? $config->get("{$package}.all.{$type}.{$format}");
+            ?? $config->get("{$package}.locales.{$locale}.{$type}.{$option}")
+            ?? $config->get("{$package}.all.{$type}.{$option}");
 
         return $pattern;
     }

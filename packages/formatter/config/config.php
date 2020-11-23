@@ -1,7 +1,5 @@
 <?php declare(strict_types = 1);
 
-use LastDragon_ru\LaraASP\Formatter\Formatter;
-
 /**
  * -----------------------------------------------------------------------------
  * Formatter Settings
@@ -20,8 +18,27 @@ return [
         // Fraction digits for decimal()
         // Formatter::Decimal => 2,
 
-        // Additional custom time format
+        // Default custom time format, you can also use
+        // - {@link \IntlDateFormatter::SHORT} (default)
+        // - {@link \IntlDateFormatter::FULL}
+        // - {@link \IntlDateFormatter::LONG}
+        // - {@link \IntlDateFormatter::MEDIUM}
         // Formatter::Time => 'custom',
+
+        // Global Attributes for {@link \NumberFormatter::setAttribute()}
+        'intl_attributes' => [
+            NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
+        ],
+
+        // Global Symbols for {@link \NumberFormatter::setSymbol()}
+        // 'intl_symbols' => [
+        //     // ...
+        // ],
+
+        // Global Attributes for {@link \NumberFormatter::setTextAttribute()}
+        // 'intl_text_attributes' => [
+        //     // ...
+        // ],
     ],
 
     /**
@@ -32,11 +49,19 @@ return [
      * For date/time please use ICU, see
      * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates-and-times
      */
-    // 'all' => [
-    //     Formatter::Time => [
-    //         'custom' => 'HH:mm:ss.SSS',
-    //     ],
-    // ],
+    'all'     => [
+        // Custom time format for all locales
+        // Formatter::Time        => [
+        //     'custom' => 'HH:mm:ss.SSS',
+        // ],
+
+        // Intl properties for all locales (will be merged with `options`)
+        // Formatter::Decimal => [
+        //     'intl_attributes'      => [],
+        //     'intl_symbols'         => [],
+        //     'intl_text_attributes' => [],
+        // ],
+    ],
 
     /**
      * Settings for concrete locales
@@ -45,10 +70,17 @@ return [
      * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates-and-times
      */
     'locales' => [
-        // For specific Locale
         // 'ru_RU' => [
+        //     // Custom time format for specific Locale
         //     Formatter::Time => [
         //         'custom' => 'HH:mm:ss',
+        //     ],
+        //
+        //     // Intl properties for specific Locale (will be merged with all`)
+        //     Formatter::Decimal => [
+        //         'intl_attributes'      => [],
+        //         'intl_symbols'         => [],
+        //         'intl_text_attributes' => [],
         //     ],
         // ],
     ],

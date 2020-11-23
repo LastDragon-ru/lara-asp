@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Formatter;
 use DateTime;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Testing\TestCase;
+use NumberFormatter;
 use function config;
 
 /**
@@ -67,11 +68,16 @@ class FormatterTest extends TestCase {
      */
     public function testDecimalConfig() {
         config([
-            Provider::Package.'.options.'.Formatter::Decimal => 4,
+            Provider::Package.'.options.'.Formatter::Decimal                          => 4,
+            Provider::Package.'.locales.ru_RU.'.Formatter::Decimal.'.intl_attributes' => [
+                NumberFormatter::FRACTION_DIGITS => 9, // should be ignored
+                NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_FLOOR,
+            ],
         ]);
 
         $this->assertEquals('1,000.0000', $this->formatter->decimal(1000));
-        $this->assertEquals('1,000.9900', $this->formatter->decimal(1000.99));
+        $this->assertEquals('1,000.0001', $this->formatter->decimal(1000.000099));
+        $this->assertEquals("1\u{00A0}000,0000", $this->formatter->forLocale('ru_RU')->decimal(1000.000099));
     }
 
     /**
