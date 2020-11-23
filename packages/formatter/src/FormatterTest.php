@@ -153,9 +153,9 @@ class FormatterTest extends TestCase {
      */
     public function testTimeCustomFormat() {
         config([
-            Provider::Package.'.options.'.Formatter::Time                => 'custom',
-            Provider::Package.'.locales.all.'.Formatter::Time.'.custom'  => 'HH:mm:ss.SSS',
-            Provider::Package.'.locales.all.'.Formatter::Time.'.custom2' => 'HH:mm:ss.SSS',
+            Provider::Package.'.options.'.Formatter::Time        => 'custom',
+            Provider::Package.'.all.'.Formatter::Time.'.custom'  => 'HH:mm:ss.SSS',
+            Provider::Package.'.all.'.Formatter::Time.'.custom2' => 'HH:mm:ss.SSS',
         ]);
 
         $time = DateTime::createFromFormat('H:i:s', '23:24:59');
@@ -192,9 +192,9 @@ class FormatterTest extends TestCase {
      */
     public function testDateCustomFormat() {
         config([
-            Provider::Package.'.options.'.Formatter::Date                => 'custom',
-            Provider::Package.'.locales.all.'.Formatter::Date.'.custom'  => 'd MMM YYYY',
-            Provider::Package.'.locales.all.'.Formatter::Date.'.custom2' => 'd MMM YYYY',
+            Provider::Package.'.options.'.Formatter::Date        => 'custom',
+            Provider::Package.'.all.'.Formatter::Date.'.custom'  => 'd MMM YYYY',
+            Provider::Package.'.all.'.Formatter::Date.'.custom2' => 'd MMM YYYY',
         ]);
 
         $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
@@ -231,9 +231,9 @@ class FormatterTest extends TestCase {
      */
     public function testDatetimeCustomFormat() {
         config([
-            Provider::Package.'.options.'.Formatter::DateTime                => 'custom',
-            Provider::Package.'.locales.all.'.Formatter::DateTime.'.custom'  => 'd MMM YYYY || HH:mm:ss',
-            Provider::Package.'.locales.all.'.Formatter::DateTime.'.custom2' => 'd MMM YYYY || HH:mm:ss',
+            Provider::Package.'.options.'.Formatter::DateTime        => 'custom',
+            Provider::Package.'.all.'.Formatter::DateTime.'.custom'  => 'd MMM YYYY || HH:mm:ss',
+            Provider::Package.'.all.'.Formatter::DateTime.'.custom2' => 'd MMM YYYY || HH:mm:ss',
         ]);
 
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');

@@ -1,12 +1,12 @@
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\LaraASP\Formatter\Formatter;
+
 /**
  * -----------------------------------------------------------------------------
  * Formatter Settings
  * -----------------------------------------------------------------------------
  */
-
-use LastDragon_ru\LaraASP\Formatter\Formatter;
 
 return [
     /**
@@ -25,22 +25,26 @@ return [
     ],
 
     /**
-     * Locales overrides
+     * Settings for all locales
      * ---------------------------------------------------------------------
-     * You can define a custom pattern for all ('all' section) and overwrite it
-     * for a specific locale.
+     * You can define a custom pattern for all locales here.
      *
      * For date/time please use ICU, see
      * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates-and-times
      */
-    'locales'   => [
-        // For All
-        // 'all' => [
-        //     Formatter::Time => [
-        //         'custom' => 'HH:mm:ss.SSS',
-        //     ],
-        // ],
+    // 'all' => [
+    //     Formatter::Time => [
+    //         'custom' => 'HH:mm:ss.SSS',
+    //     ],
+    // ],
 
+    /**
+     * Settings for concrete locales
+     * ---------------------------------------------------------------------
+     * For date/time please use ICU, see
+     * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates-and-times
+     */
+    'locales' => [
         // For specific Locale
         // 'ru_RU' => [
         //     Formatter::Time => [

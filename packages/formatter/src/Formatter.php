@@ -74,7 +74,7 @@ class Formatter {
      * Locale overrides:
      * - `string`: available only for custom formats: locale specific pattern
      *      (key: `locales.<locale>.time.<format>` and/or default pattern
-     *      (key: `locales.all.time.<format>`)
+     *      (key: `all.time.<format>`)
      *
      * @var string
      */
@@ -458,7 +458,7 @@ class Formatter {
         $config  = $this->app->make(Repository::class);
         $pattern = null
             ?? $config->get("{$package}.locales.{$locale}.{$type}.{$format}")
-            ?? $config->get("{$package}.locales.all.{$type}.{$format}");
+            ?? $config->get("{$package}.all.{$type}.{$format}");
 
         return $pattern;
     }
