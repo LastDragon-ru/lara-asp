@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Mixins;
 use Closure;
 use Illuminate\Testing\TestResponse;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode;
 
 /**
  * @internal
@@ -30,6 +31,15 @@ class TestResponseMixin {
         return function (string $contentType, string $message = ''): TestResponse {
             /** @var \Illuminate\Testing\TestResponse $this */
             Assert::assertThat($this->getContentType(), new ContentType($contentType), $message);
+
+            return $this;
+        };
+    }
+
+    public function assertStatusCode(): Closure {
+        return function (int $statusCode, string $message = ''): TestResponse {
+            /** @var \Illuminate\Testing\TestResponse $this */
+            Assert::assertThat($this->getStatusCode(), new StatusCode($statusCode), $message);
 
             return $this;
         };
