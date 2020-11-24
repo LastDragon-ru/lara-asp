@@ -11,13 +11,11 @@ use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
 use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use PHPUnit\Framework\Constraint\Constraint;
 use stdClass;
-use function json_encode;
-use const JSON_PRETTY_PRINT;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
 use const PHP_EOL;
 
 class JsonMatchesSchema extends Constraint {
+    use JsonPrettify;
+
     protected Schema             $schema;
     protected ?ValidationResult  $result = null;
 
@@ -62,12 +60,5 @@ class JsonMatchesSchema extends Constraint {
         return 'matches JSON schema';
     }
 
-    // </editor-fold>
-
-    // <editor-fold desc="Functions">
-    // =========================================================================
-    protected function prettify($value): string {
-        return json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    }
     // </editor-fold>
 }
