@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
+use LastDragon_ru\LaraASP\Testing\Assertions\Application\CronableAssertions;
+
 trait Assertions {
     use JsonAssertions;
     use CronableAssertions;

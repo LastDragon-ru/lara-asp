@@ -7,13 +7,20 @@ use function json_decode;
 use function json_encode;
 
 /**
- * @mixin \PHPUnit\Framework\TestCase
+ * @mixin \PHPUnit\Framework\Assert
  */
 trait JsonAssertions {
-    protected function assertJsonMatchesSchema(array $json, array $schema, string $message = ''): void {
+    /**
+     * @param array|\stdClass $json
+     * @param array|\stdClass $schema
+     * @param string          $message
+     *
+     * @return void
+     */
+    public static function assertJsonMatchesSchema($json, $schema, string $message = ''): void {
         $schema = json_decode(json_encode($schema), false);
         $json   = json_decode(json_encode($json), false);
 
-        $this->assertThat($json, new JsonMatchesSchema($schema), $message);
+        static::assertThat($json, new JsonMatchesSchema($schema), $message);
     }
 }

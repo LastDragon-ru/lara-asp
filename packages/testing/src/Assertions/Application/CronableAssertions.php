@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Assertions;
+namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
@@ -15,7 +15,7 @@ use function str_contains;
  *
  * @property-read \Illuminate\Foundation\Application $app
  *
- * @mixin \PHPUnit\Framework\TestCase
+ * @mixin \PHPUnit\Framework\Assert
  */
 trait CronableAssertions {
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
