@@ -3,23 +3,21 @@
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema;
-use function json_decode;
-use function json_encode;
 
 /**
  * @mixin \PHPUnit\Framework\Assert
  */
 trait JsonAssertions {
     /**
-     * @param array|\stdClass $json
-     * @param array|\stdClass $schema
-     * @param string          $message
+     * @param \SplFileInfo|\stdClass|array|string $json
+     * @param \SplFileInfo|\stdClass|array|string $schema
+     * @param string                              $message
      *
      * @return void
      */
     public static function assertJsonMatchesSchema($json, $schema, string $message = ''): void {
-        $schema = json_decode(json_encode($schema), false);
-        $json   = json_decode(json_encode($json), false);
+        $json   = Loader::loadJson($json);
+        $schema = Loader::loadJson($schema);
 
         static::assertThat($json, new JsonMatchesSchema($schema), $message);
     }
