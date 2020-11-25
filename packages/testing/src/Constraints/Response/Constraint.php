@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 
 abstract class Constraint extends PHPUnitConstraint {
     use JsonPrettify;
-    use FailureDescription;
 
     /**
      * @inheritdoc
