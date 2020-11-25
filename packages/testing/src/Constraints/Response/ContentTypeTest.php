@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-use Illuminate\Http\Response;
+use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -26,8 +26,8 @@ class ContentTypeTest extends TestCase {
      * @covers ::matches
      */
     public function testMatches(): void {
-        $valid      = (new Response())->header('Content-Type', 'example/text');
-        $invalid    = (new Response())->header('Content-Type', 'example/invalid');
+        $valid      = (new Response())->withHeader('Content-Type', 'example/text');
+        $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
         $constraint = new class('example/text') extends ContentType {
             public function matches($other): bool {
                 return parent::matches($other);

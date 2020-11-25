@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 trait FailureDescription {
     /**
-     * @param \Illuminate\Testing\TestResponse $other
+     * @param \Psr\Http\Message\ResponseInterface $other
      *
      * @return string
      */
@@ -13,11 +13,11 @@ trait FailureDescription {
     }
 
     /**
-     * @param \Illuminate\Testing\TestResponse $other
+     * @param \Psr\Http\Message\ResponseInterface $other
      *
      * @return string
      */
     protected function additionalFailureDescription($other): string {
-        return (string) $other->baseResponse;
+        return 'TODO'; // FIXME [!] Add failure description
     }
 }

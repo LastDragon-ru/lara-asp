@@ -8,4 +8,5 @@ trait Assertions {
     use JsonAssertions;
     use CronableAssertions;
     use StrictAssertEquals;
+    use ResponseAssertions;
 }

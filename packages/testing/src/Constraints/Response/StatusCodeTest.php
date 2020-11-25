@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-use Illuminate\Http\Response;
+use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -26,8 +26,8 @@ class StatusCodeTest extends TestCase {
      * @covers ::matches
      */
     public function testMatches(): void {
-        $valid      = new Response('', 200);
-        $invalid    = new Response('', 500);
+        $valid      = new Response(200);
+        $invalid    = new Response(500);
         $constraint = new class(200) extends StatusCode {
             public function matches($other): bool {
                 return parent::matches($other);
