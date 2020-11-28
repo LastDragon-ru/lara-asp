@@ -19,9 +19,14 @@
     "laravel/framework": "^8.0"
   },
   "require-dev": {
+    "lastdragon-ru/lara-asp-testing": "dev-master",
+    "orchestra/testbench": "^6.4",
     "phpunit/phpunit": "^9.0"
   },
   "autoload": {
+    "files": [
+      "src/mixins.php"
+    ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Eloquent\\": "src/"
     },

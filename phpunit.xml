@@ -43,4 +43,8 @@
             <directory suffix="Test.php">./packages/formatter/src</directory>
         </exclude>
     </coverage>
+    <php>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+    </php>
 </phpunit>
