@@ -28,10 +28,10 @@ use function is_object;
  *      $query->iterator()->safe()
  *
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()
- * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChangeSafeChunkedIterator
+ * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  * @see https://github.com/laravel/framework/issues/35400
  */
-class ChangeSafeChunkedIterator implements IteratorAggregate {
+class ChunkedChangeSafeIterator implements IteratorAggregate {
     /**
      * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */

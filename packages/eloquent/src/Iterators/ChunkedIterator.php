@@ -16,7 +16,7 @@ use Traversable;
  * that will return the change safe iterator.
  *
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()
- * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChangeSafeChunkedIterator
+ * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  */
 class ChunkedIterator implements IteratorAggregate {
     /**
@@ -53,7 +53,7 @@ class ChunkedIterator implements IteratorAggregate {
     /**
      * Returns change safe iterator.
      */
-    public function safe(string $column = null): ChangeSafeChunkedIterator {
-        return new ChangeSafeChunkedIterator($this->chunk, $this->builder, $column);
+    public function safe(string $column = null): ChunkedChangeSafeIterator {
+        return new ChunkedChangeSafeIterator($this->chunk, $this->builder, $column);
     }
 }

@@ -10,9 +10,9 @@ use function count;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Iterators\ChangeSafeChunkedIterator
+ * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  */
-class ChangeSafeChunkedIteratorTest extends TestCase {
+class ChunkedChangeSafeIteratorTest extends TestCase {
     use TestObjectTrait;
     use WithQueryLog;
 
@@ -27,7 +27,7 @@ class ChangeSafeChunkedIteratorTest extends TestCase {
         $db       = $this->app->make('db');
         $query    = TestObject::query()->orderByDesc('value');
         $count    = count($db->getQueryLog());
-        $iterator = new ChangeSafeChunkedIterator(2, $query);
+        $iterator = new ChunkedChangeSafeIterator(2, $query);
         $actual   = [];
 
         foreach ($iterator as $model) {
