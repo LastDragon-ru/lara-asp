@@ -6,6 +6,7 @@ namespace LastDragon_ru\LaraASP\Testing\Database;
  * Enable QueryLog (the {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits} is required).
  *
  * @required {@link \Illuminate\Foundation\Testing\TestCase}
+ * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
  *
  * @property-read \Illuminate\Foundation\Application $app
  *
