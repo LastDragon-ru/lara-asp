@@ -4,7 +4,10 @@ namespace LastDragon_ru\LaraASP\Testing;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use LastDragon_ru\LaraASP\Testing\Assertions\Assertions;
+use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 
 abstract class TestCase extends BaseTestCase {
-    use SetUpTraits, Assertions;
+    use SetUpTraits;
+    use Assertions;
+    use WithTestData;
 }

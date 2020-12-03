@@ -19,6 +19,7 @@
   "require": {
     "php": ">=7.4.0",
     "ext-json": "*",
+    "ext-dom": "*",
     "doctrine/dbal": "^2.12",
     "http-interop/http-factory-guzzle": "^1.0",
     "laravel/framework": "^8.0",
