@@ -4,11 +4,14 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\Constraints\JsonPrettify;
+use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedImpl;
+use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedInterface;
 use PHPUnit\Framework\Constraint\Constraint as PHPUnitConstraint;
 use Psr\Http\Message\ResponseInterface;
 
-abstract class Constraint extends PHPUnitConstraint {
+abstract class Constraint extends PHPUnitConstraint implements CompositeExpectedInterface {
     use JsonPrettify;
+    use CompositeExpectedImpl;
 
     /**
      * @inheritdoc
