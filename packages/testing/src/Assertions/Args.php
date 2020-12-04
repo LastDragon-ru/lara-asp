@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions;
 use DOMDocument;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\NoReturn;
-use PHPUnit\Framework\Assert;
 use SplFileInfo;
 use stdClass;
 use function file_get_contents;
@@ -13,11 +12,13 @@ use function is_array;
 use function is_string;
 use function json_decode;
 use function json_encode;
+use function json_last_error;
+use const JSON_ERROR_NONE;
 
 /**
  * @internal
  */
-class Loader {
+class Args {
     private function __construct() { }
 
     /**
@@ -25,22 +26,18 @@ class Loader {
      *
      * @return string
      */
-    public static function loadFile(SplFileInfo $file): string {
+    public static function getFileContents(SplFileInfo $file): string {
         return file_get_contents(static::getFile($file)->getPathname());
     }
 
     /**
      * @param \SplFileInfo|\stdClass|array|string $json
      *
-     * @return \stdClass
+     * @return \stdClass|null
      */
-    public static function loadJson($json): stdClass {
+    public static function getJson($json): ?stdClass {
         if ($json instanceof SplFileInfo) {
-            $json = static::loadFile($json);
-        }
-
-        if (is_string($json)) {
-            Assert::assertJson($json);
+            $json = static::getFileContents($json);
         }
 
         if (is_array($json)) {
@@ -49,9 +46,15 @@ class Loader {
 
         if (is_string($json)) {
             $json = json_decode($json, false);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                static::invalidJson();
+            }
         }
 
-        return $json;
+        return $json instanceof stdClass
+            ? $json
+            : null;
     }
 
     /**
@@ -61,7 +64,9 @@ class Loader {
      */
     public static function getFile($file): ?SplFileInfo {
         if ($file instanceof SplFileInfo) {
-            Assert::assertFileIsReadable($file->getPathname());
+            if (!$file->isReadable()) {
+                static::invalidFile();
+            }
 
             return $file;
         }
@@ -78,7 +83,7 @@ class Loader {
             $dom = new DOMDocument();
 
             if (!$dom->loadXML($xml)) {
-                static::error('The string is not an XML document.');
+                static::invalidXml();
             }
         } else {
             // empty
@@ -88,7 +93,22 @@ class Loader {
     }
 
     #[NoReturn]
-    public static function error(string $message): void {
+    public static function invalid(string $message): void {
         throw new InvalidArgumentException($message);
+    }
+
+    #[NoReturn]
+    public static function invalidFile(): void {
+        static::invalid('It is not the file or the file is not readable.');
+    }
+
+    #[NoReturn]
+    public static function invalidJson(): void {
+        static::invalid('It is not a valid JSON.');
+    }
+
+    #[NoReturn]
+    public static function invalidXml(): void {
+        static::invalid('It is not a valid XML.');
     }
 }

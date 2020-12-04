@@ -22,8 +22,8 @@ trait XmlAssertions {
      * @return void
      */
     public static function assertXmlMatchesSchema($xml, SplFileInfo $schema, string $message = ''): void {
-        $xml        = Loader::getFile($xml) ?? Loader::getDomDocument($xml) ?? Loader::error('FIXME');
-        $schema     = Loader::getFile($schema) ?? Loader::error('FIXME');
+        $xml        = Args::getFile($xml) ?? Args::getDomDocument($xml) ?? Args::invalidXml();
+        $schema     = Args::getFile($schema) ?? Args::invalidFile();
         $isRelaxNg  = strtolower($schema->getExtension()) === 'rng';
         $constraint = null;
 

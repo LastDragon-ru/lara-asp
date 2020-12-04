@@ -16,8 +16,8 @@ trait JsonAssertions {
      * @return void
      */
     public static function assertJsonMatchesSchema($json, $schema, string $message = ''): void {
-        $json   = Loader::loadJson($json);
-        $schema = Loader::loadJson($schema);
+        $json   = Args::getJson($json) ?? Args::invalidJson();
+        $schema = Args::getJson($schema) ?? Args::invalidJson();
 
         static::assertThat($json, new JsonMatchesSchema($schema), $message);
     }
