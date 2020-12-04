@@ -31,6 +31,7 @@
     "ext-json": "*",
     "ext-xml": "*",
     "ext-dom": "*",
+    "ext-xmlreader": "*",
     "composer/composer": "^2.0",
     "doctrine/dbal": "^2.12",
     "http-interop/http-factory-guzzle": "^1.0",
@@ -40,7 +41,7 @@
     "psr/http-message": "^1.0",
     "symfony/finder": "^5.1",
     "symfony/polyfill-php80": "^1.20",
-    "symfony/psr-http-message-bridge": "^2.0"
+    "symfony/psr-http-message-bridge": "^2.0",
   },
   "require-dev": {
     "guzzlehttp/psr7": "^1.7",

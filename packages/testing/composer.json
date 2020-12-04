@@ -21,6 +21,7 @@
     "ext-json": "*",
     "ext-xml": "*",
     "ext-dom": "*",
+    "ext-xmlreader": "*",
     "doctrine/dbal": "^2.12",
     "http-interop/http-factory-guzzle": "^1.0",
     "laravel/framework": "^8.0",
