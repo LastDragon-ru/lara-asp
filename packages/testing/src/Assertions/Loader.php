@@ -2,6 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
+use DOMDocument;
+use InvalidArgumentException;
+use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\Assert;
 use SplFileInfo;
 use stdClass;
@@ -23,9 +26,7 @@ class Loader {
      * @return string
      */
     public static function loadFile(SplFileInfo $file): string {
-        Assert::assertFileIsReadable($file->getPathname());
-
-        return file_get_contents($file->getPathname());
+        return file_get_contents(static::getFile($file)->getPathname());
     }
 
     /**
@@ -51,5 +52,43 @@ class Loader {
         }
 
         return $json;
+    }
+
+    /**
+     * @param \SplFileInfo|mixed $file
+     *
+     * @return \SplFileInfo|null
+     */
+    public static function getFile($file): ?SplFileInfo {
+        if ($file instanceof SplFileInfo) {
+            Assert::assertFileIsReadable($file->getPathname());
+
+            return $file;
+        }
+
+        return null;
+    }
+
+    public static function getDomDocument($xml): ?DOMDocument {
+        $dom = null;
+
+        if ($xml instanceof DOMDocument) {
+            $dom = $xml;
+        } elseif (is_string($xml)) {
+            $dom = new DOMDocument();
+
+            if (!$dom->loadXML($xml)) {
+                static::error('The string is not an XML document.');
+            }
+        } else {
+            // empty
+        }
+
+        return $dom;
+    }
+
+    #[NoReturn]
+    public static function error(string $message): void {
+        throw new InvalidArgumentException($message);
     }
 }

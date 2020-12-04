@@ -11,6 +11,7 @@ use Illuminate\Testing\TestResponse;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode;
 use PHPUnit\Framework\Constraint\Constraint;
+use SplFileInfo;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
 /**
@@ -62,6 +63,15 @@ class TestResponseMixin {
         return function (int $statusCode, string $message = ''): TestResponse {
             /** @var \Illuminate\Testing\TestResponse $this */
             Assert::assertThat($this->getStatusCode(), new StatusCode($statusCode), $message);
+
+            return $this;
+        };
+    }
+
+    public function assertXmlMatchesSchema(): Closure {
+        return function (SplFileInfo $schema, string $message = ''): TestResponse {
+            /** @var \Illuminate\Testing\TestResponse $this */
+            Assert::assertXmlMatchesSchema($this->getContent(), $schema, $message);
 
             return $this;
         };
