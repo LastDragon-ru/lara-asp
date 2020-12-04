@@ -11,6 +11,7 @@ use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
 use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use PHPUnit\Framework\Constraint\Constraint;
 use stdClass;
+use function ltrim;
 use const PHP_EOL;
 
 class JsonMatchesSchema extends Constraint {
@@ -26,6 +27,10 @@ class JsonMatchesSchema extends Constraint {
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
     protected function matches($other): bool {
+        if (!($other instanceof stdClass)) {
+            return false;
+        }
+
         $this->result = (new Validator())->schemaValidation($other, $this->schema);
         $matches      = $this->result->isValid();
 
@@ -47,9 +52,9 @@ class JsonMatchesSchema extends Constraint {
                 new BestMatchError()
             );
             $presented   = $presenter->present(...$this->result->getErrors());
-            $padding     = '  ';
+            $padding     = '    ';
             $description .= PHP_EOL.$padding.'Errors:';
-            $description .= PHP_EOL.preg_replace('/^/m', $padding, $this->prettify($presented));
+            $description .= ltrim(preg_replace('/^/m', $padding, $this->prettify($presented)));
             $description .= PHP_EOL;
         }
 

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\Constraints\JsonPrettify;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedImpl;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedInterface;
@@ -15,12 +14,15 @@ abstract class Constraint extends PHPUnitConstraint implements CompositeExpected
 
     /**
      * @inheritdoc
+     *
+     * @param ResponseInterface $other
+     * @param string            $description
+     * @param bool              $returnResult
+     *
+     * @return bool|null
      */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
-        if (!($other instanceof ResponseInterface)) {
-            throw new InvalidArgumentException(sprintf('The `%s` must be instance of `%s`.', '$other', ResponseInterface::class));
-        }
-
-        return parent::evaluate($other, $description, $returnResult);
+        return $other instanceof ResponseInterface
+            && parent::evaluate($other, $description, $returnResult);
     }
 }

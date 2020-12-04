@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use GuzzleHttp\Psr7\Response;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -16,10 +15,7 @@ class StatusCodeTest extends TestCase {
      * @covers ::evaluate
      */
     public function testEvaluate(): void {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageMatches('/The `[^`]+` must be instance of `[^`]+`./');
-
-        (new StatusCode(200))->evaluate(new stdClass());
+        $this->assertFalse((new StatusCode(200))->evaluate(new stdClass()));
     }
 
     /**
