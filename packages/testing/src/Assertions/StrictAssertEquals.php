@@ -5,7 +5,9 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions;
 use LastDragon_ru\LaraASP\Testing\Comparators\ScalarStrictComparator;
 
 /**
- * Make `assertEquals` strict (the {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits} is required).
+ * Makes `assertEquals` strict.
+ *
+ * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
  *
  * @mixin \PHPUnit\Framework\Test
  */
