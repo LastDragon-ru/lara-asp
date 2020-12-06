@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Eloquent\Mixins;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObjectTrait;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use Traversable;
 
@@ -12,6 +14,8 @@ use Traversable;
  * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Mixins\EloquentBuilderMixin
  */
 class EloquentBuilderMixinTest extends TestCase {
+    use TestObjectTrait;
+
     /**
      * @covers ::getDefaultKeyName
      */
@@ -34,5 +38,18 @@ class EloquentBuilderMixinTest extends TestCase {
 
         $this->assertTrue(Builder::hasGlobalMacro('iterator'));
         $this->assertInstanceOf(Traversable::class, $model->query()->iterator());
+    }
+
+    /**
+     * @covers ::orderByKey
+     * @covers ::orderByKeyDesc
+     */
+    public function testOrderByKey(): void {
+        $a = TestObject::factory()->create();
+        $b = TestObject::factory()->create();
+
+        $this->assertEquals([$a, $b], TestObject::query()->orderByKey()->get()->all());
+        $this->assertEquals([$b, $a], TestObject::query()->orderByKey('desc')->get()->all());
+        $this->assertEquals([$b, $a], TestObject::query()->orderByKeyDesc()->get()->all());
     }
 }
