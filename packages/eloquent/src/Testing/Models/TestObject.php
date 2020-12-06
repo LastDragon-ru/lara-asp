@@ -17,6 +17,6 @@ class TestObject extends Model {
     protected $table = 'test_objects';
 
     protected static function newFactory(): Factory {
-        return new TestObjectFactory();
+        return TestObjectFactory::new();
     }
 }
