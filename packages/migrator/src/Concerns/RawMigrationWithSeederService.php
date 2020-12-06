@@ -7,6 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
 
 /**
+ * @deprecated probably you need RawDataMigration
  * @mixin \LastDragon_ru\LaraASP\Migrator\Migrations\RawMigration
  */
 trait RawMigrationWithSeederService {
