@@ -10,4 +10,5 @@ trait Assertions {
     use CronableAssertions;
     use StrictAssertEquals;
     use ResponseAssertions;
+    use ModelComparator;
 }
