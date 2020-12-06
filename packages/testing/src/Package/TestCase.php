@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Package;
 
 use LastDragon_ru\LaraASP\Testing\Assertions\Assertions;
+use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
 use LastDragon_ru\LaraASP\Testing\SetUpTraits;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
 
@@ -14,4 +15,5 @@ use Orchestra\Testbench\TestCase as TestbenchTestCase;
 class TestCase extends TestbenchTestCase {
     use SetUpTraits;
     use Assertions;
+    use Concerns;
 }

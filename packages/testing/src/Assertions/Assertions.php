@@ -8,7 +8,5 @@ trait Assertions {
     use XmlAssertions;
     use JsonAssertions;
     use CronableAssertions;
-    use StrictAssertEquals;
     use ResponseAssertions;
-    use ModelComparator;
 }
