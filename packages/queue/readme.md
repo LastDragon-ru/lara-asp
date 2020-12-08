@@ -31,32 +31,27 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Job;
 
 class MyJobWithConfig extends Job {
     /**
-     * Must be private (see below).
-     *
-     * @var \Illuminate\Foundation\Application
-     */
-    private Application $app;
-
-    /**
-     * As a small bonus you can inject dependencies into the constructor, but
-     * keep in mind that all injected dependencies must be private to avoid
-     * their serialization while dispatching.
+     * As a small bonus you can inject dependencies into the constructor, but 
+     * keep in mind that you, probably, should not assign them to class 
+     * properties (even private) or they will be serialized.
      *
      * @param \LastDragon_ru\LaraASP\Queue\QueueableConfigurator $configurator
      * @param \Illuminate\Foundation\Application                 $app
      */
     public function __construct(QueueableConfigurator $configurator, Application $app) {
-        $this->app = $app;
-
+        // $app ...
+    
         parent::__construct($configurator);
     }
 
     /**
      * Default config.
      *
+     * @param \Illuminate\Foundation\Application|null $app you can use DI here too
+     *                                                    
      * @return array
      */
-    public function getQueueConfig(): array {
+    public function getQueueConfig(Application $app = null): array {
         return [
                 'queue'    => 'queue',
                 'settings' => [

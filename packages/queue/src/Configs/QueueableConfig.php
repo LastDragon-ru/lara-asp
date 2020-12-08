@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Queue\Configs;
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
@@ -23,12 +24,19 @@ class QueueableConfig {
 
     protected Repository            $global;
     protected ConfigurableQueueable $queueable;
+    protected Container             $container;
     protected array                 $properties;
     protected ?array                $config = null;
 
-    public function __construct(Repository $global, ConfigurableQueueable $queueable, array $properties) {
+    public function __construct(
+        Container $container,
+        Repository $global,
+        ConfigurableQueueable $queueable,
+        array $properties
+    ) {
         $this->global     = $global;
         $this->queueable  = $queueable;
+        $this->container  = $container;
         $this->properties = $properties;
     }
 
@@ -52,7 +60,7 @@ class QueueableConfig {
     protected function config(): array {
         if (is_null($this->config)) {
             $global       = (array) $this->global->get($this->getApplicationConfig());
-            $config       = (array) $this->queueable->getQueueConfig();
+            $config       = (array) $this->container->call([$this->queueable, 'getQueueConfig']);
             $target       = $this->getDefaultConfig() + $config;
             $this->config = (new ConfigRecursiveMerger())->merge($target, $config, $global);
         }

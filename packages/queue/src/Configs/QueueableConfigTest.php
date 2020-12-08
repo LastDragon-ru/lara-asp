@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Queue\Configs;
 
 use Exception;
 use Illuminate\Config\Repository;
+use Illuminate\Container\Container;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Concerns\Configurable;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
@@ -14,6 +15,8 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Job;
 use LastDragon_ru\LaraASP\Queue\Queueables\Listener;
 use LastDragon_ru\LaraASP\Queue\Queueables\Mail;
 use PHPUnit\Framework\TestCase;
+use stdClass;
+use function get_class;
 
 /**
  * @internal
@@ -32,11 +35,12 @@ class QueueableConfigTest extends TestCase {
      * @return void
      */
     public function testGetQueueClass(string $expected, string $class): void {
+        $container    = Container::getInstance();
         $repository   = new Repository();
-        $configurator = new QueueableConfigurator($repository);
+        $configurator = new QueueableConfigurator($container, $repository);
         $properties   = [];
         $queueable    = new $class($configurator);
-        $config       = new class($repository, $queueable, $properties) extends QueueableConfig {
+        $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
             public function getQueueClass(): string {
                 return parent::getQueueClass();
             }
@@ -56,8 +60,9 @@ class QueueableConfigTest extends TestCase {
      * @return void
      */
     public function testConfig($expected, array $appConfig, array $queueableConfig): void {
+        $container    = Container::getInstance();
         $repository   = new Repository();
-        $configurator = new class($repository) extends QueueableConfigurator {
+        $configurator = new class($container, $repository) extends QueueableConfigurator {
             public function getQueueableProperties(): array {
                 return parent::getQueueableProperties();
             }
@@ -76,7 +81,7 @@ class QueueableConfigTest extends TestCase {
                 return $this->config;
             }
         };
-        $config       = new class($repository, $queueable, $properties) extends QueueableConfig {
+        $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
             public function config(): array {
                 return parent::config();
             }
@@ -93,6 +98,28 @@ class QueueableConfigTest extends TestCase {
         }
 
         $this->assertEquals($expected, $config->config());
+    }
+
+    /**
+     * @covers ::config
+     *
+     * @return void
+     */
+    public function testConfigInjectionIntoGetQueueConfig(): void {
+        $container    = Container::getInstance();
+        $repository   = new Repository();
+        $configurator = new class($container, $repository) extends QueueableConfigurator {
+            public function getQueueableProperties(): array {
+                return parent::getQueueableProperties();
+            }
+        };
+        $queueable    = new class($configurator) extends Job {
+            public function getQueueConfig(stdClass $injected = null): array {
+                return ['injected' => get_class($injected)];
+            }
+        };
+
+        $this->assertEquals(stdClass::class, $configurator->config($queueable)->get('injected'));
     }
     // </editor-fold>
 
