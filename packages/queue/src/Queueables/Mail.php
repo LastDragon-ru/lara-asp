@@ -11,5 +11,8 @@ use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 
 abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueable {
-    use Queueable, SerializesModels, Configurable, WithConfig;
+    use Queueable;
+    use SerializesModels;
+    use Configurable;
+    use WithConfig;
 }

@@ -11,5 +11,9 @@ use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 
 abstract class Job implements ShouldQueue, ConfigurableQueueable {
-    use Queueable, SerializesModels, Configurable, WithConfig, Dispatchable;
+    use Queueable;
+    use SerializesModels;
+    use Configurable;
+    use Dispatchable;
+    use WithConfig;
 }
