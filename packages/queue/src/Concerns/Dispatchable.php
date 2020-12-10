@@ -5,7 +5,11 @@ namespace LastDragon_ru\LaraASP\Queue\Concerns;
 use Illuminate\Foundation\Bus\PendingDispatch;
 
 trait Dispatchable {
+    use WithInitialization;
+
     public function dispatch(): PendingDispatch {
-        return new PendingDispatch($this);
+        return $this->ifInitialized(function () {
+            return new PendingDispatch($this);
+        });
     }
 }
