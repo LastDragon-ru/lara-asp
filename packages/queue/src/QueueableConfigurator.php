@@ -2,14 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
+use DateTime;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Mail\Mailable;
+use Illuminate\Support\DateFactory;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\MailableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
+use function is_string;
 
 /**
  * Queueable configurator.
@@ -42,12 +45,23 @@ class QueueableConfigurator {
         $config     = $this->config($queueable);
         $novalue    = __METHOD__;
         $properties = array_keys($this->getQueueableProperties());
+        $preparers  = [
+            'retryUntil' => function ($value): ?DateTime {
+                if (is_string($value)) {
+                    $value = DateFactory::now()->add($value);
+                }
+
+                return $value;
+            },
+        ];
 
         foreach ($properties as $property) {
             $value = $config->get($property, $novalue);
 
             if ($value !== $novalue) {
-                $queueable->{$property} = $value;
+                $queueable->{$property} = isset($preparers[$property])
+                    ? $preparers[$property]($value)
+                    : $value;
             }
         }
     }
@@ -63,6 +77,7 @@ class QueueableConfigurator {
             'maxExceptions'           => null,  // Number of exceptions allowed for the job before fail
             'backoff'                 => null,  // Retry delay for the failed job
             'deleteWhenMissingModels' => null,  // Allow deleting the job if the model does not exist anymore
+            'retryUntil'              => null,  // The \DateTime indicating when the job should timeout.
         ];
     }
 }

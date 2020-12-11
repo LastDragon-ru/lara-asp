@@ -108,11 +108,7 @@ class QueueableConfigTest extends TestCase {
     public function testConfigInjectionIntoGetQueueConfig(): void {
         $container    = Container::getInstance();
         $repository   = new Repository();
-        $configurator = new class($container, $repository) extends QueueableConfigurator {
-            public function getQueueableProperties(): array {
-                return parent::getQueueableProperties();
-            }
-        };
+        $configurator = new QueueableConfigurator($container, $repository);
         $queueable    = new class($configurator) extends Job {
             public function getQueueConfig(stdClass $injected = null): array {
                 return ['injected' => get_class($injected)];
@@ -149,6 +145,7 @@ class QueueableConfigTest extends TestCase {
                     'backoff'                 => null,
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
+                    'retryUntil'              => null,
                 ],
                 [],
                 [],
@@ -163,6 +160,7 @@ class QueueableConfigTest extends TestCase {
                     'backoff'                 => null,
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
+                    'retryUntil'              => null,
                 ],
                 [
                     'queue'   => 'app',
@@ -180,6 +178,7 @@ class QueueableConfigTest extends TestCase {
                     'backoff'                 => null,
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
+                    'retryUntil'              => null,
                 ],
                 [],
                 [
@@ -197,6 +196,7 @@ class QueueableConfigTest extends TestCase {
                     'backoff'                 => null,
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
+                    'retryUntil'              => null,
                 ],
                 [
                     'queue'   => 'app',
@@ -225,6 +225,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
                     'unknown'                 => 'key',
+                    'retryUntil'              => null,
                 ],
                 [],
                 [

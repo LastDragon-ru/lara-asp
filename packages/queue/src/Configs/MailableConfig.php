@@ -7,6 +7,7 @@ class MailableConfig extends QueueableConfig {
         /** SEE {@link \Illuminate\Mail\SendQueuedMailable} */
         $config = parent::getDefaultConfig();
 
+        unset($config['retryUntil']);
         unset($config['maxExceptions']);
         unset($config['deleteWhenMissingModels']);
 
