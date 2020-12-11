@@ -46,8 +46,8 @@ class QueueableConfig {
         return $this->config();
     }
 
-    public function get(string $key) {
-        return Arr::get($this->config(), $key);
+    public function get(string $key, $default = null) {
+        return Arr::get($this->config(), $key, $default);
     }
 
     public function setting(string $key) {
