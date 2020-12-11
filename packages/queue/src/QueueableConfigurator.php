@@ -15,7 +15,7 @@ use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
  * Queueable configurator.
  */
 class QueueableConfigurator {
-    protected Container $container;
+    protected Container  $container;
     protected Repository $config;
 
     public function __construct(Container $container, Repository $config) {
@@ -40,12 +40,13 @@ class QueueableConfigurator {
 
     public function configure(ConfigurableQueueable $queueable): void {
         $config     = $this->config($queueable);
+        $novalue    = __METHOD__;
         $properties = array_keys($this->getQueueableProperties());
 
         foreach ($properties as $property) {
-            $value = $config->get($property);
+            $value = $config->get($property, $novalue);
 
-            if (!is_null($value)) {
+            if ($value !== $novalue) {
                 $queueable->{$property} = $value;
             }
         }
