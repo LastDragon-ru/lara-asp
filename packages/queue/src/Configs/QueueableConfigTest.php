@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue\Configs;
 use Exception;
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
+use Illuminate\Support\DateFactory;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Concerns\Configurable;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
@@ -37,7 +38,8 @@ class QueueableConfigTest extends TestCase {
     public function testGetQueueClass(string $expected, string $class): void {
         $container    = Container::getInstance();
         $repository   = new Repository();
-        $configurator = new QueueableConfigurator($container, $repository);
+        $dateFactory  = new DateFactory();
+        $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
         $properties   = [];
         $queueable    = new $class($configurator);
         $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
@@ -62,7 +64,8 @@ class QueueableConfigTest extends TestCase {
     public function testConfig($expected, array $appConfig, array $queueableConfig): void {
         $container    = Container::getInstance();
         $repository   = new Repository();
-        $configurator = new class($container, $repository) extends QueueableConfigurator {
+        $dateFactory  = new DateFactory();
+        $configurator = new class($container, $repository, $dateFactory) extends QueueableConfigurator {
             public function getQueueableProperties(): array {
                 return parent::getQueueableProperties();
             }
@@ -108,7 +111,8 @@ class QueueableConfigTest extends TestCase {
     public function testConfigInjectionIntoGetQueueConfig(): void {
         $container    = Container::getInstance();
         $repository   = new Repository();
-        $configurator = new QueueableConfigurator($container, $repository);
+        $dateFactory  = new DateFactory();
+        $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
         $queueable    = new class($configurator) extends Job {
             public function getQueueConfig(stdClass $injected = null): array {
                 return ['injected' => get_class($injected)];

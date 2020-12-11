@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
-use DateTime;
+use DateTimeInterface;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Mail\Mailable;
@@ -18,12 +18,14 @@ use function is_string;
  * Queueable configurator.
  */
 class QueueableConfigurator {
-    protected Container  $container;
-    protected Repository $config;
+    protected Container   $container;
+    protected Repository  $config;
+    protected DateFactory $dateFactory;
 
-    public function __construct(Container $container, Repository $config) {
-        $this->container = $container;
-        $this->config    = $config;
+    public function __construct(Container $container, Repository $config, DateFactory $dateFactory) {
+        $this->dateFactory = $dateFactory;
+        $this->container   = $container;
+        $this->config      = $config;
     }
 
     public function config(ConfigurableQueueable $queueable): QueueableConfig {
@@ -46,9 +48,9 @@ class QueueableConfigurator {
         $novalue    = __METHOD__;
         $properties = array_keys($this->getQueueableProperties());
         $preparers  = [
-            'retryUntil' => function ($value): ?DateTime {
+            'retryUntil' => function ($value): ?DateTimeInterface {
                 if (is_string($value)) {
-                    $value = DateFactory::now()->add($value);
+                    $value = $this->dateFactory->now()->add($value);
                 }
 
                 return $value;
