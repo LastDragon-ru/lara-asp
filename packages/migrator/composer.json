@@ -23,6 +23,7 @@
     "ext-intl": "*",
     "ext-json": "*",
     "laravel/framework": "^8.0",
+    "symfony/filesystem": "^5.2",
     "symfony/finder": "^5.1",
     "composer/composer": "^2.0",
     "doctrine/dbal": "^2.12"
@@ -32,8 +33,7 @@
   },
   "autoload": {
     "psr-4": {
-      "LastDragon_ru\\LaraASP\\Migrator\\": "src/",
-      "Database\\Seeders\\": "database/seeders/"
+      "LastDragon_ru\\LaraASP\\Migrator\\": "src/"
     },
     "exclude-from-classmap": [
       "src/**Test.php"

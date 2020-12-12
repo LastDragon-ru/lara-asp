@@ -35,12 +35,14 @@ Another useful class is [`RawDataMigration`](./src/Migrations/RawDataMigration.p
 
 ### Seeders
 
-The Migrator uses a bit different approach compared to standard:
+The Migrator uses a bit different approach compared to standard and provides a few different types of seeders:
 
-- it loads all files automatically, so you no need to call `$this->call([UserSeeder::class])` inside seeder;
-- it will skip the seeder if it was already applied (it is now safe for production 🤩).
+- [`RootSeeder`](./src/Seeders/RootSeeder.php) - similar to `DirectorySeeder`, but also includes paths which was added by packages through `loadSeedsFrom()`;
+- [`DirectorySeeder`](./src/Seeders/DirectorySeeder.php) - loads seeders from specified paths (recursive);
+- [`SmartSeeder`](./src/Seeders/SmartSeeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
+- [`RawSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
 
-To create seeder just use standard command
+To create raw seeder just use standard command
 
 ```
 php artisan make:seeder MySeeder

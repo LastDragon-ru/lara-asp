@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
-use Database\Seeders\DatabaseSeeder;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +9,10 @@ use InvalidArgumentException;
 
 class SeederService {
     protected Application $app;
+    /**
+     * @var string[]
+     */
+    protected array $seedersPaths = [];
 
     public function __construct(Application $app) {
         $this->app = $app;
@@ -62,9 +65,14 @@ class SeederService {
     }
 
     public function loadSeedsFrom(string $path): void {
-        $this->app->afterResolving(DatabaseSeeder::class, function (DatabaseSeeder $seeder) use ($path) {
-            $seeder->addPath($path);
-        });
+        $this->seedersPaths[] = $path;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSeedersPaths(): array {
+        return $this->seedersPaths;
     }
     // </editor-fold>
 
