@@ -7,11 +7,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use ReflectionClass;
 use Symfony\Component\Filesystem\Filesystem;
-use function array_filter;
-use function array_keys;
 use function dirname;
 use function is_subclass_of;
-use function sort;
+use function str_ends_with;
 
 /**
  * Directory Seeder. Loads all seeders from specified paths.
@@ -67,14 +65,16 @@ abstract class DirectorySeeder extends Seeder {
     }
 
     protected function getSeedersFromPath(string $path): array {
-        $classes = ClassMapGenerator::createMap($path);
-        $classes = array_keys($classes);
-        $classes = array_filter($classes, function (string $class): bool {
-            return is_subclass_of($class, Seeder::class, true)
-                && $class !== static::class;
-        });
-
-        sort($classes);
+        $map     = ClassMapGenerator::createMap($path);
+        $classes = (new Collection($map))
+            ->filter(function (string $path, string $class) {
+                return !str_ends_with($path, 'Test.php')
+                    && is_subclass_of($class, Seeder::class, true)
+                    && $class !== static::class;
+            })
+            ->keys()
+            ->sort()
+            ->all();
 
         return $classes;
     }
