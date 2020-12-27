@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
-use Database\Seeders\DatabaseSeeder;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Seeder;
 use Illuminate\Filesystem\Filesystem;
@@ -53,8 +52,6 @@ abstract class SmartSeeder extends Seeder {
     // <editor-fold desc="Seed">
     // =========================================================================
     public function run(): void {
-        $this->seeding();
-
         $reason = $this->isSkipped();
 
         if ($reason) {
@@ -75,13 +72,6 @@ abstract class SmartSeeder extends Seeder {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function seeding(): void {
-        if ($this->command && $this->command->option('class') !== DatabaseSeeder::class) {
-            $this->command->getOutput()
-                ->writeln("<info>Seeding:</info> {$this->command->option('class')}");
-        }
-    }
-
     /**
      * Output "skipped" message.
      *
