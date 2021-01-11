@@ -31,3 +31,9 @@ This package improves standard laravel migrations to add support for raw SQL fil
 This package provides additional capabilities for queued jobs and queued listeners like multilevel configuration support, job overriding (very useful for package development to provide base implementation and allow the application to extend it), easy define for cron jobs, and DI in constructor support.
 
 [Read more](packages/queue/readme.md).
+
+## Eloquent Helpers
+
+This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/8.x/eloquent).
+
+[Read more](packages/eloquent/readme.md).
