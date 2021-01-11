@@ -1,20 +1,23 @@
-# Awesome Set of Packages for Laravel
+# The Migrator
 
-## The Migrator
+> This package is the part of Awesome Set of Packages for Laravel.
+> 
+> [Read more](../../readme.md).
 
 This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳 
 
-### Important note
+:warning: | The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/8.x/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details.
+:---: | :---
 
-The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/8.x/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details.
+
+# Installation
+
+```shell
+composer require lastdragon-ru/lara-asp-migrator
+```
 
 
-### Installation
-
-1. Run `composer install lastdragon-ru/lara-asp-migrator`
-1. Remove `DatabaseSeeder` class (`database/seeders/DatabaseSeeder.php`/`database/seeds/DatabaseSeeder.php`). The seeding will not work if this class exists.
-
-### Migrations
+# Migrations
 
 To create migration just use the standard command
 
@@ -33,7 +36,8 @@ Usually, you just need to put your SQL into `~up.sql` and `~down.sql` 😇 Note 
 
 Another useful class is [`RawDataMigration`](./src/Migrations/RawDataMigration.php) that specially designed for cases when you want to insert data without altering the table(s). Unlike `RawMigration` it will apply migration only if the database is not empty (to fill empty database while fresh installation please use Seeders).
 
-### Seeders
+
+# Seeders
 
 The Migrator uses a bit different approach compared to standard and provides a few different types of seeders:
 

@@ -1,12 +1,17 @@
-# Awesome Set of Packages for Laravel
+# Queue Helpers
 
-## Queue Helpers
+> This package is the part of Awesome Set of Packages for Laravel.
+>
+> [Read more](../../readme.md).
 
 This package provides additional capabilities for queued jobs and queued listeners like multilevel configuration support, job overriding (very useful for package development to provide base implementation and allow the application to extend it), easy define for cron jobs, and DI in constructor support.  
 
-### Installation
+# Installation
 
-1. Run `composer install lastdragon-ru/lara-asp-queue`
+1. Run
+    ```shell
+    composer require lastdragon-ru/lara-asp-queue
+    ```
 1. Overwrite default event Dispatcher by adding following code into `bootstrap/app.php` (before all others singletons):
    ```php
    $app->singleton('events', \LastDragon_ru\LaraASP\Queue\EventsDispatcher::class);
@@ -15,7 +20,7 @@ This package provides additional capabilities for queued jobs and queued listene
    This is required if you want use configuration/DI for queued Listeners. Please see https://github.com/laravel/framework/issues/25272 for reason.
 
 
-### Configuration
+# Configuration
 
 To add the configuration for job/listener/mailable you just need extends one the [base classes](https://github.com/LastDragon-ru/lara-asp/tree/master/packages/queue/src/Queueables):
 
@@ -108,7 +113,7 @@ return [
 ```
 
 
-### Cron jobs
+# Cron jobs
 
 Creating the cron jobs is similar. They just have two additional settings:
 
@@ -215,7 +220,7 @@ $ php artisan schedule:list
 +-------------+---------------------+---------+---------------------------------------------------------------------+
 ```
 
-### Overriding package Jobs
+# Overriding package Jobs
 
 The most interesting and useful thing for package developers is the ability to extend all package's jobs in the application. For example, our package provides the `PackageCronJob` and `UpdateSomethingJob`, their setting can be easily changed through the config, but can we extend it in the app? Yes!
 
