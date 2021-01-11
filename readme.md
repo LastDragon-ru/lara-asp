@@ -37,3 +37,9 @@ This package provides additional capabilities for queued jobs and queued listene
 This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/8.x/eloquent).
 
 [Read more](packages/eloquent/readme.md).
+
+## The Formatter
+
+This package provides a customizable wrapper around Intl formatters.
+
+[Read more](packages/formatter/readme.md).
