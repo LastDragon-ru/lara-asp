@@ -14,6 +14,12 @@ composer require lastdragon-ru/lara-asp-core
 
 # Packages
 
+## The Core
+
+This package contains useful utilities and classes.
+
+[Read more](packages/core/readme.md).
+
 ## The Migrator
 
 This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
