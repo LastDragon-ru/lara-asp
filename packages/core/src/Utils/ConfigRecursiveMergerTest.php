@@ -31,7 +31,7 @@ class ConfigRecursiveMergerTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $merger = (new ConfigRecursiveMerger())->setStrict($strict);
+        $merger = new ConfigRecursiveMerger($strict);
         $actual = $merger->merge($config, ... $configs);
 
         $this->assertEquals($expected, $actual);

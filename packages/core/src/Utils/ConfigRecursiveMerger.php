@@ -18,12 +18,6 @@ class ConfigRecursiveMerger {
         return $this->strict;
     }
 
-    public function setStrict(bool $strict = true): self {
-        $this->strict = $strict;
-
-        return $this;
-    }
-
     /**
      * Merge two or more array-based configs.
      *
