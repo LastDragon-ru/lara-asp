@@ -10,6 +10,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 trait ResponseAssertions {
     /**
+     * Asserts that PSR Response satisfies given constraint.
+     *
      * @param \Psr\Http\Message\ResponseInterface      $response
      * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string                                   $message

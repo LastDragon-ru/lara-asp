@@ -15,6 +15,11 @@ use function strtolower;
  */
 trait XmlAssertions {
     /**
+     * Asserts that XML matches schema.
+     *
+     * @see \LastDragon_ru\LaraASP\Testing\Constraints\Xml\DomDocumentMatchesSchemaXsd
+     * @see \LastDragon_ru\LaraASP\Testing\Constraints\Xml\DomDocumentMatchesSchemaRelaxNg
+     *
      * @param \SplFileInfo|\DOMDocument|string $xml
      * @param \SplFileInfo                     $schema
      * @param string                           $message

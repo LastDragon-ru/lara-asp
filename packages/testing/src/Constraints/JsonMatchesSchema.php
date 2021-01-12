@@ -14,6 +14,12 @@ use stdClass;
 use function ltrim;
 use const PHP_EOL;
 
+/**
+ * Check that JSON matches schema (draft-07 and draft-06).
+ *
+ * @see https://json-schema.org/
+ * @see https://github.com/opis/json-schema
+ */
 class JsonMatchesSchema extends Constraint {
     use JsonPrettify;
 

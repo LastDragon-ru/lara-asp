@@ -18,6 +18,14 @@ use function str_contains;
  * @mixin \PHPUnit\Framework\Assert
  */
 trait CronableAssertions {
+    /**
+     * Asserts that {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} is registered.
+     *
+     * @param string $cronable class name
+     * @param string $message
+     *
+     * @return void
+     */
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
         $this->assertTrue(
             is_subclass_of($cronable, Cronable::class, true),

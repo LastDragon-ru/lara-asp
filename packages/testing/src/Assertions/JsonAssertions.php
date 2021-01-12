@@ -9,6 +9,10 @@ use LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema;
  */
 trait JsonAssertions {
     /**
+     * Asserts that JSON matches schema.
+     *
+     * @see \LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema
+     *
      * @param \SplFileInfo|\stdClass|array|string $json
      * @param \SplFileInfo|\stdClass|array|string $schema
      * @param string                              $message

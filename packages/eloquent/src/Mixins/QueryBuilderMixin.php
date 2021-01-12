@@ -8,6 +8,9 @@ use Traversable;
 
 class QueryBuilderMixin {
     public function getDefaultKeyName(): Closure {
+        /**
+         * @internal
+         */
         return function (): string {
             /** @var \Illuminate\Database\Query\Builder $this */
             return $this->defaultKeyName();
