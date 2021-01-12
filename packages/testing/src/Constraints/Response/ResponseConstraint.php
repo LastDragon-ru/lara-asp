@@ -12,7 +12,7 @@ class ResponseConstraint extends Constraint implements CompositeExpectedInterfac
     protected LogicalAnd $constraint;
 
     public function __construct(Constraint ...$constraints) {
-        $this->constraint = LogicalAnd::fromConstraints($constraints);
+        $this->constraint = LogicalAnd::fromConstraints(...$constraints);
     }
 
     /**
@@ -21,7 +21,7 @@ class ResponseConstraint extends Constraint implements CompositeExpectedInterfac
      * @return bool
      */
     protected function matches($other): bool {
-        return $this->constraint->evaluate($other);
+        return $this->constraint->evaluate($other, '', true);
     }
 
     public function toString(): string {
