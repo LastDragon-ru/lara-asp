@@ -12,7 +12,7 @@ trait CompositeExpectedImpl {
         return $this->isExpectedFinal;
     }
 
-    public function setIsExpectedFinal(bool $isExpectedFinal): self {
+    public function setIsExpectedFinal(bool $isExpectedFinal) {
         $this->isExpectedFinal = $isExpectedFinal;
 
         return $this;
