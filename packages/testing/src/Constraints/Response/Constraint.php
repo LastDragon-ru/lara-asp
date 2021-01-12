@@ -8,7 +8,14 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedImpl;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedInterface;
 use PHPUnit\Framework\Constraint\Constraint as PHPUnitConstraint;
 use Psr\Http\Message\ResponseInterface;
+use function explode;
+use function implode;
+use function in_array;
+use function mb_strtolower;
 use function sprintf;
+use function str_ends_with;
+use function str_starts_with;
+use const PHP_EOL;
 
 abstract class Constraint extends PHPUnitConstraint implements CompositeExpectedInterface {
     use JsonPrettify;
@@ -29,5 +36,26 @@ abstract class Constraint extends PHPUnitConstraint implements CompositeExpected
         }
 
         return parent::evaluate($other, $description, $returnResult);
+    }
+
+    /**
+     * @param \Psr\Http\Message\ResponseInterface $other
+     *
+     * @return string
+     */
+    protected function additionalFailureDescription($other): string {
+        $contentType = mb_strtolower(implode('', explode(';', $other->getHeaderLine('Content-Type'), 1)));
+        $isText      = false
+            || str_starts_with($contentType, 'text/')   // text
+            || str_ends_with($contentType, '+xml')      // xml based
+            || str_ends_with($contentType, '+json')     // json based
+            || in_array($contentType, [                 // other
+                'application/json',
+            ], true);
+        $description = $isText
+            ? PHP_EOL.((string) $other->getBody())
+            : '';
+
+        return $description;
     }
 }
