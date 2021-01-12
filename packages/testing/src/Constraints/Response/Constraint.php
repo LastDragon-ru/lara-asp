@@ -44,7 +44,7 @@ abstract class Constraint extends PHPUnitConstraint implements CompositeExpected
      * @return string
      */
     protected function additionalFailureDescription($other): string {
-        $contentType = mb_strtolower(implode('', explode(';', $other->getHeaderLine('Content-Type'), 1)));
+        $contentType = mb_strtolower(explode(';', $other->getHeaderLine('Content-Type'))[0]);
         $isText      = false
             || str_starts_with($contentType, 'text/')   // text
             || str_ends_with($contentType, '+xml')      // xml based

@@ -23,7 +23,7 @@ class ContentType extends Constraint {
      * @return bool
      */
     protected function matches($other): bool {
-        $actual   = mb_strtolower(implode('', explode(';', $other->getHeaderLine('Content-Type'), 1)));
+        $actual   = mb_strtolower(explode(';', $other->getHeaderLine('Content-Type'))[0]);
         $expected = mb_strtolower($this->getContentType());
 
         return $actual === $expected;
