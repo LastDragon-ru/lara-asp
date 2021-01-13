@@ -31,6 +31,7 @@
     "ext-intl": "*",
     "ext-json": "*",
     "ext-xml": "*",
+    "ext-libxml": "*",
     "ext-xmlreader": "*",
     "composer/composer": "^2.0",
     "doctrine/dbal": "^2.12",

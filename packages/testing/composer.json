@@ -20,6 +20,7 @@
     "php": ">=7.4.0",
     "ext-json": "*",
     "ext-xml": "*",
+    "ext-libxml": "*",
     "ext-dom": "*",
     "ext-xmlreader": "*",
     "doctrine/dbal": "^2.12",
