@@ -11,7 +11,6 @@ use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
 use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
 use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use PHPUnit\Framework\Constraint\Constraint;
-use stdClass;
 use function ltrim;
 use const PHP_EOL;
 
@@ -38,23 +37,45 @@ class JsonMatchesSchema extends Constraint {
     // =========================================================================
     /**
      * @param \SplFileInfo|\stdClass|array|string $other
+     * @param string                              $description
+     * @param bool                                $returnResult
+     *
+     * @return bool|null
+     */
+    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+        return parent::evaluate(
+            Args::getJson($other) ?? Args::invalidJson(),
+            $description,
+            $returnResult
+        );
+    }
+
+    /**
+     * @param \stdClass $other
      *
      * @return bool
      */
     protected function matches($other): bool {
-        $other        = Args::getJson($other) ?? Args::invalidJson();
         $this->result = (new Validator())->schemaValidation($other, $this->schema);
         $matches      = $this->result->isValid();
 
         return $matches;
     }
 
+    /**
+     * @param \stdClass $other
+     *
+     * @return string
+     */
     protected function failureDescription($other): string {
-        return $other instanceof stdClass
-            ? "{$this->prettify($other)} {$this->toString()}"
-            : parent::failureDescription($other);
+        return "{$this->prettify($other)} {$this->toString()}";
     }
 
+    /**
+     * @param \stdClass $other
+     *
+     * @return string
+     */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);
 
