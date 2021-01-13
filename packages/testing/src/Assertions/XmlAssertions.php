@@ -14,13 +14,13 @@ trait XmlAssertions {
      *
      * @see \LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchema
      *
-     * @param \SplFileInfo|\DOMDocument|string $xml
      * @param \SplFileInfo                     $schema
+     * @param \SplFileInfo|\DOMDocument|string $xml
      * @param string                           $message
      *
      * @return void
      */
-    public static function assertXmlMatchesSchema($xml, SplFileInfo $schema, string $message = ''): void {
+    public static function assertXmlMatchesSchema(SplFileInfo $schema, $xml, string $message = ''): void {
         static::assertThat($xml, new XmlMatchesSchema($schema), $message);
     }
 }
