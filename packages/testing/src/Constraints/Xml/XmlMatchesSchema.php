@@ -4,6 +4,10 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 
 use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Args;
+use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentRelaxNgSchemaMatcher;
+use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentXsdSchemaMatcher;
+use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileRelaxNgSchemaMatcher;
+use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileXsdSchemaMatcher;
 use PHPUnit\Framework\Constraint\Constraint;
 use SplFileInfo;
 use function libxml_clear_errors;
@@ -16,7 +20,7 @@ use const LIBXML_ERR_FATAL;
 use const LIBXML_ERR_WARNING;
 use const PHP_EOL;
 
-abstract class XmlMatchesSchema extends Constraint {
+class XmlMatchesSchema extends Constraint {
     protected SplFileInfo $schema;
     /**
      * @var \LibXMLError[]
@@ -24,50 +28,52 @@ abstract class XmlMatchesSchema extends Constraint {
     protected array $errors = [];
 
     public function __construct(SplFileInfo $schema) {
-        $this->schema = $schema;
+        $this->schema = Args::getFile($schema) ?? Args::invalidFile();
     }
-
-    // <editor-fold desc="Factory">
-    // =========================================================================
-    /**
-     * @param \SplFileInfo|\DOMDocument|string $xml
-     * @param \SplFileInfo                     $schema
-     *
-     * @return static
-     */
-    public static function create($xml, SplFileInfo $schema): self {
-        $xml        = Args::getFile($xml) ?? Args::getDomDocument($xml) ?? Args::invalidXml();
-        $schema     = Args::getFile($schema) ?? Args::invalidFile();
-        $isRelaxNg  = strtolower($schema->getExtension()) === 'rng';
-        $constraint = null;
-
-        if ($xml instanceof DOMDocument) {
-            $constraint = $isRelaxNg
-                ? new DomDocumentMatchesSchemaRelaxNg($schema)
-                : new DomDocumentMatchesSchemaXsd($schema);
-        } else {
-            $constraint = $isRelaxNg
-                ? new XmlFileMatchesSchemaRelaxNg($schema)
-                : new XmlFileMatchesSchemaXsd($schema);
-        }
-
-        return $constraint;
-    }
-    // </editor-fold>
 
     // <editor-fold desc="Constraint">
     // =========================================================================
     /**
      * @param \SplFileInfo|\DOMDocument|string $other
+     * @param string                           $description
+     * @param bool                             $returnResult
+     *
+     * @return bool|null
+     */
+    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+        return parent::evaluate(
+            Args::getFile($other) ?? Args::getDomDocument($other) ?? Args::invalidXml(),
+            $description,
+            $returnResult
+        );
+    }
+
+    /**
+     * @param \SplFileInfo|\DOMDocument $other
      *
      * @return bool
      */
     protected function matches($other): bool {
+        // Create constraint
+        $isRelaxNg  = strtolower($this->schema->getExtension()) === 'rng';
+        $constraint = null;
+
+        if ($other instanceof DOMDocument) {
+            $constraint = $isRelaxNg
+                ? new DomDocumentRelaxNgSchemaMatcher()
+                : new DomDocumentXsdSchemaMatcher();
+        } else {
+            $constraint = $isRelaxNg
+                ? new XmlFileRelaxNgSchemaMatcher()
+                : new XmlFileXsdSchemaMatcher();
+        }
+
+        // Check
         $previous = libxml_use_internal_errors(true);
         libxml_clear_errors();
 
         try {
-            $matches = $this->isMatchesSchema($other);
+            $matches = $constraint->isMatchesSchema($this->schema, $other);
         } finally {
             $this->errors = libxml_get_errors();
 
@@ -79,7 +85,7 @@ abstract class XmlMatchesSchema extends Constraint {
     }
 
     /**
-     * @param \SplFileInfo|\DOMDocument|string $other
+     * @param \SplFileInfo|\DOMDocument $other
      *
      * @return string
      */
@@ -105,15 +111,5 @@ abstract class XmlMatchesSchema extends Constraint {
         return "matches schema {$this->schema->getPathname()}";
     }
 
-    // </editor-fold>
-
-    // <editor-fold desc="Abstract">
-    // =========================================================================
-    /**
-     * @param \SplFileInfo|\DOMDocument|string $other
-     *
-     * @return bool
-     */
-    protected abstract function isMatchesSchema($other): bool;
     // </editor-fold>
 }

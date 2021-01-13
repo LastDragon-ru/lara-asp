@@ -21,6 +21,6 @@ trait XmlAssertions {
      * @return void
      */
     public static function assertXmlMatchesSchema($xml, SplFileInfo $schema, string $message = ''): void {
-        static::assertThat($xml, XmlMatchesSchema::create($xml, $schema), $message);
+        static::assertThat($xml, new XmlMatchesSchema($schema), $message);
     }
 }
