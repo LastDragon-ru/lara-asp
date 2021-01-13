@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 use DOMDocument;
 
 abstract class DomDocumentMatchesSchema extends XmlMatchesSchema {
-    protected function isMatchesSchema($reader): bool {
-        return $reader instanceof DOMDocument
-            && $this->isMatchesSchemaValidate($reader);
+    protected function isMatchesSchema($other): bool {
+        return $other instanceof DOMDocument
+            && $this->isMatchesSchemaValidate($other);
     }
 
     protected abstract function isMatchesSchemaValidate(DOMDocument $document): bool;

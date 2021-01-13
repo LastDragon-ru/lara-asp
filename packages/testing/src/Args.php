@@ -1,10 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Assertions;
+namespace LastDragon_ru\LaraASP\Testing;
 
 use DOMDocument;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\NoReturn;
 use SplFileInfo;
 use stdClass;
 use function file_get_contents;

@@ -2,11 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 
+use DOMDocument;
+use LastDragon_ru\LaraASP\Testing\Args;
 use PHPUnit\Framework\Constraint\Constraint;
 use SplFileInfo;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
+use function strtolower;
 use function trim;
 use const LIBXML_ERR_ERROR;
 use const LIBXML_ERR_FATAL;
@@ -24,8 +27,41 @@ abstract class XmlMatchesSchema extends Constraint {
         $this->schema = $schema;
     }
 
+    // <editor-fold desc="Factory">
+    // =========================================================================
+    /**
+     * @param \SplFileInfo|\DOMDocument|string $xml
+     * @param \SplFileInfo                     $schema
+     *
+     * @return static
+     */
+    public static function create($xml, SplFileInfo $schema): self {
+        $xml        = Args::getFile($xml) ?? Args::getDomDocument($xml) ?? Args::invalidXml();
+        $schema     = Args::getFile($schema) ?? Args::invalidFile();
+        $isRelaxNg  = strtolower($schema->getExtension()) === 'rng';
+        $constraint = null;
+
+        if ($xml instanceof DOMDocument) {
+            $constraint = $isRelaxNg
+                ? new DomDocumentMatchesSchemaRelaxNg($schema)
+                : new DomDocumentMatchesSchemaXsd($schema);
+        } else {
+            $constraint = $isRelaxNg
+                ? new XmlFileMatchesSchemaRelaxNg($schema)
+                : new XmlFileMatchesSchemaXsd($schema);
+        }
+
+        return $constraint;
+    }
+    // </editor-fold>
+
     // <editor-fold desc="Constraint">
     // =========================================================================
+    /**
+     * @param \SplFileInfo|\DOMDocument|string $other
+     *
+     * @return bool
+     */
     protected function matches($other): bool {
         $previous = libxml_use_internal_errors(true);
         libxml_clear_errors();
@@ -42,6 +78,11 @@ abstract class XmlMatchesSchema extends Constraint {
         return $matches;
     }
 
+    /**
+     * @param \SplFileInfo|\DOMDocument|string $other
+     *
+     * @return string
+     */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);
         $levels      = [
@@ -49,7 +90,6 @@ abstract class XmlMatchesSchema extends Constraint {
             LIBXML_ERR_ERROR   => 'Error',
             LIBXML_ERR_FATAL   => 'Fatal Error',
         ];
-
 
         foreach ($this->errors as $error) {
             $padding     = '    ';
@@ -69,6 +109,11 @@ abstract class XmlMatchesSchema extends Constraint {
 
     // <editor-fold desc="Abstract">
     // =========================================================================
-    protected abstract function isMatchesSchema($reader): bool;
+    /**
+     * @param \SplFileInfo|\DOMDocument|string $other
+     *
+     * @return bool
+     */
+    protected abstract function isMatchesSchema($other): bool;
     // </editor-fold>
 }

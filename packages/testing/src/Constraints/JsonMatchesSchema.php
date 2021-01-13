@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints;
 
+use LastDragon_ru\LaraASP\Testing\Args;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\ValidationResult;
 use Opis\JsonSchema\Validator;
@@ -23,20 +24,25 @@ use const PHP_EOL;
 class JsonMatchesSchema extends Constraint {
     use JsonPrettify;
 
-    protected Schema             $schema;
-    protected ?ValidationResult  $result = null;
+    protected Schema            $schema;
+    protected ?ValidationResult $result = null;
 
-    public function __construct(stdClass $schema) {
-        $this->schema = new Schema($schema);
+    /**
+     * @param \SplFileInfo|\stdClass|array|string $schema
+     */
+    public function __construct($schema) {
+        $this->schema = new Schema(Args::getJson($schema) ?? Args::invalidJson());
     }
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
+    /**
+     * @param \SplFileInfo|\stdClass|array|string $other
+     *
+     * @return bool
+     */
     protected function matches($other): bool {
-        if (!($other instanceof stdClass)) {
-            return false;
-        }
-
+        $other        = Args::getJson($other) ?? Args::invalidJson();
         $this->result = (new Validator())->schemaValidation($other, $this->schema);
         $matches      = $this->result->isValid();
 
