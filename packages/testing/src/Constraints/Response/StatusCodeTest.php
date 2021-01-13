@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -15,6 +16,10 @@ class StatusCodeTest extends TestCase {
      * @covers ::evaluate
      */
     public function testEvaluate(): void {
+        $this->expectExceptionObject(new InvalidArgumentException(
+            'The `$other` must be instance of `Psr\Http\Message\ResponseInterface`.'
+        ));
+
         $this->assertFalse((new StatusCode(200))->evaluate(new stdClass()));
     }
 
