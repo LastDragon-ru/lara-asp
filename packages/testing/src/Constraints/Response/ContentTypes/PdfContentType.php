@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 
-class Zip extends ContentType {
+class PdfContentType extends ContentType {
     public function __construct() {
-        parent::__construct('application/zip');
+        parent::__construct('application/pdf');
     }
 }

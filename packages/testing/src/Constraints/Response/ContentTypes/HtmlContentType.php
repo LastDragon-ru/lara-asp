@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 
-class Markdown extends ContentType {
+class HtmlContentType extends ContentType {
     public function __construct() {
-        parent::__construct('text/markdown');
+        parent::__construct('text/html');
     }
 }

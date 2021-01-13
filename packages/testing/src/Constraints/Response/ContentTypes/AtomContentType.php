@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 
-class Html extends ContentType {
+class AtomContentType extends ContentType {
     public function __construct() {
-        parent::__construct('text/html');
+        parent::__construct('application/atom+xml');
     }
 }

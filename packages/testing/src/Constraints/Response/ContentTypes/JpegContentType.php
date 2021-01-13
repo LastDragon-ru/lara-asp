@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 
-class Rss extends ContentType {
+class JpegContentType extends ContentType {
     public function __construct() {
-        parent::__construct('application/rss+xml');
+        parent::__construct('image/jpeg');
     }
 }

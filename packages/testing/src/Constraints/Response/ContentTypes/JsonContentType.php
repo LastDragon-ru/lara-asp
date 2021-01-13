@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 
-class Gif extends ContentType {
+class JsonContentType extends ContentType {
     public function __construct() {
-        parent::__construct('image/gif');
+        parent::__construct('application/json');
     }
 }

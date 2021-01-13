@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 
-class Jpeg extends ContentType {
+class SvgContentType extends ContentType {
     public function __construct() {
-        parent::__construct('image/jpeg');
+        parent::__construct('image/svg+xml');
     }
 }
