@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing;
 
 use DOMDocument;
 use InvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
 use stdClass;
 use function file_get_contents;
@@ -91,6 +92,16 @@ class Args {
         return $dom;
     }
 
+    public static function getResponse($response): ?ResponseInterface {
+        $psr = null;
+
+        if ($response instanceof ResponseInterface) {
+            $psr = $response;
+        }
+
+        return $psr;
+    }
+
     #[NoReturn]
     public static function invalid(string $message): void {
         throw new InvalidArgumentException($message);
@@ -109,5 +120,10 @@ class Args {
     #[NoReturn]
     public static function invalidXml(): void {
         static::invalid('It is not a valid XML.');
+    }
+
+    #[NoReturn]
+    public static function invalidResponse(): void {
+        static::invalid(sprintf('It is not a `%s` instance.', ResponseInterface::class));
     }
 }
