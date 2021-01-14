@@ -17,7 +17,7 @@ class StatusCodeTest extends TestCase {
      */
     public function testEvaluate(): void {
         $this->expectExceptionObject(new InvalidArgumentException(
-            'The `$other` must be instance of `Psr\Http\Message\ResponseInterface`.'
+            'It is not a `Psr\Http\Message\ResponseInterface` instance.'
         ));
 
         $this->assertFalse((new StatusCode(200))->evaluate(new stdClass()));
@@ -45,6 +45,6 @@ class StatusCodeTest extends TestCase {
     public function testToString(): void {
         $constraint = new StatusCode(200);
 
-        $this->assertEquals('Status Code is 200', $constraint->toString());
+        $this->assertEquals('has Status Code is equal to 200', $constraint->toString());
     }
 }

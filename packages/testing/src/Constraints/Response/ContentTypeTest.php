@@ -17,7 +17,7 @@ class ContentTypeTest extends TestCase {
      */
     public function testEvaluate(): void {
         $this->expectExceptionObject(new InvalidArgumentException(
-            'The `$other` must be instance of `Psr\Http\Message\ResponseInterface`.'
+            'It is not a `Psr\Http\Message\ResponseInterface` instance.'
         ));
 
         $this->assertFalse((new ContentType(''))->evaluate(new stdClass()));
@@ -45,6 +45,6 @@ class ContentTypeTest extends TestCase {
     public function testToString(): void {
         $constraint = new ContentType('example/text');
 
-        $this->assertEquals('Content-Type is example/text', $constraint->toString());
+        $this->assertEquals('has Content-Type is equal to example/text', $constraint->toString());
     }
 }
