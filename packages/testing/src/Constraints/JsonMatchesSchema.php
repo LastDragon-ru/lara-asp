@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints;
 
-use LastDragon_ru\LaraASP\Testing\Args;
+use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\ValidationResult;
 use Opis\JsonSchema\Validator;

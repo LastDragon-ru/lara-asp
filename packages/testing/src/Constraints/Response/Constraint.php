@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-use LastDragon_ru\LaraASP\Testing\Args;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedImpl;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedInterface;
+use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Constraint\Constraint as PHPUnitConstraint;
 use function explode;
 use function in_array;

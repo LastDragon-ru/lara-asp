@@ -3,11 +3,11 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 
 use DOMDocument;
-use LastDragon_ru\LaraASP\Testing\Args;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentRelaxNgSchemaMatcher;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentXsdSchemaMatcher;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileRelaxNgSchemaMatcher;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileXsdSchemaMatcher;
+use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Constraint\Constraint;
 use SplFileInfo;
 use function libxml_clear_errors;

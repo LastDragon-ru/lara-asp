@@ -1,9 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing;
+namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use DOMDocument;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Testing\NoReturn;
 use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
 use stdClass;
