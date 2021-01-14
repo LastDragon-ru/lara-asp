@@ -30,13 +30,6 @@ class Assert extends PHPUnitAssert {
      * @return void
      */
     public static function assertThatResponse(TestResponse $response, Constraint $constraint, string $message = ''): void {
-        $serverRequestFactory = new ServerRequestFactory();
-        $uploadedFileFactory  = new UploadedFileFactory();
-        $ResponseFactory      = new ResponseFactory();
-        $streamFactory        = new StreamFactory();
-        $psrFactory           = new PsrHttpFactory($serverRequestFactory, $streamFactory, $uploadedFileFactory, $ResponseFactory);
-        $psrResponse          = $psrFactory->createResponse($response->baseResponse);
-
-        static::assertThat($psrResponse, $constraint, $message);
+        static::assertThat($response->toPsrResponse(), $constraint, $message);
     }
 }

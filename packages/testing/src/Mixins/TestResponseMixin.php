@@ -3,11 +3,17 @@
 namespace LastDragon_ru\LaraASP\Testing\Mixins;
 
 use Closure;
+use Http\Factory\Guzzle\ResponseFactory;
+use Http\Factory\Guzzle\ServerRequestFactory;
+use Http\Factory\Guzzle\StreamFactory;
+use Http\Factory\Guzzle\UploadedFileFactory;
 use Illuminate\Testing\TestResponse;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode;
 use PHPUnit\Framework\Constraint\Constraint;
+use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
 /**
  * @internal
@@ -17,6 +23,20 @@ class TestResponseMixin {
         return function (): ?string {
             /** @var \Illuminate\Testing\TestResponse $this */
             return $this->headers->get('Content-Type');
+        };
+    }
+
+    public function toPsrResponse(): Closure {
+        return function (): ResponseInterface {
+            /** @var \Illuminate\Testing\TestResponse $this */
+            $serverRequestFactory = new ServerRequestFactory();
+            $uploadedFileFactory  = new UploadedFileFactory();
+            $ResponseFactory      = new ResponseFactory();
+            $streamFactory        = new StreamFactory();
+            $psrFactory           = new PsrHttpFactory($serverRequestFactory, $streamFactory, $uploadedFileFactory, $ResponseFactory);
+            $psrResponse          = $psrFactory->createResponse($this->baseResponse);
+
+            return $psrResponse;
         };
     }
 
