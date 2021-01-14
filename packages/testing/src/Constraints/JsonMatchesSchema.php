@@ -86,7 +86,7 @@ class JsonMatchesSchema extends Constraint {
             );
             $presented   = $presenter->present(...$this->result->getErrors());
             $padding     = '    ';
-            $description .= PHP_EOL.$padding.'Errors:';
+            $description .= PHP_EOL.$padding.'Errors: ';
             $description .= ltrim(preg_replace('/^/m', $padding, $this->prettify($presented)));
             $description .= PHP_EOL;
         }
