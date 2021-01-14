@@ -23,6 +23,6 @@ class StatusCode extends Constraint {
     }
 
     public function toString(): string {
-        return "Status Code is {$this->getStatusCode()}";
+        return "has Status Code is equal to {$this->getStatusCode()}";
     }
 }

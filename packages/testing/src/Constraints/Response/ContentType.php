@@ -30,6 +30,6 @@ class ContentType extends Constraint {
     }
 
     public function toString(): string {
-        return "Content-Type is {$this->getContentType()}";
+        return "has Content-Type is equal to {$this->getContentType()}";
     }
 }
