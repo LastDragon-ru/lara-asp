@@ -13,10 +13,9 @@ class CompositeDataProviderTest extends TestCase {
      * @covers ::getData
      */
     public function testGetData() {
-        $f = new ExpectedFinal('expected final');
         $a = [
             ['expected a', 'value a'],
-            [$f, 'value final'],
+            [new ExpectedFinal('expected final'), 'value final'],
         ];
         $b = [
             ['expected b', 'value b'],
@@ -24,14 +23,14 @@ class CompositeDataProviderTest extends TestCase {
         ];
         $c = [
             ['expected d', 'value d'],
-            ['expected e', 'value e'],
+            [new ExpectedValue('expected e'), 'value e'],
         ];
         $e = [
             '0 / 0 / 0' => ['expected d', 'value a', 'value b', 'value d'],
             '0 / 0 / 1' => ['expected e', 'value a', 'value b', 'value e'],
             '0 / 1 / 0' => ['expected d', 'value a', 'value c', 'value d'],
             '0 / 1 / 1' => ['expected e', 'value a', 'value c', 'value e'],
-            '1'         => [$f, 'value final'],
+            '1'         => ['expected final', 'value final'],
         ];
 
         $this->assertEquals($e, (new CompositeDataProvider(

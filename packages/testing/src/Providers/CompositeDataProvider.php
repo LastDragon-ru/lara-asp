@@ -72,13 +72,13 @@ class CompositeDataProvider implements DataProvider {
                 $cParameters = array_slice($cData, 1);
 
                 if ($this->isExpectedFinal($cExpected)) {
-                    $data[$cKey] = $cData;
+                    $data[$cKey] = array_merge([$this->getExpectedValue($cExpected)], $cParameters);
                 } else {
                     foreach ($previous as $pKey => $pData) {
                         $key         = "{$cKey} / {$pKey}";
                         $pExpected   = reset($pData);
                         $pParameters = array_slice($pData, 1);
-                        $data[$key]  = array_merge([$pExpected], $cParameters, $pParameters);
+                        $data[$key]  = array_merge([$this->getExpectedValue($pExpected)], $cParameters, $pParameters);
                     }
                 }
             }
@@ -93,6 +93,12 @@ class CompositeDataProvider implements DataProvider {
     // =========================================================================
     protected function isExpectedFinal($expected): bool {
         return $expected instanceof ExpectedFinal;
+    }
+
+    protected function getExpectedValue($expected) {
+        return $expected instanceof ExpectedValue
+            ? $expected->getValue()
+            : $expected;
     }
     // </editor-fold>
 }
