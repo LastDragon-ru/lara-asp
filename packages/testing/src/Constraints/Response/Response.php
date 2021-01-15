@@ -3,12 +3,14 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use PHPUnit\Framework\Constraint\Constraint as PHPUnitConstraint;
+use PHPUnit\Framework\Constraint\LogicalAnd;
 use Psr\Http\Message\ResponseInterface;
 use function array_filter;
 use function array_map;
 use function array_unique;
 use function get_class;
 use function implode;
+use function is_null;
 use const PHP_EOL;
 
 class Response extends Constraint {
@@ -16,7 +18,7 @@ class Response extends Constraint {
      * @var array|\PHPUnit\Framework\Constraint\Constraint[]
      */
     protected array              $constraints;
-    protected ?PHPUnitConstraint $failed;
+    protected ?PHPUnitConstraint $failed = null;
 
     public function __construct(PHPUnitConstraint ...$constraints) {
         $this->constraints = $constraints;
@@ -24,6 +26,13 @@ class Response extends Constraint {
 
     // <editor-fold desc="Constraint">
     // =========================================================================
+    /**
+     * @return array|\PHPUnit\Framework\Constraint\Constraint[]
+     */
+    public function getConstraints(): array {
+        return $this->constraints;
+    }
+
     /**
      * @param \Psr\Http\Message\ResponseInterface $other
      *
@@ -33,8 +42,8 @@ class Response extends Constraint {
         $matches      = true;
         $this->failed = null;
 
-        foreach ($this->constraints as $constraint) {
-            if (!$this->isConstraintMatches($constraint, $other)) {
+        foreach ($this->getConstraints() as $constraint) {
+            if (!$this->isConstraintMatches($other, $constraint)) {
                 $matches      = false;
                 $this->failed = $constraint;
                 break;
@@ -45,9 +54,9 @@ class Response extends Constraint {
     }
 
     public function toString(): string {
-        return $this->failed
-            ? $this->failed->toString()
-            : '';
+        return is_null($this->failed)
+            ? LogicalAnd::fromConstraints(...$this->getConstraints())->toString()
+            : $this->failed->toString();
     }
 
     protected function additionalFailureDescription($other): string {
@@ -71,7 +80,7 @@ class Response extends Constraint {
 
     // <editor-fold desc="Functions">
     // =========================================================================
-    protected function isConstraintMatches(PHPUnitConstraint $constraint, ResponseInterface $other): bool {
+    protected function isConstraintMatches(ResponseInterface $other, PHPUnitConstraint $constraint): bool {
         return $constraint->evaluate($other, '', true);
     }
     // </editor-fold>
