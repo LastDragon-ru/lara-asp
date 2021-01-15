@@ -16,6 +16,8 @@ class ExpectedValue {
      * @return mixed
      */
     public function getValue() {
-        return $this->value;
+        return $this->value instanceof ExpectedValueProvider
+            ? $this->value->getExpectedValue()
+            : $this->value;
     }
 }
