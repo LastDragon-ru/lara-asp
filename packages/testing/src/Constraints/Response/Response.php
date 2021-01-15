@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedImpl;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedInterface;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
-use PHPUnit\Framework\Constraint\Constraint as PHPUnitConstraint;
+use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\LogicalAnd;
 use Psr\Http\Message\ResponseInterface;
 use function array_filter;
@@ -18,19 +18,18 @@ use function is_null;
 use function mb_strtolower;
 use function str_ends_with;
 use function str_starts_with;
-use function var_dump;
 use const PHP_EOL;
 
-class Response extends PHPUnitConstraint implements CompositeExpectedInterface {
+class Response extends Constraint implements CompositeExpectedInterface {
     use CompositeExpectedImpl;
 
     /**
      * @var array|\PHPUnit\Framework\Constraint\Constraint[]
      */
-    protected array              $constraints;
-    protected ?PHPUnitConstraint $failed = null;
+    protected array       $constraints;
+    protected ?Constraint $failed = null;
 
-    public function __construct(PHPUnitConstraint ...$constraints) {
+    public function __construct(Constraint ...$constraints) {
         $this->constraints = $constraints;
     }
 
@@ -119,7 +118,7 @@ class Response extends PHPUnitConstraint implements CompositeExpectedInterface {
 
     // <editor-fold desc="Functions">
     // =========================================================================
-    protected function isConstraintMatches(ResponseInterface $other, PHPUnitConstraint $constraint): bool {
+    protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
         return $constraint->evaluate($other, '', true);
     }
 

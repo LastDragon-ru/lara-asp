@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-use PHPUnit\Framework\Constraint\Constraint as PHPUnitConstraint;
+use PHPUnit\Framework\Constraint\Constraint;
 use Psr\Http\Message\ResponseInterface;
 use function reset;
 
@@ -33,7 +33,7 @@ class Header extends Response {
             .($this->getConstraints() ? ' that '.parent::toString() : '');
     }
 
-    protected function isConstraintMatches(ResponseInterface $other, PHPUnitConstraint $constraint): bool {
+    protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
         $header  = $other->getHeader($this->getName());
         $header  = count($header) == 1 ? reset($header) : $header;
         $matches = $constraint->evaluate($header, '', true);

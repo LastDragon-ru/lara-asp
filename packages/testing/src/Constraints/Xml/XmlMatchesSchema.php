@@ -31,7 +31,7 @@ class XmlMatchesSchema extends Constraint {
         $this->schema = Args::getFile($schema) ?? Args::invalidFile();
     }
 
-    // <editor-fold desc="Constraint">
+    // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
     /**
      * @param \SplFileInfo|\DOMDocument|string $other
