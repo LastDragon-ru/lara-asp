@@ -2,27 +2,20 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-class StatusCode extends Constraint {
-    private int $statusCode;
+use PHPUnit\Framework\Constraint\Constraint as PHPUnitConstraint;
+use PHPUnit\Framework\Constraint\IsEqual;
+use Psr\Http\Message\ResponseInterface;
 
+class StatusCode extends Response {
     public function __construct(int $statusCode) {
-        $this->statusCode = $statusCode;
-    }
-
-    public function getStatusCode(): int {
-        return $this->statusCode;
-    }
-
-    /**
-     * @param \Illuminate\Testing\TestResponse $other
-     *
-     * @return bool
-     */
-    protected function matches($other): bool {
-        return $this->getStatusCode() === $other->getStatusCode();
+        parent::__construct(new IsEqual($statusCode));
     }
 
     public function toString(): string {
-        return "has Status Code is equal to {$this->getStatusCode()}";
+        return 'has Status Code '.parent::toString();
+    }
+
+    protected function isConstraintMatches(ResponseInterface $other, PHPUnitConstraint $constraint): bool {
+        return $constraint->evaluate($other->getStatusCode(), '', true);
     }
 }
