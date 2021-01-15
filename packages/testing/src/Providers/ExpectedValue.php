@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
-class CompositeExpectedValue implements CompositeExpectedInterface {
-    use CompositeExpectedImpl;
-
+class ExpectedValue {
     /**
      * @var mixed
      */

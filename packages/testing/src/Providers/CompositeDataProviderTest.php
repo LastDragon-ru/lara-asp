@@ -13,7 +13,7 @@ class CompositeDataProviderTest extends TestCase {
      * @covers ::getData
      */
     public function testGetData() {
-        $f = (new CompositeExpectedValue('expected final'))->setIsExpectedFinal(true);
+        $f = new ExpectedFinal('expected final');
         $a = [
             ['expected a', 'value a'],
             [$f, 'value final'],

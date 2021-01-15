@@ -92,8 +92,7 @@ class CompositeDataProvider implements DataProvider {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function isExpectedFinal($expected): bool {
-        return $expected instanceof CompositeExpectedInterface
-            && $expected->isExpectedFinal();
+        return $expected instanceof ExpectedFinal;
     }
     // </editor-fold>
 }

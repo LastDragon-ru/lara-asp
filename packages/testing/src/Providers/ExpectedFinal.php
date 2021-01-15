@@ -2,6 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
-interface CompositeExpectedInterface {
-    public function isExpectedFinal(): bool;
+class ExpectedFinal extends ExpectedValue {
+    // empty
 }

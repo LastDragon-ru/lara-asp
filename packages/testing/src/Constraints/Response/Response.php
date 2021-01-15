@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedImpl;
-use LastDragon_ru\LaraASP\Testing\Providers\CompositeExpectedInterface;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\LogicalAnd;
@@ -20,9 +18,7 @@ use function str_ends_with;
 use function str_starts_with;
 use const PHP_EOL;
 
-class Response extends Constraint implements CompositeExpectedInterface {
-    use CompositeExpectedImpl;
-
+class Response extends Constraint {
     /**
      * @var array|\PHPUnit\Framework\Constraint\Constraint[]
      */
