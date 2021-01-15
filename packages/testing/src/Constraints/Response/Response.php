@@ -9,7 +9,6 @@ use function array_map;
 use function array_unique;
 use function get_class;
 use function implode;
-use function rtrim;
 use const PHP_EOL;
 
 class Response extends Constraint {

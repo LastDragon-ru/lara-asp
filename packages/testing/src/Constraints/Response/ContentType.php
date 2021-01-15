@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use function explode;
-use function implode;
 use function mb_strtolower;
 
 class ContentType extends Constraint {
