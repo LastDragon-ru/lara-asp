@@ -20,11 +20,13 @@ This package contains useful utilities and classes.
 
 [Read more](packages/core/readme.md).
 
+
 ## The Migrator
 
 This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
 
 [Read more](packages/migrator/readme.md).
+
 
 ## Queue Helpers
 
@@ -32,14 +34,23 @@ This package provides additional capabilities for queued jobs and queued listene
 
 [Read more](packages/queue/readme.md).
 
+
 ## Eloquent Helpers
 
 This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/8.x/eloquent).
 
 [Read more](packages/eloquent/readme.md).
 
+
 ## The Formatter
 
 This package provides a customizable wrapper around Intl formatters.
 
 [Read more](packages/formatter/readme.md).
+
+
+## Testing Helpers
+
+This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and alternative solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
+
+[Read more](packages/testing/readme.md).
