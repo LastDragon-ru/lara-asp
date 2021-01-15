@@ -2,33 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-use function explode;
-use function mb_strtolower;
+use PHPUnit\Framework\Constraint\IsEqual;
+use PHPUnit\Framework\Constraint\LogicalOr;
+use PHPUnit\Framework\Constraint\StringStartsWith;
 
-class ContentType extends Constraint {
-    private string $contentType;
-
+class ContentType extends Header {
     public function __construct(string $contentType) {
-        $this->contentType = $contentType;
-    }
-
-    public function getContentType(): string {
-        return $this->contentType;
-    }
-
-    /**
-     * @param \Psr\Http\Message\ResponseInterface $other
-     *
-     * @return bool
-     */
-    protected function matches($other): bool {
-        $actual   = mb_strtolower(explode(';', $other->getHeaderLine('Content-Type'))[0]);
-        $expected = mb_strtolower($this->getContentType());
-
-        return $actual === $expected;
-    }
-
-    public function toString(): string {
-        return "has Content-Type is equal to {$this->getContentType()}";
+        parent::__construct('Content-Type', [LogicalOr::fromConstraints(
+            new IsEqual($contentType),
+            new StringStartsWith("{$contentType};")
+        )]);
     }
 }

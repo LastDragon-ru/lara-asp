@@ -28,6 +28,7 @@ class ContentTypeTest extends TestCase {
      */
     public function testMatches(): void {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
+        $valid2     = (new Response())->withHeader('Content-Type', 'example/text;charset=utf-8');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
         $constraint = new class('example/text') extends ContentType {
             public function matches($other): bool {
@@ -36,6 +37,7 @@ class ContentTypeTest extends TestCase {
         };
 
         $this->assertTrue($constraint->matches($valid));
+        $this->assertTrue($constraint->matches($valid2));
         $this->assertFalse($constraint->matches($invalid));
     }
 
@@ -45,6 +47,6 @@ class ContentTypeTest extends TestCase {
     public function testToString(): void {
         $constraint = new ContentType('example/text');
 
-        $this->assertEquals('has Content-Type is equal to example/text', $constraint->toString());
+        $this->assertEquals('has Content-Type header that is equal to \'example/text\' or starts with "example/text;"', $constraint->toString());
     }
 }
