@@ -50,13 +50,13 @@ foreach ($query->iterator()->safe() as $user) {
 
 # Mixins
 
-## `Illuminate\Database\Query\Builder`
+## `\Illuminate\Database\Query\Builder`
 
 Name                  | Description
 --------------------- | ----
 `iterator()`          | Create [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) instance.
 
-## `Illuminate\Database\Eloquent\Builder`
+## `\Illuminate\Database\Eloquent\Builder`
 
 Name                                    | Description
 --------------------------------------- | ----

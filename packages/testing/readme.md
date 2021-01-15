@@ -91,7 +91,7 @@ Name                  | Description
 [`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L18)   | Asserts that XML matches schema (XSD or Relax NG).
 [`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L22)    | Asserts that PSR Response satisfies given constraint.
 
-## For Laravel
+## Laravel
 
 Name                  | Description
 --------------------- | ----
@@ -287,9 +287,9 @@ Process finished with exit code 1
 
 ## Reusing the test code is problematic
 
-In most real applications you have multiple roles (eg `guest`, `user`, `admin`), guards, and policies. Very difficult to test all of them and usually you need create many `testRouteIsNotAvailableForGuest()`, `testRouteIsAvailableForAdminOnly()` with a lot of boilerplate code. Also, often you cannot reuse that (boilerplate) code and must write it again and again. That is really annoying.
+In most real applications you have multiple roles (eg `guest`, `user`, `admin`), guards, and policies. Very difficult to test all of them and usually you need create many `testRouteIsNotAvailableForGuest()`, `testRouteIsAvailableForAdminOnly()`, etc with a lot of boilerplate code. Also, often you cannot reuse that (boilerplate) code and must write it again and again. That is really annoying.
 
-Resolving this problem is very simple. First, we need to create classes for the most used Responses (actually package provides few most [used responses](./src/Responses) 🙄). Let's start with a simple JSON response:
+Resolving this problem is very simple. First, we need to create classes for the required Responses (actually package already provides few most [used responses](./src/Responses/Laravel) 🙄). Let's start with a simple JSON response:
 
 ```php
 <?php declare(strict_types = 1);
@@ -411,6 +411,8 @@ class IndexControllerTest extends TestCase {
     }
 }
 ```
+
+Feel the difference 😉
 
 
 # PSR Response Testing

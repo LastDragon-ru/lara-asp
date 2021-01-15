@@ -63,7 +63,7 @@ MySeeder.sql
 
 You should place your SQL into `*.sql` and then update the model class in the `.php` file:
 
-```
+```php
 <?php declare(strict_types = 1);
 
 namespace Database\Seeders;
