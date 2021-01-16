@@ -34,7 +34,7 @@
     "ext-libxml": "*",
     "ext-xmlreader": "*",
     "composer/composer": "^2.0",
-    "doctrine/dbal": "^2.12",
+    "doctrine/dbal": "^2.12|^3.0",
     "http-interop/http-factory-guzzle": "^1.0",
     "laravel/framework": "^8.0",
     "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
@@ -49,7 +49,7 @@
     "guzzlehttp/psr7": "^1.7",
     "orchestra/testbench": "^6.4",
     "phpunit/phpunit": "^9.0",
-    "symplify/monorepo-builder": "^8.3"
+    "symplify/monorepo-builder": "^9.0"
   },
   "suggest": {
     "hmazter/laravel-schedule-list": "Package to add a artisan command to list all scheduled artisan commands."

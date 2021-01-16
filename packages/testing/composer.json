@@ -23,7 +23,7 @@
     "ext-libxml": "*",
     "ext-dom": "*",
     "ext-xmlreader": "*",
-    "doctrine/dbal": "^2.12",
+    "doctrine/dbal": "^2.12|^3.0",
     "http-interop/http-factory-guzzle": "^1.0",
     "laravel/framework": "^8.0",
     "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
