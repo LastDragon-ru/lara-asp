@@ -2,7 +2,7 @@
 
 > This package is the part of Awesome Set of Packages for Laravel.
 >
-> [Read more](../../readme.md).
+> [Read more](https://github.com/LastDragon-ru/lara-asp).
 
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and alternative solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 

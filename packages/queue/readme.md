@@ -2,7 +2,7 @@
 
 > This package is the part of Awesome Set of Packages for Laravel.
 >
-> [Read more](../../readme.md).
+> [Read more](https://github.com/LastDragon-ru/lara-asp).
 
 This package provides additional capabilities for queued jobs and queued listeners like multilevel configuration support, job overriding (very useful for package development to provide base implementation and allow the application to extend it), easy define for cron jobs, and DI in constructor support.  
 

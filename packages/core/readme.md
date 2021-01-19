@@ -2,7 +2,7 @@
 
 > This package is the part of Awesome Set of Packages for Laravel.
 >
-> [Read more](../../readme.md).
+> [Read more](https://github.com/LastDragon-ru/lara-asp).
 
 This package contains useful utilities and classes. Please see the [source code](./src) to find something interesting 😅
 
