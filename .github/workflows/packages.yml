@@ -1,0 +1,69 @@
+name: Sync Packages
+
+on: push
+
+env:
+  PACKAGES_DIRECTORY: "packages/"
+
+jobs:
+  list:
+    name: List packages
+    runs-on: ubuntu-latest
+    outputs:
+      json: ${{ steps.list.outputs.value }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: list
+        working-directory: ${{ env.PACKAGES_DIRECTORY }}
+        run: |
+          echo "::set-output name=value::$(ls -1 -d */ | sed -e 's-/$--' | jq  --raw-input . | jq --slurp -c .)"
+
+  sync:
+    name: "Sync package: ${{ matrix.package }}"
+    runs-on: ubuntu-latest
+    needs:
+      - list
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{fromJson(needs.list.outputs.json)}}
+    steps:
+      # Dependencies
+      - name: Install git-filter-repo
+        run: sudo pip3 install git-filter-repo
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets[matrix.package] }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      # Checkout source repo
+      - name: Checkout src
+        uses: actions/checkout@v2
+        with:
+          ref: master
+          path: src
+          fetch-depth: 0
+
+      # Checkout package repo
+      # Unfortunately actions/checkout@v2 cannot checkout empty repo
+      - name: Checkout package
+        run: |
+          git clone "git@github.com:${{ github.repository }}-${{ matrix.package }}.git" package
+      - name: Checkout package (refs/replace)
+        working-directory: package
+        run: |
+          git fetch origin "refs/replace/*:refs/replace/*"
+
+      # Update package
+      - name: Update package
+        run: |
+          git-filter-repo --source=src --target=package --subdirectory-filter="${{ env.PACKAGES_DIRECTORY }}${{ matrix.package }}"
+
+      # Push
+      - name: Push package
+        working-directory: package
+        run: |
+          git push --all origin
+          git push --tags origin
+          git push origin "refs/replace/*"
