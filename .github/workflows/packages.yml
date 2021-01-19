@@ -15,8 +15,10 @@ jobs:
     outputs:
       json: ${{ steps.list.outputs.value }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - id: list
+        name: Detect packages
         working-directory: ${{ env.PACKAGES_DIRECTORY }}
         run: |
           echo "::set-output name=value::$(ls -1 -d */ | sed -e 's-/$--' | jq  --raw-input . | jq --slurp -c .)"
