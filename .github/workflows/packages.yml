@@ -30,7 +30,7 @@ jobs:
     steps:
       # Dependencies
       - name: Install git-filter-repo
-        run: sudo pip3 install git-filter-repo
+        run: sudo -H pip3 install git-filter-repo
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh/
