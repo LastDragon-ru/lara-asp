@@ -1,0 +1,67 @@
+name: PHPUnit
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  settings:
+    name: Collect settings
+    runs-on: ubuntu-latest
+    outputs:
+      extensions: ${{ steps.extensions.outputs.value }}
+      skipped: ${{ steps.skipped.outputs.value }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Detect PHP extensions
+        id: extensions
+        run: |
+          echo "::set-output name=value::$(jq '.require | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(",")' -c composer.json)"
+      - name: Detect composer.lock
+        id: skipped
+        run: |
+          echo "::set-output name=value::$([ -f "composer.lock" ] || echo "locked")"
+
+  phpunit:
+    name: "PHP ${{ matrix.php }} (${{ matrix.os }} / ${{ matrix.dependencies }})"
+
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.beta }}
+    needs:
+      - settings
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+        beta:
+          - false
+        php:
+          - 7.4
+          - 8.0
+        dependencies:
+          - locked
+          - highest
+          - lowest
+
+        exclude:
+          - dependencies: "${{ needs.settings.outputs.skipped }}"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ needs.settings.outputs.extensions }}
+      - name: Install dependencies
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+      - name: Execute
+        run: |
+          vendor/bin/phpunit
