@@ -1,10 +1,10 @@
 {
   "name": "lastdragon-ru/lara-asp-queue",
-  "version": "dev-master",
+  "homepage": "https://github.com/LastDragon-ru/lara-asp",
   "description": "The Awesome Set of Packages for Laravel - Queue Helpers.",
+  "readme": "readme.md",
   "license": "MIT",
   "type": "library",
-  "readme": "readme.md",
   "keywords": [
     "queue",
     "laravel-queue",
