@@ -19,10 +19,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-      - name: Install dependencies
-        uses: "ramsey/composer-install@v1"
-        with:
-          dependency-versions: highest
       - name: Detect composer.lock
         id: skipped
         run: |
@@ -36,7 +32,7 @@ jobs:
       - name: Detect PHP extensions
         id: extensions
         run: |
-          echo "::set-output name=value::$(composer check-platform-reqs | cut -d" " -f1 | grep "ext-" | sed 's/^ext-//g' | paste -sd ",")"
+          echo "::set-output name=value::$(jq '[.require, ."require-dev"] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(",")' -c composer.json)"
 
   phpunit:
     name: "PHP ${{ matrix.php }} (${{ matrix.os }} / ${{ matrix.dependencies }})"
