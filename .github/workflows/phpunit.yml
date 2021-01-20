@@ -32,7 +32,7 @@ jobs:
       - name: Detect PHP extensions
         id: extensions
         run: |
-          echo "::set-output name=value::$(jq '[.require, ."require-dev"] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(",")' -c composer.json)"
+          echo "::set-output name=value::$(jq '[.require, ."require-dev"] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(", ")' -c composer.json)"
 
   phpunit:
     name: "PHP ${{ matrix.php }} (${{ matrix.os }} / ${{ matrix.dependencies }})"
@@ -62,6 +62,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - run: echo "${{ needs.settings.outputs.extensions }}"
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
