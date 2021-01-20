@@ -19,16 +19,13 @@
   "require": {
     "php": ">=7.4.0",
     "ext-intl": "*",
-    "laravel/framework": "^8.0",
-    "lastdragon-ru/lara-asp-core": "dev-master"
+    "laravel/framework": "^8.0.0",
+    "lastdragon-ru/lara-asp-core": "self.version"
   },
   "require-dev": {
-    "lastdragon-ru/lara-asp-testing": "dev-master",
-    "orchestra/testbench": "^6.4",
-    "phpunit/phpunit": "^9.0"
-  },
-  "conflict": {
-    "phpunit/phpunit": "<9.0"
+    "lastdragon-ru/lara-asp-testing": "self.version",
+    "orchestra/testbench": "^6.4.0",
+    "phpunit/phpunit": "^9.5.0"
   },
   "autoload": {
     "psr-4": {

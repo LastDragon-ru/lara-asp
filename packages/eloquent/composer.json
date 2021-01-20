@@ -17,12 +17,12 @@
   },
   "require": {
     "php": ">=7.4.0",
-    "laravel/framework": "^8.0"
+    "laravel/framework": "^8.0.0"
   },
   "require-dev": {
-    "lastdragon-ru/lara-asp-testing": "dev-master",
-    "orchestra/testbench": "^6.4",
-    "phpunit/phpunit": "^9.0"
+    "lastdragon-ru/lara-asp-testing": "self.version",
+    "orchestra/testbench": "^6.4.0",
+    "phpunit/phpunit": "^9.5.0"
   },
   "autoload": {
     "files": [
