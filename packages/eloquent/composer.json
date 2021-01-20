@@ -20,6 +20,7 @@
     "laravel/framework": "^8.22.1"
   },
   "require-dev": {
+    "ext-pdo_sqlite": "*",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "orchestra/testbench": "^6.4.0",
     "phpunit/phpunit": "^9.5.0"
