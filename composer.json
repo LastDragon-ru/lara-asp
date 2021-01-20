@@ -49,7 +49,7 @@
   "require-dev": {
     "ext-pdo_sqlite": "*",
     "guzzlehttp/psr7": "^1.7.0",
-    "orchestra/testbench": "^6.4.0",
+    "orchestra/testbench": "^6.9.0",
     "phpunit/phpunit": "^9.5.0",
     "symplify/monorepo-builder": "^9.0.0"
   },
