@@ -22,7 +22,8 @@
     "lastdragon-ru/lara-asp-core": "self.version"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.5.0"
+    "phpunit/phpunit": "^9.5.0",
+    "lastdragon-ru/lara-asp-testing": "self.version"
   },
   "suggest": {
     "ext-fileinfo": "Required for league/flysystem",
