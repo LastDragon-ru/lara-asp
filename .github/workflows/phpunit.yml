@@ -25,7 +25,7 @@ jobs:
         id: dependencies
         run: |
           DEPS_HIGHEST="highest"
-          DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked";)"
+          DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked"; fi)"
           DEPS_LOWEST="$([ ! "$GITHUB_EVENT_NAME" == "schedule" ] && echo "lowest")"
           echo "::set-output name=value::$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)"
       - name: Detect PHP versions
