@@ -19,6 +19,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
+      - name: Install dependencies
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: highest
       - name: Detect PHP versions
         id: versions
         run: |
