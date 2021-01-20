@@ -62,12 +62,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - run: echo "${{ needs.settings.outputs.extensions }}"
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: ${{ needs.settings.outputs.extensions }}
+          extensions: dom, intl, json, xml, libxml, xmlreader, pdo_sqlite
       - name: Install dependencies
         uses: "ramsey/composer-install@v1"
         with:
