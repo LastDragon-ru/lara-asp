@@ -1,8 +1,10 @@
 name: PHPUnit
 
 on:
-  - push
-  - pull_request
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 0 */7 * *"
 
 jobs:
   settings:
@@ -11,7 +13,7 @@ jobs:
     outputs:
       versions: ${{ steps.versions.outputs.value }}
       extensions: ${{ steps.extensions.outputs.value }}
-      skipped: ${{ steps.skipped.outputs.value }}
+      dependencies: ${{ steps.dependencies.outputs.value }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,10 +21,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-      - name: Detect composer.lock
-        id: skipped
+      - name: Detect dependencies versions
+        id: dependencies
         run: |
-          echo "::set-output name=value::$([ -f "composer.lock" ] || echo "locked")"
+          DEPS_HIGHEST="highest"
+          DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked"; fi)"
+          DEPS_LOWEST="$([ ! "$GITHUB_EVENT_NAME" == "schedule" ] && echo "lowest")"
+          echo "::set-output name=value::$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)"
       - name: Detect PHP versions
         id: versions
         run: |
@@ -51,13 +56,7 @@ jobs:
         beta:
           - false
         php: ${{ fromJson(needs.settings.outputs.versions) }}
-        dependencies:
-          - locked
-          - highest
-          - lowest
-
-        exclude:
-          - dependencies: ${{ needs.settings.outputs.skipped }}
+        dependencies: ${{ fromJson(needs.settings.outputs.dependencies) }}
 
     steps:
       - name: Checkout
