@@ -21,6 +21,9 @@
   "require-dev": {
     "phpunit/phpunit": "^9.5.0"
   },
+  "suggest": {
+    "ext-fileinfo": "Required for league/flysystem"
+  },
   "autoload": {
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\": "src/"
