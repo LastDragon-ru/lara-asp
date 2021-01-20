@@ -24,3 +24,6 @@ Thumbs.db
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+
+# Project
+composer.lock
