@@ -19,13 +19,12 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-      - name: Install symplify/easy-ci
-        run: |
-          composer require --no-interaction --ignore-platform-reqs symplify/easy-ci
       - name: Detect PHP versions
         id: versions
         run: |
-          echo "::set-output name=value::$(vendor/bin/easy-ci php-versions-json)"
+          mkdir "$RUNNER_TEMP/easy-ci"
+          composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev symplify/easy-ci
+          echo "::set-output name=value::$("$RUNNER_TEMP/easy-ci/vendor/bin/easy-ci" php-versions-json)"
       - name: Detect PHP extensions
         id: extensions
         run: |
