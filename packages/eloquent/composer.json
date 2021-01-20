@@ -17,7 +17,7 @@
   },
   "require": {
     "php": ">=7.4.0",
-    "laravel/framework": "^8.0.0"
+    "laravel/framework": "^8.2.0"
   },
   "require-dev": {
     "lastdragon-ru/lara-asp-testing": "self.version",

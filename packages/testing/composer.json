@@ -26,9 +26,9 @@
     "ext-xmlreader": "*",
     "doctrine/dbal": "^2.12.0|^3.0.0",
     "http-interop/http-factory-guzzle": "^1.0.0",
-    "laravel/framework": "^8.0.0",
+    "laravel/framework": "^8.2.0",
     "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
-    "opis/json-schema": "^1.0.0",
+    "opis/json-schema": "^1.0.19",
     "psr/http-message": "^1.0.0",
     "symfony/psr-http-message-bridge": "^2.0.0"
   },
