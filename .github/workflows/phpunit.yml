@@ -32,7 +32,7 @@ jobs:
       - name: Detect PHP extensions
         id: extensions
         run: |
-          echo "::set-output name=value::$(jq '[.require, ."require-dev"] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(", ")' -c composer.json)"
+          echo "::set-output name=value::$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(", ")' -r -c composer.json)"
 
   phpunit:
     name: "PHP ${{ matrix.php }} (${{ matrix.os }} / ${{ matrix.dependencies }})"
@@ -66,7 +66,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, intl, json, xml, libxml, xmlreader, pdo_sqlite
+          extensions: ${{ needs.settings.outputs.extensions }}
       - name: Install dependencies
         uses: "ramsey/composer-install@v1"
         with:
