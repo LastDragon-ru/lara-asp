@@ -23,6 +23,10 @@ jobs:
         uses: "ramsey/composer-install@v1"
         with:
           dependency-versions: highest
+      - name: Detect composer.lock
+        id: skipped
+        run: |
+          echo "::set-output name=value::$([ -f "composer.lock" ] || echo "locked")"
       - name: Detect PHP versions
         id: versions
         run: |
@@ -33,10 +37,6 @@ jobs:
         id: extensions
         run: |
           echo "::set-output name=value::$(composer check-platform-reqs | cut -d" " -f1 | grep "ext-" | sed 's/^ext-//g' | paste -sd ",")"
-      - name: Detect composer.lock
-        id: skipped
-        run: |
-          echo "::set-output name=value::$([ -f "composer.lock" ] || echo "locked")"
 
   phpunit:
     name: "PHP ${{ matrix.php }} (${{ matrix.os }} / ${{ matrix.dependencies }})"
