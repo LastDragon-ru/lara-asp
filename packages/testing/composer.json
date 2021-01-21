@@ -24,6 +24,7 @@
     "ext-libxml": "*",
     "ext-dom": "*",
     "ext-xmlreader": "*",
+    "ext-mbstring": "*",
     "doctrine/dbal": "^2.12.0|^3.0.0",
     "http-interop/http-factory-guzzle": "^1.0.0",
     "laravel/framework": "^8.22.1",

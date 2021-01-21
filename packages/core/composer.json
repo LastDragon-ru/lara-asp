@@ -16,6 +16,8 @@
   },
   "require": {
     "php": ">=7.4.0",
+    "ext-mbstring": "*",
+    "laravel/framework": "^8.22.1",
     "symfony/polyfill-php80": "^1.20.0"
   },
   "require-dev": {

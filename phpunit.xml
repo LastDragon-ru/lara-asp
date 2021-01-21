@@ -23,6 +23,9 @@
         <testsuite name="lastdragon-ru/lara-asp-formatter">
             <directory suffix="Test.php">./packages/formatter/src</directory>
         </testsuite>
+        <testsuite name="lastdragon-ru/lara-asp-spa">
+            <directory suffix="Test.php">./packages/spa/src</directory>
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true"
               cacheDirectory=".phpunit/code-coverage">
@@ -33,6 +36,7 @@
             <directory suffix=".php">./packages/testing/src</directory>
             <directory suffix=".php">./packages/eloquent/src</directory>
             <directory suffix=".php">./packages/formatter/src</directory>
+            <directory suffix=".php">./packages/spa/src</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./packages/core/src</directory>
@@ -41,6 +45,7 @@
             <directory suffix="Test.php">./packages/testing/src</directory>
             <directory suffix="Test.php">./packages/eloquent/src</directory>
             <directory suffix="Test.php">./packages/formatter/src</directory>
+            <directory suffix="Test.php">./packages/spa/src</directory>
         </exclude>
     </coverage>
     <php>

@@ -19,6 +19,7 @@
   "require": {
     "php": ">=7.4.0",
     "ext-intl": "*",
+    "ext-mbstring": "*",
     "laravel/framework": "^8.22.1",
     "lastdragon-ru/lara-asp-core": "self.version"
   },
