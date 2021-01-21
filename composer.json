@@ -20,7 +20,9 @@
     "laravel",
     "phpunit",
     "phpunit-assertions",
-    "php"
+    "php",
+    "spa",
+    "angular"
   ],
   "support": {
     "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
@@ -71,7 +73,8 @@
       "LastDragon_ru\\LaraASP\\Queue\\": "packages/queue/src/",
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
-      "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/"
+      "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
+      "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/"
     },
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
@@ -79,7 +82,8 @@
       "packages/queue/src/**Test.php",
       "packages/testing/src/**Test.php",
       "packages/eloquent/src/**Test.php",
-      "packages/formatter/src/**Test.php"
+      "packages/formatter/src/**Test.php",
+      "packages/spa/src/**Test.php"
     ]
   },
   "extra": {
@@ -100,6 +104,7 @@
     "lastdragon-ru/lara-asp-queue": "self.version",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
-    "lastdragon-ru/lara-asp-formatter": "self.version"
+    "lastdragon-ru/lara-asp-formatter": "self.version",
+    "lastdragon-ru/lara-asp-spa": "self.version"
   }
 }
