@@ -23,12 +23,14 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
+      - run: echo "$GITHUB_EVENT_NAME"
+      - run: echo "$(if [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "lowest"; fi)"
       - name: Detect dependencies versions
         id: dependencies
         run: |
           DEPS_HIGHEST="highest"
           DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked"; fi)"
-          DEPS_LOWEST="$([ ! "$GITHUB_EVENT_NAME" == "schedule" ] && echo "lowest")"
+          DEPS_LOWEST="$(if [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "lowest"; fi)"
           echo "::set-output name=value::$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)"
       - name: Detect PHP versions
         id: versions
