@@ -2,11 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
+use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObjectTrait;
 use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use function count;
+use function iterator_to_array;
 
 /**
  * @internal
@@ -49,5 +51,54 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         // 3 - create #4
         // 4 - third chunk (because second chunk returned value)
         // 5 - last empty chunk (because third chunk returned value)
+    }
+
+    /**
+     * @covers ::getIterator
+     */
+    public function testGetIteratorLimit() {
+        $a = TestObject::factory()->create(['value' => '1']);
+        $b = TestObject::factory()->create(['value' => '2']);
+        $c = TestObject::factory()->create(['value' => '3']);
+
+        $db       = $this->app->make('db');
+        $table    = (new TestObject())->getTable();
+        $query    = $db->table($table)->select()->limit(2)->orderByDesc('value');
+        $iterator = new ChunkedChangeSafeIterator(1, $query);
+        $actual   = iterator_to_array($iterator);
+        $count    = (clone $query)->count();
+        $expected = (clone $query)->reorder()->orderBy('id')->limit(2)->get()->all();
+
+        $this->assertEquals(3, $count);
+        $this->assertCount(2, $actual);
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @covers ::getIterator
+     */
+    public function testGetIteratorLimitEloquent() {
+        $a = TestObject::factory()->create(['value' => '1']);
+        $b = TestObject::factory()->create(['value' => '2']);
+        $c = TestObject::factory()->create(['value' => '3']);
+
+        $query    = TestObject::query()->limit(2)->orderByDesc('value');
+        $iterator = new ChunkedChangeSafeIterator(1, $query);
+        $actual   = iterator_to_array($iterator);
+        $count    = (clone $query)->count();
+        $expected = (clone $query)->reorder()->orderByKey()->limit(2)->get()->all();
+
+        $this->assertEquals(3, $count);
+        $this->assertCount(2, $actual);
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @covers ::getIterator
+     */
+    public function testGetIteratorUnion() {
+        $this->expectExceptionObject(new InvalidArgumentException("Queries with UNION is not supported."));
+
+        new ChunkedChangeSafeIterator(1, TestObject::query()->union(TestObject::query()->toBase()));
     }
 }

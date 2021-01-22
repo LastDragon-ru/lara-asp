@@ -35,7 +35,8 @@ When you use the default [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php
 
 - it is not possible to sort rows, they always will be sorted by `column asc`;
 - the `column` should not be changed while iteration or this may lead to repeating row in results;
-- the row inserted while iteration may be skipped if it has `column` with the value that lover than the internal pointer.
+- the row inserted while iteration may be skipped if it has `column` with the value that lover than the internal pointer;
+- queries with UNION is not supported.
 
 To create a change safe instance you can use:
 

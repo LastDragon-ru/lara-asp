@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
+use InvalidArgumentException;
 use IteratorAggregate;
 use Traversable;
 use function is_array;
@@ -19,7 +20,8 @@ use function is_object;
  * - the `column` should not be changed while iteration or this may lead to
  *   repeating row in results;
  * - the row inserted while iteration may be skipped if it has `column` with
- *   the value that lover than the internal pointer.
+ *   the value that lover than the internal pointer;
+ * - queries with UNION is not supported.
  *
  * To create an instance you can use:
  *
@@ -31,6 +33,8 @@ use function is_object;
  * @see https://github.com/laravel/framework/issues/35400
  */
 class ChunkedChangeSafeIterator implements IteratorAggregate {
+    use Helper;
+
     /**
      * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
@@ -49,10 +53,19 @@ class ChunkedChangeSafeIterator implements IteratorAggregate {
         $this->chunk   = $chunk;
         $this->builder = clone $builder;
         $this->column  = $column ?? $builder->getDefaultKeyName();
+
+        // Unfortunately the `forPageAfterId()` doesn't correctly work with UNION,
+        // it just adds conditional to the main query, and this leads to an
+        // infinite loop.
+        if ($this->hasUnions($builder)) {
+            throw new InvalidArgumentException("Queries with UNION is not supported.");
+        }
     }
 
     public function getIterator(): Traversable {
-        $last = null;
+        $last  = null;
+        $index = 0;
+        $limit = $this->getLimit($this->builder);
 
         do {
             $items = (clone $this->builder)
@@ -63,7 +76,11 @@ class ChunkedChangeSafeIterator implements IteratorAggregate {
             $last  = $this->column($items->last());
 
             foreach ($items as $item) {
-                yield $item;
+                yield $index++ => $item;
+
+                if ($index >= $limit) {
+                    break 2;
+                }
             }
 
             // The '0' here to select rows that may be created while iteration
