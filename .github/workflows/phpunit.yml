@@ -23,8 +23,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-      - run: echo "$GITHUB_EVENT_NAME"
-      - run: echo "$(if [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "lowest"; fi)"
       - name: Detect dependencies versions
         id: dependencies
         run: |

@@ -28,7 +28,7 @@ jobs:
         run: |
           DEPS_HIGHEST="highest"
           DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked"; fi)"
-          DEPS_LOWEST="$([ ! "$GITHUB_EVENT_NAME" == "schedule" ] && echo "lowest")"
+          DEPS_LOWEST="$(if [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "lowest"; fi)"
           echo "::set-output name=value::$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)"
       - name: Detect PHP versions
         id: versions
