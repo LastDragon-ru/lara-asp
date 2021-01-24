@@ -1,6 +1,6 @@
 # Awesome Set of Packages for Laravel
 
-The set contains provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
+The set provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
 
 # Installation
 
