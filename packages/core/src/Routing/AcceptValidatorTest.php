@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Core\Routing;
 
-use Illuminate\Support\Facades\Route as RouteFacade;
+use Illuminate\Support\Facades\Route;
 use LastDragon_ru\LaraASP\Core\Provider;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
@@ -121,7 +121,7 @@ class AcceptValidatorTest extends TestCase {
     // =========================================================================
     protected function createNestedRoute(string $path, array $accepts): void {
         /** @var \Illuminate\Routing\Router $router */
-        $router = RouteFacade::getFacadeRoot();
+        $router = Route::getFacadeRoot();
         $accept = array_shift($accepts);
 
         if (empty($accepts)) {
