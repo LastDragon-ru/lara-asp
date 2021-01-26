@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Core\Routing;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
@@ -22,66 +20,68 @@ abstract class Resolver {
     // <editor-fold desc="Abstract">
     // =========================================================================
     /**
-     * Resolves model.
+     * Resolves value.
      *
      * @param mixed $value
      * @param array $parameters
      *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return mixed|null
      */
-    protected abstract function resolve($value, array $parameters): ?Model;
+    protected abstract function resolve($value, array $parameters);
 
     /**
-     * Resolves parameters for model resolving.
+     * Resolves parameters for value resolving.
      *
      * @param \Illuminate\Http\Request|null  $request
      * @param \Illuminate\Routing\Route|null $route
      *
      * @return array
      */
-    protected abstract function resolveParameters(Request $request = null, Route $route = null): array;
+    protected function resolveParameters(Request $request = null, Route $route = null): array {
+        return [];
+    }
     // </editor-fold>
 
     // <editor-fold desc="API">
     // =========================================================================
     /**
-     * Returns model.
+     * Returns value.
      *
      * @param mixed                          $value
      * @param \Illuminate\Http\Request|null  $request
      * @param \Illuminate\Routing\Route|null $route
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \LastDragon_ru\LaraASP\Core\Routing\UnresolvedValueException
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return mixed
      */
-    public function get($value, Request $request = null, Route $route = null): Model {
+    public function get($value, Request $request = null, Route $route = null) {
         $route      = $route ?: $this->router->getCurrentRoute();
         $request    = $request ?: $this->router->getCurrentRequest();
         $parameters = $this->resolveParameters($request, $route);
         $key        = array_merge([$value], $parameters);
-        $resolved   = $this->instanceCacheGet($key, function () use ($value, $parameters): ?Model {
+        $resolved   = $this->instanceCacheGet($key, function () use ($value, $parameters) {
             return $this->resolve($value, $parameters);
         });
 
         if (is_null($resolved)) {
-            throw (new ModelNotFoundException())->setModel(static::class);
+            throw new UnresolvedValueException($value);
         }
 
         return $resolved;
     }
 
     /**
-     * Returns the model (used while substituting bindings)
+     * Returns the value (used while substituting bindings)
      *
      * @param mixed                     $value
      * @param \Illuminate\Routing\Route $route
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \LastDragon_ru\LaraASP\Core\Routing\UnresolvedValueException
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return mixed
      */
-    public function bind($value, Route $route): Model {
+    public function bind($value, Route $route) {
         return $this->get($value, null, $route);
     }
     // </editor-fold>
