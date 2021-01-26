@@ -4,12 +4,13 @@ namespace LastDragon_ru\LaraASP\Core\Validation\Rules;
 
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Rule;
+use LastDragon_ru\LaraASP\Core\Http\ValueProvider;
 use LastDragon_ru\LaraASP\Core\Provider;
 use LastDragon_ru\LaraASP\Core\Routing\Resolver;
 use LastDragon_ru\LaraASP\Core\Routing\UnresolvedValueException;
 use function get_class;
 
-class ResolverRule implements Rule {
+class ResolverRule implements Rule, ValueProvider {
     protected Translator $translator;
     protected Resolver   $resolver;
 
@@ -25,7 +26,7 @@ class ResolverRule implements Rule {
      */
     public function passes($attribute, $value) {
         try {
-            return (bool) $this->resolver->get($value);
+            return (bool) $this->getValue($value);
         } catch (UnresolvedValueException $exception) {
             // no action
         }
@@ -43,6 +44,13 @@ class ResolverRule implements Rule {
         ]);
 
         return $translation;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="ValueProvider">
+    // =========================================================================
+    public function getValue($value) {
+        return $this->resolver->get($value);
     }
     // </editor-fold>
 }

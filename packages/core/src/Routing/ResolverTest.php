@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
-use function json_decode;
-use function json_encode;
 
 /**
  * @internal
@@ -21,10 +19,10 @@ class ResolverTest extends TestCase {
         $router   = $this->app->make(Router::class);
         $resolver = new class($router) extends Resolver {
             protected function resolve($value, array $parameters) {
-                return json_decode(json_encode([
+                return (object) [
                     'id'         => $value,
                     'parameters' => $parameters,
-                ]), false);
+                ];
             }
 
             protected function resolveParameters(Request $request = null, Route $route = null): array {
