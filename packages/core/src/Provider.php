@@ -10,8 +10,15 @@ use LastDragon_ru\LaraASP\Core\Routing\AcceptValidator;
 use LastDragon_ru\LaraASP\Core\Routing\UnresolvedValueException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function array_merge;
+use function tap;
 
 class Provider extends ServiceProvider {
+    public const Package = 'lara-asp-core';
+
+    protected function getPackage(): string {
+        return static::Package;
+    }
+
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
     // =========================================================================
     public function register() {
@@ -22,6 +29,7 @@ class Provider extends ServiceProvider {
 
     public function boot(): void {
         $this->bootExceptionHandler();
+        $this->bootTranslations();
     }
     // </editor-fold>
 
@@ -43,6 +51,15 @@ class Provider extends ServiceProvider {
             $handler->map(UnresolvedValueException::class, function (UnresolvedValueException $exception) {
                 return new NotFoundHttpException($exception->getMessage() ?: 'Not found.', $exception);
             });
+        });
+    }
+
+    protected function bootTranslations() {
+        tap(__DIR__.'/../resources/lang', function (string $path): void {
+            $this->loadTranslationsFrom($path, $this->getPackage());
+            $this->publishes([
+                $path => $this->app->resourcePath("lang/vendor/{$this->getPackage()}"),
+            ], 'translations');
         });
     }
     // </editor-fold>
