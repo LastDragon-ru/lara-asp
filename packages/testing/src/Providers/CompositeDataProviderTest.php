@@ -39,4 +39,22 @@ class CompositeDataProviderTest extends TestCase {
             new ArrayDataProvider($c),
         ))->getData());
     }
+
+    /**
+     * @covers ::getData
+     */
+    public function testGetDataSingleProviderPassed() {
+        $a = [
+            ['expected a', 'value a'],
+            [new ExpectedFinal('expected final'), 'value final'],
+        ];
+        $e = [
+            ['expected a', 'value a'],
+            ['expected final', 'value final'],
+        ];
+
+        $this->assertEquals($e, (new CompositeDataProvider(
+            new ArrayDataProvider($a),
+        ))->getData());
+    }
 }

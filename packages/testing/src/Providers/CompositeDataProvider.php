@@ -58,20 +58,14 @@ class CompositeDataProvider implements DataProvider {
      * @inheritdoc
      */
     public function getData(): array {
-        return array_reduce(array_reverse($this->getProviders()), function (?array $previous, DataProvider $current): array {
-            // First Iteration?
-            if (!$previous) {
-                return $current->getData();
-            }
-
-            // Merge
+        return array_reduce(array_reverse($this->getProviders()), function (array $previous, DataProvider $current): array {
             $data = [];
 
             foreach ($current->getData() as $cKey => $cData) {
                 $cExpected   = reset($cData);
                 $cParameters = array_slice($cData, 1);
 
-                if ($this->isExpectedFinal($cExpected)) {
+                if ($this->isExpectedFinal($cExpected) || !$previous) {
                     $data[$cKey] = array_merge([$this->getExpectedValue($cExpected)], $cParameters);
                 } else {
                     foreach ($previous as $pKey => $pData) {
@@ -84,7 +78,7 @@ class CompositeDataProvider implements DataProvider {
             }
 
             return $data;
-        }, null);
+        }, []);
     }
 
     // </editor-fold>
