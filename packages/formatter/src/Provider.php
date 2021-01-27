@@ -13,7 +13,11 @@ class Provider extends ServiceProvider {
 
     public function boot(): void {
         tap(__DIR__.'/../config/config.php', function (string $path): void {
-            $this->loadConfigFrom($path, $this->getPackage(), false);
+            $this->loadConfigFrom($path, $this->getPackage(), true, [
+                'options',
+                'locales',
+                'all',
+            ]);
             $this->publishes([
                 $path => $this->app->configPath("{$this->getPackage()}.php"),
             ], 'config');
