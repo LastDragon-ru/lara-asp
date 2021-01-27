@@ -212,7 +212,7 @@ class QueueableConfigTest extends TestCase {
                 ],
             ],
             'app + unknown'       => [
-                new InvalidArgumentException('Unknown key.'),
+                new InvalidArgumentException('Unknown key `unknown`.'),
                 [
                     'unknown' => 'key',
                 ],
