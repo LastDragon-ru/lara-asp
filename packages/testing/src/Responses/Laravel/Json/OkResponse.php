@@ -2,11 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 
 class OkResponse extends Response {
-    public function __construct(JsonResource $resource) {
-        parent::__construct(new Ok(), $resource);
+    /**
+     * @param string                                   $resource
+     * @param \SplFileInfo|\stdClass|array|string|null $content
+     */
+    public function __construct(string $resource, $content = null) {
+        parent::__construct(new Ok(), $resource, $content);
     }
 }

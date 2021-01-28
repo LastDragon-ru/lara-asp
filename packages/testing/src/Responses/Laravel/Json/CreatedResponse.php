@@ -2,11 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Created;
 
 class CreatedResponse extends Response {
-    public function __construct(JsonResource $resource) {
-        parent::__construct(new Created(), $resource);
+    /**
+     * @param string                                   $resource
+     * @param \SplFileInfo|\stdClass|array|string|null $content
+     */
+    public function __construct(string $resource, $content = null) {
+        parent::__construct(new Created(), $resource, $content);
     }
 }
