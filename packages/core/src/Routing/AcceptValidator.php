@@ -18,15 +18,21 @@ class AcceptValidator implements ValidatorInterface {
     public const Key = 'accept';
 
     public function matches(Route $route, Request $request): bool {
-        // Not set or accept all?
+        // Setting not set or accept all?
         $expected = $this->getExpected($route);
 
         if (is_null($expected) || $expected === Accept::Any) {
             return true;
         }
 
+        // Request accept any
+        $accept = $request->getAcceptableContentTypes();
+
+        if (in_array('*/*', $accept, true)) {
+            return true;
+        }
+
         // Check
-        $accept  = $request->getAcceptableContentTypes();
         $matches = (bool) Arr::first($accept, function (string $accept) use ($request, $expected): bool {
             return $this->isAccepted($request, $expected, $accept);
         });

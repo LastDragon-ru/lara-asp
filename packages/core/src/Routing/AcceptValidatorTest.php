@@ -61,6 +61,11 @@ class AcceptValidatorTest extends TestCase {
             'json accepted but request not' => [
                 false,
                 [Accept::Json],
+                'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng;v=b3;q=0.9',
+            ],
+            'json accepted + request */*' => [
+                true,
+                [Accept::Json],
                 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;v=b3;q=0.9',
             ],
             'json accepted '                => [
@@ -99,9 +104,14 @@ class AcceptValidatorTest extends TestCase {
                 'text/html,application/xhtml+xml,application/xml;q=0.9,application/json,image/avif,image/webp,image/apng,*/*;v=b3;q=0.9',
             ],
             'nested replace json'           => [
-                false,
+                true,
                 [Accept::Json, 'text/plain'],
                 'text/html,application/xhtml+xml,application/xml;q=0.9,application/json,image/avif,image/webp,image/apng,*/*;v=b3;q=0.9',
+            ],
+            'nested replace json + request */*'           => [
+                false,
+                [Accept::Json, 'text/plain'],
+                'text/html,application/xhtml+xml,application/xml;q=0.9,application/json,image/avif,image/webp,image/apng;v=b3;q=0.9',
             ],
             'nested accept any'             => [
                 true,
