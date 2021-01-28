@@ -23,15 +23,3 @@ Route::group([
 ], function (Router $router) use ($controller) {
     $router->get('settings', [$controller, 'settings']);
 });
-
-// Redirect all unknown GET routes to SPA
-Route::group([
-    'middleware' => $middleware,
-    'accept'     => Accept::Html,
-    'prefix'     => $prefix,
-], function (Router $router) use ($controller) {
-    $router
-        ->get('{anyurl}', [$controller, 'index'])
-        ->where('anyurl', '.*')
-        ->fallback();
-});

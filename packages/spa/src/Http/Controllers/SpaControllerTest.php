@@ -4,13 +4,10 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\Str;
-use Illuminate\View\Factory;
 use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Body;
-use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\HtmlContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
@@ -21,12 +18,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
-use PHPUnit\Framework\Constraint\IsEqual;
-use Symfony\Component\Filesystem\Filesystem;
 use function array_merge;
-use function implode;
-use function str_replace;
-use function sys_get_temp_dir;
 
 /**
  * @internal
@@ -34,9 +26,6 @@ use function sys_get_temp_dir;
  */
 class SpaControllerTest extends TestCase {
     use WithTestData;
-
-    private string     $tmp;
-    private Filesystem $fs;
 
     // <editor-fold desc="Prepare">
     // =========================================================================
@@ -54,82 +43,26 @@ class SpaControllerTest extends TestCase {
             Provider::class,
         ]);
     }
-
-    public function setUp(): void {
-        // Parent
-        parent::setUp();
-
-        // Create tmp dir
-        $this->tmp = implode('/', [sys_get_temp_dir(), Provider::Package]);
-        $this->fs  = new Filesystem();
-
-        $this->fs->mkdir($this->tmp);
-
-        // Create view
-        $this->createView('index');
-
-        // Set view path
-        $this->app->make(Factory::class)->addLocation($this->tmp);
-    }
-
-    public function tearDown(): void {
-        // Cleanup
-        $this->fs->remove($this->tmp);
-
-        unset($this->fs);
-        unset($this->tmp);
-
-        // Parent
-        parent::tearDown();
-    }
     // </editor-fold>
 
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::index
-     *
-     * @dataProvider dataProviderIndex
-     *
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\Response $expected
-     * @param bool                                                         $enabled
-     * @param string|null                                                  $prefix
-     * @param array                                                        $headers
-     * @param string|null                                                  $view
-     *
-     * @return void
-     */
-    public function testIndex(Response $expected, bool $enabled = true, string $prefix = null, array $headers = [], string $view = null): void {
-        $this->setSettings([
-            'routes.enabled' => $enabled,
-            'routes.prefix'  => $prefix,
-        ]);
-
-        $this->loadRoutes();
-
-        if ($view) {
-            $this->createView($view);
-        }
-
-        $this->get("{$prefix}/index", $headers)->assertThat($expected);
-    }
-
     /**
      * @covers ::settings
      *
      * @dataProvider dataProviderSettings
      *
      * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\Response $expected
-     * @param bool                                                         $enabled
+     * @param bool                                                         $routes
      * @param string|null                                                  $prefix
      * @param array                                                        $headers
      * @param array                                                        $settings
      *
      * @return void
      */
-    public function testSettings(Response $expected, bool $enabled = true, string $prefix = null, array $headers = [], array $settings = []): void {
+    public function testSettings(Response $expected, bool $routes = true, string $prefix = null, array $headers = [], array $settings = []): void {
         $this->setSettings([
-            'routes.enabled' => $enabled,
+            'routes.enabled' => $routes,
             'routes.prefix'  => $prefix,
             'spa'            => $settings,
         ]);
@@ -138,68 +71,10 @@ class SpaControllerTest extends TestCase {
 
         $this->get("{$prefix}/settings", $headers)->assertThat($expected);
     }
-
-    /**
-     * @covers ::settings
-     *
-     * @dataProvider dataProviderUnknown
-     *
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\Response $expected
-     * @param bool                                                         $enabled
-     * @param string|null                                                  $prefix
-     * @param array                                                        $headers
-     * @param string|null                                                  $view
-     *
-     * @return void
-     */
-    public function testUnknown(Response $expected, bool $enabled = true, string $prefix = null, array $headers = [], string $view = null): void {
-        $this->setSettings([
-            'routes.enabled' => $enabled,
-            'routes.prefix'  => $prefix,
-        ]);
-
-        $this->loadRoutes();
-
-        if ($view) {
-            $this->createView($view);
-        }
-
-        $this->get($prefix.'/'.Str::random(), $headers)->assertThat($expected);
-    }
     //</editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
-    public function dataProviderIndex(): array {
-        return (new CompositeDataProvider(
-            $this->getEnabledDataProvider(),
-            $this->getPrefixDataProvider(),
-            $this->getAcceptHtmlDataProvider(),
-            new ArrayDataProvider([
-                'no spa view'   => [
-                    new Response(
-                        new Ok(),
-                        new HtmlContentType(),
-                        new Body(
-                            new IsEqual('index')
-                        )
-                    ),
-                    null,
-                ],
-                'spa view used' => [
-                    new Response(
-                        new Ok(),
-                        new HtmlContentType(),
-                        new Body(
-                            new IsEqual('spa.index')
-                        )
-                    ),
-                    'spa.index',
-                ],
-            ])
-        ))->getData();
-    }
-
     public function dataProviderSettings(): array {
         return (new CompositeDataProvider(
             $this->getEnabledDataProvider(),
@@ -232,36 +107,6 @@ class SpaControllerTest extends TestCase {
         ))->getData();
     }
 
-    public function dataProviderUnknown(): array {
-        return (new CompositeDataProvider(
-            $this->getEnabledDataProvider(),
-            $this->getPrefixDataProvider(),
-            $this->getAcceptHtmlDataProvider(),
-            new ArrayDataProvider([
-                'no spa view'   => [
-                    new Response(
-                        new Ok(),
-                        new HtmlContentType(),
-                        new Body(
-                            new IsEqual('index')
-                        )
-                    ),
-                    null,
-                ],
-                'spa view used' => [
-                    new Response(
-                        new Ok(),
-                        new HtmlContentType(),
-                        new Body(
-                            new IsEqual('spa.index')
-                        )
-                    ),
-                    'spa.index',
-                ],
-            ])
-        ))->getData();
-    }
-
     protected function getEnabledDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'disabled' => [
@@ -288,30 +133,10 @@ class SpaControllerTest extends TestCase {
         ]);
     }
 
-    protected function getAcceptHtmlDataProvider(): DataProvider {
-        return new ArrayDataProvider([
-            'accept html' => [
-                new Ok(),
-                [
-                    'Accept' => 'text/html',
-                ],
-            ],
-            'accept json' => [
-                new ExpectedFinal(new NotFound()),
-                [
-                    'Accept' => 'application/json',
-                ],
-            ],
-        ]);
-    }
-
     protected function getAcceptJsonDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'accept html' => [
-                new ExpectedFinal(new Response(
-                    new Ok(),
-                    new HtmlContentType()
-                )),
+                new ExpectedFinal(new NotFound()),
                 [
                     'Accept' => 'text/html',
                 ],
@@ -328,14 +153,6 @@ class SpaControllerTest extends TestCase {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function createView(string $path): void {
-        $content = $path;
-        $path    = str_replace('.', '/', $path);
-        $path    = "{$this->tmp}/{$path}.blade.php";
-
-        $this->fs->dumpFile($path, $content);
-    }
-
     protected function setSettings(array $settings, Application $app = null): void {
         $package = Provider::Package;
         $config  = ($app ?? $this->app)->get(Repository::class);

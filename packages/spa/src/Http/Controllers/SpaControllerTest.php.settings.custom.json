@@ -3,15 +3,11 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "url",
     "title",
     "upload",
     "custom"
   ],
   "properties": {
-    "url": {
-      "type": "string"
-    },
     "title": {
       "type": "string"
     },

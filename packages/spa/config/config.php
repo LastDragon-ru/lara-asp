@@ -10,9 +10,8 @@ use LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController;
 
 return [
     /**
-     * Routes?
+     * Routes Settings
      * ---------------------------------------------------------------------
-     * If `true` package will add default routes.
      */
     'routes' => [
         'enabled'    => true,
