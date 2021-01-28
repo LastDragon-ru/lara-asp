@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
+use LastDragon_ru\LaraASP\Testing\Providers\Unknown;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use function array_merge;
 
@@ -114,7 +115,7 @@ class SpaControllerTest extends TestCase {
                 false,
             ],
             'enabled'  => [
-                new Ok(),
+                new Unknown(),
                 true,
             ],
         ]);
@@ -123,11 +124,11 @@ class SpaControllerTest extends TestCase {
     protected function getPrefixDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'without prefix' => [
-                new Ok(),
+                new Unknown(),
                 null,
             ],
             'with prefix'    => [
-                new Ok(),
+                new Unknown(),
                 'spa',
             ],
         ]);
@@ -136,13 +137,13 @@ class SpaControllerTest extends TestCase {
     protected function getAcceptDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'accept html' => [
-                new Ok(),
+                new Unknown(),
                 [
                     'Accept' => 'text/html',
                 ],
             ],
             'accept json' => [
-                new Ok(),
+                new Unknown(),
                 [
                     'Accept' => 'application/json',
                 ],
