@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
@@ -12,14 +11,14 @@ use LastDragon_ru\LaraASP\Spa\Provider;
 class SpaController extends Controller {
     // <editor-fold desc="Actions">
     // =========================================================================
-    public function settings(Repository $config, UrlGenerator $url): array {
-        return $this->getSettings($config, $url);
+    public function settings(Repository $config): array {
+        return $this->getSettings($config);
     }
     // </editor-fold>
 
     // <editor-fold desc="Extensions">
     // =========================================================================
-    protected function getSettings(Repository $config, UrlGenerator $url): array {
+    protected function getSettings(Repository $config): array {
         $package  = Provider::Package;
         $default  = [
             'title'  => $config->get('app.name'),

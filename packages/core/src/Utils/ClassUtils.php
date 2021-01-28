@@ -12,8 +12,9 @@ class ClassUtils {
      * @param string|null   $prefix
      * @param bool          $recursive
      *
-     * @return array
      * @throws \ReflectionException
+     *
+     * @return array
      */
     public static function getConstants($class, string $prefix = null, bool $recursive = true): array {
         $values    = [];
