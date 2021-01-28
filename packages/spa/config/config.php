@@ -6,8 +6,6 @@
  * -----------------------------------------------------------------------------
  */
 
-use LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController;
-
 return [
     /**
      * Routes Settings
@@ -16,7 +14,6 @@ return [
     'routes' => [
         'enabled'    => true,
         'middleware' => 'web',
-        'controller' => SpaController::class,
         'prefix'     => null,
     ],
 

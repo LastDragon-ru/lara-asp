@@ -2,13 +2,13 @@
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
+use LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController;
 use LastDragon_ru\LaraASP\Spa\Provider;
 
 $package    = Provider::Package;
 $prefix     = config("{$package}.routes.prefix");
 $enabled    = config("{$package}.routes.enabled");
 $middleware = config("{$package}.routes.middleware");
-$controller = config("{$package}.routes.controller");
 
 if (!$enabled) {
     return;
@@ -18,7 +18,7 @@ if (!$enabled) {
 Route::group([
     'middleware' => $middleware,
     'prefix'     => $prefix,
-], function (Router $router) use ($controller) {
-    $router->get('settings', [$controller, 'settings']);
-    $router->get('user', [$controller, 'user']);
+], function (Router $router) {
+    $router->get('settings', [SpaController::class, 'settings']);
+    $router->get('user', [SpaController::class, 'user']);
 });
