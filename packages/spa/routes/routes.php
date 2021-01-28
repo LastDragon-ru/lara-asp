@@ -2,7 +2,6 @@
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
-use LastDragon_ru\LaraASP\Core\Routing\Accept;
 use LastDragon_ru\LaraASP\Spa\Provider;
 
 $package    = Provider::Package;
@@ -18,7 +17,6 @@ if (!$enabled) {
 // SPA Routes
 Route::group([
     'middleware' => $middleware,
-    'accept'     => Accept::Json,
     'prefix'     => $prefix,
 ], function (Router $router) use ($controller) {
     $router->get('settings', [$controller, 'settings']);

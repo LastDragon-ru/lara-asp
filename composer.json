@@ -67,7 +67,6 @@
   },
   "autoload": {
     "files": [
-      "packages/core/src/mixins.php",
       "packages/eloquent/src/mixins.php",
       "packages/testing/src/mixins.php"
     ],

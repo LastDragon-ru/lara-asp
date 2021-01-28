@@ -79,7 +79,7 @@ class SpaControllerTest extends TestCase {
         return (new CompositeDataProvider(
             $this->getEnabledDataProvider(),
             $this->getPrefixDataProvider(),
-            $this->getAcceptJsonDataProvider(),
+            $this->getAcceptDataProvider(),
             new ArrayDataProvider([
                 'settings returned (default)' => [
                     new Response(
@@ -133,10 +133,10 @@ class SpaControllerTest extends TestCase {
         ]);
     }
 
-    protected function getAcceptJsonDataProvider(): DataProvider {
+    protected function getAcceptDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'accept html' => [
-                new ExpectedFinal(new NotFound()),
+                new Ok(),
                 [
                     'Accept' => 'text/html',
                 ],
