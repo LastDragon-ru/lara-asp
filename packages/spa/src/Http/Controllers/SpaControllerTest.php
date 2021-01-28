@@ -6,9 +6,6 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
 use LastDragon_ru\LaraASP\Spa\Provider;
-use LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema;
-use LastDragon_ru\LaraASP\Testing\Constraints\Response\Body;
-use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
@@ -18,6 +15,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\Unknown;
+use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use function array_merge;
 
@@ -83,23 +81,11 @@ class SpaControllerTest extends TestCase {
             $this->getAcceptDataProvider(),
             new ArrayDataProvider([
                 'settings returned (default)' => [
-                    new Response(
-                        new Ok(),
-                        new JsonContentType(),
-                        new Body(
-                            new JsonMatchesSchema($this->getTestData()->file('.settings.default.json'))
-                        )
-                    ),
+                    new JsonResponse(new Ok(), $this->getTestData()->file('.settings.default.json')),
                     [],
                 ],
                 'settings returned (custom)'  => [
-                    new Response(
-                        new Ok(),
-                        new JsonContentType(),
-                        new Body(
-                            new JsonMatchesSchema($this->getTestData()->file('.settings.custom.json'))
-                        )
-                    ),
+                    new JsonResponse(new Ok(), $this->getTestData()->file('.settings.custom.json')),
                     [
                         'custom' => 'value',
                     ],
