@@ -44,7 +44,7 @@ class JsonMatchesSchema extends Constraint {
      */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
-            Args::getJson($other) ?? Args::invalidJson(),
+            Args::getJson($other),
             $description,
             $returnResult
         );
