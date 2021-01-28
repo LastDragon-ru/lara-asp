@@ -20,4 +20,5 @@ Route::group([
     'prefix'     => $prefix,
 ], function (Router $router) use ($controller) {
     $router->get('settings', [$controller, 'settings']);
+    $router->get('user', [$controller, 'user']);
 });
