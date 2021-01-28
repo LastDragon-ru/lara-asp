@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Responses;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Body;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
@@ -26,7 +27,7 @@ class JsonResponse extends Response {
         parent::__construct(
             $code,
             new JsonContentType(),
-            new Body(...array_filter([
+            new JsonBody(...array_filter([
                 new JsonMatchesSchema($schema),
                 $content
                     ? new JsonMatches(json_encode($content))
