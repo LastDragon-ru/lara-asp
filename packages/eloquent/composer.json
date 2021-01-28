@@ -13,7 +13,8 @@
   ],
   "support": {
     "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
-    "source": "https://github.com/LastDragon-ru/lara-asp"
+    "source": "https://github.com/LastDragon-ru/lara-asp",
+    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
     "php": ">=7.4.0",
