@@ -34,9 +34,9 @@ class Args {
     /**
      * @param \SplFileInfo|\stdClass|array|string $json
      *
-     * @return \stdClass|null
+     * @return \stdClass|string|int|float|bool|null
      */
-    public static function getJson($json): ?stdClass {
+    public static function getJson($json) {
         if ($json instanceof SplFileInfo) {
             $json = static::getFileContents($json);
         }
@@ -51,11 +51,11 @@ class Args {
             if (json_last_error() !== JSON_ERROR_NONE) {
                 static::invalidJson();
             }
+        } else {
+            static::invalidJson();
         }
 
-        return $json instanceof stdClass
-            ? $json
-            : null;
+        return $json;
     }
 
     /**
