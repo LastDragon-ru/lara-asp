@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
-use LastDragon_ru\LaraASP\Spa\Http\Resources\NullResource;
+use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Provider;
 
@@ -28,7 +28,7 @@ class SpaController extends Controller {
     /**
      * @param \Illuminate\Http\Request $request
      *
-     * @return \LastDragon_ru\LaraASP\Spa\Http\Resources\NullResource|\LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource
+     * @return \LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource|\LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource
      */
     public function user(Request $request) {
         return $request->user()

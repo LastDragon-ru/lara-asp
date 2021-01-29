@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
-use LastDragon_ru\LaraASP\Spa\Http\Resources\NullResource;
+use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
