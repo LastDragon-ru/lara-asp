@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Http;
+namespace LastDragon_ru\LaraASP\Spa\Http;
 
 interface ValueProvider {
     /**

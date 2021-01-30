@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Routing;
+namespace LastDragon_ru\LaraASP\Spa\Routing;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
@@ -51,7 +51,7 @@ abstract class Resolver {
      * @param \Illuminate\Http\Request|null  $request
      * @param \Illuminate\Routing\Route|null $route
      *
-     * @throws \LastDragon_ru\LaraASP\Core\Routing\UnresolvedValueException
+     * @throws \LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException
      *
      * @return mixed
      */
@@ -77,7 +77,7 @@ abstract class Resolver {
      * @param mixed                     $value
      * @param \Illuminate\Routing\Route $route
      *
-     * @throws \LastDragon_ru\LaraASP\Core\Routing\UnresolvedValueException
+     * @throws \LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException
      *
      * @return mixed
      */

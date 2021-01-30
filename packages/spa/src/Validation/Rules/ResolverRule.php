@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Validation\Rules;
+namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Rule;
-use LastDragon_ru\LaraASP\Core\Http\ValueProvider;
-use LastDragon_ru\LaraASP\Core\Provider;
-use LastDragon_ru\LaraASP\Core\Routing\Resolver;
-use LastDragon_ru\LaraASP\Core\Routing\UnresolvedValueException;
+use LastDragon_ru\LaraASP\Spa\Http\ValueProvider;
+use LastDragon_ru\LaraASP\Spa\Provider;
+use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
+use LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException;
 use function get_class;
 
 class ResolverRule implements Rule, ValueProvider {

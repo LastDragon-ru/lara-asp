@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Routing;
+namespace LastDragon_ru\LaraASP\Spa\Routing;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Routing\Resolver
+ * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Routing\Resolver
  */
 class ResolverTest extends TestCase {
     /**

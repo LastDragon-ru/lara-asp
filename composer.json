@@ -92,7 +92,6 @@
   "extra": {
     "laravel": {
       "providers": [
-        "LastDragon_ru\\LaraASP\\Core\\Provider",
         "LastDragon_ru\\LaraASP\\Migrator\\Provider",
         "LastDragon_ru\\LaraASP\\Formatter\\Provider",
         "LastDragon_ru\\LaraASP\\Spa\\Provider"

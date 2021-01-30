@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Routing;
+namespace LastDragon_ru\LaraASP\Spa\Routing;
 
 use RuntimeException;
 use Throwable;

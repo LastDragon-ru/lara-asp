@@ -8,7 +8,6 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Date;
-use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Provider;
@@ -45,7 +44,6 @@ class SpaControllerTest extends TestCase {
 
     protected function getPackageProviders($app) {
         return array_merge(parent::getPackageProviders($app), [
-            CoreProvider::class,
             Provider::class,
         ]);
     }

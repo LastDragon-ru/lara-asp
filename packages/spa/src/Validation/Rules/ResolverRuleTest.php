@@ -1,18 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Validation\Rules;
+namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Routing\Router;
-use LastDragon_ru\LaraASP\Core\Provider;
-use LastDragon_ru\LaraASP\Core\Routing\Resolver;
+use LastDragon_ru\LaraASP\Spa\Provider;
+use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use stdClass;
 use function array_merge;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Validation\Rules\ResolverRule
+ * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule
  */
 class ResolverRuleTest extends TestCase {
     // <editor-fold desc="Prepare">

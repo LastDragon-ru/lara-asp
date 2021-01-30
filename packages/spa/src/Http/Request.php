@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Http;
+namespace LastDragon_ru\LaraASP\Spa\Http;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -23,7 +23,7 @@ abstract class Request extends FormRequest {
 
         // Replace values
         foreach ($validator->getRules() as $attribute => $rules) {
-            /** @var \LastDragon_ru\LaraASP\Core\Http\ValueProvider $provider */
+            /** @var \LastDragon_ru\LaraASP\Spa\Http\ValueProvider $provider */
             $provider = Arr::last($rules, function ($rule) {
                 return $rule instanceof ValueProvider;
             });

@@ -1,18 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Http;
+namespace LastDragon_ru\LaraASP\Spa\Http;
 
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\Router;
-use LastDragon_ru\LaraASP\Core\Routing\Resolver;
-use LastDragon_ru\LaraASP\Core\Validation\Rules\ResolverRule;
+use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
+use LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Http\Request
+ * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Request
  */
 class RequestTest extends TestCase {
     /**
