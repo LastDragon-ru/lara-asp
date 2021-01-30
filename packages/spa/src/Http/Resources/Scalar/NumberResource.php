@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar;
 
 /**
- * @property float $resource
+ * @property float|int $resource
  */
-class FloatResource extends ScalarResource {
+class NumberResource extends ScalarResource {
     public function __construct(float $resource) {
         parent::__construct($resource);
     }
