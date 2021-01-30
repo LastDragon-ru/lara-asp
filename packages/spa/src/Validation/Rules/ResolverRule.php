@@ -3,20 +3,19 @@
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Contracts\Translation\Translator;
-use Illuminate\Contracts\Validation\Rule;
 use LastDragon_ru\LaraASP\Spa\Http\ValueProvider;
-use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException;
+use function array_merge;
 use function get_class;
 
-class ResolverRule implements Rule, ValueProvider {
-    protected Translator $translator;
-    protected Resolver   $resolver;
+class ResolverRule extends Rule implements ValueProvider {
+    protected Resolver $resolver;
 
     public function __construct(Translator $translator, Resolver $resolver) {
-        $this->translator = $translator;
-        $this->resolver   = $resolver;
+        parent::__construct($translator);
+
+        $this->resolver = $resolver;
     }
 
     // <editor-fold desc="Rule">
@@ -34,16 +33,24 @@ class ResolverRule implements Rule, ValueProvider {
         return false;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function message() {
-        $package     = Provider::Package;
-        $translation = $this->translator->get("{$package}::validation.resolver", [
+    protected function getMessageReplace(): array {
+        return array_merge(parent::getMessageReplace(), [
             'resolver' => get_class($this->resolver),
         ]);
+    }
 
-        return $translation;
+    protected function getMessageVariants(): array {
+        $defaults   = parent::getMessageVariants();
+        $resolver   = get_class($this->resolver);
+        $variants   = [];
+        $customized = [];
+
+        foreach ($defaults as $variant) {
+            $variants[]   = "{$variant}.default";
+            $customized[] = "{$variant}.{$resolver}";
+        }
+
+        return array_merge($customized, $variants);
     }
     // </editor-fold>
 
