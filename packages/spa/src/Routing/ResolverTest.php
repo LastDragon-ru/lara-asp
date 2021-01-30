@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Routing;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 
 /**
  * @internal

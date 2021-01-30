@@ -4,27 +4,13 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Contracts\Translation\Translator;
-use LastDragon_ru\LaraASP\Spa\Provider;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
-use function array_merge;
+use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Validation\Rules\DateRule
  */
 class DateRuleTest extends TestCase {
-    // <editor-fold desc="Prepare">
-    // =========================================================================
-    /**
-     * @inheritdoc
-     */
-    protected function getPackageProviders($app) {
-        return array_merge(parent::getPackageProviders($app), [
-            Provider::class,
-        ]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

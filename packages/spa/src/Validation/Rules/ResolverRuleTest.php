@@ -4,29 +4,15 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Routing\Router;
-use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 use stdClass;
-use function array_merge;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule
  */
 class ResolverRuleTest extends TestCase {
-    // <editor-fold desc="Prepare">
-    // =========================================================================
-    /**
-     * @inheritdoc
-     */
-    protected function getPackageProviders($app) {
-        return array_merge(parent::getPackageProviders($app), [
-            Provider::class,
-        ]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

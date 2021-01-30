@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar;
 
 use Illuminate\Support\Facades\Route;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 
 /**

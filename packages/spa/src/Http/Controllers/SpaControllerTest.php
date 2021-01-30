@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Provider;
+use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
@@ -23,7 +23,6 @@ use LastDragon_ru\LaraASP\Testing\Providers\Unknown;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
-use function array_merge;
 
 /**
  * @internal
@@ -40,12 +39,6 @@ class SpaControllerTest extends TestCase {
         $this->setSettings([
             'routes.enabled' => false,
         ], $app);
-    }
-
-    protected function getPackageProviders($app) {
-        return array_merge(parent::getPackageProviders($app), [
-            Provider::class,
-        ]);
     }
     // </editor-fold>
 
