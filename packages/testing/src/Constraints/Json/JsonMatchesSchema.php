@@ -1,7 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Constraints;
+namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
+use LastDragon_ru\LaraASP\Testing\Constraints\JsonPrettify;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\ValidationResult;

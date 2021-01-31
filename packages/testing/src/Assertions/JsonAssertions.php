@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
-use LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema;
-use LastDragon_ru\LaraASP\Testing\Constraints\JsonSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
 
 /**
  * @mixin \PHPUnit\Framework\Assert
@@ -12,11 +12,11 @@ trait JsonAssertions {
     /**
      * Asserts that JSON matches schema.
      *
-     * @see \LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema
+     * @see \LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema
      *
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\JsonSchema $schema
-     * @param \SplFileInfo|\stdClass|array|string                   $json
-     * @param string                                                $message
+     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema $schema
+     * @param \SplFileInfo|\stdClass|array|string                        $json
+     * @param string                                                     $message
      *
      * @return void
      */

@@ -8,7 +8,7 @@ use Http\Factory\Guzzle\ServerRequestFactory;
 use Http\Factory\Guzzle\StreamFactory;
 use Http\Factory\Guzzle\UploadedFileFactory;
 use Illuminate\Testing\TestResponse;
-use LastDragon_ru\LaraASP\Testing\Constraints\JsonSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode;
 use PHPUnit\Framework\Constraint\Constraint;

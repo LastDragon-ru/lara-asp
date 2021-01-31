@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Constraints;
+namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use Opis\JsonSchema\ISchemaLoader;
 

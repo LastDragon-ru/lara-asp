@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
-use LastDragon_ru\LaraASP\Testing\Constraints\JsonSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;

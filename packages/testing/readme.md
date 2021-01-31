@@ -70,11 +70,11 @@ Enables query log for the test case.
 
 Name                  | Description
 --------------------- | ----
-`assertThat(\PHPUnit\Framework\Constraint\Constraint $constraint, string $message = '')` | Asserts that response satisfies given constraint.
-`assertContentType(string $contentType, string $message = '')`                           | Asserts that a response has a specified content type.
-`assertStatusCode(int $statusCode, string $message = '')`                                | Asserts that a response has a specified status code.
-`assertJsonMatchesSchema($schema, string $message = '')`                                 | Asserts that a response contains JSON that matches the schema.
-`assertXmlMatchesSchema(\SplFileInfo $schema, string $message = '')`                     | Asserts that a response contains XML that matches the schema.
+`assertThat()`                  | Asserts that response satisfies given constraint.
+`assertContentType()`           | Asserts that a response has a specified content type.
+`assertStatusCode()`            | Asserts that a response has a specified status code.
+`assertJsonMatchesSchema()`     | Asserts that a response contains JSON that matches the schema.
+`assertXmlMatchesSchema()`      | Asserts that a response contains XML that matches the schema.
 
 # Assertions
 
@@ -317,7 +317,8 @@ Next, lets add JSON Validation Error:
 
 namespace Tests\Responses;
 
-use LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Body;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
@@ -332,7 +333,7 @@ class ValidationErrorResponse extends Response {
             new UnprocessableEntity(),
             new JsonContentType(),
             new Body([
-                new JsonMatchesSchema($this->getTestData(self::class)->file('.json')),
+                new JsonMatchesSchema(new JsonSchema($this->getTestData(self::class)->file('.json'))),
             ]),
         );
     }
