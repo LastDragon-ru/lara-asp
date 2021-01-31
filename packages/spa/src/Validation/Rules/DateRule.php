@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Facades\Date;
+use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Http\ValueProvider;
 
 /**
@@ -21,7 +21,7 @@ class DateRule extends Rule implements ValueProvider {
         try {
             $date   = $this->getValue($value);
             $passes = $date && $date->format(static::Format) === $value;
-        } catch (InvalidFormatException $exception) {
+        } catch (InvalidArgumentException $exception) {
             // ignored
         }
 
@@ -31,9 +31,9 @@ class DateRule extends Rule implements ValueProvider {
     /**
      * @param mixed $value
      *
-     * @return false|\Carbon\CarbonInterface
+     * @return \DateTimeInterface|null
      */
     public function getValue($value) {
-        return Date::createFromFormat(static::Format.'|', $value);
+        return Date::createFromFormat(static::Format.'|', $value) ?: null;
     }
 }

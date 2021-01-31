@@ -23,7 +23,7 @@ class DateTimeRule extends DateRule {
     /**
      * @param mixed $value
      *
-     * @return false|\Carbon\CarbonInterface
+     * @return \DateTimeInterface|null
      */
     public function getValue($value) {
         $value = parent::getValue($value);

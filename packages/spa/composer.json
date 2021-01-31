@@ -23,7 +23,6 @@
     "guzzlehttp/psr7": "^1.7.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "laravel/framework": "^8.22.1",
-    "nesbot/carbon": "^2.34.0",
     "symfony/polyfill-php80": "^1.20.0",
     "lastdragon-ru/lara-asp-core": "self.version"
   },

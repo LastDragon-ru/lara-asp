@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Carbon\Exceptions\InvalidFormatException;
 use Exception;
 use Illuminate\Contracts\Translation\Translator;
+use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 
 /**
@@ -46,8 +46,8 @@ class DateRuleTest extends TestCase {
      *
      * @dataProvider dataProviderGetValue
      *
-     * @param string|\Carbon\Exceptions\InvalidFormatException $expected
-     * @param string                                           $value
+     * @param string|\Exception $expected
+     * @param string            $value
      *
      * @return void
      */
@@ -78,7 +78,7 @@ class DateRuleTest extends TestCase {
         return [
             'valid date'   => ['2102-12-01T00:00:00.000000+00:00', '2102-12-01'],
             'invalid date' => ['0002-12-01T00:00:00.000000+00:00', '02-12-01'],
-            'datetime'     => [new InvalidFormatException('Trailing data'), '2102-12-01T00:00:00'],
+            'datetime'     => [new InvalidArgumentException('Trailing data'), '2102-12-01T00:00:00'],
         ];
     }
     // </editor-fold>

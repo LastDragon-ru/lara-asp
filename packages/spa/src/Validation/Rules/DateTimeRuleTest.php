@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Carbon\Exceptions\InvalidFormatException;
 use Exception;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Translation\Translator;
+use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 
 /**
@@ -49,9 +49,9 @@ class DateTimeRuleTest extends TestCase {
      *
      * @dataProvider dataProviderGetValue
      *
-     * @param string|\Carbon\Exceptions\InvalidFormatException $expected
-     * @param string|null                                      $tz
-     * @param string                                           $value
+     * @param string|\Exception $expected
+     * @param string|null       $tz
+     * @param string            $value
      *
      * @return void
      */
@@ -85,9 +85,9 @@ class DateTimeRuleTest extends TestCase {
 
     public function dataProviderGetValue(): array {
         return [
-            'date'                          => [new InvalidFormatException('Data missing'), null, '2102-12-01'],
-            'invalid date'                  => [new InvalidFormatException('Data missing'), null, '02-12-01'],
-            'datetime without timezone'     => [new InvalidFormatException('Data missing'), null, '2102-12-01T00:00:00'],
+            'date'                          => [new InvalidArgumentException('Data missing'), null, '2102-12-01'],
+            'invalid date'                  => [new InvalidArgumentException('Data missing'), null, '02-12-01'],
+            'datetime without timezone'     => [new InvalidArgumentException('Data missing'), null, '2102-12-01T00:00:00'],
             'datetime UTC + UTC'            => ['2102-12-01T22:12:01.000000+00:00', 'UTC', '2102-12-01T22:12:01+00:00'],
             'datetime Europe/Moscow + UTC'  => ['2102-12-02T01:12:01.000000+03:00', 'Europe/Moscow', '2102-12-01T22:12:01+00:00'],
             'datetime UTC + Europe/Moscow'  => ['2102-12-01T22:12:01.000000+00:00', 'UTC', '2102-12-02T01:12:01+03:00'],
