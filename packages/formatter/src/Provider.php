@@ -10,8 +10,6 @@ class Provider extends ServiceProvider {
     use ProviderWithConfig;
     use ProviderWithTranslations;
 
-    public const Package = 'lara-asp-formatter';
-
     public function boot(): void {
         $this->bootConfig([
             'options',
@@ -19,5 +17,9 @@ class Provider extends ServiceProvider {
             'all',
         ]);
         $this->bootTranslations();
+    }
+
+    protected function getName(): string {
+        return Package::Name;
     }
 }

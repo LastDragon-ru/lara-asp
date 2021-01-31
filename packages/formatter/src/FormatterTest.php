@@ -68,8 +68,8 @@ class FormatterTest extends TestCase {
      */
     public function testDecimalConfig() {
         config([
-            Provider::Package.'.options.'.Formatter::Decimal                          => 4,
-            Provider::Package.'.locales.ru_RU.'.Formatter::Decimal.'.intl_attributes' => [
+            Package::Name.'.options.'.Formatter::Decimal                          => 4,
+            Package::Name.'.locales.ru_RU.'.Formatter::Decimal.'.intl_attributes' => [
                 NumberFormatter::FRACTION_DIGITS => 9, // should be ignored
                 NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_FLOOR,
             ],
@@ -117,7 +117,7 @@ class FormatterTest extends TestCase {
      */
     public function testPercentConfig() {
         config([
-            Provider::Package.'.options.'.Formatter::Percent => 2,
+            Package::Name.'.options.'.Formatter::Percent => 2,
         ]);
 
         $this->assertEquals('10.99%', $this->formatter->percent(10.99));
@@ -146,7 +146,7 @@ class FormatterTest extends TestCase {
      */
     public function testTimeConfig() {
         config([
-            Provider::Package.'.options.'.Formatter::Time => IntlDateFormatter::MEDIUM,
+            Package::Name.'.options.'.Formatter::Time => IntlDateFormatter::MEDIUM,
         ]);
 
         $time = DateTime::createFromFormat('H:i:s', '23:24:59');
@@ -159,9 +159,9 @@ class FormatterTest extends TestCase {
      */
     public function testTimeCustomFormat() {
         config([
-            Provider::Package.'.options.'.Formatter::Time        => 'custom',
-            Provider::Package.'.all.'.Formatter::Time.'.custom'  => 'HH:mm:ss.SSS',
-            Provider::Package.'.all.'.Formatter::Time.'.custom2' => 'HH:mm:ss.SSS',
+            Package::Name.'.options.'.Formatter::Time        => 'custom',
+            Package::Name.'.all.'.Formatter::Time.'.custom'  => 'HH:mm:ss.SSS',
+            Package::Name.'.all.'.Formatter::Time.'.custom2' => 'HH:mm:ss.SSS',
         ]);
 
         $time = DateTime::createFromFormat('H:i:s', '23:24:59');
@@ -185,7 +185,7 @@ class FormatterTest extends TestCase {
      */
     public function testDateConfig() {
         config([
-            Provider::Package.'.options.'.Formatter::Date => IntlDateFormatter::MEDIUM,
+            Package::Name.'.options.'.Formatter::Date => IntlDateFormatter::MEDIUM,
         ]);
 
         $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
@@ -198,9 +198,9 @@ class FormatterTest extends TestCase {
      */
     public function testDateCustomFormat() {
         config([
-            Provider::Package.'.options.'.Formatter::Date        => 'custom',
-            Provider::Package.'.all.'.Formatter::Date.'.custom'  => 'd MMM YYYY',
-            Provider::Package.'.all.'.Formatter::Date.'.custom2' => 'd MMM YYYY',
+            Package::Name.'.options.'.Formatter::Date        => 'custom',
+            Package::Name.'.all.'.Formatter::Date.'.custom'  => 'd MMM YYYY',
+            Package::Name.'.all.'.Formatter::Date.'.custom2' => 'd MMM YYYY',
         ]);
 
         $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
@@ -224,7 +224,7 @@ class FormatterTest extends TestCase {
      */
     public function testDatetimeConfig() {
         config([
-            Provider::Package.'.options.'.Formatter::DateTime => IntlDateFormatter::MEDIUM,
+            Package::Name.'.options.'.Formatter::DateTime => IntlDateFormatter::MEDIUM,
         ]);
 
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
@@ -237,9 +237,9 @@ class FormatterTest extends TestCase {
      */
     public function testDatetimeCustomFormat() {
         config([
-            Provider::Package.'.options.'.Formatter::DateTime        => 'custom',
-            Provider::Package.'.all.'.Formatter::DateTime.'.custom'  => 'd MMM YYYY || HH:mm:ss',
-            Provider::Package.'.all.'.Formatter::DateTime.'.custom2' => 'd MMM YYYY || HH:mm:ss',
+            Package::Name.'.options.'.Formatter::DateTime        => 'custom',
+            Package::Name.'.all.'.Formatter::DateTime.'.custom'  => 'd MMM YYYY || HH:mm:ss',
+            Package::Name.'.all.'.Formatter::DateTime.'.custom2' => 'd MMM YYYY || HH:mm:ss',
         ]);
 
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
@@ -280,7 +280,7 @@ class FormatterTest extends TestCase {
      */
     public function testSecretConfig() {
         config([
-            Provider::Package.'.options.'.Formatter::Secret => 3,
+            Package::Name.'.options.'.Formatter::Secret => 3,
         ]);
 
         $this->assertEquals('', $this->formatter->secret(null));
@@ -316,7 +316,7 @@ class FormatterTest extends TestCase {
      */
     public function testCurrencyConfig() {
         config([
-            Provider::Package.'.options.'.Formatter::Currency => 'RUB',
+            Package::Name.'.options.'.Formatter::Currency => 'RUB',
         ]);
 
         $this->assertEquals("RUB\u{00A0}10.03", $this->formatter->currency(10.0324234));

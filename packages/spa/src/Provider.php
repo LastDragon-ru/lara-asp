@@ -16,8 +16,6 @@ class Provider extends ServiceProvider {
     use ProviderWithRoutes;
     use ProviderWithTranslations;
 
-    public const Package = 'lara-asp-spa';
-
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
     // =========================================================================
     public function boot(): void {
@@ -32,6 +30,10 @@ class Provider extends ServiceProvider {
 
     // <editor-fold desc="Functions">
     // =========================================================================
+    protected function getName(): string {
+        return Package::Name;
+    }
+
     protected function bootExceptionHandler() {
         $this->callAfterResolving(ExceptionHandler::class, function (ExceptionHandler $handler) {
             if (!($handler instanceof Handler)) {

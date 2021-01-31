@@ -12,7 +12,7 @@ trait ProviderWithConfig {
     use ProviderHelper;
 
     protected function bootConfig(array $unprotected = []): void {
-        $package = self::Package;
+        $package = $this->getName();
         $path    = $this->getPath('../config/config.php');
 
         $this->loadConfigFrom($path, $package, true, $unprotected);

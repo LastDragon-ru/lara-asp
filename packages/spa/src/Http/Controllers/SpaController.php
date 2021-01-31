@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
-use LastDragon_ru\LaraASP\Spa\Provider;
+use LastDragon_ru\LaraASP\Spa\Package;
 
 class SpaController extends Controller {
     // <editor-fold desc="Actions">
@@ -40,7 +40,7 @@ class SpaController extends Controller {
     // <editor-fold desc="Extensions">
     // =========================================================================
     protected function getSettings(Repository $config): array {
-        $package  = Provider::Package;
+        $package  = Package::Name;
         $default  = [
             'title'  => $config->get('app.name'),
             'upload' => [

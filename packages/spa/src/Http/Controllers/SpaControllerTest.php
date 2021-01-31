@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
+use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
@@ -205,7 +206,7 @@ class SpaControllerTest extends TestCase {
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function setSettings(array $settings, Application $app = null): void {
-        $package = Provider::Package;
+        $package = Package::Name;
         $config  = ($app ?? $this->app)->get(Repository::class);
 
         foreach ($settings as $name => $value) {

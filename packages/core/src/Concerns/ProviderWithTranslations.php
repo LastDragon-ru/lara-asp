@@ -9,7 +9,7 @@ trait ProviderWithTranslations {
     use ProviderHelper;
 
     protected function bootTranslations() {
-        $package = self::Package;
+        $package = $this->getName();
         $path    = $this->getPath('../resources/lang');
 
         $this->loadTranslationsFrom($path, $package);

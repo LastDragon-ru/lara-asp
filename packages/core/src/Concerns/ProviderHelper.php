@@ -12,6 +12,20 @@ use function ltrim;
  * @mixin \Illuminate\Support\ServiceProvider
  */
 trait ProviderHelper {
+    /**
+     * Should return the name of the package.
+     *
+     * @return string
+     */
+    protected abstract function getName(): string;
+
+    /**
+     * Returns path relative to class location.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
     protected function getPath(string $path): string {
         $class = new ReflectionClass(self::class);
         $path  = dirname($class->getFileName()).'/'.ltrim($path, '/');

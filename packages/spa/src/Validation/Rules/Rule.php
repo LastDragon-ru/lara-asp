@@ -6,7 +6,7 @@ use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Rule as RuleContract;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\Spa\Provider;
+use LastDragon_ru\LaraASP\Spa\Package;
 use ReflectionClass;
 use function preg_replace;
 
@@ -46,7 +46,7 @@ abstract class Rule implements RuleContract {
     protected function getMessageVariants(): array {
         $name    = Str::snake((new ReflectionClass($this))->getShortName());
         $name    = preg_replace('/_rule$/', '', $name);
-        $package = Provider::Package;
+        $package = Package::Name;
 
         return [
             "validation.{$package}.{$name}",  // application

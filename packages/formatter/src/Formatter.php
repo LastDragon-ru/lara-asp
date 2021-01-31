@@ -531,7 +531,7 @@ class Formatter {
     }
 
     protected function getOptions(string $type, $default = null) {
-        $package = Provider::Package;
+        $package = Package::Name;
         $config  = $this->app->make(Repository::class);
         $key     = "{$package}.options.{$type}";
 
@@ -539,7 +539,7 @@ class Formatter {
     }
 
     protected function getLocaleOptions(string $type, string $option) {
-        $package = Provider::Package;
+        $package = Package::Name;
         $locale  = $this->getLocale();
         $config  = $this->app->make(Repository::class);
         $pattern = null
@@ -550,7 +550,7 @@ class Formatter {
     }
 
     protected function getTranslation(string $key, array $replace = []): string {
-        $package     = Provider::Package;
+        $package     = Package::Name;
         $translator  = $this->app->make(Translator::class);
         $translation = $translator->get("{$package}::messages.{$key}", $replace, $this->getLocale());
 

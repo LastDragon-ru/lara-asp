@@ -3,9 +3,9 @@
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController;
-use LastDragon_ru\LaraASP\Spa\Provider;
+use LastDragon_ru\LaraASP\Spa\Package;
 
-$package    = Provider::Package;
+$package    = Package::Name;
 $prefix     = config("{$package}.routes.prefix");
 $enabled    = config("{$package}.routes.enabled");
 $middleware = config("{$package}.routes.middleware");
