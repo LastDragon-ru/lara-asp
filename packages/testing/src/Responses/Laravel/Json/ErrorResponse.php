@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\JsonMatchesSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\JsonSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
@@ -17,7 +18,7 @@ class ErrorResponse extends Response {
             $statusCode,
             new JsonContentType(),
             new JsonBody(
-                new JsonMatchesSchema($this->getTestData(self::class)->file('.json')),
+                new JsonMatchesSchema(new JsonSchema($this->getTestData(self::class)->file('.json'))),
             ),
         );
     }

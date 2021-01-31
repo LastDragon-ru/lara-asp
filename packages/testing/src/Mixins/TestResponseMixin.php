@@ -8,6 +8,7 @@ use Http\Factory\Guzzle\ServerRequestFactory;
 use Http\Factory\Guzzle\StreamFactory;
 use Http\Factory\Guzzle\UploadedFileFactory;
 use Illuminate\Testing\TestResponse;
+use LastDragon_ru\LaraASP\Testing\Constraints\JsonSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode;
 use PHPUnit\Framework\Constraint\Constraint;
@@ -58,7 +59,7 @@ class TestResponseMixin {
     public function assertJsonMatchesSchema(): Closure {
         return function ($schema, string $message = ''): TestResponse {
             /** @var \Illuminate\Testing\TestResponse $this */
-            Assert::assertJsonMatchesSchema($this->json(), $schema, $message);
+            Assert::assertJsonMatchesSchema(new JsonSchema($this->json()), $schema, $message);
 
             return $this;
         };

@@ -23,14 +23,11 @@ use const PHP_EOL;
 class JsonMatchesSchema extends Constraint {
     use JsonPrettify;
 
-    protected Schema            $schema;
+    protected JsonSchema        $schema;
     protected ?ValidationResult $result = null;
 
-    /**
-     * @param \SplFileInfo|\stdClass|array|string $schema
-     */
-    public function __construct($schema) {
-        $this->schema = new Schema(Args::getJson($schema) ?? Args::invalidJson());
+    public function __construct(JsonSchema $schema) {
+        $this->schema = $schema;
     }
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
@@ -56,7 +53,10 @@ class JsonMatchesSchema extends Constraint {
      * @return bool
      */
     protected function matches($other): bool {
-        $this->result = (new Validator())->schemaValidation($other, $this->schema);
+        $helper       = null;
+        $loader       = $this->schema->getLoader();
+        $schema       = new Schema(Args::getJson($this->schema->getSchema()) ?? Args::invalidJson());
+        $this->result = (new Validator($helper, $loader))->schemaValidation($other, $schema);
         $matches      = $this->result->isValid();
 
         return $matches;
