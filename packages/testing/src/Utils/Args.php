@@ -7,7 +7,6 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\NoReturn;
 use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
-use stdClass;
 use function file_get_contents;
 use function is_array;
 use function is_string;

@@ -95,7 +95,7 @@ class EloquentModelComparatorTest extends TestCase {
         $c = (clone $a)->setAttribute('id', 2);
 
         return [
-            'different classes' => [
+            'different classes'             => [
                 '/.+? is not instance of expected class ".+?"/i',
                 new class() extends Model {
                     // empty
@@ -104,17 +104,17 @@ class EloquentModelComparatorTest extends TestCase {
                     // empty
                 },
             ],
-            'same model'        => [
+            'same model'                    => [
                 true,
                 $a,
                 $a,
             ],
-            'same model + different types'        => [
+            'same model + different types'  => [
                 true,
                 $a,
                 $b,
             ],
-            'same model + different values'        => [
+            'same model + different values' => [
                 false,
                 $b,
                 $c,

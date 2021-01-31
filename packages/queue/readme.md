@@ -4,7 +4,7 @@
 >
 > [Read more](https://github.com/LastDragon-ru/lara-asp).
 
-This package provides additional capabilities for queued jobs and queued listeners like multilevel configuration support, job overriding (very useful for package development to provide base implementation and allow the application to extend it), easy define for cron jobs, and DI in constructor support.  
+This package provides additional capabilities for queued jobs and queued listeners like multilevel configuration support, job overriding (very useful for package development to provide base implementation and allow the application to extend it), easy define for cron jobs, and DI in constructor support.
 
 # Installation
 
@@ -16,9 +16,8 @@ This package provides additional capabilities for queued jobs and queued listene
    ```php
    $app->singleton('events', \LastDragon_ru\LaraASP\Queue\EventsDispatcher::class);
    ```
-   
-   This is required if you want use configuration/DI for queued Listeners. Please see https://github.com/laravel/framework/issues/25272 for reason.
 
+   This is required if you want use configuration/DI for queued Listeners. Please see https://github.com/laravel/framework/issues/25272 for reason.
 
 # Configuration
 
@@ -79,6 +78,7 @@ class MyJobWithConfig extends Job {
 ```
 
 Configurations have the following priority  (last win):
+
 - own properties (`$this->connection`, `$this->queue`, etc)
 - own config from `getQueueConfig()`
 - app's config (`queue.queueables.<class>` from `config/queue.php` if present)
@@ -111,7 +111,6 @@ return [
     ],
 ];
 ```
-
 
 # Cron jobs
 
@@ -271,7 +270,7 @@ class AppServiceProvider extends ServiceProvider {
 
 🥳
 
-The `CustomUpdateSomethingJob` will use the same settings name in `config/queue.php` as `UpdateSomethingJob`. Sometimes you may want to create a new job with its own config, in this case, you should break the config chain: 
+The `CustomUpdateSomethingJob` will use the same settings name in `config/queue.php` as `UpdateSomethingJob`. Sometimes you may want to create a new job with its own config, in this case, you should break the config chain:
 
 ```php
 <?php  declare(strict_types = 1);
