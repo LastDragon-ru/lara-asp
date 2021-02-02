@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use Opis\JsonSchema\ISchemaLoader;
+use function json_encode;
 use function str_replace;
 
 class JsonSchemaWrapper extends JsonSchema {
@@ -17,9 +18,9 @@ class JsonSchemaWrapper extends JsonSchema {
     }
 
     protected function getSchemaFor(string $schema): string {
-        $ref  = $this->getTestData($schema)->path('.json');
+        $ref  = JsonSchemaLoader::FullPathPrefix."{$this->getTestData($schema)->path('.json')}";
         $base = $this->getTestData()->content('.json');
-        $base = str_replace('${schema.path}', "file://{$ref}", $base);
+        $base = str_replace('"${schema.path}"', json_encode($ref), $base);
 
         return $base;
     }
