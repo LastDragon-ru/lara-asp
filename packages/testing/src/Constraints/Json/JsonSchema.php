@@ -17,7 +17,7 @@ class JsonSchema {
      */
     public function __construct($schema, ISchemaLoader $loader = null) {
         $this->schema = $schema;
-        $this->loader = $loader;
+        $this->loader = $loader ?: new JsonSchemaLoader();
     }
 
     /**
