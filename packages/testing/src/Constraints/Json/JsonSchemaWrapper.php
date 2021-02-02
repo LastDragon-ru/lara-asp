@@ -16,12 +16,7 @@ class JsonSchemaWrapper extends JsonSchema {
         parent::__construct($schema, $loader);
     }
 
-    /**
-     * @param string $schema
-     *
-     * @return \SplFileInfo|\stdClass|array|string|null
-     */
-    protected function getSchemaFor(string $schema) {
+    protected function getSchemaFor(string $schema): string {
         $ref  = $this->getTestData($schema)->path('.json');
         $base = $this->getTestData()->content('.json');
         $base = str_replace('${schema.path}', "file://{$ref}", $base);

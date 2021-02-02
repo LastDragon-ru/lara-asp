@@ -15,7 +15,7 @@ trait JsonAssertions {
      * @see \LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema
      *
      * @param \LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema $schema
-     * @param \SplFileInfo|\stdClass|array|string                        $json
+     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string      $json
      * @param string                                                     $message
      *
      * @return void

@@ -16,7 +16,7 @@ class JsonResponse extends Response {
     /**
      * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode $code
      * @param \LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema     $schema
-     * @param \SplFileInfo|\stdClass|array|string|null                       $content
+     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string|null     $content
      */
     public function __construct(StatusCode $code, JsonSchema $schema, $content = null) {
         if ($content) {

@@ -6,14 +6,14 @@ use Opis\JsonSchema\ISchemaLoader;
 
 class JsonSchema {
     /**
-     * @var \SplFileInfo|\stdClass|array|string|null
+     * @var \JsonSerializable|\SplFileInfo|\stdClass|array|string|null
      */
     protected                $schema;
     protected ?ISchemaLoader $loader;
 
     /**
-     * @param \SplFileInfo|\stdClass|array|string|null $schema
-     * @param \Opis\JsonSchema\ISchemaLoader|null      $loader
+     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string|null $schema
+     * @param \Opis\JsonSchema\ISchemaLoader|null                        $loader
      */
     public function __construct($schema, ISchemaLoader $loader = null) {
         $this->schema = $schema;

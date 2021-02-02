@@ -34,9 +34,9 @@ class JsonMatchesSchema extends Constraint {
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
     /**
-     * @param \SplFileInfo|\stdClass|array|string $other
-     * @param string                              $description
-     * @param bool                                $returnResult
+     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string $other
+     * @param string                                                $description
+     * @param bool                                                  $returnResult
      *
      * @return bool|null
      */

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use DOMDocument;
 use InvalidArgumentException;
+use JsonSerializable;
 use LastDragon_ru\LaraASP\Testing\NoReturn;
 use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
@@ -31,7 +32,7 @@ class Args {
     }
 
     /**
-     * @param \SplFileInfo|\stdClass|array|string $json
+     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string $json
      *
      * @return \stdClass|string|int|float|bool|null
      */
@@ -40,7 +41,7 @@ class Args {
             $json = static::getFileContents($json);
         }
 
-        if (is_array($json)) {
+        if (is_array($json) || $json instanceof JsonSerializable) {
             $json = json_encode($json);
         }
 
