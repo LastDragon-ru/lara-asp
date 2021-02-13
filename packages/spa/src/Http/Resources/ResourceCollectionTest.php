@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 use stdClass;
+
 use function get_class;
 use function json_decode;
 use function sprintf;
@@ -21,13 +22,8 @@ class ResourceCollectionTest extends TestCase {
      * @covers ::__construct
      *
      * @dataProvider dataProviderConstruct
-     *
-     * @param bool|\Exception $expected
-     * @param string          $class
-     *
-     * @return void
      */
-    public function testConstruct($expected, string $class): void {
+    public function testConstruct(bool|Exception $expected, string $class): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }

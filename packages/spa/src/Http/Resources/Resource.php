@@ -11,6 +11,7 @@ use JsonSerializable;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\ResourceCollection as ResourceCollection;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LogicException;
+
 use function array_merge;
 use function count;
 use function end;

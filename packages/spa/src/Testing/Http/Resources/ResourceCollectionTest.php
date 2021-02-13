@@ -20,9 +20,6 @@ class ResourceCollectionTest extends TestCase {
      * @coversNothing
      *
      * @dataProvider dataProviderSchema
-     *
-     * @param bool  $expected
-     * @param array $json
      */
     public function testSchema(bool $expected, array $json): void {
         $schema     = new ResourceCollection(static::class);

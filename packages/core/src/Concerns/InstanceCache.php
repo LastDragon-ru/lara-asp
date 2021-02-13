@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 use Closure;
 use Illuminate\Contracts\Queue\QueueableEntity;
+
 use function array_key_exists;
 use function array_map;
 use function get_class;

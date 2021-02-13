@@ -17,12 +17,6 @@ class Assert extends PHPUnitAssert {
 
     /**
      * Asserts that TestResponse satisfies given constraint.
-     *
-     * @param \Illuminate\Testing\TestResponse         $response
-     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
-     * @param string                                   $message
-     *
-     * @return void
      */
     public static function assertThatResponse(TestResponse $response, Constraint $constraint, string $message = ''): void {
         static::assertThat($response->toPsrResponse(), $constraint, $message);

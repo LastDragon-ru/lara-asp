@@ -2,9 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
 use IteratorAggregate;
+use stdClass;
 use Traversable;
+
 use function is_array;
 use function is_object;
 
@@ -35,21 +40,11 @@ use function is_object;
 class ChunkedChangeSafeIterator implements IteratorAggregate {
     use Helper;
 
-    /**
-     * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
-     */
-    private        $builder;
-    private string $column;
-    private int    $chunk;
+    private QueryBuilder|EloquentBuilder $builder;
+    private string                       $column;
+    private int                          $chunk;
 
-    /**
-     * ChangeSafeChunkedIterator constructor.
-     *
-     * @param int                                                                      $chunk
-     * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $builder
-     * @param string|null                                                              $column
-     */
-    public function __construct(int $chunk, $builder, string $column = null) {
+    public function __construct(int $chunk, QueryBuilder|EloquentBuilder $builder, string $column = null) {
         $this->chunk   = $chunk;
         $this->builder = clone $builder;
         $this->column  = $column ?? $builder->getDefaultKeyName();
@@ -87,12 +82,7 @@ class ChunkedChangeSafeIterator implements IteratorAggregate {
         } while ($count > 0);
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Model|\stdClass|array $item
-     *
-     * @return mixed|null
-     */
-    protected function column($item) {
+    protected function column(Model|stdClass|array|null $item): mixed {
         $value = null;
 
         if (is_object($item)) {

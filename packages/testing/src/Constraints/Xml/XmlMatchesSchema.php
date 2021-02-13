@@ -10,11 +10,13 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileXsdSchemaMatch
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Constraint\Constraint;
 use SplFileInfo;
+
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function strtolower;
 use function trim;
+
 use const LIBXML_ERR_ERROR;
 use const LIBXML_ERR_FATAL;
 use const LIBXML_ERR_WARNING;
@@ -33,13 +35,6 @@ class XmlMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @param \SplFileInfo|\DOMDocument|string $other
-     * @param string                           $description
-     * @param bool                             $returnResult
-     *
-     * @return bool|null
-     */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getFile($other) ?? Args::getDomDocument($other) ?? Args::invalidXml(),
@@ -48,11 +43,6 @@ class XmlMatchesSchema extends Constraint {
         );
     }
 
-    /**
-     * @param \SplFileInfo|\DOMDocument $other
-     *
-     * @return bool
-     */
     protected function matches($other): bool {
         // Create constraint
         $isRelaxNg  = strtolower($this->schema->getExtension()) === 'rng';
@@ -62,10 +52,12 @@ class XmlMatchesSchema extends Constraint {
             $constraint = $isRelaxNg
                 ? new DomDocumentRelaxNgSchemaMatcher()
                 : new DomDocumentXsdSchemaMatcher();
-        } else {
+        } elseif ($other instanceof SplFileInfo) {
             $constraint = $isRelaxNg
                 ? new XmlFileRelaxNgSchemaMatcher()
                 : new XmlFileXsdSchemaMatcher();
+        } else {
+            // no action
         }
 
         // Check
@@ -73,7 +65,7 @@ class XmlMatchesSchema extends Constraint {
         libxml_clear_errors();
 
         try {
-            $matches = $constraint->isMatchesSchema($this->schema, $other);
+            $matches = $constraint && $constraint->isMatchesSchema($this->schema, $other);
         } finally {
             $this->errors = libxml_get_errors();
 
@@ -84,11 +76,6 @@ class XmlMatchesSchema extends Constraint {
         return $matches;
     }
 
-    /**
-     * @param \SplFileInfo|\DOMDocument $other
-     *
-     * @return string
-     */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);
         $levels      = [

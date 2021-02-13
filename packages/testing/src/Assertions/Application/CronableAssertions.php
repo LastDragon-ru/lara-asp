@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
+
 use function array_filter;
 use function is_subclass_of;
 use function sprintf;
@@ -20,11 +21,6 @@ use function str_contains;
 trait CronableAssertions {
     /**
      * Asserts that {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} is registered.
-     *
-     * @param string $cronable class name
-     * @param string $message
-     *
-     * @return void
      */
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
         $this->assertTrue(

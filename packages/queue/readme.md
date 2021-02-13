@@ -38,9 +38,6 @@ class MyJobWithConfig extends Job {
      * As a small bonus you can inject dependencies into the constructor, but 
      * keep in mind that you, probably, should not assign them to class 
      * properties (even private) or they will be serialized.
-     *
-     * @param \LastDragon_ru\LaraASP\Queue\QueueableConfigurator $configurator
-     * @param \Illuminate\Foundation\Application                 $app
      */
     public function __construct(QueueableConfigurator $configurator, Application $app) {
         // $app ...

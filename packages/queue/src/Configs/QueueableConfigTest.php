@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Listener;
 use LastDragon_ru\LaraASP\Queue\Queueables\Mail;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+
 use function get_class;
 
 /**
@@ -29,11 +30,6 @@ class QueueableConfigTest extends TestCase {
     /**
      * @covers ::getQueueClass
      * @dataProvider dataProviderGetQueueClass
-     *
-     * @param string $expected
-     * @param string $class
-     *
-     * @return void
      */
     public function testGetQueueClass(string $expected, string $class): void {
         $container    = Container::getInstance();
@@ -54,14 +50,8 @@ class QueueableConfigTest extends TestCase {
     /**
      * @covers ::config
      * @dataProvider dataProviderConfig
-     *
-     * @param array|\Exception $expected
-     * @param array            $appConfig
-     * @param array            $queueableConfig
-     *
-     * @return void
      */
-    public function testConfig($expected, array $appConfig, array $queueableConfig): void {
+    public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
         $container    = Container::getInstance();
         $repository   = new Repository();
         $dateFactory  = new DateFactory();
@@ -105,8 +95,6 @@ class QueueableConfigTest extends TestCase {
 
     /**
      * @covers ::config
-     *
-     * @return void
      */
     public function testConfigInjectionIntoGetQueueConfig(): void {
         $container    = Container::getInstance();

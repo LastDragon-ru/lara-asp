@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use InvalidArgumentException;
 use LogicException;
+
 use function in_array;
 
 /**
@@ -17,7 +18,6 @@ class ConfigRecursiveMerger {
     private array $unprotected;
 
     /**
-     * @param bool     $strict
      * @param string[] $unprotected
      */
     public function __construct(bool $strict = true, array $unprotected = []) {
@@ -46,11 +46,6 @@ class ConfigRecursiveMerger {
      * In strict mode (default) it will respect the structure of the target
      * array, thus you cannot add any new keys, cannot replace existing
      * scalar values by the array, and vice versa.
-     *
-     * @param array $target
-     * @param array ...$configs
-     *
-     * @return array
      */
     public function merge(array $target, array ...$configs): array {
         foreach ($configs as $config) {

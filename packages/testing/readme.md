@@ -520,12 +520,6 @@ class ExampleTest extends TestCase {
     // =========================================================================
     /**
      * @dataProvider dataProviderGet
-     *
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\Response $expected
-     * @param \Closure|null                                                $actingAs
-     * @param \Closure|null                                                $user
-     *
-     * @return void
      */
     public function testGet(Response $expected, Closure $actingAs = null, Closure $user = null): void {
         $user = $user ? $user()->getKey() : 0;
@@ -539,13 +533,6 @@ class ExampleTest extends TestCase {
 
     /**
      * @dataProvider dataProviderUpdate
-     *
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\Response $expected
-     * @param \Closure|null                                                $actingAs
-     * @param \Closure|null                                                $user
-     * @param array                                                        $data
-     *
-     * @return void
      */
     public function testUpdate(Response $expected, Closure $actingAs = null, Closure $user = null, array $data = []) {
         $user = $user ? $user()->getKey() : 0;

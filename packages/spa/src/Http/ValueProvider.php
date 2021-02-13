@@ -3,10 +3,5 @@
 namespace LastDragon_ru\LaraASP\Spa\Http;
 
 interface ValueProvider {
-    /**
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    public function getValue($value);
+    public function getValue(mixed $value): mixed;
 }

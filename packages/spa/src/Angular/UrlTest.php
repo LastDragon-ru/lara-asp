@@ -18,11 +18,6 @@ class UrlTest extends TestCase {
      * @covers ::extract
      *
      * @dataProvider dataProviderConstruct
-     *
-     * @param array  $expected
-     * @param string $template
-     *
-     * @return void
      */
     public function testConstruct(array $expected, string $template): void {
         $url = new Url($template);
@@ -35,14 +30,8 @@ class UrlTest extends TestCase {
      * @covers ::build
      *
      * @dataProvider dataProviderBuild
-     *
-     * @param string|\Exception $expected
-     * @param string            $template
-     * @param array             $parameters
-     *
-     * @return void
      */
-    public function testBuild($expected, string $template, array $parameters): void {
+    public function testBuild(string|Exception $expected, string $template, array $parameters): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }

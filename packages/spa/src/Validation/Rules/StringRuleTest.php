@@ -16,13 +16,8 @@ class StringRuleTest extends TestCase {
      * @covers ::passes
      *
      * @dataProvider dataProviderPasses
-     *
-     * @param bool  $expected
-     * @param mixed $value
-     *
-     * @return void
      */
-    public function testPasses(bool $expected, $value): void {
+    public function testPasses(bool $expected, mixed $value): void {
         $translator = $this->app->make(Translator::class);
         $rule       = new StringRule($translator);
 

@@ -9,10 +9,7 @@ class Unknown extends ExpectedValue {
         parent::__construct(null);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValue() {
+    public function getValue(): mixed {
         throw new LogicException('The expected value is not provided.');
     }
 }

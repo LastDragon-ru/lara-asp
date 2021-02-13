@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
+use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchema;
 use SplFileInfo;
 
@@ -13,14 +14,12 @@ trait XmlAssertions {
      * Asserts that XML matches schema.
      *
      * @see \LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchema
-     *
-     * @param \SplFileInfo                     $schema
-     * @param \SplFileInfo|\DOMDocument|string $xml
-     * @param string                           $message
-     *
-     * @return void
      */
-    public static function assertXmlMatchesSchema(SplFileInfo $schema, $xml, string $message = ''): void {
+    public static function assertXmlMatchesSchema(
+        SplFileInfo $schema,
+        SplFileInfo|DOMDocument|string $xml,
+        string $message = '',
+    ): void {
         static::assertThat($xml, new XmlMatchesSchema($schema), $message);
     }
 }

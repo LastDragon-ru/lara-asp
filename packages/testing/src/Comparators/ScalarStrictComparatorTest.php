@@ -16,14 +16,8 @@ class ScalarStrictComparatorTest extends TestCase {
      * @covers ::assertEquals
      *
      * @dataProvider dataProviderAssertEquals
-     *
-     * @param bool  $equals
-     * @param mixed $expected
-     * @param mixed $actual
-     *
-     * @return void
      */
-    public function testAssertEquals(bool $equals, $expected, $actual): void {
+    public function testAssertEquals(bool $equals, mixed $expected, mixed $actual): void {
         if ($equals) {
             $this->assertTrue(true);
         } else {

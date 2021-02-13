@@ -2,14 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
+use JsonSerializable;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
+use SplFileInfo;
+use stdClass;
 
 class OkResponse extends Response {
-    /**
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema|string $resource
-     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string|null        $content
-     */
-    public function __construct($resource, $content = null) {
+    public function __construct(
+        JsonSchema|string $resource,
+        JsonSerializable|SplFileInfo|stdClass|array|string|null $content = null,
+    ) {
         parent::__construct(new Ok(), $resource, $content);
     }
 }

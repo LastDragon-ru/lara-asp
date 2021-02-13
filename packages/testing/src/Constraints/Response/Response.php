@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\LogicalAnd;
 use Psr\Http\Message\ResponseInterface;
+
 use function array_filter;
 use function array_map;
 use function array_unique;
@@ -16,11 +17,12 @@ use function is_null;
 use function mb_strtolower;
 use function str_ends_with;
 use function str_starts_with;
+
 use const PHP_EOL;
 
 class Response extends Constraint {
     /**
-     * @var array|\PHPUnit\Framework\Constraint\Constraint[]
+     * @var \PHPUnit\Framework\Constraint\Constraint[]
      */
     protected array       $constraints;
     protected ?Constraint $failed = null;
@@ -30,7 +32,7 @@ class Response extends Constraint {
     }
 
     /**
-     * @return array|\PHPUnit\Framework\Constraint\Constraint[]
+     * @return \PHPUnit\Framework\Constraint\Constraint[]
      */
     public function getConstraints(): array {
         return $this->constraints;
@@ -38,15 +40,6 @@ class Response extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @inheritdoc
-     *
-     * @param \Psr\Http\Message\ResponseInterface $other
-     * @param string                              $description
-     * @param bool                                $returnResult
-     *
-     * @return bool|null
-     */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getResponse($other) ?? Args::invalidResponse(),
@@ -54,21 +47,20 @@ class Response extends Constraint {
             $returnResult);
     }
 
-    /**
-     * @param \Psr\Http\Message\ResponseInterface $other
-     *
-     * @return bool
-     */
     protected function matches($other): bool {
         $matches      = true;
         $this->failed = null;
 
-        foreach ($this->getConstraints() as $constraint) {
-            if (!$this->isConstraintMatches($other, $constraint)) {
-                $matches      = false;
-                $this->failed = $constraint;
-                break;
+        if ($other instanceof ResponseInterface) {
+            foreach ($this->getConstraints() as $constraint) {
+                if (!$this->isConstraintMatches($other, $constraint)) {
+                    $matches      = false;
+                    $this->failed = $constraint;
+                    break;
+                }
             }
+        } else {
+            $matches = false;
         }
 
         return $matches;
@@ -80,13 +72,11 @@ class Response extends Constraint {
             : $this->failed->toString();
     }
 
-    /**
-     * @param \Psr\Http\Message\ResponseInterface $other
-     * @param bool                                $root
-     *
-     * @return string
-     */
     protected function additionalFailureDescription($other, bool $root = true): string {
+        if (!$other instanceof ResponseInterface) {
+            return '';
+        }
+
         $description = [];
 
         if ($this->failed) {

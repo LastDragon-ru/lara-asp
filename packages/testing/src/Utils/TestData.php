@@ -6,6 +6,7 @@ use DOMDocument;
 use ReflectionClass;
 use RuntimeException;
 use SplFileInfo;
+
 use function basename;
 use function dirname;
 use function file_get_contents;

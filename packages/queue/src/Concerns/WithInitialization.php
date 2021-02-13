@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue\Concerns;
 use Closure;
 use LastDragon_ru\LaraASP\Queue\Contracts\Initializable;
 use RuntimeException;
+
 use function get_class;
 use function sprintf;
 

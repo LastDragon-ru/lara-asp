@@ -22,12 +22,12 @@ class RequestTest extends TestCase {
         $router        = $this->app->make(Router::class);
         $translator    = $this->app->make(Translator::class);
         $resolverRuleA = new ResolverRule($translator, new class($router) extends Resolver {
-            protected function resolve($value, array $parameters) {
+            protected function resolve(mixed $value, array $parameters): mixed {
                 return ['a' => $value];
             }
         });
         $resolverRuleB = new ResolverRule($translator, new class($router) extends Resolver {
-            protected function resolve($value, array $parameters) {
+            protected function resolve(mixed $value, array $parameters): mixed {
                 return ['b' => $value];
             }
         });

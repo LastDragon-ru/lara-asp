@@ -26,10 +26,8 @@ abstract class RawDataMigration extends RawMigration {
     // =========================================================================
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up() {
+    public function up(): void {
         if ($this->seeder->isSeeded()) {
             parent::up();
         }
@@ -37,10 +35,8 @@ abstract class RawDataMigration extends RawMigration {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down() {
+    public function down(): void {
         if ($this->seeder->isSeeded()) {
             parent::down();
         }

@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObjectTrait;
 use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+
 use function count;
 use function iterator_to_array;
 

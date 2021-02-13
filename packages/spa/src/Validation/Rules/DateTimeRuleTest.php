@@ -19,11 +19,6 @@ class DateTimeRuleTest extends TestCase {
      * @covers ::passes
      *
      * @dataProvider dataProviderPasses
-     *
-     * @param bool   $expected
-     * @param string $value
-     *
-     * @return void
      */
     public function testPasses(bool $expected, string $value): void {
         $translator = $this->app->make(Translator::class);
@@ -48,14 +43,8 @@ class DateTimeRuleTest extends TestCase {
      * @covers ::getValue
      *
      * @dataProvider dataProviderGetValue
-     *
-     * @param string|\Exception $expected
-     * @param string|null       $tz
-     * @param string            $value
-     *
-     * @return void
      */
-    public function testGetValue($expected, ?string $tz, string $value): void {
+    public function testGetValue(string|Exception $expected, ?string $tz, string $value): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }

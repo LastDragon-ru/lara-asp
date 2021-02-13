@@ -50,14 +50,6 @@ class SpaControllerTest extends TestCase {
      * @covers ::settings
      *
      * @dataProvider dataProviderSettings
-     *
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\Response $expected
-     * @param bool                                                         $routes
-     * @param string|null                                                  $prefix
-     * @param array                                                        $headers
-     * @param array                                                        $settings
-     *
-     * @return void
      */
     public function testSettings(Response $expected, bool $routes = true, string $prefix = null, array $headers = [], array $settings = []): void {
         $this->setSettings([
@@ -75,14 +67,6 @@ class SpaControllerTest extends TestCase {
      * @covers ::user
      *
      * @dataProvider dataProviderUser
-     *
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\Response $expected
-     * @param bool                                                         $routes
-     * @param string|null                                                  $prefix
-     * @param array                                                        $headers
-     * @param \Closure|null                                                $user
-     *
-     * @return void
      */
     public function testUser(Response $expected, bool $routes = true, string $prefix = null, array $headers = [], Closure $user = null): void {
         $this->setSettings([

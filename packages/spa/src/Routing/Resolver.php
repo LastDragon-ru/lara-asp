@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Core\Concerns\InstanceCache;
+
 use function array_merge;
 
 abstract class Resolver {
@@ -19,23 +20,10 @@ abstract class Resolver {
 
     // <editor-fold desc="Abstract">
     // =========================================================================
-    /**
-     * Resolves value.
-     *
-     * @param mixed $value
-     * @param array $parameters
-     *
-     * @return mixed|null
-     */
-    protected abstract function resolve($value, array $parameters);
+    protected abstract function resolve(mixed $value, array $parameters): mixed;
 
     /**
      * Resolves parameters for value resolving.
-     *
-     * @param \Illuminate\Http\Request|null  $request
-     * @param \Illuminate\Routing\Route|null $route
-     *
-     * @return array
      */
     protected function resolveParameters(Request $request = null, Route $route = null): array {
         return [];
@@ -47,15 +35,9 @@ abstract class Resolver {
     /**
      * Returns value.
      *
-     * @param mixed                          $value
-     * @param \Illuminate\Http\Request|null  $request
-     * @param \Illuminate\Routing\Route|null $route
-     *
      * @throws \LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException
-     *
-     * @return mixed
      */
-    public function get($value, Request $request = null, Route $route = null) {
+    public function get(mixed $value, Request $request = null, Route $route = null): mixed {
         $route      = $route ?: $this->router->getCurrentRoute();
         $request    = $request ?: $this->router->getCurrentRequest();
         $parameters = $this->resolveParameters($request, $route);
@@ -74,14 +56,9 @@ abstract class Resolver {
     /**
      * Returns the value (used while substituting bindings)
      *
-     * @param mixed                     $value
-     * @param \Illuminate\Routing\Route $route
-     *
      * @throws \LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException
-     *
-     * @return mixed
      */
-    public function bind($value, Route $route) {
+    public function bind(mixed $value, Route $route): mixed {
         return $this->get($value, null, $route);
     }
     // </editor-fold>

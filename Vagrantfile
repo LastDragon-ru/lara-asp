@@ -71,12 +71,12 @@ EOT
     echo "cd /project >& /dev/null" >> .profile
   SHELL
 
-  config.vm.provision "PHP 7.4", type: "shell", privileged: false, inline: <<-SHELL
+  config.vm.provision "PHP 8.0", type: "shell", privileged: false, inline: <<-SHELL
     sudo add-apt-repository -y ppa:ondrej/php
-    sudo apt-get install -y php7.4-{cli,common,mbstring,bcmath,zip,json,intl,mbstring,xml,xdebug,curl,gd,imagick,ldap}
-    sudo sed -i 's/^error_reporting = .\+$/error_reporting = E_ALL/'            /etc/php/7.4/cli/php.ini
-    sudo sed -i 's/^display_errors = .\+$/display_errors = On/'                 /etc/php/7.4/cli/php.ini
-    sudo tee -a /etc/php/7.4/mods-available/xdebug.ini > /dev/null <<"EOT"
+    sudo apt-get install -y php8.0-{cli,common,mbstring,bcmath,zip,intl,mbstring,xml,xdebug,curl,gd,imagick,ldap,pdo-sqlite}
+    sudo sed -i 's/^error_reporting = .\+$/error_reporting = E_ALL/'            /etc/php/8.0/cli/php.ini
+    sudo sed -i 's/^display_errors = .\+$/display_errors = On/'                 /etc/php/8.0/cli/php.ini
+    sudo tee -a /etc/php/8.0/mods-available/xdebug.ini > /dev/null <<"EOT"
 xdebug.remote_enable        = 1
 xdebug.remote_host          = "10.0.2.2"
 xdebug.profiler_output_dir  = "/project/.xdebug"
