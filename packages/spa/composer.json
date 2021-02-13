@@ -18,12 +18,11 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": ">=7.4.0",
+    "php": ">=8.0.0",
     "ext-mbstring": "*",
     "guzzlehttp/psr7": "^1.7.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "laravel/framework": "^8.22.1",
-    "symfony/polyfill-php80": "^1.20.0",
     "lastdragon-ru/lara-asp-core": "self.version"
   },
   "require-dev": {
