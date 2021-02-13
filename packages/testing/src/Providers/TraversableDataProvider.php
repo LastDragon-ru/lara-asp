@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
 use Traversable;
+
 use function iterator_to_array;
 
 class TraversableDataProvider implements DataProvider {

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Angular;
 use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
+
 use function array_diff_key;
 use function array_fill_keys;
 use function array_keys;
@@ -20,6 +21,7 @@ use function parse_url;
 use function sprintf;
 use function str_replace;
 use function str_starts_with;
+
 use const PHP_QUERY_RFC3986;
 use const PHP_URL_PATH;
 
@@ -87,8 +89,6 @@ class Url {
     }
 
     /**
-     * @param string $template
-     *
      * @return string[]
      */
     #[Pure]
@@ -105,13 +105,8 @@ class Url {
         return $names;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return string|array|null
-     */
     #[Pure]
-    private function serialize($value) {
+    private function serialize(mixed $value): string|array|null {
         if (is_float($value)) {
             $value = str_replace(',', '.', (string) $value);
         } elseif (is_bool($value)) {

@@ -16,21 +16,12 @@ class SpaController extends Controller {
     // =========================================================================
     /**
      * Returns SPA settings.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
-     *
-     * @return array
      */
     public function settings(Repository $config): array {
         return $this->getSettings($config);
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource|\LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource
-     */
-    public function user(Request $request) {
+    public function user(Request $request): UserResource|NullResource {
         return $request->user()
             ? new UserResource($request->user())
             : new NullResource();

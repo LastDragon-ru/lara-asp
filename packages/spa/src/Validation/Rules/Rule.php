@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Spa\Package;
 use ReflectionClass;
+
 use function preg_replace;
 
 abstract class Rule implements RuleContract {

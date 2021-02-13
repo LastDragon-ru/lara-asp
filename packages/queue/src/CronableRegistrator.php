@@ -34,8 +34,6 @@ class CronableRegistrator {
      * scheduled job. This method shouldn't be used until the app booted.
      *
      * @param string $cronable {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} class
-     *
-     * @return void
      */
     public function register(string $cronable): void {
         // Cronable?

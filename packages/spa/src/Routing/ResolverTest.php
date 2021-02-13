@@ -18,7 +18,7 @@ class ResolverTest extends TestCase {
     public function testGet(): void {
         $router   = $this->app->make(Router::class);
         $resolver = new class($router) extends Resolver {
-            protected function resolve($value, array $parameters) {
+            protected function resolve(mixed $value, array $parameters): mixed {
                 return (object) [
                     'id'         => $value,
                     'parameters' => $parameters,
@@ -50,7 +50,7 @@ class ResolverTest extends TestCase {
 
         $router   = $this->app->make(Router::class);
         $resolver = new class($router) extends Resolver {
-            protected function resolve($value, array $parameters) {
+            protected function resolve(mixed $value, array $parameters): mixed {
                 return null;
             }
         };

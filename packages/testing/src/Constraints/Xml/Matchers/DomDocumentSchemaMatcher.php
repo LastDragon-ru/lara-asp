@@ -10,7 +10,7 @@ use SplFileInfo;
  * @internal
  */
 abstract class DomDocumentSchemaMatcher implements XmlSchemaMatcher {
-    public function isMatchesSchema(SplFileInfo $schema, $xml): bool {
+    public function isMatchesSchema(SplFileInfo $schema, SplFileInfo|DOMDocument $xml): bool {
         return $xml instanceof DOMDocument
             && $this->isMatchesSchemaValidate($schema, $xml);
     }

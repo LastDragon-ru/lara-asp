@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Core\Concerns\InstanceCache;
 use Locale;
 use NumberFormatter;
 use OutOfBoundsException;
+
 use function abs;
 use function is_null;
 use function is_string;
@@ -182,12 +183,8 @@ class Formatter {
     // =========================================================================
     /**
      * Create a new formatter for the specified locale.
-     *
-     * @param string $locale
-     *
-     * @return $this
      */
-    public function forLocale(string $locale): self {
+    public function forLocale(string $locale): static {
         $formatter         = $this->app->make(static::class);
         $formatter->locale = $locale;
 
@@ -209,12 +206,7 @@ class Formatter {
         return trim((string) $value);
     }
 
-    /**
-     * @param int|float|null $value
-     *
-     * @return string
-     */
-    public function integer($value): string {
+    public function integer(int|float|null $value): string {
         return $this
             ->getIntlNumberFormatter(static::Integer)
             ->format((float) $value);
@@ -243,9 +235,6 @@ class Formatter {
 
     /**
      * @param float|null $value must be between 0-100
-     * @param int|null   $decimals
-     *
-     * @return string
      */
     public function percent(?float $value, int $decimals = null): string {
         $type  = static::Percent;
@@ -282,14 +271,11 @@ class Formatter {
             ->format((int) $value);
     }
 
-    /**
-     * @param \DateTimeInterface|null   $value
-     * @param string|int|null           $format
-     * @param \DateTimeZone|string|null $tz
-     *
-     * @return string
-     */
-    public function time(?DateTimeInterface $value, $format = null, $tz = null): string {
+    public function time(
+        ?DateTimeInterface $value,
+        string|int $format = null,
+        DateTimeZone|string $tz = null,
+    ): string {
         if (is_null($value)) {
             return '';
         }
@@ -299,14 +285,11 @@ class Formatter {
             ->format($value);
     }
 
-    /**
-     * @param \DateTimeInterface|null   $value
-     * @param string|int|null           $format
-     * @param \DateTimeZone|string|null $tz
-     *
-     * @return string
-     */
-    public function date(?DateTimeInterface $value, $format = null, $tz = null): string {
+    public function date(
+        ?DateTimeInterface $value,
+        string|int $format = null,
+        DateTimeZone|string $tz = null,
+    ): string {
         if (is_null($value)) {
             return '';
         }
@@ -316,14 +299,11 @@ class Formatter {
             ->format($value);
     }
 
-    /**
-     * @param \DateTimeInterface|null   $value
-     * @param string|int|null           $format
-     * @param \DateTimeZone|string|null $tz
-     *
-     * @return string
-     */
-    public function datetime(?DateTimeInterface $value, $format = null, $tz = null): string {
+    public function datetime(
+        ?DateTimeInterface $value,
+        string|int $format = null,
+        DateTimeZone|string $tz = null,
+    ): string {
         if (is_null($value)) {
             return '';
         }
@@ -482,14 +462,11 @@ class Formatter {
         });
     }
 
-    /**
-     * @param string                    $type
-     * @param string|int|null           $format
-     * @param \DateTimeZone|string|null $tz
-     *
-     * @return \IntlDateFormatter
-     */
-    private function getIntlDateFormatter(string $type, $format = null, $tz = null): IntlDateFormatter {
+    private function getIntlDateFormatter(
+        string $type,
+        string|int $format = null,
+        DateTimeZone|string $tz = null,
+    ): IntlDateFormatter {
         return $this->getIntlFormatter([$type, $format, $tz], function () use ($type, $format, $tz): ?IntlDateFormatter {
             $formatter = null;
             $pattern   = '';
@@ -520,13 +497,7 @@ class Formatter {
         });
     }
 
-    /**
-     * @param mixed    $type
-     * @param \Closure $closure
-     *
-     * @return \NumberFormatter|\IntlDateFormatter
-     */
-    private function getIntlFormatter($type, Closure $closure) {
+    private function getIntlFormatter(mixed $type, Closure $closure): NumberFormatter|IntlDateFormatter {
         return $this->instanceCacheGet([__METHOD__, $type], $closure);
     }
 
@@ -557,12 +528,7 @@ class Formatter {
         return $translation;
     }
 
-    /**
-     * @param \DateTimeZone|string|null $tz
-     *
-     * @return \DateTimeZone|null
-     */
-    protected function getTimezone($tz = null): ?DateTimeZone {
+    protected function getTimezone(DateTimeZone|string $tz = null): ?DateTimeZone {
         if (is_null($tz)) {
             $tz = $this->getDefaultTimezone();
         }

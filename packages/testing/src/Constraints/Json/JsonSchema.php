@@ -2,28 +2,24 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
+use JsonSerializable;
 use Opis\JsonSchema\ISchemaLoader;
+use SplFileInfo;
+use stdClass;
 
 class JsonSchema {
-    /**
-     * @var \JsonSerializable|\SplFileInfo|\stdClass|array|string|null
-     */
-    protected                $schema;
-    protected ?ISchemaLoader $loader;
+    protected JsonSerializable|SplFileInfo|stdClass|array|string|null $schema;
+    protected ?ISchemaLoader                                          $loader;
 
-    /**
-     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string|null $schema
-     * @param \Opis\JsonSchema\ISchemaLoader|null                        $loader
-     */
-    public function __construct($schema, ISchemaLoader $loader = null) {
+    public function __construct(
+        JsonSerializable|SplFileInfo|stdClass|array|string|null $schema,
+        ISchemaLoader $loader = null,
+    ) {
         $this->schema = $schema;
         $this->loader = $loader ?: new JsonSchemaLoader();
     }
 
-    /**
-     * @return array|\SplFileInfo|\stdClass|string|null
-     */
-    public function getSchema() {
+    public function getSchema(): SplFileInfo|stdClass|array|string|null {
         return $this->schema;
     }
 

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Seeder;
 use Illuminate\Filesystem\Filesystem;
+
 use function is_string;
 
 /**
@@ -74,10 +75,6 @@ abstract class SmartSeeder extends Seeder {
     // =========================================================================
     /**
      * Output "skipped" message.
-     *
-     * @param string|null $reason
-     *
-     * @return void
      */
     protected function skipped(string $reason = null): void {
         if ($this->command) {

@@ -17,12 +17,6 @@ class ValidationErrorResponseTest extends TestCase {
      * @covers ::evaluate
      *
      * @dataProvider dataProviderEvaluate
-     *
-     * @param bool       $expected
-     * @param array      $rules
-     * @param array|null $errors
-     *
-     * @return void
      */
     public function testEvaluate(bool $expected, array $rules, ?array $errors): void {
         Route::get(__FUNCTION__, function (Request $request) use ($rules) {

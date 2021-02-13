@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Responses;
 
+use JsonSerializable;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
@@ -10,15 +11,17 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Constraint\JsonMatches;
+use SplFileInfo;
+use stdClass;
+
 use function json_encode;
 
 class JsonResponse extends Response {
-    /**
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode $code
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema     $schema
-     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string|null     $content
-     */
-    public function __construct(StatusCode $code, JsonSchema $schema, $content = null) {
+    public function __construct(
+        StatusCode $code,
+        JsonSchema $schema,
+        JsonSerializable|SplFileInfo|stdClass|array|string|null $content = null,
+    ) {
         if ($content) {
             $content = Args::getJson($content) ?? Args::invalidJson();
         }

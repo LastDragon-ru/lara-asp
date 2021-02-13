@@ -4,13 +4,13 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use PHPUnit\Framework\Constraint\Constraint;
 use Psr\Http\Message\ResponseInterface;
+
 use function reset;
 
 class Header extends Response {
     protected string $name;
 
     /**
-     * @param string                                     $name
      * @param \PHPUnit\Framework\Constraint\Constraint[] $constraints
      */
     public function __construct(string $name, array $constraints = []) {

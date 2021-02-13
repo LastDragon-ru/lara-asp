@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
+use DateTimeInterface;
 use Illuminate\Support\Facades\Date;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Http\ValueProvider;
@@ -27,12 +28,7 @@ class DateRule extends Rule implements ValueProvider {
         return $passes;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return \DateTimeInterface|null
-     */
-    public function getValue($value) {
+    public function getValue(mixed $value): DateTimeInterface|null {
         return Date::createFromFormat("{$this->getFormat()}|", $value) ?: null;
     }
 

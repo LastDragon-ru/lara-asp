@@ -19,14 +19,8 @@ class EloquentModelComparatorTest extends TestCase {
      * @covers ::accepts
      *
      * @dataProvider dataProviderAccepts
-     *
-     * @param bool  $equals
-     * @param mixed $expected
-     * @param mixed $actual
-     *
-     * @return void
      */
-    public function testAccepts(bool $equals, $expected, $actual): void {
+    public function testAccepts(bool $equals, mixed $expected, mixed $actual): void {
         $this->assertEquals($equals, (new EloquentModelComparator())->accepts($expected, $actual));
     }
 
@@ -34,14 +28,8 @@ class EloquentModelComparatorTest extends TestCase {
      * @covers ::assertEquals
      *
      * @dataProvider dataProviderAssertEquals
-     *
-     * @param bool|string $equals
-     * @param mixed       $expected
-     * @param mixed       $actual
-     *
-     * @return void
      */
-    public function testAssertEquals($equals, $expected, $actual): void {
+    public function testAssertEquals(bool|string $equals, mixed $expected, mixed $actual): void {
         if ($equals === true) {
             $this->assertTrue(true);
         } else {

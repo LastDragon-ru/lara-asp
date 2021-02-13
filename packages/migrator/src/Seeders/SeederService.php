@@ -41,12 +41,7 @@ class SeederService {
         return $seeded;
     }
 
-    /**
-     * @param string|\Illuminate\Database\Eloquent\Model $model
-     *
-     * @return bool
-     */
-    public function isModelSeeded($model): bool {
+    public function isModelSeeded(string|Model $model): bool {
         if (is_string($model) && is_subclass_of($model, Model::class, true)) {
             $model = new $model();
         }

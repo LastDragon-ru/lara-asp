@@ -11,12 +11,6 @@ use Psr\Http\Message\ResponseInterface;
 trait ResponseAssertions {
     /**
      * Asserts that PSR Response satisfies given constraint.
-     *
-     * @param \Psr\Http\Message\ResponseInterface      $response
-     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
-     * @param string                                   $message
-     *
-     * @return void
      */
     public static function assertThatResponse(ResponseInterface $response, Constraint $constraint, string $message = ''): void {
         static::assertThat($response, $constraint, $message);

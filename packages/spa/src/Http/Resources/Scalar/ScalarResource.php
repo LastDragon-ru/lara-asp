@@ -9,10 +9,7 @@ use LastDragon_ru\LaraASP\Spa\Http\Resources\Resource;
  * @property int|float|string|bool|null $resource
  */
 abstract class ScalarResource extends Resource {
-    /**
-     * @param int|float|string|bool|null $resource
-     */
-    protected function __construct($resource) {
+    protected function __construct(int|float|string|bool|null $resource) {
         parent::__construct($resource);
     }
 

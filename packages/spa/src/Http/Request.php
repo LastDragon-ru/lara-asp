@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Validator;
+
 use function is_null;
 
 abstract class Request extends FormRequest {

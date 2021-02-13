@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Testing;
 
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
+
 use function array_merge;
 
 /**

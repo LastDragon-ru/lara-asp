@@ -6,6 +6,7 @@ use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Spa\Http\ValueProvider;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException;
+
 use function array_merge;
 use function get_class;
 
@@ -56,7 +57,7 @@ class ResolverRule extends Rule implements ValueProvider {
 
     // <editor-fold desc="ValueProvider">
     // =========================================================================
-    public function getValue($value) {
+    public function getValue(mixed $value): mixed {
         return $this->resolver->get($value);
     }
     // </editor-fold>

@@ -7,6 +7,7 @@ namespace LastDragon_ru\LaraASP\Testing;
 
 use Illuminate\Testing\TestResponse;
 use LastDragon_ru\LaraASP\Testing\Mixins\TestResponseMixin;
+
 use function class_exists;
 
 if (class_exists(TestResponse::class)) {

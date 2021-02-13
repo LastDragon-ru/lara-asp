@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Core\Concerns;
 use Illuminate\Contracts\Queue\QueueableEntity;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+
 use function addslashes;
 use function sprintf;
 use function strtolower;
@@ -71,6 +72,9 @@ class InstanceCacheTest extends TestCase {
         $this->assertFalse($cache->instanceCacheHas($key));
     }
 
+    /**
+     * @covers ::instanceCacheClear
+     */
     public function testInstanceCacheClear(): void {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
@@ -85,15 +89,9 @@ class InstanceCacheTest extends TestCase {
 
     /**
      * @covers ::instanceCacheKey
-     *
      * @dataProvider dataProviderInstanceCacheKey
-     *
-     * @param string $expected
-     * @param mixed  $keys
-     *
-     * @return void
      */
-    public function testInstanceCacheKey(string $expected, $keys): void {
+    public function testInstanceCacheKey(string $expected, mixed $keys): void {
         $this->assertEquals($expected, (new InstanceCacheTest_Cache())->instanceCacheKey($keys));
     }
     //</editor-fold>

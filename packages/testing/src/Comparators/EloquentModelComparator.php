@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Comparators;
 use Illuminate\Database\Eloquent\Model;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ObjectComparator;
+
 use function get_class;
 use function substr_replace;
 

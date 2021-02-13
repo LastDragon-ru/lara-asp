@@ -15,6 +15,7 @@ use JsonSerializable;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
 use LogicException;
+
 use function get_class;
 use function json_decode;
 
@@ -29,13 +30,8 @@ class ResourceTest extends TestCase {
      * @covers ::__construct
      *
      * @dataProvider dataProviderConstruct
-     *
-     * @param bool|\Exception $expected
-     * @param mixed           $value
-     *
-     * @return void
      */
-    public function testConstruct($expected, $value): void {
+    public function testConstruct(bool|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
@@ -52,12 +48,9 @@ class ResourceTest extends TestCase {
      *
      * @dataProvider dataProviderCollection
      *
-     * @param string $expected
-     * @param mixed  $value
-     *
      * @return void
      */
-    public function testCollection(string $expected, $value): void {
+    public function testCollection(string $expected, mixed $value): void {
         $class  = get_class(new class(null) extends Resource {
             // empty
         });
@@ -73,13 +66,8 @@ class ResourceTest extends TestCase {
      * @covers ::mapResourceData
      *
      * @dataProvider dataProviderMapResourceData
-     *
-     * @param array|\Exception $expected
-     * @param mixed            $value
-     *
-     * @return void
      */
-    public function testMapResourceData($expected, $value) {
+    public function testMapResourceData(array|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
@@ -112,10 +100,8 @@ class ResourceTest extends TestCase {
 
     /**
      * @covers ::mapResourceData
-     *
-     * @return void
      */
-    public function testMapResourceDataImplicitModel() {
+    public function testMapResourceDataImplicitModel(): void {
         $model    = new class() extends Model {
             // empty
         };

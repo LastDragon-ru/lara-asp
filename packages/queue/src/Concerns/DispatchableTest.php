@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue\Concerns;
 use LastDragon_ru\LaraASP\Queue\Contracts\Initializable;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
 use function get_class;
 use function sprintf;
 

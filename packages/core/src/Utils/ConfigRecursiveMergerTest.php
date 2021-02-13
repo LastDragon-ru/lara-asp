@@ -19,16 +19,8 @@ class ConfigRecursiveMergerTest extends TestCase {
      * @covers ::merge
      *
      * @dataProvider dataProviderMerge
-     *
-     * @param array|\Exception $expected
-     * @param bool             $strict
-     * @param string[]         $unprotected
-     * @param array            $target
-     * @param array            ...$configs
-     *
-     * @return void
      */
-    public function testMerge($expected, bool $strict, array $unprotected, array $target, array ...$configs): void {
+    public function testMerge(array|Exception $expected, bool $strict, array $unprotected, array $target, array ...$configs): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }

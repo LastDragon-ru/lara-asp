@@ -12,8 +12,6 @@ trait ProviderWithSchedule {
      * Define the command schedule.
      *
      * @param string[] $schedule {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} classes
-     *
-     * @return void
      */
     protected function bootSchedule(array $schedule): void {
         if (!$this->app->runningInConsole()) {

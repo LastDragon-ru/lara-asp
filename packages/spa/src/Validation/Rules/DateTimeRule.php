@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
+use DateTimeInterface;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Spa\Package;
@@ -18,12 +19,7 @@ class DateTimeRule extends DateRule {
         $this->config = $config;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return \DateTimeInterface|null
-     */
-    public function getValue($value) {
+    public function getValue(mixed $value): DateTimeInterface|null {
         $value = parent::getValue($value);
         $tz    = $this->config->get('app.timezone') ?: 'UTC';
 

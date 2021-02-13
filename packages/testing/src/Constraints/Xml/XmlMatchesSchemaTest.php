@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use PHPUnit\Framework\TestCase;
+use SplFileInfo;
+
 use function is_string;
 
 /**
@@ -17,12 +19,8 @@ class XmlMatchesSchemaTest extends TestCase {
     // =========================================================================
     /**
      * @dataProvider dataProviderEvaluate
-     *
-     * @param bool|string                      $expected
-     * @param \SplFileInfo                     $schema
-     * @param \SplFileInfo|\DOMDocument|string $xml
      */
-    public function testEvaluate($expected, \SplFileInfo $schema, $xml): void {
+    public function testEvaluate(bool|string $expected, SplFileInfo $schema, $xml): void {
         $constraint = new class($schema) extends XmlMatchesSchema {
             public function additionalFailureDescription($other): string {
                 return parent::additionalFailureDescription($other);

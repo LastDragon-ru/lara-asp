@@ -4,16 +4,19 @@ namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use DOMDocument;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\NoReturn;
 use JsonSerializable;
-use LastDragon_ru\LaraASP\Testing\NoReturn;
 use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
+use stdClass;
+
 use function file_get_contents;
 use function is_array;
 use function is_string;
 use function json_decode;
 use function json_encode;
 use function json_last_error;
+
 use const JSON_ERROR_NONE;
 
 /**
@@ -22,21 +25,11 @@ use const JSON_ERROR_NONE;
 class Args {
     private function __construct() { }
 
-    /**
-     * @param \SplFileInfo $file
-     *
-     * @return string
-     */
     public static function getFileContents(SplFileInfo $file): string {
         return file_get_contents(static::getFile($file)->getPathname());
     }
 
-    /**
-     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string $json
-     *
-     * @return \stdClass|string|int|float|bool|null
-     */
-    public static function getJson($json) {
+    public static function getJson(JsonSerializable|SplFileInfo|stdClass|array|string $json): stdClass|array|string|int|float|bool|null {
         if ($json instanceof SplFileInfo) {
             $json = static::getFileContents($json);
         }
@@ -58,12 +51,7 @@ class Args {
         return $json;
     }
 
-    /**
-     * @param \SplFileInfo|mixed $file
-     *
-     * @return \SplFileInfo|null
-     */
-    public static function getFile($file): ?SplFileInfo {
+    public static function getFile(mixed $file): ?SplFileInfo {
         if ($file instanceof SplFileInfo) {
             if (!$file->isReadable()) {
                 static::invalidFile();
@@ -75,7 +63,7 @@ class Args {
         return null;
     }
 
-    public static function getDomDocument($xml): ?DOMDocument {
+    public static function getDomDocument(mixed $xml): ?DOMDocument {
         $dom = null;
 
         if ($xml instanceof DOMDocument) {
@@ -93,7 +81,7 @@ class Args {
         return $dom;
     }
 
-    public static function getResponse($response): ?ResponseInterface {
+    public static function getResponse(mixed $response): ?ResponseInterface {
         $psr = null;
 
         if ($response instanceof ResponseInterface) {

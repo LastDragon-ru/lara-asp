@@ -8,15 +8,9 @@ class ClassUtils {
     /**
      * Get class public constants values.
      *
-     * @param object|string $class
-     * @param string|null   $prefix
-     * @param bool          $recursive
-     *
      * @throws \ReflectionException
-     *
-     * @return array
      */
-    public static function getConstants($class, string $prefix = null, bool $recursive = true): array {
+    public static function getConstants(object|string $class, string $prefix = null, bool $recursive = true): array {
         $values    = [];
         $constants = (new ReflectionClass($class))->getReflectionConstants();
 
