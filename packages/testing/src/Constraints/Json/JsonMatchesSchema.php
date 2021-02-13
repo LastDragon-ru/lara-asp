@@ -35,13 +35,6 @@ class JsonMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @param \JsonSerializable|\SplFileInfo|\stdClass|array|string $other
-     * @param string                                                $description
-     * @param bool                                                  $returnResult
-     *
-     * @return bool|null
-     */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getJson($other),
@@ -50,11 +43,6 @@ class JsonMatchesSchema extends Constraint {
         );
     }
 
-    /**
-     * @param \stdClass $other
-     *
-     * @return bool
-     */
     protected function matches($other): bool {
         $helper       = null;
         $loader       = $this->schema->getLoader();
@@ -65,20 +53,10 @@ class JsonMatchesSchema extends Constraint {
         return $matches;
     }
 
-    /**
-     * @param \stdClass $other
-     *
-     * @return string
-     */
     protected function failureDescription($other): string {
         return "{$this->prettify($other)} {$this->toString()}";
     }
 
-    /**
-     * @param \stdClass $other
-     *
-     * @return string
-     */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);
 

@@ -35,13 +35,6 @@ class XmlMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @param \SplFileInfo|\DOMDocument|string $other
-     * @param string                           $description
-     * @param bool                             $returnResult
-     *
-     * @return bool|null
-     */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getFile($other) ?? Args::getDomDocument($other) ?? Args::invalidXml(),
@@ -50,11 +43,6 @@ class XmlMatchesSchema extends Constraint {
         );
     }
 
-    /**
-     * @param \SplFileInfo|\DOMDocument $other
-     *
-     * @return bool
-     */
     protected function matches($other): bool {
         // Create constraint
         $isRelaxNg  = strtolower($this->schema->getExtension()) === 'rng';
@@ -64,10 +52,12 @@ class XmlMatchesSchema extends Constraint {
             $constraint = $isRelaxNg
                 ? new DomDocumentRelaxNgSchemaMatcher()
                 : new DomDocumentXsdSchemaMatcher();
-        } else {
+        } elseif ($other instanceof SplFileInfo) {
             $constraint = $isRelaxNg
                 ? new XmlFileRelaxNgSchemaMatcher()
                 : new XmlFileXsdSchemaMatcher();
+        } else {
+            // no action
         }
 
         // Check
@@ -75,7 +65,7 @@ class XmlMatchesSchema extends Constraint {
         libxml_clear_errors();
 
         try {
-            $matches = $constraint->isMatchesSchema($this->schema, $other);
+            $matches = $constraint && $constraint->isMatchesSchema($this->schema, $other);
         } finally {
             $this->errors = libxml_get_errors();
 
@@ -86,11 +76,6 @@ class XmlMatchesSchema extends Constraint {
         return $matches;
     }
 
-    /**
-     * @param \SplFileInfo|\DOMDocument $other
-     *
-     * @return string
-     */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);
         $levels      = [
