@@ -6,21 +6,15 @@ use RuntimeException;
 use Throwable;
 
 class UnresolvedValueException extends RuntimeException {
-    /**
-     * @var mixed
-     */
-    protected $value;
+    protected mixed $value;
 
-    public function __construct($value, $message = "", $code = 0, Throwable $previous = null) {
+    public function __construct(mixed $value, $message = "", $code = 0, Throwable $previous = null) {
         parent::__construct($message, $code, $previous);
 
         $this->value = $value;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValue() {
+    public function getValue(): mixed {
         return $this->value;
     }
 }

@@ -36,10 +36,7 @@ abstract class SmartSeeder extends Seeder {
         return null;
     }
 
-    /**
-     * @return bool|string
-     */
-    protected function isSkipped() {
+    protected function isSkipped(): bool|string {
         return $this->isSeeded() ? 'seeded' : false;
     }
 

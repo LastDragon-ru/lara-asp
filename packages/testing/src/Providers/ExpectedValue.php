@@ -3,19 +3,13 @@
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
 class ExpectedValue {
-    /**
-     * @var mixed
-     */
-    private $value;
+    private mixed $value;
 
-    public function __construct($value) {
+    public function __construct(mixed $value) {
         $this->value = $value;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValue() {
+    public function getValue(): mixed {
         return $this->value instanceof ExpectedValueProvider
             ? $this->value->getExpectedValue()
             : $this->value;

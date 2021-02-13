@@ -33,30 +33,26 @@ abstract class RawMigration extends Migration {
     // =========================================================================
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up() {
+    public function up(): void {
         $this->runRawUp();
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down() {
+    public function down(): void {
         $this->runRawDown();
     }
     // </editor-fold>
 
     // <editor-fold desc="Functions">
     // =========================================================================
-    protected function runRawUp() {
+    protected function runRawUp(): void {
         $this->runRaw('up');
     }
 
-    protected function runRawDown() {
+    protected function runRawDown(): void {
         $this->runRaw('down');
     }
     // </editor-fold>

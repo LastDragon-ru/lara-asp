@@ -95,8 +95,6 @@ class QueueableConfigTest extends TestCase {
 
     /**
      * @covers ::config
-     *
-     * @return void
      */
     public function testConfigInjectionIntoGetQueueConfig(): void {
         $container    = Container::getInstance();
