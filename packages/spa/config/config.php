@@ -12,7 +12,7 @@ return [
      * ---------------------------------------------------------------------
      */
     'routes' => [
-        'enabled'    => true,
+        'enabled'    => false,
         'middleware' => 'web',
         'prefix'     => null,
     ],
