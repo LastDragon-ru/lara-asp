@@ -43,12 +43,20 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       # Checkout source repo
+      #
+      # cleanup required to fix "expected freshly packed repo", another option
+      # pass --force to git-filter-repo, but I don't want to do this.
+      #
+      # https://github.com/newren/git-filter-repo/issues/38
       - name: Checkout src
         uses: actions/checkout@v2
         with:
           ref: master
           path: src
           fetch-depth: 0
+      - name: Cleanup src
+        run: |
+          git gc
 
       # Checkout package repo
       # Unfortunately actions/checkout@v2 cannot checkout empty repo
