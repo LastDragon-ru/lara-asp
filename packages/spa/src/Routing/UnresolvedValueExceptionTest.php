@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
  */
 class UnresolvedValueExceptionTest extends TestCase {
     public function testHttpResponse(): void {
-        Route::get(__FUNCTION__, function (): void {
+        Route::get(__FUNCTION__, static function (): void {
             throw new UnresolvedValueException(123);
         });
 

@@ -25,10 +25,10 @@ class InstanceCacheTest extends TestCase {
         $object = new stdClass();
 
         $this->assertNull($cache->instanceCacheGet('a'));
-        $this->assertSame($object, $cache->instanceCacheGet('b', function () use ($object) {
+        $this->assertSame($object, $cache->instanceCacheGet('b', static function () use ($object) {
             return $object;
         }));
-        $this->assertSame($object, $cache->instanceCacheGet('b', function () {
+        $this->assertSame($object, $cache->instanceCacheGet('b', static function () {
             return new stdClass();
         }));
     }
@@ -41,7 +41,7 @@ class InstanceCacheTest extends TestCase {
         $key   = 'a';
 
         $this->assertFalse($cache->instanceCacheHas($key));
-        $this->assertNull($cache->instanceCacheGet($key, function () {
+        $this->assertNull($cache->instanceCacheGet($key, static function () {
             return null;
         }));
         $this->assertTrue($cache->instanceCacheHas($key));

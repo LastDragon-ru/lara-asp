@@ -23,7 +23,7 @@ trait SetUpTraits {
      * @beforeClass
      */
     public static function setUpTraitsSetUp(): void {
-        static::$setUpTraits = array_filter(array_map(function (string $trait): ?string {
+        static::$setUpTraits = array_filter(array_map(static function (string $trait): ?string {
             // Self?
             if ($trait === __TRAIT__) {
                 return null;

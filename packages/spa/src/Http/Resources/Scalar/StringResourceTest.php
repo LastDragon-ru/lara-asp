@@ -15,7 +15,7 @@ class StringResourceTest extends TestCase {
      * @covers ::toResponse
      */
     public function testToResponse(): void {
-        Route::get(__METHOD__, function () {
+        Route::get(__METHOD__, static function () {
             return new StringResource('123');
         });
 

@@ -15,7 +15,7 @@ trait SaveOrThrow {
      */
     public function save(array $options = []) {
         /** @noinspection PhpUndefinedClassInspection */
-        return tap(parent::save($options), function (bool $result): void {
+        return tap(parent::save($options), static function (bool $result): void {
             if (!$result) {
                 throw new Exception('An unknown error occurred while saving the model.');
             }
@@ -27,7 +27,7 @@ trait SaveOrThrow {
      */
     public function delete() {
         /** @noinspection PhpUndefinedClassInspection */
-        return tap(parent::delete(), function (?bool $result): void {
+        return tap(parent::delete(), static function (?bool $result): void {
             if ($result === false) {
                 throw new Exception('An unknown error occurred while deleting the model.');
             }

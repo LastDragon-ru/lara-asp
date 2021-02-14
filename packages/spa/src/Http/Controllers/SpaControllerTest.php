@@ -136,7 +136,7 @@ class SpaControllerTest extends TestCase {
                         'name'     => 'Test',
                         'verified' => false,
                     ]),
-                    function (): Model {
+                    static function (): Model {
                         return (new User())->forceFill([
                             'name'              => 'Test',
                             'email_verified_at' => null,
@@ -148,7 +148,7 @@ class SpaControllerTest extends TestCase {
                         'name'     => 'Test',
                         'verified' => true,
                     ]),
-                    function (): Model {
+                    static function (): Model {
                         return (new User())->forceFill([
                             'name'              => 'Test',
                             'email_verified_at' => Date::now(),

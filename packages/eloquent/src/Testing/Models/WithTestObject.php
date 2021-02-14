@@ -20,7 +20,7 @@ trait WithTestObject {
             return;
         }
 
-        Schema::create($table, function ($table): void {
+        Schema::create($table, static function ($table): void {
             $table->increments('id');
             $table->string('value', 40);
         });

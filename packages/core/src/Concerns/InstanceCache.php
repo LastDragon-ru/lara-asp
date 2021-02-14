@@ -55,7 +55,7 @@ trait InstanceCache {
 
     protected function instanceCacheKey(mixed $keys): string {
         if (is_array($keys)) {
-            $keys = array_map(function ($key) {
+            $keys = array_map(static function ($key) {
                 if ($key instanceof QueueableEntity) {
                     $key = [
                         $key::class,

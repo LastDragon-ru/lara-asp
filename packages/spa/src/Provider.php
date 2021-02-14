@@ -35,12 +35,12 @@ class Provider extends ServiceProvider {
     }
 
     protected function bootExceptionHandler(): void {
-        $this->callAfterResolving(ExceptionHandler::class, function (ExceptionHandler $handler): void {
+        $this->callAfterResolving(ExceptionHandler::class, static function (ExceptionHandler $handler): void {
             if (!($handler instanceof Handler)) {
                 return;
             }
 
-            $handler->map(UnresolvedValueException::class, function (UnresolvedValueException $exception) {
+            $handler->map(UnresolvedValueException::class, static function (UnresolvedValueException $exception) {
                 return new NotFoundHttpException($exception->getMessage() ?: 'Not found.', $exception);
             });
         });
