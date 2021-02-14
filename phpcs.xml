@@ -129,4 +129,10 @@
             <property name="ignoreUnusedValuesWhenOnlyKeysAreUsedInForeach" value="true"/>
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration">
+        <properties>
+            <property name="allowAboveNonAssignment" value="true"/>
+            <property name="allowDocCommentAboveReturn" value="true"/>
+        </properties>
+    </rule>
 </ruleset>

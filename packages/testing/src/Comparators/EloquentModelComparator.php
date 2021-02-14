@@ -39,11 +39,8 @@ class EloquentModelComparator extends ObjectComparator {
         $ignoreCase = false,
         array &$processed = [],
     ) {
-        /** @var \Illuminate\Database\Eloquent\Model $expected */
-        /** @var \Illuminate\Database\Eloquent\Model $actual */
-
         // If classes different we just call parent to fail
-        if ($actual::class !== $expected::class) {
+        if (!($actual instanceof Model) || !($expected instanceof Model) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
         }
 

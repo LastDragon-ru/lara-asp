@@ -29,11 +29,11 @@ class TestResponseMixin {
 
     public function toPsrResponse(): Closure {
         return function (): ResponseInterface {
-            /** @var \Illuminate\Testing\TestResponse $this */
-
             // Some responses (eg StreamedResponse) should be read only
             // one time, so we should use a cloned response and cache the
             // created PSR response (to avoid double code execution).
+
+            /** @var \Illuminate\Testing\TestResponse $this */
             if (!isset($this->psrResponse)) {
                 $psrFactory        = new PsrHttpFactory(
                     new ServerRequestFactory(),
