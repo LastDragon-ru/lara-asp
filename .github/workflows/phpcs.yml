@@ -1,0 +1,54 @@
+name: PHP Code Sniffer
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  settings:
+    name: Collect settings
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+      extensions: ${{ steps.extensions.outputs.value }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+      - name: Detect Latest PHP version
+        id: version
+        run: |
+          mkdir "$RUNNER_TEMP/easy-ci"
+          composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev symplify/easy-ci
+          echo "::set-output name=value::$("$RUNNER_TEMP/easy-ci/vendor/bin/easy-ci" php-versions-json | jq ".[-1]")"
+      - name: Detect PHP extensions
+        id: extensions
+        run: |
+          echo "::set-output name=value::$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(", ")' -r -c composer.json)"
+
+  php-code-sniffer:
+    name: "PHP Code Sniffer"
+    runs-on: ubuntu-latest
+    needs:
+      - settings
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ needs.settings.outputs.version }}
+          extensions: ${{ needs.settings.outputs.extensions }}
+      - name: Install dependencies
+        uses: "ramsey/composer-install@v1"
+      - name: Execute
+        uses: chekalsky/phpcs-action@v1
+        with:
+          phpcs_bin_path: './vendor/bin/phpcs'
+          enable_warnings: true
