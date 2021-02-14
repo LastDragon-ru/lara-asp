@@ -55,6 +55,7 @@ jobs:
           path: src
           fetch-depth: 0
       - name: Cleanup src
+        working-directory: src
         run: |
           git gc
 
