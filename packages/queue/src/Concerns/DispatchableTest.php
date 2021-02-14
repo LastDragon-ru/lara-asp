@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Queue\Contracts\Initializable;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-use function get_class;
 use function sprintf;
 
 /**
@@ -22,7 +21,7 @@ class DispatchableTest extends TestCase {
             use Dispatchable;
         };
 
-        $this->expectExceptionObject(new RuntimeException(sprintf('The `%s` is not initialized.', get_class($job))));
+        $this->expectExceptionObject(new RuntimeException(sprintf('The `%s` is not initialized.', $job::class)));
 
         $job->dispatch();
     }

@@ -40,7 +40,7 @@ class RequestTest extends TestCase {
             }
 
             public function message(): string {
-                return __CLASS__;
+                return static::class;
             }
         };
 

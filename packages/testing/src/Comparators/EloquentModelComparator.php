@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ObjectComparator;
 
-use function get_class;
 use function substr_replace;
 
 /**
@@ -40,8 +39,11 @@ class EloquentModelComparator extends ObjectComparator {
         $ignoreCase = false,
         array &$processed = [],
     ) {
+        /** @var \Illuminate\Database\Eloquent\Model $expected */
+        /** @var \Illuminate\Database\Eloquent\Model $actual */
+
         // If classes different we just call parent to fail
-        if (get_class($actual) !== get_class($expected)) {
+        if ($actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
         }
 
@@ -62,8 +64,8 @@ class EloquentModelComparator extends ObjectComparator {
             throw new ComparisonFailure(
                 $expected,
                 $actual,
-                substr_replace($e->getExpectedAsString(), get_class($expected).' Model', 0, 5),
-                substr_replace($e->getActualAsString(), get_class($actual).' Model', 0, 5),
+                substr_replace($e->getExpectedAsString(), $expected::class.' Model', 0, 5),
+                substr_replace($e->getActualAsString(), $actual::class.' Model', 0, 5),
                 false,
                 'Failed asserting that two models are equal.',
             );

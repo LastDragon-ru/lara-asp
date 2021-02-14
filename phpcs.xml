@@ -120,4 +120,5 @@
             <property name="allowFallbackGlobalConstants" value="false"/>
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference"/>
 </ruleset>

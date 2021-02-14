@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\QueueableEntity;
 
 use function array_key_exists;
 use function array_map;
-use function get_class;
 use function is_array;
 use function json_encode;
 use function ksort;
@@ -59,7 +58,7 @@ trait InstanceCache {
             $keys = array_map(function ($key) {
                 if ($key instanceof QueueableEntity) {
                     $key = [
-                        get_class($key),
+                        $key::class,
                         $key->getQueueableConnection(),
                         $key->getQueueableId(),
                     ];

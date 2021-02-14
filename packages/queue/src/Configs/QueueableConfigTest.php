@@ -18,8 +18,6 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Mail;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-use function get_class;
-
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig
@@ -103,7 +101,7 @@ class QueueableConfigTest extends TestCase {
         $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
         $queueable    = new class($configurator) extends Job {
             public function getQueueConfig(stdClass $injected = null): array {
-                return ['injected' => get_class($injected)];
+                return ['injected' => $injected::class];
             }
         };
 

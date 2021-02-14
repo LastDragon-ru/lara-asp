@@ -13,7 +13,6 @@ use Psr\Log\LoggerInterface;
 
 use function array_filter;
 use function array_merge;
-use function get_class;
 use function is_subclass_of;
 use function json_encode;
 use function sprintf;
@@ -67,7 +66,7 @@ class CronableRegistrator {
         $enabled    = $config->get(CronableConfig::Enabled);
         $properties = [
             'cronable' => $cronable,
-            'actual'   => get_class($job),
+            'actual'   => $job::class,
         ];
 
         if (!$cron || !$enabled) {
@@ -95,7 +94,7 @@ class CronableRegistrator {
     }
 
     protected function getDescription(string $cronable, Cronable $job, QueueableConfig $config): string {
-        $actual      = get_class($job);
+        $actual      = $job::class;
         $settings    = $this->getDescriptionSettings($config);
         $overridden  = $cronable !== $actual;
         $description = $cronable;
