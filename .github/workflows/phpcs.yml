@@ -45,10 +45,9 @@ jobs:
         with:
           php-version: ${{ needs.settings.outputs.version }}
           extensions: ${{ needs.settings.outputs.extensions }}
+          tools: cs2pr
       - name: Install dependencies
         uses: "ramsey/composer-install@v1"
       - name: Execute
-        uses: chekalsky/phpcs-action@v1
-        with:
-          phpcs_bin_path: './vendor/bin/phpcs'
-          enable_warnings: true
+        run: |
+          vendor/bin/phpcs --report=checkstyle | cs2pr
