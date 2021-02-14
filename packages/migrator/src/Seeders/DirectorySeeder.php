@@ -19,7 +19,7 @@ abstract class DirectorySeeder extends Seeder {
     /**
      * Paths from which seeders should be loaded (recursive).
      *
-     * @var string[]
+     * @var array<string>
      */
     protected array      $paths = [];
     protected Filesystem $files;

@@ -29,7 +29,7 @@ use const PHP_URL_PATH;
 class Url {
     private string $template;
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $parameters;
 
@@ -44,7 +44,7 @@ class Url {
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     #[Pure]
     public function getParameters(): array {
@@ -90,7 +90,7 @@ class Url {
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     #[Pure]
     private function extract(string $template): array {

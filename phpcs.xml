@@ -121,4 +121,5 @@
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax"/>
 </ruleset>

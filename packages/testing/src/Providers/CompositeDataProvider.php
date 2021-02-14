@@ -37,7 +37,7 @@ use function reset;
  */
 class CompositeDataProvider implements DataProvider {
     /**
-     * @var \LastDragon_ru\LaraASP\Testing\Providers\DataProvider[]
+     * @var array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider>
      */
     private array $providers;
 

@@ -23,7 +23,7 @@ use const PHP_EOL;
 
 class Response extends Constraint {
     /**
-     * @var \PHPUnit\Framework\Constraint\Constraint[]
+     * @var array<\PHPUnit\Framework\Constraint\Constraint>
      */
     protected array       $constraints;
     protected ?Constraint $failed = null;
@@ -33,7 +33,7 @@ class Response extends Constraint {
     }
 
     /**
-     * @return \PHPUnit\Framework\Constraint\Constraint[]
+     * @return array<\PHPUnit\Framework\Constraint\Constraint>
      */
     public function getConstraints(): array {
         return $this->constraints;

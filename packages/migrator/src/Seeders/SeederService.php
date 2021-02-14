@@ -14,7 +14,7 @@ use function is_subclass_of;
 class SeederService {
     protected Application $app;
     /**
-     * @var string[]
+     * @var array<string>
      */
     protected array $seedersPaths = [];
 
@@ -68,7 +68,7 @@ class SeederService {
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getSeedersPaths(): array {
         return $this->seedersPaths;
