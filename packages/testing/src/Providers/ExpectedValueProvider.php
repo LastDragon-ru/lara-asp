@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
 interface ExpectedValueProvider {
-    public function getExpectedValue();
+    public function getExpectedValue(): mixed;
 }

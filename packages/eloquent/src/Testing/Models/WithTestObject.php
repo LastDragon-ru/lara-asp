@@ -10,17 +10,17 @@ use Illuminate\Support\Facades\Schema;
  *
  * @internal
  */
-trait TestObjectTrait {
+trait WithTestObject {
     use RefreshDatabase;
 
-    public function setUpTestObjectTrait() {
+    public function setUpWithTestObject(): void {
         $table = (new TestObject())->getTable();
 
         if (Schema::hasTable($table)) {
             return;
         }
 
-        Schema::create($table, function ($table) {
+        Schema::create($table, function ($table): void {
             $table->increments('id');
             $table->string('value', 40);
         });

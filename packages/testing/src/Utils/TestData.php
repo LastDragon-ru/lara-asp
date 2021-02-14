@@ -46,7 +46,7 @@ class TestData {
         $path = $this->path($path);
 
         if (!$dom->load($path)) {
-            throw new RuntimeException(sprintf("Failed to load XML from `%s`", $path));
+            throw new RuntimeException(sprintf('Failed to load XML from `%s`', $path));
         }
 
         return $dom;

@@ -71,7 +71,10 @@ class ResourceTest extends TestCase {
         }
 
         $resource = new class($value) extends Resource {
-            public function toArray($request) {
+            /**
+             * @inheritdoc
+             */
+            public function toArray($request): array {
                 if ($this->resource instanceof Model) {
                     $properties = [];
 
@@ -92,7 +95,7 @@ class ResourceTest extends TestCase {
 
         $this->assertEquals($expected, json_decode(
             $resource->response()->content(),
-            true
+            true,
         ));
     }
 
@@ -108,7 +111,7 @@ class ResourceTest extends TestCase {
         };
 
         $this->expectExceptionObject(new LogicException(
-            'Implicit conversions of Models is not supported, please redefine this method to make it explicit.'
+            'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',
         ));
 
         $this->assertIsArray($resource->toArray(null));
@@ -153,12 +156,18 @@ class ResourceTest extends TestCase {
         return [
             'scalar'    => [true, 123],
             'array'     => [true, [1, 2, 3]],
-            'model'     => [true, new class() extends Model {
-                // empty
-            }],
-            'paginator' => [true, new class() extends AbstractPaginator {
-                // empty
-            }],
+            'model'     => [
+                true,
+                new class() extends Model {
+                    // empty
+                },
+            ],
+            'paginator' => [
+                true,
+                new class() extends AbstractPaginator {
+                    // empty
+                },
+            ],
         ];
     }
 
@@ -187,6 +196,9 @@ class ResourceTest extends TestCase {
                         $this->items = new Collection();
                     }
 
+                    /**
+                     * @inheritdoc
+                     */
                     public function toArray() {
                         return [];
                     }
@@ -225,7 +237,7 @@ class ResourceTest extends TestCase {
                     'null'             => null,
                     'array'            => [1, 2, 3, $date],
                     'SafeResource'     => new class() implements SafeResource, JsonSerializable {
-                        public function jsonSerialize() {
+                        public function jsonSerialize(): array {
                             return [
                                 'string' => '123',
                                 'int'    => 123,
@@ -243,7 +255,7 @@ class ResourceTest extends TestCase {
                             $this->date = $date;
                         }
 
-                        public function jsonSerialize() {
+                        public function jsonSerialize(): array {
                             return [
                                 'bool' => true,
                                 'date' => $this->date,
@@ -253,7 +265,7 @@ class ResourceTest extends TestCase {
                 ],
             ],
             'model inside data'                 => [
-                new LogicException("Please do not return Models directly, use our Resources instead."),
+                new LogicException('Please do not return Models directly, use our Resources instead.'),
                 [
                     'model' => new class() extends Model {
                         // model
@@ -302,7 +314,7 @@ class ResourceTest extends TestCase {
                 },
             ],
             'JsonResource inside properties'    => [
-                new LogicException("Please do not return JsonResource directly, use our Resources instead."),
+                new LogicException('Please do not return JsonResource directly, use our Resources instead.'),
                 [
                     'resource' => new class(123) extends JsonResource {
                         // empty
@@ -310,10 +322,10 @@ class ResourceTest extends TestCase {
                 ],
             ],
             'Jsonable inside properties'        => [
-                new LogicException("Value cannot be converted to JSON."),
+                new LogicException('Value cannot be converted to JSON.'),
                 [
                     'resource' => new class() implements Jsonable {
-                        public function toJson($options = 0) {
+                        public function toJson(mixed $options = 0): mixed {
                             return 'null';
                         }
                     },

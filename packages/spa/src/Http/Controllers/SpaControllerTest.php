@@ -35,7 +35,10 @@ class SpaControllerTest extends TestCase {
 
     // <editor-fold desc="Prepare">
     // =========================================================================
-    protected function getEnvironmentSetUp($app) {
+    /**
+     * @inheritdoc
+     */
+    protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);
 
         $this->setSettings([
@@ -51,7 +54,13 @@ class SpaControllerTest extends TestCase {
      *
      * @dataProvider dataProviderSettings
      */
-    public function testSettings(Response $expected, bool $routes = true, string $prefix = null, array $headers = [], array $settings = []): void {
+    public function testSettings(
+        Response $expected,
+        bool $routes = true,
+        string $prefix = null,
+        array $headers = [],
+        array $settings = [],
+    ): void {
         $this->setSettings([
             'routes.enabled' => $routes,
             'routes.prefix'  => $prefix,
@@ -68,7 +77,13 @@ class SpaControllerTest extends TestCase {
      *
      * @dataProvider dataProviderUser
      */
-    public function testUser(Response $expected, bool $routes = true, string $prefix = null, array $headers = [], Closure $user = null): void {
+    public function testUser(
+        Response $expected,
+        bool $routes = true,
+        string $prefix = null,
+        array $headers = [],
+        Closure $user = null,
+    ): void {
         $this->setSettings([
             'routes.enabled' => $routes,
             'routes.prefix'  => $prefix,
@@ -102,7 +117,7 @@ class SpaControllerTest extends TestCase {
                         'custom' => 'value',
                     ],
                 ],
-            ])
+            ]),
         ))->getData();
     }
 
@@ -140,7 +155,7 @@ class SpaControllerTest extends TestCase {
                         ]);
                     },
                 ],
-            ])
+            ]),
         ))->getData();
     }
 
@@ -201,7 +216,7 @@ class SpaControllerTest extends TestCase {
 
     protected function loadRoutes(): void {
         (new class($this->app) extends Provider {
-            public function bootRoutes() {
+            public function bootRoutes(): void {
                 parent::bootRoutes();
             }
         })->bootRoutes();

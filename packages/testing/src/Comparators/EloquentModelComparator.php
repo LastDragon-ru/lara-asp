@@ -32,7 +32,14 @@ class EloquentModelComparator extends ObjectComparator {
     /**
      * @inheritdoc
      */
-    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false, array &$processed = []) {
+    public function assertEquals(
+        $expected,
+        $actual,
+        $delta = 0.0,
+        $canonicalize = false,
+        $ignoreCase = false,
+        array &$processed = [],
+    ) {
         // If classes different we just call parent to fail
         if (get_class($actual) !== get_class($expected)) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
@@ -43,7 +50,14 @@ class EloquentModelComparator extends ObjectComparator {
         $normalizedActual   = $this->normalize($actual);
 
         try {
-            parent::assertEquals($normalizedExpected, $normalizedActual, $delta, $canonicalize, $ignoreCase, $processed);
+            parent::assertEquals(
+                $normalizedExpected,
+                $normalizedActual,
+                $delta,
+                $canonicalize,
+                $ignoreCase,
+                $processed,
+            );
         } catch (ComparisonFailure $e) {
             throw new ComparisonFailure(
                 $expected,
@@ -51,7 +65,7 @@ class EloquentModelComparator extends ObjectComparator {
                 substr_replace($e->getExpectedAsString(), get_class($expected).' Model', 0, 5),
                 substr_replace($e->getActualAsString(), get_class($actual).' Model', 0, 5),
                 false,
-                'Failed asserting that two models are equal.'
+                'Failed asserting that two models are equal.',
             );
         }
     }

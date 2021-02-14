@@ -8,6 +8,7 @@ use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Core\Concerns\InstanceCache;
 
 use function array_merge;
+use function is_null;
 
 abstract class Resolver {
     use InstanceCache;
@@ -20,7 +21,7 @@ abstract class Resolver {
 
     // <editor-fold desc="Abstract">
     // =========================================================================
-    protected abstract function resolve(mixed $value, array $parameters): mixed;
+    abstract protected function resolve(mixed $value, array $parameters): mixed;
 
     /**
      * Resolves parameters for value resolving.

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 
+use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
@@ -20,8 +21,11 @@ class XmlMatchesSchemaTest extends TestCase {
     /**
      * @dataProvider dataProviderEvaluate
      */
-    public function testEvaluate(bool|string $expected, SplFileInfo $schema, $xml): void {
+    public function testEvaluate(bool|string $expected, SplFileInfo $schema, DOMDocument|SplFileInfo $xml): void {
         $constraint = new class($schema) extends XmlMatchesSchema {
+            /**
+             * @inheritdoc
+             */
             public function additionalFailureDescription($other): string {
                 return parent::additionalFailureDescription($other);
             }

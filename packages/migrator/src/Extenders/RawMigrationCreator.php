@@ -4,6 +4,9 @@ namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
 use Illuminate\Database\Migrations\MigrationCreator;
 
+use function basename;
+use function dirname;
+
 class RawMigrationCreator extends MigrationCreator {
     // <editor-fold desc="Illuminate\Database\Migrations\MigrationCreator">
     // =========================================================================

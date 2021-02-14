@@ -16,7 +16,7 @@ trait ProviderHelper {
     /**
      * Should return the name of the package.
      */
-    protected abstract function getName(): string;
+    abstract protected function getName(): string;
 
     /**
      * Returns path relative to class location.
@@ -28,7 +28,7 @@ trait ProviderHelper {
         return $path;
     }
 
-    protected function callAfterBoot(Closure $callback) {
+    protected function callAfterBoot(Closure $callback): void {
         if ($this->app instanceof Application && $this->app->isBooted()) {
             $this->app->call($callback);
         } else {

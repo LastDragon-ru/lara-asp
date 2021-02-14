@@ -9,7 +9,7 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
 trait JsonPrettify {
-    protected function prettify($value): string {
+    protected function prettify(mixed $value): string {
         return json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 }

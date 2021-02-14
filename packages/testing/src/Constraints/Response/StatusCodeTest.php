@@ -17,7 +17,7 @@ class StatusCodeTest extends TestCase {
      */
     public function testEvaluate(): void {
         $this->expectExceptionObject(new InvalidArgumentException(
-            'It is not a `Psr\Http\Message\ResponseInterface` instance.'
+            'It is not a `Psr\Http\Message\ResponseInterface` instance.',
         ));
 
         $this->assertFalse((new StatusCode(200))->evaluate(new stdClass()));
@@ -30,6 +30,9 @@ class StatusCodeTest extends TestCase {
         $valid      = new Response(200);
         $invalid    = new Response(500);
         $constraint = new class(200) extends StatusCode {
+            /**
+             * @inheritdoc
+             */
             public function matches($other): bool {
                 return parent::matches($other);
             }

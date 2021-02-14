@@ -22,25 +22,25 @@ class MailTest extends TestCase {
     /**
      * @covers ::queue
      */
-    public function testQueueUninitializedInitializable() {
+    public function testQueueUninitializedInitializable(): void {
         $this->expectExceptionObject($this->getException());
 
         (new MailTest_Mail())->queue($this->app->make(QueueFactory::class));
     }
 
-    public function testLaterUninitializedInitializable() {
+    public function testLaterUninitializedInitializable(): void {
         $this->expectExceptionObject($this->getException());
 
         (new MailTest_Mail())->later(10, $this->app->make(QueueFactory::class));
     }
 
-    public function testSendUninitializedInitializable() {
+    public function testSendUninitializedInitializable(): void {
         $this->expectExceptionObject($this->getException());
 
         (new MailTest_Mail())->send($this->app->make(MailFactory::class));
     }
 
-    public function testRenderUninitializedInitializable() {
+    public function testRenderUninitializedInitializable(): void {
         $this->expectExceptionObject($this->getException());
 
         (new MailTest_Mail())->render();
@@ -55,6 +55,9 @@ class MailTest extends TestCase {
     // </editor-fold>
 }
 
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
@@ -65,3 +68,5 @@ class MailTest_Mail extends Mail implements Initializable {
         // empty
     }
 }
+
+// @phpcs:enable

@@ -37,7 +37,7 @@ use function reset;
  */
 class CompositeDataProvider implements DataProvider {
     /**
-     * @var DataProvider[]
+     * @var \LastDragon_ru\LaraASP\Testing\Providers\DataProvider[]
      */
     private array $providers;
 
@@ -58,7 +58,8 @@ class CompositeDataProvider implements DataProvider {
      * @inheritdoc
      */
     public function getData(): array {
-        return array_reduce(array_reverse($this->getProviders()), function (array $previous, DataProvider $current): array {
+        $array    = array_reverse($this->getProviders());
+        $callback = function (array $previous, DataProvider $current): array {
             $data = [];
 
             foreach ($current->getData() as $cKey => $cData) {
@@ -78,18 +79,20 @@ class CompositeDataProvider implements DataProvider {
             }
 
             return $data;
-        }, []);
+        };
+
+        return array_reduce($array, $callback, []);
     }
 
     // </editor-fold>
 
     // <editor-fold desc="Functions">
     // =========================================================================
-    protected function isExpectedFinal($expected): bool {
+    protected function isExpectedFinal(mixed $expected): bool {
         return $expected instanceof ExpectedFinal;
     }
 
-    protected function getExpectedValue($expected) {
+    protected function getExpectedValue(mixed $expected): mixed {
         return $expected instanceof ExpectedValue
             ? $expected->getValue()
             : $expected;

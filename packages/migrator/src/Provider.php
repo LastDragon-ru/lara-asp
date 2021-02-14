@@ -15,6 +15,9 @@ use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 class Provider extends ServiceProvider implements DeferrableProvider {
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
     // =========================================================================
+    /**
+     * @inheritdoc
+     */
     public function register() {
         parent::register();
 

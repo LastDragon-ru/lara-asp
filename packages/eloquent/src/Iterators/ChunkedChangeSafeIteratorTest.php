@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObjectTrait;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 
@@ -16,13 +16,13 @@ use function iterator_to_array;
  * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  */
 class ChunkedChangeSafeIteratorTest extends TestCase {
-    use TestObjectTrait;
+    use WithTestObject;
     use WithQueryLog;
 
     /**
      * @covers ::getIterator
      */
-    public function testGetIterator() {
+    public function testGetIterator(): void {
         $a = TestObject::factory()->create(['value' => '1']);
         $b = TestObject::factory()->create(['value' => '2']);
         $c = TestObject::factory()->create(['value' => '3']);
@@ -36,7 +36,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         foreach ($iterator as $model) {
             $actual[] = $model;
 
-            if (count($actual) == 3) {
+            if (count($actual) === 3) {
                 TestObject::factory()->create(['value' => '4']);
             }
         }
@@ -57,7 +57,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     /**
      * @covers ::getIterator
      */
-    public function testGetIteratorLimit() {
+    public function testGetIteratorLimit(): void {
         $a = TestObject::factory()->create(['value' => '1']);
         $b = TestObject::factory()->create(['value' => '2']);
         $c = TestObject::factory()->create(['value' => '3']);
@@ -78,7 +78,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     /**
      * @covers ::getIterator
      */
-    public function testGetIteratorLimitEloquent() {
+    public function testGetIteratorLimitEloquent(): void {
         $a = TestObject::factory()->create(['value' => '1']);
         $b = TestObject::factory()->create(['value' => '2']);
         $c = TestObject::factory()->create(['value' => '3']);
@@ -97,8 +97,8 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     /**
      * @covers ::getIterator
      */
-    public function testGetIteratorUnion() {
-        $this->expectExceptionObject(new InvalidArgumentException("Queries with UNION is not supported."));
+    public function testGetIteratorUnion(): void {
+        $this->expectExceptionObject(new InvalidArgumentException('Queries with UNION is not supported.'));
 
         new ChunkedChangeSafeIterator(1, TestObject::query()->union(TestObject::query()->toBase()));
     }

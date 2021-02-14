@@ -10,15 +10,19 @@ use Illuminate\Filesystem\Filesystem;
 use ReflectionClass;
 use RuntimeException;
 
+use function basename;
+use function dirname;
+use function method_exists;
+
 /**
  * @internal
  */
 trait RawSqlHelper {
-    protected abstract function getApplication(): Application;
+    abstract protected function getApplication(): Application;
 
-    protected abstract function getFilesystem(): Filesystem;
+    abstract protected function getFilesystem(): Filesystem;
 
-    protected function runRaw(string $type = null) {
+    protected function runRaw(string $type = null): void {
         $connection = $this->getConnectionInstance();
         $state      = $this->getSchemaState($connection);
         $path       = $this->getRawPath($type);

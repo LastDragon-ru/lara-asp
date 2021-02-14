@@ -18,6 +18,7 @@ use function is_bool;
 use function is_float;
 use function mb_substr;
 use function parse_url;
+use function preg_replace;
 use function sprintf;
 use function str_replace;
 use function str_starts_with;
@@ -58,7 +59,7 @@ class Url {
 
         if ($missed) {
             throw new InvalidArgumentException(
-                sprintf('Url requires the following parameters: %s.', implode(', ', array_keys($missed)))
+                sprintf('Url requires the following parameters: %s.', implode(', ', array_keys($missed))),
             );
         }
 

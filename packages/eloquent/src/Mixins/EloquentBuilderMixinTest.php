@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Eloquent\Mixins;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObjectTrait;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use Traversable;
 
@@ -14,7 +14,7 @@ use Traversable;
  * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Mixins\EloquentBuilderMixin
  */
 class EloquentBuilderMixinTest extends TestCase {
-    use TestObjectTrait;
+    use WithTestObject;
 
     /**
      * @covers ::getDefaultKeyName

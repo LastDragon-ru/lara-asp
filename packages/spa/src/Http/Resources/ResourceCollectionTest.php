@@ -38,7 +38,7 @@ class ResourceCollectionTest extends TestCase {
     /**
      * @covers ::toResponse
      */
-    public function testToResponse() {
+    public function testToResponse(): void {
         $class    = get_class(new class(null) extends Resource {
             // empty
         });
@@ -65,7 +65,7 @@ class ResourceCollectionTest extends TestCase {
 
         $this->assertEquals($expected, json_decode(
             $resource->toResponse(null)->content(),
-            true
+            true,
         ));
     }
     // </editor-fold>
@@ -77,7 +77,7 @@ class ResourceCollectionTest extends TestCase {
             'class'        => [
                 new InvalidArgumentException(sprintf(
                     'The `$class` must be instance of `%s`.',
-                    SafeResource::class
+                    SafeResource::class,
                 )),
                 stdClass::class,
             ],

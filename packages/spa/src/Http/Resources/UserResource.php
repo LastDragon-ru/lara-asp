@@ -12,7 +12,7 @@ class UserResource extends Resource {
         parent::__construct($resource);
     }
 
-    public function toArray($request) {
+    public function toArray(mixed $request): array {
         return [
             'name'     => $this->resource->name,
             'verified' => $this->resource->hasVerifiedEmail(),

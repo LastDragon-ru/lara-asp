@@ -55,6 +55,8 @@
     "ext-pdo_sqlite": "*",
     "orchestra/testbench": "^6.9.0",
     "phpunit/phpunit": "^9.5.0",
+    "slevomat/coding-standard": "dev-master",
+    "squizlabs/php_codesniffer": "dev-master",
     "symplify/monorepo-builder": "^9.0.0"
   },
   "suggest": {

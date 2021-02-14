@@ -17,7 +17,7 @@ class DispatchableTest extends TestCase {
     /**
      * @covers ::dispatch
      */
-    public function testDispatchUninitializedInitializable() {
+    public function testDispatchUninitializedInitializable(): void {
         $job = new class() implements Initializable {
             use Dispatchable;
         };

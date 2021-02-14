@@ -20,7 +20,13 @@ class ConfigRecursiveMergerTest extends TestCase {
      *
      * @dataProvider dataProviderMerge
      */
-    public function testMerge(array|Exception $expected, bool $strict, array $unprotected, array $target, array ...$configs): void {
+    public function testMerge(
+        array|Exception $expected,
+        bool $strict,
+        array $unprotected,
+        array $target,
+        array ...$configs,
+    ): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }

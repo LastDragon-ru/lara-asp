@@ -7,5 +7,6 @@ use LastDragon_ru\LaraASP\Eloquent\Concerns\SaveOrThrow;
 use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutQueueableRelations;
 
 class Pivot extends EloquentPivot {
-    use SaveOrThrow, WithoutQueueableRelations;
+    use SaveOrThrow;
+    use WithoutQueueableRelations;
 }

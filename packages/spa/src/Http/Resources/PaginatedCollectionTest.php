@@ -18,7 +18,7 @@ class PaginatedCollectionTest extends TestCase {
      * @covers ::toResponse
      * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedResponse::toResponse
      */
-    public function testToResponseLengthAwarePaginator() {
+    public function testToResponseLengthAwarePaginator(): void {
         $total     = 123;
         $perPage   = 25;
         $current   = 2;
@@ -60,7 +60,7 @@ class PaginatedCollectionTest extends TestCase {
 
         $this->assertEquals($expected, json_decode(
             $resource->toResponse(null)->content(),
-            true
+            true,
         ));
     }
 
@@ -68,7 +68,7 @@ class PaginatedCollectionTest extends TestCase {
      * @covers ::toResponse
      * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedResponse::toResponse
      */
-    public function testToResponsePaginator() {
+    public function testToResponsePaginator(): void {
         $perPage   = 25;
         $current   = 2;
         $items     = [
@@ -109,7 +109,7 @@ class PaginatedCollectionTest extends TestCase {
 
         $this->assertEquals($expected, json_decode(
             $resource->toResponse(null)->content(),
-            true
+            true,
         ));
     }
 }

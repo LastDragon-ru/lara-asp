@@ -8,6 +8,7 @@ namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
 trait WithoutTimestamps {
     /**
      * @noinspection PhpMissingReturnTypeInspection
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint
      */
     public function usesTimestamps() {
         return false;

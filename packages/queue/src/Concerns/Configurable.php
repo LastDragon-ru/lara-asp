@@ -6,6 +6,8 @@ use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\QueueableConfigurator;
 use RuntimeException;
 
+use function sprintf;
+
 trait Configurable {
     public function __construct(QueueableConfigurator $configurator) {
         if (!($this instanceof ConfigurableQueueable)) {

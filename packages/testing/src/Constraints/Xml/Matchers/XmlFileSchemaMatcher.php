@@ -24,7 +24,7 @@ abstract class XmlFileSchemaMatcher implements XmlSchemaMatcher {
         $reader = new XMLReader();
 
         if (!$reader->open($xml->getPathname())) {
-            throw new RuntimeException(sprintf("Failed to load XML from `%s`.", $xml->getPathname()));
+            throw new RuntimeException(sprintf('Failed to load XML from `%s`.', $xml->getPathname()));
         }
 
         // Check
@@ -32,7 +32,7 @@ abstract class XmlFileSchemaMatcher implements XmlSchemaMatcher {
 
         try {
             if (!$this->setSchema($schema, $reader)) {
-                throw new RuntimeException(sprintf("Failed to load XML schema from `%s`.", $schema->getPathname()));
+                throw new RuntimeException(sprintf('Failed to load XML schema from `%s`.', $schema->getPathname()));
             }
 
             while (@$reader->read()) {
@@ -49,5 +49,5 @@ abstract class XmlFileSchemaMatcher implements XmlSchemaMatcher {
         return $matches;
     }
 
-    protected abstract function setSchema(SplFileInfo $schema, XMLReader $reader): bool;
+    abstract protected function setSchema(SplFileInfo $schema, XMLReader $reader): bool;
 }

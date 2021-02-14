@@ -229,12 +229,16 @@ class QueueableConfigTest extends TestCase {
     // </editor-fold>
 }
 
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class QueueableConfigTest_getQueueClass implements ConfigurableQueueable {
-    use Configurable, WithConfig;
+    use Configurable;
+    use WithConfig;
 }
 
 /**
@@ -284,3 +288,5 @@ class QueueableConfigTest_getQueueClass_Listener extends Listener {
 class QueueableConfigTest_getQueueClass_Mail extends Mail {
     // empty
 }
+
+// @phpcs:enable

@@ -8,9 +8,11 @@ use PHPUnit\Framework\Constraint\StringStartsWith;
 
 class ContentType extends Header {
     public function __construct(string $contentType) {
-        parent::__construct('Content-Type', [LogicalOr::fromConstraints(
-            new IsEqual($contentType),
-            new StringStartsWith("{$contentType};")
-        )]);
+        parent::__construct('Content-Type', [
+            LogicalOr::fromConstraints(
+                new IsEqual($contentType),
+                new StringStartsWith("{$contentType};"),
+            ),
+        ]);
     }
 }

@@ -5,7 +5,14 @@ namespace LastDragon_ru\LaraASP\Core\Utils;
 use InvalidArgumentException;
 use LogicException;
 
+use function array_key_exists;
+use function array_values;
 use function in_array;
+use function is_array;
+use function is_null;
+use function is_scalar;
+use function is_string;
+use function key;
 
 /**
  * The merger for array-based configs.

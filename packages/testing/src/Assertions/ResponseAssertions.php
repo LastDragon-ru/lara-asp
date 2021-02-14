@@ -12,7 +12,11 @@ trait ResponseAssertions {
     /**
      * Asserts that PSR Response satisfies given constraint.
      */
-    public static function assertThatResponse(ResponseInterface $response, Constraint $constraint, string $message = ''): void {
+    public static function assertThatResponse(
+        ResponseInterface $response,
+        Constraint $constraint,
+        string $message = '',
+    ): void {
         static::assertThat($response, $constraint, $message);
     }
 }

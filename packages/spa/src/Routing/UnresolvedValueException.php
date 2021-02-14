@@ -8,7 +8,7 @@ use Throwable;
 class UnresolvedValueException extends RuntimeException {
     protected mixed $value;
 
-    public function __construct(mixed $value, $message = "", $code = 0, Throwable $previous = null) {
+    public function __construct(mixed $value, string $message = '', int $code = 0, Throwable $previous = null) {
         parent::__construct($message, $code, $previous);
 
         $this->value = $value;

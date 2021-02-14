@@ -7,6 +7,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 
 use function array_filter;
+use function count;
 use function is_subclass_of;
 use function sprintf;
 use function str_contains;
@@ -25,14 +26,15 @@ trait CronableAssertions {
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
         $this->assertTrue(
             is_subclass_of($cronable, Cronable::class, true),
-            sprintf('The `%s` must be instance of `%s`.', $cronable, Cronable::class)
+            sprintf('The `%s` must be instance of `%s`.', $cronable, Cronable::class),
         );
 
+        $message  = $message ?: sprintf('The `%s` is not registered as scheduled job.', $cronable);
         $schedule = $this->app->make(Schedule::class);
         $events   = array_filter($schedule->events(), function (Event $event) use ($cronable): bool {
             return str_contains($event->description ?? '', $cronable);
         });
 
-        $this->assertEquals(1, count($events), $message ?: sprintf('The `%s` is not registered as scheduled job.', $cronable));
+        $this->assertEquals(1, count($events), $message);
     }
 }

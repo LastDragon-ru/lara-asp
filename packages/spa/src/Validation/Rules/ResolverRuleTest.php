@@ -50,7 +50,7 @@ class ResolverRuleTest extends TestCase {
     /**
      * @covers ::message
      */
-    public function testMessage() {
+    public function testMessage(): void {
         $translator = $this->app->make(Translator::class);
         $router     = $this->app->make(Router::class);
         $resolver   = new class($router) extends Resolver {

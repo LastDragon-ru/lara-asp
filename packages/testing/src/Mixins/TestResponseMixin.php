@@ -35,12 +35,13 @@ class TestResponseMixin {
             // one time, so we should use a cloned response and cache the
             // created PSR response (to avoid double code execution).
             if (!isset($this->psrResponse)) {
-                $serverRequestFactory = new ServerRequestFactory();
-                $uploadedFileFactory  = new UploadedFileFactory();
-                $ResponseFactory      = new ResponseFactory();
-                $streamFactory        = new StreamFactory();
-                $psrFactory           = new PsrHttpFactory($serverRequestFactory, $streamFactory, $uploadedFileFactory, $ResponseFactory);
-                $this->psrResponse    = $psrFactory->createResponse(clone $this->baseResponse);
+                $psrFactory        = new PsrHttpFactory(
+                    new ServerRequestFactory(),
+                    new StreamFactory(),
+                    new UploadedFileFactory(),
+                    new ResponseFactory(),
+                );
+                $this->psrResponse = $psrFactory->createResponse(clone $this->baseResponse);
             }
 
             return $this->psrResponse;

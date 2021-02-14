@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObjectTrait;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 
@@ -15,13 +15,13 @@ use function iterator_to_array;
  * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator
  */
 class ChunkedIteratorTest extends TestCase {
-    use TestObjectTrait;
+    use WithTestObject;
     use WithQueryLog;
 
     /**
      * @covers ::getIterator
      */
-    public function testGetIterator() {
+    public function testGetIterator(): void {
         $a = TestObject::factory()->create(['value' => '1']);
         $b = TestObject::factory()->create(['value' => '2']);
         $c = TestObject::factory()->create(['value' => '3']);
@@ -41,7 +41,7 @@ class ChunkedIteratorTest extends TestCase {
     /**
      * @covers ::getIterator
      */
-    public function testGetIteratorLimit() {
+    public function testGetIteratorLimit(): void {
         $a = TestObject::factory()->create(['value' => '1']);
         $b = TestObject::factory()->create(['value' => '2']);
         $c = TestObject::factory()->create(['value' => '3']);
@@ -62,7 +62,7 @@ class ChunkedIteratorTest extends TestCase {
     /**
      * @covers ::getIterator
      */
-    public function testGetIteratorLimitEloquent() {
+    public function testGetIteratorLimitEloquent(): void {
         $a = TestObject::factory()->create(['value' => '1']);
         $b = TestObject::factory()->create(['value' => '2']);
         $c = TestObject::factory()->create(['value' => '3']);
@@ -81,7 +81,7 @@ class ChunkedIteratorTest extends TestCase {
     /**
      * @covers ::getIterator
      */
-    public function testGetIteratorUnion() {
+    public function testGetIteratorUnion(): void {
         $a = TestObject::factory()->create(['value' => '1']);
         $b = TestObject::factory()->create(['value' => '2']);
         $c = TestObject::factory()->create(['value' => '3']);
@@ -103,7 +103,7 @@ class ChunkedIteratorTest extends TestCase {
     /**
      * @covers ::getIterator
      */
-    public function testGetIteratorUnionLimit() {
+    public function testGetIteratorUnionLimit(): void {
         $a = TestObject::factory()->create(['value' => '1']);
         $b = TestObject::factory()->create(['value' => '2']);
         $c = TestObject::factory()->create(['value' => '3']);

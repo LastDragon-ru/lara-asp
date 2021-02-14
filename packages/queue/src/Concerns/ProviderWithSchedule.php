@@ -18,7 +18,7 @@ trait ProviderWithSchedule {
             return;
         }
 
-        $this->app->booted(function () use ($schedule) {
+        $this->app->booted(function () use ($schedule): void {
             $registrator = $this->app->make(CronableRegistrator::class);
 
             foreach ($schedule as $job) {

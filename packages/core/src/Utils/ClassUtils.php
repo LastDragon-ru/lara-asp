@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use ReflectionClass;
 
+use function str_starts_with;
+
 class ClassUtils {
     /**
      * Get class public constants values.

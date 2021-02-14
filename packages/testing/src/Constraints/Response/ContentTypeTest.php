@@ -17,7 +17,7 @@ class ContentTypeTest extends TestCase {
      */
     public function testEvaluate(): void {
         $this->expectExceptionObject(new InvalidArgumentException(
-            'It is not a `Psr\Http\Message\ResponseInterface` instance.'
+            'It is not a `Psr\Http\Message\ResponseInterface` instance.',
         ));
 
         $this->assertFalse((new ContentType(''))->evaluate(new stdClass()));
@@ -31,6 +31,9 @@ class ContentTypeTest extends TestCase {
         $valid2     = (new Response())->withHeader('Content-Type', 'example/text;charset=utf-8');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
         $constraint = new class('example/text') extends ContentType {
+            /**
+             * @inheritdoc
+             */
             public function matches($other): bool {
                 return parent::matches($other);
             }
@@ -47,6 +50,9 @@ class ContentTypeTest extends TestCase {
     public function testToString(): void {
         $constraint = new ContentType('example/text');
 
-        $this->assertEquals('has Content-Type header that is equal to \'example/text\' or starts with "example/text;"', $constraint->toString());
+        $this->assertEquals(
+            'has Content-Type header that is equal to \'example/text\' or starts with "example/text;"',
+            $constraint->toString(),
+        );
     }
 }

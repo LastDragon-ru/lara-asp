@@ -7,6 +7,10 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
+use function in_array;
+use function is_string;
+use function is_subclass_of;
+
 class SeederService {
     protected Application $app;
     /**

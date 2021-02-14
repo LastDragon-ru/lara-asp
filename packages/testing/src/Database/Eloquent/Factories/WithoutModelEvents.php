@@ -29,7 +29,7 @@ trait WithoutModelEvents {
         });
     }
 
-    private function callWithoutModelEvents(Closure $closure) {
-        return ($this->modelName())::withoutEvents($closure);
+    private function callWithoutModelEvents(Closure $closure): mixed {
+        return $this->modelName()::withoutEvents($closure);
     }
 }

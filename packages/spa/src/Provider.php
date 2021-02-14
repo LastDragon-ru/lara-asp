@@ -34,8 +34,8 @@ class Provider extends ServiceProvider {
         return Package::Name;
     }
 
-    protected function bootExceptionHandler() {
-        $this->callAfterResolving(ExceptionHandler::class, function (ExceptionHandler $handler) {
+    protected function bootExceptionHandler(): void {
+        $this->callAfterResolving(ExceptionHandler::class, function (ExceptionHandler $handler): void {
             if (!($handler instanceof Handler)) {
                 return;
             }

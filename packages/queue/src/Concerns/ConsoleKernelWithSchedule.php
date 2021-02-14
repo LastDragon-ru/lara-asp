@@ -11,12 +11,12 @@ use LogicException;
  * @mixin \Illuminate\Foundation\Console\Kernel
  */
 trait ConsoleKernelWithSchedule {
-    protected function schedule(Schedule $schedule) {
+    protected function schedule(Schedule $schedule): void {
         if (!isset($this->schedule)) {
             throw new LogicException('Class does not have $schedule property, please add it.');
         }
 
-        $this->app->booted(function () use ($schedule) {
+        $this->app->booted(function () use ($schedule): void {
             $registrator = $this->app->make(CronableRegistrator::class, [
                 'schedule' => $schedule,
             ]);
