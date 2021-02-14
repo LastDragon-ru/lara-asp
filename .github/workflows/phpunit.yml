@@ -68,6 +68,10 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ needs.settings.outputs.extensions }}
+      - name: Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+      - name: Setup problem matchers for PHPUnit
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
       - name: Install dependencies
         uses: "ramsey/composer-install@v1"
         with:
