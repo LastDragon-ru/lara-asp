@@ -31,7 +31,7 @@ class TestResponseMixin {
         return function (): ResponseInterface {
             /** @var \Illuminate\Testing\TestResponse $this */
 
-            // Some responses (eg StreamedResponse) can be should be read only
+            // Some responses (eg StreamedResponse) should be read only
             // one time, so we should use a cloned response and cache the
             // created PSR response (to avoid double code execution).
             if (!isset($this->psrResponse)) {
