@@ -22,9 +22,9 @@ class ChunkedIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIterator(): void {
-        $a = TestObject::factory()->create(['value' => '1']);
-        $b = TestObject::factory()->create(['value' => '2']);
-        $c = TestObject::factory()->create(['value' => '3']);
+        TestObject::factory()->create(['value' => '1']);
+        TestObject::factory()->create(['value' => '2']);
+        TestObject::factory()->create(['value' => '3']);
 
         $db       = $this->app->make('db');
         $table    = (new TestObject())->getTable();
@@ -42,9 +42,9 @@ class ChunkedIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIteratorLimit(): void {
-        $a = TestObject::factory()->create(['value' => '1']);
-        $b = TestObject::factory()->create(['value' => '2']);
-        $c = TestObject::factory()->create(['value' => '3']);
+        TestObject::factory()->create(['value' => '1']);
+        TestObject::factory()->create(['value' => '2']);
+        TestObject::factory()->create(['value' => '3']);
 
         $db       = $this->app->make('db');
         $table    = (new TestObject())->getTable();
@@ -63,9 +63,9 @@ class ChunkedIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIteratorLimitEloquent(): void {
-        $a = TestObject::factory()->create(['value' => '1']);
-        $b = TestObject::factory()->create(['value' => '2']);
-        $c = TestObject::factory()->create(['value' => '3']);
+        TestObject::factory()->create(['value' => '1']);
+        TestObject::factory()->create(['value' => '2']);
+        TestObject::factory()->create(['value' => '3']);
 
         $query    = TestObject::query()->limit(2)->orderByDesc('value');
         $iterator = new ChunkedIterator(1, $query);
@@ -82,11 +82,11 @@ class ChunkedIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIteratorUnion(): void {
-        $a = TestObject::factory()->create(['value' => '1']);
-        $b = TestObject::factory()->create(['value' => '2']);
-        $c = TestObject::factory()->create(['value' => '3']);
-        $d = TestObject::factory()->create(['value' => '4']);
-        $e = TestObject::factory()->create(['value' => '5']);
+        TestObject::factory()->create(['value' => '1']);
+        TestObject::factory()->create(['value' => '2']);
+        TestObject::factory()->create(['value' => '3']);
+        TestObject::factory()->create(['value' => '4']);
+        TestObject::factory()->create(['value' => '5']);
 
         $query    = TestObject::query()->where('value', '<', 4)->limit(2)->orderByDesc('value');
         $second   = TestObject::query()->where('value', '>=', 4)->limit(2)->orderByDesc('value');
@@ -104,11 +104,11 @@ class ChunkedIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIteratorUnionLimit(): void {
-        $a = TestObject::factory()->create(['value' => '1']);
-        $b = TestObject::factory()->create(['value' => '2']);
-        $c = TestObject::factory()->create(['value' => '3']);
-        $d = TestObject::factory()->create(['value' => '4']);
-        $e = TestObject::factory()->create(['value' => '5']);
+        TestObject::factory()->create(['value' => '1']);
+        TestObject::factory()->create(['value' => '2']);
+        TestObject::factory()->create(['value' => '3']);
+        TestObject::factory()->create(['value' => '4']);
+        TestObject::factory()->create(['value' => '5']);
 
         $query    = TestObject::query()->where('value', '<', 4)->limit(2)->orderByDesc('value');
         $second   = TestObject::query()->where('value', '>=', 4)->limit(2)->orderByDesc('value');

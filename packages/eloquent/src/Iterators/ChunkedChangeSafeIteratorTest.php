@@ -23,9 +23,9 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIterator(): void {
-        $a = TestObject::factory()->create(['value' => '1']);
-        $b = TestObject::factory()->create(['value' => '2']);
-        $c = TestObject::factory()->create(['value' => '3']);
+        TestObject::factory()->create(['value' => '1']);
+        TestObject::factory()->create(['value' => '2']);
+        TestObject::factory()->create(['value' => '3']);
 
         $db       = $this->app->make('db');
         $query    = TestObject::query()->orderByDesc('value');
@@ -58,9 +58,9 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIteratorLimit(): void {
-        $a = TestObject::factory()->create(['value' => '1']);
-        $b = TestObject::factory()->create(['value' => '2']);
-        $c = TestObject::factory()->create(['value' => '3']);
+        TestObject::factory()->create(['value' => '1']);
+        TestObject::factory()->create(['value' => '2']);
+        TestObject::factory()->create(['value' => '3']);
 
         $db       = $this->app->make('db');
         $table    = (new TestObject())->getTable();
@@ -79,9 +79,9 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIteratorLimitEloquent(): void {
-        $a = TestObject::factory()->create(['value' => '1']);
-        $b = TestObject::factory()->create(['value' => '2']);
-        $c = TestObject::factory()->create(['value' => '3']);
+        TestObject::factory()->create(['value' => '1']);
+        TestObject::factory()->create(['value' => '2']);
+        TestObject::factory()->create(['value' => '3']);
 
         $query    = TestObject::query()->limit(2)->orderByDesc('value');
         $iterator = new ChunkedChangeSafeIterator(1, $query);
