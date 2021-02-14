@@ -26,7 +26,8 @@ trait ProviderWithConfig {
             $config = $this->app->make('config');
 
             $config->set($key, (new ConfigRecursiveMerger($strict, $unprotected))->merge(
-                require $path, $config->get($key, [])
+                require $path,
+                $config->get($key, []),
             ));
         }
     }

@@ -11,6 +11,15 @@ use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LogicException;
 use Psr\Log\LoggerInterface;
 
+use function array_filter;
+use function array_merge;
+use function is_subclass_of;
+use function json_encode;
+use function sprintf;
+
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
+
 class CronableRegistrator {
     protected Application           $app;
     protected LoggerInterface       $logger;
@@ -21,7 +30,7 @@ class CronableRegistrator {
         Application $app,
         Schedule $schedule,
         QueueableConfigurator $configurator,
-        LoggerInterface $logger
+        LoggerInterface $logger,
     ) {
         $this->app          = $app;
         $this->logger       = $logger;
@@ -38,7 +47,9 @@ class CronableRegistrator {
     public function register(string $cronable): void {
         // Cronable?
         if (!is_subclass_of($cronable, Cronable::class, true)) {
-            throw new InvalidArgumentException(sprintf('The $cronable must implement %s.', Cronable::class));
+            throw new InvalidArgumentException(
+                sprintf('The $cronable must implement %s.', Cronable::class),
+            );
         }
 
         // Registration only makes sense when the app running in console.
@@ -55,7 +66,7 @@ class CronableRegistrator {
         $enabled    = $config->get(CronableConfig::Enabled);
         $properties = [
             'cronable' => $cronable,
-            'actual'   => get_class($job),
+            'actual'   => $job::class,
         ];
 
         if (!$cron || !$enabled) {
@@ -75,7 +86,7 @@ class CronableRegistrator {
             ->job($job)
             ->cron($cron)
             ->description($this->getDescription($cronable, $job, $config))
-            ->after(function () use ($debug, $properties) {
+            ->after(function () use ($debug, $properties): void {
                 if ($debug) {
                     $this->logger->info('Cron job was dispatched successfully', $properties);
                 }
@@ -83,7 +94,7 @@ class CronableRegistrator {
     }
 
     protected function getDescription(string $cronable, Cronable $job, QueueableConfig $config): string {
-        $actual      = get_class($job);
+        $actual      = $job::class;
         $settings    = $this->getDescriptionSettings($config);
         $overridden  = $cronable !== $actual;
         $description = $cronable;

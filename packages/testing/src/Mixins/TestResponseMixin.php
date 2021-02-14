@@ -29,18 +29,19 @@ class TestResponseMixin {
 
     public function toPsrResponse(): Closure {
         return function (): ResponseInterface {
-            /** @var \Illuminate\Testing\TestResponse $this */
-
-            // Some responses (eg StreamedResponse) can be should be read only
+            // Some responses (eg StreamedResponse) should be read only
             // one time, so we should use a cloned response and cache the
             // created PSR response (to avoid double code execution).
+
+            /** @var \Illuminate\Testing\TestResponse $this */
             if (!isset($this->psrResponse)) {
-                $serverRequestFactory = new ServerRequestFactory();
-                $uploadedFileFactory  = new UploadedFileFactory();
-                $ResponseFactory      = new ResponseFactory();
-                $streamFactory        = new StreamFactory();
-                $psrFactory           = new PsrHttpFactory($serverRequestFactory, $streamFactory, $uploadedFileFactory, $ResponseFactory);
-                $this->psrResponse    = $psrFactory->createResponse(clone $this->baseResponse);
+                $psrFactory        = new PsrHttpFactory(
+                    new ServerRequestFactory(),
+                    new StreamFactory(),
+                    new UploadedFileFactory(),
+                    new ResponseFactory(),
+                );
+                $this->psrResponse = $psrFactory->createResponse(clone $this->baseResponse);
             }
 
             return $this->psrResponse;

@@ -20,7 +20,7 @@ trait RefreshDatabaseIfEmpty {
         refreshTestDatabase as protected laravelRefreshTestDatabase;
     }
 
-    protected function refreshTestDatabase() {
+    protected function refreshTestDatabase(): void {
         if (!RefreshDatabaseState::$migrated) {
             $connection = $this->app->make('db')->connection();
             $tables     = $connection->getDoctrineSchemaManager()->listTableNames();

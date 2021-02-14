@@ -25,10 +25,10 @@ class InstanceCacheTest extends TestCase {
         $object = new stdClass();
 
         $this->assertNull($cache->instanceCacheGet('a'));
-        $this->assertSame($object, $cache->instanceCacheGet('b', function () use ($object) {
+        $this->assertSame($object, $cache->instanceCacheGet('b', static function () use ($object) {
             return $object;
         }));
-        $this->assertSame($object, $cache->instanceCacheGet('b', function () {
+        $this->assertSame($object, $cache->instanceCacheGet('b', static function () {
             return new stdClass();
         }));
     }
@@ -41,7 +41,7 @@ class InstanceCacheTest extends TestCase {
         $key   = 'a';
 
         $this->assertFalse($cache->instanceCacheHas($key));
-        $this->assertNull($cache->instanceCacheGet($key, function () {
+        $this->assertNull($cache->instanceCacheGet($key, static function () {
             return null;
         }));
         $this->assertTrue($cache->instanceCacheHas($key));
@@ -103,13 +103,19 @@ class InstanceCacheTest extends TestCase {
             'string'                             => ['"string"', 'string'],
             'null'                               => ['null', null],
             'array'                              => ['[1,2,3]', [1, 2, 3]],
-            'assoc'                              => ['{"a":"a","b":123,"c":true}', [
-                'b' => 123,
-                'c' => true,
-                'a' => 'a',
-            ]],
+            'assoc'                              => [
+                '{"a":"a","b":123,"c":true}',
+                [
+                    'b' => 123,
+                    'c' => true,
+                    'a' => 'a',
+                ],
+            ],
             'QueueableEntity without connection' => [
-                sprintf('{"a":["%s",null,456],"b":123,"c":true}', addslashes(strtolower(InstanceCacheTest_QueueableEntity::class))),
+                sprintf(
+                    '{"a":["%s",null,456],"b":123,"c":true}',
+                    addslashes(strtolower(InstanceCacheTest_QueueableEntity::class)),
+                ),
                 [
                     'b' => 123,
                     'c' => true,
@@ -117,7 +123,10 @@ class InstanceCacheTest extends TestCase {
                 ],
             ],
             'QueueableEntity with connection'    => [
-                sprintf('{"a":["%s","connection",789],"b":123,"c":true}', addslashes(strtolower(InstanceCacheTest_QueueableEntity::class))),
+                sprintf(
+                    '{"a":["%s","connection",789],"b":123,"c":true}',
+                    addslashes(strtolower(InstanceCacheTest_QueueableEntity::class)),
+                ),
                 [
                     'b' => 123,
                     'c' => true,
@@ -128,6 +137,9 @@ class InstanceCacheTest extends TestCase {
     }
     // </editor-fold>
 }
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
 
 /**
  * @internal
@@ -149,25 +161,36 @@ class InstanceCacheTest_Cache {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class InstanceCacheTest_QueueableEntity implements QueueableEntity {
-    private         $id;
+    private mixed   $id;
     private array   $relations;
     private ?string $connection;
 
-    public function __construct($id, string $connection = null) {
+    public function __construct(mixed $id, string $connection = null) {
         $this->id         = $id;
         $this->relations  = ['ignored'];
         $this->connection = $connection;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getQueueableId() {
         return $this->id;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getQueueableRelations() {
         return $this->relations;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getQueueableConnection() {
         return $this->connection;
     }
 }
+
+// @phpcs:enable

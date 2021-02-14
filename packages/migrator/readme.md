@@ -1,10 +1,10 @@
 # The Migrator
 
 > This package is the part of Awesome Set of Packages for Laravel.
-> 
+>
 > [Read more](https://github.com/LastDragon-ru/lara-asp).
 
-This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳 
+This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
 
 :warning: | The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/8.x/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details.
 :---: | :---
@@ -26,6 +26,7 @@ php artisan make:migration MyMigration
 ```
 
 It will create the following files in `database/migrations`:
+
 ```
 2020_11_05_170802_my_migration.php
 2020_11_05_170802_my_migration~down.sql
@@ -52,14 +53,12 @@ To create raw seeder just use standard command
 php artisan make:seeder MySeeder
 ```
 
-
 It will create the following files in `database/seeders` (or `database/seeds/`):
 
 ```
 MySeeder.php
 MySeeder.sql
 ```
-
 
 You should place your SQL into `*.sql` and then update the model class in the `.php` file:
 

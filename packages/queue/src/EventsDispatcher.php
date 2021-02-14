@@ -39,9 +39,11 @@ class EventsDispatcher extends Dispatcher {
      */
     protected function createListenerAndJob($class, $method, $arguments) {
         $listener = $this->container->make($class);
+        $options  = $this->propagateListenerOptions(
+            $listener,
+            new CallQueuedListener($class, $method, $arguments),
+        );
 
-        return [$listener, $this->propagateListenerOptions(
-            $listener, new CallQueuedListener($class, $method, $arguments)
-        )];
+        return [$listener, $options];
     }
 }

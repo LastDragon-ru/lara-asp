@@ -18,8 +18,6 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Mail;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-use function get_class;
-
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig
@@ -103,7 +101,7 @@ class QueueableConfigTest extends TestCase {
         $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
         $queueable    = new class($configurator) extends Job {
             public function getQueueConfig(stdClass $injected = null): array {
-                return ['injected' => get_class($injected)];
+                return ['injected' => $injected::class];
             }
         };
 
@@ -229,12 +227,16 @@ class QueueableConfigTest extends TestCase {
     // </editor-fold>
 }
 
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class QueueableConfigTest_getQueueClass implements ConfigurableQueueable {
-    use Configurable, WithConfig;
+    use Configurable;
+    use WithConfig;
 }
 
 /**
@@ -284,3 +286,5 @@ class QueueableConfigTest_getQueueClass_Listener extends Listener {
 class QueueableConfigTest_getQueueClass_Mail extends Mail {
     // empty
 }
+
+// @phpcs:enable

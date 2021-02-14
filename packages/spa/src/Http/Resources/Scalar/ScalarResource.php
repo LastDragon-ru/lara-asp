@@ -13,7 +13,7 @@ abstract class ScalarResource extends Resource {
         parent::__construct($resource);
     }
 
-    public function toResponse($request) {
+    public function toResponse(mixed $request): mixed {
         return (new JsonResponse())->setData($this->resource);
     }
 }

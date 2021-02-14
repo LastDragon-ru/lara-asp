@@ -12,7 +12,7 @@ class CompositeDataProviderTest extends TestCase {
     /**
      * @covers ::getData
      */
-    public function testGetData() {
+    public function testGetData(): void {
         $a = [
             ['expected a', 'value a'],
             [new ExpectedFinal('expected final'), 'value final'],
@@ -43,7 +43,7 @@ class CompositeDataProviderTest extends TestCase {
     /**
      * @covers ::getData
      */
-    public function testGetDataSingleProviderPassed() {
+    public function testGetDataSingleProviderPassed(): void {
         $a = [
             ['expected a', 'value a'],
             [new ExpectedFinal('expected final'), 'value final'],

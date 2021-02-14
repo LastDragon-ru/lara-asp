@@ -8,8 +8,8 @@ namespace LastDragon_ru\LaraASP\Core\Concerns;
 trait ProviderWithRoutes {
     use ProviderHelper;
 
-    protected function bootRoutes() {
-        $this->callAfterBoot(function () {
+    protected function bootRoutes(): void {
+        $this->callAfterBoot(function (): void {
             $this->loadRoutesFrom($this->getPath('../routes/routes.php'));
         });
     }

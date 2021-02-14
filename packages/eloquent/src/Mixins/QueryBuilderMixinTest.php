@@ -14,7 +14,7 @@ class QueryBuilderMixinTest extends TestCase {
     /**
      * @covers ::getDefaultKeyName
      */
-    public function testGetDefaultKeyNameQueryBuilder() {
+    public function testGetDefaultKeyNameQueryBuilder(): void {
         $this->assertTrue(Builder::hasMacro('getDefaultKeyName'));
         $this->assertEquals('id', $this->app->make('db')->query()->getDefaultKeyName());
     }
@@ -22,7 +22,7 @@ class QueryBuilderMixinTest extends TestCase {
     /**
      * @covers ::iterator
      */
-    public function testIteratorQueryBuilder() {
+    public function testIteratorQueryBuilder(): void {
         $this->assertTrue(Builder::hasMacro('iterator'));
         $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->iterator());
     }

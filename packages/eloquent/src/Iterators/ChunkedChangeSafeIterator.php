@@ -53,7 +53,7 @@ class ChunkedChangeSafeIterator implements IteratorAggregate {
         // it just adds conditional to the main query, and this leads to an
         // infinite loop.
         if ($this->hasUnions($builder)) {
-            throw new InvalidArgumentException("Queries with UNION is not supported.");
+            throw new InvalidArgumentException('Queries with UNION is not supported.');
         }
     }
 

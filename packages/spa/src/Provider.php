@@ -34,13 +34,13 @@ class Provider extends ServiceProvider {
         return Package::Name;
     }
 
-    protected function bootExceptionHandler() {
-        $this->callAfterResolving(ExceptionHandler::class, function (ExceptionHandler $handler) {
+    protected function bootExceptionHandler(): void {
+        $this->callAfterResolving(ExceptionHandler::class, static function (ExceptionHandler $handler): void {
             if (!($handler instanceof Handler)) {
                 return;
             }
 
-            $handler->map(UnresolvedValueException::class, function (UnresolvedValueException $exception) {
+            $handler->map(UnresolvedValueException::class, static function (UnresolvedValueException $exception) {
                 return new NotFoundHttpException($exception->getMessage() ?: 'Not found.', $exception);
             });
         });

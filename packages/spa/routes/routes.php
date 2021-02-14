@@ -18,7 +18,7 @@ if (!$enabled) {
 Route::group([
     'middleware' => $middleware,
     'prefix'     => $prefix,
-], function (Router $router) {
+], static function (Router $router): void {
     $router->get('settings', [SpaController::class, 'settings']);
     $router->get('user', [SpaController::class, 'user']);
 });

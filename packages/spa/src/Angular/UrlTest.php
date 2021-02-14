@@ -54,49 +54,73 @@ class UrlTest extends TestCase {
     public function dataProviderBuild(): array {
         return [
             'url without params without data'       => ['http://example.com/path', 'http://example.com/path', []],
-            'url without params with data'          => ['http://example.com/path?int=123&null=&true=1&false=0&float=1.23&array=1&array=2&array=3&string=value', 'http://example.com/path', [
-                'int'    => 123,
-                'null'   => null,
-                'true'   => true,
-                'false'  => false,
-                'float'  => 1.23,
-                'array'  => [1, 2, 3],
-                'string' => 'value',
-            ]],
+            'url without params with data'          => [
+                'http://example.com/path?int=123&null=&true=1&false=0&float=1.23&array=1&array=2&array=3&string=value',
+                'http://example.com/path',
+                [
+                    'int'    => 123,
+                    'null'   => null,
+                    'true'   => true,
+                    'false'  => false,
+                    'float'  => 1.23,
+                    'array'  => [1, 2, 3],
+                    'string' => 'value',
+                ],
+            ],
             'url with params without data'          => [
                 new InvalidArgumentException('Url requires the following parameters: to, id.'),
                 'http://example.com/path/:to/item/:id',
                 [],
             ],
-            'url with params with data'             => ['http://example.com/path/1/item/2?int=123', 'http://example.com/path/:to/item/:id', [
-                'to'  => 1,
-                'id'  => 2,
-                'int' => 123,
-            ]],
-            'url with params with data with query'  => ['http://example.com/path/1/item/2?value=123&int=123', 'http://example.com/path/:to/item/:id?value=123', [
-                'to'  => 1,
-                'id'  => 2,
-                'int' => 123,
-            ]],
-            'path without params without data'      => ["path/to/item/id?int=123&null=&true=1&false=0&float=1.23&array=1&array=2&array=3&string=value", 'path/to/item/id', [
-                'int'    => 123,
-                'null'   => '',
-                'true'   => true,
-                'false'  => false,
-                'float'  => 1.23,
-                'array'  => [1, 2, 3],
-                'string' => 'value',
-            ]],
-            'path with params with data'            => ["/path/1/item/2?int=123", '/path/:to/item/:id', [
-                'to'  => 1,
-                'id'  => 2,
-                'int' => 123,
-            ]],
-            'path with params with data with query' => ["/path/1/item/2?value=123&int=123", '/path/:to/item/:id?value=123', [
-                'to'  => 1,
-                'id'  => 2,
-                'int' => 123,
-            ]],
+            'url with params with data'             => [
+                'http://example.com/path/1/item/2?int=123',
+                'http://example.com/path/:to/item/:id',
+                [
+                    'to'  => 1,
+                    'id'  => 2,
+                    'int' => 123,
+                ],
+            ],
+            'url with params with data with query'  => [
+                'http://example.com/path/1/item/2?value=123&int=123',
+                'http://example.com/path/:to/item/:id?value=123',
+                [
+                    'to'  => 1,
+                    'id'  => 2,
+                    'int' => 123,
+                ],
+            ],
+            'path without params without data'      => [
+                'path/to/item/id?int=123&null=&true=1&false=0&float=1.23&array=1&array=2&array=3&string=value',
+                'path/to/item/id',
+                [
+                    'int'    => 123,
+                    'null'   => '',
+                    'true'   => true,
+                    'false'  => false,
+                    'float'  => 1.23,
+                    'array'  => [1, 2, 3],
+                    'string' => 'value',
+                ],
+            ],
+            'path with params with data'            => [
+                '/path/1/item/2?int=123',
+                '/path/:to/item/:id',
+                [
+                    'to'  => 1,
+                    'id'  => 2,
+                    'int' => 123,
+                ],
+            ],
+            'path with params with data with query' => [
+                '/path/1/item/2?value=123&int=123',
+                '/path/:to/item/:id?value=123',
+                [
+                    'to'  => 1,
+                    'id'  => 2,
+                    'int' => 123,
+                ],
+            ],
             'path with params without data'         => [
                 new InvalidArgumentException('Url requires the following parameters: to, id.'),
                 'path/:to/item/:id',

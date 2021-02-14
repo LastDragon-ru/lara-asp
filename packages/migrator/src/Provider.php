@@ -15,6 +15,9 @@ use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 class Provider extends ServiceProvider implements DeferrableProvider {
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
     // =========================================================================
+    /**
+     * @inheritdoc
+     */
     public function register() {
         parent::register();
 
@@ -38,19 +41,19 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function registerMigrator(): void {
-        $this->app->singleton('migrator', function (Application $app): Migrator {
+        $this->app->singleton('migrator', static function (Application $app): Migrator {
             return new SmartMigrator($app['migration.repository'], $app['db'], $app['files'], $app['events'], $app);
         });
     }
 
     protected function registerMigrationCreator(): void {
-        $this->app->singleton('migration.creator', function (Application $app): MigrationCreator {
+        $this->app->singleton('migration.creator', static function (Application $app): MigrationCreator {
             return new RawMigrationCreator($app['files'], $app->basePath('stubs'));
         });
     }
 
     protected function registerSeederMakeCommand(): void {
-        $this->app->singleton('command.seeder.make', function (Application $app): SeederMakeCommand {
+        $this->app->singleton('command.seeder.make', static function (Application $app): SeederMakeCommand {
             return new RawSeederMakeCommand($app['files']);
         });
     }

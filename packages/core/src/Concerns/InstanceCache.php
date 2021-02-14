@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\QueueableEntity;
 
 use function array_key_exists;
 use function array_map;
-use function get_class;
 use function is_array;
 use function json_encode;
 use function ksort;
@@ -16,7 +15,7 @@ use function mb_strtolower;
 trait InstanceCache {
     private array $instanceCache = [];
 
-    protected function instanceCacheGet($keys, Closure $closure = null) {
+    protected function instanceCacheGet(mixed $keys, Closure $closure = null): mixed {
         $key   = $this->instanceCacheKey($keys);
         $value = null;
 
@@ -31,17 +30,17 @@ trait InstanceCache {
         return $value;
     }
 
-    protected function instanceCacheHas($keys): bool {
+    protected function instanceCacheHas(mixed $keys): bool {
         return array_key_exists($this->instanceCacheKey($keys), $this->instanceCache);
     }
 
-    protected function instanceCacheSet($keys, $value) {
+    protected function instanceCacheSet(mixed $keys, mixed $value): mixed {
         $this->instanceCache[$this->instanceCacheKey($keys)] = $value;
 
         return $value;
     }
 
-    protected function instanceCacheUnset($keys) {
+    protected function instanceCacheUnset(mixed $keys): mixed {
         $key   = $this->instanceCacheKey($keys);
         $value = $this->instanceCache[$key] ?? null;
 
@@ -54,12 +53,12 @@ trait InstanceCache {
         $this->instanceCache = [];
     }
 
-    protected function instanceCacheKey($keys): string {
+    protected function instanceCacheKey(mixed $keys): string {
         if (is_array($keys)) {
-            $keys = array_map(function ($key) {
+            $keys = array_map(static function ($key) {
                 if ($key instanceof QueueableEntity) {
                     $key = [
-                        get_class($key),
+                        $key::class,
                         $key->getQueueableConnection(),
                         $key->getQueueableId(),
                     ];

@@ -14,6 +14,7 @@ use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use PHPUnit\Framework\Constraint\Constraint;
 
 use function ltrim;
+use function preg_replace;
 
 use const PHP_EOL;
 
@@ -35,14 +36,20 @@ class JsonMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
+    /**
+     * @inheritdoc
+     */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getJson($other),
             $description,
-            $returnResult
+            $returnResult,
         );
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function matches($other): bool {
         $helper       = null;
         $loader       = $this->schema->getLoader();
@@ -53,17 +60,23 @@ class JsonMatchesSchema extends Constraint {
         return $matches;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function failureDescription($other): string {
         return "{$this->prettify($other)} {$this->toString()}";
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);
 
         if ($this->result) {
             $presenter   = new ValidationErrorPresenter(
                 new PresentedValidationErrorFactory(new MessageFormatterFactory()),
-                new BestMatchError()
+                new BestMatchError(),
             );
             $presented   = $presenter->present(...$this->result->getErrors());
             $padding     = '    ';

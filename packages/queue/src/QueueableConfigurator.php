@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 
+use function array_keys;
 use function is_string;
 
 /**

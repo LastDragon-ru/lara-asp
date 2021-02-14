@@ -14,7 +14,7 @@ class TraversableDataProvider implements DataProvider {
     }
 
     /**
-     * @return array[]
+     * @return array<mixed>
      */
     public function getData(): array {
         return iterator_to_array($this->traversable);

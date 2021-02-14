@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Providers;
 
 class ArrayDataProvider implements DataProvider {
     /**
-     * @var array[]
+     * @var array<mixed>
      */
     private array $data;
 
@@ -13,7 +13,7 @@ class ArrayDataProvider implements DataProvider {
     }
 
     /**
-     * @return array[]
+     * @return array<mixed>
      */
     public function getData(): array {
         return $this->data;

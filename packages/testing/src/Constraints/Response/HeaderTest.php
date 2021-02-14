@@ -18,7 +18,7 @@ class HeaderTest extends TestCase {
      */
     public function testEvaluate(): void {
         $this->expectExceptionObject(new InvalidArgumentException(
-            'It is not a `Psr\Http\Message\ResponseInterface` instance.'
+            'It is not a `Psr\Http\Message\ResponseInterface` instance.',
         ));
 
         $this->assertFalse((new Header('Test'))->evaluate(new stdClass()));
@@ -31,6 +31,9 @@ class HeaderTest extends TestCase {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
         $constraint = new class('Content-Type') extends Header {
+            /**
+             * @inheritdoc
+             */
             public function matches($other): bool {
                 return parent::matches($other);
             }
@@ -47,6 +50,9 @@ class HeaderTest extends TestCase {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
         $constraint = new class('Content-Type', [new IsEqual('example/text')]) extends Header {
+            /**
+             * @inheritdoc
+             */
             public function matches($other): bool {
                 return parent::matches($other);
             }

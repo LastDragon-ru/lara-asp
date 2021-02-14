@@ -11,14 +11,14 @@ trait ProviderWithSchedule {
     /**
      * Define the command schedule.
      *
-     * @param string[] $schedule {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} classes
+     * @param array<string> $schedule {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} classes
      */
     protected function bootSchedule(array $schedule): void {
         if (!$this->app->runningInConsole()) {
             return;
         }
 
-        $this->app->booted(function () use ($schedule) {
+        $this->app->booted(function () use ($schedule): void {
             $registrator = $this->app->make(CronableRegistrator::class);
 
             foreach ($schedule as $job) {

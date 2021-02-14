@@ -93,8 +93,6 @@ class Formatter {
      * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
      *      except {@link NumberFormatter::FRACTION_DIGITS}
      * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
-     *
-     * @var string
      */
     public const Decimal = 'decimal';
 
@@ -119,8 +117,6 @@ class Formatter {
      * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
      *      except {@link NumberFormatter::FRACTION_DIGITS}
      * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
-     *
-     * @var string
      */
     public const Percent = 'percent';
 
@@ -134,8 +130,6 @@ class Formatter {
      * - `string`: available only for custom formats: locale specific pattern
      *      (key: `locales.<locale>.time.<format>` and/or default pattern
      *      (key: `all.time.<format>`)
-     *
-     * @var string
      */
     public const Time = 'time';
 
@@ -155,8 +149,6 @@ class Formatter {
      *
      * Locales options:
      * - none
-     *
-     * @var string
      */
     public const Filesize = 'filesize';
 
@@ -166,8 +158,6 @@ class Formatter {
      *
      * Locales options:
      * - none
-     *
-     * @var string
      */
     public const Secret = 'secret';
 
@@ -225,8 +215,7 @@ class Formatter {
 
     public function currency(?float $value, string $currency = null): string {
         $type     = static::Currency;
-        $currency = $currency
-            ?: $this->getOptions($type, 'USD');
+        $currency = $currency ?: $this->getOptions($type, 'USD');
 
         return $this
             ->getIntlNumberFormatter($type)
@@ -325,8 +314,7 @@ class Formatter {
             $this->getTranslation('filesize.TB'),
             $this->getTranslation('filesize.PB'),
         ];
-        $decimals = $decimals
-            ?: $this->getOptions(static::Filesize, 2);
+        $decimals = $decimals ?: $this->getOptions(static::Filesize, 2);
 
         while ($bytes >= 1024) {
             $bytes /= 1024;
@@ -334,8 +322,8 @@ class Formatter {
         }
 
         // Format
-        return $unit == 0
-            ? $this->integer($bytes).($bytes > 0 ? " {$units[$unit]}" : "")
+        return $unit === 0
+            ? $this->integer($bytes).($bytes > 0 ? " {$units[$unit]}" : '')
             : $this->decimal($bytes, $decimals)." {$units[$unit]}";
     }
 
@@ -354,13 +342,13 @@ class Formatter {
             $value = str_replace(
                 mb_substr($value, 0, $show),
                 str_pad('*', $show, '*'),
-                $value
+                $value,
             );
         } else {
             $value = str_replace(
                 mb_substr($value, 0, $hidden),
                 str_pad('*', $hidden, '*'),
-                $value
+                $value,
             );
         }
 
@@ -378,88 +366,101 @@ class Formatter {
         return $this->app->make(Repository::class)->get('app.timezone') ?: 'UTC';
     }
 
-    private function getIntlNumberFormatter(string $type, int $decimals = null, Closure $closure = null): NumberFormatter {
-        return $this->getIntlFormatter([$type, $decimals], function () use ($type, $decimals, $closure): ?NumberFormatter {
-            $formatter  = null;
-            $attributes = [];
-            $symbols    = [];
-            $texts      = [];
+    private function getIntlNumberFormatter(
+        string $type,
+        int $decimals = null,
+        Closure $closure = null,
+    ): NumberFormatter {
+        return $this->getIntlFormatter(
+            [$type, $decimals],
+            function () use ($type, $decimals, $closure): ?NumberFormatter {
+                $formatter  = null;
+                $attributes = [];
+                $symbols    = [];
+                $texts      = [];
 
-            if ($closure) {
-                $decimals = $closure($type, $decimals);
-            }
+                if ($closure) {
+                    $decimals = $closure($type, $decimals);
+                }
 
-            switch ($type) {
-                case static::Integer:
-                    $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
-                    $attributes += [
-                        NumberFormatter::FRACTION_DIGITS => 0,
-                    ];
-                    break;
-                case static::Decimal:
-                    $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
-                    $attributes += [
-                        NumberFormatter::FRACTION_DIGITS => abs((int) $decimals),
-                    ];
-                    break;
-                case static::Currency:
-                    $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::CURRENCY);
-                    break;
-                case static::Percent:
-                    $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::PERCENT);
-                    $attributes += [
-                        NumberFormatter::FRACTION_DIGITS => abs((int) $decimals),
-                    ];
-                    break;
-                case static::Scientific:
-                    $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SCIENTIFIC);
-                    break;
-                case static::Spellout:
-                    $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SPELLOUT);
-                    break;
-                case static::Ordinal:
-                    $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::ORDINAL);
-                    break;
-                case static::Duration:
-                    $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::DURATION);
-                    break;
-                default:
-                    // null
-                    break;
-            }
+                switch ($type) {
+                    case static::Integer:
+                        $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
+                        $attributes = $attributes + [
+                                NumberFormatter::FRACTION_DIGITS => 0,
+                            ];
+                        break;
+                    case static::Decimal:
+                        $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
+                        $attributes = $attributes + [
+                                NumberFormatter::FRACTION_DIGITS => abs((int) $decimals),
+                            ];
+                        break;
+                    case static::Currency:
+                        $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::CURRENCY);
+                        break;
+                    case static::Percent:
+                        $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::PERCENT);
+                        $attributes = $attributes + [
+                                NumberFormatter::FRACTION_DIGITS => abs((int) $decimals),
+                            ];
+                        break;
+                    case static::Scientific:
+                        $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SCIENTIFIC);
+                        break;
+                    case static::Spellout:
+                        $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SPELLOUT);
+                        break;
+                    case static::Ordinal:
+                        $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::ORDINAL);
+                        break;
+                    case static::Duration:
+                        $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::DURATION);
+                        break;
+                    default:
+                        // null
+                        break;
+                }
 
-            if ($formatter) {
-                $attributes = $attributes
-                    + (array) $this->getLocaleOptions($type, 'intl_attributes')
-                    + (array) $this->getOptions('intl_attributes');
-                $symbols    = $symbols
-                    + (array) $this->getLocaleOptions($type, 'intl_symbols')
-                    + (array) $this->getOptions('intl_symbols');
-                $texts      = $texts
-                    + (array) $this->getLocaleOptions($type, 'intl_text_attributes')
-                    + (array) $this->getOptions('intl_text_attributes');
+                if ($formatter) {
+                    $attributes = $attributes
+                        + (array) $this->getLocaleOptions($type, 'intl_attributes')
+                        + (array) $this->getOptions('intl_attributes');
+                    $symbols    = $symbols
+                        + (array) $this->getLocaleOptions($type, 'intl_symbols')
+                        + (array) $this->getOptions('intl_symbols');
+                    $texts      = $texts
+                        + (array) $this->getLocaleOptions($type, 'intl_text_attributes')
+                        + (array) $this->getOptions('intl_text_attributes');
 
-                foreach ($attributes as $attribute => $value) {
-                    if (!$formatter->setAttribute($attribute, $value)) {
-                        throw new OutOfBoundsException("\\NumberFormatter::setAttribute() failed: '{$attribute}' is unknown/invalid.");
+                    foreach ($attributes as $attribute => $value) {
+                        if (!$formatter->setAttribute($attribute, $value)) {
+                            throw new OutOfBoundsException(
+                                "\\NumberFormatter::setAttribute() failed: '{$attribute}' is unknown/invalid.",
+                            );
+                        }
+                    }
+
+                    foreach ($symbols as $symbol => $value) {
+                        if (!$formatter->setSymbol($symbol, $value)) {
+                            throw new OutOfBoundsException(
+                                "\\NumberFormatter::setSymbol() failed: '{$symbol}' is unknown/invalid.",
+                            );
+                        }
+                    }
+
+                    foreach ($texts as $text => $value) {
+                        if (!$formatter->setTextAttribute($text, $value)) {
+                            throw new OutOfBoundsException(
+                                "\\NumberFormatter::setTextAttribute() failed: '{$text}' is unknown/invalid.",
+                            );
+                        }
                     }
                 }
 
-                foreach ($symbols as $symbol => $value) {
-                    if (!$formatter->setSymbol($symbol, $value)) {
-                        throw new OutOfBoundsException("\\NumberFormatter::setSymbol() failed: '{$symbol}' is unknown/invalid.");
-                    }
-                }
-
-                foreach ($texts as $text => $value) {
-                    if (!$formatter->setTextAttribute($text, $value)) {
-                        throw new OutOfBoundsException("\\NumberFormatter::setTextAttribute() failed: '{$text}' is unknown/invalid.");
-                    }
-                }
-            }
-
-            return $formatter;
-        });
+                return $formatter;
+            },
+        );
     }
 
     private function getIntlDateFormatter(
@@ -467,41 +468,65 @@ class Formatter {
         string|int $format = null,
         DateTimeZone|string $tz = null,
     ): IntlDateFormatter {
-        return $this->getIntlFormatter([$type, $format, $tz], function () use ($type, $format, $tz): ?IntlDateFormatter {
-            $formatter = null;
-            $pattern   = '';
-            $format    = $format ?: $this->getOptions($type, IntlDateFormatter::SHORT);
-            $tz        = $this->getTimezone($tz);
+        return $this->getIntlFormatter(
+            [$type, $format, $tz],
+            function () use ($type, $format, $tz): ?IntlDateFormatter {
+                $formatter = null;
+                $pattern   = '';
+                $format    = $format ?: $this->getOptions($type, IntlDateFormatter::SHORT);
+                $tz        = $this->getTimezone($tz);
 
-            if (is_string($format)) {
-                $pattern = (string) $this->getLocaleOptions($type, $format);
-                $format  = IntlDateFormatter::FULL;
-            }
+                if (is_string($format)) {
+                    $pattern = (string) $this->getLocaleOptions($type, $format);
+                    $format  = IntlDateFormatter::FULL;
+                }
 
-            switch ($type) {
-                case self::Time:
-                    $formatter = new IntlDateFormatter($this->getLocale(), IntlDateFormatter::NONE, $format, $tz, null, $pattern);
-                    break;
-                case self::Date:
-                    $formatter = new IntlDateFormatter($this->getLocale(), $format, IntlDateFormatter::NONE, $tz, null, $pattern);
-                    break;
-                case self::DateTime:
-                    $formatter = new IntlDateFormatter($this->getLocale(), $format, $format, $tz, null, $pattern);
-                    break;
-                default:
-                    // empty
-                    break;
-            }
+                switch ($type) {
+                    case self::Time:
+                        $formatter = new IntlDateFormatter(
+                            $this->getLocale(),
+                            IntlDateFormatter::NONE,
+                            $format,
+                            $tz,
+                            null,
+                            $pattern,
+                        );
+                        break;
+                    case self::Date:
+                        $formatter = new IntlDateFormatter(
+                            $this->getLocale(),
+                            $format,
+                            IntlDateFormatter::NONE,
+                            $tz,
+                            null,
+                            $pattern,
+                        );
+                        break;
+                    case self::DateTime:
+                        $formatter = new IntlDateFormatter(
+                            $this->getLocale(),
+                            $format,
+                            $format,
+                            $tz,
+                            null,
+                            $pattern,
+                        );
+                        break;
+                    default:
+                        // empty
+                        break;
+                }
 
-            return $formatter;
-        });
+                return $formatter;
+            },
+        );
     }
 
     private function getIntlFormatter(mixed $type, Closure $closure): NumberFormatter|IntlDateFormatter {
         return $this->instanceCacheGet([__METHOD__, $type], $closure);
     }
 
-    protected function getOptions(string $type, $default = null) {
+    protected function getOptions(string $type, mixed $default = null): mixed {
         $package = Package::Name;
         $config  = $this->app->make(Repository::class);
         $key     = "{$package}.options.{$type}";
@@ -509,7 +534,7 @@ class Formatter {
         return $config->get($key, $default);
     }
 
-    protected function getLocaleOptions(string $type, string $option) {
+    protected function getLocaleOptions(string $type, string $option): mixed {
         $package = Package::Name;
         $locale  = $this->getLocale();
         $config  = $this->app->make(Repository::class);

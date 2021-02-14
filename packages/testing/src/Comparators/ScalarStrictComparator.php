@@ -6,6 +6,9 @@ use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ScalarComparator;
 
 class ScalarStrictComparator extends ScalarComparator {
+    /**
+     * @inheritdoc
+     */
     public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false) {
         if ($expected !== $actual) {
             throw new ComparisonFailure(
@@ -14,7 +17,7 @@ class ScalarStrictComparator extends ScalarComparator {
                 $this->exporter->export($expected),
                 $this->exporter->export($actual),
                 false,
-                'Failed asserting that two values are equal.'
+                'Failed asserting that two values are equal.',
             );
         }
     }

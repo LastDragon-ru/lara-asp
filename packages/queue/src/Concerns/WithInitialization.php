@@ -6,7 +6,6 @@ use Closure;
 use LastDragon_ru\LaraASP\Queue\Contracts\Initializable;
 use RuntimeException;
 
-use function get_class;
 use function sprintf;
 
 trait WithInitialization {
@@ -22,9 +21,9 @@ trait WithInitialization {
         return $this;
     }
 
-    protected function ifInitialized(Closure $closure) {
+    protected function ifInitialized(Closure $closure): mixed {
         if ($this instanceof Initializable && !$this->isInitialized()) {
-            throw new RuntimeException(sprintf('The `%s` is not initialized.', get_class($this)));
+            throw new RuntimeException(sprintf('The `%s` is not initialized.', static::class));
         }
 
         return $closure();

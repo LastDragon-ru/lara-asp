@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use LastDragon_ru\LaraASP\Testing\Package;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use Opis\JsonSchema\ISchema;
 use Opis\JsonSchema\ISchemaLoader;
 use Opis\JsonSchema\Schema;
 use SplFileInfo;
@@ -30,7 +31,7 @@ class JsonSchemaLoader implements ISchemaLoader {
         $this->pwd = $pwd;
     }
 
-    public function loadSchema(string $uri) {
+    public function loadSchema(string $uri): ISchema|null {
         // Supported path?
         $file     = null;
         $relative = static::RelativePathPrefix;

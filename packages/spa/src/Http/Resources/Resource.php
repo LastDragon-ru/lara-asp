@@ -4,11 +4,11 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 use JsonSerializable;
-use LastDragon_ru\LaraASP\Spa\Http\Resources\ResourceCollection as ResourceCollection;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LogicException;
 
@@ -28,9 +28,11 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritdoc
      */
-    public function toArray($request) {
+    public function toArray($request): array {
         if ($this->resource instanceof Model) {
-            throw new LogicException('Implicit conversions of Models is not supported, please redefine this method to make it explicit.');
+            throw new LogicException(
+                'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',
+            );
         }
 
         return parent::toArray($request);
@@ -39,18 +41,18 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritdoc
      */
-    public function with($request) {
+    public function with($request): array {
         return $this->mapResourceData(parent::with($request), []);
+    }
+
+    public function additional(array $data): self {
+        return parent::additional($this->mapResourceData($data, []));
     }
 
     /**
      * @inheritdoc
      */
-    public function additional(array $data) {
-        return parent::additional($this->mapResourceData($data, []));
-    }
-
-    protected function filter($data) {
+    protected function filter($data): array {
         // Why do we need this? Resources can contain different types, and we
         // cannot be sure that all of them will be serialized properly :(
 
@@ -68,7 +70,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritdoc
      */
-    public static function collection($resource) {
+    public static function collection($resource): AnonymousResourceCollection {
         // TODO [spa]: I'm definitely not sure that we need to support $preserveKeys
         //      (see parent method) because:
         //      - right now Laravel 8.25.0 doesn't support it without $wrap but
@@ -93,7 +95,7 @@ abstract class Resource extends JsonResource implements SafeResource {
         return $data;
     }
 
-    protected function mapResourceValue($key, $value, array $path) {
+    protected function mapResourceValue(string|int $key, mixed $value, array $path): mixed {
         // Scalars, null and our Resources can be returned as is
         if (is_scalar($value) || is_null($value) || $value instanceof SafeResource) {
             return $value;
@@ -102,12 +104,12 @@ abstract class Resource extends JsonResource implements SafeResource {
         // Returning the Model is not a good idea because we never know what
         // data will be returned and what format will be used.
         if ($value instanceof Model) {
-            throw new LogicException("Please do not return Models directly, use our Resources instead.");
+            throw new LogicException('Please do not return Models directly, use our Resources instead.');
         }
 
         // Returning `Illuminate\Http\Resources\Json\JsonResource` is also not safe.
         if ($value instanceof JsonResource) {
-            throw new LogicException("Please do not return JsonResource directly, use our Resources instead.");
+            throw new LogicException('Please do not return JsonResource directly, use our Resources instead.');
         }
 
         // Convert
@@ -128,7 +130,7 @@ abstract class Resource extends JsonResource implements SafeResource {
             $value = $this->mapResourceData($value, $path);
         } else {
             // All other values is not supported.
-            throw new LogicException("Value cannot be converted to JSON.");
+            throw new LogicException('Value cannot be converted to JSON.');
         }
 
         // Return

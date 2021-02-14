@@ -65,7 +65,7 @@ abstract class SmartSeeder extends Seeder {
         $this->seed();
     }
 
-    public abstract function seed(): void;
+    abstract public function seed(): void;
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -76,7 +76,7 @@ abstract class SmartSeeder extends Seeder {
     protected function skipped(string $reason = null): void {
         if ($this->command) {
             $this->command->getOutput()
-                ->writeln("<comment>         skipped</comment>".($reason ? " ({$reason})" : ''));
+                ->writeln('<comment>         skipped</comment>'.($reason ? " ({$reason})" : ''));
         }
     }
     // </editor-fold>

@@ -15,5 +15,5 @@ abstract class DomDocumentSchemaMatcher implements XmlSchemaMatcher {
             && $this->isMatchesSchemaValidate($schema, $xml);
     }
 
-    protected abstract function isMatchesSchemaValidate(SplFileInfo $schema, DOMDocument $document): bool;
+    abstract protected function isMatchesSchemaValidate(SplFileInfo $schema, DOMDocument $document): bool;
 }

@@ -41,7 +41,7 @@ class DateRuleTest extends TestCase {
      *
      * @dataProvider dataProviderGetValue
      */
-    public function testGetValue($expected, string $value): void {
+    public function testGetValue(Exception|string|null $expected, string $value): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }

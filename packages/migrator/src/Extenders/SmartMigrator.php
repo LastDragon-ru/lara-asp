@@ -11,6 +11,10 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\Finder;
 
+use function array_slice;
+use function explode;
+use function implode;
+
 // TODO [laravel] [update] \Illuminate\Database\Migrations\Migrator
 
 /**
@@ -27,7 +31,7 @@ class SmartMigrator extends Migrator {
         ConnectionResolverInterface $resolver,
         Filesystem $files,
         Dispatcher $dispatcher = null,
-        Container $container = null
+        Container $container = null,
     ) {
         parent::__construct($repository, $resolver, $files, $dispatcher);
 
@@ -36,6 +40,9 @@ class SmartMigrator extends Migrator {
 
     // <editor-fold desc="\Illuminate\Database\Migrations\Migrator">
     // =========================================================================
+    /**
+     * @inheritdoc
+     */
     public function resolve($file) {
         $class    = Str::studly(implode('_', array_slice(explode('_', $file), 4)));
         $instance = $this->container

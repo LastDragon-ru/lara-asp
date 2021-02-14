@@ -4,6 +4,10 @@ namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
 use Illuminate\Database\Console\Seeds\SeederMakeCommand;
 
+use function basename;
+use function dirname;
+use function trim;
+
 class RawSeederMakeCommand extends SeederMakeCommand {
     /**
      * @inheritdoc

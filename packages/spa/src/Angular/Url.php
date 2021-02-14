@@ -18,6 +18,7 @@ use function is_bool;
 use function is_float;
 use function mb_substr;
 use function parse_url;
+use function preg_replace;
 use function sprintf;
 use function str_replace;
 use function str_starts_with;
@@ -28,7 +29,7 @@ use const PHP_URL_PATH;
 class Url {
     private string $template;
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $parameters;
 
@@ -43,7 +44,7 @@ class Url {
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     #[Pure]
     public function getParameters(): array {
@@ -58,7 +59,7 @@ class Url {
 
         if ($missed) {
             throw new InvalidArgumentException(
-                sprintf('Url requires the following parameters: %s.', implode(', ', array_keys($missed)))
+                sprintf('Url requires the following parameters: %s.', implode(', ', array_keys($missed))),
             );
         }
 
@@ -89,7 +90,7 @@ class Url {
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     #[Pure]
     private function extract(string $template): array {

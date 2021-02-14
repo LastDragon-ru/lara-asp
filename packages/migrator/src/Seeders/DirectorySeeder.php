@@ -19,7 +19,7 @@ abstract class DirectorySeeder extends Seeder {
     /**
      * Paths from which seeders should be loaded (recursive).
      *
-     * @var string[]
+     * @var array<string>
      */
     protected array      $paths = [];
     protected Filesystem $files;
@@ -68,7 +68,7 @@ abstract class DirectorySeeder extends Seeder {
     protected function getSeedersFromPath(string $path): array {
         $map     = ClassMapGenerator::createMap($path);
         $classes = (new Collection($map))
-            ->filter(function (string $path, string $class) {
+            ->filter(static function (string $path, string $class) {
                 return !str_ends_with($path, 'Test.php')
                     && is_subclass_of($class, Seeder::class, true)
                     && $class !== static::class;

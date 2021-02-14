@@ -16,6 +16,7 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 use function json_last_error;
+use function sprintf;
 
 use const JSON_ERROR_NONE;
 
@@ -23,13 +24,17 @@ use const JSON_ERROR_NONE;
  * @internal
  */
 class Args {
-    private function __construct() { }
+    private function __construct() {
+        // empty
+    }
 
     public static function getFileContents(SplFileInfo $file): string {
         return file_get_contents(static::getFile($file)->getPathname());
     }
 
-    public static function getJson(JsonSerializable|SplFileInfo|stdClass|array|string $json): stdClass|array|string|int|float|bool|null {
+    public static function getJson(
+        JsonSerializable|SplFileInfo|stdClass|array|string $json,
+    ): stdClass|array|string|int|float|bool|null {
         if ($json instanceof SplFileInfo) {
             $json = static::getFileContents($json);
         }

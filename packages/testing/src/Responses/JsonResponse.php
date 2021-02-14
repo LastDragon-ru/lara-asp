@@ -14,6 +14,7 @@ use PHPUnit\Framework\Constraint\JsonMatches;
 use SplFileInfo;
 use stdClass;
 
+use function array_filter;
 use function json_encode;
 
 class JsonResponse extends Response {

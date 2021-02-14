@@ -25,7 +25,7 @@ use const PHP_EOL;
 class XmlMatchesSchema extends Constraint {
     protected SplFileInfo $schema;
     /**
-     * @var \LibXMLError[]
+     * @var array<\LibXMLError>
      */
     protected array $errors = [];
 
@@ -35,14 +35,20 @@ class XmlMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
+    /**
+     * @inheritdoc
+     */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getFile($other) ?? Args::getDomDocument($other) ?? Args::invalidXml(),
             $description,
-            $returnResult
+            $returnResult,
         );
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function matches($other): bool {
         // Create constraint
         $isRelaxNg  = strtolower($this->schema->getExtension()) === 'rng';
@@ -76,6 +82,9 @@ class XmlMatchesSchema extends Constraint {
         return $matches;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);
         $levels      = [

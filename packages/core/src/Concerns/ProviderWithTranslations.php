@@ -8,7 +8,7 @@ namespace LastDragon_ru\LaraASP\Core\Concerns;
 trait ProviderWithTranslations {
     use ProviderHelper;
 
-    protected function bootTranslations() {
+    protected function bootTranslations(): void {
         $package = $this->getName();
         $path    = $this->getPath('../resources/lang');
 

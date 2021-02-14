@@ -32,12 +32,15 @@ class RequestTest extends TestCase {
             }
         });
         $rule          = new class() implements Rule {
-            public function passes($attribute, $value) {
+            /**
+             * @inheritdoc
+             */
+            public function passes($attribute, $value): bool {
                 return (bool) $value;
             }
 
-            public function message() {
-                return __CLASS__;
+            public function message(): string {
+                return static::class;
             }
         };
 
@@ -54,7 +57,7 @@ class RequestTest extends TestCase {
                 parent::__construct();
             }
 
-            public function rules() {
+            public function rules(): array {
                 return [
                     'rule'              => ['required', $this->rule],
                     'rule_nullable'     => ['nullable', 'int'],

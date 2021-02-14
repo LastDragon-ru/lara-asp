@@ -5,7 +5,14 @@ namespace LastDragon_ru\LaraASP\Core\Utils;
 use InvalidArgumentException;
 use LogicException;
 
+use function array_key_exists;
+use function array_values;
 use function in_array;
+use function is_array;
+use function is_null;
+use function is_scalar;
+use function is_string;
+use function key;
 
 /**
  * The merger for array-based configs.
@@ -13,12 +20,12 @@ use function in_array;
 class ConfigRecursiveMerger {
     private bool $strict;
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $unprotected;
 
     /**
-     * @param string[] $unprotected
+     * @param array<string> $unprotected
      */
     public function __construct(bool $strict = true, array $unprotected = []) {
         $this->strict      = $strict;
@@ -34,7 +41,7 @@ class ConfigRecursiveMerger {
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getUnprotected(): array {
         return $this->unprotected;

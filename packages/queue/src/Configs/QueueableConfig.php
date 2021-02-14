@@ -10,6 +10,10 @@ use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use ReflectionClass;
 
+use function get_class;
+use function in_array;
+use function is_null;
+
 /**
  * Queue config.
  *
@@ -32,7 +36,7 @@ class QueueableConfig {
         Container $container,
         Repository $global,
         ConfigurableQueueable $queueable,
-        array $properties
+        array $properties,
     ) {
         $this->global     = $global;
         $this->queueable  = $queueable;
@@ -46,11 +50,11 @@ class QueueableConfig {
         return $this->config();
     }
 
-    public function get(string $key, $default = null) {
+    public function get(string $key, mixed $default = null): mixed {
         return Arr::get($this->config(), $key, $default);
     }
 
-    public function setting(string $key) {
+    public function setting(string $key): mixed {
         return $this->get("settings.{$key}");
     }
     // </editor-fold>

@@ -74,13 +74,41 @@ class DateTimeRuleTest extends TestCase {
 
     public function dataProviderGetValue(): array {
         return [
-            'date'                          => [new InvalidArgumentException('Data missing'), null, '2102-12-01'],
-            'invalid date'                  => [new InvalidArgumentException('Data missing'), null, '02-12-01'],
-            'datetime without timezone'     => [new InvalidArgumentException('Data missing'), null, '2102-12-01T00:00:00'],
-            'datetime UTC + UTC'            => ['2102-12-01T22:12:01.000000+00:00', 'UTC', '2102-12-01T22:12:01+00:00'],
-            'datetime Europe/Moscow + UTC'  => ['2102-12-02T01:12:01.000000+03:00', 'Europe/Moscow', '2102-12-01T22:12:01+00:00'],
-            'datetime UTC + Europe/Moscow'  => ['2102-12-01T22:12:01.000000+00:00', 'UTC', '2102-12-02T01:12:01+03:00'],
-            'datetime null + Europe/Moscow' => ['2102-12-01T22:12:01.000000+00:00', null, '2102-12-02T01:12:01+03:00'],
+            'date'                          => [
+                new InvalidArgumentException('Data missing'),
+                null,
+                '2102-12-01',
+            ],
+            'invalid date'                  => [
+                new InvalidArgumentException('Data missing'),
+                null,
+                '02-12-01',
+            ],
+            'datetime without timezone'     => [
+                new InvalidArgumentException('Data missing'),
+                null,
+                '2102-12-01T00:00:00',
+            ],
+            'datetime UTC + UTC'            => [
+                '2102-12-01T22:12:01.000000+00:00',
+                'UTC',
+                '2102-12-01T22:12:01+00:00',
+            ],
+            'datetime Europe/Moscow + UTC'  => [
+                '2102-12-02T01:12:01.000000+03:00',
+                'Europe/Moscow',
+                '2102-12-01T22:12:01+00:00',
+            ],
+            'datetime UTC + Europe/Moscow'  => [
+                '2102-12-01T22:12:01.000000+00:00',
+                'UTC',
+                '2102-12-02T01:12:01+03:00',
+            ],
+            'datetime null + Europe/Moscow' => [
+                '2102-12-01T22:12:01.000000+00:00',
+                null,
+                '2102-12-02T01:12:01+03:00',
+            ],
         ];
     }
     // </editor-fold>

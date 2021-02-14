@@ -17,12 +17,13 @@ use function is_null;
 use function mb_strtolower;
 use function str_ends_with;
 use function str_starts_with;
+use function trim;
 
 use const PHP_EOL;
 
 class Response extends Constraint {
     /**
-     * @var \PHPUnit\Framework\Constraint\Constraint[]
+     * @var array<\PHPUnit\Framework\Constraint\Constraint>
      */
     protected array       $constraints;
     protected ?Constraint $failed = null;
@@ -32,7 +33,7 @@ class Response extends Constraint {
     }
 
     /**
-     * @return \PHPUnit\Framework\Constraint\Constraint[]
+     * @return array<\PHPUnit\Framework\Constraint\Constraint>
      */
     public function getConstraints(): array {
         return $this->constraints;
@@ -40,13 +41,20 @@ class Response extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
+    /**
+     * @inheritdoc
+     */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getResponse($other) ?? Args::invalidResponse(),
             $description,
-            $returnResult);
+            $returnResult,
+        );
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function matches($other): bool {
         $matches      = true;
         $this->failed = null;
@@ -72,6 +80,9 @@ class Response extends Constraint {
             : $this->failed->toString();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function additionalFailureDescription($other, bool $root = true): string {
         if (!$other instanceof ResponseInterface) {
             return '';
@@ -89,7 +100,7 @@ class Response extends Constraint {
             $description[] = $this->getResponseDescription($other);
         }
 
-        $description = array_map(function (string $text) {
+        $description = array_map(static function (string $text) {
             return trim($text, PHP_EOL);
         }, $description);
         $description = array_unique($description);
