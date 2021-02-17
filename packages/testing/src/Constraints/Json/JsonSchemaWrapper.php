@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use Opis\JsonSchema\ISchemaLoader;
 
-use function array_map;
 use function json_encode;
 use function ltrim;
 use function strtr;
@@ -23,11 +22,9 @@ class JsonSchemaWrapper extends JsonSchema {
     }
 
     protected function getSchemaFor(): string {
-        $replacements = $this->getSchemaReplacements();
-        $replacements = array_map(static function (mixed $value): string {
-            return json_encode($value);
-        }, $replacements);
-        $base         = strtr($this->getBaseSchema(), $replacements);
+        $replacements = $this->getReplacements();
+        $base         = $this->getBaseSchema();
+        $base         = strtr($base, $replacements);
 
         return $base;
     }
@@ -41,7 +38,7 @@ class JsonSchemaWrapper extends JsonSchema {
      */
     protected function getSchemaReplacements(): array {
         return [
-            '"${schema.path}"' => $this->getLocalPath($this->getTestData($this->nested)->path('.json')),
+            'schema.path' => $this->getLocalPath($this->getTestData($this->nested)->path('.json')),
         ];
     }
 
@@ -51,5 +48,18 @@ class JsonSchemaWrapper extends JsonSchema {
 
     protected function getDefaultLoader(): JsonSchemaLoader {
         return new JsonSchemaLoader($this->getTestData($this->nested)->file('.any')->getPath());
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getReplacements(): array {
+        $replacements = [];
+
+        foreach ($this->getSchemaReplacements() as $key => $value) {
+            $replacements["\"\${{$key}}\""] = json_encode($value);
+        }
+
+        return $replacements;
     }
 }
