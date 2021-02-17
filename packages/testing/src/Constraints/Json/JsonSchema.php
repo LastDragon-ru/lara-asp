@@ -16,7 +16,7 @@ class JsonSchema {
         ISchemaLoader $loader = null,
     ) {
         $this->schema = $schema;
-        $this->loader = $loader ?: new JsonSchemaLoader();
+        $this->loader = $loader ?: $this->getDefaultLoader();
     }
 
     public function getSchema(): SplFileInfo|stdClass|array|string|null {
@@ -25,5 +25,9 @@ class JsonSchema {
 
     public function getLoader(): ?ISchemaLoader {
         return $this->loader;
+    }
+
+    protected function getDefaultLoader(): JsonSchemaLoader {
+        return new JsonSchemaLoader();
     }
 }
