@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use Opis\JsonSchema\ISchemaLoader;
 
 use function json_encode;
-use function ltrim;
 use function strtr;
 
 class JsonSchemaWrapper extends JsonSchema {
@@ -43,7 +42,7 @@ class JsonSchemaWrapper extends JsonSchema {
     }
 
     protected function getLocalPath(string $path): string {
-        return JsonSchemaLoader::FullPathPrefix.'/'.ltrim($path, '/');
+        return JsonSchemaLoader::getLocalSchemaPath($path);
     }
 
     protected function getDefaultLoader(): JsonSchemaLoader {

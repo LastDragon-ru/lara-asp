@@ -9,16 +9,21 @@ use Opis\JsonSchema\ISchemaLoader;
 use Opis\JsonSchema\Schema;
 use SplFileInfo;
 
+use function ltrim;
 use function str_starts_with;
 use function strlen;
 use function substr;
+
+use function var_dump;
+
+use const DIRECTORY_SEPARATOR;
 
 class JsonSchemaLoader implements ISchemaLoader {
     /**
      * Opis\JsonSchema cannot correctly work with Windows-style full paths, so
      * we use a hack and convert them into URLs.
      */
-    public const FullPathPrefix = 'https://example.com/'.Package::Name.'/';
+    protected const FullPathPrefix = 'https://example.com/'.Package::Name.'/';
 
     /**
      * This value used internally in Opis\JsonSchema as prefix for uri.
@@ -53,5 +58,9 @@ class JsonSchemaLoader implements ISchemaLoader {
 
         // Return
         return $schema;
+    }
+
+    public static function getLocalSchemaPath(string $path): string {
+        return static::FullPathPrefix.$path;
     }
 }
