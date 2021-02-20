@@ -94,7 +94,7 @@ class XmlMatchesSchema extends Constraint {
         ];
 
         foreach ($this->errors as $error) {
-            $padding     = '    ';
+            $padding      = '    ';
             $description .= PHP_EOL.$padding.trim("{$levels[$error->level]} #{$error->code}: {$error->message}");
             $description .= PHP_EOL."{$padding}{$error->file}:{$error->line}";
             $description .= PHP_EOL;

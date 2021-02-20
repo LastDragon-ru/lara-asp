@@ -99,6 +99,11 @@
       ]
     }
   },
+  "scripts": {
+    "phpcs": [
+      "@php ./vendor/bin/phpcs"
+    ]
+  },
   "config": {
     "sort-packages": true,
     "optimize-autoloader": true

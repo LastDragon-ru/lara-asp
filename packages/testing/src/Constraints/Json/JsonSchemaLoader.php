@@ -9,14 +9,9 @@ use Opis\JsonSchema\ISchemaLoader;
 use Opis\JsonSchema\Schema;
 use SplFileInfo;
 
-use function ltrim;
 use function str_starts_with;
 use function strlen;
 use function substr;
-
-use function var_dump;
-
-use const DIRECTORY_SEPARATOR;
 
 class JsonSchemaLoader implements ISchemaLoader {
     /**

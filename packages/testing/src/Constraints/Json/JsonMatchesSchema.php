@@ -74,12 +74,12 @@ class JsonMatchesSchema extends Constraint {
         $description = parent::additionalFailureDescription($other);
 
         if ($this->result) {
-            $presenter   = new ValidationErrorPresenter(
+            $presenter    = new ValidationErrorPresenter(
                 new PresentedValidationErrorFactory(new MessageFormatterFactory()),
                 new BestMatchError(),
             );
-            $presented   = $presenter->present(...$this->result->getErrors());
-            $padding     = '    ';
+            $presented    = $presenter->present(...$this->result->getErrors());
+            $padding      = '    ';
             $description .= PHP_EOL.$padding.'Errors: ';
             $description .= ltrim(preg_replace('/^/m', $padding, $this->prettify($presented)));
             $description .= PHP_EOL;

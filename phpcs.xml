@@ -23,10 +23,6 @@
 
         <!-- False positive: https://github.com/squizlabs/PHP_CodeSniffer/issues/2937 -->
         <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNoNewline"/>
-
-        <!-- False positive: https://github.com/squizlabs/PHP_CodeSniffer/issues/3219 -->
-        <exclude name="Generic.Formatting.MultipleStatementAlignment.IncorrectWarning"/>
-        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
     </rule>
     <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
     <rule ref="Generic.Classes.OpeningBraceSameLine"/>
