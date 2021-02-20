@@ -22,6 +22,9 @@ use const SORT_REGULAR;
 class ValidationErrorResponse extends Response {
     use WithTestData;
 
+    /**
+     * @param array<string,array<string>|string>|null $errors
+     */
     public function __construct(array $errors = null) {
         parent::__construct(
             new UnprocessableEntity(),
@@ -35,6 +38,11 @@ class ValidationErrorResponse extends Response {
         );
     }
 
+    /**
+     * @param array<string,array<string>|string>|null $errors
+     *
+     * @return array<mixed>
+     */
     protected function getErrorsSchema(array $errors): array {
         $properties = [];
 

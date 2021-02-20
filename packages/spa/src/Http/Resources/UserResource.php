@@ -12,6 +12,9 @@ class UserResource extends Resource {
         parent::__construct($resource);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function toArray(mixed $request): array {
         return [
             'name'     => $this->resource->name,

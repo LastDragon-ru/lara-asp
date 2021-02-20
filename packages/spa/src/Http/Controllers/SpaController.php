@@ -16,6 +16,8 @@ class SpaController extends Controller {
     // =========================================================================
     /**
      * Returns SPA settings.
+     *
+     * @return array<string, mixed>
      */
     public function settings(Repository $config): array {
         return $this->getSettings($config);
@@ -30,6 +32,9 @@ class SpaController extends Controller {
 
     // <editor-fold desc="Extensions">
     // =========================================================================
+    /**
+     * @return array<string, mixed>
+     */
     protected function getSettings(Repository $config): array {
         $package  = Package::Name;
         $default  = [

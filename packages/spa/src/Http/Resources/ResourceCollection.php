@@ -9,6 +9,10 @@ use function is_a;
 use function sprintf;
 
 class ResourceCollection extends AnonymousResourceCollection implements SafeResource {
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string|null
+     */
     public static $wrap = null;
 
     public function __construct(string $class, mixed $resource) {

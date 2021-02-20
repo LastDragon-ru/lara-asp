@@ -51,6 +51,9 @@ class Url {
         return $this->parameters;
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     #[Pure]
     public function build(array $parameters = []): string {
         // Check

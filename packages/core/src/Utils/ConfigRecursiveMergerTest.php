@@ -19,6 +19,10 @@ class ConfigRecursiveMergerTest extends TestCase {
      * @covers ::merge
      *
      * @dataProvider dataProviderMerge
+     *
+     * @param array<string> $unprotected
+     * @param array<mixed> $target
+     * @param array<mixed> $configs
      */
     public function testMerge(
         array|Exception $expected,
@@ -40,6 +44,9 @@ class ConfigRecursiveMergerTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderMerge(): array {
         return [
             'strict + array = ok'                    => [

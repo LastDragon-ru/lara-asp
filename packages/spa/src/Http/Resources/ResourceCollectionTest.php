@@ -72,6 +72,9 @@ class ResourceCollectionTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderConstruct(): array {
         return [
             'class'        => [

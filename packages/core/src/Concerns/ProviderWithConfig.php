@@ -11,6 +11,9 @@ use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
 trait ProviderWithConfig {
     use ProviderHelper;
 
+    /**
+     * @param array<string> $unprotected
+     */
     protected function bootConfig(array $unprotected = []): void {
         $package = $this->getName();
         $path    = $this->getPath('../config/config.php');
@@ -21,6 +24,9 @@ trait ProviderWithConfig {
         ], 'config');
     }
 
+    /**
+     * @param array<string> $unprotected
+     */
     protected function loadConfigFrom(string $path, string $key, bool $strict = true, array $unprotected = []): void {
         if (!($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
             $config = $this->app->make('config');

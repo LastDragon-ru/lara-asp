@@ -40,6 +40,9 @@ class NumberRuleTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderPasses(): array {
         return [
             'true'  => [false, true],

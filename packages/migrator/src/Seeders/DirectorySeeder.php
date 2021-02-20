@@ -65,6 +65,9 @@ abstract class DirectorySeeder extends Seeder {
         return "{$base}/{$name}";
     }
 
+    /**
+     * @return array<string>
+     */
     protected function getSeedersFromPath(string $path): array {
         $map     = ClassMapGenerator::createMap($path);
         $classes = (new Collection($map))

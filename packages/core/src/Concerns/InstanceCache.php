@@ -13,6 +13,9 @@ use function ksort;
 use function mb_strtolower;
 
 trait InstanceCache {
+    /**
+     * @var array<string, mixed>
+     */
     private array $instanceCache = [];
 
     protected function instanceCacheGet(mixed $keys, Closure $closure = null): mixed {

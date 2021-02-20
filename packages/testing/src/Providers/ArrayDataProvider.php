@@ -8,6 +8,9 @@ class ArrayDataProvider implements DataProvider {
      */
     private array $data;
 
+    /**
+     * @param array<mixed> $data
+     */
     public function __construct(array $data) {
         $this->data = $data;
     }

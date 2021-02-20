@@ -545,6 +545,9 @@ class Formatter {
         return $pattern;
     }
 
+    /**
+     * @param array<string, mixed> $replace
+     */
     protected function getTranslation(string $key, array $replace = []): string {
         $package     = Package::Name;
         $translator  = $this->app->make(Translator::class);

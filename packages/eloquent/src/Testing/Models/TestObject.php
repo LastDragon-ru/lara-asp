@@ -14,6 +14,10 @@ class TestObject extends Model {
     use HasFactory;
     use WithoutTimestamps;
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string
+     */
     protected $table = 'test_objects';
 
     protected static function newFactory(): Factory {

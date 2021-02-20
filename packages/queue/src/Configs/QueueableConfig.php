@@ -29,9 +29,18 @@ class QueueableConfig {
     protected Repository            $global;
     protected ConfigurableQueueable $queueable;
     protected Container             $container;
+    /**
+     * @var array<string, mixed>
+     */
     protected array                 $properties;
+    /**
+     * @var array<string, mixed>|null
+     */
     protected ?array                $config = null;
 
+    /**
+     * @param array<mixed> $properties
+     */
     public function __construct(
         Container $container,
         Repository $global,
@@ -46,6 +55,9 @@ class QueueableConfig {
 
     // <editor-fold desc="API">
     // =========================================================================
+    /**
+     * @return array<string,mixed>
+     */
     public function all(): array {
         return $this->config();
     }
@@ -61,6 +73,9 @@ class QueueableConfig {
 
     // <editor-fold desc="Functions">
     // =========================================================================
+    /**
+     * @return array<string,mixed>
+     */
     protected function config(): array {
         if (is_null($this->config)) {
             $global       = (array) $this->global->get($this->getApplicationConfig());
@@ -72,6 +87,9 @@ class QueueableConfig {
         return $this->config;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getDefaultConfig(): array {
         return $this->properties + [
                 static::Debug => false, // Not used directly, but you may use it for debug the job

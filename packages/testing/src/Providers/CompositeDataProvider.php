@@ -47,6 +47,9 @@ class CompositeDataProvider implements DataProvider {
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
+    /**
+     * @return array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider>
+     */
     protected function getProviders(): array {
         return $this->providers;
     }

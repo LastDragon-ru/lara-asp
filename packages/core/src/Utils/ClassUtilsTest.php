@@ -15,6 +15,8 @@ class ClassUtilsTest extends TestCase {
      * @covers ::getConstants
      *
      * @dataProvider dataProviderGetConstants
+     *
+     * @param array<mixed> $expected
      */
     public function testGetConstants(array $expected, object|string $class, ?string $prefix, bool $recursive): void {
         $this->assertEqualsCanonicalizing($expected, ClassUtils::getConstants($class, $prefix, $recursive));
@@ -24,6 +26,9 @@ class ClassUtilsTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderGetConstants(): array {
         return [
             'class - without prefix - non recursive' => [

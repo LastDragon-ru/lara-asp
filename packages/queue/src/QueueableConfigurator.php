@@ -70,6 +70,9 @@ class QueueableConfigurator {
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function getQueueableProperties(): array {
         // TODO [laravel] [update] Check available queue properties.
         /** SEE {@link https://laravel.com/docs/8.x/queues} */

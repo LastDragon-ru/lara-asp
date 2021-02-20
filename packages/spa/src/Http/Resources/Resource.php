@@ -20,6 +20,10 @@ use function is_null;
 use function is_scalar;
 
 abstract class Resource extends JsonResource implements SafeResource {
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string|null
+     */
     public static $wrap        = null;
     private int   $filterLevel = 0;
 
@@ -45,6 +49,9 @@ abstract class Resource extends JsonResource implements SafeResource {
         return $this->mapResourceData(parent::with($request), []);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function additional(array $data): self {
         return parent::additional($this->mapResourceData($data, []));
     }
@@ -87,6 +94,12 @@ abstract class Resource extends JsonResource implements SafeResource {
 
     // <editor-fold desc="Functions">
     // =========================================================================
+    /**
+     * @param array<mixed> $data
+     * @param array<mixed> $path
+     *
+     * @return array<mixed>
+     */
     protected function mapResourceData(array $data, array $path): array {
         foreach ($data as $key => $value) {
             $data[$key] = $this->mapResourceValue($key, $value, array_merge($path, [$key]));
@@ -95,6 +108,9 @@ abstract class Resource extends JsonResource implements SafeResource {
         return $data;
     }
 
+    /**
+     * @param array<string> $path
+     */
     protected function mapResourceValue(string|int $key, mixed $value, array $path): mixed {
         // Scalars, null and our Resources can be returned as is
         if (is_scalar($value) || is_null($value) || $value instanceof SafeResource) {
@@ -137,6 +153,9 @@ abstract class Resource extends JsonResource implements SafeResource {
         return $value;
     }
 
+    /**
+     * @param array<string> $path
+     */
     protected function mapResourceIsDate(DateTimeInterface $value, array $path): bool {
         return count($path) === 1
             && $this->resource instanceof Model

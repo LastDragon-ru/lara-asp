@@ -17,6 +17,9 @@ trait Configurable {
         $configurator->configure($this);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getQueueConfig(): array {
         return [];
     }

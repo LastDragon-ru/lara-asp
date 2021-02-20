@@ -53,6 +53,11 @@ class ConfigRecursiveMerger {
      * In strict mode (default) it will respect the structure of the target
      * array, thus you cannot add any new keys, cannot replace existing
      * scalar values by the array, and vice versa.
+     *
+     * @param array<mixed> $target
+     * @param array<mixed> $configs
+     *
+     * @return array<mixed>
      */
     public function merge(array $target, array ...$configs): array {
         foreach ($configs as $config) {
@@ -62,6 +67,12 @@ class ConfigRecursiveMerger {
         return $target;
     }
 
+    /**
+     * @param array<mixed> $target
+     * @param array<mixed> $config
+     *
+     * @return array<mixed>
+     */
     protected function process(array $target, array $config, string $path): array {
         foreach ($config as $key => $value) {
             // Current path

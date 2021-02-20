@@ -110,6 +110,9 @@ class CronableRegistrator {
         return $description;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDescriptionSettings(QueueableConfig $config): array {
         $settings = array_filter($config->all());
 

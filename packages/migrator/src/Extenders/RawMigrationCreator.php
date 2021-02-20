@@ -43,6 +43,9 @@ class RawMigrationCreator extends MigrationCreator {
 
     // <editor-fold desc="Functions">
     // =========================================================================
+    /**
+     * @return array<string>
+     */
     protected function getRawFiles(string $path): array {
         $dir  = dirname($path);
         $name = basename($path, '.php');

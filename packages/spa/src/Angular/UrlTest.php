@@ -18,6 +18,8 @@ class UrlTest extends TestCase {
      * @covers ::extract
      *
      * @dataProvider dataProviderConstruct
+     *
+     * @param array<mixed> $expected
      */
     public function testConstruct(array $expected, string $template): void {
         $url = new Url($template);
@@ -30,6 +32,8 @@ class UrlTest extends TestCase {
      * @covers ::build
      *
      * @dataProvider dataProviderBuild
+     *
+     * @param array<mixed> $parameters
      */
     public function testBuild(string|Exception $expected, string $template, array $parameters): void {
         if ($expected instanceof Exception) {
@@ -42,6 +46,9 @@ class UrlTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderConstruct(): array {
         return [
             'url without params'  => [[], 'http://example.com/path?:id=1'],
@@ -51,6 +58,9 @@ class UrlTest extends TestCase {
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderBuild(): array {
         return [
             'url without params without data'       => ['http://example.com/path', 'http://example.com/path', []],

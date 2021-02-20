@@ -21,10 +21,15 @@ abstract class Resolver {
 
     // <editor-fold desc="Abstract">
     // =========================================================================
+    /**
+     * @param array<mixed> $parameters
+     */
     abstract protected function resolve(mixed $value, array $parameters): mixed;
 
     /**
      * Resolves parameters for value resolving.
+     *
+     * @return array<mixed>
      */
     protected function resolveParameters(Request $request = null, Route $route = null): array {
         return [];

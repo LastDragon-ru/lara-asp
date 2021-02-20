@@ -30,6 +30,9 @@ class ScalarStrictComparatorTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderAssertEquals(): array {
         return [
             'int'         => [true, 1, 1],

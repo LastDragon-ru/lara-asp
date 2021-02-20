@@ -11,6 +11,8 @@ class ClassUtils {
      * Get class public constants values.
      *
      * @throws \ReflectionException
+     *
+     * @return array<mixed>
      */
     public static function getConstants(object|string $class, string $prefix = null, bool $recursive = true): array {
         $values    = [];

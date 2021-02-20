@@ -3,6 +3,9 @@
 namespace LastDragon_ru\LaraASP\Queue\Configs;
 
 class MailableConfig extends QueueableConfig {
+    /**
+     * @return array<string,mixed>
+     */
     public function getDefaultConfig(): array {
         /** SEE {@link \Illuminate\Mail\SendQueuedMailable} */
         $config = parent::getDefaultConfig();

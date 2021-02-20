@@ -17,6 +17,9 @@ class ValidationErrorResponseTest extends TestCase {
      * @covers ::evaluate
      *
      * @dataProvider dataProviderEvaluate
+     *
+     * @param array<string,string> $rules
+     * @param array<string,string>|null $errors
      */
     public function testEvaluate(bool $expected, array $rules, ?array $errors): void {
         Route::get(__FUNCTION__, static function (Request $request) use ($rules) {
@@ -32,6 +35,9 @@ class ValidationErrorResponseTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderEvaluate(): array {
         return [
             'no rules'                     => [

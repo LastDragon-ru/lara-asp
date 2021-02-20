@@ -43,6 +43,9 @@ class XmlMatchesSchemaTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderEvaluate(): array {
         return [
             'rng + dom = valid'    => [

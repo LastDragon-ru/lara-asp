@@ -53,6 +53,9 @@ class SpaControllerTest extends TestCase {
      * @covers ::settings
      *
      * @dataProvider dataProviderSettings
+     *
+     * @param array<mixed> $headers
+     * @param array<mixed> $settings
      */
     public function testSettings(
         Response $expected,
@@ -76,6 +79,8 @@ class SpaControllerTest extends TestCase {
      * @covers ::user
      *
      * @dataProvider dataProviderUser
+     *
+     * @param array<mixed> $headers
      */
     public function testUser(
         Response $expected,
@@ -101,6 +106,9 @@ class SpaControllerTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderSettings(): array {
         return (new CompositeDataProvider(
             $this->getEnabledDataProvider(),
@@ -121,6 +129,9 @@ class SpaControllerTest extends TestCase {
         ))->getData();
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderUser(): array {
         return (new CompositeDataProvider(
             $this->getEnabledDataProvider(),
@@ -205,6 +216,9 @@ class SpaControllerTest extends TestCase {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
+    /**
+     * @param array<string,mixed> $settings
+     */
     protected function setSettings(array $settings, Application $app = null): void {
         $package = Package::Name;
         $config  = ($app ?? $this->app)->get(Repository::class);

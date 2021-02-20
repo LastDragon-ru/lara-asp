@@ -21,6 +21,10 @@ class EloquentBuilderMixinTest extends TestCase {
      */
     public function testGetDefaultKeyName(): void {
         $model = new class() extends Model {
+            /**
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+             * @var string
+             */
             protected $primaryKey = 'idddd';
         };
 

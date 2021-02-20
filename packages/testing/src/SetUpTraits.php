@@ -17,6 +17,9 @@ use function str_starts_with;
  * @mixin \PHPUnit\Framework\TestCase
  */
 trait SetUpTraits {
+    /**
+     * @var array<string>
+     */
     private static array $setUpTraits = [];
 
     /**

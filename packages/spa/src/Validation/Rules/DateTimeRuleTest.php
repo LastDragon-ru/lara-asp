@@ -63,6 +63,9 @@ class DateTimeRuleTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderPasses(): array {
         return [
             'valid date'                => [false, '2102-12-01'],
@@ -72,6 +75,9 @@ class DateTimeRuleTest extends TestCase {
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderGetValue(): array {
         return [
             'date'                          => [

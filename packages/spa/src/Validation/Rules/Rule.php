@@ -40,10 +40,16 @@ abstract class Rule implements RuleContract {
 
     // <editor-fold desc="Functions">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     protected function getMessageReplace(): array {
         return [];
     }
 
+    /**
+     * @return array<string>
+     */
     protected function getMessageVariants(): array {
         $name    = Str::snake((new ReflectionClass($this))->getShortName());
         $name    = preg_replace('/_rule$/', '', $name);

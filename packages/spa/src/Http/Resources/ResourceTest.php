@@ -122,6 +122,9 @@ class ResourceTest extends TestCase {
      */
     public function testAdditional(): void {
         $resource = new class(123) extends Resource {
+            /**
+             * @inheritdoc
+             */
             protected function mapResourceData(array $data, array $path): array {
                 throw new Exception(__FUNCTION__);
             }
@@ -139,6 +142,9 @@ class ResourceTest extends TestCase {
      */
     public function testWith(): void {
         $resource = new class(123) extends Resource {
+            /**
+             * @inheritdoc
+             */
             protected function mapResourceData(array $data, array $path): array {
                 throw new Exception(__FUNCTION__);
             }
@@ -152,6 +158,9 @@ class ResourceTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderConstruct(): array {
         return [
             'scalar'    => [true, 123],
@@ -171,6 +180,9 @@ class ResourceTest extends TestCase {
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderCollection(): array {
         return [
             'scalar'    => [
@@ -207,6 +219,9 @@ class ResourceTest extends TestCase {
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderMapResourceData(): array {
         $date   = new DateTimeImmutable();
         $format = 'Y-m-d H:i:s.v';
@@ -237,6 +252,9 @@ class ResourceTest extends TestCase {
                     'null'             => null,
                     'array'            => [1, 2, 3, $date],
                     'SafeResource'     => new class() implements SafeResource, JsonSerializable {
+                        /**
+                         * @inheritdoc
+                         */
                         public function jsonSerialize(): array {
                             return [
                                 'string' => '123',
@@ -255,6 +273,9 @@ class ResourceTest extends TestCase {
                             $this->date = $date;
                         }
 
+                        /**
+                         * @inheritdoc
+                         */
                         public function jsonSerialize(): array {
                             return [
                                 'bool' => true,

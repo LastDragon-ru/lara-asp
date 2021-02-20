@@ -8,8 +8,15 @@ use LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories\Factory;
  * @internal
  */
 class TestObjectFactory extends Factory {
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string
+     */
     protected $model = TestObject::class;
 
+    /**
+     * @return array<string,mixed>
+     */
     public function definition(): array {
         return [
             'value' => $this->faker->word,

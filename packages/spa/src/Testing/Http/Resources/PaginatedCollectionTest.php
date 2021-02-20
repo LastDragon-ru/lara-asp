@@ -20,6 +20,8 @@ class PaginatedCollectionTest extends TestCase {
      * @coversNothing
      *
      * @dataProvider dataProviderSchema
+     *
+     * @param array<mixed> $json
      */
     public function testSchema(bool $expected, array $json): void {
         $schema     = new PaginatedCollection(static::class);
@@ -40,6 +42,9 @@ class PaginatedCollectionTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderSchema(): array {
         return [
             'object (invalid)'                 => [

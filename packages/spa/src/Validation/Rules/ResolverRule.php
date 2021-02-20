@@ -34,12 +34,18 @@ class ResolverRule extends Rule implements ValueProvider {
         return false;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function getMessageReplace(): array {
         return array_merge(parent::getMessageReplace(), [
             'resolver' => get_class($this->resolver),
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function getMessageVariants(): array {
         $defaults   = parent::getMessageVariants();
         $resolver   = get_class($this->resolver);

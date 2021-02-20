@@ -48,31 +48,50 @@ class QueueableConfigTest extends TestCase {
     /**
      * @covers ::config
      * @dataProvider dataProviderConfig
+     *
+     * @param array<mixed>|\Exception $expected
+     * @param array<mixed> $appConfig
+     * @param array<mixed> $queueableConfig
      */
     public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
         $container    = Container::getInstance();
         $repository   = new Repository();
         $dateFactory  = new DateFactory();
         $configurator = new class($container, $repository, $dateFactory) extends QueueableConfigurator {
+            /**
+             * @inheritdoc
+             */
             public function getQueueableProperties(): array {
                 return parent::getQueueableProperties();
             }
         };
         $properties   = $configurator->getQueueableProperties();
         $queueable    = new class($configurator, $queueableConfig) extends Job {
+            /**
+             * @var array<mixed>
+             */
             private array $config;
 
+            /**
+             * @param array<string,mixed> $config
+             */
             public function __construct(QueueableConfigurator $configurator, array $config) {
                 $this->config = $config;
 
                 parent::__construct($configurator);
             }
 
+            /**
+             * @inheritdoc
+             */
             public function getQueueConfig(): array {
                 return $this->config;
             }
         };
         $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
+            /**
+             * @inheritdoc
+             */
             public function config(): array {
                 return parent::config();
             }
@@ -100,6 +119,9 @@ class QueueableConfigTest extends TestCase {
         $dateFactory  = new DateFactory();
         $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
         $queueable    = new class($configurator) extends Job {
+            /**
+             * @inheritdoc
+             */
             public function getQueueConfig(stdClass $injected = null): array {
                 return ['injected' => $injected::class];
             }
@@ -111,6 +133,9 @@ class QueueableConfigTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderGetQueueClass(): array {
         return [
             [QueueableConfigTest_getQueueClass::class, QueueableConfigTest_getQueueClass::class],
@@ -123,6 +148,9 @@ class QueueableConfigTest extends TestCase {
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function dataProviderConfig(): array {
         return [
             'empty'               => [
