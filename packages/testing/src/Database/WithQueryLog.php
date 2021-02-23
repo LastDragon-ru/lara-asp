@@ -33,4 +33,15 @@ trait WithQueryLog {
             $db->flushQueryLog();
         }
     }
+
+    /**
+     * @return array<array{query: string, bindings: array<mixed>, time: float|null}>
+     */
+    protected function getQueryLog(): array {
+        return $this->app->make('db')->getQueryLog();
+    }
+
+    protected function flushQueryLog(): void {
+        $this->app->make('db')->flushQueryLog();
+    }
 }
