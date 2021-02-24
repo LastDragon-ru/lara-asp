@@ -49,7 +49,7 @@ trait SetUpTraits {
         static::$setUpTraits = [];
     }
 
-    public function setUp(): void {
+    protected function setUp(): void {
         // Parent
         /** @noinspection PhpUndefinedClassInspection */
         parent::setUp();
@@ -62,7 +62,7 @@ trait SetUpTraits {
         }
     }
 
-    public function tearDown(): void {
+    protected function tearDown(): void {
         // Tear traits Down
         foreach (static::$setUpTraits as $trait) {
             if (method_exists($this, "tearDown{$trait}")) {
