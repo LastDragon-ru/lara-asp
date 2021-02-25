@@ -41,11 +41,11 @@ class TestData {
         return file_get_contents($this->path($path));
     }
 
-    public function json(string $path): array|string|int|float|bool|null {
+    public function json(string $path = '.json'): array|string|int|float|bool|null {
         return Args::getJson($this->file($path), true);
     }
 
-    public function dom(string $path): DOMDocument {
+    public function dom(string $path = '.xml'): DOMDocument {
         $dom  = new DOMDocument();
         $path = $this->path($path);
 
