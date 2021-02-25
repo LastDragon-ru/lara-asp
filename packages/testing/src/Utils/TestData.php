@@ -41,6 +41,10 @@ class TestData {
         return file_get_contents($this->path($path));
     }
 
+    public function json(string $path): array|string|int|float|bool|null {
+        return Args::getJson($this->file($path), true);
+    }
+
     public function dom(string $path): DOMDocument {
         $dom  = new DOMDocument();
         $path = $this->path($path);

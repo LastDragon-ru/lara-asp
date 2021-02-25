@@ -34,6 +34,7 @@ class Args {
 
     public static function getJson(
         JsonSerializable|SplFileInfo|stdClass|array|string $json,
+        bool $associative = false,
     ): stdClass|array|string|int|float|bool|null {
         if ($json instanceof SplFileInfo) {
             $json = static::getFileContents($json);
@@ -44,7 +45,7 @@ class Args {
         }
 
         if (is_string($json)) {
-            $json = json_decode($json, false);
+            $json = json_decode($json, $associative);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
                 static::invalidJson();
