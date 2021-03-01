@@ -27,7 +27,7 @@ class TestData {
     public function path(string $path): string {
         $dir  = dirname(str_replace('\\', '/', $this->test->getFileName()));
         $name = basename($this->test->getFileName(), '.php');
-        $path = str_starts_with($path, '.') ? $path : '/'.$path;
+        $path = str_starts_with($path, '.') || str_starts_with($path, '~') ? $path : '/'.$path;
         $path = "{$dir}/{$name}{$path}";
 
         return $path;
