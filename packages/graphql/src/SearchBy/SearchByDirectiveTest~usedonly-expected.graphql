@@ -1,0 +1,29 @@
+input Properties {
+  value: String!
+}
+
+type Query {
+  test(where: [SearchByInputProperties!]): ID!
+}
+
+"""Available conditions."""
+input SearchByInputProperties {
+  not: Boolean = false
+  and: [SearchByInputProperties!]
+  or: [SearchByInputProperties!]
+  value: SearchByScalarStringNullable
+}
+
+"""Available operators for String (only one operator allowed at a time)."""
+input SearchByScalarStringNullable {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: String
+
+  """Within a set of values."""
+  in: [String!]
+
+  """IS NULL (value of property not matter)"""
+  isnull: Boolean
+}

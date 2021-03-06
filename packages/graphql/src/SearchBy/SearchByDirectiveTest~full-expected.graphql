@@ -1,0 +1,300 @@
+input Nested {
+  value: String
+}
+
+input Properties {
+  idScalar: ID
+  idScalarNotNull: ID!
+  intScalar: Int
+  inScalarNotNull: Int!
+  floatScalar: Float
+  floatScalarNotNull: Float!
+  stringScalar: String
+  stringScalarNotNull: String!
+  booleanScalar: Boolean
+  booleanScalarNotNull: Boolean!
+  nested: Nested
+  nestedNotNull: Nested!
+}
+
+type Query {
+  test(where: [SearchByInputProperties!]): ID!
+}
+
+"""Available conditions."""
+input SearchByInputNested {
+  not: Boolean = false
+  and: [SearchByInputNested!]
+  or: [SearchByInputNested!]
+  value: SearchByScalarString
+}
+
+"""Available conditions."""
+input SearchByInputProperties {
+  not: Boolean = false
+  and: [SearchByInputProperties!]
+  or: [SearchByInputProperties!]
+  idScalar: SearchByScalarID
+  idScalarNotNull: SearchByScalarIDNullable
+  intScalar: SearchByScalarInt
+  inScalarNotNull: SearchByScalarIntNullable
+  floatScalar: SearchByScalarFloat
+  floatScalarNotNull: SearchByScalarFloatNullable
+  stringScalar: SearchByScalarString
+  stringScalarNotNull: SearchByScalarStringNullable
+  booleanScalar: SearchByScalarBoolean
+  booleanScalarNotNull: SearchByScalarBooleanNullable
+  nested: SearchByRelationNested
+  nestedNotNull: SearchByRelationNested
+}
+
+"""Where Has condition."""
+input SearchByRelationNested {
+  not: Boolean = false
+  has: Boolean = true
+  where: [SearchByInputNested!]
+  count: SearchByScalarInt = {not: false, gte: 1}
+}
+
+"""
+Available operators for Boolean (only one operator allowed at a time).
+"""
+input SearchByScalarBoolean {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: Boolean
+}
+
+"""
+Available operators for Boolean (only one operator allowed at a time).
+"""
+input SearchByScalarBooleanNullable {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: Boolean
+
+  """IS NULL (value of property not matter)"""
+  isnull: Boolean
+}
+
+"""Available operators for Float (only one operator allowed at a time)."""
+input SearchByScalarFloat {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: Float
+
+  """Less than (`<`)."""
+  lt: Float
+
+  """Less than or equal to (`<=`)."""
+  lte: Float
+
+  """Greater than (`>`)."""
+  gt: Float
+
+  """Greater than or equal to (`>=`)."""
+  gte: Float
+
+  """Within a set of values."""
+  in: [Float!]
+
+  """Within a range."""
+  between: SearchByScalarFloatBetween
+}
+
+input SearchByScalarFloatBetween {
+  min: Float!
+  max: Float!
+}
+
+"""Available operators for Float (only one operator allowed at a time)."""
+input SearchByScalarFloatNullable {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: Float
+
+  """Less than (`<`)."""
+  lt: Float
+
+  """Less than or equal to (`<=`)."""
+  lte: Float
+
+  """Greater than (`>`)."""
+  gt: Float
+
+  """Greater than or equal to (`>=`)."""
+  gte: Float
+
+  """Within a set of values."""
+  in: [Float!]
+
+  """Within a range."""
+  between: SearchByScalarFloatNullableBetween
+
+  """IS NULL (value of property not matter)"""
+  isnull: Boolean
+}
+
+input SearchByScalarFloatNullableBetween {
+  min: Float!
+  max: Float!
+}
+
+"""Available operators for ID (only one operator allowed at a time)."""
+input SearchByScalarID {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: ID
+
+  """Less than (`<`)."""
+  lt: ID
+
+  """Less than or equal to (`<=`)."""
+  lte: ID
+
+  """Greater than (`>`)."""
+  gt: ID
+
+  """Greater than or equal to (`>=`)."""
+  gte: ID
+
+  """Within a set of values."""
+  in: [ID!]
+
+  """Within a range."""
+  between: SearchByScalarIDBetween
+}
+
+input SearchByScalarIDBetween {
+  min: ID!
+  max: ID!
+}
+
+"""Available operators for ID (only one operator allowed at a time)."""
+input SearchByScalarIDNullable {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: ID
+
+  """Less than (`<`)."""
+  lt: ID
+
+  """Less than or equal to (`<=`)."""
+  lte: ID
+
+  """Greater than (`>`)."""
+  gt: ID
+
+  """Greater than or equal to (`>=`)."""
+  gte: ID
+
+  """Within a set of values."""
+  in: [ID!]
+
+  """Within a range."""
+  between: SearchByScalarIDNullableBetween
+
+  """IS NULL (value of property not matter)"""
+  isnull: Boolean
+}
+
+input SearchByScalarIDNullableBetween {
+  min: ID!
+  max: ID!
+}
+
+"""Available operators for Int (only one operator allowed at a time)."""
+input SearchByScalarInt {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: Int
+
+  """Less than (`<`)."""
+  lt: Int
+
+  """Less than or equal to (`<=`)."""
+  lte: Int
+
+  """Greater than (`>`)."""
+  gt: Int
+
+  """Greater than or equal to (`>=`)."""
+  gte: Int
+
+  """Within a set of values."""
+  in: [Int!]
+
+  """Within a range."""
+  between: SearchByScalarIntBetween
+}
+
+input SearchByScalarIntBetween {
+  min: Int!
+  max: Int!
+}
+
+"""Available operators for Int (only one operator allowed at a time)."""
+input SearchByScalarIntNullable {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: Int
+
+  """Less than (`<`)."""
+  lt: Int
+
+  """Less than or equal to (`<=`)."""
+  lte: Int
+
+  """Greater than (`>`)."""
+  gt: Int
+
+  """Greater than or equal to (`>=`)."""
+  gte: Int
+
+  """Within a set of values."""
+  in: [Int!]
+
+  """Within a range."""
+  between: SearchByScalarIntNullableBetween
+
+  """IS NULL (value of property not matter)"""
+  isnull: Boolean
+}
+
+input SearchByScalarIntNullableBetween {
+  min: Int!
+  max: Int!
+}
+
+"""Available operators for String (only one operator allowed at a time)."""
+input SearchByScalarString {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: String
+
+  """Within a set of values."""
+  in: [String!]
+}
+
+"""Available operators for String (only one operator allowed at a time)."""
+input SearchByScalarStringNullable {
+  not: Boolean = false
+
+  """Equal (`=`)."""
+  eq: String
+
+  """Within a set of values."""
+  in: [String!]
+
+  """IS NULL (value of property not matter)"""
+  isnull: Boolean
+}
