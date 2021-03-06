@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator;
-
-class NotEqual extends Operator {
+class NotEqual extends BaseOperator {
     public function getName(): string {
         return 'neq';
     }

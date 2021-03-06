@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\OperatorHasType;
+use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\OperatorHasTypesForScalar;
 
-class Between extends Operator implements OperatorHasType {
+class Between extends BaseOperator implements OperatorHasTypesForScalar {
     public function getName(): string {
         return 'between';
     }
@@ -14,12 +14,20 @@ class Between extends Operator implements OperatorHasType {
         return 'Within a range.';
     }
 
-    public function getTypeDefinition(string $name, string $type, bool $nullable): string {
-        return /** @lang GraphQL */ <<<GRAPHQL
-        input {$name} {
-            min: {$type}!
-            max: {$type}!
-        }
-        GRAPHQL;
+    /**
+     * @inheritdoc
+     */
+    public function getTypeDefinitionsForScalar(string $name, string $type): array {
+        return [
+            Parser::inputObjectTypeDefinition(
+                /** @lang GraphQL */
+                <<<GRAPHQL
+                input {$name} {
+                    min: {$type}!
+                    max: {$type}!
+                }
+                GRAPHQL,
+            ),
+        ];
     }
 }

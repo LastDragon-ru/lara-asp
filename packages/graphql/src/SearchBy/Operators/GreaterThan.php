@@ -1,9 +1,8 @@
 <?php declare(strict_types = 1);
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator;
 
-class GreaterThan extends Operator {
+class GreaterThan extends BaseOperator {
     public function getName(): string {
         return 'gt';
     }

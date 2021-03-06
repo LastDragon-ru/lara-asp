@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator;
-
-class Equal extends Operator {
+class Equal extends BaseOperator {
     public function getName(): string {
         return 'eq';
     }

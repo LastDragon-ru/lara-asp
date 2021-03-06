@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator;
-
-class In extends Operator {
+class In extends BaseOperator {
     public function getName(): string {
         return 'in';
     }

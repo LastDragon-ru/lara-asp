@@ -2,9 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator;
+use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\OperatorHasTypes;
 
-class IsNull extends Operator {
+class IsNull extends BaseOperator implements OperatorHasTypes {
     public function getName(): string {
         return 'isNull';
     }
@@ -13,7 +14,19 @@ class IsNull extends Operator {
         return 'IS NULL (value of property not matter)';
     }
 
-    public function getDefinition(string $type, bool $nullable): string {
-        return parent::getDefinition('Boolean', true);
+    /**
+     * @inheritdoc
+     */
+    public function getTypeDefinitions(string $name): array {
+        return [
+            Parser::enumTypeDefinition(
+                /** @lang GraphQL */
+                <<<GRAPHQL
+                enum {$name} {
+                    YES
+                }
+                GRAPHQL,
+            ),
+        ];
     }
 }

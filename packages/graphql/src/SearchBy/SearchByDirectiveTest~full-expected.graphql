@@ -18,20 +18,28 @@ input Properties {
 }
 
 type Query {
-  test(where: [SearchByInputProperties!]): ID!
+  test(where: [SearchByQueryProperties!]): ID!
+}
+
+enum SearchByOperatorIsNotNull {
+  YES
+}
+
+enum SearchByOperatorIsNull {
+  YES
 }
 
 """Available conditions."""
-input SearchByInputNested {
-  and: [SearchByInputNested!]
-  or: [SearchByInputNested!]
+input SearchByQueryNested {
+  and: [SearchByQueryNested!]
+  or: [SearchByQueryNested!]
   value: SearchByScalarString
 }
 
 """Available conditions."""
-input SearchByInputProperties {
-  and: [SearchByInputProperties!]
-  or: [SearchByInputProperties!]
+input SearchByQueryProperties {
+  and: [SearchByQueryProperties!]
+  or: [SearchByQueryProperties!]
   idScalar: SearchByScalarID
   idScalarNotNull: SearchByScalarIDNullable
   intScalar: SearchByScalarInt
@@ -49,7 +57,7 @@ input SearchByInputProperties {
 """Where Has condition."""
 input SearchByRelationNested {
   has: Boolean = true
-  where: [SearchByInputNested!]
+  where: [SearchByQueryNested!]
   count: SearchByScalarInt = {gte: 1}
 }
 
@@ -75,10 +83,10 @@ input SearchByScalarBooleanNullable {
   neq: Boolean
 
   """IS NULL (value of property not matter)"""
-  isNull: Boolean
+  isNull: SearchByOperatorIsNull
 
   """IS NOT NULL (value of property not matter)"""
-  isNotNull: Boolean
+  isNotNull: SearchByOperatorIsNotNull
 }
 
 """Available operators for Float (only one operator allowed at a time)."""
@@ -137,18 +145,13 @@ input SearchByScalarFloatNullable {
   in: [Float!]
 
   """Within a range."""
-  between: SearchByScalarFloatNullableBetween
+  between: SearchByScalarFloatBetween
 
   """IS NULL (value of property not matter)"""
-  isNull: Boolean
+  isNull: SearchByOperatorIsNull
 
   """IS NOT NULL (value of property not matter)"""
-  isNotNull: Boolean
-}
-
-input SearchByScalarFloatNullableBetween {
-  min: Float!
-  max: Float!
+  isNotNull: SearchByOperatorIsNotNull
 }
 
 """Available operators for ID (only one operator allowed at a time)."""
@@ -207,18 +210,13 @@ input SearchByScalarIDNullable {
   in: [ID!]
 
   """Within a range."""
-  between: SearchByScalarIDNullableBetween
+  between: SearchByScalarIDBetween
 
   """IS NULL (value of property not matter)"""
-  isNull: Boolean
+  isNull: SearchByOperatorIsNull
 
   """IS NOT NULL (value of property not matter)"""
-  isNotNull: Boolean
-}
-
-input SearchByScalarIDNullableBetween {
-  min: ID!
-  max: ID!
+  isNotNull: SearchByOperatorIsNotNull
 }
 
 """Available operators for Int (only one operator allowed at a time)."""
@@ -277,18 +275,13 @@ input SearchByScalarIntNullable {
   in: [Int!]
 
   """Within a range."""
-  between: SearchByScalarIntNullableBetween
+  between: SearchByScalarIntBetween
 
   """IS NULL (value of property not matter)"""
-  isNull: Boolean
+  isNull: SearchByOperatorIsNull
 
   """IS NOT NULL (value of property not matter)"""
-  isNotNull: Boolean
-}
-
-input SearchByScalarIntNullableBetween {
-  min: Int!
-  max: Int!
+  isNotNull: SearchByOperatorIsNotNull
 }
 
 """Available operators for String (only one operator allowed at a time)."""
@@ -315,8 +308,8 @@ input SearchByScalarStringNullable {
   in: [String!]
 
   """IS NULL (value of property not matter)"""
-  isNull: Boolean
+  isNull: SearchByOperatorIsNull
 
   """IS NOT NULL (value of property not matter)"""
-  isNotNull: Boolean
+  isNotNull: SearchByOperatorIsNotNull
 }

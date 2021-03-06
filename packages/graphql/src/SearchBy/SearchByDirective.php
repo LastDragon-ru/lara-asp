@@ -95,7 +95,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             Convert Input into Search Conditions.
             """
             directive @searchBy on INPUT_FIELD_DEFINITION
-            GRAPHQL;
+        GRAPHQL;
     }
 
     public function manipulateArgDefinition(
@@ -128,11 +128,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         }
 
         // Add dummy type to avoid infinite loop
-        $document->setTypeDefinition(Parser::inputObjectTypeDefinition("
-            input {$name} {
-                dummy: Boolean!
-            }
-        "));
+        $this->addDummyType($document, $name);
 
         // Create
         $body = [];
@@ -153,7 +149,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             if ($typeNode instanceof InputObjectTypeDefinitionNode) {
                 $definition = $this->getRelationType($document, $typeNode, $nullable);
             } elseif ($typeNode instanceof ScalarTypeDefinitionNode) {
-                $definition = $this->getScalarOperatorType($document, $typeNode, $nullable);
+                $definition = $this->getScalarType($document, $typeNode, $nullable);
             } else {
                 // empty
             }
@@ -171,7 +167,8 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         // Add type
         $content = implode("\n", $body);
 
-        $document->setTypeDefinition(Parser::inputObjectTypeDefinition(<<<DEF
+        $document->setTypeDefinition(Parser::inputObjectTypeDefinition(
+            <<<DEF
             """
             Available conditions.
             """
@@ -180,13 +177,14 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
                 or: [{$name}!]
                 {$content}
             }
-        DEF));
+            DEF,
+        ));
 
         // Return
         return $name;
     }
 
-    protected function getScalarOperatorType(
+    protected function getScalarType(
         DocumentAST $document,
         ScalarTypeDefinitionNode $node,
         bool $nullable,
@@ -198,8 +196,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             return $name;
         }
 
-        // Create
-        $body      = [];
+        // Determine supported operators
         $type      = $node->name->value;
         $operators = $type;
 
@@ -207,23 +204,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             $operators = $this->scalars[$operators] ?? [];
         } while (!is_array($operators));
 
-        foreach ($operators as $operator) {
-            $operator     = $this->getOperator($operator);
-            $operatorType = $type;
-
-            if ($operator instanceof OperatorHasType) {
-                $operatorType = $this->getScalarOperatorTypeName($node, $nullable, $operator);
-
-                $document->setTypeDefinition(Parser::inputObjectTypeDefinition(
-                    $operator->getTypeDefinition($operatorType, $type, $nullable),
-                ));
-            }
-
-            $body[] = $operator->getDefinition($operatorType, $nullable);
-        }
-
-        // Body cannot be empty
-        if (empty($body)) {
+        if (empty($operators)) {
             throw new SearchByException(sprintf(
                 'Generated scalar type is empty. Please check definition for `%s` scalar.',
                 $type,
@@ -232,21 +213,33 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
 
         // Add null for nullable
         if ($nullable) {
-            $body[] = $this->getOperator(IsNull::class)->getDefinition($type, $nullable);
-            $body[] = $this->getOperator(IsNotNull::class)->getDefinition($type, $nullable);
+            $operators[] = IsNull::class;
+            $operators[] = IsNotNull::class;
+        }
+
+        // Generate
+        $body = [];
+
+        foreach ($operators as $operator) {
+            $operator     = $this->getOperator($operator);
+            $operatorType = $this->getOperatorType($document, $node, $type, $nullable, $operator);
+
+            $body[] = $operator->getDefinition($operatorType, $nullable);
         }
 
         // Add type
         $content = implode("\n", $body);
 
-        $document->setTypeDefinition(Parser::inputObjectTypeDefinition(<<<DEF
+        $document->setTypeDefinition(Parser::inputObjectTypeDefinition(
+            <<<DEF
             """
             Available operators for {$type} (only one operator allowed at a time).
             """
             input {$name} {
                 {$content}
             }
-        DEF));
+            DEF,
+        ));
 
         // Return
         return $name;
@@ -265,48 +258,74 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         }
 
         // Add dummy type to avoid infinite loop
-        $document->setTypeDefinition(Parser::inputObjectTypeDefinition("
-            input {$name} {
-                dummy: Boolean!
-            }
-        "));
+        $this->addDummyType($document, $name);
 
         // Add type
-        $document->setTypeDefinition(Parser::inputObjectTypeDefinition(<<<DEF
+        $document->setTypeDefinition(Parser::inputObjectTypeDefinition(
+            <<<DEF
             """
             Where Has condition.
             """
             input {$name} {
                 has: Boolean = true
                 where: [{$this->getInputType($document, $node)}!]
-                count: {$this->getScalarOperatorType($document, $this->getScalarTypeNode('Int'), false)} = {
+                count: {$this->getScalarType($document, $this->getScalarTypeNode('Int'), false)} = {
                     {$this->getOperator(GreaterThanOrEqual::class)->getName()}: 1
                 }
             }
-        DEF));
+            DEF,
+        ));
 
         // Return
         return $name;
+    }
+
+    protected function getOperatorType(
+        DocumentAST $document,
+        ScalarTypeDefinitionNode $node,
+        string $type,
+        bool $nullable,
+        Operator $operator,
+    ): string {
+        $name  = $type;
+        $types = [];
+
+        if ($operator instanceof OperatorHasTypes) {
+            $name  = $this->getOperatorTypeName($operator);
+            $types = array_merge($operator->getTypeDefinitions($name));
+        }
+
+        if ($operator instanceof OperatorHasTypesForScalar) {
+            $name  = $this->getOperatorTypeName($operator, $this->getScalarTypeName($node, false));
+            $types = array_merge($operator->getTypeDefinitionsForScalar($name, $type));
+        }
+
+        if ($operator instanceof OperatorHasTypesForScalarNullable) {
+            $name  = $this->getOperatorTypeName($operator, $this->getScalarTypeName($node, $nullable));
+            $types = array_merge($operator->getTypeDefinitionsForScalar($name, $type, $nullable));
+        }
+
+        foreach ($types as $type) {
+            $document->setTypeDefinition($type);
+        }
+
+        return $name;
+    }
+
+    protected function getInputTypeName(InputObjectTypeDefinitionNode $node): string {
+        return static::NAME.'Query'.$node->name->value;
     }
 
     protected function getScalarTypeName(ScalarTypeDefinitionNode $node, bool $nullable): string {
         return static::NAME.'Scalar'.$node->name->value.($nullable ? 'Nullable' : '');
     }
 
-    protected function getScalarOperatorTypeName(
-        ScalarTypeDefinitionNode $node,
-        bool $nullable,
-        Operator $operator,
-    ): string {
-        return $this->getScalarTypeName($node, $nullable).Str::studly($operator->getName());
-    }
-
-    protected function getInputTypeName(InputObjectTypeDefinitionNode $node): string {
-        return static::NAME.'Input'.$node->name->value;
-    }
-
     protected function getRelationTypeName(InputObjectTypeDefinitionNode $node): string {
         return static::NAME.'Relation'.$node->name->value;
+    }
+
+    protected function getOperatorTypeName(Operator $operator, string $base = null): string {
+        return ($base ?: static::NAME.'Operator').Str::studly($operator->getName());
     }
 
     protected function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
@@ -322,5 +341,20 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
      */
     protected function getOperator(string $class): Operator {
         return $this->container->make($class);
+    }
+
+    protected function addDummyType(DocumentAST $document, string $name): void {
+        $document->setTypeDefinition(Parser::inputObjectTypeDefinition(
+        /** @lang GraphQL */
+            <<<DEF
+            """
+            This is a dummy type that used internally. If you see it, this is
+            probably a bug, please contact to developer.
+            """
+            input {$name} {
+                dummy: Boolean!
+            }
+            DEF,
+        ));
     }
 }
