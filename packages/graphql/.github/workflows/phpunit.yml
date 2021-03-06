@@ -1,0 +1,79 @@
+name: PHP Unit
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+  schedule:
+    - cron: "0 0 */7 * *"
+  workflow_dispatch:
+
+jobs:
+  settings:
+    name: Collect settings
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.versions.outputs.value }}
+      extensions: ${{ steps.extensions.outputs.value }}
+      dependencies: ${{ steps.dependencies.outputs.value }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+      - name: Detect dependencies versions
+        id: dependencies
+        run: |
+          DEPS_HIGHEST="highest"
+          DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked"; fi)"
+          DEPS_LOWEST="$(if [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "lowest"; fi)"
+          echo "::set-output name=value::$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)"
+      - name: Detect PHP versions
+        id: versions
+        run: |
+          mkdir "$RUNNER_TEMP/easy-ci"
+          composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev symplify/easy-ci
+          echo "::set-output name=value::$("$RUNNER_TEMP/easy-ci/vendor/bin/easy-ci" php-versions-json)"
+      - name: Detect PHP extensions
+        id: extensions
+        run: |
+          echo "::set-output name=value::$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(", ")' -r -c composer.json)"
+
+  phpunit:
+    name: "PHP ${{ matrix.php }} (${{ matrix.os }} / ${{ matrix.dependencies }})"
+
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.beta }}
+    needs:
+      - settings
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+        beta:
+          - false
+        php: ${{ fromJson(needs.settings.outputs.versions) }}
+        dependencies: ${{ fromJson(needs.settings.outputs.dependencies) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ needs.settings.outputs.extensions }}
+      - name: Install dependencies
+        uses: "ramsey/composer-install@v1"
+        with:
+          composer-options: "--no-cache"
+          dependency-versions: ${{ matrix.dependencies }}
+      - name: Execute
+        run: |
+          vendor/bin/phpunit
