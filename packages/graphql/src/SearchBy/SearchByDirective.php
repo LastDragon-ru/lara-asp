@@ -16,16 +16,17 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThanOrEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\In;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\IsNotNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\NotEqual;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 use function array_merge;
-use function get_class;
 use function implode;
 use function is_array;
 use function is_null;
@@ -50,6 +51,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
     protected array $scalars = [
         'ID'      => [
             Equal::class,
+            NotEqual::class,
             LessThan::class,
             LessThanOrEqual::class,
             GreaterThan::class,
@@ -59,6 +61,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         ],
         'Int'     => [
             Equal::class,
+            NotEqual::class,
             LessThan::class,
             LessThanOrEqual::class,
             GreaterThan::class,
@@ -69,9 +72,11 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         'Float'   => 'Int',
         'Boolean' => [
             Equal::class,
+            NotEqual::class,
         ],
         'String'  => [
             Equal::class,
+            NotEqual::class,
             In::class,
         ],
     ];
@@ -171,7 +176,6 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             Available conditions.
             """
             input {$name} {
-                not: Boolean = false
                 and: [{$name}!]
                 or: [{$name}!]
                 {$content}
@@ -229,6 +233,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         // Add null for nullable
         if ($nullable) {
             $body[] = $this->getOperator(IsNull::class)->getDefinition($type, $nullable);
+            $body[] = $this->getOperator(IsNotNull::class)->getDefinition($type, $nullable);
         }
 
         // Add type
@@ -239,7 +244,6 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             Available operators for {$type} (only one operator allowed at a time).
             """
             input {$name} {
-                not: Boolean = false
                 {$content}
             }
         DEF));
@@ -273,7 +277,6 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             Where Has condition.
             """
             input {$name} {
-                not: Boolean = false
                 has: Boolean = true
                 where: [{$this->getInputType($document, $node)}!]
                 count: {$this->getScalarOperatorType($document, $this->getScalarTypeNode('Int'), false)} = {

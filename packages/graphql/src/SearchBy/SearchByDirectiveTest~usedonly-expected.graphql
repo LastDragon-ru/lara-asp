@@ -8,7 +8,6 @@ type Query {
 
 """Available conditions."""
 input SearchByInputProperties {
-  not: Boolean = false
   and: [SearchByInputProperties!]
   or: [SearchByInputProperties!]
   value: SearchByScalarStringNullable
@@ -16,14 +15,18 @@ input SearchByInputProperties {
 
 """Available operators for String (only one operator allowed at a time)."""
 input SearchByScalarStringNullable {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: String
+
+  """Not Equal (`!=`)."""
+  neq: String
 
   """Within a set of values."""
   in: [String!]
 
   """IS NULL (value of property not matter)"""
-  isnull: Boolean
+  isNull: Boolean
+
+  """IS NOT NULL (value of property not matter)"""
+  isNotNull: Boolean
 }

@@ -23,7 +23,6 @@ type Query {
 
 """Available conditions."""
 input SearchByInputNested {
-  not: Boolean = false
   and: [SearchByInputNested!]
   or: [SearchByInputNested!]
   value: SearchByScalarString
@@ -31,7 +30,6 @@ input SearchByInputNested {
 
 """Available conditions."""
 input SearchByInputProperties {
-  not: Boolean = false
   and: [SearchByInputProperties!]
   or: [SearchByInputProperties!]
   idScalar: SearchByScalarID
@@ -50,41 +48,46 @@ input SearchByInputProperties {
 
 """Where Has condition."""
 input SearchByRelationNested {
-  not: Boolean = false
   has: Boolean = true
   where: [SearchByInputNested!]
-  count: SearchByScalarInt = {not: false, gte: 1}
+  count: SearchByScalarInt = {gte: 1}
 }
 
 """
 Available operators for Boolean (only one operator allowed at a time).
 """
 input SearchByScalarBoolean {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: Boolean
+
+  """Not Equal (`!=`)."""
+  neq: Boolean
 }
 
 """
 Available operators for Boolean (only one operator allowed at a time).
 """
 input SearchByScalarBooleanNullable {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: Boolean
 
+  """Not Equal (`!=`)."""
+  neq: Boolean
+
   """IS NULL (value of property not matter)"""
-  isnull: Boolean
+  isNull: Boolean
+
+  """IS NOT NULL (value of property not matter)"""
+  isNotNull: Boolean
 }
 
 """Available operators for Float (only one operator allowed at a time)."""
 input SearchByScalarFloat {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: Float
+
+  """Not Equal (`!=`)."""
+  neq: Float
 
   """Less than (`<`)."""
   lt: Float
@@ -112,10 +115,11 @@ input SearchByScalarFloatBetween {
 
 """Available operators for Float (only one operator allowed at a time)."""
 input SearchByScalarFloatNullable {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: Float
+
+  """Not Equal (`!=`)."""
+  neq: Float
 
   """Less than (`<`)."""
   lt: Float
@@ -136,7 +140,10 @@ input SearchByScalarFloatNullable {
   between: SearchByScalarFloatNullableBetween
 
   """IS NULL (value of property not matter)"""
-  isnull: Boolean
+  isNull: Boolean
+
+  """IS NOT NULL (value of property not matter)"""
+  isNotNull: Boolean
 }
 
 input SearchByScalarFloatNullableBetween {
@@ -146,10 +153,11 @@ input SearchByScalarFloatNullableBetween {
 
 """Available operators for ID (only one operator allowed at a time)."""
 input SearchByScalarID {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: ID
+
+  """Not Equal (`!=`)."""
+  neq: ID
 
   """Less than (`<`)."""
   lt: ID
@@ -177,10 +185,11 @@ input SearchByScalarIDBetween {
 
 """Available operators for ID (only one operator allowed at a time)."""
 input SearchByScalarIDNullable {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: ID
+
+  """Not Equal (`!=`)."""
+  neq: ID
 
   """Less than (`<`)."""
   lt: ID
@@ -201,7 +210,10 @@ input SearchByScalarIDNullable {
   between: SearchByScalarIDNullableBetween
 
   """IS NULL (value of property not matter)"""
-  isnull: Boolean
+  isNull: Boolean
+
+  """IS NOT NULL (value of property not matter)"""
+  isNotNull: Boolean
 }
 
 input SearchByScalarIDNullableBetween {
@@ -211,10 +223,11 @@ input SearchByScalarIDNullableBetween {
 
 """Available operators for Int (only one operator allowed at a time)."""
 input SearchByScalarInt {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: Int
+
+  """Not Equal (`!=`)."""
+  neq: Int
 
   """Less than (`<`)."""
   lt: Int
@@ -242,10 +255,11 @@ input SearchByScalarIntBetween {
 
 """Available operators for Int (only one operator allowed at a time)."""
 input SearchByScalarIntNullable {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: Int
+
+  """Not Equal (`!=`)."""
+  neq: Int
 
   """Less than (`<`)."""
   lt: Int
@@ -266,7 +280,10 @@ input SearchByScalarIntNullable {
   between: SearchByScalarIntNullableBetween
 
   """IS NULL (value of property not matter)"""
-  isnull: Boolean
+  isNull: Boolean
+
+  """IS NOT NULL (value of property not matter)"""
+  isNotNull: Boolean
 }
 
 input SearchByScalarIntNullableBetween {
@@ -276,10 +293,11 @@ input SearchByScalarIntNullableBetween {
 
 """Available operators for String (only one operator allowed at a time)."""
 input SearchByScalarString {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: String
+
+  """Not Equal (`!=`)."""
+  neq: String
 
   """Within a set of values."""
   in: [String!]
@@ -287,14 +305,18 @@ input SearchByScalarString {
 
 """Available operators for String (only one operator allowed at a time)."""
 input SearchByScalarStringNullable {
-  not: Boolean = false
-
   """Equal (`=`)."""
   eq: String
+
+  """Not Equal (`!=`)."""
+  neq: String
 
   """Within a set of values."""
   in: [String!]
 
   """IS NULL (value of property not matter)"""
-  isnull: Boolean
+  isNull: Boolean
+
+  """IS NOT NULL (value of property not matter)"""
+  isNotNull: Boolean
 }
