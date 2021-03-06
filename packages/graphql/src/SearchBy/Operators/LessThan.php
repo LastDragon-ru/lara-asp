@@ -7,7 +7,7 @@ class LessThan extends BaseOperator {
         return 'lt';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'Less than (`<`).';
     }
 }

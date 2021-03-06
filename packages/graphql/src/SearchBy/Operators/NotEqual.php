@@ -7,7 +7,7 @@ class NotEqual extends BaseOperator {
         return 'neq';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'Not Equal (`!=`).';
     }
 }

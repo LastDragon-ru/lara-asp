@@ -10,7 +10,7 @@ class IsNull extends BaseOperator implements OperatorHasTypes {
         return 'isNull';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'IS NULL (value of property not matter)';
     }
 

@@ -7,7 +7,7 @@ class GreaterThanOrEqual extends BaseOperator {
         return 'gte';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'Greater than or equal to (`>=`).';
     }
 }

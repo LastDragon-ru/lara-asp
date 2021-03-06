@@ -7,7 +7,7 @@ class GreaterThan extends BaseOperator {
         return 'gt';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'Greater than (`>`).';
     }
 }

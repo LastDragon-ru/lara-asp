@@ -10,7 +10,7 @@ class Between extends BaseOperator implements OperatorHasTypesForScalar {
         return 'between';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'Within a range.';
     }
 

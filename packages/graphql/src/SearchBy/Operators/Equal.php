@@ -7,7 +7,7 @@ class Equal extends BaseOperator {
         return 'eq';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'Equal (`=`).';
     }
 }

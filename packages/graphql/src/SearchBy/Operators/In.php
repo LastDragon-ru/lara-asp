@@ -7,7 +7,7 @@ class In extends BaseOperator {
         return 'in';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'Within a set of values.';
     }
 

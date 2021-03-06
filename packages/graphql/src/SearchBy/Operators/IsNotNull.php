@@ -7,7 +7,7 @@ class IsNotNull extends IsNull {
         return 'isNotNull';
     }
 
-    public function getDescription(): string {
+    protected function getDescription(): string {
         return 'IS NOT NULL (value of property not matter)';
     }
 }

@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator;
 
 abstract class BaseOperator implements Operator {
-    abstract public function getDescription(): string;
+    abstract protected function getDescription(): string;
 
     public function getDefinition(string $type, bool $nullable): string {
         return <<<DEF
