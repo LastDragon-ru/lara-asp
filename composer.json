@@ -22,7 +22,9 @@
     "phpunit-assertions",
     "php",
     "spa",
-    "angular"
+    "angular",
+    "GraphQL",
+    "lighthouse-php"
   ],
   "support": {
     "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
@@ -35,9 +37,9 @@
     "ext-intl": "*",
     "ext-json": "*",
     "ext-libxml": "*",
+    "ext-mbstring": "*",
     "ext-xml": "*",
     "ext-xmlreader": "*",
-    "ext-mbstring": "*",
     "composer/composer": "^2.0.0",
     "doctrine/dbal": "^2.12.0|^3.0.0",
     "guzzlehttp/psr7": "^1.7.0",
@@ -45,6 +47,7 @@
     "jetbrains/phpstorm-attributes": "^1.0",
     "laravel/framework": "^8.22.1",
     "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
+    "nuwave/lighthouse": "^5.3",
     "opis/json-schema": "^1.0.19",
     "psr/http-message": "^1.0.0",
     "symfony/filesystem": "^5.2.0",
@@ -53,7 +56,9 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
+    "nunomaduro/larastan": "^0.7.0",
     "orchestra/testbench": "^6.9.0",
+    "phpstan/phpstan": "^0.12.77",
     "phpunit/phpunit": "^9.5.0",
     "slevomat/coding-standard": "dev-master",
     "squizlabs/php_codesniffer": "dev-master",
@@ -78,7 +83,8 @@
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
-      "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/"
+      "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
+      "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/"
     },
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
@@ -87,7 +93,8 @@
       "packages/testing/src/**Test.php",
       "packages/eloquent/src/**Test.php",
       "packages/formatter/src/**Test.php",
-      "packages/spa/src/**Test.php"
+      "packages/spa/src/**Test.php",
+      "packages/graphql/src/**Test.php"
     ]
   },
   "extra": {
@@ -95,7 +102,8 @@
       "providers": [
         "LastDragon_ru\\LaraASP\\Migrator\\Provider",
         "LastDragon_ru\\LaraASP\\Formatter\\Provider",
-        "LastDragon_ru\\LaraASP\\Spa\\Provider"
+        "LastDragon_ru\\LaraASP\\Spa\\Provider",
+        "LastDragon_ru\\LaraASP\\GraphQL\\Provider"
       ]
     }
   },
@@ -115,6 +123,7 @@
     "lastdragon-ru/lara-asp-testing": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",
-    "lastdragon-ru/lara-asp-spa": "self.version"
+    "lastdragon-ru/lara-asp-spa": "self.version",
+    "lastdragon-ru/lara-asp-graphql": "self.version"
   }
 }
