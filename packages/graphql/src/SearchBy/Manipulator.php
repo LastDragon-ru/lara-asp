@@ -3,8 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
@@ -33,7 +37,31 @@ class Manipulator {
         // empty
     }
 
-    public function getQueryType(InputObjectTypeDefinitionNode $node): string {
+    public function getConditionType(InputValueDefinitionNode $node): ListTypeNode {
+        $type = null;
+
+        if ((!$node->type instanceof ListTypeNode)) {
+            $def = $this->getTypeDefinitionNode($node);
+
+            if ($def instanceof InputObjectTypeDefinitionNode) {
+                $name = $this->getQueryType($def);
+                $type = Parser::typeReference("[{$name}!]");
+            }
+        } else {
+            $type = $node->type;
+        }
+
+        if ((!$type instanceof ListTypeNode)) {
+            throw new SearchByException(sprintf(
+                'Impossible to create Search Condition for `%s`.',
+                $node->name->value,
+            ));
+        }
+
+        return $type;
+    }
+
+    protected function getQueryType(InputObjectTypeDefinitionNode $node): string {
         // Exists?
         $name = $this->getQueryTypeName($node);
 
@@ -52,7 +80,7 @@ class Manipulator {
 
             $type       = ASTHelper::getUnderlyingTypeName($field);
             $nullable   = ($field->type instanceof NonNullTypeNode);
-            $typeNode   = $this->document->types[$type] ?? null;
+            $typeNode   = $this->getTypeDefinitionNode($field);
             $definition = null;
 
             if (is_null($typeNode) && $this->isScalar($type)) {
@@ -252,6 +280,15 @@ class Manipulator {
         return $this->container->make($class);
     }
 
+    // <editor-fold desc="AST Helpers">
+    // =========================================================================
+    protected function getTypeDefinitionNode(Node $node): ?TypeDefinitionNode {
+        $type       = ASTHelper::getUnderlyingTypeName($node);
+        $definition = $this->document->types[$type] ?? null;
+
+        return $definition;
+    }
+
     protected function addDummyType(DocumentAST $document, string $name): void {
         $document->setTypeDefinition(Parser::inputObjectTypeDefinition(
         /** @lang GraphQL */
@@ -266,4 +303,5 @@ class Manipulator {
             DEF,
         ));
     }
+    //</editor-fold>
 }

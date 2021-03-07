@@ -88,16 +88,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        // Our?
-        $input = $documentAST->types[ASTHelper::getUnderlyingTypeName($argDefinition)];
-
-        if (str_ends_with($input->name->value, static::NAME)) {
-            return;
-        }
-
-        // Update arg
         $manipulator         = new Manipulator($this->container, $documentAST, self::NAME, $this->scalars);
-        $type                = $manipulator->getQueryType($input);
-        $argDefinition->type = Parser::typeReference("[{$type}!]");
+        $argDefinition->type = $manipulator->getConditionType($argDefinition);
     }
 }
