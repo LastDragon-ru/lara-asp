@@ -65,7 +65,7 @@ class Manipulator {
         // Exists?
         $name = $this->getQueryTypeName($node);
 
-        if (isset($this->document->types[$name])) {
+        if ($this->isTypeDefinitionExists($name)) {
             return $name;
         }
 
@@ -130,7 +130,7 @@ class Manipulator {
         // Exists?
         $name = $this->getScalarTypeName($node, $nullable);
 
-        if (isset($this->document->types[$name])) {
+        if ($this->isTypeDefinitionExists($name)) {
             return $name;
         }
 
@@ -187,7 +187,7 @@ class Manipulator {
         // Exists?
         $name = $this->getRelationTypeName($node);
 
-        if (isset($this->document->types[$name])) {
+        if ($this->isTypeDefinitionExists($name)) {
             return $name;
         }
 
@@ -282,8 +282,14 @@ class Manipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================
-    protected function getTypeDefinitionNode(Node $node): ?TypeDefinitionNode {
-        $type       = ASTHelper::getUnderlyingTypeName($node);
+    protected function isTypeDefinitionExists(string $name): bool {
+        return (bool) $this->getTypeDefinitionNode($name);
+    }
+
+    protected function getTypeDefinitionNode(Node|string $node): ?TypeDefinitionNode {
+        $type       = $node instanceof Node
+            ? ASTHelper::getUnderlyingTypeName($node)
+            : $node;
         $definition = $this->document->types[$type] ?? null;
 
         return $definition;
