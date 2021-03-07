@@ -10,6 +10,10 @@ use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
 
+use function str_replace;
+
+use const PHP_EOL;
+
 class TestCase extends PackageTestCase {
     /**
      * @inheritdoc
@@ -29,6 +33,7 @@ class TestCase extends PackageTestCase {
         $graphql = $this->app->make(GraphQL::class);
         $schema  = $graphql->prepSchema();
         $schema  = SchemaPrinter::doPrint($schema);
+        $schema  = str_replace(PHP_EOL, "\n", $schema);
 
         return $schema;
     }
