@@ -2,21 +2,21 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\OperatorNegationable;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Manipulator;
 
-class In extends BaseOperator implements OperatorNegationable {
+class Not extends BaseOperator {
     public function getName(): string {
-        return 'in';
+        return 'not';
     }
 
     protected function getDescription(): string {
-        return 'Within a set of values.';
+        return 'Negation.';
     }
 
     /**
      * @inheritdoc
      */
     public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, "[{$scalar}!]", true);
+        return parent::getDefinition($map, $map[Manipulator::TYPE_FLAG], true);
     }
 }

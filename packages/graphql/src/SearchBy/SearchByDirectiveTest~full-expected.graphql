@@ -26,7 +26,7 @@ input SearchByConditionNested {
   and: [SearchByConditionNested!]
   or: [SearchByConditionNested!]
   not: [SearchByConditionNested!]
-  value: SearchByScalarString
+  value: SearchByScalarStringOrNull
 }
 
 """Available conditions."""
@@ -34,31 +34,26 @@ input SearchByConditionProperties {
   and: [SearchByConditionProperties!]
   or: [SearchByConditionProperties!]
   not: [SearchByConditionProperties!]
-  idScalar: SearchByScalarID
-  idScalarNotNull: SearchByScalarIDNullable
-  intScalar: SearchByScalarInt
-  inScalarNotNull: SearchByScalarIntNullable
-  floatScalar: SearchByScalarFloat
-  floatScalarNotNull: SearchByScalarFloatNullable
-  stringScalar: SearchByScalarString
-  stringScalarNotNull: SearchByScalarStringNullable
-  booleanScalar: SearchByScalarBoolean
-  booleanScalarNotNull: SearchByScalarBooleanNullable
+  idScalar: SearchByScalarIDOrNull
+  idScalarNotNull: SearchByScalarID
+  intScalar: SearchByScalarIntOrNull
+  inScalarNotNull: SearchByScalarInt
+  floatScalar: SearchByScalarFloatOrNull
+  floatScalarNotNull: SearchByScalarFloat
+  stringScalar: SearchByScalarStringOrNull
+  stringScalarNotNull: SearchByScalarString
+  booleanScalar: SearchByScalarBooleanOrNull
+  booleanScalarNotNull: SearchByScalarBoolean
   nested: SearchByRelationNested
   nestedNotNull: SearchByRelationNested
 }
 
-enum SearchByOperatorIsNotNull {
-  YES
-}
-
-enum SearchByOperatorIsNull {
-  YES
-}
-
 """Where Has condition."""
 input SearchByRelationNested {
-  has: Boolean = true
+  has: SearchByTypeFlag = yes
+
+  """Negation."""
+  not: SearchByTypeFlag
   where: [SearchByConditionNested!]
   count: SearchByScalarInt = {gte: 1}
 }
@@ -70,25 +65,22 @@ input SearchByScalarBoolean {
   """Equal (`=`)."""
   eq: Boolean
 
-  """Not Equal (`!=`)."""
-  neq: Boolean
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
 """
 Available operators for Boolean (only one operator allowed at a time).
 """
-input SearchByScalarBooleanNullable {
+input SearchByScalarBooleanOrNull {
   """Equal (`=`)."""
   eq: Boolean
 
-  """Not Equal (`!=`)."""
-  neq: Boolean
-
   """IS NULL (value of property not matter)"""
-  isNull: SearchByOperatorIsNull
+  isNull: SearchByTypeFlag
 
-  """IS NOT NULL (value of property not matter)"""
-  isNotNull: SearchByOperatorIsNotNull
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
 """Available operators for Float (only one operator allowed at a time)."""
@@ -96,9 +88,6 @@ input SearchByScalarFloat {
   """Equal (`=`)."""
   eq: Float
 
-  """Not Equal (`!=`)."""
-  neq: Float
-
   """Less than (`<`)."""
   lt: Float
 
@@ -115,21 +104,21 @@ input SearchByScalarFloat {
   in: [Float!]
 
   """Within a range."""
-  between: SearchByScalarFloatBetween
+  between: SearchByScalarFloatOperatorBetween
+
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
-input SearchByScalarFloatBetween {
+input SearchByScalarFloatOperatorBetween {
   min: Float!
   max: Float!
 }
 
 """Available operators for Float (only one operator allowed at a time)."""
-input SearchByScalarFloatNullable {
+input SearchByScalarFloatOrNull {
   """Equal (`=`)."""
   eq: Float
-
-  """Not Equal (`!=`)."""
-  neq: Float
 
   """Less than (`<`)."""
   lt: Float
@@ -147,13 +136,13 @@ input SearchByScalarFloatNullable {
   in: [Float!]
 
   """Within a range."""
-  between: SearchByScalarFloatBetween
+  between: SearchByScalarFloatOperatorBetween
 
   """IS NULL (value of property not matter)"""
-  isNull: SearchByOperatorIsNull
+  isNull: SearchByTypeFlag
 
-  """IS NOT NULL (value of property not matter)"""
-  isNotNull: SearchByOperatorIsNotNull
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
 """Available operators for ID (only one operator allowed at a time)."""
@@ -161,23 +150,26 @@ input SearchByScalarID {
   """Equal (`=`)."""
   eq: ID
 
-  """Not Equal (`!=`)."""
-  neq: ID
+  """Within a set of values."""
+  in: [ID!]
+
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
 """Available operators for ID (only one operator allowed at a time)."""
-input SearchByScalarIDNullable {
+input SearchByScalarIDOrNull {
   """Equal (`=`)."""
   eq: ID
 
-  """Not Equal (`!=`)."""
-  neq: ID
+  """Within a set of values."""
+  in: [ID!]
 
   """IS NULL (value of property not matter)"""
-  isNull: SearchByOperatorIsNull
+  isNull: SearchByTypeFlag
 
-  """IS NOT NULL (value of property not matter)"""
-  isNotNull: SearchByOperatorIsNotNull
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
 """Available operators for Int (only one operator allowed at a time)."""
@@ -185,9 +177,6 @@ input SearchByScalarInt {
   """Equal (`=`)."""
   eq: Int
 
-  """Not Equal (`!=`)."""
-  neq: Int
-
   """Less than (`<`)."""
   lt: Int
 
@@ -204,21 +193,21 @@ input SearchByScalarInt {
   in: [Int!]
 
   """Within a range."""
-  between: SearchByScalarIntBetween
+  between: SearchByScalarIntOperatorBetween
+
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
-input SearchByScalarIntBetween {
+input SearchByScalarIntOperatorBetween {
   min: Int!
   max: Int!
 }
 
 """Available operators for Int (only one operator allowed at a time)."""
-input SearchByScalarIntNullable {
+input SearchByScalarIntOrNull {
   """Equal (`=`)."""
   eq: Int
-
-  """Not Equal (`!=`)."""
-  neq: Int
 
   """Less than (`<`)."""
   lt: Int
@@ -236,13 +225,13 @@ input SearchByScalarIntNullable {
   in: [Int!]
 
   """Within a range."""
-  between: SearchByScalarIntBetween
+  between: SearchByScalarIntOperatorBetween
 
   """IS NULL (value of property not matter)"""
-  isNull: SearchByOperatorIsNull
+  isNull: SearchByTypeFlag
 
-  """IS NOT NULL (value of property not matter)"""
-  isNotNull: SearchByOperatorIsNotNull
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
 """Available operators for String (only one operator allowed at a time)."""
@@ -250,27 +239,28 @@ input SearchByScalarString {
   """Equal (`=`)."""
   eq: String
 
-  """Not Equal (`!=`)."""
-  neq: String
-
   """Within a set of values."""
   in: [String!]
+
+  """Negation."""
+  not: SearchByTypeFlag
 }
 
 """Available operators for String (only one operator allowed at a time)."""
-input SearchByScalarStringNullable {
+input SearchByScalarStringOrNull {
   """Equal (`=`)."""
   eq: String
-
-  """Not Equal (`!=`)."""
-  neq: String
 
   """Within a set of values."""
   in: [String!]
 
   """IS NULL (value of property not matter)"""
-  isNull: SearchByOperatorIsNull
+  isNull: SearchByTypeFlag
 
-  """IS NOT NULL (value of property not matter)"""
-  isNotNull: SearchByOperatorIsNotNull
+  """Negation."""
+  not: SearchByTypeFlag
+}
+
+enum SearchByTypeFlag {
+  yes
 }

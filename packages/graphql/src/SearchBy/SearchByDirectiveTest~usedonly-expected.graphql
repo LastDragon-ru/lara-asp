@@ -11,31 +11,21 @@ input SearchByConditionProperties {
   and: [SearchByConditionProperties!]
   or: [SearchByConditionProperties!]
   not: [SearchByConditionProperties!]
-  value: SearchByScalarStringNullable
-}
-
-enum SearchByOperatorIsNotNull {
-  YES
-}
-
-enum SearchByOperatorIsNull {
-  YES
+  value: SearchByScalarString
 }
 
 """Available operators for String (only one operator allowed at a time)."""
-input SearchByScalarStringNullable {
+input SearchByScalarString {
   """Equal (`=`)."""
   eq: String
-
-  """Not Equal (`!=`)."""
-  neq: String
 
   """Within a set of values."""
   in: [String!]
 
-  """IS NULL (value of property not matter)"""
-  isNull: SearchByOperatorIsNull
+  """Negation."""
+  not: SearchByTypeFlag
+}
 
-  """IS NOT NULL (value of property not matter)"""
-  isNotNull: SearchByOperatorIsNotNull
+enum SearchByTypeFlag {
+  yes
 }

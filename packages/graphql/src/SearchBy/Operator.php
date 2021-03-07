@@ -5,5 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 interface Operator {
     public function getName(): string;
 
-    public function getDefinition(string $type, bool $nullable): string;
+    /**
+     * @param array<string, string> $map
+     */
+    public function getDefinition(array $map, string $scalar, bool $nullable): string;
 }

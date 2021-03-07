@@ -11,21 +11,37 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\IsNotNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\IsNull;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 
+use function array_map;
 use function array_merge;
 use function implode;
+use function is_a;
 use function is_array;
 use function is_null;
 use function sprintf;
 use function tap;
 
 class Manipulator {
+    public const TYPE_FLAG = 'Flag';
+
+    /**
+     * Maps internal (operators) names to fully qualified names.
+     *
+     * @var array<string,string>
+     */
+    protected array $map = [];
+    /**
+     * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator|null>
+     */
+    protected array $operators = [];
+
     /**
      * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>> $scalars
      */
@@ -35,9 +51,11 @@ class Manipulator {
         protected string $name,
         protected array $scalars,
     ) {
-        // empty
+        $this->addRootTypeDefinitions();
     }
 
+    // <editor-fold desc="API">
+    // =========================================================================
     public function getConditionsType(InputValueDefinitionNode $node): ListTypeNode {
         $type = null;
 
@@ -61,7 +79,10 @@ class Manipulator {
 
         return $type;
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Types">
+    // =========================================================================
     protected function getInputType(InputObjectTypeDefinitionNode $node): string {
         // Exists?
         $name = $this->getConditionTypeName($node);
@@ -72,7 +93,7 @@ class Manipulator {
 
         // Add type
         /** @var \GraphQL\Language\AST\InputObjectTypeDefinitionNode $type */
-        $type = Parser::inputObjectTypeDefinition(
+        $type = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Available conditions.
@@ -83,16 +104,24 @@ class Manipulator {
                 not: [{$name}!]
             }
             DEF,
-        );
-
-        $this->document->setTypeDefinition($type);
+        ));
 
         // Add searchable fields
         /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
         foreach ($node->fields as $field) {
+            // Name should be unique
+            $fieldName = $field->name->value;
+
+            if (isset($type->fields[$fieldName])) {
+                throw new SearchByException(sprintf(
+                    'Property with name `%s` already defined.',
+                    $fieldName,
+                ));
+            }
+
             // Create Type for Search
             $fieldType       = ASTHelper::getUnderlyingTypeName($field);
-            $fieldNullable   = ($field->type instanceof NonNullTypeNode);
+            $fieldNullable   = !($field->type instanceof NonNullTypeNode);
             $fieldTypeNode   = $this->getTypeDefinitionNode($field);
             $fieldDefinition = null;
 
@@ -154,26 +183,22 @@ class Manipulator {
             ));
         }
 
-        // Add null for nullable
+        // Add `null` for nullable
         if ($nullable) {
             $operators[] = IsNull::class;
-            $operators[] = IsNotNull::class;
         }
 
-        // Generate
-        $body = [];
-
-        foreach ($operators as $operator) {
-            $operator     = $this->getOperator($operator);
-            $operatorType = $this->getOperatorType($node, $type, $nullable, $operator);
-
-            $body[] = $operator->getDefinition($operatorType, $nullable);
+        // Add `not` for negationable
+        if (Arr::first($operators, static fn(string $o) => is_a($o, OperatorNegationable::class, true))) {
+            $operators[] = Not::class;
         }
 
         // Add type
-        $content = implode("\n", $body);
+        $content = implode("\n", array_map(function (string $operator) use ($node, $nullable): string {
+            return $this->getScalarOperatorType($this->getOperator($operator), $node, $nullable);
+        }, $operators));
 
-        $this->document->setTypeDefinition(Parser::inputObjectTypeDefinition(
+        $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Available operators for {$type} (only one operator allowed at a time).
@@ -188,6 +213,38 @@ class Manipulator {
         return $name;
     }
 
+    protected function getScalarOperatorType(
+        Operator $operator,
+        ScalarTypeDefinitionNode $node,
+        bool $nullable,
+    ): string {
+        // Add types for Scalars
+        if ($operator instanceof OperatorHasTypesForScalar) {
+            $this->addTypeDefinitions($operator, $operator->getTypeDefinitionsForScalar(
+                $this->getScalarOperatorTypeName($operator, $node, false),
+                $node->name->value,
+            ));
+        }
+
+        if ($operator instanceof OperatorHasTypesForScalarNullable) {
+            $this->addTypeDefinitions($operator, $operator->getTypeDefinitionsForScalar(
+                $this->getScalarOperatorTypeName($operator, $node, $nullable),
+                $node->name->value,
+                $nullable,
+            ));
+        }
+
+        // Named map
+        $map  = array_merge(
+            $this->map[$operator::class] ?? [],
+            $this->map[$this::class] ?? [],
+        );
+        $type = $operator->getDefinition($map, $node->name->value, $nullable);
+
+        // Return
+        return $type;
+    }
+
     protected function getRelationType(InputObjectTypeDefinitionNode $node, bool $nullable): string {
         // Exists?
         $name = $this->getRelationTypeName($node);
@@ -196,20 +253,24 @@ class Manipulator {
             return $name;
         }
 
-        // Add dummy type to avoid infinite loop
-        $this->addDummyType($this->document, $name);
-
         // Add type
+        $type = $this->getInputType($node);
+        $map  = $this->map[$this::class] ?? [];
+        $int  = $this->getScalarType($this->getScalarTypeNode('Int'), false);
+        $gte  = $this->getOperator(GreaterThanOrEqual::class)->getName();
+        $not  = $this->getOperator(Not::class)->getDefinition($map, '', true);
+
         $this->document->setTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Where Has condition.
             """
             input {$name} {
-                has: Boolean = true
-                where: [{$this->getInputType($node)}!]
-                count: {$this->getScalarType($this->getScalarTypeNode('Int'), false)} = {
-                    {$this->getOperator(GreaterThanOrEqual::class)->getName()}: 1
+                has: {$map[self::TYPE_FLAG]} = yes
+                {$not}
+                where: [{$type}!]
+                count: {$int} = {
+                    {$gte}: 1
                 }
             }
             DEF,
@@ -218,62 +279,53 @@ class Manipulator {
         // Return
         return $name;
     }
+    // </editor-fold>
 
-    protected function getOperatorType(
-        ScalarTypeDefinitionNode $node,
-        string $type,
-        bool $nullable,
-        Operator $operator,
-    ): string {
-        $name  = $type;
-        $types = [];
-
-        if ($operator instanceof OperatorHasTypes) {
-            $name  = $this->getOperatorTypeName($operator);
-            $types = array_merge($operator->getTypeDefinitions($name));
-        }
-
-        if ($operator instanceof OperatorHasTypesForScalar) {
-            $name  = $this->getOperatorTypeName($operator, $this->getScalarTypeName($node, false));
-            $types = array_merge($operator->getTypeDefinitionsForScalar($name, $type));
-        }
-
-        if ($operator instanceof OperatorHasTypesForScalarNullable) {
-            $name  = $this->getOperatorTypeName($operator, $this->getScalarTypeName($node, $nullable));
-            $types = array_merge($operator->getTypeDefinitionsForScalar($name, $type, $nullable));
-        }
-
-        foreach ($types as $type) {
-            $this->document->setTypeDefinition($type);
-        }
-
-        return $name;
+    // <editor-fold desc="Defaults">
+    // =========================================================================
+    protected function addRootTypeDefinitions(): void {
+        $this->addTypeDefinitions($this, [
+            self::TYPE_FLAG => Parser::enumTypeDefinition(
+            /** @lang GraphQL */
+                <<<GRAPHQL
+                enum {$this->name}TypeFlag {
+                    yes
+                }
+                GRAPHQL,
+            ),
+        ]);
     }
+    // </editor-fold>
 
-    protected function getTypeName(string $name): string {
-        return "{$this->name}Type{$name}";
-    }
-
+    // <editor-fold desc="Names">
+    // =========================================================================
     protected function getConditionTypeName(InputObjectTypeDefinitionNode $node): string {
         return "{$this->name}Condition{$node->name->value}";
     }
 
     protected function getScalarTypeName(ScalarTypeDefinitionNode $node, bool $nullable): string {
-        return "{$this->name}Scalar{$node->name->value}".($nullable ? 'Nullable' : '');
+        return "{$this->name}Scalar{$node->name->value}".($nullable ? 'OrNull' : '');
     }
 
     protected function getRelationTypeName(InputObjectTypeDefinitionNode $node): string {
         return "{$this->name}Relation{$node->name->value}";
     }
 
-    protected function getOperatorTypeName(Operator $operator, string $base = null): string {
-        return ($base ?: "{$this->name}Operator").Str::studly($operator->getName());
-    }
+    protected function getScalarOperatorTypeName(
+        Operator $operator,
+        ScalarTypeDefinitionNode $node = null,
+        bool $nullable = null,
+    ): string {
+        $op   = Str::studly($operator->getName());
+        $base = $node ? $this->getScalarTypeName($node, $nullable) : $this->name;
+        $name = "{$base}Operator{$op}";
 
-    protected function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
-        return Parser::scalarTypeDefinition("scalar {$scalar}");
+        return $name;
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Helpers">
+    // =========================================================================
     protected function isScalar(string $type): bool {
         return isset($this->scalars[$type]);
     }
@@ -282,15 +334,25 @@ class Manipulator {
      * @param class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator> $class
      */
     protected function getOperator(string $class): Operator {
-        return $this->container->make($class);
+        $operator = $this->operators[$class] ?? null;
+
+        if (!$operator) {
+            $this->operators[$class] = $this->container->make($class);
+            $operator                = $this->operators[$class];
+
+            if ($operator instanceof OperatorHasTypes) {
+                $this->addTypeDefinitions($operator, $operator->getTypeDefinitions(
+                    $this->getScalarOperatorTypeName($operator),
+                ));
+            }
+        }
+
+        return $operator;
     }
+    // </editor-fold>
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================
-//    protected function getNodeName(NamedTypeNode $node): string {
-//        return $node->
-//    }
-
     protected function isTypeDefinitionExists(string $name): bool {
         return (bool) $this->getTypeDefinitionNode($name);
     }
@@ -304,19 +366,28 @@ class Manipulator {
         return $definition;
     }
 
-    protected function addDummyType(DocumentAST $document, string $name): void {
-        $document->setTypeDefinition(Parser::inputObjectTypeDefinition(
-        /** @lang GraphQL */
-            <<<DEF
-            """
-            This is a dummy type that used internally. If you see it, this is
-            probably a bug, please contact to developer.
-            """
-            input {$name} {
-                dummy: Boolean!
-            }
-            DEF,
-        ));
+    protected function addTypeDefinition(string $name, TypeDefinitionNode $definition): TypeDefinitionNode {
+        if (!$this->isTypeDefinitionExists($name)) {
+            $this->document->setTypeDefinition($definition);
+        }
+
+        return $this->getTypeDefinitionNode($name);
+    }
+
+    /**
+     * @param array<\GraphQL\Language\AST\TypeDefinitionNode> $definitions
+     */
+    protected function addTypeDefinitions(object $owner, array $definitions): void {
+        foreach ($definitions as $name => $definition) {
+            $fullname                        = $definition->name->value;
+            $this->map[$owner::class][$name] = $fullname;
+
+            $this->addTypeDefinition($fullname, $definition);
+        }
+    }
+
+    protected function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
+        return Parser::scalarTypeDefinition("scalar {$scalar}");
     }
     //</editor-fold>
 }

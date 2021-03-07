@@ -8,7 +8,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
  */
 interface OperatorHasTypesForScalar extends Operator {
     /**
-     * @return array<\GraphQL\Language\AST\TypeDefinitionNode>
+     * @return array<string,\GraphQL\Language\AST\TypeDefinitionNode>
      */
-    public function getTypeDefinitionsForScalar(string $name, string $type): array;
+    public function getTypeDefinitionsForScalar(string $prefix, string $scalar): array;
 }

@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-class Equal extends BaseOperator {
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\OperatorNegationable;
+
+class Equal extends BaseOperator implements OperatorNegationable {
     public function getName(): string {
         return 'eq';
     }

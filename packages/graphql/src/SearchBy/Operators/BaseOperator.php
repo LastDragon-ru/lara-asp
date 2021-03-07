@@ -7,12 +7,15 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator;
 abstract class BaseOperator implements Operator {
     abstract protected function getDescription(): string;
 
-    public function getDefinition(string $type, bool $nullable): string {
+    /**
+     * @inheritdoc
+     */
+    public function getDefinition(array $map, string $scalar, bool $nullable): string {
         return <<<DEF
         """
         {$this->getDescription()}
         """
-        {$this->getName()}: {$type}
+        {$this->getName()}: {$scalar}
 
         DEF;
     }

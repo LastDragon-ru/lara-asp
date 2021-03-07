@@ -14,7 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThanOrEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\In;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\NotEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -41,11 +41,10 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
     protected array $scalars = [
         'ID'      => [
             Equal::class,
-            NotEqual::class,
+            In::class,
         ],
         'Int'     => [
             Equal::class,
-            NotEqual::class,
             LessThan::class,
             LessThanOrEqual::class,
             GreaterThan::class,
@@ -56,11 +55,9 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         'Float'   => 'Int',
         'Boolean' => [
             Equal::class,
-            NotEqual::class,
         ],
         'String'  => [
             Equal::class,
-            NotEqual::class,
             In::class,
         ],
     ];

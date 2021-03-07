@@ -8,7 +8,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
  */
 interface OperatorHasTypes extends Operator {
     /**
-     * @return array<\GraphQL\Language\AST\TypeDefinitionNode>
+     * @return array<string,\GraphQL\Language\AST\TypeDefinitionNode>
      */
-    public function getTypeDefinitions(string $name): array;
+    public function getTypeDefinitions(string $prefix): array;
 }
