@@ -10,10 +10,6 @@ use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
 
-use function str_replace;
-
-use const PHP_EOL;
-
 class TestCase extends PackageTestCase {
     /**
      * @inheritdoc
