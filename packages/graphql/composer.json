@@ -28,6 +28,9 @@
     "lastdragon-ru/lara-asp-testing": "self.version",
     "orchestra/testbench": "^6.9.0"
   },
+  "suggest": {
+    "ext-fileinfo": "Required for league/flysystem"
+  },
   "autoload": {
     "psr-4": {
       "LastDragon_ru\\LaraASP\\GraphQL\\": "src/"
