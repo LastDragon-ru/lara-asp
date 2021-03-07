@@ -33,7 +33,6 @@ class TestCase extends PackageTestCase {
         $graphql = $this->app->make(GraphQL::class);
         $schema  = $graphql->prepSchema();
         $schema  = SchemaPrinter::doPrint($schema);
-        $schema  = str_replace([PHP_EOL, "\r\n"], "\n", $schema);
 
         return $schema;
     }
