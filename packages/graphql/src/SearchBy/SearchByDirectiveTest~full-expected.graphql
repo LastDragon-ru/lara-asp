@@ -55,7 +55,7 @@ input SearchByRelationNested {
   """Negation."""
   not: SearchByTypeFlag
   where: [SearchByConditionNested!]
-  count: SearchByScalarInt = {gte: 1}
+  count: SearchByScalarHas = {gte: 1}
 }
 
 """
@@ -140,6 +140,27 @@ input SearchByScalarFloatOrNull {
 
   """IS NULL (value of property not matter)"""
   isNull: SearchByTypeFlag
+
+  """Negation."""
+  not: SearchByTypeFlag
+}
+
+"""Available operators for Has (only one operator allowed at a time)."""
+input SearchByScalarHas {
+  """Equal (`=`)."""
+  eq: Int
+
+  """Less than (`<`)."""
+  lt: Int
+
+  """Less than or equal to (`<=`)."""
+  lte: Int
+
+  """Greater than (`>`)."""
+  gt: Int
+
+  """Greater than or equal to (`>=`)."""
+  gte: Int
 
   """Negation."""
   not: SearchByTypeFlag

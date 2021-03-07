@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Equal;
@@ -14,14 +13,11 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThanOrEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\In;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
-use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 use function array_merge;
-use function str_ends_with;
 
 class SearchByDirective extends BaseDirective implements ArgManipulator {
     protected const NAME = 'SearchBy';
@@ -39,6 +35,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
      * @var array<string, array<string>|string>
      */
     protected array $scalars = [
+        // Standard types
         'ID'      => [
             Equal::class,
             In::class,
@@ -60,14 +57,33 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             Equal::class,
             In::class,
         ],
+        // Special type for Relations
+        'Has'     => [
+            Equal::class,
+            LessThan::class,
+            LessThanOrEqual::class,
+            GreaterThan::class,
+            GreaterThanOrEqual::class,
+        ],
+    ];
+
+    /**
+     * Allow redefine scalar type in conditions.
+     *
+     * @var array<string,string>
+     */
+    protected array $aliases = [
+        'Has' => 'Int',
     ];
 
     /**
      * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>> $scalars
+     * @param array<string,string>                                                                 $aliases
      */
-    public function __construct(Container $container, array $scalars) {
+    public function __construct(Container $container, array $scalars, array $aliases) {
         $this->container = $container;
         $this->scalars   = array_merge($this->scalars, $scalars);
+        $this->aliases   = array_merge($this->aliases, $aliases);
     }
 
     public static function definition(): string {
@@ -85,7 +101,12 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $manipulator         = new Manipulator($this->container, $documentAST, self::NAME, $this->scalars);
-        $argDefinition->type = $manipulator->getConditionsType($argDefinition);
+        $argDefinition->type = (new Manipulator(
+            $this->container,
+            $documentAST,
+            self::NAME,
+            $this->scalars,
+            $this->aliases,
+        ))->getConditionsType($argDefinition);
     }
 }

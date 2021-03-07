@@ -44,12 +44,14 @@ class Manipulator {
 
     /**
      * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>> $scalars
+     * @param array<string,string>                                                                 $aliases
      */
     public function __construct(
         protected Container $container,
         protected DocumentAST $document,
         protected string $name,
         protected array $scalars,
+        protected array $aliases,
     ) {
         $this->addRootTypeDefinitions();
     }
@@ -194,8 +196,11 @@ class Manipulator {
         }
 
         // Add type
-        $content = implode("\n", array_map(function (string $operator) use ($node, $nullable): string {
-            return $this->getScalarOperatorType($this->getOperator($operator), $node, $nullable);
+        $scalar  = isset($this->aliases[$type])
+            ? $this->getScalarTypeNode($this->aliases[$type])
+            : $node;
+        $content = implode("\n", array_map(function (string $operator) use ($scalar, $nullable): string {
+            return $this->getScalarOperatorType($this->getOperator($operator), $scalar, $nullable);
         }, $operators));
 
         $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
@@ -256,9 +261,9 @@ class Manipulator {
         // Add type
         $type = $this->getInputType($node);
         $map  = $this->map[$this::class] ?? [];
-        $int  = $this->getScalarType($this->getScalarTypeNode('Int'), false);
         $gte  = $this->getOperator(GreaterThanOrEqual::class)->getName();
         $not  = $this->getOperator(Not::class)->getDefinition($map, '', true);
+        $has  = $this->getScalarType($this->getScalarTypeNode('Has'), false);
 
         $this->document->setTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
@@ -269,7 +274,7 @@ class Manipulator {
                 has: {$map[self::TYPE_FLAG]} = yes
                 {$not}
                 where: [{$type}!]
-                count: {$int} = {
+                count: {$has} = {
                     {$gte}: 1
                 }
             }

@@ -21,7 +21,8 @@ class Provider extends ServiceProvider {
 
     public function boot(Dispatcher $dispatcher): void {
         $this->bootConfig([
-            'scalars',
+            'search_by.scalars',
+            'search_by.aliases',
         ]);
         $this->bootDirectives($dispatcher);
     }
@@ -46,7 +47,8 @@ class Provider extends ServiceProvider {
             $container = $this->app;
             $config    = $container->make(Repository::class);
             $scalars   = $config->get("{$this->getName()}.search_by.scalars");
-            $instance  = new SearchByDirective($container, $scalars);
+            $aliases   = $config->get("{$this->getName()}.search_by.aliases");
+            $instance  = new SearchByDirective($container, $scalars, $aliases);
 
             return $instance;
         });
