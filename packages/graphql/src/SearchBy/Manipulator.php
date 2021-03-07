@@ -23,6 +23,7 @@ use function implode;
 use function is_array;
 use function is_null;
 use function sprintf;
+use function tap;
 
 class Manipulator {
     /**
@@ -37,14 +38,14 @@ class Manipulator {
         // empty
     }
 
-    public function getConditionType(InputValueDefinitionNode $node): ListTypeNode {
+    public function getConditionsType(InputValueDefinitionNode $node): ListTypeNode {
         $type = null;
 
         if ((!$node->type instanceof ListTypeNode)) {
             $def = $this->getTypeDefinitionNode($node);
 
             if ($def instanceof InputObjectTypeDefinitionNode) {
-                $name = $this->getQueryType($def);
+                $name = $this->getInputType($def);
                 $type = Parser::typeReference("[{$name}!]");
             }
         } else {
@@ -61,55 +62,17 @@ class Manipulator {
         return $type;
     }
 
-    protected function getQueryType(InputObjectTypeDefinitionNode $node): string {
+    protected function getInputType(InputObjectTypeDefinitionNode $node): string {
         // Exists?
-        $name = $this->getQueryTypeName($node);
+        $name = $this->getConditionTypeName($node);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
         }
 
-        // Add dummy type to avoid infinite loop
-        $this->addDummyType($this->document, $name);
-
-        // Create
-        $body = [];
-
-        foreach ($node->fields as $field) {
-            /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
-
-            $type       = ASTHelper::getUnderlyingTypeName($field);
-            $nullable   = ($field->type instanceof NonNullTypeNode);
-            $typeNode   = $this->getTypeDefinitionNode($field);
-            $definition = null;
-
-            if (is_null($typeNode) && $this->isScalar($type)) {
-                // TODO Is there any better way for this?
-                $typeNode = $this->getScalarTypeNode($type);
-            }
-
-            if ($typeNode instanceof InputObjectTypeDefinitionNode) {
-                $definition = $this->getRelationType($typeNode, $nullable);
-            } elseif ($typeNode instanceof ScalarTypeDefinitionNode) {
-                $definition = $this->getScalarType($typeNode, $nullable);
-            } else {
-                // empty
-            }
-
-            if ($definition) {
-                $body[] = "{$field->name->value}: {$definition}\n";
-            } else {
-                throw new SearchByException(sprintf(
-                    'Hmm... Seems `%s` not yet supported :( Please contact to developer.',
-                    $type,
-                ));
-            }
-        }
-
         // Add type
-        $content = implode("\n", $body);
-
-        $this->document->setTypeDefinition(Parser::inputObjectTypeDefinition(
+        /** @var \GraphQL\Language\AST\InputObjectTypeDefinitionNode $type */
+        $type = Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Available conditions.
@@ -117,10 +80,52 @@ class Manipulator {
             input {$name} {
                 and: [{$name}!]
                 or: [{$name}!]
-                {$content}
+                not: [{$name}!]
             }
             DEF,
-        ));
+        );
+
+        $this->document->setTypeDefinition($type);
+
+        // Add searchable fields
+        /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
+        foreach ($node->fields as $field) {
+            // Create Type for Search
+            $fieldType       = ASTHelper::getUnderlyingTypeName($field);
+            $fieldNullable   = ($field->type instanceof NonNullTypeNode);
+            $fieldTypeNode   = $this->getTypeDefinitionNode($field);
+            $fieldDefinition = null;
+
+            if (is_null($fieldTypeNode) && $this->isScalar($fieldType)) {
+                // TODO [SearchBy] Is there any better way for this?
+                $fieldTypeNode = $this->getScalarTypeNode($fieldType);
+            }
+
+            if ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
+                $fieldDefinition = $this->getRelationType($fieldTypeNode, $fieldNullable);
+            } elseif ($fieldTypeNode instanceof ScalarTypeDefinitionNode) {
+                $fieldDefinition = $this->getScalarType($fieldTypeNode, $fieldNullable);
+            } else {
+                // empty
+            }
+
+            // Create new Field
+            if ($fieldDefinition) {
+                // TODO [SearchBy] We probably not need all directives from the
+                //      original Input type, but cloning is the easiest way...
+                $type->fields[] = tap(
+                    $field->cloneDeep(),
+                    static function (InputValueDefinitionNode $field) use ($fieldDefinition): void {
+                        $field->type = Parser::typeReference($fieldDefinition);
+                    },
+                );
+            } else {
+                throw new SearchByException(sprintf(
+                    'Hmm... Seems `%s` not yet supported :( Please contact to developer.',
+                    $fieldType,
+                ));
+            }
+        }
 
         // Return
         return $name;
@@ -202,7 +207,7 @@ class Manipulator {
             """
             input {$name} {
                 has: Boolean = true
-                where: [{$this->getQueryType($node)}!]
+                where: [{$this->getInputType($node)}!]
                 count: {$this->getScalarType($this->getScalarTypeNode('Int'), false)} = {
                     {$this->getOperator(GreaterThanOrEqual::class)->getName()}: 1
                 }
@@ -249,8 +254,8 @@ class Manipulator {
         return "{$this->name}Type{$name}";
     }
 
-    protected function getQueryTypeName(InputObjectTypeDefinitionNode $node): string {
-        return "{$this->name}Query{$node->name->value}";
+    protected function getConditionTypeName(InputObjectTypeDefinitionNode $node): string {
+        return "{$this->name}Condition{$node->name->value}";
     }
 
     protected function getScalarTypeName(ScalarTypeDefinitionNode $node, bool $nullable): string {
@@ -282,6 +287,10 @@ class Manipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================
+//    protected function getNodeName(NamedTypeNode $node): string {
+//        return $node->
+//    }
+
     protected function isTypeDefinitionExists(string $name): bool {
         return (bool) $this->getTypeDefinitionNode($name);
     }

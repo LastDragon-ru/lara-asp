@@ -3,7 +3,15 @@ input Properties {
 }
 
 type Query {
-  test(where: [SearchByQueryProperties!]): ID!
+  test(where: [SearchByConditionProperties!]): ID!
+}
+
+"""Available conditions."""
+input SearchByConditionProperties {
+  and: [SearchByConditionProperties!]
+  or: [SearchByConditionProperties!]
+  not: [SearchByConditionProperties!]
+  value: SearchByScalarStringNullable
 }
 
 enum SearchByOperatorIsNotNull {
@@ -12,13 +20,6 @@ enum SearchByOperatorIsNotNull {
 
 enum SearchByOperatorIsNull {
   YES
-}
-
-"""Available conditions."""
-input SearchByQueryProperties {
-  and: [SearchByQueryProperties!]
-  or: [SearchByQueryProperties!]
-  value: SearchByScalarStringNullable
 }
 
 """Available operators for String (only one operator allowed at a time)."""

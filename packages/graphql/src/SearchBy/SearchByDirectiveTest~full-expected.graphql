@@ -18,28 +18,22 @@ input Properties {
 }
 
 type Query {
-  test(where: [SearchByQueryProperties!]): ID!
-}
-
-enum SearchByOperatorIsNotNull {
-  YES
-}
-
-enum SearchByOperatorIsNull {
-  YES
+  test(where: [SearchByConditionProperties!]): ID!
 }
 
 """Available conditions."""
-input SearchByQueryNested {
-  and: [SearchByQueryNested!]
-  or: [SearchByQueryNested!]
+input SearchByConditionNested {
+  and: [SearchByConditionNested!]
+  or: [SearchByConditionNested!]
+  not: [SearchByConditionNested!]
   value: SearchByScalarString
 }
 
 """Available conditions."""
-input SearchByQueryProperties {
-  and: [SearchByQueryProperties!]
-  or: [SearchByQueryProperties!]
+input SearchByConditionProperties {
+  and: [SearchByConditionProperties!]
+  or: [SearchByConditionProperties!]
+  not: [SearchByConditionProperties!]
   idScalar: SearchByScalarID
   idScalarNotNull: SearchByScalarIDNullable
   intScalar: SearchByScalarInt
@@ -54,10 +48,18 @@ input SearchByQueryProperties {
   nestedNotNull: SearchByRelationNested
 }
 
+enum SearchByOperatorIsNotNull {
+  YES
+}
+
+enum SearchByOperatorIsNull {
+  YES
+}
+
 """Where Has condition."""
 input SearchByRelationNested {
   has: Boolean = true
-  where: [SearchByQueryNested!]
+  where: [SearchByConditionNested!]
   count: SearchByScalarInt = {gte: 1}
 }
 

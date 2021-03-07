@@ -89,6 +89,6 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         ObjectTypeDefinitionNode &$parentType,
     ): void {
         $manipulator         = new Manipulator($this->container, $documentAST, self::NAME, $this->scalars);
-        $argDefinition->type = $manipulator->getConditionType($argDefinition);
+        $argDefinition->type = $manipulator->getConditionsType($argDefinition);
     }
 }
