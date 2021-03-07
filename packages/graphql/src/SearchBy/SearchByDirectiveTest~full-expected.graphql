@@ -161,29 +161,6 @@ input SearchByScalarID {
 
   """Not Equal (`!=`)."""
   neq: ID
-
-  """Less than (`<`)."""
-  lt: ID
-
-  """Less than or equal to (`<=`)."""
-  lte: ID
-
-  """Greater than (`>`)."""
-  gt: ID
-
-  """Greater than or equal to (`>=`)."""
-  gte: ID
-
-  """Within a set of values."""
-  in: [ID!]
-
-  """Within a range."""
-  between: SearchByScalarIDBetween
-}
-
-input SearchByScalarIDBetween {
-  min: ID!
-  max: ID!
 }
 
 """Available operators for ID (only one operator allowed at a time)."""
@@ -193,24 +170,6 @@ input SearchByScalarIDNullable {
 
   """Not Equal (`!=`)."""
   neq: ID
-
-  """Less than (`<`)."""
-  lt: ID
-
-  """Less than or equal to (`<=`)."""
-  lte: ID
-
-  """Greater than (`>`)."""
-  gt: ID
-
-  """Greater than or equal to (`>=`)."""
-  gte: ID
-
-  """Within a set of values."""
-  in: [ID!]
-
-  """Within a range."""
-  between: SearchByScalarIDBetween
 
   """IS NULL (value of property not matter)"""
   isNull: SearchByOperatorIsNull

@@ -42,12 +42,6 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         'ID'      => [
             Equal::class,
             NotEqual::class,
-            LessThan::class,
-            LessThanOrEqual::class,
-            GreaterThan::class,
-            GreaterThanOrEqual::class,
-            In::class,
-            Between::class,
         ],
         'Int'     => [
             Equal::class,
