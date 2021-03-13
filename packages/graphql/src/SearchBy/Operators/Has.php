@@ -12,6 +12,10 @@ class Has extends BaseOperator implements OperatorNegationable {
         return 'has';
     }
 
+    public function getPrecedence(): int {
+        return static::PrecedenceStructural;
+    }
+
     protected function getDescription(): string {
         return 'Has?';
     }

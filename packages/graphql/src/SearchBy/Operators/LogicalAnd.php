@@ -12,6 +12,10 @@ class LogicalAnd extends BaseOperator implements OperatorNegationable {
         return 'and';
     }
 
+    public function getPrecedence(): int {
+        return static::PrecedenceLogical;
+    }
+
     protected function getDescription(): string {
         return 'Logical `AND`.';
     }
