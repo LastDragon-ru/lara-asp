@@ -9,16 +9,16 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Equal;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Has;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\In;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LogicalAnd;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LogicalOr;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalAnd;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOr;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
@@ -75,7 +75,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuil
             LogicalOr::class,
         ],
         self::Relation => [
-            Has::class,
+            Relation::class,
             Equal::class,
             LessThan::class,
             LessThanOrEqual::class,
@@ -118,7 +118,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuil
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $argDefinition->type = (new Manipulator(
+        $argDefinition->type = (new AstManipulator(
             $this->container,
             $documentAST,
             self::Name,

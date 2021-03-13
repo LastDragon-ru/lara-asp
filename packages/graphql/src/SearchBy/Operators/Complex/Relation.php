@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 
 use function is_array;
@@ -14,7 +14,7 @@ use function reset;
 /**
  * @internal Must not be used directly.
  */
-class Has extends BaseOperator implements ComplexOperator, OperatorNegationable {
+class Relation extends BaseOperator implements ComplexOperator, OperatorNegationable {
     public function getName(): string {
         return 'has';
     }

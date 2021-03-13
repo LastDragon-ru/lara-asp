@@ -1,8 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
-
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Logical;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 /**
  * @internal Must not be used directly.

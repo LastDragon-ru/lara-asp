@@ -1,18 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 
-class LessThan extends BaseOperator implements ComparisonOperator {
+class GreaterThan extends BaseOperator implements ComparisonOperator {
     public function getName(): string {
-        return 'lt';
+        return 'gt';
     }
 
     protected function getDescription(): string {
-        return 'Less than (`<`).';
+        return 'Greater than (`>`).';
     }
 
     public function apply(
@@ -21,6 +21,6 @@ class LessThan extends BaseOperator implements ComparisonOperator {
         mixed $value,
         bool $not,
     ): EloquentBuilder|QueryBuilder {
-        return $builder->where($property, '<', $value);
+        return $builder->where($property, '>', $value);
     }
 }

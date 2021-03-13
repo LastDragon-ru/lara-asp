@@ -18,9 +18,9 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypes;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalarNullable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\IsNull;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Has;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 
@@ -33,7 +33,7 @@ use function is_null;
 use function sprintf;
 use function tap;
 
-class Manipulator {
+class AstManipulator {
     /**
      * Maps internal (operators) names to fully qualified names.
      *
@@ -247,7 +247,7 @@ class Manipulator {
         $operators = $this->getScalarOperators(SearchByDirective::Relation, false);
         $content   = implode("\n", array_map(function (string $operator) use ($input, $scalar): string {
             $operator = $this->getOperator($operator);
-            $node     = $operator instanceof Has ? $input : $scalar;
+            $node     = $operator instanceof Relation ? $input : $scalar;
             $type     = $this->getScalarOperatorType($operator, $node, false);
 
             return $type;
