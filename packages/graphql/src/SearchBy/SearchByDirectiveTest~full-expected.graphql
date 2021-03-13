@@ -23,10 +23,10 @@ type Query {
 
 """Available conditions."""
 input SearchByConditionNested {
-  """Logical `AND`."""
+  """Logical `and`."""
   and: [SearchByConditionNested!]
 
-  """Logical `OR`."""
+  """Logical `or`."""
   or: [SearchByConditionNested!]
 
   """Not."""
@@ -38,10 +38,10 @@ input SearchByConditionNested {
 
 """Available conditions."""
 input SearchByConditionProperties {
-  """Logical `AND`."""
+  """Logical `and`."""
   and: [SearchByConditionProperties!]
 
-  """Logical `OR`."""
+  """Logical `or`."""
   or: [SearchByConditionProperties!]
 
   """Not."""

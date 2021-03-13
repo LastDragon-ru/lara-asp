@@ -8,10 +8,10 @@ type Query {
 
 """Available conditions."""
 input SearchByConditionProperties {
-  """Logical `AND`."""
+  """Logical `and`."""
   and: [SearchByConditionProperties!]
 
-  """Logical `OR`."""
+  """Logical `or`."""
   or: [SearchByConditionProperties!]
 
   """Not."""

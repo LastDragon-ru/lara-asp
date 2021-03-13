@@ -2,28 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\OperatorNegationable;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Logical;
 
 /**
  * @internal Must not be used directly.
  */
-class LogicalOr extends BaseOperator implements OperatorNegationable {
+class LogicalOr extends Logical {
     public function getName(): string {
         return 'or';
-    }
-
-    public function getPrecedence(): int {
-        return static::PrecedenceLogical;
-    }
-
-    protected function getDescription(): string {
-        return 'Logical `OR`.';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, "[{$scalar}!]", true);
     }
 }

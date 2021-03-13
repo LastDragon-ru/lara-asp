@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
 /**
- * Indicates that {@link \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator} is
+ * Indicates that {@link \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator} is
  * complex and define own input type for each scalar type and it differs if
  * nullable.
  */

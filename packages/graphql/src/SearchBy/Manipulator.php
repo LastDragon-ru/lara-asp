@@ -13,9 +13,14 @@ use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Has;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypes;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalarNullable;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Has;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 
@@ -36,13 +41,13 @@ class Manipulator {
      */
     protected array $map = [];
     /**
-     * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator|null>
+     * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|null>
      */
     protected array $operators = [];
 
     /**
-     * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>> $scalars
-     * @param array<string,string>                                                                 $aliases
+     * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>> $scalars
+     * @param array<string,string>                                                                           $aliases
      */
     public function __construct(
         protected Container $container,
@@ -314,7 +319,7 @@ class Manipulator {
     }
 
     /**
-     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>
+     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
      */
     protected function getScalarOperators(string $scalar, bool $nullable): array {
         $operators = $scalar;
@@ -345,7 +350,7 @@ class Manipulator {
     }
 
     /**
-     * @param class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator> $class
+     * @param class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator> $class
      */
     protected function getOperator(string $class): Operator {
         $operator = $this->operators[$class] ?? null;

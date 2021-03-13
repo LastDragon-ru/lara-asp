@@ -6,6 +6,9 @@ use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThan;
@@ -18,11 +21,12 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LogicalAnd;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LogicalOr;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 use function array_merge;
 
-class SearchByDirective extends BaseDirective implements ArgManipulator {
+class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name        = 'SearchBy';
     public const Logic       = 'Logic';
     public const Relation    = 'Relation';
@@ -30,7 +34,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
     public const TypeFlag    = 'Flag';
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>|null
+     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>|null
      */
     protected ?array $operators = [];
 
@@ -90,8 +94,8 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
     ];
 
     /**
-     * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>> $scalars
-     * @param array<string,string>                                                                 $aliases
+     * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>> $scalars
+     * @param array<string,string>                                                                           $aliases
      */
     public function __construct(Container $container, array $scalars, array $aliases) {
         $this->container = $container;
@@ -121,5 +125,14 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             $this->scalars,
             $this->aliases,
         ))->getConditionsType($argDefinition);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handleBuilder($builder, $value): QueryBuilder|EloquentBuilder {
+        return (new SearchBuilder(
+            (new Collection($this->scalars))->flatten()->unique()->all(),
+        ))->build($builder, $value);
     }
 }

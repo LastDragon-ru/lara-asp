@@ -2,13 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\OperatorNegationable;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchByDirective;
 
 /**
  * @internal Must not be used directly.
  */
-class IsNull extends BaseOperator implements OperatorNegationable {
+class IsNull extends BaseOperator implements ComparisonOperator, OperatorNegationable {
     public function getName(): string {
         return 'isNull';
     }
@@ -22,5 +25,16 @@ class IsNull extends BaseOperator implements OperatorNegationable {
      */
     public function getDefinition(array $map, string $scalar, bool $nullable): string {
         return parent::getDefinition($map, $map[SearchByDirective::TypeFlag], true);
+    }
+
+    public function apply(
+        EloquentBuilder|QueryBuilder $builder,
+        string $property,
+        mixed $value,
+        bool $not,
+    ): EloquentBuilder|QueryBuilder {
+        return $not
+            ? $builder->whereNotNull($property)
+            : $builder->whereNull($property);
     }
 }

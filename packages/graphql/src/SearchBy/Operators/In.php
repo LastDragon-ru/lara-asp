@@ -2,9 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\OperatorNegationable;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator;
 
-class In extends BaseOperator implements OperatorNegationable {
+class In extends BaseOperator implements ComparisonOperator, OperatorNegationable {
     public function getName(): string {
         return 'in';
     }
@@ -18,5 +21,16 @@ class In extends BaseOperator implements OperatorNegationable {
      */
     public function getDefinition(array $map, string $scalar, bool $nullable): string {
         return parent::getDefinition($map, "[{$scalar}!]", true);
+    }
+
+    public function apply(
+        EloquentBuilder|QueryBuilder $builder,
+        string $property,
+        mixed $value,
+        bool $not,
+    ): EloquentBuilder|QueryBuilder {
+        return $not
+            ? $builder->whereNotIn($property, $value)
+            : $builder->whereIn($property, $value);
     }
 }

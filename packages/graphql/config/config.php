@@ -17,7 +17,7 @@ return [
          *
          * You can (re)define scalars and supported operators here.
          *
-         * @var array<string, array<string|\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>
+         * @var array<string, array<string|\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
          */
         'scalars' => [
             // empty
