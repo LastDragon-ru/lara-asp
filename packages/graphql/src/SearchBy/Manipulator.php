@@ -13,7 +13,7 @@ use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Has;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -29,8 +29,6 @@ use function sprintf;
 use function tap;
 
 class Manipulator {
-    public const TYPE_FLAG = 'Flag';
-
     /**
      * Maps internal (operators) names to fully qualified names.
      *
@@ -94,7 +92,6 @@ class Manipulator {
         }
 
         // Add type
-        /** @var \GraphQL\Language\AST\InputObjectTypeDefinitionNode $type */
         $type = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
             <<<DEF
             """
@@ -171,34 +168,11 @@ class Manipulator {
         }
 
         // Determine supported operators
-        $type      = $node->name->value;
-        $operators = $type;
-
-        do {
-            $operators = $this->scalars[$operators] ?? [];
-        } while (!is_array($operators));
-
-        if (empty($operators)) {
-            throw new SearchByException(sprintf(
-                'Generated scalar type is empty. Please check definition for `%s` scalar.',
-                $type,
-            ));
-        }
-
-        // Add `null` for nullable
-        if ($nullable) {
-            $operators[] = IsNull::class;
-        }
-
-        // Add `not` for negationable
-        if (Arr::first($operators, static fn(string $o) => is_a($o, OperatorNegationable::class, true))) {
-            $operators[] = Not::class;
-        }
+        $operators = $this->getScalarOperators($node, $nullable);
 
         // Add type
-        $scalar  = isset($this->aliases[$type])
-            ? $this->getScalarTypeNode($this->aliases[$type])
-            : $node;
+        $type    = $node->name->value;
+        $scalar  = $this->getScalarRealTypeNode($node);
         $content = implode("\n", array_map(function (string $operator) use ($scalar, $nullable): string {
             return $this->getScalarOperatorType($this->getOperator($operator), $scalar, $nullable);
         }, $operators));
@@ -259,24 +233,24 @@ class Manipulator {
         }
 
         // Add type
-        $type = $this->getInputType($node);
-        $map  = $this->map[$this::class] ?? [];
-        $gte  = $this->getOperator(GreaterThanOrEqual::class)->getName();
-        $not  = $this->getOperator(Not::class)->getDefinition($map, '', true);
-        $has  = $this->getScalarType($this->getScalarTypeNode('Has'), false);
+        $input     = $this->getScalarTypeNode($this->getInputType($node));
+        $scalar    = $this->getScalarRealTypeNode($this->getScalarTypeNode(SearchByDirective::RelationHas));
+        $operators = $this->getScalarOperators($this->getScalarTypeNode(SearchByDirective::Relation), false);
+        $content   = implode("\n", array_map(function (string $operator) use ($input, $scalar): string {
+            $operator = $this->getOperator($operator);
+            $node     = $operator instanceof Has ? $input : $scalar;
+            $type     = $this->getScalarOperatorType($operator, $node, false);
+
+            return $type;
+        }, $operators));
 
         $this->document->setTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Where Has condition.
+            Relation condition.
             """
             input {$name} {
-                has: {$map[self::TYPE_FLAG]} = yes
-                {$not}
-                where: [{$type}!]
-                count: {$has} = {
-                    {$gte}: 1
-                }
+                {$content}
             }
             DEF,
         ));
@@ -290,7 +264,7 @@ class Manipulator {
     // =========================================================================
     protected function addRootTypeDefinitions(): void {
         $this->addTypeDefinitions($this, [
-            self::TYPE_FLAG => Parser::enumTypeDefinition(
+            SearchByDirective::TypeFlag => Parser::enumTypeDefinition(
             /** @lang GraphQL */
                 <<<GRAPHQL
                 enum {$this->name}TypeFlag {
@@ -336,6 +310,38 @@ class Manipulator {
     }
 
     /**
+     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>
+     */
+    protected function getScalarOperators(ScalarTypeDefinitionNode $node, bool $nullable): array {
+        $scalar    = $node->name->value;
+        $operators = $scalar;
+
+        do {
+            $operators = $this->scalars[$operators] ?? [];
+        } while (!is_array($operators));
+
+        if (empty($operators)) {
+            throw new SearchByException(sprintf(
+                'Generated scalar type is empty. Please check definition for `%s` scalar.',
+                $scalar,
+            ));
+        }
+
+        // Add `null` for nullable
+        if ($nullable) {
+            $operators[] = IsNull::class;
+        }
+
+        // Add `not` for negationable
+        if (Arr::first($operators, static fn(string $o) => is_a($o, OperatorNegationable::class, true))) {
+            $operators[] = Not::class;
+        }
+
+        // Return
+        return $operators;
+    }
+
+    /**
      * @param class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator> $class
      */
     protected function getOperator(string $class): Operator {
@@ -354,6 +360,12 @@ class Manipulator {
 
         return $operator;
     }
+
+    protected function getScalarRealTypeNode(ScalarTypeDefinitionNode $node): ScalarTypeDefinitionNode {
+        return isset($this->aliases[$node->name->value])
+            ? $this->getScalarTypeNode($this->aliases[$node->name->value])
+            : $node;
+    }
     // </editor-fold>
 
     // <editor-fold desc="AST Helpers">
@@ -371,6 +383,13 @@ class Manipulator {
         return $definition;
     }
 
+    /**
+     * @template T of \GraphQL\Language\AST\TypeDefinitionNode
+     *
+     * @param T $definition
+     *
+     * @return T
+     */
     protected function addTypeDefinition(string $name, TypeDefinitionNode $definition): TypeDefinitionNode {
         if (!$this->isTypeDefinitionExists($name)) {
             $this->document->setTypeDefinition($definition);

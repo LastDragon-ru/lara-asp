@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\GreaterThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Has;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\In;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThanOrEqual;
@@ -20,7 +21,10 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use function array_merge;
 
 class SearchByDirective extends BaseDirective implements ArgManipulator {
-    protected const NAME = 'SearchBy';
+    public const Name        = 'SearchBy';
+    public const Relation    = 'Relation';
+    public const RelationHas = 'RelationHas';
+    public const TypeFlag    = 'Flag';
 
     /**
      * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>|null
@@ -36,11 +40,11 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
      */
     protected array $scalars = [
         // Standard types
-        'ID'      => [
+        'ID'           => [
             Equal::class,
             In::class,
         ],
-        'Int'     => [
+        'Int'          => [
             Equal::class,
             LessThan::class,
             LessThanOrEqual::class,
@@ -49,16 +53,18 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             In::class,
             Between::class,
         ],
-        'Float'   => 'Int',
-        'Boolean' => [
+        'Float'        => 'Int',
+        'Boolean'      => [
             Equal::class,
         ],
-        'String'  => [
+        'String'       => [
             Equal::class,
             In::class,
         ],
+
         // Special type for Relations
-        'Has'     => [
+        self::Relation => [
+            Has::class,
             Equal::class,
             LessThan::class,
             LessThanOrEqual::class,
@@ -73,7 +79,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
      * @var array<string,string>
      */
     protected array $aliases = [
-        'Has' => 'Int',
+        self::RelationHas => 'Int',
     ];
 
     /**
@@ -104,7 +110,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
         $argDefinition->type = (new Manipulator(
             $this->container,
             $documentAST,
-            self::NAME,
+            self::Name,
             $this->scalars,
             $this->aliases,
         ))->getConditionsType($argDefinition);

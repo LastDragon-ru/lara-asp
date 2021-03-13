@@ -48,14 +48,28 @@ input SearchByConditionProperties {
   nestedNotNull: SearchByRelationNested
 }
 
-"""Where Has condition."""
+"""Relation condition."""
 input SearchByRelationNested {
-  has: SearchByTypeFlag = yes
+  """Has?"""
+  has: [SearchByConditionNested!]!
+
+  """Equal (`=`)."""
+  eq: Int
+
+  """Less than (`<`)."""
+  lt: Int
+
+  """Less than or equal to (`<=`)."""
+  lte: Int
+
+  """Greater than (`>`)."""
+  gt: Int
+
+  """Greater than or equal to (`>=`)."""
+  gte: Int
 
   """Negation."""
   not: SearchByTypeFlag
-  where: [SearchByConditionNested!]
-  count: SearchByScalarHas = {gte: 1}
 }
 
 """
@@ -76,7 +90,7 @@ input SearchByScalarBooleanOrNull {
   """Equal (`=`)."""
   eq: Boolean
 
-  """IS NULL (value of property not matter)"""
+  """IS NULL?"""
   isNull: SearchByTypeFlag
 
   """Negation."""
@@ -138,29 +152,8 @@ input SearchByScalarFloatOrNull {
   """Within a range."""
   between: SearchByScalarFloatOperatorBetween
 
-  """IS NULL (value of property not matter)"""
+  """IS NULL?"""
   isNull: SearchByTypeFlag
-
-  """Negation."""
-  not: SearchByTypeFlag
-}
-
-"""Available operators for Has (only one operator allowed at a time)."""
-input SearchByScalarHas {
-  """Equal (`=`)."""
-  eq: Int
-
-  """Less than (`<`)."""
-  lt: Int
-
-  """Less than or equal to (`<=`)."""
-  lte: Int
-
-  """Greater than (`>`)."""
-  gt: Int
-
-  """Greater than or equal to (`>=`)."""
-  gte: Int
 
   """Negation."""
   not: SearchByTypeFlag
@@ -186,7 +179,7 @@ input SearchByScalarIDOrNull {
   """Within a set of values."""
   in: [ID!]
 
-  """IS NULL (value of property not matter)"""
+  """IS NULL?"""
   isNull: SearchByTypeFlag
 
   """Negation."""
@@ -248,7 +241,7 @@ input SearchByScalarIntOrNull {
   """Within a range."""
   between: SearchByScalarIntOperatorBetween
 
-  """IS NULL (value of property not matter)"""
+  """IS NULL?"""
   isNull: SearchByTypeFlag
 
   """Negation."""
@@ -275,7 +268,7 @@ input SearchByScalarStringOrNull {
   """Within a set of values."""
   in: [String!]
 
-  """IS NULL (value of property not matter)"""
+  """IS NULL?"""
   isNull: SearchByTypeFlag
 
   """Negation."""
