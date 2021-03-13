@@ -202,19 +202,21 @@ class Provider extends ServiceProvider {
 }
 ```
 
-I also recommend installing the [hmazter/laravel-schedule-list](https://github.com/hmazter/laravel-schedule-list) that will allow to see actual settings for all cron jobs:
+Finally, the package also discloses all settings in the job description:
 
 ```txt
 $ php artisan schedule:list
-+-------------+---------------------+---------+---------------------------------------------------------------------+
-| expression  | next run at         | command | description                                                         |
-+-------------+---------------------+---------+---------------------------------------------------------------------+
-| 0 * * * *   | 2020-11-22 13:00:00 | Closure | App\Jobs\JobsCleanupCronJob                                         |
-|             |                     |         | {"queue":"default","enabled":true,"settings":{"expire":"18 hours"}} |
-| */5 * * * * | 2020-11-22 13:00:00 | Closure | App\Jobs\SiteLogsCleanupCronJob                                     |
-|             |                     |         | {"queue":"default","enabled":true,"settings":{"expire":"30 days"}}  |
-+-------------+---------------------+---------+---------------------------------------------------------------------+
+
++---------+-------------+---------------------------------------------------------------------------------+---------------------+
+| Command | Interval    | Description                                                                     | Next Due            |
++---------+-------------+---------------------------------------------------------------------------------+---------------------+
+|         | 0 0 * * *   | App\Jobs\JobsCleanupCronJob                                                     | 2021-03-14 00:00:00 |
+|         |             | {"queue":"default","enabled":true,"settings":{"expire":"18 hours"}}             |                     |
+|         | */5 * * * * | App\Jobs\SiteLogsCleanupCronJob                                                 | 2021-03-13 06:40:00 |
+|         |             | {"queue":"default","enabled":true,"settings":{"expire":"30 days"}}              |                     |
++---------+-------------+---------------------------------------------------------------------------------+---------------------+
 ```
+
 
 # Overriding package Jobs
 

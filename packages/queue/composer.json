@@ -28,8 +28,7 @@
     "orchestra/testbench": "^6.9.0"
   },
   "suggest": {
-    "ext-fileinfo": "Required for league/flysystem",
-    "hmazter/laravel-schedule-list": "Package to add a artisan command to list all scheduled artisan commands."
+    "ext-fileinfo": "Required for league/flysystem"
   },
   "autoload": {
     "psr-4": {
