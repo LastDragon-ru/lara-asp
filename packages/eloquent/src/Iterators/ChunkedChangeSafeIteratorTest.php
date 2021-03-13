@@ -2,11 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
+use Closure;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use Mockery;
 
 use function count;
 use function iterator_to_array;
@@ -21,16 +24,18 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
 
     /**
      * @covers ::getIterator
+     * @covers ::each
      */
     public function testGetIterator(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
+        $spy      = Mockery::spy(static fn() => null);
         $db       = $this->app->make('db');
         $query    = TestObject::query()->orderByDesc('value');
         $count    = count($db->getQueryLog());
-        $iterator = new ChunkedChangeSafeIterator(2, $query);
+        $iterator = (new ChunkedChangeSafeIterator(2, $query))->each(Closure::fromCallable($spy));
         $actual   = [];
 
         foreach ($iterator as $model) {
@@ -52,6 +57,13 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         // 3 - create #4
         // 4 - third chunk (because second chunk returned value)
         // 5 - last empty chunk (because third chunk returned value)
+
+        $spy
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Collection $items): bool {
+                return $items->count() >= 1;
+            })
+            ->times(3);
     }
 
     /**

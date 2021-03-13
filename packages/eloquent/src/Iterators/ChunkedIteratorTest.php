@@ -2,10 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
+use Closure;
+use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use Mockery;
 
 use function count;
 use function iterator_to_array;
@@ -20,22 +23,31 @@ class ChunkedIteratorTest extends TestCase {
 
     /**
      * @covers ::getIterator
+     * @covers ::each
      */
     public function testGetIterator(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
+        $spy      = Mockery::spy(static fn() => null);
         $db       = $this->app->make('db');
         $table    = (new TestObject())->getTable();
         $query    = $db->table($table)->select()->orderByDesc('value');
         $expected = (clone $query)->get()->all();
         $count    = count($db->getQueryLog());
-        $iterator = new ChunkedIterator(2, $query);
+        $iterator = (new ChunkedIterator(2, $query))->each(Closure::fromCallable($spy));
         $actual   = iterator_to_array($iterator);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals(2, count($db->getQueryLog()) - $count);
+
+        $spy
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Collection $items): bool {
+                return $items->count() >= 1;
+            })
+            ->twice();
     }
 
     /**

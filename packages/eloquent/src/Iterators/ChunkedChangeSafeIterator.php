@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
-use IteratorAggregate;
 use stdClass;
 use Traversable;
 
@@ -37,17 +36,13 @@ use function is_object;
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()
  * @see https://github.com/laravel/framework/issues/35400
  */
-class ChunkedChangeSafeIterator implements IteratorAggregate {
-    use Helper;
-
-    private QueryBuilder|EloquentBuilder $builder;
-    private string                       $column;
-    private int                          $chunk;
+class ChunkedChangeSafeIterator extends Iterator {
+    private string $column;
 
     public function __construct(int $chunk, QueryBuilder|EloquentBuilder $builder, string $column = null) {
-        $this->chunk   = $chunk;
-        $this->builder = clone $builder;
-        $this->column  = $column ?? $builder->getDefaultKeyName();
+        parent::__construct($chunk, $builder);
+
+        $this->column = $column ?? $builder->getDefaultKeyName();
 
         // Unfortunately the `forPageAfterId()` doesn't correctly work with UNION,
         // it just adds conditional to the main query, and this leads to an
@@ -69,6 +64,10 @@ class ChunkedChangeSafeIterator implements IteratorAggregate {
                 ->get();
             $count = $items->count();
             $last  = $this->column($items->last());
+
+            if ($this->each) {
+                ($this->each)($items);
+            }
 
             foreach ($items as $item) {
                 yield $index++ => $item;

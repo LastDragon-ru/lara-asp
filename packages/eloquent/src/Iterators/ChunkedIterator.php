@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use IteratorAggregate;
+use Closure;
 use Traversable;
 
 /**
@@ -20,17 +18,7 @@ use Traversable;
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  */
-class ChunkedIterator implements IteratorAggregate {
-    use Helper;
-
-    private QueryBuilder|EloquentBuilder $builder;
-    private int                          $chunk;
-
-    public function __construct(int $chunk, QueryBuilder|EloquentBuilder $builder) {
-        $this->chunk   = $chunk;
-        $this->builder = clone $builder;
-    }
-
+class ChunkedIterator extends Iterator {
     public function getIterator(): Traversable {
         $page  = 0;
         $index = 0;
@@ -40,6 +28,10 @@ class ChunkedIterator implements IteratorAggregate {
             $page  = $page + 1;
             $items = $this->builder->forPage($page, $this->chunk)->get();
             $count = $items->count();
+
+            if ($this->each) {
+                ($this->each)($items);
+            }
 
             foreach ($items as $item) {
                 yield $index++ => $item;
@@ -55,6 +47,6 @@ class ChunkedIterator implements IteratorAggregate {
      * Returns change safe iterator.
      */
     public function safe(string $column = null): ChunkedChangeSafeIterator {
-        return new ChunkedChangeSafeIterator($this->chunk, $this->builder, $column);
+        return (new ChunkedChangeSafeIterator($this->chunk, $this->builder, $column))->each($this->each);
     }
 }
