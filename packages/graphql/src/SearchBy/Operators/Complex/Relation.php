@@ -7,9 +7,11 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
 
 use function is_array;
 use function reset;
+use function sprintf;
 
 /**
  * @internal Must not be used directly.
@@ -38,7 +40,16 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
         EloquentBuilder|QueryBuilder $builder,
         string $property,
         array $conditions,
-    ): EloquentBuilder|QueryBuilder {
+    ): EloquentBuilder {
+        // QueryBuilder?
+        if ($builder instanceof QueryBuilder) {
+            throw new SearchLogicException(sprintf(
+                'Operator `%s` can not be used with `%`.',
+                $this->getName(),
+                QueryBuilder::class,
+            ));
+        }
+
         // Possible variants:
         // * has + not            = doesntHave
         // * has + not + operator = has + !$operator
