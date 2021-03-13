@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
-use Closure;
 use Traversable;
 
 /**
