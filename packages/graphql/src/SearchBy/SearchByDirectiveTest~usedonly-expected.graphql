@@ -8,9 +8,16 @@ type Query {
 
 """Available conditions."""
 input SearchByConditionProperties {
+  """Logical `AND`."""
   and: [SearchByConditionProperties!]
+
+  """Logical `OR`."""
   or: [SearchByConditionProperties!]
-  not: [SearchByConditionProperties!]
+
+  """Not."""
+  not: SearchByTypeFlag
+
+  """Property condition."""
   value: SearchByScalarString
 }
 
@@ -22,7 +29,7 @@ input SearchByScalarString {
   """Within a set of values."""
   in: [String!]
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 

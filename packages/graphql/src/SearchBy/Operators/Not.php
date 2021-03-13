@@ -14,7 +14,7 @@ class Not extends BaseOperator {
     }
 
     protected function getDescription(): string {
-        return 'Negation.';
+        return 'Not.';
     }
 
     /**

@@ -14,6 +14,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Has;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\In;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LessThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LogicalAnd;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\LogicalOr;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
@@ -22,6 +24,7 @@ use function array_merge;
 
 class SearchByDirective extends BaseDirective implements ArgManipulator {
     public const Name        = 'SearchBy';
+    public const Logic       = 'Logic';
     public const Relation    = 'Relation';
     public const RelationHas = 'RelationHas';
     public const TypeFlag    = 'Flag';
@@ -62,7 +65,11 @@ class SearchByDirective extends BaseDirective implements ArgManipulator {
             In::class,
         ],
 
-        // Special type for Relations
+        // Special types
+        self::Logic    => [
+            LogicalAnd::class,
+            LogicalOr::class,
+        ],
         self::Relation => [
             Has::class,
             Equal::class,

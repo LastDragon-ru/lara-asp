@@ -23,28 +23,64 @@ type Query {
 
 """Available conditions."""
 input SearchByConditionNested {
+  """Logical `AND`."""
   and: [SearchByConditionNested!]
+
+  """Logical `OR`."""
   or: [SearchByConditionNested!]
-  not: [SearchByConditionNested!]
+
+  """Not."""
+  not: SearchByTypeFlag
+
+  """Property condition."""
   value: SearchByScalarStringOrNull
 }
 
 """Available conditions."""
 input SearchByConditionProperties {
+  """Logical `AND`."""
   and: [SearchByConditionProperties!]
+
+  """Logical `OR`."""
   or: [SearchByConditionProperties!]
-  not: [SearchByConditionProperties!]
+
+  """Not."""
+  not: SearchByTypeFlag
+
+  """Property condition."""
   idScalar: SearchByScalarIDOrNull
+
+  """Property condition."""
   idScalarNotNull: SearchByScalarID
+
+  """Property condition."""
   intScalar: SearchByScalarIntOrNull
+
+  """Property condition."""
   inScalarNotNull: SearchByScalarInt
+
+  """Property condition."""
   floatScalar: SearchByScalarFloatOrNull
+
+  """Property condition."""
   floatScalarNotNull: SearchByScalarFloat
+
+  """Property condition."""
   stringScalar: SearchByScalarStringOrNull
+
+  """Property condition."""
   stringScalarNotNull: SearchByScalarString
+
+  """Property condition."""
   booleanScalar: SearchByScalarBooleanOrNull
+
+  """Property condition."""
   booleanScalarNotNull: SearchByScalarBoolean
+
+  """Property condition."""
   nested: SearchByRelationNested
+
+  """Property condition."""
   nestedNotNull: SearchByRelationNested
 }
 
@@ -68,7 +104,7 @@ input SearchByRelationNested {
   """Greater than or equal to (`>=`)."""
   gte: Int
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -79,7 +115,7 @@ input SearchByScalarBoolean {
   """Equal (`=`)."""
   eq: Boolean
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -90,10 +126,10 @@ input SearchByScalarBooleanOrNull {
   """Equal (`=`)."""
   eq: Boolean
 
-  """IS NULL?"""
+  """Is NULL?"""
   isNull: SearchByTypeFlag
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -120,7 +156,7 @@ input SearchByScalarFloat {
   """Within a range."""
   between: SearchByScalarFloatOperatorBetween
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -152,10 +188,10 @@ input SearchByScalarFloatOrNull {
   """Within a range."""
   between: SearchByScalarFloatOperatorBetween
 
-  """IS NULL?"""
+  """Is NULL?"""
   isNull: SearchByTypeFlag
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -167,7 +203,7 @@ input SearchByScalarID {
   """Within a set of values."""
   in: [ID!]
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -179,10 +215,10 @@ input SearchByScalarIDOrNull {
   """Within a set of values."""
   in: [ID!]
 
-  """IS NULL?"""
+  """Is NULL?"""
   isNull: SearchByTypeFlag
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -209,7 +245,7 @@ input SearchByScalarInt {
   """Within a range."""
   between: SearchByScalarIntOperatorBetween
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -241,10 +277,10 @@ input SearchByScalarIntOrNull {
   """Within a range."""
   between: SearchByScalarIntOperatorBetween
 
-  """IS NULL?"""
+  """Is NULL?"""
   isNull: SearchByTypeFlag
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -256,7 +292,7 @@ input SearchByScalarString {
   """Within a set of values."""
   in: [String!]
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 
@@ -268,10 +304,10 @@ input SearchByScalarStringOrNull {
   """Within a set of values."""
   in: [String!]
 
-  """IS NULL?"""
+  """Is NULL?"""
   isNull: SearchByTypeFlag
 
-  """Negation."""
+  """Not."""
   not: SearchByTypeFlag
 }
 

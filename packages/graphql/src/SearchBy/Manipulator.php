@@ -92,15 +92,18 @@ class Manipulator {
         }
 
         // Add type
-        $type = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
+        $operators = $this->getScalarOperators(SearchByDirective::Logic, false);
+        $scalar    = $this->getScalarTypeNode($name);
+        $content   = implode("\n", array_map(function (string $operator) use ($scalar): string {
+            return $this->getScalarOperatorType($this->getOperator($operator), $scalar, false);
+        }, $operators));
+        $type      = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Available conditions.
             """
             input {$name} {
-                and: [{$name}!]
-                or: [{$name}!]
-                not: [{$name}!]
+                {$content}
             }
             DEF,
         ));
@@ -144,7 +147,8 @@ class Manipulator {
                 $type->fields[] = tap(
                     $field->cloneDeep(),
                     static function (InputValueDefinitionNode $field) use ($fieldDefinition): void {
-                        $field->type = Parser::typeReference($fieldDefinition);
+                        $field->type        = Parser::typeReference($fieldDefinition);
+                        $field->description = Parser::description('"""Property condition."""');
                     },
                 );
             } else {
@@ -168,10 +172,10 @@ class Manipulator {
         }
 
         // Determine supported operators
-        $operators = $this->getScalarOperators($node, $nullable);
+        $type      = $node->name->value;
+        $operators = $this->getScalarOperators($type, $nullable);
 
         // Add type
-        $type    = $node->name->value;
         $scalar  = $this->getScalarRealTypeNode($node);
         $content = implode("\n", array_map(function (string $operator) use ($scalar, $nullable): string {
             return $this->getScalarOperatorType($this->getOperator($operator), $scalar, $nullable);
@@ -235,7 +239,7 @@ class Manipulator {
         // Add type
         $input     = $this->getScalarTypeNode($this->getInputType($node));
         $scalar    = $this->getScalarRealTypeNode($this->getScalarTypeNode(SearchByDirective::RelationHas));
-        $operators = $this->getScalarOperators($this->getScalarTypeNode(SearchByDirective::Relation), false);
+        $operators = $this->getScalarOperators(SearchByDirective::Relation, false);
         $content   = implode("\n", array_map(function (string $operator) use ($input, $scalar): string {
             $operator = $this->getOperator($operator);
             $node     = $operator instanceof Has ? $input : $scalar;
@@ -312,8 +316,7 @@ class Manipulator {
     /**
      * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operator>>
      */
-    protected function getScalarOperators(ScalarTypeDefinitionNode $node, bool $nullable): array {
-        $scalar    = $node->name->value;
+    protected function getScalarOperators(string $scalar, bool $nullable): array {
         $operators = $scalar;
 
         do {
