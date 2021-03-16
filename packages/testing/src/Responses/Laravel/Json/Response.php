@@ -18,7 +18,7 @@ class Response extends JsonResponse {
     public function __construct(
         StatusCode $code,
         JsonSchema|string $resource,
-        JsonSerializable|SplFileInfo|stdClass|array|string|null $content = null,
+        JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $content = null,
     ) {
         if (is_string($resource)) {
             $resource = new JsonSchema($this->getTestData($resource)->file('.json'));

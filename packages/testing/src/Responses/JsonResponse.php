@@ -21,7 +21,7 @@ class JsonResponse extends Response {
     public function __construct(
         StatusCode $code,
         JsonSchema $schema,
-        JsonSerializable|SplFileInfo|stdClass|array|string|null $content = null,
+        JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $content = null,
     ) {
         if ($content) {
             $content = Args::getJson($content) ?? Args::invalidJson();

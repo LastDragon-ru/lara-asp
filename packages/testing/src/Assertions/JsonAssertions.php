@@ -17,7 +17,7 @@ trait JsonAssertions {
      */
     public static function assertJsonMatchesSchema(
         JsonSchema $schema,
-        JsonSerializable|SplFileInfo|stdClass|array|string $json,
+        JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $json,
         string $message = '',
     ): void {
         static::assertThat($json, new JsonMatchesSchema($schema), $message);

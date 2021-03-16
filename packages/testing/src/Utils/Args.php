@@ -33,7 +33,7 @@ class Args {
     }
 
     public static function getJson(
-        JsonSerializable|SplFileInfo|stdClass|array|string $json,
+        JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $json,
         bool $associative = false,
     ): stdClass|array|string|int|float|bool|null {
         if ($json instanceof SplFileInfo) {

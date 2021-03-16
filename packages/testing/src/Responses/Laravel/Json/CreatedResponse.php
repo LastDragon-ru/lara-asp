@@ -11,7 +11,7 @@ use stdClass;
 class CreatedResponse extends Response {
     public function __construct(
         JsonSchema|string $resource,
-        JsonSerializable|SplFileInfo|stdClass|array|string|null $content = null,
+        JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $content = null,
     ) {
         parent::__construct(new Created(), $resource, $content);
     }
