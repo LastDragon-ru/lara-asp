@@ -28,7 +28,11 @@
     <rule ref="Generic.Classes.OpeningBraceSameLine"/>
     <rule ref="Generic.Formatting.MultipleStatementAlignment"/>
     <rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
-    <rule ref="Squiz.Strings.ConcatenationSpacing"/>
+    <rule ref="Squiz.Strings.ConcatenationSpacing">
+        <properties>
+            <property name="ignoreNewlines" value="true"/>
+        </properties>
+    </rule>
     <rule ref="Squiz.Strings.DoubleQuoteUsage.NotRequired"/>
     <rule ref="Squiz.Arrays.ArrayDeclaration">
         <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned"/>
