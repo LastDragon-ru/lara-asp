@@ -301,11 +301,13 @@ class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="Defaults">
     // =========================================================================
     protected function addRootTypeDefinitions(): void {
+        $flag = SearchByDirective::TypeFlag;
+
         $this->addTypeDefinitions($this, [
-            SearchByDirective::TypeFlag => Parser::enumTypeDefinition(
+            $flag => Parser::enumTypeDefinition(
             /** @lang GraphQL */
                 <<<GRAPHQL
-                enum {$this->name}TypeFlag {
+                enum {$this->name}{$flag} {
                     yes
                 }
                 GRAPHQL,

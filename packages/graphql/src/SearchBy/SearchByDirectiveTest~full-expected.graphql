@@ -32,7 +32,7 @@ input SearchByConditionNested {
   anyOf: [SearchByConditionNested!]
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 
   """Property condition."""
   value: SearchByScalarStringOrNull
@@ -47,7 +47,7 @@ input SearchByConditionProperties {
   anyOf: [SearchByConditionProperties!]
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 
   """Property condition."""
   idScalar: SearchByScalarIDOrNull
@@ -103,7 +103,7 @@ input SearchByEnumValue {
   in: [Value!]
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """
@@ -117,10 +117,14 @@ input SearchByEnumValueOrNull {
   in: [Value!]
 
   """Is NULL?"""
-  isNull: SearchByTypeFlag
+  isNull: SearchByFlag
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
+}
+
+enum SearchByFlag {
+  yes
 }
 
 """Relation condition."""
@@ -144,7 +148,7 @@ input SearchByRelationNested {
   gte: Int
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """
@@ -155,7 +159,7 @@ input SearchByScalarBoolean {
   eq: Boolean
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """
@@ -166,10 +170,10 @@ input SearchByScalarBooleanOrNull {
   eq: Boolean
 
   """Is NULL?"""
-  isNull: SearchByTypeFlag
+  isNull: SearchByFlag
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """Available operators for Float (only one operator allowed at a time)."""
@@ -196,7 +200,7 @@ input SearchByScalarFloat {
   between: SearchByScalarFloatOperatorBetween
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 input SearchByScalarFloatOperatorBetween {
@@ -228,10 +232,10 @@ input SearchByScalarFloatOrNull {
   between: SearchByScalarFloatOperatorBetween
 
   """Is NULL?"""
-  isNull: SearchByTypeFlag
+  isNull: SearchByFlag
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """Available operators for ID (only one operator allowed at a time)."""
@@ -243,7 +247,7 @@ input SearchByScalarID {
   in: [ID!]
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """Available operators for ID (only one operator allowed at a time)."""
@@ -255,10 +259,10 @@ input SearchByScalarIDOrNull {
   in: [ID!]
 
   """Is NULL?"""
-  isNull: SearchByTypeFlag
+  isNull: SearchByFlag
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """Available operators for Int (only one operator allowed at a time)."""
@@ -285,7 +289,7 @@ input SearchByScalarInt {
   between: SearchByScalarIntOperatorBetween
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 input SearchByScalarIntOperatorBetween {
@@ -317,10 +321,10 @@ input SearchByScalarIntOrNull {
   between: SearchByScalarIntOperatorBetween
 
   """Is NULL?"""
-  isNull: SearchByTypeFlag
+  isNull: SearchByFlag
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """Available operators for String (only one operator allowed at a time)."""
@@ -335,7 +339,7 @@ input SearchByScalarString {
   in: [String!]
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 }
 
 """Available operators for String (only one operator allowed at a time)."""
@@ -350,14 +354,10 @@ input SearchByScalarStringOrNull {
   in: [String!]
 
   """Is NULL?"""
-  isNull: SearchByTypeFlag
+  isNull: SearchByFlag
 
   """Not."""
-  not: SearchByTypeFlag
-}
-
-enum SearchByTypeFlag {
-  yes
+  not: SearchByFlag
 }
 
 enum Value {

@@ -15,10 +15,14 @@ input SearchByConditionProperties {
   anyOf: [SearchByConditionProperties!]
 
   """Not."""
-  not: SearchByTypeFlag
+  not: SearchByFlag
 
   """Property condition."""
   value: SearchByScalarString
+}
+
+enum SearchByFlag {
+  yes
 }
 
 """Available operators for String (only one operator allowed at a time)."""
@@ -33,9 +37,5 @@ input SearchByScalarString {
   in: [String!]
 
   """Not."""
-  not: SearchByTypeFlag
-}
-
-enum SearchByTypeFlag {
-  yes
+  not: SearchByFlag
 }
