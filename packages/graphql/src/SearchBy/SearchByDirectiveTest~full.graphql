@@ -15,8 +15,15 @@ input Properties {
   booleanScalarNotNull: Boolean!
   nested: Nested
   nestedNotNull: Nested!
+  enum: Value
+  enumNotNull: Value!
 }
 
 input Nested {
   value: String
+}
+
+enum Value {
+  one
+  two
 }

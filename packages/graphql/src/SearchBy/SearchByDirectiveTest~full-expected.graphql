@@ -15,6 +15,8 @@ input Properties {
   booleanScalarNotNull: Boolean!
   nested: Nested
   nestedNotNull: Nested!
+  enum: Value
+  enumNotNull: Value!
 }
 
 type Query {
@@ -82,6 +84,43 @@ input SearchByConditionProperties {
 
   """Property condition."""
   nestedNotNull: SearchByRelationNested
+
+  """Property condition."""
+  enum: SearchByEnumValueOrNull
+
+  """Property condition."""
+  enumNotNull: SearchByEnumValue
+}
+
+"""
+Available operators for enum Value (only one operator allowed at a time).
+"""
+input SearchByEnumValue {
+  """Equal (`=`)."""
+  eq: Value
+
+  """Within a set of values."""
+  in: [Value!]
+
+  """Not."""
+  not: SearchByTypeFlag
+}
+
+"""
+Available operators for enum Value (only one operator allowed at a time).
+"""
+input SearchByEnumValueOrNull {
+  """Equal (`=`)."""
+  eq: Value
+
+  """Within a set of values."""
+  in: [Value!]
+
+  """Is NULL?"""
+  isNull: SearchByTypeFlag
+
+  """Not."""
+  not: SearchByTypeFlag
 }
 
 """Relation condition."""
@@ -319,4 +358,9 @@ input SearchByScalarStringOrNull {
 
 enum SearchByTypeFlag {
   yes
+}
+
+enum Value {
+  one
+  two
 }

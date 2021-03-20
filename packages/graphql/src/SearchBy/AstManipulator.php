@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
+use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
@@ -100,7 +101,7 @@ class AstManipulator {
         $operators = $this->getScalarOperators(SearchByDirective::Logic, false);
         $scalar    = $this->getScalarTypeNode($name);
         $content   = implode("\n", array_map(function (string $operator) use ($scalar): string {
-            return $this->getScalarOperatorType($this->getOperator($operator), $scalar, false);
+            return $this->getOperatorType($this->getOperator($operator), $scalar, false);
         }, $operators));
         $type      = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
             <<<DEF
@@ -141,6 +142,8 @@ class AstManipulator {
                 $fieldDefinition = $this->getRelationType($fieldTypeNode, $fieldNullable);
             } elseif ($fieldTypeNode instanceof ScalarTypeDefinitionNode) {
                 $fieldDefinition = $this->getScalarType($fieldTypeNode, $fieldNullable);
+            } elseif ($fieldTypeNode instanceof EnumTypeDefinitionNode) {
+                $fieldDefinition = $this->getEnumType($fieldTypeNode, $fieldNullable);
             } else {
                 // empty
             }
@@ -168,6 +171,38 @@ class AstManipulator {
         return $name;
     }
 
+    protected function getEnumType(EnumTypeDefinitionNode $node, bool $nullable): string {
+        // Exists?
+        $name = $this->getEnumTypeName($node, $nullable);
+
+        if ($this->isTypeDefinitionExists($name)) {
+            return $name;
+        }
+
+        // Determine supported operators
+        $type      = $node->name->value;
+        $operators = $this->getEnumOperators($nullable);
+
+        // Add type
+        $content = implode("\n", array_map(function (string $operator) use ($node, $nullable): string {
+            return $this->getOperatorType($this->getOperator($operator), $node, $nullable);
+        }, $operators));
+
+        $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
+            <<<DEF
+            """
+            Available operators for enum {$type} (only one operator allowed at a time).
+            """
+            input {$name} {
+                {$content}
+            }
+            DEF,
+        ));
+
+        // Return
+        return $name;
+    }
+
     protected function getScalarType(ScalarTypeDefinitionNode $node, bool $nullable): string {
         // Exists?
         $name = $this->getScalarTypeName($node, $nullable);
@@ -183,7 +218,7 @@ class AstManipulator {
         // Add type
         $scalar  = $this->getScalarRealTypeNode($node);
         $content = implode("\n", array_map(function (string $operator) use ($scalar, $nullable): string {
-            return $this->getScalarOperatorType($this->getOperator($operator), $scalar, $nullable);
+            return $this->getOperatorType($this->getOperator($operator), $scalar, $nullable);
         }, $operators));
 
         $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
@@ -201,22 +236,22 @@ class AstManipulator {
         return $name;
     }
 
-    protected function getScalarOperatorType(
+    protected function getOperatorType(
         Operator $operator,
-        ScalarTypeDefinitionNode $node,
+        ScalarTypeDefinitionNode|EnumTypeDefinitionNode $node,
         bool $nullable,
     ): string {
         // Add types for Scalars
         if ($operator instanceof OperatorHasTypesForScalar) {
             $this->addTypeDefinitions($operator, $operator->getTypeDefinitionsForScalar(
-                $this->getScalarOperatorTypeName($operator, $node, false),
+                $this->getOperatorTypeName($operator, $node, false),
                 $node->name->value,
             ));
         }
 
         if ($operator instanceof OperatorHasTypesForScalarNullable) {
             $this->addTypeDefinitions($operator, $operator->getTypeDefinitionsForScalar(
-                $this->getScalarOperatorTypeName($operator, $node, $nullable),
+                $this->getOperatorTypeName($operator, $node, $nullable),
                 $node->name->value,
                 $nullable,
             ));
@@ -248,7 +283,7 @@ class AstManipulator {
         $content   = implode("\n", array_map(function (string $operator) use ($input, $scalar): string {
             $operator = $this->getOperator($operator);
             $node     = $operator instanceof Relation ? $input : $scalar;
-            $type     = $this->getScalarOperatorType($operator, $node, false);
+            $type     = $this->getOperatorType($operator, $node, false);
 
             return $type;
         }, $operators));
@@ -291,6 +326,10 @@ class AstManipulator {
         return "{$this->name}Condition{$node->name->value}";
     }
 
+    protected function getEnumTypeName(EnumTypeDefinitionNode $node, bool $nullable): string {
+        return "{$this->name}Enum{$node->name->value}".($nullable ? 'OrNull' : '');
+    }
+
     protected function getScalarTypeName(ScalarTypeDefinitionNode $node, bool $nullable): string {
         return "{$this->name}Scalar{$node->name->value}".($nullable ? 'OrNull' : '');
     }
@@ -299,16 +338,23 @@ class AstManipulator {
         return "{$this->name}Relation{$node->name->value}";
     }
 
-    protected function getScalarOperatorTypeName(
+    protected function getOperatorTypeName(
         Operator $operator,
-        ScalarTypeDefinitionNode $node = null,
+        ScalarTypeDefinitionNode|EnumTypeDefinitionNode $node = null,
         bool $nullable = null,
     ): string {
         $op   = Str::studly($operator->getName());
-        $base = $node ? $this->getScalarTypeName($node, $nullable) : $this->name;
-        $name = "{$base}Operator{$op}";
+        $base = $this->name;
 
-        return $name;
+        if ($node instanceof ScalarTypeDefinitionNode) {
+            $base = $this->getScalarTypeName($node, $nullable);
+        } elseif ($node instanceof EnumTypeDefinitionNode) {
+            $base = $this->getEnumTypeName($node, $nullable);
+        } else {
+            // empty
+        }
+
+        return "{$base}Operator{$op}";
     }
     // </editor-fold>
 
@@ -316,6 +362,13 @@ class AstManipulator {
     // =========================================================================
     protected function isScalar(string $type): bool {
         return isset($this->scalars[$type]);
+    }
+
+    /**
+     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
+     */
+    protected function getEnumOperators(bool $nullable): array {
+        return $this->getScalarOperators(SearchByDirective::Enum, $nullable);
     }
 
     /**
@@ -361,7 +414,7 @@ class AstManipulator {
 
             if ($operator instanceof OperatorHasTypes) {
                 $this->addTypeDefinitions($operator, $operator->getTypeDefinitions(
-                    $this->getScalarOperatorTypeName($operator),
+                    $this->getOperatorTypeName($operator),
                 ));
             }
         }

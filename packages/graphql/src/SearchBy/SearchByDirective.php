@@ -29,6 +29,7 @@ use function array_merge;
 
 class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name        = 'SearchBy';
+    public const Enum        = 'Enum';
     public const Logic       = 'Logic';
     public const Relation    = 'Relation';
     public const RelationHas = 'RelationHas';
@@ -72,6 +73,10 @@ class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuil
         ],
 
         // Special types
+        self::Enum     => [
+            Equal::class,
+            In::class,
+        ],
         self::Logic    => [
             AllOf::class,
             AnyOf::class,
