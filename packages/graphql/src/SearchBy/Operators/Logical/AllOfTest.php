@@ -12,9 +12,9 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalAnd
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf
  */
-class LogicalAndTest extends TestCase {
+class AllOfTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -25,7 +25,7 @@ class LogicalAndTest extends TestCase {
      * @param array{sql: string, bindings: array<mixed>} $expected
      */
     public function testApply(array $expected, Closure $builder, Closure $nested): void {
-        $operator = $this->app->make(LogicalAnd::class);
+        $operator = $this->app->make(AllOf::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($builder, $nested);
         $builder  = $operator->apply($builder, $nested);
@@ -47,7 +47,7 @@ class LogicalAndTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'and' => [
+                'allOf' => [
                     [
                         'sql'      => 'select * from "tmp" where (1 = 1) and (1 = 1)',
                         'bindings' => [],

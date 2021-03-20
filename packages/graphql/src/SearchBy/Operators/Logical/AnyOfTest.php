@@ -12,9 +12,9 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOr
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf
  */
-class LogicalOrTest extends TestCase {
+class AnyOfTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -25,7 +25,7 @@ class LogicalOrTest extends TestCase {
      * @param array{sql: string, bindings: array<mixed>} $expected
      */
     public function testApply(array $expected, Closure $builder, Closure $nested): void {
-        $operator = $this->app->make(LogicalOr::class);
+        $operator = $this->app->make(AnyOf::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($builder, $nested);
         $builder  = $operator->apply($builder, $nested);
@@ -47,7 +47,7 @@ class LogicalOrTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'or' => [
+                'anyOf' => [
                     [
                         'sql'      => 'select * from "tmp" where (1 = 1) or (1 = 1)',
                         'bindings' => [],

@@ -10,9 +10,9 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalAnd;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOr;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
 use LastDragon_ru\LaraASP\GraphQL\Testing\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
@@ -50,8 +50,8 @@ class SearchBuilderTest extends TestCase {
             $this->app->make(Not::class),
             $this->app->make(Equal::class),
             $this->app->make(GreaterThan::class),
-            $this->app->make(LogicalAnd::class),
-            $this->app->make(LogicalOr::class),
+            $this->app->make(AllOf::class),
+            $this->app->make(AnyOf::class),
         ]);
         $builder = $builder($this);
         $builder = $search->process($builder, $conditions, $tableAlias);
@@ -285,8 +285,8 @@ class SearchBuilderTest extends TestCase {
                         ],
                     ],
                     [
-                        'not' => 'yes',
-                        'and' => [
+                        'not'   => 'yes',
+                        'allOf' => [
                             [
                                 'a' => [
                                     'eq'  => 1,
@@ -294,7 +294,7 @@ class SearchBuilderTest extends TestCase {
                                 ],
                             ],
                             [
-                                'or' => [
+                                'anyOf' => [
                                     [
                                         'a' => [
                                             'eq' => 2,
@@ -324,8 +324,8 @@ class SearchBuilderTest extends TestCase {
                         ],
                     ],
                     [
-                        'not' => 'yes',
-                        'and' => [
+                        'not'   => 'yes',
+                        'allOf' => [
                             [
                                 'a' => [
                                     'eq'  => 1,
@@ -333,7 +333,7 @@ class SearchBuilderTest extends TestCase {
                                 ],
                             ],
                             [
-                                'or' => [
+                                'anyOf' => [
                                     [
                                         'a' => [
                                             'eq' => 2,

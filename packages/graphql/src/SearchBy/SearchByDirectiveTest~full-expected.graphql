@@ -23,11 +23,11 @@ type Query {
 
 """Available conditions."""
 input SearchByConditionNested {
-  """Logical `and`."""
-  and: [SearchByConditionNested!]
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionNested!]
 
-  """Logical `or`."""
-  or: [SearchByConditionNested!]
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionNested!]
 
   """Not."""
   not: SearchByTypeFlag
@@ -38,11 +38,11 @@ input SearchByConditionNested {
 
 """Available conditions."""
 input SearchByConditionProperties {
-  """Logical `and`."""
-  and: [SearchByConditionProperties!]
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionProperties!]
 
-  """Logical `or`."""
-  or: [SearchByConditionProperties!]
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionProperties!]
 
   """Not."""
   not: SearchByTypeFlag

@@ -17,8 +17,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalAnd;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOr;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
@@ -71,8 +71,8 @@ class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuil
 
         // Special types
         self::Logic    => [
-            LogicalAnd::class,
-            LogicalOr::class,
+            AllOf::class,
+            AnyOf::class,
         ],
         self::Relation => [
             Relation::class,

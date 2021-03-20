@@ -8,11 +8,11 @@ type Query {
 
 """Available conditions."""
 input SearchByConditionProperties {
-  """Logical `and`."""
-  and: [SearchByConditionProperties!]
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionProperties!]
 
-  """Logical `or`."""
-  or: [SearchByConditionProperties!]
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionProperties!]
 
   """Not."""
   not: SearchByTypeFlag
