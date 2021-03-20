@@ -126,12 +126,12 @@ class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuil
         ObjectTypeDefinitionNode &$parentType,
     ): void {
         $argDefinition->type = (new AstManipulator(
-            $this->container,
             $documentAST,
+            $this->container,
             self::Name,
             $this->scalars,
             $this->aliases,
-        ))->getConditionsType($argDefinition);
+        ))->getType($argDefinition);
     }
 
     /**

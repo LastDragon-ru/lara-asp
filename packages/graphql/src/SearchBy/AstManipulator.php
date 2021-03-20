@@ -6,14 +6,13 @@ use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
-use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\AstManipulator as BaseAstManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypes;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar;
@@ -34,13 +33,7 @@ use function is_null;
 use function sprintf;
 use function tap;
 
-class AstManipulator {
-    /**
-     * Maps internal (operators) names to fully qualified names.
-     *
-     * @var array<string,string>
-     */
-    protected array $map = [];
+class AstManipulator extends BaseAstManipulator {
     /**
      * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|null>
      */
@@ -51,21 +44,21 @@ class AstManipulator {
      * @param array<string,string>                                                                           $aliases
      */
     public function __construct(
+        DocumentAST $document,
         protected Container $container,
-        protected DocumentAST $document,
         protected string $name,
         protected array $scalars,
         protected array $aliases,
     ) {
-        $this->addRootTypeDefinitions();
+        parent::__construct($document);
     }
 
     // <editor-fold desc="API">
     // =========================================================================
-    public function getConditionsType(InputValueDefinitionNode $node): ListTypeNode {
+    public function getType(InputValueDefinitionNode $node): ListTypeNode {
         $type = null;
 
-        if ((!$node->type instanceof ListTypeNode)) {
+        if (!($node->type instanceof ListTypeNode)) {
             $def = $this->getTypeDefinitionNode($node);
 
             if ($def instanceof InputObjectTypeDefinitionNode) {
@@ -76,7 +69,7 @@ class AstManipulator {
             $type = $node->type;
         }
 
-        if ((!$type instanceof ListTypeNode)) {
+        if (!($type instanceof ListTypeNode)) {
             throw new SearchByException(sprintf(
                 'Impossible to create Search Condition for `%s`.',
                 $node->name->value,
@@ -115,6 +108,8 @@ class AstManipulator {
         ));
 
         // Add searchable fields
+        $description = Parser::description('"""Property condition."""');
+
         /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
         foreach ($node->fields as $field) {
             // Name should be unique
@@ -134,7 +129,6 @@ class AstManipulator {
             $fieldDefinition = null;
 
             if (is_null($fieldTypeNode) && $this->isScalar($fieldType)) {
-                // TODO [SearchBy] Is there any better way for this?
                 $fieldTypeNode = $this->getScalarTypeNode($fieldType);
             }
 
@@ -154,9 +148,9 @@ class AstManipulator {
                 //      original Input type, but cloning is the easiest way...
                 $type->fields[] = tap(
                     $field->cloneDeep(),
-                    static function (InputValueDefinitionNode $field) use ($fieldDefinition): void {
+                    static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
                         $field->type        = Parser::typeReference($fieldDefinition);
-                        $field->description = Parser::description('"""Property condition."""');
+                        $field->description = $description;
                     },
                 );
             } else {
@@ -259,8 +253,8 @@ class AstManipulator {
 
         // Named map
         $map  = array_merge(
-            $this->map[$operator::class] ?? [],
-            $this->map[$this::class] ?? [],
+            $this->getMap($operator),
+            $this->getMap($this),
         );
         $type = $operator->getDefinition($map, $node->name->value, $nullable);
 
@@ -428,51 +422,4 @@ class AstManipulator {
             : $node;
     }
     // </editor-fold>
-
-    // <editor-fold desc="AST Helpers">
-    // =========================================================================
-    protected function isTypeDefinitionExists(string $name): bool {
-        return (bool) $this->getTypeDefinitionNode($name);
-    }
-
-    protected function getTypeDefinitionNode(Node|string $node): ?TypeDefinitionNode {
-        $type       = $node instanceof Node
-            ? ASTHelper::getUnderlyingTypeName($node)
-            : $node;
-        $definition = $this->document->types[$type] ?? null;
-
-        return $definition;
-    }
-
-    /**
-     * @template T of \GraphQL\Language\AST\TypeDefinitionNode
-     *
-     * @param T $definition
-     *
-     * @return T
-     */
-    protected function addTypeDefinition(string $name, TypeDefinitionNode $definition): TypeDefinitionNode {
-        if (!$this->isTypeDefinitionExists($name)) {
-            $this->document->setTypeDefinition($definition);
-        }
-
-        return $this->getTypeDefinitionNode($name);
-    }
-
-    /**
-     * @param array<\GraphQL\Language\AST\TypeDefinitionNode> $definitions
-     */
-    protected function addTypeDefinitions(object $owner, array $definitions): void {
-        foreach ($definitions as $name => $definition) {
-            $fullname                        = $definition->name->value;
-            $this->map[$owner::class][$name] = $fullname;
-
-            $this->addTypeDefinition($fullname, $definition);
-        }
-    }
-
-    protected function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
-        return Parser::scalarTypeDefinition("scalar {$scalar}");
-    }
-    //</editor-fold>
 }
