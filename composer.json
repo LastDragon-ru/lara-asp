@@ -56,6 +56,7 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
+    "mockery/mockery": "^1.4",
     "nunomaduro/larastan": "^0.7.0",
     "orchestra/testbench": "^6.9.0",
     "phpstan/phpstan": "^0.12.77",

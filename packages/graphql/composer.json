@@ -25,6 +25,7 @@
     "lastdragon-ru/lara-asp-core": "self.version"
   },
   "require-dev": {
+    "mockery/mockery": "^1.4",
     "phpunit/phpunit": "^9.5.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "orchestra/testbench": "^6.9.0"

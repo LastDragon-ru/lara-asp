@@ -3,12 +3,17 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionNamedType;
 
+use function is_a;
 use function is_array;
 use function reset;
 use function sprintf;
@@ -44,7 +49,7 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
         // QueryBuilder?
         if ($builder instanceof QueryBuilder) {
             throw new SearchLogicException(sprintf(
-                'Operator `%s` can not be used with `%`.',
+                'Operator `%s` can not be used with `%s`.',
                 $this->getName(),
                 QueryBuilder::class,
             ));
@@ -55,22 +60,21 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
         // * has + not + operator = has + !$operator
 
         // Conditions & Not
-        $all = $conditions;
-        $has = $conditions[$this->getName()];
-        $not = (bool) $search->getNotOperator($conditions);
+        $relation = $this->getRelation($builder, $property);
+        $original = $conditions;
+        $has      = $conditions[$this->getName()];
+        $not      = (bool) $search->getNotOperator($conditions);
 
         unset($conditions[$this->getName()]);
-        unset($all[$this->getName()]);
+        unset($original[$this->getName()]);
 
         // Build
         $count    = 1;
         $operator = '>=';
 
         if ($conditions) {
-            $query    = $builder instanceof EloquentBuilder
-                ? $builder->toBase()->newQuery()
-                : $builder->newQuery();
-            $query    = $search->processComparison($query, 'tmp', $all);
+            $query    = $builder->toBase()->newQuery();
+            $query    = $search->processComparison($query, 'tmp', $original);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;
@@ -84,13 +88,43 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
         // Build
         return $builder->whereHas(
             $property,
-            static function (EloquentBuilder|QueryBuilder $builder) use ($search, $has): EloquentBuilder|QueryBuilder {
+            static function (
+                EloquentBuilder|QueryBuilder $builder,
+            ) use (
+                $search,
+                $relation,
+                $has,
+            ): EloquentBuilder|QueryBuilder {
                 return is_array($has)
-                    ? $search->process($builder, $has)
+                    ? $search->process($builder, $has, $relation->getRelationCountHash(false))
                     : $builder;
             },
             $operator,
             $count,
         );
+    }
+
+    protected function getRelation(EloquentBuilder $builder, string $property): EloquentRelation {
+        $relation = null;
+
+        try {
+            $class = new ReflectionClass($builder->getModel());
+            $type  = $class->getMethod($property)->getReturnType();
+
+            if ($type instanceof ReflectionNamedType && is_a($type->getName(), EloquentRelation::class, true)) {
+                $relation = $builder->newModelInstance()->{$property}();
+            }
+        } catch (ReflectionException) {
+            $relation = null;
+        }
+
+        if (!($relation instanceof EloquentRelation)) {
+            throw new SearchLogicException(sprintf(
+                'Property `%s` is not a relation.',
+                $property,
+            ));
+        }
+
+        return $relation;
     }
 }

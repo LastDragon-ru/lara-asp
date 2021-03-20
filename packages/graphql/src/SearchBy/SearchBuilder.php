@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use InvalidArgumentException;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator;
@@ -38,14 +39,16 @@ class SearchBuilder {
      */
     public function __construct(array $operators) {
         foreach ($operators as $operator) {
-            if ($operator instanceof ComplexOperator) {
-                $this->complex[$operator->getName()] = $operator;
+            if ($operator instanceof ComparisonOperator) {
+                $this->comparison[$operator->getName()] = $operator;
             } elseif ($operator instanceof LogicalOperator) {
                 $this->logical[$operator->getName()] = $operator;
-            } elseif ($operator instanceof ComparisonOperator) {
-                $this->comparison[$operator->getName()] = $operators;
+            } elseif ($operator instanceof ComplexOperator) {
+                $this->complex[$operator->getName()] = $operator;
             } else {
-                // empty
+                throw new InvalidArgumentException(
+                    'Unsupported operator type.',
+                );
             }
         }
     }
@@ -68,12 +71,13 @@ class SearchBuilder {
     public function process(
         QueryBuilder|EloquentBuilder $builder,
         array $input,
+        string $tableAlias = null,
     ): QueryBuilder|EloquentBuilder {
         // Not?
         $not = $this->getNotOperator($input);
 
         if ($not) {
-            return $this->processNotOperator($builder, $not, $input);
+            return $this->processNotOperator($builder, $not, $input, $tableAlias);
         }
 
         // On this level, each item can be one of the following
@@ -94,13 +98,13 @@ class SearchBuilder {
             $logical = $this->getLogicalOperator($property);
 
             if ($logical) {
-                $builder = $this->processLogicalOperator($builder, $logical, $conditions);
+                $builder = $this->processLogicalOperator($builder, $logical, $conditions, $tableAlias);
 
                 continue;
             }
 
             // Comparison
-            $this->processComparison($builder, $property, $conditions);
+            $this->processComparison($builder, $property, $conditions, $tableAlias);
         }
 
         return $builder;
@@ -113,13 +117,21 @@ class SearchBuilder {
         EloquentBuilder|QueryBuilder $builder,
         Not $not,
         array $conditions,
+        string $tableAlias = null,
     ): EloquentBuilder|QueryBuilder {
         return $builder->where(
-            function (EloquentBuilder|QueryBuilder $builder) use ($not, $conditions): EloquentBuilder|QueryBuilder {
+            function (EloquentBuilder|QueryBuilder $builder) use (
+                $not,
+                $conditions,
+                $tableAlias,
+            ): EloquentBuilder|QueryBuilder {
                 return $not->apply(
                     $builder,
-                    function (QueryBuilder|EloquentBuilder $builder) use ($conditions): QueryBuilder|EloquentBuilder {
-                        return $this->process($builder, $conditions);
+                    function (QueryBuilder|EloquentBuilder $builder) use (
+                        $conditions,
+                        $tableAlias,
+                    ): QueryBuilder|EloquentBuilder {
+                        return $this->process($builder, $conditions, $tableAlias);
                     },
                 );
             },
@@ -155,16 +167,22 @@ class SearchBuilder {
         EloquentBuilder|QueryBuilder $builder,
         LogicalOperator $logical,
         array $conditions,
+        string $tableAlias = null,
     ): EloquentBuilder|QueryBuilder {
         return $builder->where(
-            function (EloquentBuilder|QueryBuilder $builder) use ($logical, $conditions): EloquentBuilder|QueryBuilder {
+            function (EloquentBuilder|QueryBuilder $builder) use (
+                $logical,
+                $conditions,
+                $tableAlias,
+            ): EloquentBuilder|QueryBuilder {
                 foreach ($conditions as $condition) {
                     $builder = $logical->apply(
                         $builder,
-                        function (
-                            QueryBuilder|EloquentBuilder $builder,
-                        ) use ($condition): QueryBuilder|EloquentBuilder {
-                            return $this->process($builder, $condition);
+                        function (QueryBuilder|EloquentBuilder $builder) use (
+                            $condition,
+                            $tableAlias,
+                        ): QueryBuilder|EloquentBuilder {
+                            return $this->process($builder, $condition, $tableAlias);
                         },
                     );
                 }
@@ -181,6 +199,7 @@ class SearchBuilder {
         EloquentBuilder|QueryBuilder $builder,
         string $property,
         array $conditions,
+        string $tableAlias = null,
     ): EloquentBuilder|QueryBuilder {
         // Not?
         $not = (bool) $this->getNotOperator($conditions);
@@ -195,8 +214,8 @@ class SearchBuilder {
         // More than one operator?
         if (count($conditions) > 1) {
             throw new SearchLogicException(sprintf(
-                'Only one comparison operator allowed, found: %s',
-                implode(', ', array_keys($conditions)),
+                'Only one comparison operator allowed, found: %s.',
+                '`'.implode('`, `', array_keys($conditions)).'`',
             ));
         }
 
@@ -220,6 +239,11 @@ class SearchBuilder {
                 $name,
                 Not::Name,
             ));
+        }
+
+        // Table Alias?
+        if ($tableAlias) {
+            $property = "{$tableAlias}.{$property}";
         }
 
         // Apply
@@ -258,7 +282,7 @@ class SearchBuilder {
      */
     public function getNotOperator(array &$conditions): ?Not {
         $not      = null;
-        $operator = isset($input[Not::Name])
+        $operator = isset($conditions[Not::Name])
             ? $this->getLogicalOperator(Not::Name)
             : null;
 
