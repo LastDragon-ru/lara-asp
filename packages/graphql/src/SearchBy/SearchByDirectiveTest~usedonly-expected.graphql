@@ -26,6 +26,9 @@ input SearchByScalarString {
   """Equal (`=`)."""
   eq: String
 
+  """Like."""
+  like: String
+
   """Within a set of values."""
   in: [String!]
 

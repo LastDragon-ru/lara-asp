@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqu
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
@@ -66,6 +67,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuil
         ],
         'String'       => [
             Equal::class,
+            Like::class,
             In::class,
         ],
 
