@@ -1,0 +1,21 @@
+type Query {
+  test(order: Properties @sortBy): ID! @all
+}
+
+input Properties {
+  idScalar: ID
+  idScalarNotNull: ID!
+  nested: Nested
+  nestedNotNull: Nested!
+  enum: Value
+  enumNotNull: Value!
+}
+
+input Nested {
+  value: String
+}
+
+enum Value {
+  one
+  two
+}

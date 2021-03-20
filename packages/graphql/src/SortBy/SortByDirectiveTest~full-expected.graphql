@@ -1,0 +1,35 @@
+input Nested {
+  value: String
+}
+
+input Properties {
+  idScalar: ID
+  idScalarNotNull: ID!
+  nested: Nested
+  nestedNotNull: Nested!
+  enum: Value
+  enumNotNull: Value!
+}
+
+type Query {
+  test(order: [SortByClauseProperties!]): ID!
+}
+
+"""Sort clauses."""
+input SortByClauseProperties {
+  """Property clause."""
+  idScalar: SortByDirection
+
+  """Property clause."""
+  idScalarNotNull: SortByDirection
+}
+
+enum SortByDirection {
+  asc
+  desc
+}
+
+enum Value {
+  one
+  two
+}

@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchByDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\SortByDirective;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
 
 use function array_slice;
@@ -37,6 +38,12 @@ class Provider extends ServiceProvider {
             RegisterDirectiveNamespaces::class,
             static function (): string {
                 return implode('\\', array_slice(explode('\\', SearchByDirective::class), 0, -1));
+            },
+        );
+        $dispatcher->listen(
+            RegisterDirectiveNamespaces::class,
+            static function (): string {
+                return implode('\\', array_slice(explode('\\', SortByDirective::class), 0, -1));
             },
         );
     }
