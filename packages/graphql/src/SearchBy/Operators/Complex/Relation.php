@@ -65,6 +65,7 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
         unset($original[$this->getName()]);
 
         // Build
+        $alias    = $relation->getRelationCountHash(false);
         $count    = 1;
         $operator = '>=';
 
@@ -88,11 +89,11 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
                 EloquentBuilder|QueryBuilder $builder,
             ) use (
                 $search,
-                $relation,
+                $alias,
                 $has,
             ): EloquentBuilder|QueryBuilder {
                 return is_array($has)
-                    ? $search->process($builder, $has, $relation->getRelationCountHash(false))
+                    ? $search->process($builder, $has, $alias)
                     : $builder;
             },
             $operator,
