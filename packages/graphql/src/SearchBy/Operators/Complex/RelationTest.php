@@ -14,6 +14,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
 
+use LogicException;
+
 use function preg_replace;
 use function sprintf;
 
@@ -80,7 +82,7 @@ class RelationTest extends TestCase {
                 [],
             ],
             'not a relation'              => [
-                new SearchLogicException(sprintf(
+                new LogicException(sprintf(
                     'Property `%s` is not a relation.',
                     'delete',
                 )),

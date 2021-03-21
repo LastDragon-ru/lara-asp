@@ -3,17 +3,13 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionNamedType;
 
-use function is_a;
 use function is_array;
 use function reset;
 use function sprintf;
@@ -60,7 +56,7 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
         // * has + not + operator = has + !$operator
 
         // Conditions & Not
-        $relation = $this->getRelation($builder, $property);
+        $relation = (new ModelHelper($builder))->getRelation($property);
         $original = $conditions;
         $has      = $conditions[$this->getName()];
         $not      = (bool) $search->getNotOperator($conditions);
@@ -102,29 +98,5 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
             $operator,
             $count,
         );
-    }
-
-    protected function getRelation(EloquentBuilder $builder, string $property): EloquentRelation {
-        $relation = null;
-
-        try {
-            $class = new ReflectionClass($builder->getModel());
-            $type  = $class->getMethod($property)->getReturnType();
-
-            if ($type instanceof ReflectionNamedType && is_a($type->getName(), EloquentRelation::class, true)) {
-                $relation = $builder->newModelInstance()->{$property}();
-            }
-        } catch (ReflectionException) {
-            $relation = null;
-        }
-
-        if (!($relation instanceof EloquentRelation)) {
-            throw new SearchLogicException(sprintf(
-                'Property `%s` is not a relation.',
-                $property,
-            ));
-        }
-
-        return $relation;
     }
 }
