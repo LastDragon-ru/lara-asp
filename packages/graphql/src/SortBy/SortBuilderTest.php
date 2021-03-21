@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
@@ -14,6 +15,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LogicException;
 
+use function implode;
 use function sprintf;
 
 /**
@@ -140,6 +142,23 @@ class SortBuilderTest extends TestCase {
                     ],
                 ],
             ],
+            'eloquent: unsupported'                 => [
+                new SortLogicException(sprintf(
+                    'Relation of type `%s` cannot be used for sort, only `%s` supported.',
+                    HasMany::class,
+                    implode('`, `', [
+                        BelongsTo::class,
+                    ]),
+                )),
+                static function (): EloquentBuilder {
+                    return SortBuilderTest__ModelA::query();
+                },
+                [
+                    [
+                        'unsupported' => ['name' => 'asc'],
+                    ],
+                ],
+            ],
             'eloquent: simple condition'            => [
                 [
                     'sql'      => 'select * from "table_a" order by "table_a"."a" asc, "table_a"."b" desc',
@@ -226,6 +245,10 @@ class SortBuilderTest__ModelA extends Model {
 
     public function belongsToB(): BelongsTo {
         return $this->belongsTo(SortBuilderTest__ModelB::class);
+    }
+
+    public function unsupported(): HasMany {
+        return $this->hasMany(SortBuilderTest__ModelB::class);
     }
 }
 

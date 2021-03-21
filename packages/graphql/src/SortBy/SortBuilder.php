@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\ModelHelper;
 
@@ -11,12 +12,20 @@ use function array_keys;
 use function count;
 use function implode;
 use function in_array;
+use function is_a;
 use function is_array;
 use function key;
 use function reset;
 use function sprintf;
 
 class SortBuilder {
+    /**
+     * @var array<class-string<\Illuminate\Database\Eloquent\Relations\Relation>>
+     */
+    protected array $relations = [
+        BelongsTo::class,
+    ];
+
     public function __construct() {
         // empty
     }
@@ -120,14 +129,15 @@ class SortBuilder {
         // Relation?
         $parentBuilder = $stack->getBuilder();
         $parentAlias   = $stack->getTableAlias();
-        $relation      = (new ModelHelper($parentBuilder))->getRelation($name);
+        $relation      = $this->getRelation($parentBuilder, $name);
         $stack         = $stack->push($name, $relation->getRelated()->newQueryWithoutRelationships());
 
-        if ($relation instanceof BelongsTo) {
-            if (!$stack->hasTableAlias()) {
-                $alias   = $relation->getRelationCountHash();
-                $stack   = $stack->setTableAlias($alias);
-                $table   = $relation->newModelInstance()->getTable();
+        if (!$stack->hasTableAlias()) {
+            $alias = $relation->getRelationCountHash();
+            $stack = $stack->setTableAlias($alias);
+            $table = $relation->newModelInstance()->getTable();
+
+            if ($relation instanceof BelongsTo) {
                 $builder = $builder->leftJoin(
                     "{$table} as {$alias}",
                     "{$alias}.{$relation->getOwnerKeyName()}",
@@ -137,14 +147,6 @@ class SortBuilder {
                         : $relation->getQualifiedForeignKeyName(),
                 );
             }
-        } else {
-            throw new SortLogicException(sprintf(
-                'Relation of type `%s` cannot be used for sort, only `%s` supported.',
-                $relation::class,
-                implode('`, `', [
-                    BelongsTo::class,
-                ]),
-            ));
         }
 
         // Return
@@ -153,6 +155,31 @@ class SortBuilder {
         } finally {
             $stack->pop();
         }
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =========================================================================
+    protected function getRelation(EloquentBuilder $builder, string $name): Relation {
+        $relation  = (new ModelHelper($builder))->getRelation($name);
+        $supported = false;
+
+        foreach ($this->relations as $class) {
+            if (is_a($relation, $class)) {
+                $supported = true;
+                break;
+            }
+        }
+
+        if (!$supported) {
+            throw new SortLogicException(sprintf(
+                'Relation of type `%s` cannot be used for sort, only `%s` supported.',
+                $relation::class,
+                implode('`, `', $this->relations),
+            ));
+        }
+
+        return $relation;
     }
     // </editor-fold>
 }
