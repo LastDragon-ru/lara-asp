@@ -53,7 +53,7 @@ trait CronableAssertions {
      */
     protected function setQueueableConfig(string $queueable, array $settings): void {
         $config = $this->app->make(Repository::class);
-        $merger = new ConfigRecursiveMerger();
+        $merger = new ConfigRecursiveMerger(false);
         $key    = sprintf('queue.queueables.%s', $queueable);
 
         $config->set($key, $merger->merge((array) $config->get($key), $settings));
