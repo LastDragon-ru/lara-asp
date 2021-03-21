@@ -39,7 +39,6 @@ class RelationTest extends TestCase {
         Closure $builder,
         string $property,
         array $conditions = [],
-        string $tableAlias = null,
     ): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
@@ -52,11 +51,8 @@ class RelationTest extends TestCase {
         ]);
         $relation = $this->app->make(Relation::class);
         $builder  = $builder($this);
-        $builder  = $relation->apply($search, $builder, $property, $conditions, $tableAlias);
-        $actual   = [
-            'sql'      => preg_replace('/laravel_reserved_[\d]+/', 'laravel_reserved', $builder->toSql()),
-            'bindings' => $builder->getBindings(),
-        ];
+        $builder  = $relation->apply($search, $builder, $property, $conditions);
+        $actual   = $this->getSql($builder);
 
         $this->assertEquals($expected, $actual);
     }
@@ -95,8 +91,8 @@ class RelationTest extends TestCase {
             '{has: yes}'                  => [
                 [
                     'sql'      => 'select * from "tmp" where exists ('.
-                        'select * from "tmp" as "laravel_reserved" '.
-                        'where "tmp"."id" = "laravel_reserved"."relation_test___model_id"'.
+                        'select * from "tmp" as "table_alias_0" '.
+                        'where "tmp"."id" = "table_alias_0"."relation_test___model_id"'.
                         ')',
                     'bindings' => [],
                 ],
@@ -111,8 +107,8 @@ class RelationTest extends TestCase {
             '{has: yes, not: yes}'        => [
                 [
                     'sql'      => 'select * from "tmp" where not exists ('.
-                        'select * from "tmp" as "laravel_reserved" '.
-                        'where "tmp"."id" = "laravel_reserved"."relation_test___model_id"'.
+                        'select * from "tmp" as "table_alias_0" '.
+                        'where "tmp"."id" = "table_alias_0"."relation_test___model_id"'.
                         ')',
                     'bindings' => [],
                 ],
@@ -128,9 +124,9 @@ class RelationTest extends TestCase {
             '{has: {property: {eq: 1}}}'  => [
                 [
                     'sql'      => 'select * from "tmp" where exists ('.
-                        'select * from "tmp" as "laravel_reserved" where '.
-                        '"tmp"."id" = "laravel_reserved"."relation_test___model_id" '.
-                        'and "laravel_reserved"."property" = ?'.
+                        'select * from "tmp" as "table_alias_0" where '.
+                        '"tmp"."id" = "table_alias_0"."relation_test___model_id" '.
+                        'and "table_alias_0"."property" = ?'.
                         ')',
                     'bindings' => [123],
                 ],
@@ -149,8 +145,8 @@ class RelationTest extends TestCase {
             '{has: yes, eq: 1}'           => [
                 [
                     'sql'      => 'select * from "tmp" where ('.
-                        'select count(*) from "tmp" as "laravel_reserved" where '.
-                        '"tmp"."id" = "laravel_reserved"."relation_test___model_id"'.
+                        'select count(*) from "tmp" as "table_alias_0" where '.
+                        '"tmp"."id" = "table_alias_0"."relation_test___model_id"'.
                         ') = 345',
                     'bindings' => [/* strange */],
                 ],
@@ -166,8 +162,8 @@ class RelationTest extends TestCase {
             '{has: yes, eq: 1, not: yes}' => [
                 [
                     'sql'      => 'select * from "tmp" where ('.
-                        'select count(*) from "tmp" as "laravel_reserved" '.
-                        'where "tmp"."id" = "laravel_reserved"."relation_test___model_id"'.
+                        'select count(*) from "tmp" as "table_alias_0" '.
+                        'where "tmp"."id" = "table_alias_0"."relation_test___model_id"'.
                         ') != 345',
                     'bindings' => [/* strange */],
                 ],
