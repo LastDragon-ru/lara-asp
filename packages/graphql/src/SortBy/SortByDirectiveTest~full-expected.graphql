@@ -1,5 +1,6 @@
 input Nested {
   value: String
+  nested: Nested
 }
 
 input Properties {
@@ -15,13 +16,30 @@ type Query {
   test(order: [SortByClauseProperties!]): ID!
 }
 
-"""Sort clauses."""
+"""Sort clause for input Nested (only one property allowed at a time)."""
+input SortByClauseNested {
+  """Property clause."""
+  value: SortByDirection
+
+  """Property clause."""
+  nested: SortByClauseNested
+}
+
+"""
+Sort clause for input Properties (only one property allowed at a time).
+"""
 input SortByClauseProperties {
   """Property clause."""
   idScalar: SortByDirection
 
   """Property clause."""
   idScalarNotNull: SortByDirection
+
+  """Property clause."""
+  nested: SortByClauseNested
+
+  """Property clause."""
+  nestedNotNull: SortByClauseNested
 }
 
 enum SortByDirection {

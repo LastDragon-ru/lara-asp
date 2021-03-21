@@ -13,6 +13,7 @@ input Properties {
 
 input Nested {
   value: String
+  nested: Nested
 }
 
 enum Value {
