@@ -4,9 +4,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\ModelHelper;
+use LogicException;
 
 use function array_keys;
 use function count;
@@ -24,6 +26,7 @@ class SortBuilder {
      */
     protected array $relations = [
         BelongsTo::class,
+        HasOne::class,
     ];
 
     public function __construct() {
@@ -146,6 +149,17 @@ class SortBuilder {
                         ? "{$parentAlias}.{$relation->getForeignKeyName()}"
                         : $relation->getQualifiedForeignKeyName(),
                 );
+            } elseif ($relation instanceof HasOne) {
+                $builder = $builder->leftJoin(
+                    "{$table} as {$alias}",
+                    "{$alias}.{$relation->getForeignKeyName()}",
+                    '=',
+                    $parentAlias
+                        ? "{$parentAlias}.{$relation->getLocalKeyName()}"
+                        : $relation->getQualifiedParentKeyName(),
+                );
+            } else {
+                throw new LogicException('O_o => Please contact to developer.');
             }
         }
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
@@ -148,6 +149,7 @@ class SortBuilderTest extends TestCase {
                     HasMany::class,
                     implode('`, `', [
                         BelongsTo::class,
+                        HasOne::class,
                     ]),
                 )),
                 static function (): EloquentBuilder {
@@ -223,6 +225,53 @@ class SortBuilderTest extends TestCase {
                     ],
                 ],
             ],
+            'eloquent: '.HasOne::class              => [
+                [
+                    'sql'      => ''.
+                        'select'.
+                        ' "table_a".*,'.
+                        ' "table_alias_0"."name" as "table_alias_0_name",'.
+                        ' "table_alias_0"."created_at" as "table_alias_0_created_at",'.
+                        ' "table_alias_1"."name" as "table_alias_1_name",'.
+                        ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
+                        'from "table_a" '.
+                        'left join "table_b" as "table_alias_0"'.
+                        ' on "table_alias_0"."model_a_id" = "table_a"."id" '.
+                        'left join "table_c" as "table_alias_1"'.
+                        ' on "table_alias_1"."model_b_id" = "table_alias_0"."id" '.
+                        'order by'.
+                        ' "table_alias_0_name" asc,'.
+                        ' "table_alias_0_created_at" desc,'.
+                        ' "table_alias_1_name" desc,'.
+                        ' "table_alias_1_created_at" desc,'.
+                        ' "table_a"."name" asc',
+                    'bindings' => [],
+                ],
+                static function (): EloquentBuilder {
+                    return SortBuilderTest__ModelA::query();
+                },
+                [
+                    [
+                        'hasOneB' => ['name' => 'asc'],
+                    ],
+                    [
+                        'hasOneB' => ['created_at' => 'desc'],
+                    ],
+                    [
+                        'hasOneB' => [
+                            'hasOneC' => ['name' => 'desc'],
+                        ],
+                    ],
+                    [
+                        'hasOneB' => [
+                            'hasOneC' => ['created_at' => 'desc'],
+                        ],
+                    ],
+                    [
+                        'name' => 'asc',
+                    ],
+                ],
+            ],
         ];
     }
     // </editor-fold>
@@ -247,6 +296,10 @@ class SortBuilderTest__ModelA extends Model {
         return $this->belongsTo(SortBuilderTest__ModelB::class);
     }
 
+    public function hasOneB(): HasOne {
+        return $this->hasOne(SortBuilderTest__ModelB::class, 'model_a_id');
+    }
+
     public function unsupported(): HasMany {
         return $this->hasMany(SortBuilderTest__ModelB::class);
     }
@@ -266,6 +319,10 @@ class SortBuilderTest__ModelB extends Model {
 
     public function belongsToC(): BelongsTo {
         return $this->belongsTo(SortBuilderTest__ModelC::class);
+    }
+
+    public function hasOneC(): HasOne {
+        return $this->hasOne(SortBuilderTest__ModelC::class, 'model_b_id');
     }
 }
 
