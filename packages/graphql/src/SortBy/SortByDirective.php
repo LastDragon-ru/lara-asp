@@ -44,7 +44,7 @@ class SortByDirective extends BaseDirective implements ArgManipulator, ArgBuilde
     /**
      * @inheritdoc
      */
-    public function handleBuilder($builder, $value): QueryBuilder|EloquentBuilder {
+    public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         return (new SortBuilder())->build($builder, $value);
     }
 }

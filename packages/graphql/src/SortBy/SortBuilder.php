@@ -13,7 +13,6 @@ use function implode;
 use function in_array;
 use function is_array;
 use function key;
-use function mb_strtolower;
 use function reset;
 use function sprintf;
 
@@ -27,7 +26,7 @@ class SortBuilder {
     /**
      * @param array<mixed> $clauses
      */
-    public function build(QueryBuilder|EloquentBuilder $builder, array $clauses): QueryBuilder|EloquentBuilder {
+    public function build(EloquentBuilder|QueryBuilder $builder, array $clauses): EloquentBuilder|QueryBuilder {
         return $builder instanceof EloquentBuilder
             ? $this->process($builder, new SortStack($builder), $clauses)
             : $this->process($builder, null, $clauses);
@@ -40,10 +39,10 @@ class SortBuilder {
      * @param array<mixed> $clauses
      */
     protected function process(
-        QueryBuilder|EloquentBuilder $builder,
+        EloquentBuilder|QueryBuilder $builder,
         SortStack|null $stack,
         array $clauses,
-    ): QueryBuilder|EloquentBuilder {
+    ): EloquentBuilder|QueryBuilder {
         foreach ((array) $clauses as $clause) {
             // Empty?
             if (!$clause) {
@@ -79,7 +78,7 @@ class SortBuilder {
         SortStack|null $stack,
         string $column,
         string $direction,
-    ): QueryBuilder|EloquentBuilder {
+    ): EloquentBuilder|QueryBuilder {
         if ($stack && $builder instanceof EloquentBuilder) {
             if ($stack->hasTableAlias()) {
                 if (!$builder->getQuery()->columns) {

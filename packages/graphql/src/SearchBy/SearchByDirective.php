@@ -137,7 +137,7 @@ class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuil
     /**
      * @inheritdoc
      */
-    public function handleBuilder($builder, $value): QueryBuilder|EloquentBuilder {
+    public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         return (new SearchBuilder(
             (new Collection($this->scalars))->flatten()->unique()->all(),
         ))->build($builder, $value);

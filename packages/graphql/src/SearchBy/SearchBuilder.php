@@ -58,7 +58,7 @@ class SearchBuilder {
     /**
      * @param array<mixed> $conditions
      */
-    public function build(QueryBuilder|EloquentBuilder $builder, array $conditions): QueryBuilder|EloquentBuilder {
+    public function build(EloquentBuilder|QueryBuilder $builder, array $conditions): EloquentBuilder|QueryBuilder {
         return $this->process($builder, $conditions);
     }
     // </editor-fold>
@@ -69,10 +69,10 @@ class SearchBuilder {
      * @param array<mixed> $input
      */
     public function process(
-        QueryBuilder|EloquentBuilder $builder,
+        EloquentBuilder|QueryBuilder $builder,
         array $input,
         string $tableAlias = null,
-    ): QueryBuilder|EloquentBuilder {
+    ): EloquentBuilder|QueryBuilder {
         // Not?
         $not = $this->getNotOperator($input);
 
@@ -127,10 +127,10 @@ class SearchBuilder {
             ): EloquentBuilder|QueryBuilder {
                 return $not->apply(
                     $builder,
-                    function (QueryBuilder|EloquentBuilder $builder) use (
+                    function (EloquentBuilder|QueryBuilder $builder) use (
                         $conditions,
                         $tableAlias,
-                    ): QueryBuilder|EloquentBuilder {
+                    ): EloquentBuilder|QueryBuilder {
                         return $this->process($builder, $conditions, $tableAlias);
                     },
                 );
@@ -178,10 +178,10 @@ class SearchBuilder {
                 foreach ($conditions as $condition) {
                     $builder = $logical->apply(
                         $builder,
-                        function (QueryBuilder|EloquentBuilder $builder) use (
+                        function (EloquentBuilder|QueryBuilder $builder) use (
                             $condition,
                             $tableAlias,
-                        ): QueryBuilder|EloquentBuilder {
+                        ): EloquentBuilder|QueryBuilder {
                             return $this->process($builder, $condition, $tableAlias);
                         },
                     );
