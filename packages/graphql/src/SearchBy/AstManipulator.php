@@ -99,7 +99,7 @@ class AstManipulator extends BaseAstManipulator {
         $type      = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Available conditions.
+            Available conditions for input {$node->name->value}.
             """
             input {$name} {
                 {$content}
@@ -132,10 +132,10 @@ class AstManipulator extends BaseAstManipulator {
                 $fieldTypeNode = $this->getScalarTypeNode($fieldType);
             }
 
-            if ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
-                $fieldDefinition = $this->getRelationType($fieldTypeNode, $fieldNullable);
-            } elseif ($fieldTypeNode instanceof ScalarTypeDefinitionNode) {
+            if ($fieldTypeNode instanceof ScalarTypeDefinitionNode) {
                 $fieldDefinition = $this->getScalarType($fieldTypeNode, $fieldNullable);
+            } elseif ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
+                $fieldDefinition = $this->getRelationType($fieldTypeNode, $fieldNullable);
             } elseif ($fieldTypeNode instanceof EnumTypeDefinitionNode) {
                 $fieldDefinition = $this->getEnumType($fieldTypeNode, $fieldNullable);
             } else {
@@ -210,6 +210,7 @@ class AstManipulator extends BaseAstManipulator {
         $operators = $this->getScalarOperators($type, $nullable);
 
         // Add type
+        $mark    = $nullable ? '' : '!';
         $scalar  = $this->getScalarRealTypeNode($node);
         $content = implode("\n", array_map(function (string $operator) use ($scalar, $nullable): string {
             return $this->getOperatorType($this->getOperator($operator), $scalar, $nullable);
@@ -218,7 +219,7 @@ class AstManipulator extends BaseAstManipulator {
         $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Available operators for {$type} (only one operator allowed at a time).
+            Available operators for scalar {$type}{$mark} (only one operator allowed at a time).
             """
             input {$name} {
                 {$content}
@@ -285,7 +286,7 @@ class AstManipulator extends BaseAstManipulator {
         $this->document->setTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Relation condition.
+            Relation condition for input {$node->name->value}.
             """
             input {$name} {
                 {$content}
@@ -305,7 +306,7 @@ class AstManipulator extends BaseAstManipulator {
 
         $this->addTypeDefinitions($this, [
             $flag => Parser::enumTypeDefinition(
-            /** @lang GraphQL */
+                /** @lang GraphQL */
                 <<<GRAPHQL
                 enum {$this->name}{$flag} {
                     yes

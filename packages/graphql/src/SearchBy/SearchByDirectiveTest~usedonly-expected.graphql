@@ -6,7 +6,7 @@ type Query {
   test(where: [SearchByConditionProperties!]): ID!
 }
 
-"""Available conditions."""
+"""Available conditions for input Properties."""
 input SearchByConditionProperties {
   """All of the conditions must be true."""
   allOf: [SearchByConditionProperties!]
@@ -25,7 +25,9 @@ enum SearchByFlag {
   yes
 }
 
-"""Available operators for String (only one operator allowed at a time)."""
+"""
+Available operators for scalar String! (only one operator allowed at a time).
+"""
 input SearchByScalarString {
   """Equal (`=`)."""
   eq: String

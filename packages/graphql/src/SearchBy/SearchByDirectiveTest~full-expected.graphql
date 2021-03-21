@@ -23,7 +23,7 @@ type Query {
   test(where: [SearchByConditionProperties!]): ID!
 }
 
-"""Available conditions."""
+"""Available conditions for input Nested."""
 input SearchByConditionNested {
   """All of the conditions must be true."""
   allOf: [SearchByConditionNested!]
@@ -38,7 +38,7 @@ input SearchByConditionNested {
   value: SearchByScalarStringOrNull
 }
 
-"""Available conditions."""
+"""Available conditions for input Properties."""
 input SearchByConditionProperties {
   """All of the conditions must be true."""
   allOf: [SearchByConditionProperties!]
@@ -127,7 +127,7 @@ enum SearchByFlag {
   yes
 }
 
-"""Relation condition."""
+"""Relation condition for input Nested."""
 input SearchByRelationNested {
   """Has?"""
   has: [SearchByConditionNested!]!
@@ -152,7 +152,7 @@ input SearchByRelationNested {
 }
 
 """
-Available operators for Boolean (only one operator allowed at a time).
+Available operators for scalar Boolean! (only one operator allowed at a time).
 """
 input SearchByScalarBoolean {
   """Equal (`=`)."""
@@ -163,7 +163,7 @@ input SearchByScalarBoolean {
 }
 
 """
-Available operators for Boolean (only one operator allowed at a time).
+Available operators for scalar Boolean (only one operator allowed at a time).
 """
 input SearchByScalarBooleanOrNull {
   """Equal (`=`)."""
@@ -176,7 +176,9 @@ input SearchByScalarBooleanOrNull {
   not: SearchByFlag
 }
 
-"""Available operators for Float (only one operator allowed at a time)."""
+"""
+Available operators for scalar Float! (only one operator allowed at a time).
+"""
 input SearchByScalarFloat {
   """Equal (`=`)."""
   eq: Float
@@ -208,7 +210,9 @@ input SearchByScalarFloatOperatorBetween {
   max: Float!
 }
 
-"""Available operators for Float (only one operator allowed at a time)."""
+"""
+Available operators for scalar Float (only one operator allowed at a time).
+"""
 input SearchByScalarFloatOrNull {
   """Equal (`=`)."""
   eq: Float
@@ -238,7 +242,9 @@ input SearchByScalarFloatOrNull {
   not: SearchByFlag
 }
 
-"""Available operators for ID (only one operator allowed at a time)."""
+"""
+Available operators for scalar ID! (only one operator allowed at a time).
+"""
 input SearchByScalarID {
   """Equal (`=`)."""
   eq: ID
@@ -250,7 +256,9 @@ input SearchByScalarID {
   not: SearchByFlag
 }
 
-"""Available operators for ID (only one operator allowed at a time)."""
+"""
+Available operators for scalar ID (only one operator allowed at a time).
+"""
 input SearchByScalarIDOrNull {
   """Equal (`=`)."""
   eq: ID
@@ -265,7 +273,9 @@ input SearchByScalarIDOrNull {
   not: SearchByFlag
 }
 
-"""Available operators for Int (only one operator allowed at a time)."""
+"""
+Available operators for scalar Int! (only one operator allowed at a time).
+"""
 input SearchByScalarInt {
   """Equal (`=`)."""
   eq: Int
@@ -297,7 +307,9 @@ input SearchByScalarIntOperatorBetween {
   max: Int!
 }
 
-"""Available operators for Int (only one operator allowed at a time)."""
+"""
+Available operators for scalar Int (only one operator allowed at a time).
+"""
 input SearchByScalarIntOrNull {
   """Equal (`=`)."""
   eq: Int
@@ -327,7 +339,9 @@ input SearchByScalarIntOrNull {
   not: SearchByFlag
 }
 
-"""Available operators for String (only one operator allowed at a time)."""
+"""
+Available operators for scalar String! (only one operator allowed at a time).
+"""
 input SearchByScalarString {
   """Equal (`=`)."""
   eq: String
@@ -342,7 +356,9 @@ input SearchByScalarString {
   not: SearchByFlag
 }
 
-"""Available operators for String (only one operator allowed at a time)."""
+"""
+Available operators for scalar String (only one operator allowed at a time).
+"""
 input SearchByScalarStringOrNull {
   """Equal (`=`)."""
   eq: String
