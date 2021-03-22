@@ -88,10 +88,15 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
             static function (
                 EloquentBuilder|QueryBuilder $builder,
             ) use (
+                $relation,
                 $search,
                 $alias,
                 $has,
             ): EloquentBuilder|QueryBuilder {
+                if ($alias === $relation->getRelationCountHash(false)) {
+                    $alias = null;
+                }
+
                 return is_array($has)
                     ? $search->process($builder, $has, $alias)
                     : $builder;

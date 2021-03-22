@@ -63,7 +63,7 @@ class RelationTest extends TestCase {
      */
     public function dataProviderApply(): array {
         return [
-            'query builder not supported' => [
+            'query builder not supported'      => [
                 new SearchLogicException(sprintf(
                     'Operator `%s` can not be used with `%s`.',
                     (new Relation())->getName(),
@@ -75,43 +75,43 @@ class RelationTest extends TestCase {
                 'test',
                 [],
             ],
-            'not a relation'              => [
+            'not a relation'                   => [
                 new LogicException(sprintf(
                     'Property `%s` is not a relation.',
                     'delete',
                 )),
                 static function (): EloquentBuilder {
-                    return RelationTest__Model::query();
+                    return RelationTest__ModelA::query();
                 },
                 'delete',
                 [],
             ],
-            '{has: yes}'                  => [
+            '{has: yes}'                       => [
                 [
-                    'sql'      => 'select * from "tmp" where exists ('.
-                        'select * from "tmp" as "table_alias_0" '.
-                        'where "tmp"."id" = "table_alias_0"."relation_test___model_id"'.
+                    'sql'      => 'select * from "table_a" where exists ('.
+                        'select * from "table_b" '.
+                        'where "table_a"."id" = "table_b"."table_a_id"'.
                         ')',
                     'bindings' => [],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__Model::query();
+                    return RelationTest__ModelA::query();
                 },
                 'test',
                 [
                     'has' => 'yes',
                 ],
             ],
-            '{has: yes, not: yes}'        => [
+            '{has: yes, not: yes}'             => [
                 [
-                    'sql'      => 'select * from "tmp" where not exists ('.
-                        'select * from "tmp" as "table_alias_0" '.
-                        'where "tmp"."id" = "table_alias_0"."relation_test___model_id"'.
+                    'sql'      => 'select * from "table_a" where not exists ('.
+                        'select * from "table_b" '.
+                        'where "table_a"."id" = "table_b"."table_a_id"'.
                         ')',
                     'bindings' => [],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__Model::query();
+                    return RelationTest__ModelA::query();
                 },
                 'test',
                 [
@@ -119,17 +119,16 @@ class RelationTest extends TestCase {
                     'not' => 'yes',
                 ],
             ],
-            '{has: {property: {eq: 1}}}'  => [
+            '{has: {property: {eq: 1}}}'       => [
                 [
-                    'sql'      => 'select * from "tmp" where exists ('.
-                        'select * from "tmp" as "table_alias_0" where '.
-                        '"tmp"."id" = "table_alias_0"."relation_test___model_id" '.
-                        'and "table_alias_0"."property" = ?'.
+                    'sql'      => 'select * from "table_a" where exists ('.
+                        'select * from "table_b" where '.
+                        '"table_a"."id" = "table_b"."table_a_id" and "property" = ?'.
                         ')',
                     'bindings' => [123],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__Model::query();
+                    return RelationTest__ModelA::query();
                 },
                 'test',
                 [
@@ -140,16 +139,16 @@ class RelationTest extends TestCase {
                     ],
                 ],
             ],
-            '{has: yes, eq: 1}'           => [
+            '{has: yes, eq: 1}'                => [
                 [
-                    'sql'      => 'select * from "tmp" where ('.
-                        'select count(*) from "tmp" as "table_alias_0" where '.
-                        '"tmp"."id" = "table_alias_0"."relation_test___model_id"'.
+                    'sql'      => 'select * from "table_a" where ('.
+                        'select count(*) from "table_b" where '.
+                        '"table_a"."id" = "table_b"."table_a_id"'.
                         ') = 345',
                     'bindings' => [/* strange */],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__Model::query();
+                    return RelationTest__ModelA::query();
                 },
                 'test',
                 [
@@ -157,16 +156,16 @@ class RelationTest extends TestCase {
                     'eq'  => 345,
                 ],
             ],
-            '{has: yes, eq: 1, not: yes}' => [
+            '{has: yes, eq: 1, not: yes}'      => [
                 [
-                    'sql'      => 'select * from "tmp" where ('.
-                        'select count(*) from "tmp" as "table_alias_0" '.
-                        'where "tmp"."id" = "table_alias_0"."relation_test___model_id"'.
+                    'sql'      => 'select * from "table_a" where ('.
+                        'select count(*) from "table_b" '.
+                        'where "table_a"."id" = "table_b"."table_a_id"'.
                         ') != 345',
                     'bindings' => [/* strange */],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__Model::query();
+                    return RelationTest__ModelA::query();
                 },
                 'test',
                 [
@@ -175,18 +174,39 @@ class RelationTest extends TestCase {
                     'eq'  => 345,
                 ],
             ],
-            '{has: yes, eq: 1, gt: 2}'    => [
+            '{has: yes, eq: 1, gt: 2}'         => [
                 new SearchLogicException(
                     'Only one comparison operator allowed, found: `eq`, `gt`',
                 ),
                 static function (): EloquentBuilder {
-                    return RelationTest__Model::query();
+                    return RelationTest__ModelA::query();
                 },
                 'test',
                 [
                     'has' => 'yes',
                     'eq'  => 345,
                     'gt'  => 2,
+                ],
+            ],
+            '{has: {property: {eq: 1}}} (own)' => [
+                [
+                    'sql'      => 'select * from "table_a" where exists ('.
+                        'select * from "table_a" as "table_alias_0" where '.
+                        '"table_a"."id" = "table_alias_0"."relation_test___model_a_id" '.
+                        'and "table_alias_0"."property" = ?'.
+                        ')',
+                    'bindings' => [123],
+                ],
+                static function (): EloquentBuilder {
+                    return RelationTest__ModelA::query();
+                },
+                'a',
+                [
+                    'has' => [
+                        'property' => [
+                            'eq' => 123,
+                        ],
+                    ],
                 ],
             ],
         ];
@@ -201,15 +221,32 @@ class RelationTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class RelationTest__Model extends Model {
+class RelationTest__ModelA extends Model {
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      *
      * @var string
      */
-    public $table = 'tmp';
+    public $table = 'table_a';
 
     public function test(): HasOne {
+        return $this->hasOne(RelationTest__ModelB::class, 'table_a_id');
+    }
+
+    public function a(): HasOne {
         return $this->hasOne(static::class);
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class RelationTest__ModelB extends Model {
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     *
+     * @var string
+     */
+    public $table = 'table_b';
 }
