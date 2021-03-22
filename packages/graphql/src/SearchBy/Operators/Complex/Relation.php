@@ -30,7 +30,7 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
      * @inheritdoc
      */
     public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, "[{$scalar}!]!", true);
+        return parent::getDefinition($map, "{$scalar}!", true);
     }
 
     /**
