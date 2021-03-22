@@ -42,6 +42,7 @@ input SortByClauseProperties {
   nestedNotNull: SortByClauseNested
 }
 
+"""Sort direction."""
 enum SortByDirection {
   asc
   desc

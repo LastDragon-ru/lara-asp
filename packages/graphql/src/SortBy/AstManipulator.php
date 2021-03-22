@@ -129,6 +129,9 @@ class AstManipulator extends BaseAstManipulator {
             $type => Parser::enumTypeDefinition(
             /** @lang GraphQL */
                 <<<GRAPHQL
+                """
+                Sort direction.
+                """
                 enum {$this->name}{$type} {
                     asc
                     desc
