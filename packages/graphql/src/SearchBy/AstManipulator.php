@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
@@ -55,21 +55,16 @@ class AstManipulator extends BaseAstManipulator {
 
     // <editor-fold desc="API">
     // =========================================================================
-    public function getType(InputValueDefinitionNode $node): ListTypeNode {
+    public function getType(InputValueDefinitionNode $node): NamedTypeNode {
         $type = null;
+        $def  = $this->getTypeDefinitionNode($node);
 
-        if (!($node->type instanceof ListTypeNode)) {
-            $def = $this->getTypeDefinitionNode($node);
-
-            if ($def instanceof InputObjectTypeDefinitionNode) {
-                $name = $this->getInputType($def);
-                $type = Parser::typeReference("[{$name}!]");
-            }
-        } else {
-            $type = $node->type;
+        if ($def instanceof InputObjectTypeDefinitionNode) {
+            $name = $this->getInputType($def);
+            $type = Parser::typeReference($name);
         }
 
-        if (!($type instanceof ListTypeNode)) {
+        if (!($type instanceof NamedTypeNode)) {
             throw new SearchByException(sprintf(
                 'Impossible to create Search Condition for `%s`.',
                 $node->name->value,
@@ -99,7 +94,7 @@ class AstManipulator extends BaseAstManipulator {
         $type      = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Available conditions for input {$node->name->value}.
+            Available conditions for input {$node->name->value} (only one property allowed at a time).
             """
             input {$name} {
                 {$content}
@@ -306,7 +301,7 @@ class AstManipulator extends BaseAstManipulator {
 
         $this->addTypeDefinitions($this, [
             $flag => Parser::enumTypeDefinition(
-                /** @lang GraphQL */
+            /** @lang GraphQL */
                 <<<GRAPHQL
                 """
                 Flag.

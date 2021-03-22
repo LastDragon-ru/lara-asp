@@ -3,10 +3,12 @@ input Properties {
 }
 
 type Query {
-  test(where: [SearchByConditionProperties!]): ID!
+  test(where: SearchByConditionProperties): ID!
 }
 
-"""Available conditions for input Properties."""
+"""
+Available conditions for input Properties (only one property allowed at a time).
+"""
 input SearchByConditionProperties {
   """All of the conditions must be true."""
   allOf: [SearchByConditionProperties!]

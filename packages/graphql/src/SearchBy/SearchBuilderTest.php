@@ -275,6 +275,22 @@ class SearchBuilderTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
+                'more than one property'           => [
+                    new SearchLogicException(
+                        'Only one property allowed, found: `a`, `b`.',
+                    ),
+                    [
+                        'not' => 'yes',
+                        'a'   => [
+                            'eq' => 2,
+                        ],
+                        'b'   => [
+                            'eq'  => 3,
+                            'not' => 'yes',
+                        ],
+                    ],
+                    null,
+                ],
                 'valid condition'                  => [
                     [
                         'sql'      => 'select * from "tmp" where (not ((("a" != ?) and ((("a" = ?) or ("b" != ?))))))',

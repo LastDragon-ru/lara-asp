@@ -35,7 +35,9 @@ class SearchBuilder {
     protected array $comparison = [];
 
     /**
-     * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator> $operators
+     * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator
+     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator
+     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator> $operators
      */
     public function __construct(array $operators) {
         foreach ($operators as $operator) {
@@ -78,6 +80,14 @@ class SearchBuilder {
 
         if ($not) {
             return $this->processNotOperator($builder, $not, $input, $tableAlias);
+        }
+
+        // More than one property?
+        if (count($input) > 1) {
+            throw new SearchLogicException(sprintf(
+                'Only one property allowed, found: `%s`.',
+                implode('`, `', array_keys($input)),
+            ));
         }
 
         // On this level, each item can be one of the following
@@ -214,8 +224,8 @@ class SearchBuilder {
         // More than one operator?
         if (count($conditions) > 1) {
             throw new SearchLogicException(sprintf(
-                'Only one comparison operator allowed, found: %s.',
-                '`'.implode('`, `', array_keys($conditions)).'`',
+                'Only one comparison operator allowed, found: `%s`.',
+                implode('`, `', array_keys($conditions)),
             ));
         }
 
