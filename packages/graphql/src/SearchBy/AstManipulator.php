@@ -308,6 +308,9 @@ class AstManipulator extends BaseAstManipulator {
             $flag => Parser::enumTypeDefinition(
                 /** @lang GraphQL */
                 <<<GRAPHQL
+                """
+                Flag.
+                """
                 enum {$this->name}{$flag} {
                     yes
                 }

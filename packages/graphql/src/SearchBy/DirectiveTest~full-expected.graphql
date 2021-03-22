@@ -123,6 +123,7 @@ input SearchByEnumValueOrNull {
   not: SearchByFlag
 }
 
+"""Flag."""
 enum SearchByFlag {
   yes
 }
