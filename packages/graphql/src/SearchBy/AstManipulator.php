@@ -31,6 +31,7 @@ use function is_a;
 use function is_array;
 use function is_null;
 use function sprintf;
+use function str_starts_with;
 use function tap;
 
 class AstManipulator extends BaseAstManipulator {
@@ -56,6 +57,12 @@ class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="API">
     // =========================================================================
     public function getType(InputValueDefinitionNode $node): NamedTypeNode {
+        // Transformed?
+        if (str_starts_with(ASTHelper::getUnderlyingTypeName($node), $this->name)) {
+            return $node->type;
+        }
+
+        // Transform
         $type = null;
         $def  = $this->getTypeDefinitionNode($node);
 
@@ -71,6 +78,7 @@ class AstManipulator extends BaseAstManipulator {
             ));
         }
 
+        // Return
         return $type;
     }
     // </editor-fold>
