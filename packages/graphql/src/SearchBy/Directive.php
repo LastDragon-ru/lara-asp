@@ -26,6 +26,7 @@ use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 use function array_merge;
+use function class_exists;
 
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name        = 'SearchBy';
@@ -139,7 +140,14 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         return (new SearchBuilder(
-            (new Collection($this->scalars))->flatten()->unique()->all(),
+            (new Collection($this->scalars))
+                ->flatten()
+                ->unique()
+                ->filter(static function (string $operator): bool {
+                    return class_exists($operator);
+                })->map(function (string $operator): object {
+                    return $this->container->make($operator);
+                })->all(),
         ))->build($builder, $value);
     }
 }
