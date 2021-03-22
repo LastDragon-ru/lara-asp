@@ -40,7 +40,7 @@ class SortBuilderTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $directive = $this->app->make(SortByDirective::class);
+        $directive = $this->app->make(Directive::class);
         $builder   = $builder($this);
         $builder   = $directive->handleBuilder($builder, $clause);
         $actual    = $this->getSql($builder);

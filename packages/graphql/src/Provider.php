@@ -7,8 +7,8 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchByDirective;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\SortByDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive\SearchByDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Directive\SortByDirective;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
 
 use function array_slice;

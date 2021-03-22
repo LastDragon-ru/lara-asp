@@ -91,7 +91,7 @@ class AstManipulator extends BaseAstManipulator {
         }
 
         // Add type
-        $operators = $this->getScalarOperators(SearchByDirective::Logic, false);
+        $operators = $this->getScalarOperators(Directive::Logic, false);
         $scalar    = $this->getScalarTypeNode($name);
         $content   = implode("\n", array_map(function (string $operator) use ($scalar): string {
             return $this->getOperatorType($this->getOperator($operator), $scalar, false);
@@ -273,8 +273,8 @@ class AstManipulator extends BaseAstManipulator {
 
         // Add type
         $input     = $this->getScalarTypeNode($this->getInputType($node));
-        $scalar    = $this->getScalarRealTypeNode($this->getScalarTypeNode(SearchByDirective::RelationHas));
-        $operators = $this->getScalarOperators(SearchByDirective::Relation, false);
+        $scalar    = $this->getScalarRealTypeNode($this->getScalarTypeNode(Directive::RelationHas));
+        $operators = $this->getScalarOperators(Directive::Relation, false);
         $content   = implode("\n", array_map(function (string $operator) use ($input, $scalar): string {
             $operator = $this->getOperator($operator);
             $node     = $operator instanceof Relation ? $input : $scalar;
@@ -302,7 +302,7 @@ class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="Defaults">
     // =========================================================================
     protected function addRootTypeDefinitions(): void {
-        $flag = SearchByDirective::TypeFlag;
+        $flag = Directive::TypeFlag;
 
         $this->addTypeDefinitions($this, [
             $flag => Parser::enumTypeDefinition(
@@ -365,7 +365,7 @@ class AstManipulator extends BaseAstManipulator {
      * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
      */
     protected function getEnumOperators(bool $nullable): array {
-        return $this->getScalarOperators(SearchByDirective::Enum, $nullable);
+        return $this->getScalarOperators(Directive::Enum, $nullable);
     }
 
     /**

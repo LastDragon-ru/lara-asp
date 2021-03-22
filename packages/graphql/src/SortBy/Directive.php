@@ -12,7 +12,7 @@ use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
-class SortByDirective extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
+class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name          = 'SortBy';
     public const TypeDirection = 'Direction';
 

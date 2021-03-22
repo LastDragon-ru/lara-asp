@@ -76,7 +76,7 @@ class AstManipulator extends BaseAstManipulator {
         ));
 
         // Add sortable fields
-        $reference   = Parser::typeReference($this->getMap($this)[SortByDirective::TypeDirection]);
+        $reference   = Parser::typeReference($this->getMap($this)[Directive::TypeDirection]);
         $description = Parser::description('"""Property clause."""');
 
         /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
@@ -123,7 +123,7 @@ class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="Defaults">
     // =========================================================================
     protected function addRootTypeDefinitions(): void {
-        $type = SortByDirective::TypeDirection;
+        $type = Directive::TypeDirection;
 
         $this->addTypeDefinitions($this, [
             $type => Parser::enumTypeDefinition(

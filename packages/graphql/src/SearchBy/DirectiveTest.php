@@ -1,15 +1,15 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\SortByDirective
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive
  */
-class SortByDirectiveTest extends TestCase {
+class DirectiveTest extends TestCase {
     use WithTestData;
 
     // <editor-fold desc="Tests">
@@ -34,7 +34,8 @@ class SortByDirectiveTest extends TestCase {
      */
     public function dataProviderManipulateArgDefinition(): array {
         return [
-            'full' => ['~full-expected.graphql', '~full.graphql'],
+            'full'                           => ['~full-expected.graphql', '~full.graphql'],
+            'only used type should be added' => ['~usedonly-expected.graphql', '~usedonly.graphql'],
         ];
     }
     // </editor-fold>

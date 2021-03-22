@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchByDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive;
 
 /**
  * @internal Must not be used directly.
@@ -27,7 +27,7 @@ class Not extends BaseOperator implements LogicalOperator {
      * @inheritdoc
      */
     public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, $map[SearchByDirective::TypeFlag], true);
+        return parent::getDefinition($map, $map[Directive::TypeFlag], true);
     }
 
     public function apply(EloquentBuilder|QueryBuilder $builder, Closure $nested): EloquentBuilder|QueryBuilder {

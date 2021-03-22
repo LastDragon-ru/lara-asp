@@ -27,7 +27,7 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 use function array_merge;
 
-class SearchByDirective extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
+class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name        = 'SearchBy';
     public const Enum        = 'Enum';
     public const Logic       = 'Logic';
