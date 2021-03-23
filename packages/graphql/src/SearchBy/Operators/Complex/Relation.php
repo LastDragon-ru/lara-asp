@@ -19,11 +19,11 @@ use function sprintf;
  */
 class Relation extends BaseOperator implements ComplexOperator, OperatorNegationable {
     public function getName(): string {
-        return 'has';
+        return 'where';
     }
 
     protected function getDescription(): string {
-        return 'Has?';
+        return 'Conditions for the related objects.';
     }
 
     /**

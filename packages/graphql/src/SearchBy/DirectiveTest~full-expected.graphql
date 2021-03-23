@@ -134,8 +134,8 @@ enum SearchByFlag {
 
 """Relation condition for input Nested."""
 input SearchByRelationNested {
-  """Has?"""
-  has: SearchByConditionNested!
+  """Conditions for the related objects."""
+  where: SearchByConditionNested!
 
   """Equal (`=`)."""
   eq: Int

@@ -99,7 +99,7 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'has' => 'yes',
+                    'where' => 'yes',
                 ],
             ],
             '{has: yes, not: yes}'             => [
@@ -115,8 +115,8 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'has' => 'yes',
-                    'not' => 'yes',
+                    'where' => 'yes',
+                    'not'   => 'yes',
                 ],
             ],
             '{has: {property: {eq: 1}}}'       => [
@@ -132,7 +132,7 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'has' => [
+                    'where' => [
                         'property' => [
                             'eq' => 123,
                         ],
@@ -152,8 +152,8 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'has' => 'yes',
-                    'eq'  => 345,
+                    'where' => 'yes',
+                    'eq'    => 345,
                 ],
             ],
             '{has: yes, eq: 1, not: yes}'      => [
@@ -169,9 +169,9 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'has' => 'yes',
-                    'not' => 'yes',
-                    'eq'  => 345,
+                    'where' => 'yes',
+                    'not'   => 'yes',
+                    'eq'    => 345,
                 ],
             ],
             '{has: yes, eq: 1, gt: 2}'         => [
@@ -183,9 +183,9 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'has' => 'yes',
-                    'eq'  => 345,
-                    'gt'  => 2,
+                    'where' => 'yes',
+                    'eq'    => 345,
+                    'gt'    => 2,
                 ],
             ],
             '{has: {property: {eq: 1}}} (own)' => [
@@ -202,7 +202,7 @@ class RelationTest extends TestCase {
                 },
                 'a',
                 [
-                    'has' => [
+                    'where' => [
                         'property' => [
                             'eq' => 123,
                         ],
