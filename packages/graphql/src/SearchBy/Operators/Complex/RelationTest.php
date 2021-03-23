@@ -123,7 +123,7 @@ class RelationTest extends TestCase {
                 [
                     'sql'      => 'select * from "table_a" where exists ('.
                         'select * from "table_b" where '.
-                        '"table_a"."id" = "table_b"."table_a_id" and "property" = ?'.
+                        '"table_a"."id" = "table_b"."table_a_id" and "table_b"."property" = ?'.
                         ')',
                     'bindings' => [123],
                 ],
