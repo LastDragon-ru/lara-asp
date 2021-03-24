@@ -2,7 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
+use Closure;
+use Exception;
+use LastDragon_ru\LaraASP\GraphQL\Testing\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
+use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
+use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 
 /**
@@ -25,6 +30,24 @@ class DirectiveTest extends TestCase {
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @covers ::handleBuilder
+     *
+     * @dataProvider dataProviderHandleBuilder
+     *
+     * @param array<mixed> $input
+     */
+    public function testHandleBuilder(bool|Exception $expected, Closure $builder, array $input): void {
+        if ($expected instanceof Exception) {
+            $this->expectExceptionObject($expected);
+        }
+
+        $builder   = $builder($this);
+        $directive = new Directive($this->app, [], []);
+
+        $this->assertNotNull($directive->handleBuilder($builder, $input));
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProvider">
@@ -37,6 +60,46 @@ class DirectiveTest extends TestCase {
             'full'                           => ['~full-expected.graphql', '~full.graphql'],
             'only used type should be added' => ['~usedonly-expected.graphql', '~usedonly.graphql'],
         ];
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function dataProviderHandleBuilder(): array {
+        return (new CompositeDataProvider(
+            new BuilderDataProvider(),
+            new ArrayDataProvider([
+                'valid condition' => [
+                    true,
+                    [
+                        'not'   => 'yes',
+                        'allOf' => [
+                            [
+                                'a' => [
+                                    'eq'  => 1,
+                                    'not' => 'yes',
+                                ],
+                            ],
+                            [
+                                'anyOf' => [
+                                    [
+                                        'a' => [
+                                            'eq' => 2,
+                                        ],
+                                    ],
+                                    [
+                                        'b' => [
+                                            'eq'  => 3,
+                                            'not' => 'yes',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]),
+        ))->getData();
     }
     // </editor-fold>
 }

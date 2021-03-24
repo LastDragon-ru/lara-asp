@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
@@ -141,13 +142,15 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         return (new SearchBuilder(
             (new Collection($this->scalars))
+                ->add(Not::class)
                 ->flatten()
                 ->unique()
                 ->filter(static function (string $operator): bool {
                     return class_exists($operator);
                 })->map(function (string $operator): object {
                     return $this->container->make($operator);
-                })->all(),
+                })
+                ->all(),
         ))->build($builder, $value);
     }
 }
