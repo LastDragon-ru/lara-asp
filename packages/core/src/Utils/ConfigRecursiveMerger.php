@@ -92,6 +92,8 @@ class ConfigRecursiveMerger {
 
                     if (is_string(key($target[$key]))) {
                         $target[$key] = $this->process($target[$key], (array) $value, $current);
+                    } elseif (empty($target[$key])) {
+                        $target[$key] = (array) $value;
                     } else {
                         $target[$key] = array_values((array) $value);
                     }

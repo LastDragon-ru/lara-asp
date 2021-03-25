@@ -21,8 +21,8 @@ class ConfigRecursiveMergerTest extends TestCase {
      * @dataProvider dataProviderMerge
      *
      * @param array<string> $unprotected
-     * @param array<mixed> $target
-     * @param array<mixed> $configs
+     * @param array<mixed>  $target
+     * @param array<mixed>  $configs
      */
     public function testMerge(
         array|Exception $expected,
@@ -49,7 +49,7 @@ class ConfigRecursiveMergerTest extends TestCase {
      */
     public function dataProviderMerge(): array {
         return [
-            'strict + array = ok'                    => [
+            'strict + array = ok'                           => [
                 [
                     'scalar' => 321,
                     'null'   => null,
@@ -92,7 +92,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     ],
                 ],
             ],
-            'strict + not scalar = error'            => [
+            'strict + not scalar = error'                   => [
                 new InvalidArgumentException('Config may contain only scalar/null values and arrays of them.'),
                 true,
                 [],
@@ -108,7 +108,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     ],
                 ],
             ],
-            'strict + unknown key = error'           => [
+            'strict + unknown key = error'                  => [
                 new InvalidArgumentException('Unknown key `unknown`.'),
                 true,
                 [],
@@ -119,7 +119,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     'unknown' => 123,
                 ],
             ],
-            'strict + scalar => array = error'       => [
+            'strict + scalar => array = error'              => [
                 new InvalidArgumentException('Scalar/null value cannot be replaced by array.'),
                 true,
                 [],
@@ -130,7 +130,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     'value' => [1, 2, 3],
                 ],
             ],
-            'strict + array => scalar = error'       => [
+            'strict + array => scalar = error'              => [
                 new InvalidArgumentException('Array cannot be replaced by scalar/null value.'),
                 true,
                 [],
@@ -141,7 +141,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     'value' => 123,
                 ],
             ],
-            'unknown key'                            => [
+            'unknown key'                                   => [
                 [
                     'scalar'  => 123,
                     'unknown' => 123,
@@ -155,7 +155,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     'unknown' => 123,
                 ],
             ],
-            'scalar => array'                        => [
+            'scalar => array'                               => [
                 [
                     'value' => [1, 2, 3],
                 ],
@@ -168,7 +168,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     'value' => [1, 2, 3],
                 ],
             ],
-            'array => scalar'                        => [
+            'array => scalar'                               => [
                 [
                     'value' => [321],
                 ],
@@ -184,7 +184,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     'value' => [321],
                 ],
             ],
-            'non-strict + unprotected => error'      => [
+            'non-strict + unprotected => error'             => [
                 new LogicException('Setting the `$unprotected` paths has no effect in non-strict mode.'),
                 false,
                 ['path'],
@@ -192,7 +192,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                 [],
                 [],
             ],
-            'strict + unprotected  => ok'            => [
+            'strict + unprotected  => ok'                   => [
                 [
                     'scalar'      => 123,
                     'unprotected' => [
@@ -234,7 +234,7 @@ class ConfigRecursiveMergerTest extends TestCase {
                     ],
                 ],
             ],
-            'strict + partial unprotected  => error' => [
+            'strict + partial unprotected  => error'        => [
                 new InvalidArgumentException('Unknown key `unprotected.path-b.added`.'),
                 true,
                 [
@@ -258,6 +258,35 @@ class ConfigRecursiveMergerTest extends TestCase {
                             'added' => 123,
                         ],
                         'path-b' => [
+                            'added' => 123,
+                        ],
+                    ],
+                ],
+            ],
+            'strict + empty target array + non empty array' => [
+                [
+                    'scalar' => 123,
+                    'array'  => [
+                        'path-a' => [
+                            'value' => [1, 2, 3],
+                            'added' => 123,
+                        ],
+                    ],
+                ],
+                true,
+                [
+                    // empty
+                ],
+                [
+                    'scalar' => 123,
+                    'array'  => [
+                        'path-a' => [],
+                    ],
+                ],
+                [
+                    'array' => [
+                        'path-a' => [
+                            'value' => [1, 2, 3],
                             'added' => 123,
                         ],
                     ],
