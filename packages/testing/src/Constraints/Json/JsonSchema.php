@@ -19,7 +19,7 @@ class JsonSchema {
         $this->loader = $loader ?: $this->getDefaultLoader();
     }
 
-    public function getSchema(): SplFileInfo|stdClass|array|string|null {
+    public function getSchema(): JsonSerializable|SplFileInfo|stdClass|array|string|null {
         return $this->schema;
     }
 
