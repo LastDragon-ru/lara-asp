@@ -8,15 +8,12 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive
  */
 class DirectiveTest extends TestCase {
-    use WithTestData;
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

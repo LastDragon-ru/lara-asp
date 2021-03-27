@@ -3,15 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Directive
  */
 class DirectiveTest extends TestCase {
-    use WithTestData;
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
