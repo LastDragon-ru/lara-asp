@@ -22,7 +22,7 @@ trait WithTestObject {
 
         Schema::create($table, static function ($table): void {
             $table->increments('id');
-            $table->string('value', 40);
+            $table->string('value', 40)->nullable();
         });
     }
 }
