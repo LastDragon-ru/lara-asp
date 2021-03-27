@@ -1,0 +1,36 @@
+"""
+Summary summary summary summary summary summary.
+
+Description description description description description. Description
+description description description description Description description
+description description description.
+
+Description description description description description. Description
+description description description description Description description
+description description description.
+"""
+enum B {
+  a
+  b
+}
+
+enum EnumHelperTest__A {
+  a
+
+  """
+  Summary summary summary summary summary summary.
+  
+  Description description description description description. Description
+  description description description description Description description
+  description description description.
+  
+  Description description description description description. Description
+  description description description description Description description
+  description description description.
+  """
+  b
+}
+
+type Query {
+  test(a: EnumHelperTest__A, b: B): ID!
+}

@@ -22,7 +22,8 @@
     "ext-mbstring": "*",
     "laravel/framework": "^8.22.1",
     "nuwave/lighthouse": "^5.3",
-    "lastdragon-ru/lara-asp-core": "self.version"
+    "lastdragon-ru/lara-asp-core": "self.version",
+    "phpdocumentor/reflection-docblock": "^5.2"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",

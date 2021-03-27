@@ -49,6 +49,7 @@
     "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
     "nuwave/lighthouse": "^5.3",
     "opis/json-schema": "^1.0.19",
+    "phpdocumentor/reflection-docblock": "^5.2",
     "psr/http-message": "^1.0.0",
     "symfony/filesystem": "^5.2.0",
     "symfony/finder": "^5.1.0",
