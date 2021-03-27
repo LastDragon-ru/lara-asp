@@ -22,7 +22,7 @@ abstract class Enum implements JsonSerializable {
      */
     private static array $values = [];
 
-    private function __construct(
+    final private function __construct(
         private string|int $value,
     ) {
         // empty
