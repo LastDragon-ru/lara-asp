@@ -43,7 +43,7 @@ class EnumCastTest extends TestCase {
      *
      * @dataProvider dataProviderSet
      */
-    public function testSet(Exception|string|int|null $expected, mixed $value) {
+    public function testSet(Exception|string|int|null $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }

@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 
 class Between extends BaseOperator implements ComparisonOperator, OperatorNegationable, OperatorHasTypesForScalar {
-    protected const TYPE_RANGE = 'Range';
+    protected const TypeRange = 'Range';
 
     public function getName(): string {
         return 'between';
@@ -24,7 +24,7 @@ class Between extends BaseOperator implements ComparisonOperator, OperatorNegati
      * @inheritdoc
      */
     public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, $map[self::TYPE_RANGE], true);
+        return parent::getDefinition($map, $map[self::TypeRange], true);
     }
 
     /**
@@ -32,7 +32,7 @@ class Between extends BaseOperator implements ComparisonOperator, OperatorNegati
      */
     public function getTypeDefinitionsForScalar(string $prefix, string $scalar): array {
         return [
-            self::TYPE_RANGE => Parser::inputObjectTypeDefinition(
+            self::TypeRange => Parser::inputObjectTypeDefinition(
                 /** @lang GraphQL */
                 <<<GRAPHQL
                 input {$prefix} {

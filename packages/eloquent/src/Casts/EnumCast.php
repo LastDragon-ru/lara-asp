@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Casts;
 
-use Closure;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Enum;
