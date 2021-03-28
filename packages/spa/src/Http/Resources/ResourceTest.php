@@ -13,7 +13,7 @@ use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Spa\Package;
-use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LogicException;
 
 use function get_class;

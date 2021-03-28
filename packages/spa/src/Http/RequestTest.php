@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
-use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule;
 
 /**

@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Helpers;
 
 use LastDragon_ru\LaraASP\Core\Enum;
-use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 /**

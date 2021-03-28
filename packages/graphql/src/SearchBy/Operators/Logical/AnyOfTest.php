@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 use Closure;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Testing\BuilderDataProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 

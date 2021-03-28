@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\Testing\BuilderDataProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 

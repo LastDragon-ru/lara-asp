@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
-use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 /**
  * @internal

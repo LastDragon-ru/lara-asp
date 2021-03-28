@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Testing;
+namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use GraphQL\Utils\SchemaPrinter;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;

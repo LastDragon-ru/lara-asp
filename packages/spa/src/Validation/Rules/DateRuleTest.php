@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 use Exception;
 use Illuminate\Contracts\Translation\Translator;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 
 /**
  * @internal

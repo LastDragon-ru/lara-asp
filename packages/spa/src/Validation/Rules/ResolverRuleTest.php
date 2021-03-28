@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
-use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use stdClass;
 
 /**

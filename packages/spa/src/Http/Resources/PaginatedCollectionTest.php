@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 
 use function get_class;
 use function json_decode;

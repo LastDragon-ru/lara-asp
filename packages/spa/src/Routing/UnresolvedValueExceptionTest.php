@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Routing;
 
 use Illuminate\Support\Facades\Route;
-use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 
 /**

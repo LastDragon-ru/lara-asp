@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use Exception;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use stdClass;
 
 use function get_class;

@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Contracts\Translation\Translator;
-use LastDragon_ru\LaraASP\Spa\Testing\TestCase;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 
 /**
  * @internal

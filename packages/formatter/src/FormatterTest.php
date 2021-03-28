@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Formatter;
 
 use DateTime;
 use IntlDateFormatter;
-use LastDragon_ru\LaraASP\Formatter\Testing\TestCase;
+use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use NumberFormatter;
 
 use function config;

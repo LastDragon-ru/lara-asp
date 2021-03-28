@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
-use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LogicException;
 
 use function sprintf;
