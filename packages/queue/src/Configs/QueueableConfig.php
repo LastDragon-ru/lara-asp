@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue\Configs;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
-use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
+use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use ReflectionClass;
@@ -81,7 +81,7 @@ class QueueableConfig {
             $global       = (array) $this->global->get($this->getApplicationConfig());
             $config       = (array) $this->container->call([$this->queueable, 'getQueueConfig']);
             $target       = $this->getDefaultConfig() + $config;
-            $this->config = (new ConfigRecursiveMerger())->merge($target, $config, $global);
+            $this->config = (new ConfigMerger())->merge($target, $config, $global);
         }
 
         return $this->config;

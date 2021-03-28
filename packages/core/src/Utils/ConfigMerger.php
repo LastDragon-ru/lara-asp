@@ -17,7 +17,7 @@ use function key;
 /**
  * The merger for array-based configs.
  */
-class ConfigRecursiveMerger {
+class ConfigMerger {
     private bool $strict;
     /**
      * @var array<string>

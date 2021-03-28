@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Config\Repository;
-use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
+use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 
@@ -53,7 +53,7 @@ trait CronableAssertions {
      */
     protected function setQueueableConfig(string $queueable, array $settings): void {
         $config = $this->app->make(Repository::class);
-        $merger = new ConfigRecursiveMerger(false);
+        $merger = new ConfigMerger(false);
         $key    = sprintf('queue.queueables.%s', $queueable);
 
         $config->set($key, $merger->merge((array) $config->get($key), $settings));

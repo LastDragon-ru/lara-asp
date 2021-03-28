@@ -6,7 +6,7 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
-use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
+use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
 use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Package;
@@ -44,7 +44,7 @@ class SpaController extends Controller {
             ],
         ];
         $custom   = $config->get("{$package}.spa");
-        $settings = (new ConfigRecursiveMerger(false))->merge($default, $custom);
+        $settings = (new ConfigMerger(false))->merge($default, $custom);
 
         return $settings;
     }

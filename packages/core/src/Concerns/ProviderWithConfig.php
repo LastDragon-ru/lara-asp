@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 use Illuminate\Contracts\Foundation\CachesConfiguration;
-use LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger;
+use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 
 /**
  * @mixin \Illuminate\Support\ServiceProvider
@@ -31,7 +31,7 @@ trait ProviderWithConfig {
         if (!($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
             $config = $this->app->make('config');
 
-            $config->set($key, (new ConfigRecursiveMerger($strict, $unprotected))->merge(
+            $config->set($key, (new ConfigMerger($strict, $unprotected))->merge(
                 require $path,
                 $config->get($key, []),
             ));

@@ -10,9 +10,9 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Utils\ConfigRecursiveMerger
+ * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Utils\ConfigMerger
  */
-class ConfigRecursiveMergerTest extends TestCase {
+class ConfigMergerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -35,7 +35,7 @@ class ConfigRecursiveMergerTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $merger = new ConfigRecursiveMerger($strict, $unprotected);
+        $merger = new ConfigMerger($strict, $unprotected);
         $actual = $merger->merge($target, ... $configs);
 
         $this->assertEquals($expected, $actual);
