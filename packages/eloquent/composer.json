@@ -18,7 +18,8 @@
   },
   "require": {
     "php": ">=8.0.0",
-    "laravel/framework": "^8.22.1"
+    "laravel/framework": "^8.22.1",
+    "lastdragon-ru/lara-asp-core": "self.version"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
