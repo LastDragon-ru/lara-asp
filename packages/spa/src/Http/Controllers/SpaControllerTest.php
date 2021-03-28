@@ -24,15 +24,12 @@ use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\Unknown;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController
  */
 class SpaControllerTest extends TestCase {
-    use WithTestData;
-
     // <editor-fold desc="Prepare">
     // =========================================================================
     /**

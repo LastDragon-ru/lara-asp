@@ -5,10 +5,10 @@ namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 use Closure;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Models\WithTestObject;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use Mockery;
 
 use function count;

@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent;
 
-use LastDragon_ru\LaraASP\Eloquent\Testing\Models\TestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Models\WithTestObject;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 
 /**
  * @internal

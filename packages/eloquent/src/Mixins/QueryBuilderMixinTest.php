@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Mixins;
 
 use Illuminate\Database\Query\Builder;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use Traversable;
 
 /**

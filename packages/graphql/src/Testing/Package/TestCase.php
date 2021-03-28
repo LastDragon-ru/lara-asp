@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use Nuwave\Lighthouse\GraphQL;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider;
@@ -23,8 +22,6 @@ use function str_replace;
 use const PREG_SET_ORDER;
 
 class TestCase extends PackageTestCase {
-    use WithTestData;
-
     /**
      * @inheritdoc
      */

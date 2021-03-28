@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Spa\Testing\Http\Resources;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
@@ -12,8 +11,6 @@ use PHPUnit\Framework\TestCase;
  * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Testing\Http\Resources\PaginatedCollection
  */
 class PaginatedCollectionTest extends TestCase {
-    use WithTestData;
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
