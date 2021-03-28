@@ -7,7 +7,6 @@ use DateTimeInterface;
 use DateTimeZone;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Core\Concerns\InstanceCache;
@@ -549,9 +548,8 @@ class Formatter {
      * @param array<string, mixed> $replace
      */
     protected function getTranslation(string $key, array $replace = []): string {
-        $package     = Package::Name;
-        $translator  = $this->app->make(Translator::class);
-        $translation = $translator->get("{$package}::messages.{$key}", $replace, $this->getLocale());
+        $translator  = $this->app->make(PackageTranslator::class);
+        $translation = $translator->get($key, $replace, $this->getLocale());
 
         return $translation;
     }
