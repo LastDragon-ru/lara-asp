@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
+use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
@@ -12,12 +13,17 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
 
 use function is_array;
 use function reset;
-use function sprintf;
 
 /**
  * @internal Must not be used directly.
  */
 class Relation extends BaseOperator implements ComplexOperator, OperatorNegationable {
+    public function __construct(
+        protected PackageTranslator $translator,
+    ) {
+        parent::__construct();
+    }
+
     public function getName(): string {
         return 'where';
     }
@@ -44,10 +50,12 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
     ): EloquentBuilder {
         // QueryBuilder?
         if ($builder instanceof QueryBuilder) {
-            throw new SearchLogicException(sprintf(
-                'Operator `%s` can not be used with `%s`.',
-                $this->getName(),
-                QueryBuilder::class,
+            throw new SearchLogicException($this->translator->get(
+                'search_by.errors.unsupported_option',
+                [
+                    'operator' => $this->getName(),
+                    'option'   => QueryBuilder::class,
+                ],
             ));
         }
 

@@ -7,6 +7,7 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
@@ -16,7 +17,9 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public const Name          = 'SortBy';
     public const TypeDirection = 'Direction';
 
-    public function __construct() {
+    public function __construct(
+        protected PackageTranslator $translator,
+    ) {
         // empty
     }
 
@@ -45,6 +48,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @inheritdoc
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
-        return (new SortBuilder())->build($builder, $value);
+        return (new SortBuilder($this->translator))->build($builder, $value);
     }
 }

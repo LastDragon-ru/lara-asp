@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator;
@@ -16,7 +17,6 @@ use function count;
 use function implode;
 use function key;
 use function reset;
-use function sprintf;
 
 class SearchBuilder {
     /**
@@ -39,7 +39,10 @@ class SearchBuilder {
      *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator
      *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator> $operators
      */
-    public function __construct(array $operators) {
+    public function __construct(
+        protected PackageTranslator $translator,
+        array $operators,
+    ) {
         foreach ($operators as $operator) {
             if ($operator instanceof ComparisonOperator) {
                 $this->comparison[$operator->getName()] = $operator;
@@ -84,9 +87,11 @@ class SearchBuilder {
 
         // More than one property?
         if (count($input) > 1) {
-            throw new SearchLogicException(sprintf(
-                'Only one property allowed, found: `%s`.',
-                implode('`, `', array_keys($input)),
+            throw new SearchLogicException($this->translator->get(
+                'search_by.errors.too_many_properties',
+                [
+                    'properties' => implode('`, `', array_keys($input)),
+                ],
             ));
         }
 
@@ -216,16 +221,18 @@ class SearchBuilder {
 
         // Empty?
         if (count($conditions) <= 0) {
-            throw new SearchLogicException(
-                'Search condition cannot be empty.',
-            );
+            throw new SearchLogicException($this->translator->get(
+                'search_by.errors.empty_condition',
+            ));
         }
 
         // More than one operator?
         if (count($conditions) > 1) {
-            throw new SearchLogicException(sprintf(
-                'Only one comparison operator allowed, found: `%s`.',
-                implode('`, `', array_keys($conditions)),
+            throw new SearchLogicException($this->translator->get(
+                'search_by.errors.too_many_operators',
+                [
+                    'operators' => implode('`, `', array_keys($conditions)),
+                ],
             ));
         }
 
@@ -236,18 +243,22 @@ class SearchBuilder {
 
         // Found?
         if (!$operator) {
-            throw new SearchLogicException(sprintf(
-                'Operator `%s` not found.',
-                $name,
+            throw new SearchLogicException($this->translator->get(
+                'search_by.errors.unknown_operator',
+                [
+                    'operator' => $name,
+                ],
             ));
         }
 
         // Not allowed?
         if ($not && !($operator instanceof OperatorNegationable)) {
-            throw new SearchLogicException(sprintf(
-                'Operator `%s` cannot be used with `%s`.',
-                $name,
-                Not::Name,
+            throw new SearchLogicException($this->translator->get(
+                'search_by.errors.unsupported_option',
+                [
+                    'operator' => $name,
+                    'option'   => Not::Name,
+                ],
             ));
         }
 

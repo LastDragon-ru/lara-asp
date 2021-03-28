@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
+use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LogicException;
 
 use function array_keys;
@@ -18,7 +19,6 @@ use function is_a;
 use function is_array;
 use function key;
 use function reset;
-use function sprintf;
 
 class SortBuilder {
     /**
@@ -29,7 +29,9 @@ class SortBuilder {
         HasOne::class,
     ];
 
-    public function __construct() {
+    public function __construct(
+        protected PackageTranslator $translator,
+    ) {
         // empty
     }
 
@@ -58,16 +60,18 @@ class SortBuilder {
         foreach ((array) $clauses as $clause) {
             // Empty?
             if (!$clause) {
-                throw new SortLogicException(
-                    'Sort clause cannot be empty.',
-                );
+                throw new SortLogicException($this->translator->get(
+                    'sort_by.errors.empty_clause',
+                ));
             }
 
             // More than one property?
             if (count($clause) > 1) {
-                throw new SortLogicException(sprintf(
-                    'Only one property allowed, found: %s.',
-                    '`'.implode('`, `', array_keys($clause)).'`',
+                throw new SortLogicException($this->translator->get(
+                    'sort_by.errors.too_many_properties',
+                    [
+                        'properties' => implode('`, `', array_keys($clause)),
+                    ],
                 ));
             }
 
@@ -123,9 +127,11 @@ class SortBuilder {
     ): EloquentBuilder {
         // QueryBuilder?
         if ($builder instanceof QueryBuilder) {
-            throw new SortLogicException(sprintf(
-                'Relation can not be used with `%s`.',
-                QueryBuilder::class,
+            throw new SortLogicException($this->translator->get(
+                'sort_by.errors.unsupported_builder',
+                [
+                    'builder' => QueryBuilder::class,
+                ],
             ));
         }
 
@@ -186,10 +192,12 @@ class SortBuilder {
         }
 
         if (!$supported) {
-            throw new SortLogicException(sprintf(
-                'Relation of type `%s` cannot be used for sort, only `%s` supported.',
-                $relation::class,
-                implode('`, `', $this->relations),
+            throw new SortLogicException($this->translator->get(
+                'sort_by.errors.unsupported_relation',
+                [
+                    'relation'  => $relation::class,
+                    'supported' => implode('`, `', $this->relations),
+                ],
             ));
         }
 

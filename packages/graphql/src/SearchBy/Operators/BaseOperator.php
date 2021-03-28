@@ -5,6 +5,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 
 abstract class BaseOperator implements Operator {
+    public function __construct() {
+        // empty
+    }
+
     /**
      * @inheritdoc
      */

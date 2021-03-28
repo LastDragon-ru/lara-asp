@@ -117,7 +117,7 @@ class SortBuilderTest extends TestCase {
         return [
             'eloquent: query builder not supported' => [
                 new SortLogicException(sprintf(
-                    'Relation can not be used with `%s`.',
+                    'Relation cannot be used with `%s`.',
                     QueryBuilder::class,
                 )),
                 static function (self $test): QueryBuilder {

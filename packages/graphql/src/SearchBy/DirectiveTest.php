@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Closure;
 use Exception;
+use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\Testing\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -41,7 +42,7 @@ class DirectiveTest extends TestCase {
         }
 
         $builder   = $builder($this);
-        $directive = new Directive($this->app, [], []);
+        $directive = new Directive($this->app, $this->app->make(PackageTranslator::class), [], []);
 
         $this->assertNotNull($directive->handleBuilder($builder, $input));
     }

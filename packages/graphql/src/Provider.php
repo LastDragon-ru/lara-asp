@@ -24,6 +24,7 @@ class Provider extends ServiceProvider {
 
     public function boot(Dispatcher $dispatcher): void {
         $this->bootConfig();
+        $this->bootTranslations();
         $this->bootDirectives($dispatcher);
     }
 
@@ -51,11 +52,12 @@ class Provider extends ServiceProvider {
 
     protected function registerDirectives(): void {
         $this->app->bind(SearchByDirective::class, function (): SearchByDirective {
-            $container = $this->app;
-            $config    = $container->make(Repository::class);
-            $scalars   = $config->get("{$this->getName()}.search_by.scalars");
-            $aliases   = $config->get("{$this->getName()}.search_by.aliases");
-            $instance  = new SearchByDirective($container, $scalars, $aliases);
+            $container  = $this->app;
+            $translator = $container->make(PackageTranslator::class);
+            $config     = $container->make(Repository::class);
+            $scalars    = $config->get("{$this->getName()}.search_by.scalars");
+            $aliases    = $config->get("{$this->getName()}.search_by.aliases");
+            $instance   = new SearchByDirective($container, $translator, $scalars, $aliases);
 
             return $instance;
         });

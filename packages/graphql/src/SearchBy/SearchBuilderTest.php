@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
@@ -49,13 +50,16 @@ class SearchBuilderTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $search  = new SearchBuilder([
-            $this->app->make(Not::class),
-            $this->app->make(Equal::class),
-            $this->app->make(GreaterThan::class),
-            $this->app->make(AllOf::class),
-            $this->app->make(AnyOf::class),
-        ]);
+        $search  = new SearchBuilder(
+            $this->app->make(PackageTranslator::class),
+            [
+                $this->app->make(Not::class),
+                $this->app->make(Equal::class),
+                $this->app->make(GreaterThan::class),
+                $this->app->make(AllOf::class),
+                $this->app->make(AnyOf::class),
+            ],
+        );
         $builder = $builder($this);
         $builder = $search->process($builder, $conditions, $tableAlias);
         $actual  = [
@@ -92,7 +96,7 @@ class SearchBuilderTest extends TestCase {
             );
 
         $builder = $builder($this);
-        $search  = new SearchBuilder([$not]);
+        $search  = new SearchBuilder($this->app->make(PackageTranslator::class), [$not]);
         $builder = $search->processNotOperator($builder, $not, [1, 2]);
         $actual  = [
             'sql'      => $builder->toSql(),
@@ -122,11 +126,14 @@ class SearchBuilderTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $search  = new SearchBuilder([
-            $this->app->make(Not::class),
-            $this->app->make(Equal::class),
-            $this->app->make(GreaterThan::class),
-        ]);
+        $search  = new SearchBuilder(
+            $this->app->make(PackageTranslator::class),
+            [
+                $this->app->make(Not::class),
+                $this->app->make(Equal::class),
+                $this->app->make(GreaterThan::class),
+            ],
+        );
         $builder = $builder($this);
         $builder = $search->processComparison($builder, $property, $conditions, $tableAlias);
         $actual  = [
@@ -153,7 +160,7 @@ class SearchBuilderTest extends TestCase {
             ->once()
             ->andReturn('and');
 
-        $search = new SearchBuilder([$logical]);
+        $search = new SearchBuilder($this->app->make(PackageTranslator::class), [$logical]);
 
         $logical
             ->shouldReceive('apply')
@@ -194,7 +201,7 @@ class SearchBuilderTest extends TestCase {
             ->once()
             ->andReturn('test');
 
-        $search = new SearchBuilder([$complex]);
+        $search = new SearchBuilder($this->app->make(PackageTranslator::class), [$complex]);
 
         $complex
             ->shouldReceive('apply')
@@ -223,7 +230,7 @@ class SearchBuilderTest extends TestCase {
      * @covers ::getNotOperator
      */
     public function testGetNotOperator(): void {
-        $search  = new SearchBuilder([$this->app->make(Not::class)]);
+        $search  = new SearchBuilder($this->app->make(PackageTranslator::class), [$this->app->make(Not::class)]);
         $with    = ['not' => 'yes'];
         $without = [];
 
@@ -261,7 +268,7 @@ class SearchBuilderTest extends TestCase {
                 return '';
             }
         };
-        $search  = new SearchBuilder([$complex]);
+        $search  = new SearchBuilder($this->app->make(PackageTranslator::class), [$complex]);
 
         $this->assertSame($complex, $search->getComplexOperator([
             $complex->getName() => 'yes',

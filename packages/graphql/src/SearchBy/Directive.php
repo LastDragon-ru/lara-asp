@@ -9,6 +9,7 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
+use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
@@ -41,8 +42,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>|null
      */
     protected ?array $operators = [];
-
-    protected Container $container;
 
     /**
      * Determines operators available for each scalar type.
@@ -106,10 +105,14 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>> $scalars
      * @param array<string,string>                                                                           $aliases
      */
-    public function __construct(Container $container, array $scalars, array $aliases) {
-        $this->container = $container;
-        $this->scalars   = array_merge($this->scalars, $scalars);
-        $this->aliases   = array_merge($this->aliases, $aliases);
+    public function __construct(
+        protected Container $container,
+        protected PackageTranslator $translator,
+        array $scalars,
+        array $aliases,
+    ) {
+        $this->scalars = array_merge($this->scalars, $scalars);
+        $this->aliases = array_merge($this->aliases, $aliases);
     }
 
     public static function definition(): string {
@@ -141,6 +144,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         return (new SearchBuilder(
+            $this->translator,
             (new Collection($this->scalars))
                 ->add(Not::class)
                 ->flatten()
