@@ -38,13 +38,14 @@ class SpaController extends Controller {
     protected function getSettings(Repository $config): array {
         $package  = Package::Name;
         $default  = [
-            'title'  => $config->get('app.name'),
-            'upload' => [
+            ConfigMerger::Strict => false,
+            'title'              => $config->get('app.name'),
+            'upload'             => [
                 'max' => UploadedFile::getMaxFilesize(),
             ],
         ];
         $custom   = $config->get("{$package}.spa");
-        $settings = (new ConfigMerger(false))->merge($default, $custom);
+        $settings = (new ConfigMerger())->merge($default, $custom);
 
         return $settings;
     }

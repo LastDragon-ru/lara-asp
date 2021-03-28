@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use Exception;
 use InvalidArgumentException;
-use LogicException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -20,14 +19,11 @@ class ConfigMergerTest extends TestCase {
      *
      * @dataProvider dataProviderMerge
      *
-     * @param array<string> $unprotected
-     * @param array<mixed>  $target
-     * @param array<mixed>  $configs
+     * @param array<mixed> $target
+     * @param array<mixed> $configs
      */
     public function testMerge(
         array|Exception $expected,
-        bool $strict,
-        array $unprotected,
         array $target,
         array ...$configs,
     ): void {
@@ -35,7 +31,7 @@ class ConfigMergerTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $merger = new ConfigMerger($strict, $unprotected);
+        $merger = new ConfigMerger();
         $actual = $merger->merge($target, ... $configs);
 
         $this->assertEquals($expected, $actual);
@@ -49,7 +45,7 @@ class ConfigMergerTest extends TestCase {
      */
     public function dataProviderMerge(): array {
         return [
-            'strict + array = ok'                           => [
+            'array + array = ok'                    => [
                 [
                     'scalar' => 321,
                     'null'   => null,
@@ -65,8 +61,6 @@ class ConfigMergerTest extends TestCase {
                         ],
                     ],
                 ],
-                true,
-                [],
                 [
                     'scalar' => 123,
                     'null'   => null,
@@ -92,10 +86,8 @@ class ConfigMergerTest extends TestCase {
                     ],
                 ],
             ],
-            'strict + not scalar = error'                   => [
+            'array + not scalar = error'            => [
                 new InvalidArgumentException('Config may contain only scalar/null values and arrays of them.'),
-                true,
-                [],
                 [
                     'scalar' => 123,
                     'nested' => [
@@ -108,10 +100,8 @@ class ConfigMergerTest extends TestCase {
                     ],
                 ],
             ],
-            'strict + unknown key = error'                  => [
+            'unknown key = error'                   => [
                 new InvalidArgumentException('Unknown key `unknown`.'),
-                true,
-                [],
                 [
                     'scalar' => 123,
                 ],
@@ -119,10 +109,8 @@ class ConfigMergerTest extends TestCase {
                     'unknown' => 123,
                 ],
             ],
-            'strict + scalar => array = error'              => [
+            'scalar + array = error'                => [
                 new InvalidArgumentException('Scalar/null value cannot be replaced by array.'),
-                true,
-                [],
                 [
                     'value' => 123,
                 ],
@@ -130,10 +118,8 @@ class ConfigMergerTest extends TestCase {
                     'value' => [1, 2, 3],
                 ],
             ],
-            'strict + array => scalar = error'              => [
+            'array + scalar = error'                => [
                 new InvalidArgumentException('Array cannot be replaced by scalar/null value.'),
-                true,
-                [],
                 [
                     'value' => [1, 2, 3],
                 ],
@@ -141,58 +127,47 @@ class ConfigMergerTest extends TestCase {
                     'value' => 123,
                 ],
             ],
-            'unknown key'                                   => [
+            'not strict: unknown key'               => [
                 [
                     'scalar'  => 123,
                     'unknown' => 123,
                 ],
-                false,
-                [],
                 [
-                    'scalar' => 123,
+                    ConfigMerger::Strict => false,
+                    'scalar'             => 123,
                 ],
                 [
                     'unknown' => 123,
                 ],
             ],
-            'scalar => array'                               => [
+            'not strict: scalar => array'           => [
                 [
                     'value' => [1, 2, 3],
                 ],
-                false,
-                [],
+                [
+                    ConfigMerger::Strict => false,
+                    'value'              => 123,
+                ],
+                [
+                    'value' => [1, 2, 3],
+                ],
+            ],
+            'not strict: array => scalar'           => [
+                [
+                    'value' => [321],
+                ],
+                [
+                    ConfigMerger::Strict => false,
+                    'value'              => [1, 2, 3],
+                ],
                 [
                     'value' => 123,
                 ],
                 [
-                    'value' => [1, 2, 3],
-                ],
-            ],
-            'array => scalar'                               => [
-                [
-                    'value' => [321],
-                ],
-                false,
-                [],
-                [
-                    'value' => [1, 2, 3],
-                ],
-                [
-                    'value' => 123,
-                ],
-                [
                     'value' => [321],
                 ],
             ],
-            'non-strict + unprotected => error'             => [
-                new LogicException('Setting the `$unprotected` paths has no effect in non-strict mode.'),
-                false,
-                ['path'],
-                [],
-                [],
-                [],
-            ],
-            'strict + unprotected  => ok'                   => [
+            'not strict: array + array => ok'       => [
                 [
                     'scalar'      => 123,
                     'unprotected' => [
@@ -206,19 +181,16 @@ class ConfigMergerTest extends TestCase {
                         ],
                     ],
                 ],
-                true,
-                [
-                    'unprotected.path-a',
-                    'unprotected.path-b',
-                ],
                 [
                     'scalar'      => 123,
                     'unprotected' => [
                         'path-a' => [
-                            'value' => 123,
+                            ConfigMerger::Strict => false,
+                            'value'              => 123,
                         ],
                         'path-b' => [
-                            'value' => 123,
+                            ConfigMerger::Strict => false,
+                            'value'              => 123,
                         ],
                     ],
                 ],
@@ -234,17 +206,14 @@ class ConfigMergerTest extends TestCase {
                     ],
                 ],
             ],
-            'strict + partial unprotected  => error'        => [
+            'partial not strict = error'            => [
                 new InvalidArgumentException('Unknown key `unprotected.path-b.added`.'),
-                true,
-                [
-                    'unprotected.path-a',
-                ],
                 [
                     'scalar'      => 123,
                     'unprotected' => [
                         'path-a' => [
-                            'value' => 123,
+                            ConfigMerger::Strict => false,
+                            'value'              => 123,
                         ],
                         'path-b' => [
                             'value' => 123,
@@ -263,7 +232,7 @@ class ConfigMergerTest extends TestCase {
                     ],
                 ],
             ],
-            'strict + empty target array + non empty array' => [
+            'empty target array + non empty array'  => [
                 [
                     'scalar' => 123,
                     'array'  => [
@@ -272,10 +241,6 @@ class ConfigMergerTest extends TestCase {
                             'added' => 123,
                         ],
                     ],
-                ],
-                true,
-                [
-                    // empty
                 ],
                 [
                     'scalar' => 123,
@@ -289,6 +254,54 @@ class ConfigMergerTest extends TestCase {
                             'value' => [1, 2, 3],
                             'added' => 123,
                         ],
+                    ],
+                ],
+            ],
+            'strict cannot be overwritten in child' => [
+                [
+                    'unknown' => 1,
+                    'array'   => [
+                        'unknown' => 1,
+                    ],
+                ],
+                [
+                    ConfigMerger::Strict => false,
+                    'array'              => [
+                        ConfigMerger::Strict => true,
+                    ],
+                ],
+                [
+                    'unknown' => 1,
+                    'array'   => [
+                        'unknown' => 1,
+                    ],
+                ],
+            ],
+            'strict cannot be overwritten in value' => [
+                new InvalidArgumentException('Unknown key `unknown`.'),
+                [
+                    'value' => 1,
+                ],
+                [
+                    ConfigMerger::Strict => false,
+                    'unknown'            => 1,
+                ],
+            ],
+            'replace'                               => [
+                [
+                    'array' => [
+                        'unknown' => 1,
+                    ],
+                ],
+                [
+                    'array' => [
+                        ConfigMerger::Replace => true,
+                        'value'               => 123,
+                    ],
+                ],
+                [
+                    'array' => [
+                        'unknown' => 1,
                     ],
                 ],
             ],

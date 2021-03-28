@@ -1,11 +1,12 @@
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
+
 /**
  * -----------------------------------------------------------------------------
  * SPA Settings
  * -----------------------------------------------------------------------------
  */
-
 return [
     /**
      * Routes Settings
@@ -23,6 +24,7 @@ return [
      * You can define settings that should be available for SPA.
      */
     'spa'    => [
-        // empty
+        // This value has no effect inside the published config.
+        ConfigMerger::Strict => false,
     ],
 ];

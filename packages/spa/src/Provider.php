@@ -19,9 +19,7 @@ class Provider extends ServiceProvider {
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
     // =========================================================================
     public function boot(): void {
-        $this->bootConfig([
-            'spa',
-        ]);
+        $this->bootConfig();
         $this->bootRoutes();
         $this->bootTranslations();
         $this->bootExceptionHandler();

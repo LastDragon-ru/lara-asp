@@ -3,11 +3,9 @@
 namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use InvalidArgumentException;
-use LogicException;
 
 use function array_key_exists;
 use function array_values;
-use function in_array;
 use function is_array;
 use function is_null;
 use function is_scalar;
@@ -18,41 +16,41 @@ use function key;
  * The merger for array-based configs.
  */
 class ConfigMerger {
-    private bool $strict;
     /**
-     * @var array<string>
+     * Array that has this mark may contains any keys/values.
      */
-    private array $unprotected;
+    public const Strict = '__strict';
 
     /**
-     * @param array<string> $unprotected
+     * Array that has this mark will be replaced completely.
      */
-    public function __construct(bool $strict = true, array $unprotected = []) {
-        $this->strict      = $strict;
-        $this->unprotected = $unprotected;
+    public const Replace = '__replace';
 
-        if (!$this->isStrict() && $this->getUnprotected()) {
-            throw new LogicException('Setting the `$unprotected` paths has no effect in non-strict mode.');
-        }
+    private bool $strict = true;
+
+    public function __construct() {
+        // empty
     }
 
-    public function isStrict(): bool {
+    protected function isStrict(): bool {
         return $this->strict;
     }
 
-    /**
-     * @return array<string>
-     */
-    public function getUnprotected(): array {
-        return $this->unprotected;
+    protected function setStrict(bool $strict): static {
+        $this->strict = $strict;
+
+        return $this;
     }
 
     /**
      * Merge two or more array-based configs.
      *
-     * In strict mode (default) it will respect the structure of the target
-     * array, thus you cannot add any new keys, cannot replace existing
-     * scalar values by the array, and vice versa.
+     * It will respect the structure of the target array, thus you cannot add
+     * any new keys, cannot replace existing scalar values by the array, and
+     * vice versa. This behavior can be changed by marks.
+     *
+     * @see \LastDragon_ru\LaraASP\Core\Utils\ConfigMerger::Strict
+     * @see \LastDragon_ru\LaraASP\Core\Utils\ConfigMerger::Replace
      *
      * @param array<mixed> $target
      * @param array<mixed> $configs
@@ -60,21 +58,38 @@ class ConfigMerger {
      * @return array<mixed>
      */
     public function merge(array $target, array ...$configs): array {
+        // Enable strict mode (just for case)
+        $this->setStrict(true);
+
+        // Merge
         foreach ($configs as $config) {
-            $target = $this->process($target, $config, '');
+            $this->process($target, $config, '');
         }
 
+        // Remove marks
+        $this->cleanup($target, true);
+
+        // Return
         return $target;
     }
 
     /**
      * @param array<mixed> $target
      * @param array<mixed> $config
-     *
-     * @return array<mixed>
      */
-    protected function process(array $target, array $config, string $path): array {
-        foreach ($config as $key => $value) {
+    protected function process(array &$target, array $config, string $path): void {
+        // Strict?
+        $isStrict = $this->isStrict();
+
+        if ($isStrict) {
+            $this->setStrict($target[static::Strict] ?? true);
+        }
+
+        // Remove marks
+        $this->cleanup($config);
+
+        // Merge
+        foreach ($config as $key => &$value) {
             // Current path
             $current = $path ? "{$path}.{$key}" : $key;
 
@@ -83,15 +98,18 @@ class ConfigMerger {
                 throw new InvalidArgumentException('Config may contain only scalar/null values and arrays of them.');
             }
 
+            // Merge
             if (array_key_exists($key, $target)) {
                 if (is_array($target[$key])) {
                     // In strict mode $value must be an array
-                    if ($this->isProtected($path) && !is_array($value)) {
+                    if ($this->isStrict() && !is_array($value)) {
                         throw new InvalidArgumentException('Array cannot be replaced by scalar/null value.');
                     }
 
-                    if (is_string(key($target[$key]))) {
-                        $target[$key] = $this->process($target[$key], (array) $value, $current);
+                    if ($target[$key][static::Replace] ?? false) {
+                        $target[$key] = [static::Replace => true] + (array) $value;
+                    } elseif (is_string(key($target[$key]))) {
+                        $this->process($target[$key], (array) $value, $current);
                     } elseif (empty($target[$key])) {
                         $target[$key] = (array) $value;
                     } else {
@@ -99,7 +117,7 @@ class ConfigMerger {
                     }
                 } else {
                     // In strict mode value cannot be replaced to array
-                    if ($this->isProtected($path) && is_array($value)) {
+                    if ($this->isStrict() && is_array($value)) {
                         throw new InvalidArgumentException('Scalar/null value cannot be replaced by array.');
                     } else {
                         $target[$key] = $value;
@@ -107,7 +125,7 @@ class ConfigMerger {
                 }
             } else {
                 // In strict mode $key must exists in $target
-                if ($this->isProtected($path)) {
+                if ($this->isStrict()) {
                     throw new InvalidArgumentException("Unknown key `{$current}`.");
                 } else {
                     $target[$key] = $value;
@@ -115,11 +133,25 @@ class ConfigMerger {
             }
         }
 
-        return $target;
+        // Reset
+        $this->setStrict($isStrict);
     }
 
-    public function isProtected(string $path): bool {
-        return $this->isStrict()
-            && (empty($this->getUnprotected()) || !in_array($path, $this->getUnprotected(), true));
+    /**
+     * @param array<mixed> $array
+     */
+    protected function cleanup(array &$array, bool $recursive = false): void {
+        // Remove
+        unset($array[static::Strict]);
+        unset($array[static::Replace]);
+
+        // Recursive
+        if ($recursive) {
+            foreach ($array as $key => &$value) {
+                if (is_array($value)) {
+                    $this->cleanup($value, $recursive);
+                }
+            }
+        }
     }
 }

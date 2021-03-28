@@ -1,11 +1,12 @@
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
+
 /**
  * -----------------------------------------------------------------------------
  * Formatter Settings
  * -----------------------------------------------------------------------------
  */
-
 return [
     /**
      * Options
@@ -15,6 +16,9 @@ return [
      * @see LastDragon_ru\LaraASP\Formatter\Formatter
      */
     'options' => [
+        // This value has no effect inside the published config.
+        ConfigMerger::Strict => false,
+
         // Fraction digits for decimal()
         // Formatter::Decimal => 2,
 
@@ -26,7 +30,7 @@ return [
         // Formatter::Time => 'custom',
 
         // Global Attributes for {@link \NumberFormatter::setAttribute()}
-        'intl_attributes' => [
+        'intl_attributes'    => [
             NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
         ],
 
@@ -50,6 +54,9 @@ return [
      * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates-and-times
      */
     'all'     => [
+        // This value has no effect inside the published config.
+        ConfigMerger::Strict => false,
+
         // Custom time format for all locales
         // Formatter::Time        => [
         //     'custom' => 'HH:mm:ss.SSS',
@@ -70,6 +77,9 @@ return [
      * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates-and-times
      */
     'locales' => [
+        // This value has no effect inside the published config.
+        ConfigMerger::Strict => false,
+
         // 'ru_RU' => [
         //     // Custom time format for specific Locale
         //     Formatter::Time => [

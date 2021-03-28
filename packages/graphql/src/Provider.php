@@ -23,11 +23,7 @@ class Provider extends ServiceProvider {
     use ProviderWithTranslations;
 
     public function boot(Dispatcher $dispatcher): void {
-        $this->bootConfig([
-            'search_by.scalars',
-            'search_by.aliases',
-            'enums',
-        ]);
+        $this->bootConfig();
         $this->bootDirectives($dispatcher);
     }
 
@@ -74,7 +70,9 @@ class Provider extends ServiceProvider {
                 $name = null;
             }
 
-            $registry->register(EnumHelper::getType($enum, $name));
+            if ($enum) {
+                $registry->register(EnumHelper::getType($enum, $name));
+            }
         }
     }
 

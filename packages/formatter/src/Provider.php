@@ -11,11 +11,7 @@ class Provider extends ServiceProvider {
     use ProviderWithTranslations;
 
     public function boot(): void {
-        $this->bootConfig([
-            'options',
-            'locales',
-            'all',
-        ]);
+        $this->bootConfig();
         $this->bootTranslations();
     }
 

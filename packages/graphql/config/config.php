@@ -1,11 +1,12 @@
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
+
 /**
  * -----------------------------------------------------------------------------
  * GraphQL Settings
  * -----------------------------------------------------------------------------
  */
-
 return [
     /**
      * Settings for @searchBy directive.
@@ -20,7 +21,8 @@ return [
          * @var array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>>
          */
         'scalars' => [
-            // empty
+            // This value has no effect inside the published config.
+            ConfigMerger::Strict => false,
         ],
 
         /**
@@ -32,7 +34,8 @@ return [
          * @var array<string, string>
          */
         'aliases' => [
-            // empty
+            // This value has no effect inside the published config.
+            ConfigMerger::Strict => false,
         ],
     ],
 
@@ -44,6 +47,7 @@ return [
      * @see \LastDragon_ru\LaraASP\Eloquent\Enum
      */
     'enums'     => [
-        // empty
+        // This value has no effect inside the published config.
+        ConfigMerger::Strict => false,
     ],
 ];
