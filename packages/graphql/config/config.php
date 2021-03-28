@@ -35,4 +35,15 @@ return [
             // empty
         ],
     ],
+
+    /**
+     * These enums will be registered automatically. You can use key to specify
+     * enum name.
+     *
+     * @see \LastDragon_ru\LaraASP\Core\Enum
+     * @see \LastDragon_ru\LaraASP\Eloquent\Enum
+     */
+    'enums'     => [
+        // empty
+    ],
 ];

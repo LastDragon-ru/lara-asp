@@ -7,13 +7,16 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
+use LastDragon_ru\LaraASP\GraphQL\Helpers\EnumHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directive\SortByDirective;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
+use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_slice;
 use function explode;
 use function implode;
+use function is_int;
 
 class Provider extends ServiceProvider {
     use ProviderWithConfig;
@@ -23,6 +26,7 @@ class Provider extends ServiceProvider {
         $this->bootConfig([
             'search_by.scalars',
             'search_by.aliases',
+            'enums',
         ]);
         $this->bootDirectives($dispatcher);
     }
@@ -31,6 +35,7 @@ class Provider extends ServiceProvider {
         parent::register();
 
         $this->registerDirectives();
+        $this->registerEnums();
     }
 
     protected function bootDirectives(Dispatcher $dispatcher): void {
@@ -58,6 +63,19 @@ class Provider extends ServiceProvider {
 
             return $instance;
         });
+    }
+
+    protected function registerEnums(): void {
+        $registry = $this->app->make(TypeRegistry::class);
+        $enums    = (array) $this->app->make(Repository::class)->get("{$this->getName()}.enums");
+
+        foreach ($enums as $name => $enum) {
+            if (is_int($name)) {
+                $name = null;
+            }
+
+            $registry->register(EnumHelper::getType($enum, $name));
+        }
     }
 
     protected function getName(): string {
