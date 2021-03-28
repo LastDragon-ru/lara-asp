@@ -69,6 +69,6 @@ jobs:
       - name: Push package
         working-directory: package
         run: |
-          git push --all origin
-          git push --tags origin
-          git push origin "refs/replace/*"
+          git push --all --force origin
+          git push --tags --force origin
+          git push --force origin "refs/replace/*"
