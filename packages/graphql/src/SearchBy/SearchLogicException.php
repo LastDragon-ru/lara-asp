@@ -2,6 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
-class SearchLogicException extends SearchByException {
-    // empty
+use GraphQL\Error\ClientAware;
+use LastDragon_ru\LaraASP\GraphQL\Package;
+
+class SearchLogicException extends SearchByException implements ClientAware {
+    public function isClientSafe(): bool {
+        return true;
+    }
+
+    public function getCategory(): string {
+        return Package::Name;
+    }
 }

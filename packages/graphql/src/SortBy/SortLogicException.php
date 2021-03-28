@@ -2,6 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
-class SortLogicException extends SortByException {
-    // empty
+use GraphQL\Error\ClientAware;
+use LastDragon_ru\LaraASP\GraphQL\Package;
+
+class SortLogicException extends SortByException implements ClientAware {
+    public function isClientSafe(): bool {
+        return true;
+    }
+
+    public function getCategory(): string {
+        return Package::Name;
+    }
 }
