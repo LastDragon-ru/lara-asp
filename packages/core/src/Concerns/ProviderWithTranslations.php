@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 /**
+ * @see \LastDragon_ru\LaraASP\Core\Translator
+ *
  * @mixin \Illuminate\Support\ServiceProvider
  */
 trait ProviderWithTranslations {
