@@ -386,7 +386,7 @@ class AstManipulator extends BaseAstManipulator {
 
         if (empty($operators)) {
             throw new SearchByException(sprintf(
-                'Generated scalar type is empty. Please check definition for `%s` scalar.',
+                'Generated scalar type is empty. Please check operators for `%s` scalar.',
                 $scalar,
             ));
         }
