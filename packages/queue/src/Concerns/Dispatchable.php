@@ -2,7 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Foundation\Bus\PendingDispatch;
+
+use function app;
 
 trait Dispatchable {
     use WithInitialization;
@@ -10,6 +13,12 @@ trait Dispatchable {
     public function dispatch(): PendingDispatch {
         return $this->ifInitialized(function () {
             return new PendingDispatch($this);
+        });
+    }
+
+    public function run(): mixed {
+        return $this->ifInitialized(function () {
+            return app(Dispatcher::class)->dispatchNow($this);
         });
     }
 }
