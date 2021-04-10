@@ -35,12 +35,11 @@ use function array_merge;
 use function class_exists;
 
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
-    public const Name        = 'SearchBy';
-    public const Enum        = 'Enum';
-    public const Logic       = 'Logic';
-    public const Relation    = 'Relation';
-    public const RelationHas = 'RelationHas';
-    public const TypeFlag    = 'Flag';
+    public const Name     = 'SearchBy';
+    public const Enum     = 'Enum';
+    public const Logic    = 'Logic';
+    public const Relation = 'Relation';
+    public const TypeFlag = 'Flag';
 
     /**
      * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>|null
@@ -114,7 +113,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @var array<string,string>
      */
     protected array $aliases = [
-        self::RelationHas => 'Int',
+        self::Relation => 'Int',
     ];
 
     /**

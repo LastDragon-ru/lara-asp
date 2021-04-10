@@ -273,7 +273,7 @@ class AstManipulator extends BaseAstManipulator {
 
         // Add type
         $input     = $this->getScalarTypeNode($this->getInputType($node));
-        $scalar    = $this->getScalarRealTypeNode($this->getScalarTypeNode(Directive::RelationHas));
+        $scalar    = $this->getScalarRealTypeNode($this->getScalarTypeNode(Directive::Relation));
         $operators = $this->getScalarOperators(Directive::Relation, false);
         $content   = implode("\n", array_map(function (string $operator) use ($input, $scalar): string {
             $operator = $this->getOperator($operator);
