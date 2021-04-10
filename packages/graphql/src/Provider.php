@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Helpers\EnumHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directive\SortByDirective;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_slice;
@@ -54,10 +55,11 @@ class Provider extends ServiceProvider {
         $this->app->bind(SearchByDirective::class, function (): SearchByDirective {
             $container  = $this->app;
             $translator = $container->make(PackageTranslator::class);
+            $directives = $container->make(DirectiveLocator::class);
             $config     = $container->make(Repository::class);
             $scalars    = $config->get("{$this->getName()}.search_by.scalars");
             $aliases    = $config->get("{$this->getName()}.search_by.aliases");
-            $instance   = new SearchByDirective($container, $translator, $scalars, $aliases);
+            $instance   = new SearchByDirective($container, $translator, $directives, $scalars, $aliases);
 
             return $instance;
         });

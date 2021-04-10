@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalarNu
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 
 use function array_map;
 use function array_merge;
@@ -41,20 +42,20 @@ class AstManipulator extends BaseAstManipulator {
      * @param array<string,string>                                                                           $aliases
      */
     public function __construct(
+        DirectiveLocator $directives,
         DocumentAST $document,
         protected Container $container,
-        protected string $name,
         protected array $scalars,
         protected array $aliases,
     ) {
-        parent::__construct($document);
+        parent::__construct($directives, $document);
     }
 
     // <editor-fold desc="API">
     // =========================================================================
     public function getType(InputValueDefinitionNode $node): NamedTypeNode {
         // Transformed?
-        if (str_starts_with(ASTHelper::getUnderlyingTypeName($node), $this->name)) {
+        if (str_starts_with(ASTHelper::getUnderlyingTypeName($node), Directive::Name)) {
             return $node->type;
         }
 
@@ -301,6 +302,7 @@ class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="Defaults">
     // =========================================================================
     protected function addRootTypeDefinitions(): void {
+        $name = Directive::Name;
         $flag = Directive::TypeFlag;
 
         $this->addTypeDefinitions($this, [
@@ -310,7 +312,7 @@ class AstManipulator extends BaseAstManipulator {
                 """
                 Flag.
                 """
-                enum {$this->name}{$flag} {
+                enum {$name}{$flag} {
                     yes
                 }
                 GRAPHQL,
@@ -322,19 +324,19 @@ class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="Names">
     // =========================================================================
     protected function getConditionTypeName(InputObjectTypeDefinitionNode $node): string {
-        return "{$this->name}Condition{$node->name->value}";
+        return Directive::Name."Condition{$node->name->value}";
     }
 
     protected function getEnumTypeName(EnumTypeDefinitionNode $node, bool $nullable): string {
-        return "{$this->name}Enum{$node->name->value}".($nullable ? 'OrNull' : '');
+        return Directive::Name."Enum{$node->name->value}".($nullable ? 'OrNull' : '');
     }
 
     protected function getScalarTypeName(ScalarTypeDefinitionNode $node, bool $nullable): string {
-        return "{$this->name}Scalar{$node->name->value}".($nullable ? 'OrNull' : '');
+        return Directive::Name."Scalar{$node->name->value}".($nullable ? 'OrNull' : '');
     }
 
     protected function getRelationTypeName(InputObjectTypeDefinitionNode $node): string {
-        return "{$this->name}Relation{$node->name->value}";
+        return Directive::Name."Relation{$node->name->value}";
     }
 
     protected function getOperatorTypeName(
@@ -343,7 +345,7 @@ class AstManipulator extends BaseAstManipulator {
         bool $nullable = null,
     ): string {
         $op   = Str::studly($operator->getName());
-        $base = $this->name;
+        $base = Directive::Name;
 
         if ($node instanceof ScalarTypeDefinitionNode) {
             $base = $this->getScalarTypeName($node, $nullable);

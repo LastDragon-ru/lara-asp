@@ -29,6 +29,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
@@ -130,6 +131,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public function __construct(
         protected Container $container,
         protected PackageTranslator $translator,
+        protected DirectiveLocator $directives,
         array $scalars,
         array $aliases,
     ) {
@@ -153,9 +155,9 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         ObjectTypeDefinitionNode &$parentType,
     ): void {
         $argDefinition->type = (new AstManipulator(
+            $this->directives,
             $documentAST,
             $this->container,
-            self::Name,
             $this->scalars,
             $this->aliases,
         ))->getType($argDefinition);

@@ -9,20 +9,12 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator as BaseAstManipulator;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
-use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 
 use function is_null;
 use function sprintf;
 use function tap;
 
 class AstManipulator extends BaseAstManipulator {
-    public function __construct(
-        protected DocumentAST $document,
-        protected string $name,
-    ) {
-        parent::__construct($this->document);
-    }
-
     // <editor-fold desc="API">
     // =========================================================================
     public function getType(InputValueDefinitionNode $node): ListTypeNode {
@@ -123,6 +115,7 @@ class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="Defaults">
     // =========================================================================
     protected function addRootTypeDefinitions(): void {
+        $name = Directive::Name;
         $type = Directive::TypeDirection;
 
         $this->addTypeDefinitions($this, [
@@ -132,7 +125,7 @@ class AstManipulator extends BaseAstManipulator {
                 """
                 Sort direction.
                 """
-                enum {$this->name}{$type} {
+                enum {$name}{$type} {
                     asc
                     desc
                 }
@@ -145,7 +138,7 @@ class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="Names">
     // =========================================================================
     protected function getTypeName(InputObjectTypeDefinitionNode $node): string {
-        return "{$this->name}Clause{$node->name->value}";
+        return Directive::Name."Clause{$node->name->value}";
     }
     // </editor-fold>
 }

@@ -8,6 +8,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 
 abstract class AstManipulator {
     /**
@@ -15,9 +16,10 @@ abstract class AstManipulator {
      *
      * @var array<string,array<string>>
      */
-    protected array       $map = [];
+    protected array $map = [];
 
     public function __construct(
+        protected DirectiveLocator $directives,
         protected DocumentAST $document,
     ) {
         $this->addRootTypeDefinitions();

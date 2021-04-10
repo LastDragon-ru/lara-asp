@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 
 /**
  * @internal
@@ -42,7 +43,13 @@ class DirectiveTest extends TestCase {
         }
 
         $builder   = $builder($this);
-        $directive = new Directive($this->app, $this->app->make(PackageTranslator::class), [], []);
+        $directive = new Directive(
+            $this->app,
+            $this->app->make(PackageTranslator::class),
+            $this->app->make(DirectiveLocator::class),
+            [],
+            [],
+        );
 
         $this->assertNotNull($directive->handleBuilder($builder, $input));
     }
