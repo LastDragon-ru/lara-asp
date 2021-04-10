@@ -6,7 +6,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
  * Indicates that {@link \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator} is
  * complex and define own input type.
  */
-interface OperatorHasTypes extends Operator {
+interface OperatorHasTypes {
     /**
      * @return array<string,\GraphQL\Language\AST\TypeDefinitionNode>
      */

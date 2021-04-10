@@ -7,7 +7,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
  * complex and define own input type for each scalar type and it differs if
  * nullable.
  */
-interface OperatorHasTypesForScalarNullable extends Operator {
+interface OperatorHasTypesForScalarNullable {
     /**
      * @return array<\GraphQL\Language\AST\TypeDefinitionNode>
      */

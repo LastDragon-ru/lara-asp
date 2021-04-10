@@ -2,6 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
+/**
+ * Simple (comparison/logical) operator.
+ *
+ * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypes
+ * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar
+ * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalarNullable
+ */
 interface Operator {
     public function getName(): string;
 
