@@ -16,14 +16,13 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypes;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalarNullable;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 
 use function array_map;
 use function array_merge;
+use function array_push;
 use function implode;
 use function is_array;
 use function is_null;
@@ -390,8 +389,7 @@ class AstManipulator extends BaseAstManipulator {
 
         // Add `null` for nullable
         if ($nullable) {
-            $operators[] = IsNull::class;
-            $operators[] = IsNotNull::class;
+            array_push($operators, ...($this->scalars[Directive::Null] ?? []));
         }
 
         // Return

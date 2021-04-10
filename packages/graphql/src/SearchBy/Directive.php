@@ -15,6 +15,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
@@ -37,6 +39,7 @@ use function class_exists;
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name     = 'SearchBy';
     public const Enum     = 'Enum';
+    public const Null     = 'Null';
     public const Logic    = 'Logic';
     public const Relation = 'Relation';
     public const TypeFlag = 'Flag';
@@ -90,6 +93,10 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             NotEqual::class,
             In::class,
             NotIn::class,
+        ],
+        self::Null     => [
+            IsNull::class,
+            IsNotNull::class,
         ],
         self::Logic    => [
             AllOf::class,
