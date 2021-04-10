@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
@@ -18,9 +17,12 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Mockery;
 
 /**
@@ -34,8 +36,6 @@ class SearchBuilderTest extends TestCase {
      * @covers ::process
      *
      * @dataProvider dataProviderProcess
-     * @dataProvider dataProviderProcessQuery
-     * @dataProvider dataProviderProcessEloquent
      *
      * @param array<mixed> $conditions
      */
@@ -74,8 +74,6 @@ class SearchBuilderTest extends TestCase {
      * @covers ::processComparison
      *
      * @dataProvider dataProviderProcessComparison
-     * @dataProvider dataProviderProcessComparisonQuery
-     * @dataProvider dataProviderProcessComparisonEloquent
      *
      * @param array<mixed> $conditions
      */
@@ -236,168 +234,151 @@ class SearchBuilderTest extends TestCase {
      * @return array<mixed>
      */
     public function dataProviderProcess(): array {
-        return (new CompositeDataProvider(
-            new BuilderDataProvider(),
-            new ArrayDataProvider([
-                'more than one property'           => [
-                    new SearchLogicException(
-                        'Only one property allowed, found: `a`, `b`.',
-                    ),
-                    [
-                        'a' => [
-                            'equal' => 2,
-                        ],
-                        'b' => [
-                            'notEqual' => 3,
-                        ],
-                    ],
-                    null,
-                ],
-                'valid condition with table alias' => [
-                    [
-                        'sql'      => 'select * from "tmp" where ('.
-                            'not ((("alias"."a" != ?) and ((("alias"."a" = ?) or ("alias"."b" != ?)))))'.
-                            ')',
-                        'bindings' => [
-                            1,
-                            2,
-                            3,
-                        ],
-                    ],
-                    [
-                        'not' => [
-                            'allOf' => [
-                                [
-                                    'a' => [
-                                        'notEqual' => 1,
-                                    ],
-                                ],
-                                [
-                                    'anyOf' => [
-                                        [
-                                            'a' => [
-                                                'equal' => 2,
-                                            ],
-                                        ],
-                                        [
-                                            'b' => [
-                                                'notEqual' => 3,
-                                            ],
-                                        ],
-                                    ],
-                                ],
+        return (new MergeDataProvider([
+            'Both'     => (new CompositeDataProvider(
+                new BuilderDataProvider(),
+                new ArrayDataProvider([
+                    'more than one property'           => [
+                        new SearchLogicException(
+                            'Only one property allowed, found: `a`, `b`.',
+                        ),
+                        [
+                            'a' => [
+                                'equal' => 2,
+                            ],
+                            'b' => [
+                                'notEqual' => 3,
                             ],
                         ],
+                        null,
                     ],
-                    'alias',
-                ],
-            ]),
-        ))->getData();
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function dataProviderProcessQuery(): array {
-        return [
-            'query: valid condition' => [
-                [
-                    'sql'      => 'select * from "tmp" where ('.
-                        'not ((("a" != ?) and ((("a" = ?) or ("b" != ?)))))'.
-                        ')',
-                    'bindings' => [
-                        1,
-                        2,
-                        3,
-                    ],
-                ],
-                static function (TestCase $test): QueryBuilder {
-                    return $test->app->make('db')->table('tmp');
-                },
-                [
-                    'not' => [
-                        'allOf' => [
-                            [
-                                'a' => [
-                                    'notEqual' => 1,
-                                ],
+                    'valid condition with table alias' => [
+                        [
+                            'sql'      => 'select * from "tmp" where ('.
+                                'not ((("alias"."a" != ?) and ((("alias"."a" = ?) or ("alias"."b" != ?)))))'.
+                                ')',
+                            'bindings' => [
+                                1,
+                                2,
+                                3,
                             ],
-                            [
-                                'anyOf' => [
+                        ],
+                        [
+                            'not' => [
+                                'allOf' => [
                                     [
                                         'a' => [
-                                            'equal' => 2,
+                                            'notEqual' => 1,
                                         ],
                                     ],
                                     [
-                                        'b' => [
-                                            'notEqual' => 3,
+                                        'anyOf' => [
+                                            [
+                                                'a' => [
+                                                    'equal' => 2,
+                                                ],
+                                            ],
+                                            [
+                                                'b' => [
+                                                    'notEqual' => 3,
+                                                ],
+                                            ],
                                         ],
                                     ],
                                 ],
                             ],
                         ],
+                        'alias',
                     ],
-                ],
-                null,
-            ],
-        ];
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function dataProviderProcessEloquent(): array {
-        return [
-            'eloquent: valid condition' => [
-                [
-                    'sql'      => 'select * from "tmp" where ('.
-                        'not ((("tmp"."a" != ?) and ((("tmp"."a" = ?) or ("tmp"."b" != ?)))))'.
-                        ')',
-                    'bindings' => [
-                        1,
-                        2,
-                        3,
-                    ],
-                ],
-                static function (TestCase $test): EloquentBuilder {
-                    return (new class() extends Model {
-                        /**
-                         * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-                         *
-                         * @var string
-                         */
-                        public $table = 'tmp';
-                    })->query();
-                },
-                [
-                    'not' => [
-                        'allOf' => [
-                            [
-                                'a' => [
-                                    'notEqual' => 1,
-                                ],
+                ]),
+            )),
+            'Query'    => (new CompositeDataProvider(
+                new QueryBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'valid condition' => [
+                        [
+                            'sql'      => 'select * from "tmp" where ('.
+                                'not ((("a" != ?) and ((("a" = ?) or ("b" != ?)))))'.
+                                ')',
+                            'bindings' => [
+                                1,
+                                2,
+                                3,
                             ],
-                            [
-                                'anyOf' => [
+                        ],
+                        [
+                            'not' => [
+                                'allOf' => [
                                     [
                                         'a' => [
-                                            'equal' => 2,
+                                            'notEqual' => 1,
                                         ],
                                     ],
                                     [
-                                        'b' => [
-                                            'notEqual' => 3,
+                                        'anyOf' => [
+                                            [
+                                                'a' => [
+                                                    'equal' => 2,
+                                                ],
+                                            ],
+                                            [
+                                                'b' => [
+                                                    'notEqual' => 3,
+                                                ],
+                                            ],
                                         ],
                                     ],
                                 ],
                             ],
                         ],
+                        null,
                     ],
-                ],
-                null,
-            ],
-        ];
+                ]),
+            )),
+            'Eloquent' => (new CompositeDataProvider(
+                new EloquentBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'valid condition' => [
+                        [
+                            'sql'      => 'select * from "tmp" where ('.
+                                'not ((("tmp"."a" != ?) and ((("tmp"."a" = ?) or ("tmp"."b" != ?)))))'.
+                                ')',
+                            'bindings' => [
+                                1,
+                                2,
+                                3,
+                            ],
+                        ],
+                        [
+                            'not' => [
+                                'allOf' => [
+                                    [
+                                        'a' => [
+                                            'notEqual' => 1,
+                                        ],
+                                    ],
+                                    [
+                                        'anyOf' => [
+                                            [
+                                                'a' => [
+                                                    'equal' => 2,
+                                                ],
+                                            ],
+                                            [
+                                                'b' => [
+                                                    'notEqual' => 3,
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        null,
+                    ],
+                ]),
+            )),
+        ]))->getData();
     }
 
     /**
@@ -438,108 +419,91 @@ class SearchBuilderTest extends TestCase {
      * @return array<mixed>
      */
     public function dataProviderProcessComparison(): array {
-        return (new CompositeDataProvider(
-            new BuilderDataProvider(),
-            new ArrayDataProvider([
-                'empty'                            => [
-                    new SearchLogicException(
-                        'Search condition cannot be empty.',
-                    ),
-                    'property',
-                    [],
-                    null,
-                ],
-                'more than one condition'          => [
-                    new SearchLogicException(
-                        'Only one comparison operator allowed, found: `equal`, `in`.',
-                    ),
-                    'property',
-                    [
-                        'equal' => 'yes',
-                        'in'    => [1, 2],
+        return (new MergeDataProvider([
+            'Both'     => (new CompositeDataProvider(
+                new BuilderDataProvider(),
+                new ArrayDataProvider([
+                    'empty'                            => [
+                        new SearchLogicException(
+                            'Search condition cannot be empty.',
+                        ),
+                        'property',
+                        [],
+                        null,
                     ],
-                    null,
-                ],
-                'unknown operator'                 => [
-                    new SearchLogicException(
-                        'Operator `unk` not found.',
-                    ),
-                    'property',
-                    [
-                        'unk' => 'yes',
-                    ],
-                    null,
-                ],
-                'valid condition with table alias' => [
-                    [
-                        'sql'      => 'select * from "tmp" where "alias"."property" = ?',
-                        'bindings' => [
-                            123,
+                    'more than one condition'          => [
+                        new SearchLogicException(
+                            'Only one comparison operator allowed, found: `equal`, `in`.',
+                        ),
+                        'property',
+                        [
+                            'equal' => 'yes',
+                            'in'    => [1, 2],
                         ],
+                        null,
                     ],
-                    'property',
-                    [
-                        'equal' => 123,
+                    'unknown operator'                 => [
+                        new SearchLogicException(
+                            'Operator `unk` not found.',
+                        ),
+                        'property',
+                        [
+                            'unk' => 'yes',
+                        ],
+                        null,
                     ],
-                    'alias',
-                ],
-            ]),
-        ))->getData();
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function dataProviderProcessComparisonQuery(): array {
-        return [
-            'query: valid condition' => [
-                [
-                    'sql'      => 'select * from "tmp" where "property" = ?',
-                    'bindings' => [
-                        123,
+                    'valid condition with table alias' => [
+                        [
+                            'sql'      => 'select * from "tmp" where "alias"."property" = ?',
+                            'bindings' => [
+                                123,
+                            ],
+                        ],
+                        'property',
+                        [
+                            'equal' => 123,
+                        ],
+                        'alias',
                     ],
-                ],
-                static function (TestCase $test): QueryBuilder {
-                    return $test->app->make('db')->table('tmp');
-                },
-                'property',
-                [
-                    'equal' => 123,
-                ],
-                null,
-            ],
-        ];
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function dataProviderProcessComparisonEloquent(): array {
-        return [
-            'eloquent: valid condition' => [
-                [
-                    'sql'      => 'select * from "tmp" where "tmp"."property" = ?',
-                    'bindings' => [
-                        123,
+                ]),
+            )),
+            'Query'    => (new CompositeDataProvider(
+                new QueryBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'valid condition' => [
+                        [
+                            'sql'      => 'select * from "tmp" where "property" = ?',
+                            'bindings' => [
+                                123,
+                            ],
+                        ],
+                        'property',
+                        [
+                            'equal' => 123,
+                        ],
+                        null,
                     ],
-                ],
-                static function (TestCase $test): EloquentBuilder {
-                    return (new class() extends Model {
-                        /**
-                         * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-                         *
-                         * @var string
-                         */
-                        public $table = 'tmp';
-                    })->query();
-                },
-                'property',
-                [
-                    'equal' => 123,
-                ],
-                null,
-            ],
-        ];
+                ]),
+            )),
+            'Eloquent' => (new CompositeDataProvider(
+                new EloquentBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'valid condition' => [
+                        [
+                            'sql'      => 'select * from "tmp" where "tmp"."property" = ?',
+                            'bindings' => [
+                                123,
+                            ],
+                        ],
+                        'property',
+                        [
+                            'equal' => 123,
+                        ],
+                        null,
+                    ],
+                ]),
+            )),
+        ]))->getData();
     }
     // </editor-fold>
 }
