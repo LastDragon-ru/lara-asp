@@ -27,11 +27,10 @@ class IsNullTest extends TestCase {
         Closure $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): void {
         $operator = $this->app->make(IsNull::class);
         $builder  = $builder($this);
-        $builder  = $operator->apply($builder, $property, $value, $not);
+        $builder  = $operator->apply($builder, $property, $value);
         $actual   = [
             'sql'      => $builder->toSql(),
             'bindings' => $builder->getBindings(),
@@ -50,23 +49,13 @@ class IsNullTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'is null'     => [
+                'is null' => [
                     [
                         'sql'      => 'select * from "tmp" where "property" is null',
                         'bindings' => [],
                     ],
                     'property',
                     null,
-                    false,
-                ],
-                'is not null' => [
-                    [
-                        'sql'      => 'select * from "tmp" where "property" is not null',
-                        'bindings' => [],
-                    ],
-                    'property',
-                    null,
-                    true,
                 ],
             ]),
         ))->getData();

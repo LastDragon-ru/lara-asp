@@ -10,6 +10,5 @@ interface ComparisonOperator {
         EloquentBuilder|QueryBuilder $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): EloquentBuilder|QueryBuilder;
 }

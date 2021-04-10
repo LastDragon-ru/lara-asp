@@ -34,7 +34,7 @@ input SearchByConditionNested {
   anyOf: [SearchByConditionNested!]
 
   """Not."""
-  not: SearchByFlag
+  not: SearchByConditionNested
 
   """Property condition."""
   value: SearchByScalarStringOrNull
@@ -51,7 +51,7 @@ input SearchByConditionProperties {
   anyOf: [SearchByConditionProperties!]
 
   """Not."""
-  not: SearchByFlag
+  not: SearchByConditionProperties
 
   """Property condition."""
   idScalar: SearchByScalarIDOrNull
@@ -101,13 +101,16 @@ Available operators for enum Value (only one operator allowed at a time).
 """
 input SearchByEnumValue {
   """Equal (`=`)."""
-  eq: Value
+  equal: Value
+
+  """Not Equal (`!=`)."""
+  notEqual: Value
 
   """Within a set of values."""
   in: [Value!]
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a set of values."""
+  notIn: [Value!]
 }
 
 """
@@ -115,16 +118,22 @@ Available operators for enum Value (only one operator allowed at a time).
 """
 input SearchByEnumValueOrNull {
   """Equal (`=`)."""
-  eq: Value
+  equal: Value
+
+  """Not Equal (`!=`)."""
+  notEqual: Value
 
   """Within a set of values."""
   in: [Value!]
 
+  """Outside a set of values."""
+  notIn: [Value!]
+
   """Is NULL?"""
   isNull: SearchByFlag
 
-  """Not."""
-  not: SearchByFlag
+  """Is NOT NULL?"""
+  isNotNull: SearchByFlag
 }
 
 """Flag."""
@@ -134,11 +143,30 @@ enum SearchByFlag {
 
 """Relation condition for input Nested."""
 input SearchByRelationNested {
-  """Conditions for the related objects."""
+  """
+  Conditions for the related objects (`has()`).
+  
+  See also:
+  * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+  * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+  """
   where: SearchByConditionNested!
 
+  """
+  Shortcut for `doesntHave()`, same as:
+  
+  ```
+  where: [...]
+  lt: 1
+  ```
+  """
+  not: Boolean! = false
+
   """Equal (`=`)."""
-  eq: Int
+  equal: Int
+
+  """Not Equal (`!=`)."""
+  notEqual: Int
 
   """Less than (`<`)."""
   lt: Int
@@ -151,9 +179,6 @@ input SearchByRelationNested {
 
   """Greater than or equal to (`>=`)."""
   gte: Int
-
-  """Not."""
-  not: SearchByFlag
 }
 
 """
@@ -161,10 +186,7 @@ Available operators for scalar Boolean! (only one operator allowed at a time).
 """
 input SearchByScalarBoolean {
   """Equal (`=`)."""
-  eq: Boolean
-
-  """Not."""
-  not: SearchByFlag
+  equal: Boolean
 }
 
 """
@@ -172,13 +194,13 @@ Available operators for scalar Boolean (only one operator allowed at a time).
 """
 input SearchByScalarBooleanOrNull {
   """Equal (`=`)."""
-  eq: Boolean
+  equal: Boolean
 
   """Is NULL?"""
   isNull: SearchByFlag
 
-  """Not."""
-  not: SearchByFlag
+  """Is NOT NULL?"""
+  isNotNull: SearchByFlag
 }
 
 """
@@ -186,7 +208,10 @@ Available operators for scalar Float! (only one operator allowed at a time).
 """
 input SearchByScalarFloat {
   """Equal (`=`)."""
-  eq: Float
+  equal: Float
+
+  """Not Equal (`!=`)."""
+  notEqual: Float
 
   """Less than (`<`)."""
   lt: Float
@@ -203,14 +228,22 @@ input SearchByScalarFloat {
   """Within a set of values."""
   in: [Float!]
 
+  """Outside a set of values."""
+  notIn: [Float!]
+
   """Within a range."""
   between: SearchByScalarFloatOperatorBetween
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a range."""
+  notBetween: SearchByScalarFloatOperatorNotBetween
 }
 
 input SearchByScalarFloatOperatorBetween {
+  min: Float!
+  max: Float!
+}
+
+input SearchByScalarFloatOperatorNotBetween {
   min: Float!
   max: Float!
 }
@@ -220,7 +253,10 @@ Available operators for scalar Float (only one operator allowed at a time).
 """
 input SearchByScalarFloatOrNull {
   """Equal (`=`)."""
-  eq: Float
+  equal: Float
+
+  """Not Equal (`!=`)."""
+  notEqual: Float
 
   """Less than (`<`)."""
   lt: Float
@@ -237,14 +273,20 @@ input SearchByScalarFloatOrNull {
   """Within a set of values."""
   in: [Float!]
 
+  """Outside a set of values."""
+  notIn: [Float!]
+
   """Within a range."""
   between: SearchByScalarFloatOperatorBetween
+
+  """Outside a range."""
+  notBetween: SearchByScalarFloatOperatorNotBetween
 
   """Is NULL?"""
   isNull: SearchByFlag
 
-  """Not."""
-  not: SearchByFlag
+  """Is NOT NULL?"""
+  isNotNull: SearchByFlag
 }
 
 """
@@ -252,13 +294,16 @@ Available operators for scalar ID! (only one operator allowed at a time).
 """
 input SearchByScalarID {
   """Equal (`=`)."""
-  eq: ID
+  equal: ID
+
+  """Not Equal (`!=`)."""
+  notEqual: ID
 
   """Within a set of values."""
   in: [ID!]
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a set of values."""
+  notIn: [ID!]
 }
 
 """
@@ -266,16 +311,22 @@ Available operators for scalar ID (only one operator allowed at a time).
 """
 input SearchByScalarIDOrNull {
   """Equal (`=`)."""
-  eq: ID
+  equal: ID
+
+  """Not Equal (`!=`)."""
+  notEqual: ID
 
   """Within a set of values."""
   in: [ID!]
 
+  """Outside a set of values."""
+  notIn: [ID!]
+
   """Is NULL?"""
   isNull: SearchByFlag
 
-  """Not."""
-  not: SearchByFlag
+  """Is NOT NULL?"""
+  isNotNull: SearchByFlag
 }
 
 """
@@ -283,7 +334,10 @@ Available operators for scalar Int! (only one operator allowed at a time).
 """
 input SearchByScalarInt {
   """Equal (`=`)."""
-  eq: Int
+  equal: Int
+
+  """Not Equal (`!=`)."""
+  notEqual: Int
 
   """Less than (`<`)."""
   lt: Int
@@ -300,14 +354,22 @@ input SearchByScalarInt {
   """Within a set of values."""
   in: [Int!]
 
+  """Outside a set of values."""
+  notIn: [Int!]
+
   """Within a range."""
   between: SearchByScalarIntOperatorBetween
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a range."""
+  notBetween: SearchByScalarIntOperatorNotBetween
 }
 
 input SearchByScalarIntOperatorBetween {
+  min: Int!
+  max: Int!
+}
+
+input SearchByScalarIntOperatorNotBetween {
   min: Int!
   max: Int!
 }
@@ -317,7 +379,10 @@ Available operators for scalar Int (only one operator allowed at a time).
 """
 input SearchByScalarIntOrNull {
   """Equal (`=`)."""
-  eq: Int
+  equal: Int
+
+  """Not Equal (`!=`)."""
+  notEqual: Int
 
   """Less than (`<`)."""
   lt: Int
@@ -334,14 +399,20 @@ input SearchByScalarIntOrNull {
   """Within a set of values."""
   in: [Int!]
 
+  """Outside a set of values."""
+  notIn: [Int!]
+
   """Within a range."""
   between: SearchByScalarIntOperatorBetween
+
+  """Outside a range."""
+  notBetween: SearchByScalarIntOperatorNotBetween
 
   """Is NULL?"""
   isNull: SearchByFlag
 
-  """Not."""
-  not: SearchByFlag
+  """Is NOT NULL?"""
+  isNotNull: SearchByFlag
 }
 
 """
@@ -349,16 +420,22 @@ Available operators for scalar String! (only one operator allowed at a time).
 """
 input SearchByScalarString {
   """Equal (`=`)."""
-  eq: String
+  equal: String
+
+  """Not Equal (`!=`)."""
+  notEqual: String
 
   """Like."""
   like: String
 
+  """Not like."""
+  notLike: String
+
   """Within a set of values."""
   in: [String!]
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a set of values."""
+  notIn: [String!]
 }
 
 """
@@ -366,19 +443,28 @@ Available operators for scalar String (only one operator allowed at a time).
 """
 input SearchByScalarStringOrNull {
   """Equal (`=`)."""
-  eq: String
+  equal: String
+
+  """Not Equal (`!=`)."""
+  notEqual: String
 
   """Like."""
   like: String
 
+  """Not like."""
+  notLike: String
+
   """Within a set of values."""
   in: [String!]
+
+  """Outside a set of values."""
+  notIn: [String!]
 
   """Is NULL?"""
   isNull: SearchByFlag
 
-  """Not."""
-  not: SearchByFlag
+  """Is NOT NULL?"""
+  isNotNull: SearchByFlag
 }
 
 enum Value {

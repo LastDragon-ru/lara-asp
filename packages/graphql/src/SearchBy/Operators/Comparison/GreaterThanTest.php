@@ -27,11 +27,10 @@ class GreaterThanTest extends TestCase {
         Closure $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): void {
         $operator = $this->app->make(GreaterThan::class);
         $builder  = $builder($this);
-        $builder  = $operator->apply($builder, $property, $value, $not);
+        $builder  = $operator->apply($builder, $property, $value);
         $actual   = [
             'sql'      => $builder->toSql(),
             'bindings' => $builder->getBindings(),
@@ -50,7 +49,7 @@ class GreaterThanTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'greater than'        => [
+                'greater than' => [
                     [
                         'sql'      => 'select * from "tmp" where "property" > ?',
                         'bindings' => [123],
@@ -58,15 +57,6 @@ class GreaterThanTest extends TestCase {
                     'property',
                     123,
                     false,
-                ],
-                '"not" not supported' => [
-                    [
-                        'sql'      => 'select * from "tmp" where "property" > ?',
-                        'bindings' => ['abc'],
-                    ],
-                    'property',
-                    'abc',
-                    true,
                 ],
             ]),
         ))->getData();

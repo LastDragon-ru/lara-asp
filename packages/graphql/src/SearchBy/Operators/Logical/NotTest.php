@@ -17,9 +17,9 @@ use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not
  */
-class AllOfTest extends TestCase {
+class NotTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -34,11 +34,12 @@ class AllOfTest extends TestCase {
         $search   = new SearchBuilder(
             $this->app->make(PackageTranslator::class),
             [
+                $this->app->make(AllOf::class),
                 $this->app->make(Equal::class),
                 $this->app->make(NotEqual::class),
             ],
         );
-        $operator = $this->app->make(AllOf::class);
+        $operator = $this->app->make(Not::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($search, $builder, $conditions, $tableAlias);
         $actual   = [
@@ -60,17 +61,19 @@ class AllOfTest extends TestCase {
             'Both'     => (new CompositeDataProvider(
                 new BuilderDataProvider(),
                 new ArrayDataProvider([
-                    'allOf with alias' => [
+                    'not with alias' => [
                         [
-                            'sql'      => 'select * from "tmp" where ("alias"."a" = ?) and ("alias"."b" != ?)',
+                            'sql'      => 'select * from "tmp" where not ((("alias"."a" = ?) and ("alias"."b" != ?)))',
                             'bindings' => [
                                 2,
                                 22,
                             ],
                         ],
                         [
-                            ['a' => ['equal' => 2]],
-                            ['b' => ['notEqual' => 22]],
+                            'allOf' => [
+                                ['a' => ['equal' => 2]],
+                                ['b' => ['notEqual' => 22]],
+                            ],
                         ],
                         'alias',
                     ],
@@ -79,17 +82,19 @@ class AllOfTest extends TestCase {
             'Query'    => (new CompositeDataProvider(
                 new QueryBuilderDataProvider(),
                 new ArrayDataProvider([
-                    'allOf' => [
+                    'not' => [
                         [
-                            'sql'      => 'select * from "tmp" where ("a" = ?) and ("b" != ?)',
+                            'sql'      => 'select * from "tmp" where not ((("a" = ?) and ("b" != ?)))',
                             'bindings' => [
                                 2,
                                 22,
                             ],
                         ],
                         [
-                            ['a' => ['equal' => 2]],
-                            ['b' => ['notEqual' => 22]],
+                            'allOf' => [
+                                ['a' => ['equal' => 2]],
+                                ['b' => ['notEqual' => 22]],
+                            ],
                         ],
                         null,
                     ],
@@ -98,17 +103,19 @@ class AllOfTest extends TestCase {
             'Eloquent' => (new CompositeDataProvider(
                 new EloquentBuilderDataProvider(),
                 new ArrayDataProvider([
-                    'allOf' => [
+                    'not' => [
                         [
-                            'sql'      => 'select * from "tmp" where ("tmp"."a" = ?) and ("tmp"."b" != ?)',
+                            'sql'      => 'select * from "tmp" where not ((("tmp"."a" = ?) and ("tmp"."b" != ?)))',
                             'bindings' => [
                                 2,
                                 22,
                             ],
                         ],
                         [
-                            ['a' => ['equal' => 2]],
-                            ['b' => ['notEqual' => 22]],
+                            'allOf' => [
+                                ['a' => ['equal' => 2]],
+                                ['b' => ['notEqual' => 22]],
+                            ],
                         ],
                         null,
                     ],

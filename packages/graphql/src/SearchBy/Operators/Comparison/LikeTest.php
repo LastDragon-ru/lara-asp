@@ -27,11 +27,10 @@ class LikeTest extends TestCase {
         Closure $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): void {
         $operator = $this->app->make(Like::class);
         $builder  = $builder($this);
-        $builder  = $operator->apply($builder, $property, $value, $not);
+        $builder  = $operator->apply($builder, $property, $value);
         $actual   = [
             'sql'      => $builder->toSql(),
             'bindings' => $builder->getBindings(),
@@ -50,23 +49,13 @@ class LikeTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'like'     => [
+                'like' => [
                     [
                         'sql'      => 'select * from "tmp" where "property" like ?',
                         'bindings' => ['abc'],
                     ],
                     'property',
                     'abc',
-                    false,
-                ],
-                'not like' => [
-                    [
-                        'sql'      => 'select * from "tmp" where "property" not like ?',
-                        'bindings' => ['abc'],
-                    ],
-                    'property',
-                    'abc',
-                    true,
                 ],
             ]),
         ))->getData();

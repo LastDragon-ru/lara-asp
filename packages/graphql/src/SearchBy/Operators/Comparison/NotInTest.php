@@ -10,9 +10,9 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanTest
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn
  */
-class LessThanTest extends TestCase {
+class NotInTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -28,7 +28,7 @@ class LessThanTest extends TestCase {
         string $property,
         mixed $value,
     ): void {
-        $operator = $this->app->make(LessThan::class);
+        $operator = $this->app->make(NotIn::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($builder, $property, $value);
         $actual   = [
@@ -49,14 +49,13 @@ class LessThanTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'less than' => [
+                'ok' => [
                     [
-                        'sql'      => 'select * from "tmp" where "property" < ?',
-                        'bindings' => [123],
+                        'sql'      => 'select * from "tmp" where "property" not in (?, ?, ?)',
+                        'bindings' => ['abc', 2, 4],
                     ],
                     'property',
-                    123,
-                    false,
+                    ['abc', 2, 4],
                 ],
             ]),
         ))->getData();

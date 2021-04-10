@@ -61,14 +61,14 @@ That's all, just search 😃
 query {
   # WHERE name = "LastDragon"
   users(where: {
-    name: {eq: "LastDragon"}
+    name: {equal: "LastDragon"}
   }) {
     id
   }
 
   # WHERE name != "LastDragon"
   users(where: {
-    name: {eq: "LastDragon", not: yes}
+    name: {notEqual: "LastDragon"}
   }) {
     id
   }
@@ -76,8 +76,8 @@ query {
   # WHERE name = "LastDragon" or name = "Aleksei"
   users(where: {
     anyOf: [
-      {name: {eq: "LastDragon"}}
-      {name: {eq: "Aleksei"}}
+      {name: {equal: "LastDragon"}}
+      {name: {equal: "Aleksei"}}
     ]
   }) {
     id
@@ -86,8 +86,8 @@ query {
   # WHERE NOT (name = "LastDragon" or name = "Aleksei")
   users(where: {
     anyOf: [
-      {name: {eq: "LastDragon"}}
-      {name: {eq: "Aleksei"}}
+      {name: {equal: "LastDragon"}}
+      {name: {equal: "Aleksei"}}
     ]
     not: yes
   }) {
@@ -118,7 +118,7 @@ query {
       where: {
         date: {between: {min: "2021-01-01", max: "2021-04-01"}}
       }
-      eq: 2
+      equal: 2
     }
   }) {
     id
@@ -154,7 +154,7 @@ input SearchByConditionCommentsQuery {
   anyOf: [SearchByConditionCommentsQuery!]
 
   """Not."""
-  not: SearchByFlag
+  not: SearchByConditionCommentsQuery
 
   """Property condition."""
   text: SearchByScalarString
@@ -177,7 +177,7 @@ input SearchByConditionUsersQuery {
   anyOf: [SearchByConditionUsersQuery!]
 
   """Not."""
-  not: SearchByFlag
+  not: SearchByConditionUsersQuery
 
   """Property condition."""
   id: SearchByScalarID
@@ -193,11 +193,30 @@ enum SearchByFlag {
 
 """Relation condition for input UsersQuery."""
 input SearchByRelationUsersQuery {
-  """Conditions for the related objects."""
+  """
+  Conditions for the related objects (`has()`).
+
+  See also:
+  * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+  * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+  """
   where: SearchByConditionUsersQuery!
 
+  """
+  Shortcut for `doesntHave()`, same as:
+
+  \```
+  where: [...]
+  lt: 1
+  \```
+  """
+  not: Boolean! = false
+
   """Equal (`=`)."""
-  eq: Int
+  equal: Int
+
+  """Not Equal (`!=`)."""
+  notEqual: Int
 
   """Less than (`<`)."""
   lt: Int
@@ -210,12 +229,14 @@ input SearchByRelationUsersQuery {
 
   """Greater than or equal to (`>=`)."""
   gte: Int
-
-  """Not."""
-  not: SearchByFlag
 }
 
 input SearchByScalarDateOperatorBetween {
+  min: Date!
+  max: Date!
+}
+
+input SearchByScalarDateOperatorNotBetween {
   min: Date!
   max: Date!
 }
@@ -225,7 +246,10 @@ Available operators for scalar Date (only one operator allowed at a time).
 """
 input SearchByScalarDateOrNull {
   """Equal (`=`)."""
-  eq: Date
+  equal: Date
+
+  """Not Equal (`!=`)."""
+  notEqual: Date
 
   """Less than (`<`)."""
   lt: Date
@@ -242,14 +266,20 @@ input SearchByScalarDateOrNull {
   """Within a set of values."""
   in: [Date!]
 
+  """Outside a set of values."""
+  notIn: [Date!]
+
   """Within a range."""
   between: SearchByScalarDateOperatorBetween
+
+  """Outside a range."""
+  notBetween: SearchByScalarDateOperatorNotBetween
 
   """Is NULL?"""
   isNull: SearchByFlag
 
-  """Not."""
-  not: SearchByFlag
+  """Is NOT NULL?"""
+  isNotNull: SearchByFlag
 }
 
 """
@@ -257,13 +287,16 @@ Available operators for scalar ID! (only one operator allowed at a time).
 """
 input SearchByScalarID {
   """Equal (`=`)."""
-  eq: ID
+  equal: ID
+
+  """Not Equal (`!=`)."""
+  notEqual: ID
 
   """Within a set of values."""
   in: [ID!]
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a set of values."""
+  notIn: [ID!]
 }
 
 """
@@ -271,22 +304,29 @@ Available operators for scalar String! (only one operator allowed at a time).
 """
 input SearchByScalarString {
   """Equal (`=`)."""
-  eq: String
+  equal: String
+
+  """Not Equal (`!=`)."""
+  notEqual: String
 
   """Like."""
   like: String
 
+  """Not like."""
+  notLike: String
+
   """Within a set of values."""
   in: [String!]
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a set of values."""
+  notIn: [String!]
 }
 
 input UsersQuery {
   id: ID!
   name: String!
 }
+
 ```
 
 </details>

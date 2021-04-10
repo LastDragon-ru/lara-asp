@@ -1,26 +1,22 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
-use Closure;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 
 /**
  * @internal Must not be used directly.
- * @see      \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable
  */
-class Not extends BaseOperator implements LogicalOperator {
-    public const Name = 'not';
-
+class IsNotNull extends BaseOperator implements ComparisonOperator {
     public function getName(): string {
-        return static::Name;
+        return 'isNotNull';
     }
 
     protected function getDescription(): string {
-        return 'Not.';
+        return 'Is NOT NULL?';
     }
 
     /**
@@ -30,7 +26,11 @@ class Not extends BaseOperator implements LogicalOperator {
         return parent::getDefinition($map, $map[Directive::TypeFlag], true);
     }
 
-    public function apply(EloquentBuilder|QueryBuilder $builder, Closure $nested): EloquentBuilder|QueryBuilder {
-        return $builder->where($nested, null, null, 'and not');
+    public function apply(
+        EloquentBuilder|QueryBuilder $builder,
+        string $property,
+        mixed $value,
+    ): EloquentBuilder|QueryBuilder {
+        return $builder->whereNotNull($property);
     }
 }

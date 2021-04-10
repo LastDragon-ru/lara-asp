@@ -6,10 +6,9 @@ use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 
-class Between extends BaseOperator implements ComparisonOperator, OperatorNegationable, OperatorHasTypesForScalar {
+class Between extends BaseOperator implements ComparisonOperator, OperatorHasTypesForScalar {
     protected const TypeRange = 'Range';
 
     public function getName(): string {
@@ -48,10 +47,7 @@ class Between extends BaseOperator implements ComparisonOperator, OperatorNegati
         EloquentBuilder|QueryBuilder $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): EloquentBuilder|QueryBuilder {
-        return $not
-            ? $builder->whereNotBetween($property, $value)
-            : $builder->whereBetween($property, $value);
+        return $builder->whereBetween($property, $value);
     }
 }

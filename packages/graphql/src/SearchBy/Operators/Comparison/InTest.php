@@ -27,11 +27,10 @@ class InTest extends TestCase {
         Closure $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): void {
         $operator = $this->app->make(In::class);
         $builder  = $builder($this);
-        $builder  = $operator->apply($builder, $property, $value, $not);
+        $builder  = $operator->apply($builder, $property, $value);
         $actual   = [
             'sql'      => $builder->toSql(),
             'bindings' => $builder->getBindings(),
@@ -50,7 +49,7 @@ class InTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'in'     => [
+                'in' => [
                     [
                         'sql'      => 'select * from "tmp" where "property" in (?, ?, ?)',
                         'bindings' => ['abc', 2, 4],
@@ -58,15 +57,6 @@ class InTest extends TestCase {
                     'property',
                     ['abc', 2, 4],
                     false,
-                ],
-                'not in' => [
-                    [
-                        'sql'      => 'select * from "tmp" where "property" not in (?, ?, ?)',
-                        'bindings' => ['abc', 2, 4],
-                    ],
-                    'property',
-                    ['abc', 2, 4],
-                    true,
                 ],
             ]),
         ))->getData();

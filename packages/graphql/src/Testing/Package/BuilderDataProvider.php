@@ -2,34 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
-use LastDragon_ru\LaraASP\Testing\Providers\Unknown;
+use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 
-class BuilderDataProvider extends ArrayDataProvider {
+class BuilderDataProvider extends MergeDataProvider {
     public function __construct() {
         parent::__construct([
-            'Query Builder'    => [
-                new Unknown(),
-                static function (TestCase $test): QueryBuilder {
-                    return $test->getApplication()->make('db')->table('tmp');
-                },
-            ],
-            'Eloquent Builder' => [
-                new Unknown(),
-                static function (TestCase $test): EloquentBuilder {
-                    return (new class() extends Model {
-                        /**
-                         * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-                         *
-                         * @var string
-                         */
-                        public $table = 'tmp';
-                    })->query();
-                },
-            ],
+            'Query'    => new QueryBuilderDataProvider(),
+            'Eloquent' => new EloquentBuilderDataProvider(),
         ]);
     }
 }

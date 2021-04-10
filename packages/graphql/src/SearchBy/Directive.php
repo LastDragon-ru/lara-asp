@@ -18,10 +18,14 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
@@ -52,16 +56,21 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         // Standard types
         'ID'           => [
             Equal::class,
+            NotEqual::class,
             In::class,
+            NotIn::class,
         ],
         'Int'          => [
             Equal::class,
+            NotEqual::class,
             LessThan::class,
             LessThanOrEqual::class,
             GreaterThan::class,
             GreaterThanOrEqual::class,
             In::class,
+            NotIn::class,
             Between::class,
+            NotBetween::class,
         ],
         'Float'        => 'Int',
         'Boolean'      => [
@@ -69,22 +78,29 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         ],
         'String'       => [
             Equal::class,
+            NotEqual::class,
             Like::class,
+            NotLike::class,
             In::class,
+            NotIn::class,
         ],
 
         // Special types
         self::Enum     => [
             Equal::class,
+            NotEqual::class,
             In::class,
+            NotIn::class,
         ],
         self::Logic    => [
             AllOf::class,
             AnyOf::class,
+            Not::class,
         ],
         self::Relation => [
             Relation::class,
             Equal::class,
+            NotEqual::class,
             LessThan::class,
             LessThanOrEqual::class,
             GreaterThan::class,
@@ -146,7 +162,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         return (new SearchBuilder(
             $this->translator,
             (new Collection($this->scalars))
-                ->add(Not::class)
                 ->flatten()
                 ->unique()
                 ->filter(static function (string $operator): bool {

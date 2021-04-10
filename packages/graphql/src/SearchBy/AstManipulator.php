@@ -10,24 +10,21 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator as BaseAstManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypes;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalarNullable;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 
 use function array_map;
 use function array_merge;
 use function implode;
-use function is_a;
 use function is_array;
 use function is_null;
 use function sprintf;
@@ -394,11 +391,7 @@ class AstManipulator extends BaseAstManipulator {
         // Add `null` for nullable
         if ($nullable) {
             $operators[] = IsNull::class;
-        }
-
-        // Add `not` for negationable
-        if (Arr::first($operators, static fn(string $o) => is_a($o, OperatorNegationable::class, true))) {
-            $operators[] = Not::class;
+            $operators[] = IsNotNull::class;
         }
 
         // Return

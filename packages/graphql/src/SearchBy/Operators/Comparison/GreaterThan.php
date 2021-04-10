@@ -19,7 +19,6 @@ class GreaterThan extends BaseOperator implements ComparisonOperator {
         EloquentBuilder|QueryBuilder $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): EloquentBuilder|QueryBuilder {
         return $builder->where($property, '>', $value);
     }

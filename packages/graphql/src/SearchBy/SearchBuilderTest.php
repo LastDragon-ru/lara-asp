@@ -11,18 +11,17 @@ use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
-
-use function count;
 
 /**
  * @internal
@@ -53,51 +52,16 @@ class SearchBuilderTest extends TestCase {
         $search  = new SearchBuilder(
             $this->app->make(PackageTranslator::class),
             [
-                $this->app->make(Not::class),
                 $this->app->make(Equal::class),
+                $this->app->make(NotEqual::class),
                 $this->app->make(GreaterThan::class),
                 $this->app->make(AllOf::class),
                 $this->app->make(AnyOf::class),
+                $this->app->make(Not::class),
             ],
         );
         $builder = $builder($this);
         $builder = $search->process($builder, $conditions, $tableAlias);
-        $actual  = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @covers ::processNotOperator
-     *
-     * @dataProvider dataProviderProcessNotOperator
-     *
-     * @param array<mixed> $expected
-     */
-    public function testProcessNotOperator(array $expected, Closure $builder): void {
-        $not = Mockery::mock(Not::class);
-        $not
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('not');
-        $not
-            ->shouldReceive('apply')
-            ->once()
-            ->andReturnUsing(
-                static function (
-                    EloquentBuilder|QueryBuilder $builder,
-                    Closure $nested,
-                ): EloquentBuilder|QueryBuilder {
-                    return $builder->whereRaw('not (1 = 1)');
-                },
-            );
-
-        $builder = $builder($this);
-        $search  = new SearchBuilder($this->app->make(PackageTranslator::class), [$not]);
-        $builder = $search->processNotOperator($builder, $not, [1, 2]);
         $actual  = [
             'sql'      => $builder->toSql(),
             'bindings' => $builder->getBindings(),
@@ -129,7 +93,7 @@ class SearchBuilderTest extends TestCase {
         $search  = new SearchBuilder(
             $this->app->make(PackageTranslator::class),
             [
-                $this->app->make(Not::class),
+                $this->app->make(NotEqual::class),
                 $this->app->make(Equal::class),
                 $this->app->make(GreaterThan::class),
             ],
@@ -164,11 +128,13 @@ class SearchBuilderTest extends TestCase {
 
         $logical
             ->shouldReceive('apply')
-            ->times(count($conditions))
+            ->once()
             ->andReturnUsing(
                 static function (
+                    SearchBuilder $search,
                     EloquentBuilder|QueryBuilder $builder,
-                    Closure $nested,
+                    array $conditions,
+                    ?string $tableAlias,
                 ): EloquentBuilder|QueryBuilder {
                     return $builder->whereRaw('(1 = 1)');
                 },
@@ -227,20 +193,6 @@ class SearchBuilderTest extends TestCase {
     }
 
     /**
-     * @covers ::getNotOperator
-     */
-    public function testGetNotOperator(): void {
-        $search  = new SearchBuilder($this->app->make(PackageTranslator::class), [$this->app->make(Not::class)]);
-        $with    = ['not' => 'yes'];
-        $without = [];
-
-        $this->assertNotNull($search->getNotOperator($with));
-        $this->assertEmpty($with);
-
-        $this->assertNull($search->getNotOperator($without));
-    }
-
-    /**
      * @covers ::getComplexOperator
      */
     public function testGetComplexOperator(): void {
@@ -292,13 +244,11 @@ class SearchBuilderTest extends TestCase {
                         'Only one property allowed, found: `a`, `b`.',
                     ),
                     [
-                        'not' => 'yes',
-                        'a'   => [
-                            'eq' => 2,
+                        'a' => [
+                            'equal' => 2,
                         ],
-                        'b'   => [
-                            'eq'  => 3,
-                            'not' => 'yes',
+                        'b' => [
+                            'notEqual' => 3,
                         ],
                     ],
                     null,
@@ -315,25 +265,24 @@ class SearchBuilderTest extends TestCase {
                         ],
                     ],
                     [
-                        'not'   => 'yes',
-                        'allOf' => [
-                            [
-                                'a' => [
-                                    'eq'  => 1,
-                                    'not' => 'yes',
-                                ],
-                            ],
-                            [
-                                'anyOf' => [
-                                    [
-                                        'a' => [
-                                            'eq' => 2,
-                                        ],
+                        'not' => [
+                            'allOf' => [
+                                [
+                                    'a' => [
+                                        'notEqual' => 1,
                                     ],
-                                    [
-                                        'b' => [
-                                            'eq'  => 3,
-                                            'not' => 'yes',
+                                ],
+                                [
+                                    'anyOf' => [
+                                        [
+                                            'a' => [
+                                                'equal' => 2,
+                                            ],
+                                        ],
+                                        [
+                                            'b' => [
+                                                'notEqual' => 3,
+                                            ],
                                         ],
                                     ],
                                 ],
@@ -366,25 +315,24 @@ class SearchBuilderTest extends TestCase {
                     return $test->app->make('db')->table('tmp');
                 },
                 [
-                    'not'   => 'yes',
-                    'allOf' => [
-                        [
-                            'a' => [
-                                'eq'  => 1,
-                                'not' => 'yes',
-                            ],
-                        ],
-                        [
-                            'anyOf' => [
-                                [
-                                    'a' => [
-                                        'eq' => 2,
-                                    ],
+                    'not' => [
+                        'allOf' => [
+                            [
+                                'a' => [
+                                    'notEqual' => 1,
                                 ],
-                                [
-                                    'b' => [
-                                        'eq'  => 3,
-                                        'not' => 'yes',
+                            ],
+                            [
+                                'anyOf' => [
+                                    [
+                                        'a' => [
+                                            'equal' => 2,
+                                        ],
+                                    ],
+                                    [
+                                        'b' => [
+                                            'notEqual' => 3,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -423,25 +371,24 @@ class SearchBuilderTest extends TestCase {
                     })->query();
                 },
                 [
-                    'not'   => 'yes',
-                    'allOf' => [
-                        [
-                            'a' => [
-                                'eq'  => 1,
-                                'not' => 'yes',
-                            ],
-                        ],
-                        [
-                            'anyOf' => [
-                                [
-                                    'a' => [
-                                        'eq' => 2,
-                                    ],
+                    'not' => [
+                        'allOf' => [
+                            [
+                                'a' => [
+                                    'notEqual' => 1,
                                 ],
-                                [
-                                    'b' => [
-                                        'eq'  => 3,
-                                        'not' => 'yes',
+                            ],
+                            [
+                                'anyOf' => [
+                                    [
+                                        'a' => [
+                                            'equal' => 2,
+                                        ],
+                                    ],
+                                    [
+                                        'b' => [
+                                            'notEqual' => 3,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -456,30 +403,13 @@ class SearchBuilderTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderProcessNotOperator(): array {
-        return (new CompositeDataProvider(
-            new BuilderDataProvider(),
-            new ArrayDataProvider([
-                'ok' => [
-                    [
-                        'sql'      => 'select * from "tmp" where (not (1 = 1))',
-                        'bindings' => [],
-                    ],
-                ],
-            ]),
-        ))->getData();
-    }
-
-    /**
-     * @return array<mixed>
-     */
     public function dataProviderProcessLogicalOperator(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
                 'ok' => [
                     [
-                        'sql'      => 'select * from "tmp" where ((1 = 1) and (1 = 1))',
+                        'sql'      => 'select * from "tmp" where ((1 = 1))',
                         'bindings' => [],
                     ],
                 ],
@@ -519,24 +449,14 @@ class SearchBuilderTest extends TestCase {
                     [],
                     null,
                 ],
-                'empty (not only)'                 => [
-                    new SearchLogicException(
-                        'Search condition cannot be empty.',
-                    ),
-                    'property',
-                    [
-                        'not' => 'yes',
-                    ],
-                    null,
-                ],
                 'more than one condition'          => [
                     new SearchLogicException(
-                        'Only one comparison operator allowed, found: `eq`, `in`.',
+                        'Only one comparison operator allowed, found: `equal`, `in`.',
                     ),
                     'property',
                     [
-                        'eq' => 'yes',
-                        'in' => [1, 2],
+                        'equal' => 'yes',
+                        'in'    => [1, 2],
                     ],
                     null,
                 ],
@@ -550,17 +470,6 @@ class SearchBuilderTest extends TestCase {
                     ],
                     null,
                 ],
-                'operator cannot be used with not' => [
-                    new SearchLogicException(
-                        'Operator `gt` cannot be used with `not`.',
-                    ),
-                    'property',
-                    [
-                        'gt'  => 'yes',
-                        'not' => 'yes',
-                    ],
-                    null,
-                ],
                 'valid condition with table alias' => [
                     [
                         'sql'      => 'select * from "tmp" where "alias"."property" = ?',
@@ -570,7 +479,7 @@ class SearchBuilderTest extends TestCase {
                     ],
                     'property',
                     [
-                        'eq' => 123,
+                        'equal' => 123,
                     ],
                     'alias',
                 ],
@@ -595,7 +504,7 @@ class SearchBuilderTest extends TestCase {
                 },
                 'property',
                 [
-                    'eq' => 123,
+                    'equal' => 123,
                 ],
                 null,
             ],
@@ -626,7 +535,7 @@ class SearchBuilderTest extends TestCase {
                 },
                 'property',
                 [
-                    'eq' => 123,
+                    'equal' => 123,
                 ],
                 null,
             ],

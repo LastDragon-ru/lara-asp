@@ -70,25 +70,24 @@ class DirectiveTest extends TestCase {
                 'valid condition' => [
                     true,
                     [
-                        'not'   => 'yes',
-                        'allOf' => [
-                            [
-                                'a' => [
-                                    'eq'  => 1,
-                                    'not' => 'yes',
-                                ],
-                            ],
-                            [
-                                'anyOf' => [
-                                    [
-                                        'a' => [
-                                            'eq' => 2,
-                                        ],
+                        'not' => [
+                            'allOf' => [
+                                [
+                                    'a' => [
+                                        'notEqual' => 1,
                                     ],
-                                    [
-                                        'b' => [
-                                            'eq'  => 3,
-                                            'not' => 'yes',
+                                ],
+                                [
+                                    'anyOf' => [
+                                        [
+                                            'a' => [
+                                                'equal' => 2,
+                                            ],
+                                        ],
+                                        [
+                                            'b' => [
+                                                'notEqual' => 3,
+                                            ],
                                         ],
                                     ],
                                 ],
