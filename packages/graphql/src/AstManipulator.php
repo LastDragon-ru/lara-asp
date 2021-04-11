@@ -84,9 +84,20 @@ abstract class AstManipulator {
         }
     }
 
-    protected function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
+    public function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
         // TODO [GraphQL] Is there any better way for this?
         return Parser::scalarTypeDefinition("scalar {$scalar}");
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $class
+     *
+     * @return T|null
+     */
+    protected function getNodeDirective(Node $node, string $class): ?object {
+        return $this->directives->associatedOfType($node, $class)->first();
     }
     //</editor-fold>
 }

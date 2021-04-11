@@ -58,8 +58,8 @@ class Provider extends ServiceProvider {
             $directives = $container->make(DirectiveLocator::class);
             $config     = $container->make(Repository::class);
             $scalars    = $config->get("{$this->getName()}.search_by.scalars");
-            $aliases    = $config->get("{$this->getName()}.search_by.aliases");
-            $instance   = new SearchByDirective($container, $translator, $directives, $scalars, $aliases);
+            $operators  = $config->get("{$this->getName()}.search_by.operators");
+            $instance   = new SearchByDirective($container, $translator, $directives, $scalars, $operators);
 
             return $instance;
         });

@@ -3,8 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
 /**
- * Indicates that {@link \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator} is
- * complex and define own input type.
+ * Indicates that operator has its own input type(s).
+ *
+ * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator
+ * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator
  */
 interface OperatorHasTypes {
     /**

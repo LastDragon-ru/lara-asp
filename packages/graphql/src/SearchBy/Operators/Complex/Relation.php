@@ -2,11 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
 
@@ -16,7 +20,7 @@ use function reset;
 /**
  * @internal Must not be used directly.
  */
-class Relation implements Operator, ComplexOperator {
+class Relation implements ComplexOperator {
     public function __construct(
         protected PackageTranslator $translator,
     ) {
@@ -24,33 +28,48 @@ class Relation implements Operator, ComplexOperator {
     }
 
     public function getName(): string {
-        return 'where';
+        return 'relation';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return <<<DEF
-        """
-        Conditions for the related objects (`has()`).
+    public function getDefinition(
+        AstManipulator $ast,
+        InputObjectTypeDefinitionNode $node,
+        string $prefix,
+        bool $nullable,
+    ): TypeDefinitionNode {
+        $count = $ast->getScalarType($ast->getScalarTypeNode('Int'), false);
+        $where = $ast->getInputType($node);
 
-        See also:
-        * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
-        * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
-        """
-        {$this->getName()}: {$scalar}!
+        return Parser::inputObjectTypeDefinition(
+            <<<DEF
+            """
+            Conditions for the related objects (`has()`) for input {$node->name->value}.
 
-        """
-        Shortcut for `doesntHave()`, same as:
+            See also:
+            * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+            * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+            """
+            input {$prefix} {
+                {$this->getName()}: SearchByFlag! = yes
 
-        ```
-        where: [...]
-        lt: 1
-        ```
-        """
-        not: Boolean! = false
-        DEF;
+                where: {$where}
+
+                count: {$count}
+
+                """
+                Shortcut for `doesntHave()`, same as:
+
+                ```
+                where: [...]
+                count: {
+                  lt: 1
+                }
+                ```
+                """
+                not: Boolean! = false
+            }
+            DEF,
+        );
     }
 
     /**
@@ -80,22 +99,17 @@ class Relation implements Operator, ComplexOperator {
 
         // Conditions & Not
         $relation = (new ModelHelper($builder))->getRelation($property);
-        $original = $conditions;
-        $has      = $conditions[$this->getName()];
+        $has      = $conditions['where'] ?? null;
         $not      = (bool) ($conditions['not'] ?? false);
-
-        unset($conditions[$this->getName()]);
-        unset($conditions['not']);
-        unset($original[$this->getName()]);
 
         // Build
         $alias    = $relation->getRelationCountHash(false);
         $count    = 1;
         $operator = '>=';
 
-        if ($conditions) {
+        if ($conditions['count'] ?? null) {
             $query    = $builder->toBase()->newQuery();
-            $query    = $search->processComparison($query, 'tmp', $original);
+            $query    = $search->processComparison($query, 'tmp', $conditions['count']);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
 
 use function array_keys;
@@ -18,7 +18,7 @@ use function reset;
 
 class SearchBuilder {
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator>
+     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>
      */
     protected array $complex = [];
 
@@ -35,7 +35,7 @@ class SearchBuilder {
     /**
      * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator
      *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator
-     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator> $operators
+     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator> $operators
      */
     public function __construct(
         protected PackageTranslator $translator,

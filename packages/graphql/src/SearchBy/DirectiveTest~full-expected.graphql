@@ -24,6 +24,31 @@ type Query {
 }
 
 """
+Conditions for the related objects (`has()`) for input Nested.
+
+See also:
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByComplexRelationNested {
+  relation: SearchByFlag! = yes
+  where: SearchByConditionNested
+  count: SearchByScalarInt
+
+  """
+  Shortcut for `doesntHave()`, same as:
+  
+  ```
+  where: [...]
+  count: {
+    lt: 1
+  }
+  ```
+  """
+  not: Boolean! = false
+}
+
+"""
 Available conditions for input Nested (only one property allowed at a time).
 """
 input SearchByConditionNested {
@@ -84,10 +109,10 @@ input SearchByConditionProperties {
   booleanScalarNotNull: SearchByScalarBoolean
 
   """Property condition."""
-  nested: SearchByRelationNested
+  nested: SearchByComplexRelationNested
 
   """Property condition."""
-  nestedNotNull: SearchByRelationNested
+  nestedNotNull: SearchByComplexRelationNested
 
   """Property condition."""
   enum: SearchByEnumValueOrNull
@@ -139,46 +164,6 @@ input SearchByEnumValueOrNull {
 """Flag."""
 enum SearchByFlag {
   yes
-}
-
-"""Relation condition for input Nested."""
-input SearchByRelationNested {
-  """
-  Conditions for the related objects (`has()`).
-  
-  See also:
-  * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
-  * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
-  """
-  where: SearchByConditionNested!
-
-  """
-  Shortcut for `doesntHave()`, same as:
-  
-  ```
-  where: [...]
-  lt: 1
-  ```
-  """
-  not: Boolean! = false
-
-  """Equal (`=`)."""
-  equal: Int
-
-  """Not Equal (`!=`)."""
-  notEqual: Int
-
-  """Less than (`<`)."""
-  lt: Int
-
-  """Less than or equal to (`<=`)."""
-  lte: Int
-
-  """Greater than (`>`)."""
-  gt: Int
-
-  """Greater than or equal to (`>=`)."""
-  gte: Int
 }
 
 """

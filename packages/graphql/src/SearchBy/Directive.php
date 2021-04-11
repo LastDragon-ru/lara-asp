@@ -46,11 +46,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public const TypeFlag = 'Flag';
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>|null
-     */
-    protected ?array $operators = [];
-
-    /**
      * Determines operators available for each scalar type.
      *
      * @var array<string, array<string>|string>
@@ -105,7 +100,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             Not::class,
         ],
         self::Relation => [
-            Relation::class,
             Equal::class,
             NotEqual::class,
             LessThan::class,
@@ -116,27 +110,27 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     ];
 
     /**
-     * Allow redefine scalar type in conditions.
+     * Complex operators.
      *
-     * @var array<string,string>
+     * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>
      */
-    protected array $aliases = [
-        self::Relation => 'Int',
+    protected array $complex = [
+        Relation::class,
     ];
 
     /**
      * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>> $scalars
-     * @param array<string,string>                                                                           $aliases
+     * @param array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>         $complex
      */
     public function __construct(
         protected Container $container,
         protected PackageTranslator $translator,
         protected DirectiveLocator $directives,
         array $scalars,
-        array $aliases,
+        array $complex,
     ) {
         $this->scalars = array_merge($this->scalars, $scalars);
-        $this->aliases = array_merge($this->aliases, $aliases);
+        $this->complex = array_merge($this->complex, $complex);
     }
 
     public static function definition(): string {
@@ -159,7 +153,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             $documentAST,
             $this->container,
             $this->scalars,
-            $this->aliases,
+            $this->complex,
         ))->getType($argDefinition);
     }
 
@@ -171,6 +165,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             $this->translator,
             (new Collection($this->scalars))
                 ->flatten()
+                ->merge($this->complex)
                 ->unique()
                 ->filter(static function (string $operator): bool {
                     return class_exists($operator);

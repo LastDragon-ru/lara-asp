@@ -67,10 +67,10 @@ class RelationTest extends TestCase {
      */
     public function dataProviderApply(): array {
         return [
-            'query builder not supported'         => [
+            'query builder not supported'                            => [
                 new SearchLogicException(sprintf(
                     'Operator `%s` cannot be used with `%s`.',
-                    'where',
+                    'relation',
                     QueryBuilder::class,
                 )),
                 static function (self $test): QueryBuilder {
@@ -79,7 +79,7 @@ class RelationTest extends TestCase {
                 'test',
                 [],
             ],
-            'not a relation'                      => [
+            'not a relation'                                         => [
                 new LogicException(sprintf(
                     'Property `%s` is not a relation.',
                     'delete',
@@ -90,7 +90,7 @@ class RelationTest extends TestCase {
                 'delete',
                 [],
             ],
-            '{has: yes}'                          => [
+            '{relation: yes}'                                        => [
                 [
                     'sql'      => 'select * from "table_a" where exists ('.
                         'select * from "table_b" '.
@@ -103,10 +103,10 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'where' => 'yes',
+                    'relation' => 'yes',
                 ],
             ],
-            '{has: yes, not: yes}'                => [
+            '{relation: yes, not: yes}'                              => [
                 [
                     'sql'      => 'select * from "table_a" where not exists ('.
                         'select * from "table_b" '.
@@ -119,11 +119,11 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'where' => 'yes',
-                    'not'   => true,
+                    'relation' => 'yes',
+                    'not'      => true,
                 ],
             ],
-            '{has: {property: {equal: 1}}}'       => [
+            '{relation: {property: {equal: 1}}}'                     => [
                 [
                     'sql'      => 'select * from "table_a" where exists ('.
                         'select * from "table_b" where '.
@@ -143,7 +143,7 @@ class RelationTest extends TestCase {
                     ],
                 ],
             ],
-            '{has: yes, equal: 1}'                => [
+            '{relation: yes, count: {equal: 1}}'                     => [
                 [
                     'sql'      => 'select * from "table_a" where ('.
                         'select count(*) from "table_b" where '.
@@ -156,39 +156,29 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'where' => 'yes',
-                    'equal' => 345,
+                    'relation' => 'yes',
+                    'count'    => [
+                        'equal' => 345,
+                    ],
                 ],
             ],
-            '{has: yes, equal: 1, not: yes}'      => [
+            '{relation: yes, count: { multiple operators }}'         => [
                 new SearchLogicException(
-                    'Only one comparison operator allowed, found: `not`, `equal`',
+                    'Only one comparison operator allowed, found: `equal`, `lt`',
                 ),
                 static function (): EloquentBuilder {
                     return RelationTest__ModelA::query();
                 },
                 'test',
                 [
-                    'where' => 'yes',
-                    'not'   => true,
-                    'equal' => 345,
+                    'relation' => 'yes',
+                    'count'    => [
+                        'equal' => 345,
+                        'lt'    => 1,
+                    ],
                 ],
             ],
-            '{has: yes, equal: 1, gt: 2}'         => [
-                new SearchLogicException(
-                    'Only one comparison operator allowed, found: `equal`, `gt`',
-                ),
-                static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
-                },
-                'test',
-                [
-                    'where' => 'yes',
-                    'equal' => 345,
-                    'gt'    => 2,
-                ],
-            ],
-            '{has: {property: {equal: 1}}} (own)' => [
+            '{relation: yes, where: {{property: {equal: 1}}}} (own)' => [
                 [
                     'sql'      => 'select * from "table_a" where exists ('.
                         'select * from "table_a" as "table_alias_0" where '.
@@ -202,7 +192,8 @@ class RelationTest extends TestCase {
                 },
                 'a',
                 [
-                    'where' => [
+                    'relation' => 'yes',
+                    'where'    => [
                         'property' => [
                             'equal' => 123,
                         ],

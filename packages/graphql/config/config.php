@@ -20,22 +20,22 @@ return [
          *
          * @var array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>>
          */
-        'scalars' => [
+        'scalars'   => [
             // This value has no effect inside the published config.
-            ConfigMerger::Strict => false,
+            ConfigMerger::Replace => true,
         ],
 
         /**
-         * Scalar aliases
+         * Complex operators.
          * ---------------------------------------------------------------------
          *
-         * Allow redefine scalar type in conditions.
+         * Allow define own complex operators here.
          *
-         * @var array<string, string>
+         * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>
          */
-        'aliases' => [
+        'operators' => [
             // This value has no effect inside the published config.
-            ConfigMerger::Strict => false,
+            ConfigMerger::Replace => true,
         ],
     ],
 
@@ -48,6 +48,6 @@ return [
      */
     'enums'     => [
         // This value has no effect inside the published config.
-        ConfigMerger::Strict => false,
+        ConfigMerger::Replace => true,
     ],
 ];

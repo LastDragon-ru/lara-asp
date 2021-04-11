@@ -11,11 +11,14 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\Core\Concerns\InstanceCache;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator as BaseAstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypes;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalarNullable;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -32,21 +35,18 @@ use function str_starts_with;
 use function tap;
 
 class AstManipulator extends BaseAstManipulator {
-    /**
-     * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|null>
-     */
-    protected array $operators = [];
+    use InstanceCache;
 
     /**
      * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>> $scalars
-     * @param array<string,string>                                                                           $aliases
+     * @param array<string,string>                                                                           $complex
      */
     public function __construct(
         DirectiveLocator $directives,
         DocumentAST $document,
         protected Container $container,
         protected array $scalars,
-        protected array $aliases,
+        protected array $complex,
     ) {
         parent::__construct($directives, $document);
     }
@@ -82,7 +82,7 @@ class AstManipulator extends BaseAstManipulator {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    protected function getInputType(InputObjectTypeDefinitionNode $node): string {
+    public function getInputType(InputObjectTypeDefinitionNode $node): string {
         // Exists?
         $name = $this->getConditionTypeName($node);
 
@@ -135,7 +135,7 @@ class AstManipulator extends BaseAstManipulator {
             if ($fieldTypeNode instanceof ScalarTypeDefinitionNode) {
                 $fieldDefinition = $this->getScalarType($fieldTypeNode, $fieldNullable);
             } elseif ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
-                $fieldDefinition = $this->getRelationType($fieldTypeNode, $fieldNullable);
+                $fieldDefinition = $this->getComplexType($fieldTypeNode, $fieldNullable);
             } elseif ($fieldTypeNode instanceof EnumTypeDefinitionNode) {
                 $fieldDefinition = $this->getEnumType($fieldTypeNode, $fieldNullable);
             } else {
@@ -165,7 +165,7 @@ class AstManipulator extends BaseAstManipulator {
         return $name;
     }
 
-    protected function getEnumType(EnumTypeDefinitionNode $node, bool $nullable): string {
+    public function getEnumType(EnumTypeDefinitionNode $node, bool $nullable): string {
         // Exists?
         $name = $this->getEnumTypeName($node, $nullable);
 
@@ -197,7 +197,7 @@ class AstManipulator extends BaseAstManipulator {
         return $name;
     }
 
-    protected function getScalarType(ScalarTypeDefinitionNode $node, bool $nullable): string {
+    public function getScalarType(ScalarTypeDefinitionNode $node, bool $nullable): string {
         // Exists?
         $name = $this->getScalarTypeName($node, $nullable);
 
@@ -211,7 +211,7 @@ class AstManipulator extends BaseAstManipulator {
 
         // Add type
         $mark    = $nullable ? '' : '!';
-        $scalar  = $this->getScalarRealTypeNode($node);
+        $scalar  = $node;
         $content = implode("\n", array_map(function (string $operator) use ($scalar, $nullable): string {
             return $this->getOperatorType($this->getOperator($operator), $scalar, $nullable);
         }, $operators));
@@ -263,36 +263,28 @@ class AstManipulator extends BaseAstManipulator {
         return $type;
     }
 
-    protected function getRelationType(InputObjectTypeDefinitionNode $node, bool $nullable): string {
+    protected function getComplexType(InputObjectTypeDefinitionNode $node, bool $nullable): string {
         // Exists?
-        $name = $this->getRelationTypeName($node);
+        $operator = $this->getComplexOperator($node);
+        $name     = $this->getComplexTypeName($node, $operator);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
         }
 
-        // Add type
-        $input     = $this->getScalarTypeNode($this->getInputType($node));
-        $scalar    = $this->getScalarRealTypeNode($this->getScalarTypeNode(Directive::Relation));
-        $operators = $this->getScalarOperators(Directive::Relation, false);
-        $content   = implode("\n", array_map(function (string $operator) use ($input, $scalar): string {
-            $operator = $this->getOperator($operator);
-            $node     = $operator instanceof Relation ? $input : $scalar;
-            $type     = $this->getOperatorType($operator, $node, false);
+        // Create
+        $definition = $operator->getDefinition($this, $node, $name, $nullable);
 
-            return $type;
-        }, $operators));
+        if ($name !== $definition->name->value) {
+            throw new SearchByException(sprintf(
+                'Generated type for complex operator `%s` must be named as `%s`, but its name is `%s`.',
+                $operator::class,
+                $name,
+                $definition->name->value,
+            ));
+        }
 
-        $this->document->setTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Relation condition for input {$node->name->value}.
-            """
-            input {$name} {
-                {$content}
-            }
-            DEF,
-        ));
+        $this->addTypeDefinition($name, $definition);
 
         // Return
         return $name;
@@ -335,12 +327,18 @@ class AstManipulator extends BaseAstManipulator {
         return Directive::Name."Scalar{$node->name->value}".($nullable ? 'OrNull' : '');
     }
 
-    protected function getRelationTypeName(InputObjectTypeDefinitionNode $node): string {
-        return Directive::Name."Relation{$node->name->value}";
+    protected function getComplexTypeName(
+        InputObjectTypeDefinitionNode $node,
+        ComplexOperator $operator,
+    ): string {
+        $name     = $node->name->value;
+        $operator = Str::studly($operator->getName());
+
+        return Directive::Name."Complex{$operator}{$name}";
     }
 
     protected function getOperatorTypeName(
-        Operator $operator,
+        Operator|ComplexOperator $operator,
         ScalarTypeDefinitionNode|EnumTypeDefinitionNode $node = null,
         bool $nullable = null,
     ): string {
@@ -402,26 +400,65 @@ class AstManipulator extends BaseAstManipulator {
      * @param class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator> $class
      */
     protected function getOperator(string $class): Operator {
-        $operator = $this->operators[$class] ?? null;
+        return $this->instanceCacheGet([__FUNCTION__, $class], function () use ($class): Operator {
+            $operator = $this->container->make($class);
 
-        if (!$operator) {
-            $this->operators[$class] = $this->container->make($class);
-            $operator                = $this->operators[$class];
+            if (!($operator instanceof Operator)) {
+                throw new SearchByException(sprintf(
+                    'Operator `%s` must implement `%s`.',
+                    $class,
+                    Operator::class,
+                ));
+            }
 
             if ($operator instanceof OperatorHasTypes) {
                 $this->addTypeDefinitions($operator, $operator->getTypeDefinitions(
                     $this->getOperatorTypeName($operator),
                 ));
             }
-        }
 
-        return $operator;
+            return $operator;
+        });
     }
 
-    protected function getScalarRealTypeNode(ScalarTypeDefinitionNode $node): ScalarTypeDefinitionNode {
-        return isset($this->aliases[$node->name->value])
-            ? $this->getScalarTypeNode($this->aliases[$node->name->value])
-            : $node;
+    protected function getComplexOperator(InputObjectTypeDefinitionNode $node): ComplexOperator {
+        return $this->instanceCacheGet([__FUNCTION__, $node->name->value], function () use ($node): ComplexOperator {
+            // Determine operator class
+            $class     = Relation::class;
+            $directive = $this->getNodeDirective($node, OperatorDirective::class);
+
+            if ($directive instanceof OperatorDirective) {
+                $class = $this->complex[$directive->getName()] ?? null;
+
+                if (!$class) {
+                    throw new SearchByException(sprintf(
+                        'Complex operator `%s` not found. Please check operator list in package config.',
+                        $directive->getName(),
+                    ));
+                }
+            }
+
+            // Create Instance
+            $operator = $this->container->make($class);
+
+            if (!($operator instanceof ComplexOperator)) {
+                throw new SearchByException(sprintf(
+                    'Operator `%s` must implement `%s`.',
+                    $class,
+                    ComplexOperator::class,
+                ));
+            }
+
+            // Add types
+            if ($operator instanceof OperatorHasTypes) {
+                $this->addTypeDefinitions($operator, $operator->getTypeDefinitions(
+                    $this->getOperatorTypeName($operator),
+                ));
+            }
+
+            // Return
+            return $operator;
+        });
     }
     // </editor-fold>
 }

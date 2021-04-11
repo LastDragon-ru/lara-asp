@@ -4,14 +4,16 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Closure;
 use Exception;
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
@@ -158,7 +160,7 @@ class SearchBuilderTest extends TestCase {
     public function testProcessComplexOperator(array $expected, Closure $builder): void {
         $conditions = [1, 2, 4];
         $property   = 'property';
-        $complex    = Mockery::mock(ComplexOperator::class, Operator::class);
+        $complex    = Mockery::mock(ComplexOperator::class);
 
         $complex
             ->shouldReceive('getName')
@@ -194,7 +196,7 @@ class SearchBuilderTest extends TestCase {
      * @covers ::getComplexOperator
      */
     public function testGetComplexOperator(): void {
-        $complex = new class() implements Operator, ComplexOperator {
+        $complex = new class() implements ComplexOperator {
             /**
              * @inheritdoc
              */
@@ -211,11 +213,13 @@ class SearchBuilderTest extends TestCase {
                 return 'test';
             }
 
-            /**
-             * @inheritdoc
-             */
-            public function getDefinition(array $map, string $scalar, bool $nullable): string {
-                return '';
+            public function getDefinition(
+                AstManipulator $ast,
+                InputObjectTypeDefinitionNode $node,
+                string $prefix,
+                bool $nullable,
+            ): TypeDefinitionNode {
+                // TODO: Implement getDefinition() method.
             }
         };
         $search  = new SearchBuilder($this->app->make(PackageTranslator::class), [$complex]);
