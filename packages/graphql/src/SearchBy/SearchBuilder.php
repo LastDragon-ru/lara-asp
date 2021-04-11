@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
 
 use function array_keys;
 use function count;
@@ -23,18 +23,18 @@ class SearchBuilder {
     protected array $complex = [];
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator>
+     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator>
      */
     protected array $logical = [];
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator>
+     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator>
      */
     protected array $comparison = [];
 
     /**
-     * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator
-     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator
+     * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator
+     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator
      *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator> $operators
      */
     public function __construct(

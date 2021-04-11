@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
 use Exception;
@@ -13,7 +13,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
  */
 class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">

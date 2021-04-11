@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 
 class SearchByDirective extends Directive {
     // Lighthouse loads all classes from directive namespace this leads to
