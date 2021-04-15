@@ -12,6 +12,7 @@ use stdClass;
 
 use function file_get_contents;
 use function is_array;
+use function is_scalar;
 use function is_string;
 use function json_decode;
 use function json_encode;
@@ -50,6 +51,8 @@ class Args {
             if (json_last_error() !== JSON_ERROR_NONE) {
                 static::invalidJson();
             }
+        } elseif (is_scalar($json)) {
+            // no action
         } else {
             static::invalidJson();
         }
