@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Types;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -57,7 +57,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        (new AstManipulator(
+        (new Manipulator(
             $this->directives,
             $documentAST,
             $this->container,

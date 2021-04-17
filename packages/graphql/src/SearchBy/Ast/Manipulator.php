@@ -12,7 +12,7 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\GraphQL\AstManipulator as BaseAstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypes;
@@ -21,6 +21,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalarNu
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\RelationOperatorDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchByException;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -35,7 +36,7 @@ use function json_encode;
 use function sprintf;
 use function tap;
 
-class AstManipulator extends BaseAstManipulator {
+class Manipulator extends AstManipulator {
     protected const PropertyOperators = Directive::Name.'Operators';
 
     protected Cache $cache;

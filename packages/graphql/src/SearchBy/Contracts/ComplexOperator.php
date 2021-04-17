@@ -7,7 +7,7 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 
 /**
@@ -19,7 +19,7 @@ interface ComplexOperator {
     public function getName(): string;
 
     public function getDefinition(
-        AstManipulator $ast,
+        Manipulator $ast,
         InputValueDefinitionNode $field,
         InputObjectTypeDefinitionNode $type,
         string $prefix,

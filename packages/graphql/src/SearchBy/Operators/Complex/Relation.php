@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
@@ -34,7 +34,7 @@ class Relation implements ComplexOperator {
     }
 
     public function getDefinition(
-        AstManipulator $ast,
+        Manipulator $ast,
         InputValueDefinitionNode $field,
         InputObjectTypeDefinitionNode $type,
         string $prefix,

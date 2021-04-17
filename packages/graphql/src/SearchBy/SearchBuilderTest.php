@@ -10,7 +10,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
@@ -216,7 +216,7 @@ class SearchBuilderTest extends TestCase {
             }
 
             public function getDefinition(
-                AstManipulator $ast,
+                Manipulator $ast,
                 InputValueDefinitionNode $field,
                 InputObjectTypeDefinitionNode $type,
                 string $prefix,
