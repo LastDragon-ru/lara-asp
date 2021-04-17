@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -33,17 +34,18 @@ class Relation implements ComplexOperator {
 
     public function getDefinition(
         AstManipulator $ast,
-        InputObjectTypeDefinitionNode $node,
+        InputValueDefinitionNode $field,
+        InputObjectTypeDefinitionNode $type,
         string $prefix,
         bool $nullable,
     ): TypeDefinitionNode {
         $count = $ast->getScalarType($ast->getScalarTypeNode('Int'), false);
-        $where = $ast->getInputType($node);
+        $where = $ast->getInputType($type);
 
         return Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Conditions for the related objects (`has()`) for input {$node->name->value}.
+            Conditions for the related objects (`has()`) for input {$type->name->value}.
 
             See also:
             * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence

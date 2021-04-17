@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use Closure;
 use Exception;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -215,7 +216,8 @@ class SearchBuilderTest extends TestCase {
 
             public function getDefinition(
                 AstManipulator $ast,
-                InputObjectTypeDefinitionNode $node,
+                InputValueDefinitionNode $field,
+                InputObjectTypeDefinitionNode $type,
                 string $prefix,
                 bool $nullable,
             ): TypeDefinitionNode {

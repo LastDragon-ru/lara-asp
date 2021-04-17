@@ -20,20 +20,7 @@ return [
          *
          * @var array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>>
          */
-        'scalars'   => [
-            // This value has no effect inside the published config.
-            ConfigMerger::Replace => true,
-        ],
-
-        /**
-         * Complex operators.
-         * ---------------------------------------------------------------------
-         *
-         * Allow define own complex operators here.
-         *
-         * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>
-         */
-        'operators' => [
+        'scalars' => [
             // This value has no effect inside the published config.
             ConfigMerger::Replace => true,
         ],

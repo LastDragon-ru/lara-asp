@@ -11,12 +11,15 @@ class OperatorDirective extends BaseDirective {
             Complex operator that will be used for this input field.
             """
             directive @searchByOperator(
-                name: String!
-            ) on INPUT_FIELD_DEFINITION
+                class: String!
+            ) on INPUT_OBJECT | INPUT_FIELD_DEFINITION
         GRAPHQL;
     }
 
-    public function getName(): string {
-        return $this->directiveArgValue('name');
+    /**
+     * @return class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>
+     */
+    public function getClass(): string {
+        return $this->directiveArgValue('class');
     }
 }

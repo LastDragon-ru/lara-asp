@@ -5,6 +5,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -43,13 +48,27 @@ class DirectiveTest extends TestCase {
         }
 
         $builder   = $builder($this);
-        $directive = new Directive(
+        $directive = new class(
             $this->app,
             $this->app->make(PackageTranslator::class),
             $this->app->make(DirectiveLocator::class),
             [],
-            [],
-        );
+        ) extends Directive {
+            /**
+             * @inheritDoc
+             */
+            protected function directiveArgValue(string $name, $default = null): mixed {
+                return $name !== Directive::ArgOperators
+                    ? parent::directiveArgValue($name, $default)
+                    : [
+                        Not::class,
+                        AllOf::class,
+                        AnyOf::class,
+                        Equal::class,
+                        NotEqual::class,
+                    ];
+            }
+        };
 
         $this->assertNotNull($directive->handleBuilder($builder, $input));
     }

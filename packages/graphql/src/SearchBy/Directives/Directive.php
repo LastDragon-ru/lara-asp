@@ -25,7 +25,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
@@ -37,15 +36,15 @@ use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 use function array_merge;
-use function class_exists;
 
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
-    public const Name     = 'SearchBy';
-    public const Enum     = 'Enum';
-    public const Null     = 'Null';
-    public const Logic    = 'Logic';
-    public const Relation = 'Relation';
-    public const TypeFlag = 'Flag';
+    public const Name         = 'SearchBy';
+    public const Enum         = 'Enum';
+    public const Null         = 'Null';
+    public const Logic        = 'Logic';
+    public const Relation     = 'Relation';
+    public const ArgOperators = 'operators';
+    public const TypeFlag     = 'Flag';
 
     /**
      * Determines operators available for each scalar type.
@@ -112,27 +111,15 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     ];
 
     /**
-     * Complex operators.
-     *
-     * @var array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>
-     */
-    protected array $complex = [
-        Relation::class,
-    ];
-
-    /**
      * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>> $scalars
-     * @param array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>         $complex
      */
     public function __construct(
         protected Container $container,
         protected PackageTranslator $translator,
         protected DirectiveLocator $directives,
         array $scalars,
-        array $complex,
     ) {
         $this->scalars = array_merge($this->scalars, $scalars);
-        $this->complex = array_merge($this->complex, $complex);
     }
 
     public static function definition(): string {
@@ -150,31 +137,28 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $argDefinition->type = (new AstManipulator(
+        (new AstManipulator(
             $this->directives,
             $documentAST,
             $this->container,
             $this->scalars,
-            $this->complex,
-        ))->getType($argDefinition);
+        ))->update($this->directiveNode, $argDefinition);
     }
 
     /**
      * @inheritdoc
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
+        $operators = $this->directiveArgValue(self::ArgOperators);
+        $operators = (new Collection($operators))
+            ->map(function (string $operator): object {
+                return $this->container->make($operator);
+            })
+            ->all();
+
         return (new SearchBuilder(
             $this->translator,
-            (new Collection($this->scalars))
-                ->flatten()
-                ->merge($this->complex)
-                ->unique()
-                ->filter(static function (string $operator): bool {
-                    return class_exists($operator);
-                })->map(function (string $operator): object {
-                    return $this->container->make($operator);
-                })
-                ->all(),
+            $operators,
         ))->build($builder, $value);
     }
 }
