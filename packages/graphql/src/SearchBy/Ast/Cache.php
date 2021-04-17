@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
 use Closure;
 use GraphQL\Language\AST\InputValueDefinitionNode;

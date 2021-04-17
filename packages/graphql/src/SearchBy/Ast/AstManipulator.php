@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
@@ -27,11 +27,9 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 
 use function array_map;
 use function array_merge;
-use function array_push;
 use function array_shift;
 use function implode;
 use function is_a;
-use function is_array;
 use function is_null;
 use function json_encode;
 use function sprintf;
@@ -50,14 +48,11 @@ class AstManipulator extends BaseAstManipulator {
      */
     protected array $operators;
 
-    /**
-     * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>> $scalars
-     */
     public function __construct(
         DirectiveLocator $directives,
         DocumentAST $document,
         protected Container $container,
-        protected array $scalars,
+        protected Types $types,
     ) {
         parent::__construct($directives, $document);
 
@@ -161,7 +156,7 @@ class AstManipulator extends BaseAstManipulator {
             $fieldTypeNode   = $this->getTypeDefinitionNode($field);
             $fieldDefinition = null;
 
-            if (is_null($fieldTypeNode) && $this->isScalar($fieldType)) {
+            if (is_null($fieldTypeNode)) {
                 $fieldTypeNode = $this->getScalarTypeNode($fieldType);
             }
 
@@ -208,7 +203,7 @@ class AstManipulator extends BaseAstManipulator {
 
         // Determine supported operators
         $enum      = $type->name->value;
-        $operators = $this->getEnumOperators($nullable);
+        $operators = $this->getEnumOperators($enum, $nullable);
 
         // Add type
         $content = implode("\n", array_map(function (string $operator) use ($type, $nullable): string {
@@ -395,40 +390,35 @@ class AstManipulator extends BaseAstManipulator {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function isScalar(string $type): bool {
-        return isset($this->scalars[$type]);
-    }
-
     /**
      * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
      */
-    protected function getEnumOperators(bool $nullable): array {
-        return $this->getScalarOperators(Directive::ScalarEnum, $nullable);
+    protected function getEnumOperators(string $enum, bool $nullable): array {
+        $operators = $this->types->getEnumOperators($enum, $nullable);
+
+        if (empty($operators)) {
+            throw new SearchByException(sprintf(
+                'List of operators for enum `%s` is empty.',
+                $enum,
+            ));
+        }
+
+        return $operators;
     }
 
     /**
      * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
      */
     protected function getScalarOperators(string $scalar, bool $nullable): array {
-        $operators = $scalar;
-
-        do {
-            $operators = $this->scalars[$operators] ?? [];
-        } while (!is_array($operators));
+        $operators = $this->types->getScalarOperators($scalar, $nullable);
 
         if (empty($operators)) {
             throw new SearchByException(sprintf(
-                'Generated scalar type is empty. Please check operators for `%s` scalar.',
+                'List of operators for scalar `%s` is empty.',
                 $scalar,
             ));
         }
 
-        // Add `null` for nullable
-        if ($nullable) {
-            array_push($operators, ...($this->scalars[Directive::ScalarNull] ?? []));
-        }
-
-        // Return
         return $operators;
     }
 

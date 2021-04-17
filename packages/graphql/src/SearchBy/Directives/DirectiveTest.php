@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Types;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
@@ -52,7 +53,7 @@ class DirectiveTest extends TestCase {
             $this->app,
             $this->app->make(PackageTranslator::class),
             $this->app->make(DirectiveLocator::class),
-            [],
+            $this->app->make(Types::class),
         ) extends Directive {
             /**
              * @inheritDoc

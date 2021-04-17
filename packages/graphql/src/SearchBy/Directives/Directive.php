@@ -10,32 +10,14 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\AstManipulator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Types;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
-
-use function array_merge;
 
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name          = 'SearchBy';
@@ -47,75 +29,17 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public const ScalarEnum    = self::Name.'Enum';
     public const ScalarNull    = self::Name.'Null';
     public const ScalarLogic   = self::Name.'Logic';
+    public const ScalarNumber  = self::Name.'Number';
     public const ArgOperators  = 'operators';
     public const TypeFlag      = 'Flag';
 
-    /**
-     * Determines operators available for each scalar type.
-     *
-     * @var array<string, array<string>|string>
-     */
-    protected array $scalars = [
-        // Standard types
-        self::ScalarID      => [
-            Equal::class,
-            NotEqual::class,
-            In::class,
-            NotIn::class,
-        ],
-        self::ScalarInt     => [
-            Equal::class,
-            NotEqual::class,
-            LessThan::class,
-            LessThanOrEqual::class,
-            GreaterThan::class,
-            GreaterThanOrEqual::class,
-            In::class,
-            NotIn::class,
-            Between::class,
-            NotBetween::class,
-        ],
-        self::ScalarFloat   => self::ScalarInt,
-        self::ScalarBoolean => [
-            Equal::class,
-        ],
-        self::ScalarString  => [
-            Equal::class,
-            NotEqual::class,
-            Like::class,
-            NotLike::class,
-            In::class,
-            NotIn::class,
-        ],
-
-        // Special types
-        self::ScalarEnum    => [
-            Equal::class,
-            NotEqual::class,
-            In::class,
-            NotIn::class,
-        ],
-        self::ScalarNull    => [
-            IsNull::class,
-            IsNotNull::class,
-        ],
-        self::ScalarLogic   => [
-            AllOf::class,
-            AnyOf::class,
-            Not::class,
-        ],
-    ];
-
-    /**
-     * @param array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>> $scalars
-     */
     public function __construct(
         protected Container $container,
         protected PackageTranslator $translator,
         protected DirectiveLocator $directives,
-        array $scalars,
+        protected Types $types,
     ) {
-        $this->scalars = array_merge($this->scalars, $scalars);
+        // empty
     }
 
     public static function definition(): string {
@@ -137,7 +61,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             $this->directives,
             $documentAST,
             $this->container,
-            $this->scalars,
+            $this->types,
         ))->update($this->directiveNode, $argDefinition);
     }
 

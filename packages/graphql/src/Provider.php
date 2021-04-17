@@ -4,14 +4,15 @@ namespace LastDragon_ru\LaraASP\GraphQL;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\EnumHelper;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Types;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
-use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_slice;
@@ -32,7 +33,7 @@ class Provider extends ServiceProvider {
     public function register(): void {
         parent::register();
 
-        $this->registerDirectives();
+        $this->registerSearchByDirective();
         $this->registerEnums();
     }
 
@@ -51,16 +52,11 @@ class Provider extends ServiceProvider {
         );
     }
 
-    protected function registerDirectives(): void {
-        $this->app->bind(SearchByDirective::class, function (): SearchByDirective {
-            $container  = $this->app;
-            $translator = $container->make(PackageTranslator::class);
-            $directives = $container->make(DirectiveLocator::class);
-            $config     = $container->make(Repository::class);
-            $scalars    = $config->get("{$this->getName()}.search_by.scalars");
-            $instance   = new SearchByDirective($container, $translator, $directives, $scalars);
-
-            return $instance;
+    protected function registerSearchByDirective(): void {
+        $this->app->bind(Types::class, function (Application $app): Types {
+            return new Types(
+                $app->make(Repository::class)->get("{$this->getName()}.search_by.scalars"),
+            );
         });
     }
 
