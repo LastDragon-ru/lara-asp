@@ -38,12 +38,17 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use function array_merge;
 
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
-    public const Name         = 'SearchBy';
-    public const Enum         = 'Enum';
-    public const Null         = 'Null';
-    public const Logic        = 'Logic';
-    public const ArgOperators = 'operators';
-    public const TypeFlag     = 'Flag';
+    public const Name          = 'SearchBy';
+    public const ScalarID      = 'ID';
+    public const ScalarInt     = 'Int';
+    public const ScalarFloat   = 'Float';
+    public const ScalarString  = 'String';
+    public const ScalarBoolean = 'Boolean';
+    public const ScalarEnum    = self::Name.'Enum';
+    public const ScalarNull    = self::Name.'Null';
+    public const ScalarLogic   = self::Name.'Logic';
+    public const ArgOperators  = 'operators';
+    public const TypeFlag      = 'Flag';
 
     /**
      * Determines operators available for each scalar type.
@@ -52,13 +57,13 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      */
     protected array $scalars = [
         // Standard types
-        'ID'        => [
+        self::ScalarID      => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        'Int'       => [
+        self::ScalarInt     => [
             Equal::class,
             NotEqual::class,
             LessThan::class,
@@ -70,11 +75,11 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             Between::class,
             NotBetween::class,
         ],
-        'Float'     => 'Int',
-        'Boolean'   => [
+        self::ScalarFloat   => self::ScalarInt,
+        self::ScalarBoolean => [
             Equal::class,
         ],
-        'String'    => [
+        self::ScalarString  => [
             Equal::class,
             NotEqual::class,
             Like::class,
@@ -84,17 +89,17 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         ],
 
         // Special types
-        self::Enum  => [
+        self::ScalarEnum    => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        self::Null  => [
+        self::ScalarNull    => [
             IsNull::class,
             IsNotNull::class,
         ],
-        self::Logic => [
+        self::ScalarLogic   => [
             AllOf::class,
             AnyOf::class,
             Not::class,

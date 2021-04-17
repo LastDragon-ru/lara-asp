@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\AstManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
 
@@ -39,7 +40,7 @@ class Relation implements ComplexOperator {
         string $prefix,
         bool $nullable,
     ): TypeDefinitionNode {
-        $count = $ast->getScalarType($ast->getScalarTypeNode('Int'), false);
+        $count = $ast->getScalarType($ast->getScalarTypeNode(Directive::ScalarInt), false);
         $where = $ast->getInputType($type);
 
         return Parser::inputObjectTypeDefinition(

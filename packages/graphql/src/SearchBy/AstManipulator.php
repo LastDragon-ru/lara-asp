@@ -124,7 +124,7 @@ class AstManipulator extends BaseAstManipulator {
         }
 
         // Add type
-        $operators = $this->getScalarOperators(Directive::Logic, false);
+        $operators = $this->getScalarOperators(Directive::ScalarLogic, false);
         $scalar    = $this->getScalarTypeNode($name);
         $content   = implode("\n", array_map(function (string $operator) use ($scalar): string {
             return $this->getOperatorType($this->getOperator($operator), $scalar, false);
@@ -403,7 +403,7 @@ class AstManipulator extends BaseAstManipulator {
      * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
      */
     protected function getEnumOperators(bool $nullable): array {
-        return $this->getScalarOperators(Directive::Enum, $nullable);
+        return $this->getScalarOperators(Directive::ScalarEnum, $nullable);
     }
 
     /**
@@ -425,7 +425,7 @@ class AstManipulator extends BaseAstManipulator {
 
         // Add `null` for nullable
         if ($nullable) {
-            array_push($operators, ...($this->scalars[Directive::Null] ?? []));
+            array_push($operators, ...($this->scalars[Directive::ScalarNull] ?? []));
         }
 
         // Return
