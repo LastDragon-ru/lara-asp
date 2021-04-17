@@ -42,7 +42,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public const Enum         = 'Enum';
     public const Null         = 'Null';
     public const Logic        = 'Logic';
-    public const Relation     = 'Relation';
     public const ArgOperators = 'operators';
     public const TypeFlag     = 'Flag';
 
@@ -53,13 +52,13 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      */
     protected array $scalars = [
         // Standard types
-        'ID'           => [
+        'ID'        => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        'Int'          => [
+        'Int'       => [
             Equal::class,
             NotEqual::class,
             LessThan::class,
@@ -71,11 +70,11 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             Between::class,
             NotBetween::class,
         ],
-        'Float'        => 'Int',
-        'Boolean'      => [
+        'Float'     => 'Int',
+        'Boolean'   => [
             Equal::class,
         ],
-        'String'       => [
+        'String'    => [
             Equal::class,
             NotEqual::class,
             Like::class,
@@ -85,28 +84,20 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         ],
 
         // Special types
-        self::Enum     => [
+        self::Enum  => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        self::Null     => [
+        self::Null  => [
             IsNull::class,
             IsNotNull::class,
         ],
-        self::Logic    => [
+        self::Logic => [
             AllOf::class,
             AnyOf::class,
             Not::class,
-        ],
-        self::Relation => [
-            Equal::class,
-            NotEqual::class,
-            LessThan::class,
-            LessThanOrEqual::class,
-            GreaterThan::class,
-            GreaterThanOrEqual::class,
         ],
     ];
 
