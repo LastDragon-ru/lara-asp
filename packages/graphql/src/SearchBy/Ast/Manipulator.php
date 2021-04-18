@@ -53,7 +53,7 @@ class Manipulator extends AstManipulator {
         DirectiveLocator $directives,
         DocumentAST $document,
         protected Container $container,
-        protected Types $types,
+        protected Scalars $scalars,
     ) {
         parent::__construct($directives, $document);
 
@@ -388,7 +388,7 @@ class Manipulator extends AstManipulator {
      * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
      */
     protected function getEnumOperators(string $enum, bool $nullable): array {
-        $operators = $this->types->getEnumOperators($enum, $nullable);
+        $operators = $this->scalars->getEnumOperators($enum, $nullable);
 
         if (empty($operators)) {
             throw new SearchByException(sprintf(
@@ -404,7 +404,7 @@ class Manipulator extends AstManipulator {
      * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
      */
     protected function getScalarOperators(string $scalar, bool $nullable): array {
-        $operators = $this->types->getScalarOperators($scalar, $nullable);
+        $operators = $this->scalars->getScalarOperators($scalar, $nullable);
 
         if (empty($operators)) {
             throw new SearchByException(sprintf(

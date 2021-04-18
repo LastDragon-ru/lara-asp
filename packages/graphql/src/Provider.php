@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\EnumHelper;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Types;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Scalars;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
@@ -53,8 +53,8 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerSearchByDirective(): void {
-        $this->app->bind(Types::class, function (Application $app): Types {
-            return new Types(
+        $this->app->bind(Scalars::class, function (Application $app): Scalars {
+            return new Scalars(
                 $app->make(Repository::class)->get("{$this->getName()}.search_by.scalars"),
             );
         });

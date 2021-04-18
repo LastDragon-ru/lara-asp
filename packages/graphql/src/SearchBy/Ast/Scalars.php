@@ -27,7 +27,7 @@ use function array_unique;
 use function array_values;
 use function is_array;
 
-class Types {
+class Scalars {
     /**
      * Determines default operators available for each scalar type.
      *

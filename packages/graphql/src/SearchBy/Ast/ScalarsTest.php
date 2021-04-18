@@ -11,42 +11,42 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Types
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Scalars
  */
-class TypesTest extends TestCase {
+class ScalarsTest extends TestCase {
     /**
      * @covers ::isScalar
      */
     public function testIsScalar(): void {
-        $this->assertTrue((new Types())->isScalar(Directive::ScalarInt));
-        $this->assertFalse((new Types())->isScalar('unknown'));
+        $this->assertTrue((new Scalars())->isScalar(Directive::ScalarInt));
+        $this->assertFalse((new Scalars())->isScalar('unknown'));
     }
 
     /**
      * @covers ::getScalarOperators
      */
     public function testGetScalarOperators(): void {
-        $scalar = __FUNCTION__;
-        $alias  = 'alias';
-        $types  = new Types([
+        $scalar  = __FUNCTION__;
+        $alias   = 'alias';
+        $scalars = new Scalars([
             $scalar => [Equal::class, Equal::class],
             $alias  => $scalar,
         ]);
 
-        $this->assertEquals([], $types->getScalarOperators('unknown', false));
-        $this->assertEquals([IsNull::class, IsNotNull::class], $types->getScalarOperators('unknown', true));
-        $this->assertEquals([Equal::class], $types->getScalarOperators($scalar, false));
+        $this->assertEquals([], $scalars->getScalarOperators('unknown', false));
+        $this->assertEquals([IsNull::class, IsNotNull::class], $scalars->getScalarOperators('unknown', true));
+        $this->assertEquals([Equal::class], $scalars->getScalarOperators($scalar, false));
         $this->assertEquals(
             [Equal::class, IsNull::class, IsNotNull::class],
-            $types->getScalarOperators($scalar, true),
+            $scalars->getScalarOperators($scalar, true),
         );
         $this->assertEquals(
-            $types->getScalarOperators($scalar, false),
-            $types->getScalarOperators($alias, false),
+            $scalars->getScalarOperators($scalar, false),
+            $scalars->getScalarOperators($alias, false),
         );
         $this->assertEquals(
-            $types->getScalarOperators($scalar, true),
-            $types->getScalarOperators($alias, true),
+            $scalars->getScalarOperators($scalar, true),
+            $scalars->getScalarOperators($alias, true),
         );
     }
 
@@ -54,31 +54,31 @@ class TypesTest extends TestCase {
      * @covers ::getEnumOperators
      */
     public function testGetEnumOperators(): void {
-        $enum  = __FUNCTION__;
-        $alias = 'alias';
-        $types = new Types([
+        $enum    = __FUNCTION__;
+        $alias   = 'alias';
+        $scalars = new Scalars([
             $enum                 => [Equal::class, Equal::class],
             $alias                => $enum,
             Directive::ScalarEnum => [NotEqual::class, NotEqual::class],
         ]);
 
-        //$this->assertEquals([NotEqual::class], $types->getEnumOperators('unknown', false));
+        $this->assertEquals([NotEqual::class], $scalars->getEnumOperators('unknown', false));
         $this->assertEquals(
             [NotEqual::class, IsNull::class, IsNotNull::class],
-            $types->getEnumOperators('unknown', true),
+            $scalars->getEnumOperators('unknown', true),
         );
-        $this->assertEquals([Equal::class], $types->getEnumOperators($enum, false));
+        $this->assertEquals([Equal::class], $scalars->getEnumOperators($enum, false));
         $this->assertEquals(
             [Equal::class, IsNull::class, IsNotNull::class],
-            $types->getEnumOperators($enum, true),
+            $scalars->getEnumOperators($enum, true),
         );
         $this->assertEquals(
-            $types->getEnumOperators($enum, false),
-            $types->getEnumOperators($alias, false),
+            $scalars->getEnumOperators($enum, false),
+            $scalars->getEnumOperators($alias, false),
         );
         $this->assertEquals(
-            $types->getEnumOperators($enum, true),
-            $types->getEnumOperators($alias, true),
+            $scalars->getEnumOperators($enum, true),
+            $scalars->getEnumOperators($alias, true),
         );
     }
 }

@@ -7,14 +7,14 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQL\AstManipulator as BaseAstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 
 use function is_null;
 use function sprintf;
 use function tap;
 
-class AstManipulator extends BaseAstManipulator {
+class Manipulator extends AstManipulator {
     // <editor-fold desc="API">
     // =========================================================================
     public function update(InputValueDefinitionNode $node): ListTypeNode {
