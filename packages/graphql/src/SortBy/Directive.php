@@ -42,10 +42,9 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $argDefinition->type = (new AstManipulator(
-            $this->directives,
-            $documentAST,
-        ))->getType($argDefinition);
+        $this->container
+            ->make(AstManipulator::class, ['document' => $documentAST])
+            ->update($argDefinition);
     }
 
     /**

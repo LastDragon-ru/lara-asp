@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
-use Exception;
+use LastDragon_ru\LaraASP\GraphQL\PackageException;
 
-class SortByException extends Exception {
+class SortByException extends PackageException {
     // empty
 }

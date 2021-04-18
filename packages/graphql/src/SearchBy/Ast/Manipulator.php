@@ -57,15 +57,13 @@ class Manipulator extends AstManipulator {
     ) {
         parent::__construct($directives, $document);
 
-        $this->reset();
+        $this->cache     = new Cache();
+        $this->operators = [];
     }
 
     // <editor-fold desc="Update">
     // =========================================================================
     public function update(DirectiveNode $directive, InputValueDefinitionNode $node): void {
-        // Reset
-        $this->reset();
-
         // Transform
         if (!isset($node->type->{self::PropertyOperators})) {
             $type = null;
@@ -101,11 +99,6 @@ class Manipulator extends AstManipulator {
         foreach ($arguments as $name => $value) {
             $directive->arguments[] = Parser::constArgument($name.': '.json_encode($this->operators));
         }
-    }
-
-    protected function reset(): void {
-        $this->cache     = new Cache();
-        $this->operators = [];
     }
     // </editor-fold>
 

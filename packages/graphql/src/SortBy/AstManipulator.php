@@ -17,7 +17,8 @@ use function tap;
 class AstManipulator extends BaseAstManipulator {
     // <editor-fold desc="API">
     // =========================================================================
-    public function getType(InputValueDefinitionNode $node): ListTypeNode {
+    public function update(InputValueDefinitionNode $node): ListTypeNode {
+        // Convert
         $type = null;
 
         if (!($node->type instanceof ListTypeNode)) {
@@ -38,6 +39,10 @@ class AstManipulator extends BaseAstManipulator {
             ));
         }
 
+        // Update
+        $node->type = $type;
+
+        // Return
         return $type;
     }
     // </editor-fold>

@@ -11,10 +11,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Types;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
-use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
@@ -36,8 +34,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public function __construct(
         protected Container $container,
         protected PackageTranslator $translator,
-        protected DirectiveLocator $directives,
-        protected Types $types,
     ) {
         // empty
     }
@@ -57,12 +53,9 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        (new Manipulator(
-            $this->directives,
-            $documentAST,
-            $this->container,
-            $this->types,
-        ))->update($this->directiveNode, $argDefinition);
+        $this->container
+            ->make(Manipulator::class, ['document' => $documentAST])
+            ->update($this->directiveNode, $argDefinition);
     }
 
     /**
