@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
@@ -27,6 +28,7 @@ class SortBuilder {
     protected array $relations = [
         BelongsTo::class,
         HasOne::class,
+        MorphOne::class,
     ];
 
     public function __construct(
@@ -155,7 +157,7 @@ class SortBuilder {
                         ? "{$parentAlias}.{$relation->getForeignKeyName()}"
                         : $relation->getQualifiedForeignKeyName(),
                 );
-            } elseif ($relation instanceof HasOne) {
+            } elseif ($relation instanceof HasOne || $relation instanceof MorphOne) {
                 $builder = $builder->leftJoinSub(
                     $relation->getQuery(),
                     $alias,

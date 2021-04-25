@@ -351,6 +351,7 @@ The main feature - the ability to sort results by relation properties, at the mo
 
 - `HasOne` (https://laravel.com/docs/8.x/eloquent-relationships#one-to-one)
 - `BelongsTo` (https://laravel.com/docs/8.x/eloquent-relationships#one-to-many-inverse)
+- `MorphOne` (https://laravel.com/docs/8.x/eloquent-relationships#one-to-one-polymorphic-relations)
 
 
 How to use:

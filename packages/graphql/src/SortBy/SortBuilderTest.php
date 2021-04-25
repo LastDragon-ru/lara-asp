@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -150,6 +151,7 @@ class SortBuilderTest extends TestCase {
                     implode('`, `', [
                         BelongsTo::class,
                         HasOne::class,
+                        MorphOne::class,
                     ]),
                 )),
                 static function (): EloquentBuilder {
@@ -282,6 +284,63 @@ class SortBuilderTest extends TestCase {
                     ],
                 ],
             ],
+            'eloquent: '.MorphOne::class            => [
+                [
+                    'sql'      => ''.
+                        'select'.
+                        ' "table_a".*,'.
+                        ' "table_alias_0"."name" as "table_alias_0_name",'.
+                        ' "table_alias_0"."created_at" as "table_alias_0_created_at",'.
+                        ' "table_alias_1"."name" as "table_alias_1_name",'.
+                        ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
+                        'from "table_a" '.
+                        'left join (select * from "table_b" where'.
+                        ' "table_b"."morphable_a_id" = ? and "table_b"."morphable_a_id" is not null and'.
+                        ' "table_b"."morphable_a_type" = ? and "c" = ?'.
+                        ') as "table_alias_0" on "table_alias_0"."morphable_a_id" = "table_a"."id" '.
+                        'left join (select * from "table_c" where'.
+                        ' "table_c"."morphable_b_id" = ? and "table_c"."morphable_b_id" is not null and'.
+                        ' "table_c"."morphable_b_type" = ?'.
+                        ') as "table_alias_1" on "table_alias_1"."morphable_b_id" = "table_alias_0"."id" '.
+                        'order by'.
+                        ' "table_alias_0_name" asc,'.
+                        ' "table_alias_0_created_at" desc,'.
+                        ' "table_alias_1_name" desc,'.
+                        ' "table_alias_1_created_at" desc,'.
+                        ' "table_a"."name" asc',
+                    'bindings' => [
+                        12,
+                        SortBuilderTest__ModelA::class,
+                        'c',
+                        56,
+                        SortBuilderTest__ModelB::class,
+                    ],
+                ],
+                static function (): EloquentBuilder {
+                    return SortBuilderTest__ModelA::query();
+                },
+                [
+                    [
+                        'morphOneB' => ['name' => 'asc'],
+                    ],
+                    [
+                        'morphOneB' => ['created_at' => 'desc'],
+                    ],
+                    [
+                        'morphOneB' => [
+                            'morphOneC' => ['name' => 'desc'],
+                        ],
+                    ],
+                    [
+                        'morphOneB' => [
+                            'morphOneC' => ['created_at' => 'desc'],
+                        ],
+                    ],
+                    [
+                        'name' => 'asc',
+                    ],
+                ],
+            ],
         ];
     }
     // </editor-fold>
@@ -322,6 +381,12 @@ class SortBuilderTest__ModelA extends Model {
             ->where('b', '=', 'b');
     }
 
+    public function morphOneB(): MorphOne {
+        return $this
+            ->morphOne(SortBuilderTest__ModelB::class, 'morphable_a')
+            ->where('c', '=', 'c');
+    }
+
     public function unsupported(): HasMany {
         return $this->hasMany(SortBuilderTest__ModelB::class);
     }
@@ -353,6 +418,10 @@ class SortBuilderTest__ModelB extends Model {
 
     public function hasOneC(): HasOne {
         return $this->hasOne(SortBuilderTest__ModelC::class, 'model_b_id');
+    }
+
+    public function morphOneC(): MorphOne {
+        return $this->morphOne(SortBuilderTest__ModelC::class, 'morphable_b');
     }
 }
 
