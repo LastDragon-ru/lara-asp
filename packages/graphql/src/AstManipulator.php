@@ -10,6 +10,8 @@ use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 
+use function sprintf;
+
 abstract class AstManipulator {
     /**
      * Maps internal (operators) names to fully qualified names.
@@ -65,9 +67,14 @@ abstract class AstManipulator {
      * @return T
      */
     protected function addTypeDefinition(string $name, TypeDefinitionNode $definition): TypeDefinitionNode {
-        if (!$this->isTypeDefinitionExists($name)) {
-            $this->document->setTypeDefinition($definition);
+        if ($this->isTypeDefinitionExists($name)) {
+            throw new PackageException(sprintf(
+                'Type Definition `%s` already defined.',
+                $name,
+            ));
         }
+
+        $this->document->setTypeDefinition($definition);
 
         return $this->getTypeDefinitionNode($name);
     }
