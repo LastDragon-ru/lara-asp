@@ -144,11 +144,11 @@ class SortBuilder {
         if (!$stack->hasTableAlias()) {
             $alias = $relation->getRelationCountHash();
             $stack = $stack->setTableAlias($alias);
-            $table = $relation->newModelInstance()->getTable();
 
             if ($relation instanceof BelongsTo) {
-                $builder = $builder->leftJoin(
-                    "{$table} as {$alias}",
+                $builder = $builder->leftJoinSub(
+                    $relation->getQuery(),
+                    $alias,
                     "{$alias}.{$relation->getOwnerKeyName()}",
                     '=',
                     $parentAlias
@@ -156,8 +156,9 @@ class SortBuilder {
                         : $relation->getQualifiedForeignKeyName(),
                 );
             } elseif ($relation instanceof HasOne) {
-                $builder = $builder->leftJoin(
-                    "{$table} as {$alias}",
+                $builder = $builder->leftJoinSub(
+                    $relation->getQuery(),
+                    $alias,
                     "{$alias}.{$relation->getForeignKeyName()}",
                     '=',
                     $parentAlias

@@ -188,17 +188,21 @@ class SortBuilderTest extends TestCase {
                         ' "table_alias_1"."name" as "table_alias_1_name",'.
                         ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
                         'from "table_a" '.
-                        'left join "table_b" as "table_alias_0"'.
-                        ' on "table_alias_0"."id" = "table_a"."belongs_to_b_id" '.
-                        'left join "table_c" as "table_alias_1"'.
-                        ' on "table_alias_1"."id" = "table_alias_0"."belongs_to_c_id" '.
+                        'left join (select * from "table_b" where "table_b"."id" = ? and "a" = ?)'.
+                        ' as "table_alias_0" on "table_alias_0"."id" = "table_a"."belongs_to_b_id" '.
+                        'left join (select * from "table_c" where "table_c"."id" = ?)'.
+                        ' as "table_alias_1" on "table_alias_1"."id" = "table_alias_0"."belongs_to_c_id" '.
                         'order by'.
                         ' "table_alias_0_name" asc,'.
                         ' "table_alias_0_created_at" desc,'.
                         ' "table_alias_1_name" desc,'.
                         ' "table_alias_1_created_at" desc,'.
                         ' "table_a"."name" asc',
-                    'bindings' => [],
+                    'bindings' => [
+                        34,
+                        'a',
+                        78,
+                    ],
                 ],
                 static function (): EloquentBuilder {
                     return SortBuilderTest__ModelA::query();
@@ -235,17 +239,23 @@ class SortBuilderTest extends TestCase {
                         ' "table_alias_1"."name" as "table_alias_1_name",'.
                         ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
                         'from "table_a" '.
-                        'left join "table_b" as "table_alias_0"'.
-                        ' on "table_alias_0"."model_a_id" = "table_a"."id" '.
-                        'left join "table_c" as "table_alias_1"'.
-                        ' on "table_alias_1"."model_b_id" = "table_alias_0"."id" '.
+                        'left join (select * from "table_b" where'.
+                        ' "table_b"."model_a_id" = ? and "table_b"."model_a_id" is not null and "b" = ?'.
+                        ') as "table_alias_0" on "table_alias_0"."model_a_id" = "table_a"."id" '.
+                        'left join (select * from "table_c" where'.
+                        ' "table_c"."model_b_id" = ? and "table_c"."model_b_id" is not null'.
+                        ') as "table_alias_1" on "table_alias_1"."model_b_id" = "table_alias_0"."id" '.
                         'order by'.
                         ' "table_alias_0_name" asc,'.
                         ' "table_alias_0_created_at" desc,'.
                         ' "table_alias_1_name" desc,'.
                         ' "table_alias_1_created_at" desc,'.
                         ' "table_a"."name" asc',
-                    'bindings' => [],
+                    'bindings' => [
+                        12,
+                        'b',
+                        56,
+                    ],
                 ],
                 static function (): EloquentBuilder {
                     return SortBuilderTest__ModelA::query();
@@ -292,12 +302,24 @@ class SortBuilderTest__ModelA extends Model {
      */
     public $table = 'table_a';
 
+    public function __construct() {
+        self::unguard(true);
+        parent::__construct([
+            $this->getKeyName() => 12,
+            'belongs_to_b_id'   => 34,
+        ]);
+    }
+
     public function belongsToB(): BelongsTo {
-        return $this->belongsTo(SortBuilderTest__ModelB::class);
+        return $this
+            ->belongsTo(SortBuilderTest__ModelB::class)
+            ->where('a', '=', 'a');
     }
 
     public function hasOneB(): HasOne {
-        return $this->hasOne(SortBuilderTest__ModelB::class, 'model_a_id');
+        return $this
+            ->hasOne(SortBuilderTest__ModelB::class, 'model_a_id')
+            ->where('b', '=', 'b');
     }
 
     public function unsupported(): HasMany {
@@ -316,6 +338,14 @@ class SortBuilderTest__ModelB extends Model {
      * @var string
      */
     public $table = 'table_b';
+
+    public function __construct() {
+        self::unguard(true);
+        parent::__construct([
+            $this->getKeyName() => 56,
+            'belongs_to_c_id'   => 78,
+        ]);
+    }
 
     public function belongsToC(): BelongsTo {
         return $this->belongsTo(SortBuilderTest__ModelC::class);
@@ -337,4 +367,11 @@ class SortBuilderTest__ModelC extends Model {
      * @var string
      */
     public $table = 'table_c';
+
+    public function __construct() {
+        self::unguard(true);
+        parent::__construct([
+            $this->getKeyName() => 90,
+        ]);
+    }
 }
