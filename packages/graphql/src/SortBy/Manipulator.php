@@ -58,7 +58,7 @@ class Manipulator extends AstManipulator {
         }
 
         // Add type
-        $type = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
+        $type = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Sort clause for input {$node->name->value} (only one property allowed at a time).
@@ -123,7 +123,7 @@ class Manipulator extends AstManipulator {
         $name = Directive::TypeDirection;
 
         if (!$this->isTypeDefinitionExists($name)) {
-            $this->addTypeDefinition($name, Parser::enumTypeDefinition(
+            $this->addTypeDefinition(Parser::enumTypeDefinition(
                 /** @lang GraphQL */
                 <<<GRAPHQL
                 """

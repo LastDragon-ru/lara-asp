@@ -49,7 +49,9 @@ abstract class AstManipulator {
      *
      * @return T
      */
-    protected function addTypeDefinition(string $name, TypeDefinitionNode $definition): TypeDefinitionNode {
+    protected function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
+        $name = $definition->name->value;
+
         if ($this->isTypeDefinitionExists($name)) {
             throw new PackageException(sprintf(
                 'Type Definition `%s` already defined.',
@@ -59,7 +61,7 @@ abstract class AstManipulator {
 
         $this->document->setTypeDefinition($definition);
 
-        return $this->getTypeDefinitionNode($name);
+        return $definition;
     }
 
     public function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {

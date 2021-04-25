@@ -124,7 +124,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Save
         $name = $definition->name->value;
 
-        $this->addTypeDefinition($name, $definition);
+        $this->addTypeDefinition($definition);
         $this->metadata->addType($internal, $name);
 
         // Return
@@ -145,7 +145,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $content   = implode("\n", array_map(function (Operator $operator) use ($scalar): string {
             return $this->getOperatorType($operator, $scalar, false);
         }, $operators));
-        $type      = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
+        $type      = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Available conditions for input {$node->name->value} (only one property allowed at a time).
@@ -231,7 +231,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             return $this->getOperatorType($operator, $type, $nullable);
         }, $operators));
 
-        $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
+        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Available operators for enum {$enum} (only one operator allowed at a time).
@@ -264,7 +264,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             return $this->getOperatorType($operator, $type, $nullable);
         }, $operators));
 
-        $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
+        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Available operators for scalar {$scalar}{$mark} (only one operator allowed at a time).
@@ -312,7 +312,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             ));
         }
 
-        $this->addTypeDefinition($name, $definition);
+        $this->addTypeDefinition($definition);
 
         // Return
         return $name;
