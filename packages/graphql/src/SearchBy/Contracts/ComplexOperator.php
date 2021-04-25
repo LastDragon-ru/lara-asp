@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 /**
  * Complex operator.
  *
- * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator
+ * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider
  */
 interface ComplexOperator {
     public function getName(): string;

@@ -29,7 +29,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public const ScalarLogic   = self::Name.'Logic';
     public const ScalarNumber  = self::Name.'Number';
     public const ArgOperators  = 'operators';
-    public const TypeFlag      = 'Flag';
 
     public function __construct(
         protected Container $container,

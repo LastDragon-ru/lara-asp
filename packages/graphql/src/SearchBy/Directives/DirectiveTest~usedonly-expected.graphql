@@ -23,11 +23,6 @@ input SearchByConditionProperties {
   value: SearchByScalarString
 }
 
-"""Flag."""
-enum SearchByFlag {
-  yes
-}
-
 """
 Available operators for scalar String! (only one operator allowed at a time).
 """

@@ -5,8 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 
 /**
  * @internal Must not be used directly.
@@ -20,11 +21,8 @@ class IsNotNull extends BaseOperator implements ComparisonOperator {
         return 'Is NOT NULL?';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, $map[Directive::TypeFlag], true);
+    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
+        return parent::getDefinition($provider, $provider->getType(Flag::Name), true);
     }
 
     public function apply(

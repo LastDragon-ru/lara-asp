@@ -31,7 +31,7 @@ See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNested {
-  relation: SearchByFlag! = yes
+  relation: SearchByTypeFlag! = yes
   where: SearchByConditionNested
   count: SearchByScalarInt
 
@@ -155,15 +155,10 @@ input SearchByEnumValueOrNull {
   notIn: [Value!]
 
   """Is NULL?"""
-  isNull: SearchByFlag
+  isNull: SearchByTypeFlag
 
   """Is NOT NULL?"""
-  isNotNull: SearchByFlag
-}
-
-"""Flag."""
-enum SearchByFlag {
-  yes
+  isNotNull: SearchByTypeFlag
 }
 
 """
@@ -182,10 +177,10 @@ input SearchByScalarBooleanOrNull {
   equal: Boolean
 
   """Is NULL?"""
-  isNull: SearchByFlag
+  isNull: SearchByTypeFlag
 
   """Is NOT NULL?"""
-  isNotNull: SearchByFlag
+  isNotNull: SearchByTypeFlag
 }
 
 """
@@ -217,20 +212,10 @@ input SearchByScalarFloat {
   notIn: [Float!]
 
   """Within a range."""
-  between: SearchByScalarFloatOperatorBetween
+  between: SearchByTypeRangeFloat
 
   """Outside a range."""
-  notBetween: SearchByScalarFloatOperatorNotBetween
-}
-
-input SearchByScalarFloatOperatorBetween {
-  min: Float!
-  max: Float!
-}
-
-input SearchByScalarFloatOperatorNotBetween {
-  min: Float!
-  max: Float!
+  notBetween: SearchByTypeRangeFloat
 }
 
 """
@@ -262,16 +247,16 @@ input SearchByScalarFloatOrNull {
   notIn: [Float!]
 
   """Within a range."""
-  between: SearchByScalarFloatOperatorBetween
+  between: SearchByTypeRangeFloat
 
   """Outside a range."""
-  notBetween: SearchByScalarFloatOperatorNotBetween
+  notBetween: SearchByTypeRangeFloat
 
   """Is NULL?"""
-  isNull: SearchByFlag
+  isNull: SearchByTypeFlag
 
   """Is NOT NULL?"""
-  isNotNull: SearchByFlag
+  isNotNull: SearchByTypeFlag
 }
 
 """
@@ -308,10 +293,10 @@ input SearchByScalarIDOrNull {
   notIn: [ID!]
 
   """Is NULL?"""
-  isNull: SearchByFlag
+  isNull: SearchByTypeFlag
 
   """Is NOT NULL?"""
-  isNotNull: SearchByFlag
+  isNotNull: SearchByTypeFlag
 }
 
 """
@@ -343,20 +328,10 @@ input SearchByScalarInt {
   notIn: [Int!]
 
   """Within a range."""
-  between: SearchByScalarIntOperatorBetween
+  between: SearchByTypeRangeInt
 
   """Outside a range."""
-  notBetween: SearchByScalarIntOperatorNotBetween
-}
-
-input SearchByScalarIntOperatorBetween {
-  min: Int!
-  max: Int!
-}
-
-input SearchByScalarIntOperatorNotBetween {
-  min: Int!
-  max: Int!
+  notBetween: SearchByTypeRangeInt
 }
 
 """
@@ -388,16 +363,16 @@ input SearchByScalarIntOrNull {
   notIn: [Int!]
 
   """Within a range."""
-  between: SearchByScalarIntOperatorBetween
+  between: SearchByTypeRangeInt
 
   """Outside a range."""
-  notBetween: SearchByScalarIntOperatorNotBetween
+  notBetween: SearchByTypeRangeInt
 
   """Is NULL?"""
-  isNull: SearchByFlag
+  isNull: SearchByTypeFlag
 
   """Is NOT NULL?"""
-  isNotNull: SearchByFlag
+  isNotNull: SearchByTypeFlag
 }
 
 """
@@ -446,10 +421,24 @@ input SearchByScalarStringOrNull {
   notIn: [String!]
 
   """Is NULL?"""
-  isNull: SearchByFlag
+  isNull: SearchByTypeFlag
 
   """Is NOT NULL?"""
-  isNotNull: SearchByFlag
+  isNotNull: SearchByTypeFlag
+}
+
+enum SearchByTypeFlag {
+  yes
+}
+
+input SearchByTypeRangeFloat {
+  min: Float!
+  max: Float!
+}
+
+input SearchByTypeRangeInt {
+  min: Int!
+  max: Int!
 }
 
 enum Value {

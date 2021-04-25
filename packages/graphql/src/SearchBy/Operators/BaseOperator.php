@@ -3,16 +3,14 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 
 abstract class BaseOperator implements Operator {
     public function __construct() {
         // empty
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDefinition(array $map, string $scalar, bool $nullable): string {
+    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
         return <<<DEF
         """
         {$this->getDescription()}

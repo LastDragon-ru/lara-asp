@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 
 use function is_array;
 use function reset;
@@ -53,7 +54,7 @@ class Relation implements ComplexOperator {
             * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
             """
             input {$prefix} {
-                {$this->getName()}: SearchByFlag! = yes
+                {$this->getName()}: {$ast->getType(Flag::Name)}! = yes
 
                 where: {$where}
 
