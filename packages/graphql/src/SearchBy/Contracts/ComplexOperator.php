@@ -22,7 +22,7 @@ interface ComplexOperator {
         Manipulator $ast,
         InputValueDefinitionNode $field,
         InputObjectTypeDefinitionNode $type,
-        string $prefix,
+        string $name,
         bool $nullable,
     ): TypeDefinitionNode;
 

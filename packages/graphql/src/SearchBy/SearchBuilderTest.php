@@ -219,7 +219,7 @@ class SearchBuilderTest extends TestCase {
                 Manipulator $ast,
                 InputValueDefinitionNode $field,
                 InputObjectTypeDefinitionNode $type,
-                string $prefix,
+                string $name,
                 bool $nullable,
             ): TypeDefinitionNode {
                 // TODO: Implement getDefinition() method.

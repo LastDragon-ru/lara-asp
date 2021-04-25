@@ -38,7 +38,7 @@ class Relation implements ComplexOperator {
         Manipulator $ast,
         InputValueDefinitionNode $field,
         InputObjectTypeDefinitionNode $type,
-        string $prefix,
+        string $name,
         bool $nullable,
     ): TypeDefinitionNode {
         $count = $ast->getScalarType($ast->getScalarTypeNode(Directive::ScalarInt), false);
@@ -53,7 +53,7 @@ class Relation implements ComplexOperator {
             * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
             * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
             """
-            input {$prefix} {
+            input {$name} {
                 {$this->getName()}: {$ast->getType(Flag::Name)}! = yes
 
                 where: {$where}
