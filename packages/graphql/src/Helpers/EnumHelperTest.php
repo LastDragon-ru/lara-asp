@@ -50,8 +50,8 @@ class EnumHelperTest__A extends Enum {
 
     /**
      * Summary summary summary summary summary summary. Summary summary summary
-     * summary summary summary. Summary summary summary summary summary summary.
-     * Summary summary summary summary summary summary.
+     * summary summary summary. Summary summary summary summary summary
+     * summary. Summary summary summary summary summary summary.
      *
      * Description description description description description. Description
      * description description description description Description description
@@ -68,8 +68,8 @@ class EnumHelperTest__A extends Enum {
 
 /**
  * Summary summary summary summary summary summary. Summary summary summary
- * summary summary summary. Summary summary summary summary summary summary.
- * Summary summary summary summary summary summary.
+ * summary summary summary. Summary summary summary summary summary
+ * summary. Summary summary summary summary summary summary.
  *
  * Description description description description description. Description
  * description description description description Description description

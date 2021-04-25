@@ -8,6 +8,8 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function trim;
+
 class EnumHelper extends Enum {
     /**
      * Converts {@link \LastDragon_ru\LaraASP\Core\Enum} into GraphQL enum that
@@ -36,8 +38,13 @@ class EnumHelper extends Enum {
     }
 
     protected static function description(ReflectionClass|ReflectionMethod $object): ?string {
-        return $object->getDocComment()
-            ? (string) DocBlockFactory::createInstance()->create($object)->getDescription()
-            : null;
+        $desc = null;
+
+        if ($object->getDocComment()) {
+            $doc  = DocBlockFactory::createInstance()->create($object);
+            $desc = trim("{$doc->getSummary()}\n\n{$doc->getDescription()}") ?: null;
+        }
+
+        return $desc;
     }
 }
