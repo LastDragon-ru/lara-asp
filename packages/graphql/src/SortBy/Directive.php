@@ -17,7 +17,7 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name          = 'SortBy';
-    public const TypeDirection = 'Direction';
+    public const TypeDirection = 'SortByDirection';
 
     public function __construct(
         protected Container $container,

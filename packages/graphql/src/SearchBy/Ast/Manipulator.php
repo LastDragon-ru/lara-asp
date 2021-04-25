@@ -321,7 +321,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Defaults">
     // =========================================================================
-    protected function addRootTypeDefinitions(): void {
+    protected function addDefaultTypeDefinitions(): void {
         $this->metadata->addDefinition(Flag::Name, Flag::class);
         $this->metadata->addDefinition(Range::Name, Range::class);
     }

@@ -13,33 +13,16 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use function sprintf;
 
 abstract class AstManipulator {
-    /**
-     * Maps internal (operators) names to fully qualified names.
-     *
-     * @var array<string,array<string>>
-     */
-    protected array $map = [];
-
     public function __construct(
         protected DirectiveLocator $directives,
         protected DocumentAST $document,
     ) {
-        $this->addRootTypeDefinitions();
+        $this->addDefaultTypeDefinitions();
     }
-
-    // <editor-fold desc="Functions">
-    // =========================================================================
-    /**
-     * @return array<string>
-     */
-    protected function getMap(object $owner): array {
-        return $this->map[$owner::class] ?? [];
-    }
-    // </editor-fold>
 
     // <editor-fold desc="Defaults">
     // =========================================================================
-    protected function addRootTypeDefinitions(): void {
+    protected function addDefaultTypeDefinitions(): void {
         // empty
     }
     // </editor-fold>
@@ -77,18 +60,6 @@ abstract class AstManipulator {
         $this->document->setTypeDefinition($definition);
 
         return $this->getTypeDefinitionNode($name);
-    }
-
-    /**
-     * @param array<\GraphQL\Language\AST\TypeDefinitionNode> $definitions
-     */
-    protected function addTypeDefinitions(object $owner, array $definitions): void {
-        foreach ($definitions as $name => $definition) {
-            $fullname                        = $definition->name->value;
-            $this->map[$owner::class][$name] = $fullname;
-
-            $this->addTypeDefinition($fullname, $definition);
-        }
     }
 
     public function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
