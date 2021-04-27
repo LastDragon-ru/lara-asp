@@ -14,10 +14,12 @@ use function is_a;
 use function sprintf;
 
 class ModelHelper {
+    protected bool  $builder;
     protected Model $model;
 
     public function __construct(Builder|Model $model) {
-        $this->model = $model instanceof Builder
+        $this->builder = $model instanceof Builder;
+        $this->model   = $model instanceof Builder
             ? $model->getModel()
             : $model;
     }
@@ -30,7 +32,13 @@ class ModelHelper {
             $type  = $class->getMethod($name)->getReturnType();
 
             if ($type instanceof ReflectionNamedType && is_a($type->getName(), Relation::class, true)) {
-                $relation = $this->model->newInstance()->{$name}();
+                if ($this->builder) {
+                    $relation = Relation::noConstraints(function () use ($name) {
+                        return $this->model->newModelInstance()->{$name}();
+                    });
+                } else {
+                    $relation = $this->model->{$name}();
+                }
             }
         } catch (ReflectionException) {
             $relation = null;
