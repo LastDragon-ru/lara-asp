@@ -190,9 +190,9 @@ class SortBuilderTest extends TestCase {
                         ' "table_alias_1"."name" as "table_alias_1_name",'.
                         ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
                         'from "table_a" '.
-                        'left join (select * from "table_b" where "table_b"."id" = ? and "a" = ?)'.
+                        'left join (select * from "table_b" where "a" = ?)'.
                         ' as "table_alias_0" on "table_alias_0"."id" = "table_a"."belongs_to_b_id" '.
-                        'left join (select * from "table_c" where "table_c"."id" = ?)'.
+                        'left join (select * from "table_c")'.
                         ' as "table_alias_1" on "table_alias_1"."id" = "table_alias_0"."belongs_to_c_id" '.
                         'order by'.
                         ' "table_alias_0_name" asc,'.
@@ -201,9 +201,7 @@ class SortBuilderTest extends TestCase {
                         ' "table_alias_1_created_at" desc,'.
                         ' "table_a"."name" asc',
                     'bindings' => [
-                        34,
                         'a',
-                        78,
                     ],
                 ],
                 static function (): EloquentBuilder {
@@ -242,10 +240,9 @@ class SortBuilderTest extends TestCase {
                         ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
                         'from "table_a" '.
                         'left join (select * from "table_b" where'.
-                        ' "table_b"."model_a_id" = ? and "table_b"."model_a_id" is not null and "b" = ?'.
+                        ' "b" = ?'.
                         ') as "table_alias_0" on "table_alias_0"."model_a_id" = "table_a"."id" '.
-                        'left join (select * from "table_c" where'.
-                        ' "table_c"."model_b_id" = ? and "table_c"."model_b_id" is not null'.
+                        'left join (select * from "table_c"'.
                         ') as "table_alias_1" on "table_alias_1"."model_b_id" = "table_alias_0"."id" '.
                         'order by'.
                         ' "table_alias_0_name" asc,'.
@@ -254,9 +251,7 @@ class SortBuilderTest extends TestCase {
                         ' "table_alias_1_created_at" desc,'.
                         ' "table_a"."name" asc',
                     'bindings' => [
-                        12,
                         'b',
-                        56,
                     ],
                 ],
                 static function (): EloquentBuilder {
@@ -295,13 +290,12 @@ class SortBuilderTest extends TestCase {
                         ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
                         'from "table_a" '.
                         'left join (select * from "table_b" where'.
-                        ' "table_b"."morphable_a_id" = ? and "table_b"."morphable_a_id" is not null and'.
-                        ' "table_b"."morphable_a_type" = ? and "c" = ?'.
-                        ') as "table_alias_0" on "table_alias_0"."morphable_a_id" = "table_a"."id" '.
-                        'left join (select * from "table_c" where'.
-                        ' "table_c"."morphable_b_id" = ? and "table_c"."morphable_b_id" is not null and'.
-                        ' "table_c"."morphable_b_type" = ?'.
-                        ') as "table_alias_1" on "table_alias_1"."morphable_b_id" = "table_alias_0"."id" '.
+                        ' "c" = ?'.
+                        ') as "table_alias_0" on "table_alias_0"."morphable_a_id" = "table_a"."id" and'.
+                        ' "table_alias_0"."morphable_a_type" = ? '.
+                        'left join (select * from "table_c"'.
+                        ') as "table_alias_1" on "table_alias_1"."morphable_b_id" = "table_alias_0"."id" and'.
+                        ' "table_alias_1"."morphable_b_type" = ? '.
                         'order by'.
                         ' "table_alias_0_name" asc,'.
                         ' "table_alias_0_created_at" desc,'.
@@ -309,10 +303,8 @@ class SortBuilderTest extends TestCase {
                         ' "table_alias_1_created_at" desc,'.
                         ' "table_a"."name" asc',
                     'bindings' => [
-                        12,
-                        SortBuilderTest__ModelA::class,
                         'c',
-                        56,
+                        SortBuilderTest__ModelA::class,
                         SortBuilderTest__ModelB::class,
                     ],
                 ],

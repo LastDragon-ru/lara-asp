@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LogicException;
@@ -157,7 +158,7 @@ class SortBuilder {
                         ? "{$parentAlias}.{$relation->getForeignKeyName()}"
                         : $relation->getQualifiedForeignKeyName(),
                 );
-            } elseif ($relation instanceof HasOne || $relation instanceof MorphOne) {
+            } elseif ($relation instanceof HasOne) {
                 $builder = $builder->leftJoinSub(
                     $relation->getQuery(),
                     $alias,
@@ -166,6 +167,25 @@ class SortBuilder {
                     $parentAlias
                         ? "{$parentAlias}.{$relation->getLocalKeyName()}"
                         : $relation->getQualifiedParentKeyName(),
+                );
+            } elseif ($relation instanceof MorphOne) {
+                $builder = $builder->leftJoinSub(
+                    $relation->getQuery(),
+                    $alias,
+                    static function (JoinClause $join) use ($relation, $alias, $parentAlias): void {
+                        $join->on(
+                            "{$alias}.{$relation->getForeignKeyName()}",
+                            '=',
+                            $parentAlias
+                                ? "{$parentAlias}.{$relation->getLocalKeyName()}"
+                                : $relation->getQualifiedParentKeyName(),
+                        );
+                        $join->where(
+                            "{$alias}.{$relation->getMorphType()}",
+                            '=',
+                            $relation->getMorphClass(),
+                        );
+                    },
                 );
             } else {
                 throw new LogicException('O_o => Please contact to developer.');
