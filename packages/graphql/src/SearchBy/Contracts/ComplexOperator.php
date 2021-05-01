@@ -24,7 +24,7 @@ interface ComplexOperator {
         InputObjectTypeDefinitionNode $type,
         string $name,
         bool $nullable,
-    ): TypeDefinitionNode;
+    ): InputObjectTypeDefinitionNode;
 
     /**
      * @param array<mixed> $conditions

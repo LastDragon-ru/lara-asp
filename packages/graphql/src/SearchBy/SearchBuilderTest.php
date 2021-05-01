@@ -221,7 +221,7 @@ class SearchBuilderTest extends TestCase {
                 InputObjectTypeDefinitionNode $type,
                 string $name,
                 bool $nullable,
-            ): TypeDefinitionNode {
+            ): InputObjectTypeDefinitionNode {
                 // TODO: Implement getDefinition() method.
             }
         };

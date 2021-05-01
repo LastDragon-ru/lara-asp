@@ -31,7 +31,6 @@ See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNested {
-  relation: SearchByTypeFlag! = yes
   where: SearchByConditionNested
   count: SearchByScalarInt
 
@@ -46,6 +45,9 @@ input SearchByComplexRelationNested {
   ```
   """
   not: Boolean! = false
+
+  """Complex type marker."""
+  relation: SearchByTypeFlag! = yes
 }
 
 """

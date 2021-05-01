@@ -213,7 +213,7 @@ class MetadataTest extends TestCase {
                 InputObjectTypeDefinitionNode $type,
                 string $name,
                 bool $nullable,
-            ): TypeDefinitionNode {
+            ): InputObjectTypeDefinitionNode {
                 throw new Exception();
             }
 

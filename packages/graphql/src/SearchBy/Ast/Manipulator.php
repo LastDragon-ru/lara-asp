@@ -321,8 +321,16 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Create
-        $usage      = $this->metadata->getUsage()->start($name);
-        $definition = $operator->getDefinition($this, $field, $type, $name, $nullable);
+        $usage                = $this->metadata->getUsage()->start($name);
+        $definition           = $operator->getDefinition($this, $field, $type, $name, $nullable);
+        $definition->fields[] = Parser::inputValueDefinition(
+            <<<DEF
+            """
+            Complex type marker.
+            """
+            {$operator->getName()}: {$this->getType(Flag::Name)}! = yes
+            DEF,
+        );
 
         if ($name !== $definition->name->value) {
             throw new SearchByException(sprintf(
