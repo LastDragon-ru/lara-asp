@@ -126,6 +126,7 @@ class Metadata {
 
     public function __construct(
         protected Container $container,
+        protected Usage $usage,
     ) {
         // empty
     }
@@ -225,6 +226,8 @@ class Metadata {
             $this->operators[$class] = $operator;
         }
 
+        $this->getUsage()->addValue($class);
+
         return $this->operators[$class];
     }
 
@@ -252,6 +255,8 @@ class Metadata {
             // Save
             $this->complex[$class] = $operator;
         }
+
+        $this->getUsage()->addValue($class);
 
         return $this->complex[$class];
     }
@@ -304,5 +309,22 @@ class Metadata {
 
     public function addType(string $type, string $fullyQualifiedName): void {
         $this->types[$type] = $fullyQualifiedName;
+    }
+
+    /**
+     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>
+     */
+    public function getUsedOperators(string $type): array {
+        return $this->usages[$type] ?? [];
+    }
+
+    /**
+     * @return \LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Usage<
+     *      \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|
+     *      \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator
+     *      >
+     */
+    public function getUsage(): Usage {
+        return $this->usage;
     }
 }

@@ -39,7 +39,7 @@ class MetadataTest extends TestCase {
      * @covers ::isScalar
      */
     public function testIsScalar(): void {
-        $metadata = new Metadata($this->app);
+        $metadata = new Metadata($this->app, new Usage());
 
         $this->assertTrue($metadata->isScalar(Directive::ScalarInt));
         $this->assertFalse($metadata->isScalar('unknown'));
@@ -55,7 +55,7 @@ class MetadataTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $metadata = new Metadata($this->app);
+        $metadata = new Metadata($this->app, new Usage());
 
         $metadata->addScalar($scalar, $operators);
 
@@ -68,7 +68,7 @@ class MetadataTest extends TestCase {
     public function testGetScalarOperators(): void {
         $scalar   = __FUNCTION__;
         $alias    = 'alias';
-        $metadata = new Metadata($this->app);
+        $metadata = new Metadata($this->app, new Usage());
 
         $metadata->addScalar($scalar, [Equal::class, Equal::class]);
         $metadata->addScalar($alias, $scalar);
@@ -100,7 +100,7 @@ class MetadataTest extends TestCase {
             'unknown',
         )));
 
-        (new Metadata($this->app))->getScalarOperators('unknown', false);
+        (new Metadata($this->app, new Usage()))->getScalarOperators('unknown', false);
     }
 
     /**
@@ -109,7 +109,7 @@ class MetadataTest extends TestCase {
     public function testGetEnumOperators(): void {
         $enum     = __FUNCTION__;
         $alias    = 'alias';
-        $metadata = new Metadata($this->app);
+        $metadata = new Metadata($this->app, new Usage());
 
         $metadata->addScalar($enum, [Equal::class, Equal::class]);
         $metadata->addScalar($alias, $enum);
@@ -161,36 +161,40 @@ class MetadataTest extends TestCase {
                 return [];
             }
         };
-        $metadata = Mockery::mock(Metadata::class, [$this->app]);
+        $metadata = Mockery::mock(Metadata::class, [$this->app, new Usage()]);
         $metadata->makePartial();
         $metadata
             ->shouldReceive('addDefinitions')
             ->once();
 
+        $u = $metadata->getUsage()->start('Test');
         $a = $metadata->getOperatorInstance($operator::class);
         $b = $metadata->getOperatorInstance($operator::class);
 
+        $metadata->getUsage()->end($u);
+
         $this->assertNotNull($a);
         $this->assertSame($a, $b);
+        $this->assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
 
     /**
      * @covers ::getOperatorInstance
      */
-    public function testGetOperatorInstanceNotOperator(): void {
+    public function testGetOperatorInstanceNotAnOperator(): void {
         $this->expectExceptionObject(new SearchByException(sprintf(
             'Operator `%s` must implement `%s`.',
             stdClass::class,
             Operator::class,
         )));
 
-        (new Metadata($this->app))->getOperatorInstance(stdClass::class);
+        (new Metadata($this->app, new Usage()))->getOperatorInstance(stdClass::class);
     }
 
     /**
      * @covers ::getComplexOperatorInstance
      */
-    public function testComplexOperatorInstance(): void {
+    public function testGetComplexOperatorInstance(): void {
         $operator = new class() implements ComplexOperator, TypeDefinitionProvider {
             /**
              * @inheritDoc
@@ -225,30 +229,34 @@ class MetadataTest extends TestCase {
                 return $builder;
             }
         };
-        $metadata = Mockery::mock(Metadata::class, [$this->app]);
+        $metadata = Mockery::mock(Metadata::class, [$this->app, new Usage()]);
         $metadata->makePartial();
         $metadata
             ->shouldReceive('addDefinitions')
             ->once();
 
+        $u = $metadata->getUsage()->start('Test');
         $a = $metadata->getComplexOperatorInstance($operator::class);
         $b = $metadata->getComplexOperatorInstance($operator::class);
 
+        $metadata->getUsage()->end($u);
+
         $this->assertNotNull($a);
         $this->assertSame($a, $b);
+        $this->assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
 
     /**
      * @covers ::getComplexOperatorInstance
      */
-    public function testGetComplexOperatorInstance(): void {
+    public function testGetComplexOperatorInstanceNotAnOperator(): void {
         $this->expectExceptionObject(new SearchByException(sprintf(
             'Operator `%s` must implement `%s`.',
             stdClass::class,
             ComplexOperator::class,
         )));
 
-        (new Metadata($this->app))->getComplexOperatorInstance(stdClass::class);
+        (new Metadata($this->app, new Usage()))->getComplexOperatorInstance(stdClass::class);
     }
 
     /**
@@ -278,7 +286,7 @@ class MetadataTest extends TestCase {
      * @covers ::addDefinition
      */
     public function testAddDefinition(): void {
-        $metadata   = new Metadata($this->app);
+        $metadata   = new Metadata($this->app, new Usage());
         $definition = Mockery::mock(TypeDefinition::class);
 
         $metadata->addDefinition('test', $definition::class);
@@ -299,14 +307,14 @@ class MetadataTest extends TestCase {
             TypeDefinition::class,
         )));
 
-        (new Metadata($this->app))->addDefinition('type', stdClass::class);
+        (new Metadata($this->app, new Usage()))->addDefinition('type', stdClass::class);
     }
 
     /**
      * @covers ::addDefinition
      */
     public function testAddDefinitionOverride(): void {
-        $metadata = new Metadata($this->app);
+        $metadata = new Metadata($this->app, new Usage());
         $a        = new class() implements TypeDefinition {
             public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
                 return null;
@@ -331,7 +339,7 @@ class MetadataTest extends TestCase {
      * @covers ::getDefinition
      */
     public function testGetDefinition(): void {
-        $metadata   = new Metadata($this->app);
+        $metadata   = new Metadata($this->app, new Usage());
         $definition = Mockery::mock(TypeDefinition::class);
 
         $metadata->addDefinition('test', $definition::class);
@@ -350,7 +358,7 @@ class MetadataTest extends TestCase {
             'unknown',
         )));
 
-        (new Metadata($this->app))->getDefinition('unknown');
+        (new Metadata($this->app, new Usage()))->getDefinition('unknown');
     }
 
     /**
@@ -358,7 +366,7 @@ class MetadataTest extends TestCase {
      * @covers ::getType
      */
     public function testGetType(): void {
-        $metadata = new Metadata($this->app);
+        $metadata = new Metadata($this->app, new Usage());
 
         $this->assertNull($metadata->getType('test'));
 
