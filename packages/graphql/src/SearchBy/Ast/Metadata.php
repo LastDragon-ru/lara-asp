@@ -113,7 +113,7 @@ class Metadata {
     /**
      * Types definitions.
      *
-     * @var array<string,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Definition>
+     * @var array<string,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition>
      */
     protected array $definitions = [];
 
@@ -267,7 +267,7 @@ class Metadata {
      */
     public function addDefinition(string $type, string $definition): void {
         // Defined?
-        if (isset($this->definitions[$type]) && $this->definitions[$type]->getDefinition() !== $definition) {
+        if (isset($this->definitions[$type]) && $this->definitions[$type]::class !== $definition) {
             throw new SearchByException(sprintf(
                 'Definition `%s` already defined.',
                 $type,
@@ -284,7 +284,7 @@ class Metadata {
         }
 
         // Add
-        $this->definitions[$type] = new Definition($this->container, $definition);
+        $this->definitions[$type] = $this->container->make($definition);
     }
 
     public function getDefinition(string $type): TypeDefinition {

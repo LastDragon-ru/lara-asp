@@ -338,9 +338,7 @@ class MetadataTest extends TestCase {
 
         $actual = $metadata->getDefinition('test');
 
-        $this->assertInstanceOf(Definition::class, $actual);
         $this->assertInstanceOf(TypeDefinition::class, $actual);
-        $this->assertEquals($definition::class, $actual->getDefinition());
     }
 
     /**
