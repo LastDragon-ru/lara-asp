@@ -24,7 +24,7 @@ class JsonResponse extends Response {
         JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $content = null,
     ) {
         if ($content) {
-            $content = Args::getJson($content) ?? Args::invalidJson();
+            $content = Args::getJson($content);
         }
 
         parent::__construct(

@@ -48,7 +48,7 @@ class JsonSchemaLoader implements ISchemaLoader {
         $schema = null;
 
         if ($file) {
-            $schema = new Schema(Args::getJson($file) ?? Args::invalidJson());
+            $schema = new Schema(Args::getJson($file));
         }
 
         // Return

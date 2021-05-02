@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use GuzzleHttp\Psr7\Response;
-use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentResponse;
 use PHPUnit\Framework\Constraint\IsEqual;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -17,9 +17,7 @@ class HeaderTest extends TestCase {
      * @covers ::evaluate
      */
     public function testEvaluate(): void {
-        $this->expectExceptionObject(new InvalidArgumentException(
-            'It is not a `Psr\Http\Message\ResponseInterface` instance.',
-        ));
+        $this->expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
         $this->assertFalse((new Header('Test'))->evaluate(new stdClass()));
     }

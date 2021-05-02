@@ -3,12 +3,17 @@
 namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use DOMDocument;
-use InvalidArgumentException;
-use JetBrains\PhpStorm\NoReturn;
 use JsonSerializable;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentJson;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentResponse;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentSplFileInfo;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentSplFileInfoIsNotAFile;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentSplFileInfoIsNotReadable;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentXml;
 use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
 use stdClass;
+use Throwable;
 
 use function file_get_contents;
 use function is_array;
@@ -16,10 +21,8 @@ use function is_scalar;
 use function is_string;
 use function json_decode;
 use function json_encode;
-use function json_last_error;
-use function sprintf;
 
-use const JSON_ERROR_NONE;
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
@@ -29,8 +32,10 @@ class Args {
         // empty
     }
 
-    public static function getFileContents(SplFileInfo $file): string {
-        return file_get_contents(static::getFile($file)->getPathname());
+    public static function content(SplFileInfo|string $file): string {
+        return $file instanceof SplFileInfo
+            ? file_get_contents(static::getFile($file)->getPathname())
+            : $file;
     }
 
     public static function getJson(
@@ -38,7 +43,7 @@ class Args {
         bool $associative = false,
     ): stdClass|array|string|int|float|bool|null {
         if ($json instanceof SplFileInfo) {
-            $json = static::getFileContents($json);
+            $json = static::content($json);
         }
 
         if (is_array($json) || $json instanceof JsonSerializable) {
@@ -46,33 +51,37 @@ class Args {
         }
 
         if (is_string($json)) {
-            $json = json_decode($json, $associative);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                static::invalidJson();
+            try {
+                $json = json_decode($json, $associative, flags: JSON_THROW_ON_ERROR);
+            } catch (Throwable $exception) {
+                throw new InvalidArgumentJson('$json', $json, $exception);
             }
         } elseif (is_scalar($json)) {
             // no action
         } else {
-            static::invalidJson();
+            throw new InvalidArgumentJson('$json', $json);
         }
 
         return $json;
     }
 
-    public static function getFile(mixed $file): ?SplFileInfo {
-        if ($file instanceof SplFileInfo) {
-            if (!$file->isReadable()) {
-                static::invalidFile();
-            }
-
-            return $file;
+    public static function getFile(mixed $file): SplFileInfo {
+        if (!($file instanceof SplFileInfo)) {
+            throw new InvalidArgumentSplFileInfo('$file', $file);
         }
 
-        return null;
+        if (!$file->isFile()) {
+            throw new InvalidArgumentSplFileInfoIsNotAFile('$file', $file);
+        }
+
+        if (!$file->isReadable()) {
+            throw new InvalidArgumentSplFileInfoIsNotReadable('$file', $file);
+        }
+
+        return $file;
     }
 
-    public static function getDomDocument(mixed $xml): ?DOMDocument {
+    public static function getDomDocument(mixed $xml): DOMDocument {
         $dom = null;
 
         if ($xml instanceof DOMDocument) {
@@ -81,47 +90,28 @@ class Args {
             $dom = new DOMDocument();
 
             if (!$dom->loadXML($xml)) {
-                static::invalidXml();
+                $dom = null;
             }
         } else {
             // empty
         }
 
+        if (!($dom instanceof DOMDocument)) {
+            throw new InvalidArgumentXml('$xml', $xml);
+        }
+
         return $dom;
     }
 
-    public static function getResponse(mixed $response): ?ResponseInterface {
+    public static function getResponse(mixed $response): ResponseInterface {
         $psr = null;
 
         if ($response instanceof ResponseInterface) {
             $psr = $response;
+        } else {
+            throw new InvalidArgumentResponse('$response', $response);
         }
 
         return $psr;
-    }
-
-    #[NoReturn]
-    public static function invalid(string $message): void {
-        throw new InvalidArgumentException($message);
-    }
-
-    #[NoReturn]
-    public static function invalidFile(): void {
-        static::invalid('It is not the file or the file is not readable.');
-    }
-
-    #[NoReturn]
-    public static function invalidJson(): void {
-        static::invalid('It is not a valid JSON.');
-    }
-
-    #[NoReturn]
-    public static function invalidXml(): void {
-        static::invalid('It is not a valid XML.');
-    }
-
-    #[NoReturn]
-    public static function invalidResponse(): void {
-        static::invalid(sprintf('It is not a `%s` instance.', ResponseInterface::class));
     }
 }

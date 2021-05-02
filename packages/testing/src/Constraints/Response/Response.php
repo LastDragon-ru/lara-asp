@@ -46,7 +46,7 @@ class Response extends Constraint {
      */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
-            Args::getResponse($other) ?? Args::invalidResponse(),
+            Args::getResponse($other),
             $description,
             $returnResult,
         );

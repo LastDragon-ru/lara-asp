@@ -30,7 +30,7 @@ class XmlMatchesSchema extends Constraint {
     protected array $errors = [];
 
     public function __construct(SplFileInfo $schema) {
-        $this->schema = Args::getFile($schema) ?? Args::invalidFile();
+        $this->schema = Args::getFile($schema);
     }
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
@@ -39,11 +39,13 @@ class XmlMatchesSchema extends Constraint {
      * @inheritdoc
      */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
-        return parent::evaluate(
-            Args::getFile($other) ?? Args::getDomDocument($other) ?? Args::invalidXml(),
-            $description,
-            $returnResult,
-        );
+        if ($other instanceof SplFileInfo) {
+            $other = Args::getFile($other);
+        } else {
+            $other = Args::getDomDocument($other);
+        }
+
+        return parent::evaluate($other, $description, $returnResult);
     }
 
     /**

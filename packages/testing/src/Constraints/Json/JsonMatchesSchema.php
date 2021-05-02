@@ -53,7 +53,7 @@ class JsonMatchesSchema extends Constraint {
     protected function matches($other): bool {
         $helper       = null;
         $loader       = $this->schema->getLoader();
-        $schema       = new Schema(Args::getJson($this->schema->getSchema()) ?? Args::invalidJson());
+        $schema       = new Schema(Args::getJson($this->schema->getSchema()));
         $this->result = (new Validator($helper, $loader))->schemaValidation($other, $schema);
         $matches      = $this->result->isValid();
 
