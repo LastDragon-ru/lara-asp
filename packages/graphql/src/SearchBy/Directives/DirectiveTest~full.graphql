@@ -25,6 +25,7 @@ input Properties {
 
 input Nested {
   value: String
+  nested: Nested
 }
 
 input Property {

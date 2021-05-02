@@ -1,5 +1,6 @@
 input Nested {
   value: String
+  nested: Nested
 }
 
 input Properties {
@@ -73,6 +74,9 @@ input SearchByConditionNested {
 
   """Property condition."""
   value: SearchByScalarStringOrNull
+
+  """Property condition."""
+  nested: SearchByComplexRelationNested
 }
 
 """

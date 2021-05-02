@@ -9,6 +9,7 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
@@ -28,6 +29,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 
 use function array_map;
 use function array_shift;
+use function count;
 use function implode;
 use function is_null;
 use function json_encode;
@@ -320,6 +322,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
             return $name;
         }
 
+        // Fake
+        $this->addFakeTypeDefinition($name);
+
         // Create
         $usage                = $this->metadata->getUsage()->start($name);
         $definition           = $operator->getDefinition($this, $field, $type, $name, $nullable);
@@ -341,6 +346,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             ));
         }
 
+        $this->removeFakeTypeDefinition($name);
         $this->addTypeDefinition($definition);
 
         // End usage
@@ -449,6 +455,44 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Return
         return $operator;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="AST Helpers">
+    // =========================================================================
+    protected function addFakeTypeDefinition(string $name): void {
+        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
+            <<<DEF
+            """
+            Fake type to prevent circular dependency infinite loop.
+            """
+            input {$name} {
+                fake: Boolean! = true
+            }
+            DEF,
+        ));
+    }
+
+    protected function removeFakeTypeDefinition(string $name): void {
+        // Possible?
+        $fake = $this->getTypeDefinitionNode($name);
+
+        if (!($fake instanceof InputObjectTypeDefinitionNode)) {
+            throw new SearchByException(sprintf(
+                'Fake type definition `%s` is not exists.',
+                $name,
+            ));
+        }
+
+        if (count($fake->fields) !== 1 || $fake->fields[0]->name->value !== 'fake') {
+            throw new SearchByException(sprintf(
+                'Type definition `%s` is not a fake.',
+                $name,
+            ));
+        }
+
+        // Remove
+        unset($this->document->types[$name]);
     }
     // </editor-fold>
 }

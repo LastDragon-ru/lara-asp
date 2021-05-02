@@ -220,6 +220,7 @@ class DirectiveTest extends TestCase {
                     AllOf::class,
                     AnyOf::class,
                     Not::class,
+                    Relation::class,
                 ],
                 '~full.graphql',
                 'b',
