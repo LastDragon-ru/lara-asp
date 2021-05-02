@@ -52,16 +52,8 @@ class DirectiveTest extends TestCase {
 
     /**
      * @covers ::manipulateArgDefinition
-     *
-     * @dataProvider dataProviderManipulateArgDefinitionDirectiveArguments
-     *
-     * @param array<string> $expected
      */
-    public function testManipulateArgDefinitionDirectiveArguments(
-        array $expected,
-        string $graphql,
-        string $field,
-    ): void {
+    public function testManipulateArgDefinitionDirectiveArguments(): void {
         // We need to check the arguments of the directive, but the method is
         // protected -> this is a little hack to unprotect it.
         $method = new ReflectionMethod(Directive::class, 'directiveArgValue');
@@ -70,22 +62,74 @@ class DirectiveTest extends TestCase {
 
         // Load schema and get Query
         $locator = $this->app->make(DirectiveLocator::class);
-        $schema  = $this->getGraphQLSchema($this->getTestData()->file($graphql));
+        $schema  = $this->getGraphQLSchema($this->getTestData()->file('~full.graphql'));
         $types   = $schema->getTypeMap();
         $query   = $types['Query'];
 
         $this->assertInstanceOf(ObjectType::class, $query);
 
-        // Test
-        /** @var \GraphQL\Type\Definition\ObjectType $query */
-        $node       = $query->getField($field)->getArg('where')->astNode;
-        $directives = $locator->associatedOfType($node, Directive::class);
+        // Collect
+        $operators = [];
 
-        $this->assertCount(1, $directives);
+        /** @var \GraphQL\Type\Definition\ObjectType $query */
+        foreach ($query->getFields() as $field) {
+            $node       = $field->getArg('where')->astNode;
+            $directives = $locator->associatedOfType($node, Directive::class);
+
+            $this->assertCount(1, $directives);
+
+            $operators[$field->name] = $method->invoke($directives->first(), Directive::ArgOperators);
+        }
 
         $this->assertEqualsCanonicalizing(
-            $expected,
-            $method->invoke($directives->first(), Directive::ArgOperators),
+            [
+                'a' => [
+                    Between::class,
+                    Equal::class,
+                    GreaterThan::class,
+                    GreaterThanOrEqual::class,
+                    In::class,
+                    IsNotNull::class,
+                    IsNull::class,
+                    LessThan::class,
+                    LessThanOrEqual::class,
+                    Like::class,
+                    NotBetween::class,
+                    NotEqual::class,
+                    NotIn::class,
+                    NotLike::class,
+                    AllOf::class,
+                    AnyOf::class,
+                    Not::class,
+                    Relation::class,
+                ],
+                'b' => [
+                    Equal::class,
+                    NotEqual::class,
+                    In::class,
+                    NotIn::class,
+                    IsNull::class,
+                    IsNotNull::class,
+                    Like::class,
+                    NotLike::class,
+                    AllOf::class,
+                    AnyOf::class,
+                    Not::class,
+                    Relation::class,
+                ],
+                'c' => [
+                    IsNull::class,
+                    IsNotNull::class,
+                    In::class,
+                    NotIn::class,
+                    Equal::class,
+                    NotEqual::class,
+                    AllOf::class,
+                    AnyOf::class,
+                    Not::class,
+                ],
+            ],
+            $operators,
         );
     }
 
@@ -176,71 +220,6 @@ class DirectiveTest extends TestCase {
                 ],
             ]),
         ))->getData();
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function dataProviderManipulateArgDefinitionDirectiveArguments(): array {
-        return [
-            'Properties' => [
-                [
-                    Between::class,
-                    Equal::class,
-                    GreaterThan::class,
-                    GreaterThanOrEqual::class,
-                    In::class,
-                    IsNotNull::class,
-                    IsNull::class,
-                    LessThan::class,
-                    LessThanOrEqual::class,
-                    Like::class,
-                    NotBetween::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    NotLike::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                    Relation::class,
-                ],
-                '~full.graphql',
-                'a',
-            ],
-            'Nested'     => [
-                [
-                    Equal::class,
-                    NotEqual::class,
-                    In::class,
-                    NotIn::class,
-                    IsNull::class,
-                    IsNotNull::class,
-                    Like::class,
-                    NotLike::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                    Relation::class,
-                ],
-                '~full.graphql',
-                'b',
-            ],
-            'Property'   => [
-                [
-                    IsNull::class,
-                    IsNotNull::class,
-                    In::class,
-                    NotIn::class,
-                    Equal::class,
-                    NotEqual::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-                '~full.graphql',
-                'c',
-            ],
-        ];
     }
     // </editor-fold>
 }

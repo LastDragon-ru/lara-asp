@@ -1,9 +1,9 @@
-input Nested {
-  value: String
-  nested: Nested
+enum EnumA {
+  one
+  two
 }
 
-input Properties {
+input InputA {
   idScalar: ID
   idScalarNotNull: ID!
   intScalar: Int
@@ -14,32 +14,37 @@ input Properties {
   stringScalarNotNull: String!
   booleanScalar: Boolean
   booleanScalarNotNull: Boolean!
-  nested: Nested
-  nestedNotNull: Nested!
-  enum: Value
-  enumNotNull: Value!
+  nested: NestedA
+  nestedNotNull: NestedA!
+  enum: EnumA
+  enumNotNull: EnumA!
 }
 
-input Property {
+input InputB {
   id: ID
 }
 
+input NestedA {
+  value: String
+  nested: NestedA
+}
+
 type Query {
-  a(where: SearchByConditionProperties): ID!
-  b(where: SearchByConditionNested): ID!
-  c(where: SearchByConditionProperty): ID!
+  a(where: SearchByConditionInputA): ID!
+  b(where: SearchByConditionNestedA): ID!
+  c(where: SearchByConditionInputB): ID!
 }
 
 """
-Conditions for the related objects (`has()`) for input Nested.
+Conditions for the related objects (`has()`) for input NestedA.
 
 See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
 """
-input SearchByComplexRelationNested {
+input SearchByComplexRelationNestedA {
   """Additional conditions."""
-  where: SearchByConditionNested
+  where: SearchByConditionNestedA
 
   """Count conditions."""
   count: SearchByScalarInt
@@ -60,37 +65,17 @@ input SearchByComplexRelationNested {
 }
 
 """
-Available conditions for input Nested (only one property allowed at a time).
+Available conditions for input InputA (only one property allowed at a time).
 """
-input SearchByConditionNested {
+input SearchByConditionInputA {
   """All of the conditions must be true."""
-  allOf: [SearchByConditionNested!]
+  allOf: [SearchByConditionInputA!]
 
   """Any of the conditions must be true."""
-  anyOf: [SearchByConditionNested!]
+  anyOf: [SearchByConditionInputA!]
 
   """Not."""
-  not: SearchByConditionNested
-
-  """Property condition."""
-  value: SearchByScalarStringOrNull
-
-  """Property condition."""
-  nested: SearchByComplexRelationNested
-}
-
-"""
-Available conditions for input Properties (only one property allowed at a time).
-"""
-input SearchByConditionProperties {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionProperties!]
-
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionProperties!]
-
-  """Not."""
-  not: SearchByConditionProperties
+  not: SearchByConditionInputA
 
   """Property condition."""
   idScalar: SearchByScalarIDOrNull
@@ -123,67 +108,87 @@ input SearchByConditionProperties {
   booleanScalarNotNull: SearchByScalarBoolean
 
   """Property condition."""
-  nested: SearchByComplexRelationNested
+  nested: SearchByComplexRelationNestedA
 
   """Property condition."""
-  nestedNotNull: SearchByComplexRelationNested
+  nestedNotNull: SearchByComplexRelationNestedA
 
   """Property condition."""
-  enum: SearchByEnumValueOrNull
+  enum: SearchByEnumEnumAOrNull
 
   """Property condition."""
-  enumNotNull: SearchByEnumValue
+  enumNotNull: SearchByEnumEnumA
 }
 
 """
-Available conditions for input Property (only one property allowed at a time).
+Available conditions for input InputB (only one property allowed at a time).
 """
-input SearchByConditionProperty {
+input SearchByConditionInputB {
   """All of the conditions must be true."""
-  allOf: [SearchByConditionProperty!]
+  allOf: [SearchByConditionInputB!]
 
   """Any of the conditions must be true."""
-  anyOf: [SearchByConditionProperty!]
+  anyOf: [SearchByConditionInputB!]
 
   """Not."""
-  not: SearchByConditionProperty
+  not: SearchByConditionInputB
 
   """Property condition."""
   id: SearchByScalarIDOrNull
 }
 
 """
-Available operators for enum Value (only one operator allowed at a time).
+Available conditions for input NestedA (only one property allowed at a time).
 """
-input SearchByEnumValue {
-  """Equal (`=`)."""
-  equal: Value
+input SearchByConditionNestedA {
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionNestedA!]
 
-  """Not Equal (`!=`)."""
-  notEqual: Value
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionNestedA!]
 
-  """Within a set of values."""
-  in: [Value!]
+  """Not."""
+  not: SearchByConditionNestedA
 
-  """Outside a set of values."""
-  notIn: [Value!]
+  """Property condition."""
+  value: SearchByScalarStringOrNull
+
+  """Property condition."""
+  nested: SearchByComplexRelationNestedA
 }
 
 """
-Available operators for enum Value (only one operator allowed at a time).
+Available operators for enum EnumA (only one operator allowed at a time).
 """
-input SearchByEnumValueOrNull {
+input SearchByEnumEnumA {
   """Equal (`=`)."""
-  equal: Value
+  equal: EnumA
 
   """Not Equal (`!=`)."""
-  notEqual: Value
+  notEqual: EnumA
 
   """Within a set of values."""
-  in: [Value!]
+  in: [EnumA!]
 
   """Outside a set of values."""
-  notIn: [Value!]
+  notIn: [EnumA!]
+}
+
+"""
+Available operators for enum EnumA (only one operator allowed at a time).
+"""
+input SearchByEnumEnumAOrNull {
+  """Equal (`=`)."""
+  equal: EnumA
+
+  """Not Equal (`!=`)."""
+  notEqual: EnumA
+
+  """Within a set of values."""
+  in: [EnumA!]
+
+  """Outside a set of values."""
+  notIn: [EnumA!]
 
   """Is NULL?"""
   isNull: SearchByTypeFlag
@@ -470,9 +475,4 @@ input SearchByTypeRangeFloat {
 input SearchByTypeRangeInt {
   min: Int!
   max: Int!
-}
-
-enum Value {
-  one
-  two
 }

@@ -1,12 +1,12 @@
 type Query {
-  a(where: Properties @searchBy): ID! @all
+  a(where: InputA @searchBy): ID! @all
 
-  b(where: Nested @searchBy): ID! @all
+  b(where: NestedA @searchBy): ID! @all
 
-  c(where: Property @searchBy): ID! @all
+  c(where: InputB @searchBy): ID! @all
 }
 
-input Properties {
+input InputA {
   idScalar: ID
   idScalarNotNull: ID!
   intScalar: Int
@@ -17,22 +17,22 @@ input Properties {
   stringScalarNotNull: String!
   booleanScalar: Boolean
   booleanScalarNotNull: Boolean!
-  nested: Nested
-  nestedNotNull: Nested!
-  enum: Value
-  enumNotNull: Value!
+  nested: NestedA
+  nestedNotNull: NestedA!
+  enum: EnumA
+  enumNotNull: EnumA!
 }
 
-input Nested {
+input NestedA {
   value: String
-  nested: Nested
+  nested: NestedA
 }
 
-input Property {
+input InputB {
   id: ID
 }
 
-enum Value {
+enum EnumA {
   one
   two
 }
