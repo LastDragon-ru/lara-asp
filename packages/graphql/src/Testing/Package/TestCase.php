@@ -2,15 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
-use GraphQL\Utils\SchemaPrinter;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
-use Nuwave\Lighthouse\GraphQL;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
-use Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider;
-use Nuwave\Lighthouse\Testing\TestSchemaProvider;
 
 use function array_column;
 use function array_unique;
@@ -22,6 +19,8 @@ use function str_replace;
 use const PREG_SET_ORDER;
 
 class TestCase extends PackageTestCase {
+    use GraphQLAssertions;
+
     /**
      * @inheritdoc
      */
@@ -30,18 +29,6 @@ class TestCase extends PackageTestCase {
             Provider::class,
             LighthouseServiceProvider::class,
         ];
-    }
-
-    protected function getSchema(string $schema): string {
-        $this->app->bind(SchemaSourceProvider::class, static function () use ($schema): SchemaSourceProvider {
-            return new TestSchemaProvider($schema);
-        });
-
-        $graphql = $this->app->make(GraphQL::class);
-        $schema  = $graphql->prepSchema();
-        $schema  = SchemaPrinter::doPrint($schema);
-
-        return $schema;
     }
 
     /**

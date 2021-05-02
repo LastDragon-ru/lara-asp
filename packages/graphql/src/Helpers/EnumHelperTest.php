@@ -22,17 +22,15 @@ class EnumHelperTest extends TestCase {
         $registry->register($a);
         $registry->register($b);
 
-        $expected = $this->getTestData()->content('.graphql');
-        $actual   = $this->getSchema(
-            /** @lang GraphQL */
+        $expected = $this->getTestData()->file('.graphql');
+        $actual   = /** @lang GraphQL */
             <<<'GRAPHQL'
             type Query {
               test(a: EnumHelperTest__A, b: B): ID! @all
             }
-            GRAPHQL,
-        );
+            GRAPHQL;
 
-        $this->assertEquals($expected, $actual);
+        $this->assertGraphQLSchemaEquals($expected, $actual);
     }
 }
 

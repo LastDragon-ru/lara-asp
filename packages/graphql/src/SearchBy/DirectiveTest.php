@@ -23,10 +23,10 @@ class DirectiveTest extends TestCase {
      * @dataProvider dataProviderManipulateArgDefinition
      */
     public function testManipulateArgDefinition(string $expected, string $graphql): void {
-        $expected = $this->getTestData()->content($expected);
-        $actual   = $this->getSchema($this->getTestData()->content($graphql));
-
-        $this->assertEquals($expected, $actual);
+        $this->assertGraphQLSchemaEquals(
+            $this->getTestData()->file($expected),
+            $this->getTestData()->file($graphql),
+        );
     }
 
     /**
