@@ -326,7 +326,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $definition->fields[] = Parser::inputValueDefinition(
             <<<DEF
             """
-            Complex type marker.
+            Complex operator marker.
             """
             {$operator->getName()}: {$this->getType(Flag::Name)}! = yes
             DEF,

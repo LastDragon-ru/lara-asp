@@ -54,15 +54,20 @@ class Relation implements ComplexOperator {
             * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
             """
             input {$name} {
+                """
+                Additional conditions.
+                """
                 where: {$where}
 
+                """
+                Count conditions.
+                """
                 count: {$count}
 
                 """
                 Shortcut for `doesntHave()`, same as:
 
                 ```
-                where: [...]
                 count: {
                   lt: 1
                 }

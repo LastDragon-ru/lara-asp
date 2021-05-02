@@ -31,14 +31,16 @@ See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNested {
+  """Additional conditions."""
   where: SearchByConditionNested
+
+  """Count conditions."""
   count: SearchByScalarInt
 
   """
   Shortcut for `doesntHave()`, same as:
   
   ```
-  where: [...]
   count: {
     lt: 1
   }
@@ -46,7 +48,7 @@ input SearchByComplexRelationNested {
   """
   not: Boolean! = false
 
-  """Complex type marker."""
+  """Complex operator marker."""
   relation: SearchByTypeFlag! = yes
 }
 
