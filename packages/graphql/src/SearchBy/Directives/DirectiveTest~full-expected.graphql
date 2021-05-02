@@ -19,8 +19,14 @@ input Properties {
   enumNotNull: Value!
 }
 
+input Property {
+  id: ID
+}
+
 type Query {
-  test(where: SearchByConditionProperties): ID!
+  a(where: SearchByConditionProperties): ID!
+  b(where: SearchByConditionNested): ID!
+  c(where: SearchByConditionProperty): ID!
 }
 
 """
@@ -123,6 +129,23 @@ input SearchByConditionProperties {
 
   """Property condition."""
   enumNotNull: SearchByEnumValue
+}
+
+"""
+Available conditions for input Property (only one property allowed at a time).
+"""
+input SearchByConditionProperty {
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionProperty!]
+
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionProperty!]
+
+  """Not."""
+  not: SearchByConditionProperty
+
+  """Property condition."""
+  id: SearchByScalarIDOrNull
 }
 
 """

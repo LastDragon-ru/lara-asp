@@ -4,9 +4,23 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
@@ -14,6 +28,8 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use ReflectionMethod;
 
 /**
  * @internal
@@ -31,6 +47,45 @@ class DirectiveTest extends TestCase {
         $this->assertGraphQLSchemaEquals(
             $this->getTestData()->file($expected),
             $this->getTestData()->file($graphql),
+        );
+    }
+
+    /**
+     * @covers ::manipulateArgDefinition
+     *
+     * @dataProvider dataProviderManipulateArgDefinitionDirectiveArguments
+     *
+     * @param array<string> $expected
+     */
+    public function testManipulateArgDefinitionDirectiveArguments(
+        array $expected,
+        string $graphql,
+        string $field,
+    ): void {
+        // We need to check the arguments of the directive, but the method is
+        // protected -> this is a little hack to unprotect it.
+        $method = new ReflectionMethod(Directive::class, 'directiveArgValue');
+
+        $method->setAccessible(true);
+
+        // Load schema and get Query
+        $locator = $this->app->make(DirectiveLocator::class);
+        $schema  = $this->getGraphQLSchema($this->getTestData()->file($graphql));
+        $types   = $schema->getTypeMap();
+        $query   = $types['Query'];
+
+        $this->assertInstanceOf(ObjectType::class, $query);
+
+        // Test
+        /** @var \GraphQL\Type\Definition\ObjectType $query */
+        $node       = $query->getField($field)->getArg('where')->astNode;
+        $directives = $locator->associatedOfType($node, Directive::class);
+
+        $this->assertCount(1, $directives);
+
+        $this->assertEqualsCanonicalizing(
+            $expected,
+            $method->invoke($directives->first(), Directive::ArgOperators),
         );
     }
 
@@ -69,6 +124,7 @@ class DirectiveTest extends TestCase {
 
         $this->assertNotNull($directive->handleBuilder($builder, $input));
     }
+
     // </editor-fold>
 
     // <editor-fold desc="DataProvider">
@@ -120,6 +176,70 @@ class DirectiveTest extends TestCase {
                 ],
             ]),
         ))->getData();
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function dataProviderManipulateArgDefinitionDirectiveArguments(): array {
+        return [
+            'Properties' => [
+                [
+                    Between::class,
+                    Equal::class,
+                    GreaterThan::class,
+                    GreaterThanOrEqual::class,
+                    In::class,
+                    IsNotNull::class,
+                    IsNull::class,
+                    LessThan::class,
+                    LessThanOrEqual::class,
+                    Like::class,
+                    NotBetween::class,
+                    NotEqual::class,
+                    NotIn::class,
+                    NotLike::class,
+                    AllOf::class,
+                    AnyOf::class,
+                    Not::class,
+                    Relation::class,
+                ],
+                '~full.graphql',
+                'a',
+            ],
+            'Nested'     => [
+                [
+                    Equal::class,
+                    NotEqual::class,
+                    In::class,
+                    NotIn::class,
+                    IsNull::class,
+                    IsNotNull::class,
+                    Like::class,
+                    NotLike::class,
+                    AllOf::class,
+                    AnyOf::class,
+                    Not::class,
+                ],
+                '~full.graphql',
+                'b',
+            ],
+            'Property'   => [
+                [
+                    IsNull::class,
+                    IsNotNull::class,
+                    In::class,
+                    NotIn::class,
+                    Equal::class,
+                    NotEqual::class,
+                    AllOf::class,
+                    AnyOf::class,
+                    Not::class,
+                ],
+                '~full.graphql',
+                'c',
+            ],
+        ];
     }
     // </editor-fold>
 }

@@ -1,5 +1,9 @@
 type Query {
-  test(where: Properties @searchBy): ID! @all
+  a(where: Properties @searchBy): ID! @all
+
+  b(where: Nested @searchBy): ID! @all
+
+  c(where: Property @searchBy): ID! @all
 }
 
 input Properties {
@@ -21,6 +25,10 @@ input Properties {
 
 input Nested {
   value: String
+}
+
+input Property {
+  id: ID
 }
 
 enum Value {
