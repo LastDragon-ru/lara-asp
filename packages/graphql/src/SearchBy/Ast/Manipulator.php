@@ -130,9 +130,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getConditionTypeName($node);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addValues(
-                $this->metadata->getUsage()->get($name),
-            );
+            $this->metadata->getUsage()->addType($name);
 
             return $name;
         }
@@ -221,9 +219,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getEnumTypeName($type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addValues(
-                $this->metadata->getUsage()->get($name),
-            );
+            $this->metadata->getUsage()->addType($name);
 
             return $name;
         }
@@ -261,9 +257,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getScalarTypeName($type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addValues(
-                $this->metadata->getUsage()->get($name),
-            );
+            $this->metadata->getUsage()->addType($name);
 
             return $name;
         }
@@ -315,9 +309,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name     = $this->getComplexTypeName($type, $operator);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addValues(
-                $this->metadata->getUsage()->get($name),
-            );
+            $this->metadata->getUsage()->addType($name);
 
             return $name;
         }

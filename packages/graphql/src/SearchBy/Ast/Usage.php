@@ -10,8 +10,10 @@ use function array_merge;
 use function array_pop;
 use function array_push;
 use function array_unique;
+use function array_values;
 use function count;
 use function end;
+use function in_array;
 use function is_null;
 use function sprintf;
 
@@ -22,11 +24,11 @@ use const SORT_REGULAR;
  */
 class Usage {
     /**
-     * @var array<string,array<T>>
+     * @var array<string,array{types:array<string>,values:array<T>}>
      */
     protected array $types = [];
     /**
-     * @var array<array{id:string,type:string,values:array<T>}>
+     * @var array<array{id:string,type:string,types:array<string>,values:array<T>}>
      */
     protected array $stack = [];
 
@@ -38,38 +40,37 @@ class Usage {
      * @return array<T>
      */
     public function get(string $type): array {
-        return $this->types[$type] ?? [];
+        return array_values(array_unique($this->values($type, []), SORT_REGULAR));
     }
 
     public function start(string $type): int {
+        $previous      = array_key_last($this->stack);
         $this->stack[] = $current = [
             'id'     => count($this->stack),
             'type'   => $type,
+            'types'  => [],
             'values' => [],
         ];
 
+        if (!is_null($previous)) {
+            $this->stack[$previous]['types'][] = $type;
+        }
+
         return $current['id'];
+    }
+
+    public function addType(string $type): void {
+        $this->end($this->start($type));
     }
 
     /**
      * @param T $value
      */
-    public function addValue(mixed $value): void {
+    public function addValue(mixed ...$value): void {
         $current = array_key_last($this->stack);
 
         if (!is_null($current)) {
-            $this->stack[$current]['values'][] = $value;
-        }
-    }
-
-    /**
-     * @param array<T> $values
-     */
-    public function addValues(array $values): void {
-        $current = array_key_last($this->stack);
-
-        if (!is_null($current)) {
-            array_push($this->stack[$current]['values'], ...$values);
+            $this->stack[$current]['values'] = array_merge($this->stack[$current]['values'], $value);
         }
     }
 
@@ -90,29 +91,39 @@ class Usage {
         }
 
         // Save values
-        $this->update($current['type'], $current['values']);
+        $this->types[$current['type']]['types']  = array_merge(
+            $this->types[$current['type']]['types'] ?? [],
+            $current['types'],
+        );
+        $this->types[$current['type']]['values'] = array_merge(
+            $this->types[$current['type']]['values'] ?? [],
+            $current['values'],
+        );
 
         // Reset
         array_pop($this->stack);
-
-        // Update parent
-        $parent = end($this->stack);
-
-        if ($parent) {
-            $this->update($parent['type'], $current['values']);
-        }
 
         // Return
         return $this;
     }
 
     /**
-     * @param array<T> $values
+     * @param array<string> $stack
+     *
+     * @return array<string>
      */
-    protected function update(string $type, array $values): void {
-        $this->types[$type] = array_unique(array_merge(
-            $this->types[$type] ?? [],
-            $values,
-        ), SORT_REGULAR);
+    protected function values(string $type, array $stack): array {
+        $types  = $this->types[$type]['types'] ?? [];
+        $values = $this->types[$type]['values'] ?? [];
+
+        foreach ($types as $t) {
+            if (in_array($t, $stack, true)) {
+                continue;
+            }
+
+            $values = array_merge($values, $this->values($t, array_merge($stack, [$t])));
+        }
+
+        return $values;
     }
 }

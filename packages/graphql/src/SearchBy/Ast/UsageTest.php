@@ -18,7 +18,7 @@ class UsageTest extends TestCase {
      * @covers ::start
      * @covers ::end
      * @covers ::addValue
-     * @covers ::addValues
+     * @covers ::addType
      */
     public function testUsage(): void {
         $usage = new Usage();
@@ -26,17 +26,25 @@ class UsageTest extends TestCase {
         $a = $usage->start('A');
         $usage->addValue('a');
         $b = $usage->start('B');
-        $usage->addValues(['b', 'b', 'bb']);
+        $usage->addValue('b', 'b', 'bb');
         $usage->end($b);
-        $c = $usage->start('C');
+        $ca = $usage->start('C');
         $usage->addValue('c');
-        $usage->end($c);
+        $cb = $usage->start('C');
+        $usage->addValue('cb');
+        $usage->end($cb);
+        $usage->end($ca);
         $usage->addValue('aa');
         $usage->end($a);
+        $d = $usage->start('D');
+        $usage->addValue('d');
+        $usage->addType('B');
+        $usage->end($d);
 
-        $this->assertEqualsCanonicalizing(['a', 'b', 'bb', 'c', 'aa'], $usage->get('A'));
+        $this->assertEqualsCanonicalizing(['a', 'b', 'bb', 'c', 'aa', 'cb'], $usage->get('A'));
         $this->assertEqualsCanonicalizing(['b', 'bb'], $usage->get('B'));
-        $this->assertEqualsCanonicalizing(['c'], $usage->get('C'));
+        $this->assertEqualsCanonicalizing(['c', 'cb'], $usage->get('C'));
+        $this->assertEqualsCanonicalizing(['b', 'bb', 'd'], $usage->get('D'));
     }
 
     /**
@@ -69,15 +77,6 @@ class UsageTest extends TestCase {
      */
     public function testAddValueWithoutStart(): void {
         (new Usage())->addValue(1);
-
-        $this->assertTrue(true);
-    }
-
-    /**
-     * @covers ::addValues
-     */
-    public function testAddValuesWithoutStart(): void {
-        (new Usage())->addValues([1]);
 
         $this->assertTrue(true);
     }

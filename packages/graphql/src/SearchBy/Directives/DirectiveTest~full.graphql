@@ -4,6 +4,8 @@ type Query {
   b(where: NestedA @searchBy): ID! @all
 
   c(where: InputB @searchBy): ID! @all
+
+  d(where: NestedB @searchBy): ID! @all
 }
 
 input InputA {
@@ -26,6 +28,14 @@ input InputA {
 input NestedA {
   value: String
   nested: NestedA
+}
+
+input NestedB {
+  nested: NestedC
+}
+
+input NestedC {
+  nested: NestedB
 }
 
 input InputB {

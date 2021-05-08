@@ -31,6 +31,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use ReflectionMethod;
 
+use function sort;
+
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
@@ -79,9 +81,11 @@ class DirectiveTest extends TestCase {
             $this->assertCount(1, $directives);
 
             $operators[$field->name] = $method->invoke($directives->first(), Directive::ArgOperators);
+
+            sort($operators[$field->name]);
         }
 
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             [
                 'a' => [
                     Between::class,
@@ -98,32 +102,54 @@ class DirectiveTest extends TestCase {
                     NotEqual::class,
                     NotIn::class,
                     NotLike::class,
+                    Relation::class,
                     AllOf::class,
                     AnyOf::class,
                     Not::class,
-                    Relation::class,
                 ],
                 'b' => [
+                    Between::class,
                     Equal::class,
-                    NotEqual::class,
+                    GreaterThan::class,
+                    GreaterThanOrEqual::class,
                     In::class,
-                    NotIn::class,
-                    IsNull::class,
                     IsNotNull::class,
+                    IsNull::class,
+                    LessThan::class,
+                    LessThanOrEqual::class,
                     Like::class,
+                    NotBetween::class,
+                    NotEqual::class,
+                    NotIn::class,
                     NotLike::class,
+                    Relation::class,
                     AllOf::class,
                     AnyOf::class,
                     Not::class,
-                    Relation::class,
                 ],
                 'c' => [
-                    IsNull::class,
-                    IsNotNull::class,
-                    In::class,
-                    NotIn::class,
                     Equal::class,
+                    In::class,
+                    IsNotNull::class,
+                    IsNull::class,
                     NotEqual::class,
+                    NotIn::class,
+                    AllOf::class,
+                    AnyOf::class,
+                    Not::class,
+                ],
+                'd' => [
+                    Between::class,
+                    Equal::class,
+                    GreaterThan::class,
+                    GreaterThanOrEqual::class,
+                    In::class,
+                    LessThan::class,
+                    LessThanOrEqual::class,
+                    NotBetween::class,
+                    NotEqual::class,
+                    NotIn::class,
+                    Relation::class,
                     AllOf::class,
                     AnyOf::class,
                     Not::class,

@@ -29,14 +29,23 @@ input NestedA {
   nested: NestedA
 }
 
+input NestedB {
+  nested: NestedC
+}
+
+input NestedC {
+  nested: NestedB
+}
+
 type Query {
   a(where: SearchByConditionInputA): ID!
   b(where: SearchByConditionNestedA): ID!
   c(where: SearchByConditionInputB): ID!
+  d(where: SearchByConditionNestedB): ID!
 }
 
 """
-Conditions for the related objects (`has()`) for input NestedA.
+Conditions for the related objects (`has()`/`doesntHave()`) for input NestedA.
 
 See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
@@ -45,6 +54,64 @@ See also:
 input SearchByComplexRelationNestedA {
   """Additional conditions."""
   where: SearchByConditionNestedA
+
+  """Count conditions."""
+  count: SearchByScalarInt
+
+  """
+  Shortcut for `doesntHave()`, same as:
+  
+  ```
+  count: {
+    lt: 1
+  }
+  ```
+  """
+  not: Boolean! = false
+
+  """Complex operator marker."""
+  relation: SearchByTypeFlag! = yes
+}
+
+"""
+Conditions for the related objects (`has()`/`doesntHave()`) for input NestedB.
+
+See also:
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByComplexRelationNestedB {
+  """Additional conditions."""
+  where: SearchByConditionNestedB
+
+  """Count conditions."""
+  count: SearchByScalarInt
+
+  """
+  Shortcut for `doesntHave()`, same as:
+  
+  ```
+  count: {
+    lt: 1
+  }
+  ```
+  """
+  not: Boolean! = false
+
+  """Complex operator marker."""
+  relation: SearchByTypeFlag! = yes
+}
+
+"""
+Conditions for the related objects (`has()`/`doesntHave()`) for input NestedC.
+
+See also:
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByComplexRelationNestedC {
+  """Additional conditions."""
+  where: SearchByConditionNestedC
 
   """Count conditions."""
   count: SearchByScalarInt
@@ -155,6 +222,40 @@ input SearchByConditionNestedA {
 
   """Property condition."""
   nested: SearchByComplexRelationNestedA
+}
+
+"""
+Available conditions for input NestedB (only one property allowed at a time).
+"""
+input SearchByConditionNestedB {
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionNestedB!]
+
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionNestedB!]
+
+  """Not."""
+  not: SearchByConditionNestedB
+
+  """Property condition."""
+  nested: SearchByComplexRelationNestedC
+}
+
+"""
+Available conditions for input NestedC (only one property allowed at a time).
+"""
+input SearchByConditionNestedC {
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionNestedC!]
+
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionNestedC!]
+
+  """Not."""
+  not: SearchByConditionNestedC
+
+  """Property condition."""
+  nested: SearchByComplexRelationNestedB
 }
 
 """
