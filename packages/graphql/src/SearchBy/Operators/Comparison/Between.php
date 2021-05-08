@@ -2,16 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
-use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorHasTypesForScalar;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 
-class Between extends BaseOperator implements ComparisonOperator, OperatorNegationable, OperatorHasTypesForScalar {
-    protected const TypeRange = 'Range';
-
+class Between extends BaseOperator implements ComparisonOperator {
     public function getName(): string {
         return 'between';
     }
@@ -20,38 +18,15 @@ class Between extends BaseOperator implements ComparisonOperator, OperatorNegati
         return 'Within a range.';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, $map[self::TypeRange], true);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getTypeDefinitionsForScalar(string $prefix, string $scalar): array {
-        return [
-            self::TypeRange => Parser::inputObjectTypeDefinition(
-                /** @lang GraphQL */
-                <<<GRAPHQL
-                input {$prefix} {
-                    min: {$scalar}!
-                    max: {$scalar}!
-                }
-                GRAPHQL,
-            ),
-        ];
+    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
+        return parent::getDefinition($provider, $provider->getType(Range::Name, $scalar), true);
     }
 
     public function apply(
         EloquentBuilder|QueryBuilder $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): EloquentBuilder|QueryBuilder {
-        return $not
-            ? $builder->whereNotBetween($property, $value)
-            : $builder->whereBetween($property, $value);
+        return $builder->whereBetween($property, $value);
     }
 }

@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\OperatorDirective;
 
-class SearchByDirective extends Directive {
+class SearchByOperatorDirective extends OperatorDirective {
     // Lighthouse loads all classes from directive namespace this leads to
     // 'Class "Orchestra\Testbench\TestCase" not found' error for our *Test
     // classes. This class required to avoid this error.

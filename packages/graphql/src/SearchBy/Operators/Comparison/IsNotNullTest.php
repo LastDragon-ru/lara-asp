@@ -1,10 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -12,9 +10,9 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull
  */
-class NotTest extends TestCase {
+class IsNotNullTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -24,10 +22,15 @@ class NotTest extends TestCase {
      *
      * @param array{sql: string, bindings: array<mixed>} $expected
      */
-    public function testApply(array $expected, Closure $builder, Closure $nested): void {
-        $operator = $this->app->make(Not::class);
+    public function testApply(
+        array $expected,
+        Closure $builder,
+        string $property,
+        mixed $value,
+    ): void {
+        $operator = $this->app->make(IsNotNull::class);
         $builder  = $builder($this);
-        $builder  = $operator->apply($builder, $nested);
+        $builder  = $operator->apply($builder, $property, $value);
         $actual   = [
             'sql'      => $builder->toSql(),
             'bindings' => $builder->getBindings(),
@@ -46,14 +49,14 @@ class NotTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'not' => [
+                'ok' => [
                     [
-                        'sql'      => 'select * from "tmp" where not (1 = 1)',
+                        'sql'      => 'select * from "tmp" where "property" is not null',
                         'bindings' => [],
                     ],
-                    static function (EloquentBuilder|QueryBuilder $builder): EloquentBuilder|QueryBuilder {
-                        return $builder->whereRaw('1 = 1');
-                    },
+                    'property',
+                    null,
+                    true,
                 ],
             ]),
         ))->getData();

@@ -4,14 +4,15 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 
 /**
  * @internal Must not be used directly.
  */
-class IsNull extends BaseOperator implements ComparisonOperator, OperatorNegationable {
+class IsNull extends BaseOperator implements ComparisonOperator {
     public function getName(): string {
         return 'isNull';
     }
@@ -20,21 +21,15 @@ class IsNull extends BaseOperator implements ComparisonOperator, OperatorNegatio
         return 'Is NULL?';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, $map[Directive::TypeFlag], true);
+    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
+        return parent::getDefinition($provider, $provider->getType(Flag::Name), true);
     }
 
     public function apply(
         EloquentBuilder|QueryBuilder $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): EloquentBuilder|QueryBuilder {
-        return $not
-            ? $builder->whereNotNull($property)
-            : $builder->whereNull($property);
+        return $builder->whereNull($property);
     }
 }

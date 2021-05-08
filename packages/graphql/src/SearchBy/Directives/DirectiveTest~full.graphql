@@ -1,0 +1,48 @@
+type Query {
+  a(where: InputA @searchBy): ID! @all
+
+  b(where: NestedA @searchBy): ID! @all
+
+  c(where: InputB @searchBy): ID! @all
+
+  d(where: NestedB @searchBy): ID! @all
+}
+
+input InputA {
+  idScalar: ID
+  idScalarNotNull: ID!
+  intScalar: Int
+  inScalarNotNull: Int!
+  floatScalar: Float
+  floatScalarNotNull: Float!
+  stringScalar: String
+  stringScalarNotNull: String!
+  booleanScalar: Boolean
+  booleanScalarNotNull: Boolean!
+  nested: NestedA
+  nestedNotNull: NestedA!
+  enum: EnumA
+  enumNotNull: EnumA!
+}
+
+input NestedA {
+  value: String
+  nested: NestedA
+}
+
+input NestedB {
+  nested: NestedC
+}
+
+input NestedC {
+  nested: NestedB
+}
+
+input InputB {
+  id: ID
+}
+
+enum EnumA {
+  one
+  two
+}

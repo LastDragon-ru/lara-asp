@@ -2,14 +2,20 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 
 use function is_array;
 use function reset;
@@ -17,26 +23,60 @@ use function reset;
 /**
  * @internal Must not be used directly.
  */
-class Relation extends BaseOperator implements ComplexOperator, OperatorNegationable {
+class Relation implements ComplexOperator {
     public function __construct(
         protected PackageTranslator $translator,
     ) {
-        parent::__construct();
+        // empty
     }
 
     public function getName(): string {
-        return 'where';
+        return 'relation';
     }
 
-    protected function getDescription(): string {
-        return 'Conditions for the related objects.';
-    }
+    public function getDefinition(
+        Manipulator $ast,
+        InputValueDefinitionNode $field,
+        InputObjectTypeDefinitionNode $type,
+        string $name,
+        bool $nullable,
+    ): InputObjectTypeDefinitionNode {
+        $count = $ast->getScalarType($ast->getScalarTypeNode(Directive::ScalarInt), false);
+        $where = $ast->getInputType($type);
 
-    /**
-     * @inheritdoc
-     */
-    public function getDefinition(array $map, string $scalar, bool $nullable): string {
-        return parent::getDefinition($map, "{$scalar}!", true);
+        return Parser::inputObjectTypeDefinition(
+            <<<DEF
+            """
+            Conditions for the related objects (`has()`/`doesntHave()`) for input {$type->name->value}.
+
+            See also:
+            * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+            * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+            """
+            input {$name} {
+                """
+                Additional conditions.
+                """
+                where: {$where}
+
+                """
+                Count conditions.
+                """
+                count: {$count}
+
+                """
+                Shortcut for `doesntHave()`, same as:
+
+                ```
+                count: {
+                  lt: 1
+                }
+                ```
+                """
+                not: Boolean! = false
+            }
+            DEF,
+        );
     }
 
     /**
@@ -60,26 +100,23 @@ class Relation extends BaseOperator implements ComplexOperator, OperatorNegation
         }
 
         // Possible variants:
-        // * has + not            = doesntHave
-        // * has + not + operator = has + !$operator
+        // * where                = whereHas
+        // * where + not          = doesntHave
+        // * has + not + operator = error
 
         // Conditions & Not
         $relation = (new ModelHelper($builder))->getRelation($property);
-        $original = $conditions;
-        $has      = $conditions[$this->getName()];
-        $not      = (bool) $search->getNotOperator($conditions);
-
-        unset($conditions[$this->getName()]);
-        unset($original[$this->getName()]);
+        $has      = $conditions['where'] ?? null;
+        $not      = (bool) ($conditions['not'] ?? false);
 
         // Build
         $alias    = $relation->getRelationCountHash(false);
         $count    = 1;
         $operator = '>=';
 
-        if ($conditions) {
+        if ($conditions['count'] ?? null) {
             $query    = $builder->toBase()->newQuery();
-            $query    = $search->processComparison($query, 'tmp', $original);
+            $query    = $search->processComparison($query, 'tmp', $conditions['count']);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;

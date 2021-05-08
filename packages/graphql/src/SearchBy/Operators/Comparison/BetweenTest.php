@@ -27,11 +27,10 @@ class BetweenTest extends TestCase {
         Closure $builder,
         string $property,
         mixed $value,
-        bool $not,
     ): void {
         $operator = $this->app->make(Between::class);
         $builder  = $builder($this);
-        $builder  = $operator->apply($builder, $property, $value, $not);
+        $builder  = $operator->apply($builder, $property, $value);
         $actual   = [
             'sql'      => $builder->toSql(),
             'bindings' => $builder->getBindings(),
@@ -50,23 +49,13 @@ class BetweenTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'between'     => [
+                'between' => [
                     [
                         'sql'      => 'select * from "tmp" where "property" between ? and ?',
                         'bindings' => [1, 2],
                     ],
                     'property',
                     [1, 2, 3],
-                    false,
-                ],
-                'not between' => [
-                    [
-                        'sql'      => 'select * from "tmp" where "property" not between ? and ?',
-                        'bindings' => [1, 2],
-                    ],
-                    'property',
-                    [1, 2, 3],
-                    true,
                 ],
             ]),
         ))->getData();

@@ -7,25 +7,18 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQL\AstManipulator as BaseAstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
-use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 
 use function is_null;
 use function sprintf;
 use function tap;
 
-class AstManipulator extends BaseAstManipulator {
-    public function __construct(
-        protected DocumentAST $document,
-        protected string $name,
-    ) {
-        parent::__construct($this->document);
-    }
-
+class Manipulator extends AstManipulator {
     // <editor-fold desc="API">
     // =========================================================================
-    public function getType(InputValueDefinitionNode $node): ListTypeNode {
+    public function update(InputValueDefinitionNode $node): ListTypeNode {
+        // Convert
         $type = null;
 
         if (!($node->type instanceof ListTypeNode)) {
@@ -46,6 +39,10 @@ class AstManipulator extends BaseAstManipulator {
             ));
         }
 
+        // Update
+        $node->type = $type;
+
+        // Return
         return $type;
     }
     // </editor-fold>
@@ -61,7 +58,7 @@ class AstManipulator extends BaseAstManipulator {
         }
 
         // Add type
-        $type = $this->addTypeDefinition($name, Parser::inputObjectTypeDefinition(
+        $type = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
             Sort clause for input {$node->name->value} (only one property allowed at a time).
@@ -76,7 +73,7 @@ class AstManipulator extends BaseAstManipulator {
         ));
 
         // Add sortable fields
-        $reference   = Parser::typeReference($this->getMap($this)[Directive::TypeDirection]);
+        $reference   = Parser::typeReference(Directive::TypeDirection);
         $description = Parser::description('"""Property clause."""');
 
         /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
@@ -122,30 +119,30 @@ class AstManipulator extends BaseAstManipulator {
 
     // <editor-fold desc="Defaults">
     // =========================================================================
-    protected function addRootTypeDefinitions(): void {
-        $type = Directive::TypeDirection;
+    protected function addDefaultTypeDefinitions(): void {
+        $name = Directive::TypeDirection;
 
-        $this->addTypeDefinitions($this, [
-            $type => Parser::enumTypeDefinition(
-            /** @lang GraphQL */
+        if (!$this->isTypeDefinitionExists($name)) {
+            $this->addTypeDefinition(Parser::enumTypeDefinition(
+                /** @lang GraphQL */
                 <<<GRAPHQL
                 """
                 Sort direction.
                 """
-                enum {$this->name}{$type} {
+                enum {$name} {
                     asc
                     desc
                 }
                 GRAPHQL,
-            ),
-        ]);
+            ));
+        }
     }
     // </editor-fold>
 
     // <editor-fold desc="Names">
     // =========================================================================
     protected function getTypeName(InputObjectTypeDefinitionNode $node): string {
-        return "{$this->name}Clause{$node->name->value}";
+        return Directive::Name."Clause{$node->name->value}";
     }
     // </editor-fold>
 }

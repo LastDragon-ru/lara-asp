@@ -29,6 +29,7 @@ Features:
 + Enums support;
 + `not (<condition>)` support;
 + Relations support (except Query Builder);
++ Custom operators support
 + Localization support;
 + easy to use and safe.
 
@@ -61,14 +62,14 @@ That's all, just search 😃
 query {
   # WHERE name = "LastDragon"
   users(where: {
-    name: {eq: "LastDragon"}
+    name: {equal: "LastDragon"}
   }) {
     id
   }
 
   # WHERE name != "LastDragon"
   users(where: {
-    name: {eq: "LastDragon", not: yes}
+    name: {notEqual: "LastDragon"}
   }) {
     id
   }
@@ -76,8 +77,8 @@ query {
   # WHERE name = "LastDragon" or name = "Aleksei"
   users(where: {
     anyOf: [
-      {name: {eq: "LastDragon"}}
-      {name: {eq: "Aleksei"}}
+      {name: {equal: "LastDragon"}}
+      {name: {equal: "Aleksei"}}
     ]
   }) {
     id
@@ -85,11 +86,12 @@ query {
 
   # WHERE NOT (name = "LastDragon" or name = "Aleksei")
   users(where: {
-    anyOf: [
-      {name: {eq: "LastDragon"}}
-      {name: {eq: "Aleksei"}}
-    ]
-    not: yes
+    not: {
+      anyOf: [
+        {name: {equal: "LastDragon"}}
+        {name: {equal: "Aleksei"}}
+      ]
+    }
   }) {
     id
   }
@@ -118,7 +120,9 @@ query {
       where: {
         date: {between: {min: "2021-01-01", max: "2021-04-01"}}
       }
-      eq: 2
+      count: {
+          equal: 2
+      }
     }
   }) {
     id
@@ -144,6 +148,35 @@ type Query {
 }
 
 """
+Conditions for the related objects (`has()`/`doesntHave()`) for input UsersQuery.
+
+See also:
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByComplexRelationUsersQuery {
+  """Additional conditions."""
+  where: SearchByConditionUsersQuery
+
+  """Count conditions."""
+  count: SearchByScalarInt
+
+  """
+  Shortcut for `doesntHave()`, same as:
+  
+  \```
+  count: {
+    lt: 1
+  }
+  \```
+  """
+  not: Boolean! = false
+
+  """Complex operator marker."""
+  relation: SearchByTypeFlag! = yes
+}
+
+"""
 Available conditions for input CommentsQuery (only one property allowed at a time).
 """
 input SearchByConditionCommentsQuery {
@@ -154,13 +187,13 @@ input SearchByConditionCommentsQuery {
   anyOf: [SearchByConditionCommentsQuery!]
 
   """Not."""
-  not: SearchByFlag
+  not: SearchByConditionCommentsQuery
 
   """Property condition."""
   text: SearchByScalarString
 
   """Property condition."""
-  user: SearchByRelationUsersQuery
+  user: SearchByComplexRelationUsersQuery
 
   """Property condition."""
   date: SearchByScalarDateOrNull
@@ -177,7 +210,7 @@ input SearchByConditionUsersQuery {
   anyOf: [SearchByConditionUsersQuery!]
 
   """Not."""
-  not: SearchByFlag
+  not: SearchByConditionUsersQuery
 
   """Property condition."""
   id: SearchByScalarID
@@ -186,46 +219,15 @@ input SearchByConditionUsersQuery {
   name: SearchByScalarString
 }
 
-"""Flag."""
-enum SearchByFlag {
-  yes
-}
-
-"""Relation condition for input UsersQuery."""
-input SearchByRelationUsersQuery {
-  """Conditions for the related objects."""
-  where: SearchByConditionUsersQuery!
-
-  """Equal (`=`)."""
-  eq: Int
-
-  """Less than (`<`)."""
-  lt: Int
-
-  """Less than or equal to (`<=`)."""
-  lte: Int
-
-  """Greater than (`>`)."""
-  gt: Int
-
-  """Greater than or equal to (`>=`)."""
-  gte: Int
-
-  """Not."""
-  not: SearchByFlag
-}
-
-input SearchByScalarDateOperatorBetween {
-  min: Date!
-  max: Date!
-}
-
 """
 Available operators for scalar Date (only one operator allowed at a time).
 """
 input SearchByScalarDateOrNull {
   """Equal (`=`)."""
-  eq: Date
+  equal: Date
+
+  """Not Equal (`!=`)."""
+  notEqual: Date
 
   """Less than (`<`)."""
   lt: Date
@@ -242,14 +244,20 @@ input SearchByScalarDateOrNull {
   """Within a set of values."""
   in: [Date!]
 
+  """Outside a set of values."""
+  notIn: [Date!]
+
   """Within a range."""
-  between: SearchByScalarDateOperatorBetween
+  between: SearchByTypeRangeDate
+
+  """Outside a range."""
+  notBetween: SearchByTypeRangeDate
 
   """Is NULL?"""
-  isNull: SearchByFlag
+  isNull: SearchByTypeFlag
 
-  """Not."""
-  not: SearchByFlag
+  """Is NOT NULL?"""
+  isNotNull: SearchByTypeFlag
 }
 
 """
@@ -257,13 +265,51 @@ Available operators for scalar ID! (only one operator allowed at a time).
 """
 input SearchByScalarID {
   """Equal (`=`)."""
-  eq: ID
+  equal: ID
+
+  """Not Equal (`!=`)."""
+  notEqual: ID
 
   """Within a set of values."""
   in: [ID!]
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a set of values."""
+  notIn: [ID!]
+}
+
+"""
+Available operators for scalar Int! (only one operator allowed at a time).
+"""
+input SearchByScalarInt {
+  """Equal (`=`)."""
+  equal: Int
+
+  """Not Equal (`!=`)."""
+  notEqual: Int
+
+  """Less than (`<`)."""
+  lt: Int
+
+  """Less than or equal to (`<=`)."""
+  lte: Int
+
+  """Greater than (`>`)."""
+  gt: Int
+
+  """Greater than or equal to (`>=`)."""
+  gte: Int
+
+  """Within a set of values."""
+  in: [Int!]
+
+  """Outside a set of values."""
+  notIn: [Int!]
+
+  """Within a range."""
+  between: SearchByTypeRangeInt
+
+  """Outside a range."""
+  notBetween: SearchByTypeRangeInt
 }
 
 """
@@ -271,30 +317,58 @@ Available operators for scalar String! (only one operator allowed at a time).
 """
 input SearchByScalarString {
   """Equal (`=`)."""
-  eq: String
+  equal: String
+
+  """Not Equal (`!=`)."""
+  notEqual: String
 
   """Like."""
   like: String
 
+  """Not like."""
+  notLike: String
+
   """Within a set of values."""
   in: [String!]
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a set of values."""
+  notIn: [String!]
+}
+
+enum SearchByTypeFlag {
+  yes
+}
+
+input SearchByTypeRangeDate {
+  min: Date!
+  max: Date!
+}
+
+input SearchByTypeRangeInt {
+  min: Int!
+  max: Int!
 }
 
 input UsersQuery {
   id: ID!
   name: String!
 }
+
 ```
 
 </details>
 
 
-## Custom scalars
+## Scalars
 
-First you need to publish package config:
+In addition to standard GraphQL scalars package defines few own:
+
+* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarNumber` - any operator for this scalar will be available for `Int` and `Float`;
+* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarNull` - additional operators available for nullable scalars;
+* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarLogic` - list of logical operators, please see below;
+* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarEnum` - default operators for enums;
+
+To work with custom scalars you need to configure supported operators for each of them. First, you need to publish package config:
 
 ```shell
 php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider --tag=config
@@ -312,8 +386,8 @@ And then edit `config/lara-asp-graphql.php`
  */
 
 use App\GraphQL\Operators\MyCustomOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Equal;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 
 return [
     /**
@@ -338,11 +412,40 @@ return [
 
             // Or re-use existing type
             'DateTime' => 'Date',
+            
+            // You can also use enum name to redefine default operators for it:
+            'MyEnum' => 'Boolean',
         ],
     ],
 ];
 
 ```
+
+
+## Operators
+
+There are three types of operators:
+
+* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`ComparisonOperator`](./src/SearchBy/Contracts/ComparisonOperator.php) and add it to scalar(s);
+* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`LogicalOperator`](./src/SearchBy/Contracts/LogicalOperator.php) and add it to `Directive::ScalarLogic` scalar;
+* Complex - used to created conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. These operators must implement [`ComplexOperator`](./src/SearchBy/Contracts/ComplexOperator.php) and then should be added for nested input with `@searchByOperator` (by default will be used [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator):
+  
+    ```graphql
+    type Query {
+      users(where: UsersQuery @searchBy): ID! @all
+      comments(where: CommentsQuery @searchBy): ID! @all
+    }
+    
+    input UsersQuery {
+      id: ID!
+      name: String!
+    }
+    
+    input CommentsQuery {
+      text: String!
+      user: UsersQuery @searchByOperator(class: "App\\MyComplexOperator")
+    }
+    ```
 
 
 # `@sortBy` directive

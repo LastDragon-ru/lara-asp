@@ -22,20 +22,7 @@ return [
          */
         'scalars' => [
             // This value has no effect inside the published config.
-            ConfigMerger::Strict => false,
-        ],
-
-        /**
-         * Scalar aliases
-         * ---------------------------------------------------------------------
-         *
-         * Allow redefine scalar type in conditions.
-         *
-         * @var array<string, string>
-         */
-        'aliases' => [
-            // This value has no effect inside the published config.
-            ConfigMerger::Strict => false,
+            ConfigMerger::Replace => true,
         ],
     ],
 
@@ -48,6 +35,6 @@ return [
      */
     'enums'     => [
         // This value has no effect inside the published config.
-        ConfigMerger::Strict => false,
+        ConfigMerger::Replace => true,
     ],
 ];

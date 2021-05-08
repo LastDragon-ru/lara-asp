@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -46,8 +46,8 @@ class RelationTest extends TestCase {
         $search   = new SearchBuilder(
             $this->app->make(PackageTranslator::class),
             [
-                $this->app->make(Not::class),
                 $this->app->make(Equal::class),
+                $this->app->make(NotEqual::class),
                 $this->app->make(Relation::class),
             ],
         );
@@ -67,10 +67,10 @@ class RelationTest extends TestCase {
      */
     public function dataProviderApply(): array {
         return [
-            'query builder not supported'      => [
+            'query builder not supported'                            => [
                 new SearchLogicException(sprintf(
                     'Operator `%s` cannot be used with `%s`.',
-                    'where',
+                    'relation',
                     QueryBuilder::class,
                 )),
                 static function (self $test): QueryBuilder {
@@ -79,7 +79,7 @@ class RelationTest extends TestCase {
                 'test',
                 [],
             ],
-            'not a relation'                   => [
+            'not a relation'                                         => [
                 new LogicException(sprintf(
                     'Property `%s` is not a relation.',
                     'delete',
@@ -90,7 +90,7 @@ class RelationTest extends TestCase {
                 'delete',
                 [],
             ],
-            '{has: yes}'                       => [
+            '{relation: yes}'                                        => [
                 [
                     'sql'      => 'select * from "table_a" where exists ('.
                         'select * from "table_b" '.
@@ -103,10 +103,10 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'where' => 'yes',
+                    'relation' => 'yes',
                 ],
             ],
-            '{has: yes, not: yes}'             => [
+            '{relation: yes, not: yes}'                              => [
                 [
                     'sql'      => 'select * from "table_a" where not exists ('.
                         'select * from "table_b" '.
@@ -119,11 +119,11 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'where' => 'yes',
-                    'not'   => 'yes',
+                    'relation' => 'yes',
+                    'not'      => true,
                 ],
             ],
-            '{has: {property: {eq: 1}}}'       => [
+            '{relation: {property: {equal: 1}}}'                     => [
                 [
                     'sql'      => 'select * from "table_a" where exists ('.
                         'select * from "table_b" where '.
@@ -138,12 +138,12 @@ class RelationTest extends TestCase {
                 [
                     'where' => [
                         'property' => [
-                            'eq' => 123,
+                            'equal' => 123,
                         ],
                     ],
                 ],
             ],
-            '{has: yes, eq: 1}'                => [
+            '{relation: yes, count: {equal: 1}}'                     => [
                 [
                     'sql'      => 'select * from "table_a" where ('.
                         'select count(*) from "table_b" where '.
@@ -156,43 +156,29 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'where' => 'yes',
-                    'eq'    => 345,
+                    'relation' => 'yes',
+                    'count'    => [
+                        'equal' => 345,
+                    ],
                 ],
             ],
-            '{has: yes, eq: 1, not: yes}'      => [
-                [
-                    'sql'      => 'select * from "table_a" where ('.
-                        'select count(*) from "table_b" '.
-                        'where "table_a"."id" = "table_b"."table_a_id"'.
-                        ') != 345',
-                    'bindings' => [/* strange */],
-                ],
-                static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
-                },
-                'test',
-                [
-                    'where' => 'yes',
-                    'not'   => 'yes',
-                    'eq'    => 345,
-                ],
-            ],
-            '{has: yes, eq: 1, gt: 2}'         => [
+            '{relation: yes, count: { multiple operators }}'         => [
                 new SearchLogicException(
-                    'Only one comparison operator allowed, found: `eq`, `gt`',
+                    'Only one comparison operator allowed, found: `equal`, `lt`',
                 ),
                 static function (): EloquentBuilder {
                     return RelationTest__ModelA::query();
                 },
                 'test',
                 [
-                    'where' => 'yes',
-                    'eq'    => 345,
-                    'gt'    => 2,
+                    'relation' => 'yes',
+                    'count'    => [
+                        'equal' => 345,
+                        'lt'    => 1,
+                    ],
                 ],
             ],
-            '{has: {property: {eq: 1}}} (own)' => [
+            '{relation: yes, where: {{property: {equal: 1}}}} (own)' => [
                 [
                     'sql'      => 'select * from "table_a" where exists ('.
                         'select * from "table_a" as "table_alias_0" where '.
@@ -206,9 +192,10 @@ class RelationTest extends TestCase {
                 },
                 'a',
                 [
-                    'where' => [
+                    'relation' => 'yes',
+                    'where'    => [
                         'property' => [
-                            'eq' => 123,
+                            'equal' => 123,
                         ],
                     ],
                 ],

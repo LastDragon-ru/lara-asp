@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\OperatorNegationable;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Not;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
 
 use function array_keys;
 use function count;
@@ -20,24 +18,24 @@ use function reset;
 
 class SearchBuilder {
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator>
+     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>
      */
     protected array $complex = [];
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator>
+     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator>
      */
     protected array $logical = [];
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator>
+     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator>
      */
     protected array $comparison = [];
 
     /**
-     * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\ComparisonOperator
-     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\LogicalOperator
-     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\ComplexOperator> $operators
+     * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator
+     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator
+     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator> $operators
      */
     public function __construct(
         protected PackageTranslator $translator,
@@ -78,13 +76,6 @@ class SearchBuilder {
         array $input,
         string $tableAlias = null,
     ): EloquentBuilder|QueryBuilder {
-        // Not?
-        $not = $this->getNotOperator($input);
-
-        if ($not) {
-            return $this->processNotOperator($builder, $not, $input, $tableAlias);
-        }
-
         // More than one property?
         if (count($input) > 1) {
             throw new SearchLogicException($this->translator->get(
@@ -128,34 +119,6 @@ class SearchBuilder {
     /**
      * @param array<mixed> $conditions
      */
-    public function processNotOperator(
-        EloquentBuilder|QueryBuilder $builder,
-        Not $not,
-        array $conditions,
-        string $tableAlias = null,
-    ): EloquentBuilder|QueryBuilder {
-        return $builder->where(
-            function (EloquentBuilder|QueryBuilder $builder) use (
-                $not,
-                $conditions,
-                $tableAlias,
-            ): EloquentBuilder|QueryBuilder {
-                return $not->apply(
-                    $builder,
-                    function (EloquentBuilder|QueryBuilder $builder) use (
-                        $conditions,
-                        $tableAlias,
-                    ): EloquentBuilder|QueryBuilder {
-                        return $this->process($builder, $conditions, $tableAlias);
-                    },
-                );
-            },
-        );
-    }
-
-    /**
-     * @param array<mixed> $conditions
-     */
     public function processComplexOperator(
         EloquentBuilder|QueryBuilder $builder,
         ComplexOperator $complex,
@@ -190,19 +153,7 @@ class SearchBuilder {
                 $conditions,
                 $tableAlias,
             ): EloquentBuilder|QueryBuilder {
-                foreach ($conditions as $condition) {
-                    $builder = $logical->apply(
-                        $builder,
-                        function (EloquentBuilder|QueryBuilder $builder) use (
-                            $condition,
-                            $tableAlias,
-                        ): EloquentBuilder|QueryBuilder {
-                            return $this->process($builder, $condition, $tableAlias);
-                        },
-                    );
-                }
-
-                return $builder;
+                return $logical->apply($this, $builder, $conditions, $tableAlias);
             },
         );
     }
@@ -216,9 +167,6 @@ class SearchBuilder {
         array $conditions,
         string $tableAlias = null,
     ): EloquentBuilder|QueryBuilder {
-        // Not?
-        $not = (bool) $this->getNotOperator($conditions);
-
         // Empty?
         if (count($conditions) <= 0) {
             throw new SearchLogicException($this->translator->get(
@@ -251,17 +199,6 @@ class SearchBuilder {
             ));
         }
 
-        // Not allowed?
-        if ($not && !($operator instanceof OperatorNegationable)) {
-            throw new SearchLogicException($this->translator->get(
-                'search_by.errors.unsupported_option',
-                [
-                    'operator' => $name,
-                    'option'   => Not::Name,
-                ],
-            ));
-        }
-
         // Table Alias?
         if ($tableAlias) {
             $property = "{$tableAlias}.{$property}";
@@ -272,7 +209,7 @@ class SearchBuilder {
         }
 
         // Apply
-        return $operator->apply($builder, $property, $value, $not);
+        return $operator->apply($builder, $property, $value);
     }
     // </editor-fold>
 
@@ -300,24 +237,6 @@ class SearchBuilder {
 
     public function getComparisonOperator(string $property): ?ComparisonOperator {
         return $this->comparison[$property] ?? null;
-    }
-
-    /**
-     * @param array<mixed> $conditions
-     */
-    public function getNotOperator(array &$conditions): ?Not {
-        $not      = null;
-        $operator = isset($conditions[Not::Name])
-            ? $this->getLogicalOperator(Not::Name)
-            : null;
-
-        if ($operator instanceof Not) {
-            $not = $operator;
-
-            unset($conditions[Not::Name]);
-        }
-
-        return $not;
     }
     // </editor-fold>
 }

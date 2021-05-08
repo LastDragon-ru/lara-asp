@@ -17,15 +17,10 @@ input SearchByConditionProperties {
   anyOf: [SearchByConditionProperties!]
 
   """Not."""
-  not: SearchByFlag
+  not: SearchByConditionProperties
 
   """Property condition."""
   value: SearchByScalarString
-}
-
-"""Flag."""
-enum SearchByFlag {
-  yes
 }
 
 """
@@ -33,14 +28,20 @@ Available operators for scalar String! (only one operator allowed at a time).
 """
 input SearchByScalarString {
   """Equal (`=`)."""
-  eq: String
+  equal: String
+
+  """Not Equal (`!=`)."""
+  notEqual: String
 
   """Like."""
   like: String
 
+  """Not like."""
+  notLike: String
+
   """Within a set of values."""
   in: [String!]
 
-  """Not."""
-  not: SearchByFlag
+  """Outside a set of values."""
+  notIn: [String!]
 }
