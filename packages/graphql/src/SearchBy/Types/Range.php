@@ -9,14 +9,14 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
 use function is_null;
 
 class Range implements TypeDefinition {
-    public const Name ='Range';
+    public const Name = 'Range';
 
     public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
         $type = null;
 
         if ($scalar && is_null($nullable)) {
             $type = Parser::inputObjectTypeDefinition(
-            /** @lang GraphQL */
+                /** @lang GraphQL */
                 <<<GRAPHQL
                 input {$name} {
                     min: {$scalar}!

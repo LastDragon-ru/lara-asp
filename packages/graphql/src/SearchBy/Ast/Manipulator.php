@@ -9,7 +9,6 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
-use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
