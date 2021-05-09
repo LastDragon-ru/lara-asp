@@ -10,6 +10,7 @@ use SplFileInfo;
 use function basename;
 use function dirname;
 use function file_get_contents;
+use function ltrim;
 use function sprintf;
 use function str_replace;
 use function str_starts_with;
@@ -27,7 +28,7 @@ class TestData {
     public function path(string $path): string {
         $dir  = dirname(str_replace('\\', '/', $this->test->getFileName()));
         $name = basename($this->test->getFileName(), '.php');
-        $path = str_starts_with($path, '.') || str_starts_with($path, '~') ? $path : '/'.$path;
+        $path = str_starts_with($path, '.') || str_starts_with($path, '~') ? $path : '/'.ltrim($path, '/');
         $path = "{$dir}/{$name}{$path}";
 
         return $path;
