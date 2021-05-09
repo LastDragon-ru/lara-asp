@@ -14,12 +14,14 @@ use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
  * will be applied only if the database already seeded.
  */
 abstract class RawDataMigration extends RawMigration {
-    protected SeederService $seeder;
-
-    public function __construct(Application $app, Filesystem $files, SeederService $seeder) {
+    public function __construct(
+        Application|null $app = null,
+        Filesystem|null $files = null,
+        protected SeederService|null $seeder = null,
+    ) {
         parent::__construct($app, $files);
 
-        $this->seeder = $seeder;
+        $this->seeder ??= $this->app->make(SeederService::class);
     }
 
     // <editor-fold desc="\Illuminate\Database\Migrations\Migration">

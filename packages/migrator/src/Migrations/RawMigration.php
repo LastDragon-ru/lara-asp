@@ -7,15 +7,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
 
+use function app;
+
 abstract class RawMigration extends Migration {
     use RawSqlHelper;
 
-    protected Application $app;
-    protected Filesystem  $files;
-
-    public function __construct(Application $app, Filesystem $files) {
-        $this->app   = $app;
-        $this->files = $files;
+    public function __construct(
+        protected Application|null $app = null,
+        protected Filesystem|null $files = null,
+    ) {
+        $this->app   ??= app();
+        $this->files ??= $this->app->make(Filesystem::class);
     }
 
     // <editor-fold desc="\LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper">
