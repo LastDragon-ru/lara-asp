@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use function array_merge;
 use function json_decode;
 use function json_encode;
+use function str_replace;
 use function trim;
 
 /**
@@ -84,7 +85,7 @@ class SmartMigratorTest extends TestCase {
 
         $this->assertEquals(
             trim($this->getTestData()->content($expectedUp)),
-            trim($output->fetch()),
+            trim(str_replace("\r\n", "\n", $output->fetch())),
         );
 
         // Down
@@ -94,7 +95,7 @@ class SmartMigratorTest extends TestCase {
 
         $this->assertEquals(
             trim($this->getTestData()->content($expectedDown)),
-            trim($output->fetch()),
+            trim(str_replace("\r\n", "\n", $output->fetch())),
         );
     }
 }
