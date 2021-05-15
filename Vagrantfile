@@ -13,11 +13,20 @@ require 'open3'
 require 'digest/sha1'
 require 'etc'
 
+settings = File.exists?('Vagrant.yml') ? YAML.load_file('Vagrant.yml') : {};
+
 Vagrant.configure(2) do |config|
   config.vm.box            = "ubuntu/bionic64"
   config.vm.hostname       = getHostName()
   config.vm.network       "private_network", type: "dhcp"
   config.vm.synced_folder ".", "/project"
+
+  # Synced Folder
+  config.vm.synced_folder ".", "/project",
+    type: "smb",
+    smb_username: settings['smb_username'],
+    smb_password: settings['smb_password'],
+    mount_options: ["vers=default,mfsymlinks,dir_mode=0775,file_mode=0775"]
 
   # Ssh
   config.vm.network        :forwarded_port, id: 'ssh', guest: 22, host: 2222, auto_correct: true
@@ -44,7 +53,7 @@ Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |v|
      v.name   = "vagrant##{config.vm.hostname}@" +  Digest::SHA1.hexdigest(__FILE__)
      v.cpus   = Etc.nprocessors
-     v.memory = "2048"
+     v.memory = settings['memory'] || "2048"
      v.customize ["modifyvm", :id, "--description", __dir__]
   end
 
