@@ -1,14 +1,24 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Migrator\Extenders;
+namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
 use Illuminate\Database\Console\Seeds\SeederMakeCommand;
+use Illuminate\Filesystem\Filesystem;
+use LastDragon_ru\LaraASP\Migrator\Package;
 
 use function basename;
 use function dirname;
 use function trim;
 
-class RawSeederMakeCommand extends SeederMakeCommand {
+class RawSeeder extends SeederMakeCommand {
+    public const Name = Package::Name.':raw-seeder';
+
+    public function __construct(Filesystem $filesystem) {
+        $this->name = static::Name;
+
+        parent::__construct($filesystem);
+    }
+
     /**
      * @inheritdoc
      * @noinspection PhpMissingReturnTypeInspection

@@ -4,14 +4,13 @@ namespace LastDragon_ru\LaraASP\Migrator;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
-use Illuminate\Database\Console\Seeds\SeederMakeCommand;
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithCommands;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawMigration;
+use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
-use LastDragon_ru\LaraASP\Migrator\Extenders\RawSeederMakeCommand;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 
 class Provider extends ServiceProvider implements DeferrableProvider {
@@ -27,12 +26,12 @@ class Provider extends ServiceProvider implements DeferrableProvider {
 
         $this->registerMigrator();
         $this->registerMigrationCreator();
-        $this->registerSeederMakeCommand();
     }
 
     public function boot(): void {
         $this->bootCommands(
             RawMigration::class,
+            RawSeeder::class,
         );
     }
     // </editor-fold>
@@ -59,12 +58,6 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     protected function registerMigrationCreator(): void {
         $this->app->bind(RawMigrationCreator::class, static function (Application $app): MigrationCreator {
             return new RawMigrationCreator($app['files'], $app->basePath('stubs'));
-        });
-    }
-
-    protected function registerSeederMakeCommand(): void {
-        $this->app->singleton('command.seeder.make', static function (Application $app): SeederMakeCommand {
-            return new RawSeederMakeCommand($app['files']);
         });
     }
     // </editor-fold>
