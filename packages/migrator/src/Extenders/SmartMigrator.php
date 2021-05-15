@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Illuminate\Database\Migrations\Migrator;
 use Symfony\Component\Finder\Finder;
 
@@ -12,7 +14,6 @@ use function is_string;
 /**
  * Extends standard migrator.
  *
- * - Dependency Injection for migrations
  * - Nested directories support
  */
 class SmartMigrator extends Migrator {
@@ -34,6 +35,13 @@ class SmartMigrator extends Migrator {
         }
 
         return parent::getMigrationFiles($paths);
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =========================================================================
+    public static function isAnonymousMigrationsSupported(): bool {
+        return InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=8.40.0');
     }
     // </editor-fold>
 }

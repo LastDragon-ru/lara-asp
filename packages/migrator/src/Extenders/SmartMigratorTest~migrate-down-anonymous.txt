@@ -1,3 +1,6 @@
+Rolling back: 2021_05_09_055650_anonymous
+2021_05_09_055650_anonymous: DROP TABLE IF EXISTS `migrator_anonymous`;
+
 Rolling back: 2021_05_09_055650_raw_migration_a
 RawMigrationA: DROP TABLE IF EXISTS `migrator_raw_migration_a`;
 

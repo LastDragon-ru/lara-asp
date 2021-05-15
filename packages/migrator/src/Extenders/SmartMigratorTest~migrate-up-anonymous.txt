@@ -1,3 +1,7 @@
+2021_05_09_055650_anonymous: CREATE TABLE IF NOT EXISTS `migrator_anonymous` (
+    `id` INT NOT NULL
+);
+
 RawMigrationA: CREATE TABLE IF NOT EXISTS `migrator_raw_migration_a` (
     `id` INT NOT NULL
 );

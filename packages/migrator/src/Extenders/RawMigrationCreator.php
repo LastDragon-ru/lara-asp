@@ -63,7 +63,7 @@ class RawMigrationCreator extends MigrationCreator {
     }
 
     protected function isAnonymousMigrationsSupported(): bool {
-        return InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=8.40.0');
+        return SmartMigrator::isAnonymousMigrationsSupported();
     }
     // </editor-fold>
 }
