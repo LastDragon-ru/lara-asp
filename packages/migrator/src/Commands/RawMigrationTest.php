@@ -13,10 +13,6 @@ use Symfony\Component\Finder\Finder;
 use function array_slice;
 use function explode;
 use function implode;
-use function mkdir;
-use function sys_get_temp_dir;
-use function tempnam;
-use function unlink;
 
 /**
  * @internal
@@ -27,13 +23,6 @@ class RawMigrationTest extends TestCase {
      * @covers ::handle
      */
     public function testHandle(): void {
-        // Prepare
-        $pkg  = Package::Name;
-        $path = tempnam(sys_get_temp_dir(), $pkg);
-
-        unlink($path);
-        mkdir($path);
-
         // make:migration also call dump-autoload we no need this.
         $composer = Mockery::mock(Composer::class);
         $composer
@@ -46,6 +35,8 @@ class RawMigrationTest extends TestCase {
         });
 
         // Pre test
+        $pkg    = Package::Name;
+        $path   = $this->getTempDirectory();
         $finder = Finder::create()->in($path);
 
         $this->assertCount(0, $finder->files());
