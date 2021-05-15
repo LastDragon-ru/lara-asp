@@ -22,7 +22,7 @@ composer require lastdragon-ru/lara-asp-migrator
 To create migration just use the standard command
 
 ```
-php artisan make:migration MyMigration
+php artisan lara-asp-migrator:raw-migration MyMigration
 ```
 
 It will create the following files in `database/migrations`:
@@ -50,7 +50,7 @@ The Migrator uses a bit different approach compared to standard and provides a f
 To create raw seeder just use standard command
 
 ```
-php artisan make:seeder MySeeder
+php artisan lara-asp-migrator:raw-seeder MySeeder
 ```
 
 It will create the following files in `database/seeders` (or `database/seeds/`):
