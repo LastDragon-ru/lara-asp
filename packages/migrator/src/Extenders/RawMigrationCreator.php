@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
 use Illuminate\Database\Migrations\MigrationCreator;
 
 use function basename;
