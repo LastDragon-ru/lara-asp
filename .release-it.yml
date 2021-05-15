@@ -1,0 +1,18 @@
+github:
+  release: true
+
+npm:
+  publish: false
+
+hooks:
+  "before:init":
+    - "composer run-script phpunit"
+    - "composer run-script phpcs"
+
+plugins:
+  "@release-it/bumper":
+    out:
+      type: text/plain
+      file:
+        - VERSION
+        - packages/*/VERSION

@@ -1,0 +1,15 @@
+{
+  "name": "@lastdragon-ru/lara-asp",
+  "version": "0.4.0",
+  "license": "MIT",
+  "scripts": {
+    "release": "release-it"
+  },
+  "repository": {
+    "url": "https://github.com/LastDragon-ru/lara-asp"
+  },
+  "devDependencies": {
+    "@release-it/bumper": "^2.0.0",
+    "release-it": "*"
+  }
+}

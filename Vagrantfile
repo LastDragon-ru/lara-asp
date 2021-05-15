@@ -98,6 +98,17 @@ EOT
       (cd /project && composer install)
     fi
   SHELL
+
+  config.vm.provision "npm", type: "shell", privileged: false, inline: <<-SHELL
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+  SHELL
+
+  config.vm.provision "npm install", type: "shell", privileged: false, inline: <<-SHELL
+    if test -f "/project/package.json"; then
+      (cd /project && npm ci)
+    fi
+  SHELL
 end
 
 # Required to avoid error:

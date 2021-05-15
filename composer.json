@@ -110,8 +110,14 @@
     }
   },
   "scripts": {
+    "phpunit": [
+      "@php ./vendor/bin/phpunit"
+    ],
     "phpcs": [
       "@php ./vendor/bin/phpcs"
+    ],
+    "release": [
+      "npm run release"
     ]
   },
   "config": {
