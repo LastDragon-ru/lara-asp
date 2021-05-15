@@ -50,8 +50,8 @@ class QueueableConfigTest extends TestCase {
      * @dataProvider dataProviderConfig
      *
      * @param array<mixed>|\Exception $expected
-     * @param array<mixed> $appConfig
-     * @param array<mixed> $queueableConfig
+     * @param array<mixed>            $appConfig
+     * @param array<mixed>            $queueableConfig
      */
     public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
         $container    = Container::getInstance();
@@ -164,6 +164,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
                     'retryUntil'              => null,
+                    'afterCommit'             => null,
                 ],
                 [],
                 [],
@@ -179,6 +180,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
                     'retryUntil'              => null,
+                    'afterCommit'             => null,
                 ],
                 [
                     'queue'   => 'app',
@@ -197,6 +199,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
                     'retryUntil'              => null,
+                    'afterCommit'             => null,
                 ],
                 [],
                 [
@@ -215,6 +218,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'debug'                   => false,
                     'retryUntil'              => null,
+                    'afterCommit'             => null,
                 ],
                 [
                     'queue'   => 'app',
@@ -244,6 +248,7 @@ class QueueableConfigTest extends TestCase {
                     'debug'                   => false,
                     'unknown'                 => 'key',
                     'retryUntil'              => null,
+                    'afterCommit'             => null,
                 ],
                 [],
                 [
