@@ -21,7 +21,7 @@
     "php": ">=8.0.0",
     "ext-mbstring": "*",
     "laravel/framework": "^8.22.1",
-    "nuwave/lighthouse": "^5.3",
+    "nuwave/lighthouse": "^5.4",
     "lastdragon-ru/lara-asp-core": "self.version",
     "phpdocumentor/reflection-docblock": "^5.2"
   },
