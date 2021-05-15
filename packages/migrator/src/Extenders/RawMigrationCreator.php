@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Illuminate\Database\Migrations\MigrationCreator;
 
 use function basename;
@@ -30,13 +32,17 @@ class RawMigrationCreator extends MigrationCreator {
      * @noinspection PhpMissingReturnTypeInspection
      */
     protected function getStub($table, $create) {
-        $custom = $this->customStubPath.'/migration.stub';
-        $path   = !$this->files->exists($custom)
-            ? __DIR__.'/../../stubs/migration.stub'
-            : $custom;
-        $stub   = $this->files->get($path);
+        $path = $this->customStubPath.'/migration.stub';
 
-        return $stub;
+        if (!$this->files->exists($path)) {
+            if ($this->isAnonymousMigrationsSupported()) {
+                $path = __DIR__.'/../../stubs/migration-anonymous.stub';
+            } else {
+                $path = __DIR__.'/../../stubs/migration.stub';
+            }
+        }
+
+        return $this->files->get($path);
     }
 
     // </editor-fold>
@@ -54,6 +60,10 @@ class RawMigrationCreator extends MigrationCreator {
             "{$dir}/{$name}~up.sql",
             "{$dir}/{$name}~down.sql",
         ];
+    }
+
+    protected function isAnonymousMigrationsSupported(): bool {
+        return InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=8.40.0');
     }
     // </editor-fold>
 }
