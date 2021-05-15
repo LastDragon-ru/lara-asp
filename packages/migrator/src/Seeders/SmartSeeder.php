@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Seeder;
-use Illuminate\Filesystem\Filesystem;
 
 use function is_string;
 
@@ -18,17 +16,6 @@ abstract class SmartSeeder extends Seeder {
     public function __construct(SeederService $service) {
         $this->service = $service;
     }
-
-    // <editor-fold desc="\LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper">
-    // =========================================================================
-    protected function getApplication(): Application {
-        return $this->app;
-    }
-
-    protected function getFilesystem(): Filesystem {
-        return $this->files;
-    }
-    // </editor-fold>
 
     // <editor-fold desc="Extension">
     // =========================================================================

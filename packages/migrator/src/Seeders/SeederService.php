@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
@@ -12,14 +12,15 @@ use function is_string;
 use function is_subclass_of;
 
 class SeederService {
-    protected Application $app;
     /**
      * @var array<string>
      */
     protected array $seedersPaths = [];
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    public function __construct(
+        protected Container $container,
+    ) {
+        // empty
     }
 
     // <editor-fold desc="API">
@@ -28,7 +29,7 @@ class SeederService {
         $seeded  = false;
         $tables  = $this->getConnection()->getDoctrineSchemaManager()->listTableNames();
         $skipped = [
-            $this->app->make('config')->get('database.migrations'),
+            $this->container->make('config')->get('database.migrations'),
         ];
 
         foreach ($tables as $table) {
@@ -78,7 +79,7 @@ class SeederService {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function getConnection(): Connection {
-        return $this->app->make('db')->connection();
+        return $this->container->make('db')->connection();
     }
     // </editor-fold>
 }

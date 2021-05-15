@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
 
@@ -12,20 +12,18 @@ use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
 abstract class RawSeeder extends SmartSeeder {
     use RawSqlHelper;
 
-    protected Application $app;
-    protected Filesystem  $files;
+    protected Filesystem $files;
 
-    public function __construct(SeederService $service, Application $app, Filesystem $files) {
+    public function __construct(SeederService $service, Filesystem $files) {
         parent::__construct($service);
 
-        $this->app   = $app;
         $this->files = $files;
     }
 
     // <editor-fold desc="\LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper">
     // =========================================================================
-    protected function getApplication(): Application {
-        return $this->app;
+    protected function getContainer(): Container {
+        return $this->container;
     }
 
     protected function getFilesystem(): Filesystem {

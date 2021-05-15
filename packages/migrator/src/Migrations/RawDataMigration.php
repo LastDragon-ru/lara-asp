@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
 
@@ -15,13 +15,13 @@ use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
  */
 abstract class RawDataMigration extends RawMigration {
     public function __construct(
-        Application|null $app = null,
+        Container|null $container = null,
         Filesystem|null $files = null,
         protected SeederService|null $seeder = null,
     ) {
-        parent::__construct($app, $files);
+        parent::__construct($container, $files);
 
-        $this->seeder ??= $this->app->make(SeederService::class);
+        $this->seeder ??= $this->getContainer()->make(SeederService::class);
     }
 
     // <editor-fold desc="\Illuminate\Database\Migrations\Migration">
