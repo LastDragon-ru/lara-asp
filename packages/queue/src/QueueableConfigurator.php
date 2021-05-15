@@ -84,7 +84,8 @@ class QueueableConfigurator {
             'maxExceptions'           => null,  // Number of exceptions allowed for the job before fail
             'backoff'                 => null,  // Retry delay for the failed job
             'deleteWhenMissingModels' => null,  // Allow deleting the job if the model does not exist anymore
-            'retryUntil'              => null,  // The \DateTime indicating when the job should timeout.
+            'retryUntil'              => null,  // The \DateTime indicating when the job should timeout
+            'afterCommit'             => null,  // The job should be dispatched after commit
         ];
     }
 }
