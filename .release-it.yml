@@ -1,6 +1,9 @@
 github:
   release: true
 
+git:
+  changelog: false
+
 npm:
   publish: false
 
@@ -11,8 +14,7 @@ hooks:
 
 plugins:
   "@release-it/bumper":
+    in:
+      file: metadata.json
     out:
-      type: text/plain
-      file:
-        - VERSION
-        - packages/*/VERSION
+      file: packages/*/metadata.json
