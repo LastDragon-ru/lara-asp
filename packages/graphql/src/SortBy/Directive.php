@@ -32,7 +32,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             """
             Convert Input into Sort Clause.
             """
-            directive @sortBy on INPUT_FIELD_DEFINITION
+            directive @sortBy on ARGUMENT_DEFINITION
         GRAPHQL;
     }
 

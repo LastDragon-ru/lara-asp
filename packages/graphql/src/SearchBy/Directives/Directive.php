@@ -42,7 +42,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             """
             Convert Input into Search Conditions.
             """
-            directive @searchBy on INPUT_FIELD_DEFINITION
+            directive @searchBy on ARGUMENT_DEFINITION
         GRAPHQL;
     }
 
