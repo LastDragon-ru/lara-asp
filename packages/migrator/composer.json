@@ -25,6 +25,7 @@
     "ext-json": "*",
     "composer/semver": "^3.2",
     "laravel/framework": "^8.22.1",
+    "lastdragon-ru/lara-asp-core": "self.version",
     "symfony/filesystem": "^5.2.0",
     "symfony/finder": "^5.1.0",
     "composer/composer": "^2.0.0",
