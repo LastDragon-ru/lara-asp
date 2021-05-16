@@ -16,7 +16,7 @@ require 'etc'
 settings = File.exists?('Vagrant.yml') ? YAML.load_file('Vagrant.yml') : {};
 
 Vagrant.configure(2) do |config|
-  config.vm.box            = "ubuntu/bionic64"
+  config.vm.box            = "ubuntu/focal64"
   config.vm.hostname       = getHostName()
   config.vm.network       "private_network", type: "dhcp"
   config.vm.synced_folder ".", "/project"
@@ -24,8 +24,8 @@ Vagrant.configure(2) do |config|
   # Synced Folder
   config.vm.synced_folder ".", "/project",
     type: "smb",
-    smb_username: settings['smb_username'],
-    smb_password: settings['smb_password'],
+    smb_username: settings['smb']['username'],
+    smb_password: settings['smb']['password'],
     mount_options: ["vers=default,mfsymlinks,dir_mode=0775,file_mode=0775"]
 
   # Ssh
@@ -53,8 +53,44 @@ Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |v|
      v.name   = "vagrant##{config.vm.hostname}@" +  Digest::SHA1.hexdigest(__FILE__)
      v.cpus   = Etc.nprocessors
-     v.memory = settings['memory'] || "2048"
+     v.memory = settings['vm']['memory'] || "2048"
      v.customize ["modifyvm", :id, "--description", __dir__]
+  end
+
+  # Git
+  if settings['git']
+    gitConfig = ""
+
+    settings['git'].each do | key, value |
+      gitConfig += "git config --global #{key} \"#{value}\"\n"
+    end
+
+    config.vm.provision "git config", type: "shell", privileged: false, inline: gitConfig
+  end
+
+  # GnuPG
+  config.vm.provision "gpg fix: inappropriate ioctl for device", type: "shell", privileged: false, inline: <<-SHELL
+    if ! grep -q "export GPG_TTY" ~/.profile; then
+      echo "export GPG_TTY=\\$(tty)" >> ~/.profile
+    fi
+  SHELL
+
+  if settings['gpg']['keys'] || nil
+    settings['gpg']['keys'].each do | key, path |
+      if path
+        config.vm.provision "file", source: path, destination: "~/gpg-#{key}-key.asc"
+        config.vm.provision "gpg import #{key} key", type: "shell", privileged: false, inline: <<-SHELL
+          gpg --batch --import ~/gpg-#{key}-key.asc
+        SHELL
+      end
+    end
+  end
+
+  if settings['gpg']['forward']['local'] || nil
+    config.ssh.extra_args = [
+      "-o", "RemoteForward=#{settings['gpg']['forward']['remote']} #{settings['gpg']['forward']['local']}",
+      "-o", "StreamLocalBindUnlink=yes"
+    ]
   end
 
   # Provision
@@ -77,7 +113,9 @@ EOT
   SHELL
 
   config.vm.provision "user:profile", type: "shell", privileged: false, inline: <<-SHELL
-    echo "cd /project >& /dev/null" >> .profile
+    if ! grep -q "cd /project" ~/.profile; then
+      echo "cd /project >& /dev/null" >> ~/.profile
+    fi
   SHELL
 
   config.vm.provision "PHP 8.0", type: "shell", privileged: false, inline: <<-SHELL
