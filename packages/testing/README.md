@@ -95,7 +95,7 @@ Name                  | Description
 
 Name                  | Description
 --------------------- | ----
-[`assertCronableRegistered()`](./src/Assertions/Application/CronableAssertions.php#L22) | Asserts that [Cronable](../queue/readme.md#cron-jobs) is registered.
+[`assertCronableRegistered()`](./src/Assertions/Application/CronableAssertions.php#L22) | Asserts that [Cronable](../queue/README.md#cron-jobs) is registered.
 
 # Laravel Response Testing
 

@@ -2,7 +2,7 @@
   "name": "lastdragon-ru/lara-asp-eloquent",
   "homepage": "https://github.com/LastDragon-ru/lara-asp",
   "description": "The Awesome Set of Packages for Laravel - Eloquent Helpers.",
-  "readme": "readme.md",
+  "readme": "README.md",
   "license": "MIT",
   "type": "library",
   "keywords": [
