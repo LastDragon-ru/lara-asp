@@ -11,6 +11,8 @@ use function http_build_query;
 use function is_null;
 use function json_decode;
 
+use const PHP_QUERY_RFC3986;
+
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Json\Protocol
@@ -34,7 +36,7 @@ class ProtocolTest extends TestCase {
         }
 
         $file   = $this->getTempFile($content);
-        $query  = http_build_query($parameters);
+        $query  = http_build_query($parameters, encoding_type: PHP_QUERY_RFC3986);
         $uri    = Uri::create("https://example.com/{$file->getPathname()}?{$query}");
         $actual = (new Protocol())($uri);
 
@@ -73,10 +75,10 @@ class ProtocolTest extends TestCase {
                 [],
             ],
             'template with parameters'       => [
-                '{"a": ["a", "b"]}',
+                '{"a a": ["a a", "b"]}',
                 '{"${a.a}": ["${a.a}", "${b}"]}',
                 [
-                    'a.a' => 'a',
+                    'a.a' => 'a a',
                     'b'   => 'b',
                 ],
             ],
