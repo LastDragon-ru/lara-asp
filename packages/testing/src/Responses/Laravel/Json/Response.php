@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaFile;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
@@ -21,7 +22,7 @@ class Response extends JsonResponse {
         JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $content = null,
     ) {
         if (is_string($resource)) {
-            $resource = new JsonSchema($this->getTestData($resource)->file('.json'));
+            $resource = new JsonSchemaFile($this->getTestData($resource)->file('.json'));
         }
 
         parent::__construct($code, $resource, $content);

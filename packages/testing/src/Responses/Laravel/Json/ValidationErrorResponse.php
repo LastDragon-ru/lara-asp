@@ -3,7 +3,8 @@
 namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
-use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaFile;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaValue;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
@@ -30,9 +31,9 @@ class ValidationErrorResponse extends Response {
             new UnprocessableEntity(),
             new JsonContentType(),
             new JsonBody(...array_filter([
-                new JsonMatchesSchema(new JsonSchema($this->getTestData(self::class)->file('.json'))),
+                new JsonMatchesSchema(new JsonSchemaFile($this->getTestData(self::class)->file('.json'))),
                 $errors
-                    ? new JsonMatchesSchema(new JsonSchema($this->getErrorsSchema($errors)))
+                    ? new JsonMatchesSchema(new JsonSchemaValue($this->getErrorsSchema($errors)))
                     : null,
             ])),
         );

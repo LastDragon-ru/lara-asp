@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Testing\Http\Resources;
 
-use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaWrapper;
-
-class PaginatedCollection extends JsonSchemaWrapper {
+class PaginatedCollection extends ResourceCollection {
     // empty
 }

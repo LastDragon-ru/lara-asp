@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaFile;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
@@ -113,11 +113,17 @@ class SpaControllerTest extends TestCase {
             $this->getAcceptDataProvider(),
             new ArrayDataProvider([
                 'settings returned (default)' => [
-                    new JsonResponse(new Ok(), new JsonSchema($this->getTestData()->file('.settings.default.json'))),
+                    new JsonResponse(
+                        new Ok(),
+                        new JsonSchemaFile($this->getTestData()->file('.settings.default.json')),
+                    ),
                     [],
                 ],
                 'settings returned (custom)'  => [
-                    new JsonResponse(new Ok(), new JsonSchema($this->getTestData()->file('.settings.custom.json'))),
+                    new JsonResponse(
+                        new Ok(),
+                        new JsonSchemaFile($this->getTestData()->file('.settings.custom.json')),
+                    ),
                     [
                         'custom' => 'value',
                     ],
