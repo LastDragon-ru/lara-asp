@@ -2,63 +2,36 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
-use Opis\JsonSchema\ISchemaLoader;
+use Opis\JsonSchema\Uri;
+use SplFileInfo;
 
-use function json_encode;
-use function strtr;
+use function array_merge;
 
-class JsonSchemaWrapper extends JsonSchema {
-    use WithTestData;
-
-    private string $nested;
-
-    public function __construct(string $schema, ISchemaLoader $loader = null) {
-        $this->nested = $schema;
-        $schema       = $this->getSchemaFor();
-
-        parent::__construct($schema, $loader);
-    }
-
-    protected function getSchemaFor(): string {
-        $replacements = $this->getReplacements();
-        $base         = $this->getBaseSchema();
-        $base         = strtr($base, $replacements);
-
-        return $base;
-    }
-
-    protected function getBaseSchema(): string {
-        return $this->getTestData()->content('.json');
-    }
+class JsonSchemaWrapper implements JsonSchema {
+    protected Uri $schema;
 
     /**
-     * @return array<string, mixed>
+     * @param array<string,string> $rootParameters
      */
-    protected function getSchemaReplacements(): array {
-        return [
-            'schema.path' => $this->getLocalPath($this->getTestData($this->nested)->path('.json')),
-        ];
-    }
-
-    protected function getLocalPath(string $path): string {
-        return JsonSchemaLoader::getLocalSchemaPath($path);
-    }
-
-    protected function getDefaultLoader(): JsonSchemaLoader {
-        return new JsonSchemaLoader($this->getTestData($this->nested)->file('.any')->getPath());
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function getReplacements(): array {
-        $replacements = [];
-
-        foreach ($this->getSchemaReplacements() as $key => $value) {
-            $replacements["\"\${{$key}}\""] = json_encode($value);
+    public function __construct(
+        JsonSchemaWrapper|JsonSchemaFile|SplFileInfo $schema,
+        SplFileInfo $rootSchema,
+        array $rootParameters = [],
+    ) {
+        if ($schema instanceof JsonSchemaFile) {
+            $schema = $schema->getSchema();
+        } elseif ($schema instanceof SplFileInfo) {
+            $schema = Protocol::getUri($schema);
+        } else {
+            // empty
         }
 
-        return $replacements;
+        $this->schema = Protocol::getUri($rootSchema, array_merge($rootParameters, [
+            'schema.path' => (string) $schema,
+        ]));
+    }
+
+    public function getSchema(): Uri {
+        return $this->schema;
     }
 }
