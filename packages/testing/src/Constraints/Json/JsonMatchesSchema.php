@@ -4,13 +4,9 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\JsonPrettify;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
-use Opis\JsonSchema\Schema;
+use Opis\JsonSchema\Errors\ErrorFormatter;
 use Opis\JsonSchema\ValidationResult;
 use Opis\JsonSchema\Validator;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use PHPUnit\Framework\Constraint\Constraint;
 
 use function ltrim;
@@ -19,7 +15,7 @@ use function preg_replace;
 use const PHP_EOL;
 
 /**
- * Check that JSON matches schema (draft-07 and draft-06).
+ * Check that JSON matches schema.
  *
  * @see https://json-schema.org/
  * @see https://github.com/opis/json-schema
@@ -51,10 +47,7 @@ class JsonMatchesSchema extends Constraint {
      * @inheritdoc
      */
     protected function matches($other): bool {
-        $helper       = null;
-        $loader       = $this->schema->getLoader();
-        $schema       = new Schema(Args::getJson($this->schema->getSchema()));
-        $this->result = (new Validator($helper, $loader))->schemaValidation($other, $schema);
+        $this->result = $this->getValidator()->validate($other, $this->schema->getSchema());
         $matches      = $this->result->isValid();
 
         return $matches;
@@ -74,14 +67,10 @@ class JsonMatchesSchema extends Constraint {
         $description = parent::additionalFailureDescription($other);
 
         if ($this->result) {
-            $presenter    = new ValidationErrorPresenter(
-                new PresentedValidationErrorFactory(new MessageFormatterFactory()),
-                new BestMatchError(),
-            );
-            $presented    = $presenter->present(...$this->result->getErrors());
+            $formatted    = (new ErrorFormatter())->format($this->result->error());
             $padding      = '    ';
             $description .= PHP_EOL.$padding.'Errors: ';
-            $description .= ltrim(preg_replace('/^/m', $padding, $this->prettify($presented)));
+            $description .= ltrim(preg_replace('/^/m', $padding, $this->prettify($formatted)));
             $description .= PHP_EOL;
         }
 
@@ -92,5 +81,15 @@ class JsonMatchesSchema extends Constraint {
         return 'matches JSON schema';
     }
 
+    // </editor-fold>
+
+    // <editor-fold desc="Getters">
+    // =========================================================================
+    protected function getValidator(): Validator {
+        $validator = new Validator();
+        $validator->resolver()->registerProtocol(Protocol::Scheme, new Protocol());
+
+        return $validator;
+    }
     // </editor-fold>
 }
