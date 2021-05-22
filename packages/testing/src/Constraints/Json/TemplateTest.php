@@ -2,9 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
+use Exception;
+use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
-use function is_null;
 use function json_decode;
 
 /**
@@ -21,10 +22,9 @@ class TemplateTest extends TestCase {
      *
      * @param array<string,string> $parameters
      */
-    public function testBuild(string|null $expected, string $content, array $parameters): void {
-        if (is_null($expected)) {
-            $this->expectError();
-            $this->expectErrorMessage('Undefined array key');
+    public function testBuild(Exception|string $expected, string $content, array $parameters): void {
+        if ($expected instanceof Exception) {
+            $this->expectExceptionObject($expected);
         }
 
         $actual = (new Template($content))->build($parameters);
@@ -55,7 +55,7 @@ class TemplateTest extends TestCase {
                 ],
             ],
             'template with missed parameter' => [
-                null,
+                new OutOfBoundsException('Required parameter `b` is missed.'),
                 '{"${a}": ["${a}", "${b}"]}',
                 [
                     'a' => 'a',

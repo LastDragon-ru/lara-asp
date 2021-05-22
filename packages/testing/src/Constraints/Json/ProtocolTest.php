@@ -2,13 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
+use Exception;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
 use Opis\JsonSchema\Uri;
+use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 use function http_build_query;
-use function is_null;
 use function json_decode;
 
 use const PHP_QUERY_RFC3986;
@@ -29,10 +30,9 @@ class ProtocolTest extends TestCase {
      *
      * @param array<string,string> $parameters
      */
-    public function testInvoke(string|null $expected, string $content, array $parameters): void {
-        if (is_null($expected)) {
-            $this->expectError();
-            $this->expectErrorMessage('Undefined array key');
+    public function testInvoke(Exception|string $expected, string $content, array $parameters): void {
+        if ($expected instanceof Exception) {
+            $this->expectExceptionObject($expected);
         }
 
         $file   = $this->getTempFile($content);
@@ -83,7 +83,7 @@ class ProtocolTest extends TestCase {
                 ],
             ],
             'template with missed parameter' => [
-                null,
+                new OutOfBoundsException('Required parameter `b` is missed.'),
                 '{"${a}": ["${a}", "${b}"]}',
                 [
                     'a' => 'a',
