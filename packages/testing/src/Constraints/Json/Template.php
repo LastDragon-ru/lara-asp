@@ -1,0 +1,37 @@
+<?php declare(strict_types = 1);
+
+namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
+
+use function addslashes;
+use function array_column;
+use function array_unique;
+use function preg_match_all;
+use function str_replace;
+
+use const PREG_SET_ORDER;
+
+class Template {
+    public function __construct(
+        protected string $content,
+    ) {
+        // empty
+    }
+
+    /**
+     * @param array<string,string> $parameters
+     */
+    public function build(array $parameters): string {
+        $result  = $this->content;
+        $matches = [];
+
+        if (preg_match_all('/\$\{(?<var>[^}]+)\}/u', $result, $matches, PREG_SET_ORDER)) {
+            $variables = array_unique(array_column($matches, 'var'));
+
+            foreach ($variables as $name) {
+                $result = str_replace("\${{$name}}", addslashes($parameters[$name]), $result);
+            }
+        }
+
+        return $result;
+    }
+}
