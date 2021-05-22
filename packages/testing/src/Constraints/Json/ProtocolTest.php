@@ -3,8 +3,9 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
-use Opis\Uri\Uri;
+use Opis\JsonSchema\Uri;
 use PHPUnit\Framework\TestCase;
+use SplFileInfo;
 
 use function http_build_query;
 use function is_null;
@@ -40,6 +41,23 @@ class ProtocolTest extends TestCase {
         $this->assertEquals($expected, $actual);
         $this->assertNotNull(json_decode($actual));
     }
+
+    /**
+     * @covers ::getUri
+     */
+    public function testGetUri(): void {
+        $file   = new SplFileInfo(__FILE__);
+        $params = ['a' => 'a', 'b' => 'b'];
+        $actual = Protocol::getUri($file, $params);
+
+        $this->assertEquals(Protocol::Scheme, $actual->scheme());
+        $this->assertEquals($file->getPathname(), $actual->path());
+        $this->assertEquals(http_build_query($params), $actual->query());
+        $this->assertEquals('', $actual->host());
+        $this->assertEquals(null, $actual->port());
+        $this->assertEquals('', $actual->authority());
+        $this->assertEquals(null, $actual->fragment());
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -56,10 +74,10 @@ class ProtocolTest extends TestCase {
             ],
             'template with parameters'       => [
                 '{"a": ["a", "b"]}',
-                '{"${a}": ["${a}", "${b}"]}',
+                '{"${a.a}": ["${a.a}", "${b}"]}',
                 [
-                    'a' => 'a',
-                    'b' => 'b',
+                    'a.a' => 'a',
+                    'b'   => 'b',
                 ],
             ],
             'template with missed parameter' => [
