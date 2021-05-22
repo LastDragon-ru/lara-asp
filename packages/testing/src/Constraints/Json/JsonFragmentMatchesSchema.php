@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use function sprintf;
 
 /**
- * Check that JSON fragment matches schema (draft-07 and draft-06).
+ * Check that JSON fragment matches schema.
  *
  * @see https://json-schema.org/
  * @see https://github.com/opis/json-schema
