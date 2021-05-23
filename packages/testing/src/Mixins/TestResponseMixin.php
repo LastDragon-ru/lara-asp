@@ -58,9 +58,9 @@ class TestResponseMixin {
     }
 
     public function assertJsonMatchesSchema(): Closure {
-        return function ($schema, string $message = ''): TestResponse {
+        return function (JsonSchema $schema, string $message = ''): TestResponse {
             /** @var \Illuminate\Testing\TestResponse $this */
-            Assert::assertJsonMatchesSchema(new JsonSchema($this->json()), $schema, $message);
+            Assert::assertJsonMatchesSchema($schema, $this->json(), $message);
 
             return $this;
         };
