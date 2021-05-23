@@ -202,7 +202,7 @@ def getHostName()
   gitBranch = nil
 
   Open3.popen3("git rev-parse --abbrev-ref HEAD") do |stdin, stdout, stderr, wait_thr|
-    gitBranch = stdout.read.strip()
+    gitBranch = stdout.read.strip().gsub(/[^\w\-]/, '-')
   end
 
   if gitBranch != 'master'
