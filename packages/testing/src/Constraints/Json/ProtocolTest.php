@@ -2,17 +2,21 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
+use Composer\Util\Platform;
 use Exception;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
-use Opis\JsonSchema\Uri;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
+use function array_map;
+use function explode;
 use function http_build_query;
+use function implode;
 use function json_decode;
-
-use const PHP_QUERY_RFC3986;
+use function ltrim;
+use function rawurlencode;
+use function str_replace;
 
 /**
  * @internal
@@ -36,8 +40,7 @@ class ProtocolTest extends TestCase {
         }
 
         $file   = $this->getTempFile($content);
-        $query  = http_build_query($parameters, encoding_type: PHP_QUERY_RFC3986);
-        $uri    = Uri::create("https://example.com/{$file->getPathname()}?{$query}");
+        $uri    = Protocol::getUri($file, $parameters);
         $actual = (new Protocol())($uri);
 
         $this->assertEquals($expected, $actual);
@@ -49,15 +52,22 @@ class ProtocolTest extends TestCase {
      */
     public function testGetUri(): void {
         $file   = new SplFileInfo(__FILE__);
+        $host   = Platform::isWindows() ? 'windows.path' : 'unix.path';
+        $path   = str_replace('\\', '/', $file->getPathname());
+        $path   = implode('/', array_map(static function (string $segment): string {
+            return rawurlencode($segment);
+        }, explode('/', '/'.ltrim($path, '/'))));
         $params = ['a' => 'a', 'b' => 'b'];
         $actual = Protocol::getUri($file, $params);
 
         $this->assertEquals(Protocol::Scheme, $actual->scheme());
-        $this->assertEquals($file->getPathname(), $actual->path());
-        $this->assertEquals(http_build_query($params), $actual->query());
-        $this->assertEquals('', $actual->host());
+        $this->assertEquals($host, $actual->host());
         $this->assertEquals(null, $actual->port());
-        $this->assertEquals('', $actual->authority());
+        $this->assertEquals($host, $actual->authority());
+        $this->assertEquals(null, $actual->user());
+        $this->assertEquals(null, $actual->pass());
+        $this->assertEquals($path, $actual->path());
+        $this->assertEquals(http_build_query($params), $actual->query());
         $this->assertEquals(null, $actual->fragment());
     }
     // </editor-fold>
