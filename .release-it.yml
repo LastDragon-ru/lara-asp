@@ -3,8 +3,7 @@ npm:
 
 hooks:
   "before:init":
-    - "composer run-script phpunit"
-    - "composer run-script phpcs"
+    - "composer run-script release:validate"
 
 plugins:
   "@release-it/bumper":

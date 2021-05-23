@@ -110,14 +110,19 @@
     }
   },
   "scripts": {
+    "release": [
+      "npm run release"
+    ],
+    "release:validate": [
+      "./vendor/bin/monorepo-builder validate",
+      "@phpunit",
+      "@phpcs"
+    ],
     "phpunit": [
       "@php ./vendor/bin/phpunit"
     ],
     "phpcs": [
       "@php ./vendor/bin/phpcs"
-    ],
-    "release": [
-      "npm run release"
     ]
   },
   "config": {
