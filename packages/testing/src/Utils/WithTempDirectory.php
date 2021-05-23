@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Utils;
 
-use LastDragon_ru\LaraASP\Migrator\Package;
+use LastDragon_ru\LaraASP\Testing\Package;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
