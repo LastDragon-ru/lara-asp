@@ -15,15 +15,4 @@ class ExpectedValueTest extends TestCase {
     public function testGetValue(): void {
         $this->assertEquals(1, (new ExpectedValue(1))->getValue());
     }
-
-    /**
-     * @covers ::getValue
-     */
-    public function testGetValueFromProvider(): void {
-        $this->assertEquals(1, (new ExpectedValue(new class() implements ExpectedValueProvider {
-            public function getExpectedValue(): mixed {
-                return 1;
-            }
-        }))->getValue());
-    }
 }

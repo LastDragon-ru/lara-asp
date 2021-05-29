@@ -10,8 +10,6 @@ class ExpectedValue {
     }
 
     public function getValue(): mixed {
-        return $this->value instanceof ExpectedValueProvider
-            ? $this->value->getExpectedValue()
-            : $this->value;
+        return $this->value;
     }
 }
