@@ -198,11 +198,13 @@ class Manipulator extends AstManipulator implements TypeProvider {
                         $field->description = $description;
                     },
                 );
-            } else {
+            } elseif ($fieldTypeNode) {
                 throw new SearchByException(sprintf(
                     'Hmm... Seems `%s` not yet supported :( Please contact to developer.',
                     $fieldType,
                 ));
+            } else {
+                // empty
             }
         }
 

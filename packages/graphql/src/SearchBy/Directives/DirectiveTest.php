@@ -28,6 +28,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Nuwave\Lighthouse\Exceptions\DefinitionException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use ReflectionMethod;
 
@@ -157,6 +158,16 @@ class DirectiveTest extends TestCase {
             ],
             $operators,
         );
+    }
+
+    /**
+     * @covers ::manipulateArgDefinition
+     */
+    public function testManipulateArgDefinitionUnknownType(): void {
+        $this->expectException(DefinitionException::class);
+        $this->expectExceptionMessage('Lighthouse failed while trying to load a type: UnknownType');
+
+        $this->printGraphQLSchema($this->getTestData()->file('~unknown.graphql'));
     }
 
     /**
