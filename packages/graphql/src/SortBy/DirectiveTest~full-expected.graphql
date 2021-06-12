@@ -40,6 +40,12 @@ input SortByClauseProperties {
 
   """Property clause."""
   nestedNotNull: SortByClauseNested
+
+  """Property clause."""
+  enum: SortByDirection
+
+  """Property clause."""
+  enumNotNull: SortByDirection
 }
 
 """Sort direction."""

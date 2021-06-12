@@ -5,12 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
-use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 
-use function is_null;
 use function sprintf;
 use function tap;
 
@@ -79,17 +76,10 @@ class Manipulator extends AstManipulator {
         /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
         foreach ($node->fields as $field) {
             // Is supported?
-            $fieldType       = ASTHelper::getUnderlyingTypeName($field);
             $fieldTypeNode   = $this->getTypeDefinitionNode($field);
-            $fieldDefinition = null;
+            $fieldDefinition = $reference;
 
-            if (is_null($fieldTypeNode)) {
-                $fieldTypeNode = $this->getScalarTypeNode($fieldType);
-            }
-
-            if ($fieldTypeNode instanceof ScalarTypeDefinitionNode) {
-                $fieldDefinition = $reference;
-            } elseif ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
+            if ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
                 $fieldDefinition = Parser::typeReference($this->getInputType($fieldTypeNode));
             } else {
                 // empty
@@ -98,15 +88,13 @@ class Manipulator extends AstManipulator {
             // Create new Field
             // TODO [SortBy] We probably not need all directives from the
             //      original Input type, but cloning is the easiest way...
-            if ($fieldDefinition) {
-                $type->fields[] = tap(
-                    $field->cloneDeep(),
-                    static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
-                        $field->type        = $fieldDefinition;
-                        $field->description = $description;
-                    },
-                );
-            }
+            $type->fields[] = tap(
+                $field->cloneDeep(),
+                static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
+                    $field->type        = $fieldDefinition;
+                    $field->description = $description;
+                },
+            );
         }
 
         // Remove dummy
