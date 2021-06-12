@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use LastDragon_ru\LaraASP\Testing\Providers\Unknown;
+use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LogicException;
 use stdClass;
 
@@ -47,13 +47,13 @@ class ModelHelperTest extends TestCase {
         return (new CompositeDataProvider(
             new ArrayDataProvider([
                 'model'   => [
-                    new Unknown(),
+                    new UnknownValue(),
                     static function (): Model {
                         return new ModelHelperTest__Model();
                     },
                 ],
                 'builder' => [
-                    new Unknown(),
+                    new UnknownValue(),
                     static function (): Builder {
                         return (new ModelHelperTest__Model())->query();
                     },

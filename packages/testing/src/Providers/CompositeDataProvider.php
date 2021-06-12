@@ -35,7 +35,7 @@ use function reset;
  *          '1'         => ['expected final', 'value final'],
  *      ]
  */
-class CompositeDataProvider implements DataProvider {
+class CompositeDataProvider extends BaseDataProvider {
     /**
      * @var array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider>
      */
@@ -60,23 +60,23 @@ class CompositeDataProvider implements DataProvider {
     /**
      * @inheritdoc
      */
-    public function getData(): array {
+    public function getData(bool $raw = false): array {
         $array    = array_reverse($this->getProviders());
         $callback = function (array $previous, DataProvider $current): array {
             $data = [];
 
-            foreach ($current->getData() as $cKey => $cData) {
+            foreach ($current->getData(true) as $cKey => $cData) {
                 $cExpected   = reset($cData);
                 $cParameters = array_slice($cData, 1);
 
                 if ($this->isExpectedFinal($cExpected) || !$previous) {
-                    $data[$cKey] = array_merge([$this->getExpectedValue($cExpected)], $cParameters);
+                    $data[$cKey] = array_merge([$cExpected], $cParameters);
                 } else {
                     foreach ($previous as $pKey => $pData) {
                         $key         = "{$cKey} / {$pKey}";
                         $pExpected   = reset($pData);
                         $pParameters = array_slice($pData, 1);
-                        $data[$key]  = array_merge([$this->getExpectedValue($pExpected)], $cParameters, $pParameters);
+                        $data[$key]  = array_merge([$pExpected], $cParameters, $pParameters);
                     }
                 }
             }
@@ -84,7 +84,7 @@ class CompositeDataProvider implements DataProvider {
             return $data;
         };
 
-        return array_reduce($array, $callback, []);
+        return $this->replaceExpectedValues(array_reduce($array, $callback, []), $raw);
     }
 
     // </editor-fold>
@@ -93,12 +93,6 @@ class CompositeDataProvider implements DataProvider {
     // =========================================================================
     protected function isExpectedFinal(mixed $expected): bool {
         return $expected instanceof ExpectedFinal;
-    }
-
-    protected function getExpectedValue(mixed $expected): mixed {
-        return $expected instanceof ExpectedValue
-            ? $expected->getValue()
-            : $expected;
     }
     // </editor-fold>
 }

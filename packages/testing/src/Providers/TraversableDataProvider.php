@@ -6,7 +6,7 @@ use Traversable;
 
 use function iterator_to_array;
 
-class TraversableDataProvider implements DataProvider {
+class TraversableDataProvider extends BaseDataProvider {
     private Traversable $traversable;
 
     public function __construct(Traversable $traversable) {
@@ -16,7 +16,7 @@ class TraversableDataProvider implements DataProvider {
     /**
      * @return array<mixed>
      */
-    public function getData(): array {
-        return iterator_to_array($this->traversable);
+    public function getData(bool $raw = false): array {
+        return $this->replaceExpectedValues(iterator_to_array($this->traversable), $raw);
     }
 }

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Providers;
 
 use LogicException;
 
-class Unknown extends ExpectedValue {
+class UnknownValue extends ExpectedValue {
     public function __construct() {
         parent::__construct(null);
     }

@@ -24,7 +24,7 @@ namespace LastDragon_ru\LaraASP\Testing\Providers;
  *          '1 / b' => ['expected c', 'value c'],
  *      ]
  */
-class MergeDataProvider implements DataProvider {
+class MergeDataProvider extends BaseDataProvider {
     /**
      * @var array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider>
      */
@@ -52,16 +52,16 @@ class MergeDataProvider implements DataProvider {
     /**
      * @inheritdoc
      */
-    public function getData(): array {
+    public function getData(bool $raw = false): array {
         $data = [];
 
         foreach ($this->getProviders() as $name => $provider) {
-            foreach ($provider->getData() as $k => $v) {
+            foreach ($provider->getData(true) as $k => $v) {
                 $data["{$name} / {$k}"] = $v;
             }
         }
 
-        return $data;
+        return $this->replaceExpectedValues($data, $raw);
     }
     // </editor-fold>
 }

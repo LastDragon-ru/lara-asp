@@ -21,7 +21,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
-use LastDragon_ru\LaraASP\Testing\Providers\Unknown;
+use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 
@@ -180,7 +180,7 @@ class SpaControllerTest extends TestCase {
                 false,
             ],
             'enabled'  => [
-                new Unknown(),
+                new UnknownValue(),
                 true,
             ],
         ]);
@@ -189,11 +189,11 @@ class SpaControllerTest extends TestCase {
     protected function getPrefixDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'without prefix' => [
-                new Unknown(),
+                new UnknownValue(),
                 null,
             ],
             'with prefix'    => [
-                new Unknown(),
+                new UnknownValue(),
                 'spa',
             ],
         ]);
@@ -202,13 +202,13 @@ class SpaControllerTest extends TestCase {
     protected function getAcceptDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'accept html' => [
-                new Unknown(),
+                new UnknownValue(),
                 [
                     'Accept' => 'text/html',
                 ],
             ],
             'accept json' => [
-                new Unknown(),
+                new UnknownValue(),
                 [
                     'Accept' => 'application/json',
                 ],

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Providers;
 
 interface DataProvider {
     /**
-     * @return array<mixed>
+     * @return array<array<mixed>>
      */
-    public function getData(): array;
+    public function getData(bool $raw = false): array;
 }
