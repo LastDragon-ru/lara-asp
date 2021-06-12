@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -30,6 +31,7 @@ class SortBuilder {
         BelongsTo::class,
         HasOne::class,
         MorphOne::class,
+        HasOneThrough::class,
     ];
 
     public function __construct(
@@ -186,6 +188,19 @@ class SortBuilder {
                             $relation->getMorphClass(),
                         );
                     },
+                );
+            } elseif ($relation instanceof HasOneThrough) {
+                $builder = $builder->leftJoinSub(
+                    $relation->getQuery()->select([
+                        "{$relation->getParent()->getQualifiedKeyName()} as {$alias}_id",
+                        $relation->getRelated()->qualifyColumn('*'),
+                    ]),
+                    $alias,
+                    "{$alias}.{$alias}_id",
+                    '=',
+                    $parentAlias
+                        ? "{$parentAlias}.{$relation->getLocalKeyName()}"
+                        : $relation->getQualifiedLocalKeyName(),
                 );
             } else {
                 throw new LogicException('O_o => Please contact to developer.');

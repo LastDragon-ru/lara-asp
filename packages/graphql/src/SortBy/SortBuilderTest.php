@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
@@ -116,7 +117,7 @@ class SortBuilderTest extends TestCase {
                 ]),
             )),
             'Eloquent' => (new ArrayDataProvider([
-                'not a relation'   => [
+                'not a relation'     => [
                     new LogicException(sprintf(
                         'Property `%s` is not a relation.',
                         'delete',
@@ -130,7 +131,7 @@ class SortBuilderTest extends TestCase {
                         ],
                     ],
                 ],
-                'unsupported'      => [
+                'unsupported'        => [
                     new SortLogicException(sprintf(
                         'Relation of type `%s` cannot be used for sort, only `%s` supported.',
                         HasMany::class,
@@ -138,6 +139,7 @@ class SortBuilderTest extends TestCase {
                             BelongsTo::class,
                             HasOne::class,
                             MorphOne::class,
+                            HasOneThrough::class,
                         ]),
                     )),
                     static function (): EloquentBuilder {
@@ -149,7 +151,7 @@ class SortBuilderTest extends TestCase {
                         ],
                     ],
                 ],
-                'simple condition' => [
+                'simple condition'   => [
                     [
                         'sql'      => 'select * from "table_a" order by "table_a"."a" asc, "table_a"."b" desc',
                         'bindings' => [],
@@ -166,7 +168,7 @@ class SortBuilderTest extends TestCase {
                         ],
                     ],
                 ],
-                BelongsTo::class   => [
+                BelongsTo::class     => [
                     [
                         'sql'      => ''.
                             'select'.
@@ -215,7 +217,7 @@ class SortBuilderTest extends TestCase {
                         ],
                     ],
                 ],
-                HasOne::class      => [
+                HasOne::class        => [
                     [
                         'sql'      => ''.
                             'select'.
@@ -265,7 +267,7 @@ class SortBuilderTest extends TestCase {
                         ],
                     ],
                 ],
-                MorphOne::class    => [
+                MorphOne::class      => [
                     [
                         'sql'      => ''.
                             'select'.
@@ -319,6 +321,65 @@ class SortBuilderTest extends TestCase {
                         ],
                     ],
                 ],
+                HasOneThrough::class => [
+                    [
+                        'sql'      => ''.
+                            'select'.
+                            ' "table_a".*,'.
+                            ' "table_alias_0"."name" as "table_alias_0_name",'.
+                            ' "table_alias_0"."created_at" as "table_alias_0_created_at",'.
+                            ' "table_alias_1"."name" as "table_alias_1_name",'.
+                            ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
+                            'from "table_a" '.
+                            'left join ('.
+                            'select'.
+                            ' "table_b"."id" as "table_alias_0_id",'.
+                            ' "table_c".*'.' '.
+                            'from "table_c" '.
+                            'inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"'.
+                            ') as "table_alias_0" on "table_alias_0"."table_alias_0_id" = "table_a"."local_key" '.
+                            'left join ('.
+                            'select'.
+                            ' "table_b"."id" as "table_alias_1_id",'.
+                            ' "table_a".* '.
+                            'from "table_a" '.
+                            'inner join "table_b" on "table_b"."second_local_key" = "table_a"."second_key"'.
+                            ') as "table_alias_1" on "table_alias_1"."table_alias_1_id" = "table_alias_0"."local_key" '.
+                            'order by'.
+                            ' "table_alias_0_name" asc,'.
+                            ' "table_alias_0_created_at" desc,'.
+                            ' "table_alias_1_name" desc,'.
+                            ' "table_alias_1_created_at" desc,'.
+                            ' "table_a"."name" asc',
+                        'bindings' => [
+                            // empty
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return SortBuilderTest__ModelA::query();
+                    },
+                    [
+                        [
+                            'hasOneThroughC' => ['name' => 'asc'],
+                        ],
+                        [
+                            'hasOneThroughC' => ['created_at' => 'desc'],
+                        ],
+                        [
+                            'hasOneThroughC' => [
+                                'hasOneThroughA' => ['name' => 'desc'],
+                            ],
+                        ],
+                        [
+                            'hasOneThroughC' => [
+                                'hasOneThroughA' => ['created_at' => 'desc'],
+                            ],
+                        ],
+                        [
+                            'name' => 'asc',
+                        ],
+                    ],
+                ],
             ])),
         ]))->getData();
     }
@@ -364,6 +425,17 @@ class SortBuilderTest__ModelA extends Model {
         return $this
             ->morphOne(SortBuilderTest__ModelB::class, 'morphable_a')
             ->where('c', '=', 'c');
+    }
+
+    public function hasOneThroughC(): HasOneThrough {
+        return $this->hasOneThrough(
+            SortBuilderTest__ModelC::class,
+            SortBuilderTest__ModelB::class,
+            'first_key',
+            'second_key',
+            'local_key',
+            'second_local_key',
+        );
     }
 
     public function unsupported(): HasMany {
@@ -421,5 +493,16 @@ class SortBuilderTest__ModelC extends Model {
         parent::__construct([
             $this->getKeyName() => 90,
         ]);
+    }
+
+    public function hasOneThroughA(): HasOneThrough {
+        return $this->hasOneThrough(
+            SortBuilderTest__ModelA::class,
+            SortBuilderTest__ModelB::class,
+            'first_key',
+            'second_key',
+            'local_key',
+            'second_local_key',
+        );
     }
 }
