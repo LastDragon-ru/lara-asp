@@ -1,0 +1,56 @@
+enum EnumCreateProgrammatically {
+  """test property"""
+  property
+}
+
+input InputA {
+  enum: EnumCreateProgrammatically
+}
+
+type Query {
+  a(where: SearchByConditionInputA): ID!
+}
+
+"""
+Available conditions for input InputA (only one property allowed at a time).
+"""
+input SearchByConditionInputA {
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionInputA!]
+
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionInputA!]
+
+  """Not."""
+  not: SearchByConditionInputA
+
+  """Property condition."""
+  enum: SearchByEnumEnumCreateProgrammaticallyOrNull
+}
+
+"""
+Available operators for enum EnumCreateProgrammatically (only one operator allowed at a time).
+"""
+input SearchByEnumEnumCreateProgrammaticallyOrNull {
+  """Equal (`=`)."""
+  equal: EnumCreateProgrammatically
+
+  """Not Equal (`!=`)."""
+  notEqual: EnumCreateProgrammatically
+
+  """Within a set of values."""
+  in: [EnumCreateProgrammatically!]
+
+  """Outside a set of values."""
+  notIn: [EnumCreateProgrammatically!]
+
+  """Is NULL?"""
+  isNull: SearchByTypeFlag
+
+  """Is NOT NULL?"""
+  isNotNull: SearchByTypeFlag
+}
+
+enum SearchByTypeFlag {
+  yes
+}

@@ -1,0 +1,7 @@
+type Query {
+  a(where: InputA @searchBy): ID! @all
+}
+
+input InputA {
+  enum: EnumCreateProgrammatically
+}

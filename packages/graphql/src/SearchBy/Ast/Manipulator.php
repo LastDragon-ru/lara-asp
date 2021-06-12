@@ -10,6 +10,8 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\ScalarType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
@@ -25,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_map;
 use function array_shift;
@@ -43,6 +46,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         DocumentAST $document,
         Repository $metadata,
         protected Container $container,
+        protected TypeRegistry $types,
     ) {
         $this->metadata = $metadata->get($document);
 
@@ -167,16 +171,33 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 ));
             }
 
-            // Create Type for Search
+            // Determine type
             $fieldType       = ASTHelper::getUnderlyingTypeName($field);
             $fieldNullable   = !($field->type instanceof NonNullTypeNode);
             $fieldTypeNode   = $this->getTypeDefinitionNode($field);
             $fieldDefinition = null;
 
             if (is_null($fieldTypeNode)) {
-                $fieldTypeNode = $this->getScalarTypeNode($fieldType);
+                $fieldTypeDefinition = null;
+
+                if ($this->types->has($fieldType)) {
+                    $fieldTypeDefinition = $this->types->get($fieldType);
+                }
+
+                if ($fieldTypeDefinition && $fieldTypeDefinition->astNode) {
+                    $fieldTypeNode = $fieldTypeDefinition->astNode;
+                } elseif ($fieldTypeDefinition instanceof EnumType) {
+                    $fieldTypeNode = $this->getFakeEnumTypeNode($fieldType);
+                } elseif ($fieldTypeDefinition instanceof ScalarType) {
+                    $fieldTypeNode = $this->getScalarTypeNode($fieldType);
+                } elseif ($this->metadata->isScalar($fieldType)) {
+                    $fieldTypeNode = $this->getScalarTypeNode($fieldType);
+                } else {
+                    // empty
+                }
             }
 
+            // Create Type for Search
             if ($fieldTypeNode instanceof ScalarTypeDefinitionNode) {
                 $fieldDefinition = $this->getScalarType($fieldTypeNode, $fieldNullable);
             } elseif ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
@@ -486,6 +507,16 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Remove
         unset($this->document->types[$name]);
+    }
+
+    public function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
+        // TODO [GraphQL] Is there any better way for this?
+        return Parser::scalarTypeDefinition("scalar {$scalar}");
+    }
+
+    protected function getFakeEnumTypeNode(string $scalar): EnumTypeDefinitionNode {
+        // TODO [GraphQL] Is there any better way for this?
+        return Parser::enumTypeDefinition("enum {$scalar} { fake }");
     }
     // </editor-fold>
 }

@@ -3,9 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL;
 
 use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
-use GraphQL\Language\Parser;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -62,11 +60,6 @@ abstract class AstManipulator {
         $this->document->setTypeDefinition($definition);
 
         return $definition;
-    }
-
-    public function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
-        // TODO [GraphQL] Is there any better way for this?
-        return Parser::scalarTypeDefinition("scalar {$scalar}");
     }
 
     /**

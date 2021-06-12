@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
@@ -30,6 +31,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Exceptions\DefinitionException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\TypeRegistry;
 use ReflectionMethod;
 
 use function sort;
@@ -168,6 +170,26 @@ class DirectiveTest extends TestCase {
         $this->expectExceptionMessage('Lighthouse failed while trying to load a type: UnknownType');
 
         $this->printGraphQLSchema($this->getTestData()->file('~unknown.graphql'));
+    }
+
+    /**
+     * @covers ::manipulateArgDefinition
+     */
+    public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {
+        $this->app->make(TypeRegistry::class)->register(new EnumType([
+            'name'   => 'EnumCreateProgrammatically',
+            'values' => [
+                'property' => [
+                    'value'       => 123,
+                    'description' => 'test property',
+                ],
+            ],
+        ]));
+
+        $this->assertGraphQLSchemaEquals(
+            $this->getTestData()->file('~programmatically-expected.graphql'),
+            $this->getTestData()->file('~programmatically.graphql'),
+        );
     }
 
     /**
