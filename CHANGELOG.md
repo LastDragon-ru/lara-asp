@@ -1,3 +1,11 @@
+### [0.6.1](https://github.com/LastDragon-ru/lara-asp/compare/0.6.0...0.6.1) (2021-06-26)
+
+
+### Bug Fixes
+
+* **testing:** `JsonSchemaWrapper::__construct()` will correctly handle `JsonSchemaWrapper $schema`. ([85ea05f](https://github.com/LastDragon-ru/lara-asp/commit/85ea05fd3748fcf7c5d13aca6d6360e30d7de7bb))
+* **testing:** TypeError : Symfony\Component\HttpFoundation\HeaderUtils::parseQuery(): Argument #1 ($query) must be of type string, null given ([9646143](https://github.com/LastDragon-ru/lara-asp/commit/9646143207dc399e3f0b7452cb52f720f69b22f2))
+
 ## [0.6.0](https://github.com/LastDragon-ru/lara-asp/compare/0.5.0...0.6.0) (2021-06-12)
 
 
