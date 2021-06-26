@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 
 class LessThan extends BaseOperator implements ComparisonOperator {
     public function getName(): string {
-        return 'lt';
+        return 'lessThan';
     }
 
     protected function getDescription(): string {
