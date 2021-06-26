@@ -89,7 +89,7 @@ class Protocol {
         //
         // Uri::parseQueryString() cannot be used because of
         // https://github.com/opis/uri/issues/1
-        $params = HeaderUtils::parseQuery($uri->query());
+        $params = HeaderUtils::parseQuery((string) $uri->query());
         $schema = file_get_contents($file->getPathname());
         $schema = (new Template($schema))->build($params);
 
