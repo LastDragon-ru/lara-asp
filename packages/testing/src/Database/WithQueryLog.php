@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\Testing\Database;
 /**
  * Enable QueryLog (the {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits} is required).
  *
+ * @deprecated Please use {@link \LastDragon_ru\LaraASP\Testing\Database\QueryLog} instead.
+ *
  * @required {@link \Illuminate\Foundation\Testing\TestCase}
  * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
  *
