@@ -63,13 +63,7 @@ class Relation implements ComplexOperator {
                 count: {$count}
 
                 """
-                Shortcut for `doesntHave()`, same as:
-
-                ```
-                count: {
-                  lt: 1
-                }
-                ```
+                Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
                 """
                 not: Boolean! = false
             }
@@ -100,7 +94,7 @@ class Relation implements ComplexOperator {
         // Possible variants:
         // * where                = whereHas
         // * where + not          = doesntHave
-        // * has + not + operator = error
+        // * has + not + operator = error?
 
         // Conditions & Not
         $relation = (new ModelHelper($builder))->getRelation($property);
