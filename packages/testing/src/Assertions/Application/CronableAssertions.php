@@ -7,10 +7,12 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
+use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 
 use function array_filter;
 use function count;
+use function is_object;
 use function is_subclass_of;
 use function sprintf;
 use function str_contains;
@@ -48,13 +50,14 @@ trait CronableAssertions {
     }
 
     /**
-     * @param class-string<\LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable> $queueable
-     * @param array<string, mixed>                                                       $settings
+     * @param \LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable
+     *      |class-string<\LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable> $queueable
+     * @param array<string, mixed> $settings
      */
-    protected function setQueueableConfig(string $queueable, array $settings): void {
+    protected function setQueueableConfig(ConfigurableQueueable|string $queueable, array $settings): void {
         $config = $this->app->make(Repository::class);
         $merger = new ConfigMerger();
-        $key    = sprintf('queue.queueables.%s', $queueable);
+        $key    = sprintf('queue.queueables.%s', is_object($queueable) ? $queueable::class : $queueable);
         $target = [ConfigMerger::Strict => false] + (array) $config->get($key);
 
         $config->set($key, $merger->merge($target, $settings));
