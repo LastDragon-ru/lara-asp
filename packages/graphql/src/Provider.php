@@ -30,13 +30,13 @@ class Provider extends ServiceProvider {
         $this->bootConfig();
         $this->bootTranslations();
         $this->bootDirectives($dispatcher);
+        $this->bootEnums();
     }
 
     public function register(): void {
         parent::register();
 
         $this->registerSearchByDirective();
-        $this->registerEnums();
     }
 
     protected function bootDirectives(Dispatcher $dispatcher): void {
@@ -69,7 +69,7 @@ class Provider extends ServiceProvider {
         });
     }
 
-    protected function registerEnums(): void {
+    protected function bootEnums(): void {
         $registry = $this->app->make(TypeRegistry::class);
         $enums    = (array) $this->app->make(Repository::class)->get("{$this->getName()}.enums");
 
