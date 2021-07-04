@@ -3,7 +3,9 @@
 namespace LastDragon_ru\LaraASP\Queue;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Foundation\Bus\PendingDispatch;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
@@ -21,21 +23,14 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
 class CronableRegistrator {
-    protected Application           $app;
-    protected LoggerInterface       $logger;
-    protected Schedule              $schedule;
-    protected QueueableConfigurator $configurator;
-
     public function __construct(
-        Application $app,
-        Schedule $schedule,
-        QueueableConfigurator $configurator,
-        LoggerInterface $logger,
+        protected Application $application,
+        protected Repository $config,
+        protected Schedule $schedule,
+        protected QueueableConfigurator $configurator,
+        protected LoggerInterface $logger,
     ) {
-        $this->app          = $app;
-        $this->logger       = $logger;
-        $this->schedule     = $schedule;
-        $this->configurator = $configurator;
+        // empty
     }
 
     /**
@@ -48,18 +43,18 @@ class CronableRegistrator {
         // Cronable?
         if (!is_subclass_of($cronable, Cronable::class, true)) {
             throw new InvalidArgumentException(
-                sprintf('The $cronable must implement %s.', Cronable::class),
+                sprintf('The `$cronable` must implement %s.', Cronable::class),
             );
         }
 
         // Registration only makes sense when the app running in console.
-        if (!$this->app->runningInConsole()) {
+        if (!$this->application->runningInConsole()) {
             throw new LogicException('The application is not running in console.');
         }
 
         // Enabled?
         /** @var \LastDragon_ru\LaraASP\Queue\Contracts\Cronable $job */
-        $job        = $this->app->make($cronable);
+        $job        = $this->application->make($cronable);
         $config     = $this->configurator->config($job);
         $cron       = $config->get(CronableConfig::Cron);
         $debug      = $config->get(CronableConfig::Debug);
@@ -80,6 +75,13 @@ class CronableRegistrator {
             return;
         }
 
+        // Should?
+        if (!$this->shouldDispatch($job)) {
+            if ($debug) {
+                $this->logger->info('Cron job already dispatched.', $properties);
+            }
+        }
+
         // Register
         $this
             ->schedule
@@ -88,7 +90,7 @@ class CronableRegistrator {
             ->description($this->getDescription($cronable, $job, $config))
             ->after(function () use ($debug, $properties): void {
                 if ($debug) {
-                    $this->logger->info('Cron job was dispatched successfully', $properties);
+                    $this->logger->info('Cron job was dispatched successfully.', $properties);
                 }
             });
     }
@@ -99,7 +101,7 @@ class CronableRegistrator {
         $overridden  = $cronable !== $actual;
         $description = $cronable;
 
-        if ($overridden && $this->app->make('config')->get('app.debug')) {
+        if ($overridden && $this->config->get('app.debug')) {
             $description .= " (overridden by {$actual})";
         }
 
@@ -119,5 +121,17 @@ class CronableRegistrator {
         unset($settings['cron']);
 
         return $settings;
+    }
+
+    protected function shouldDispatch(Cronable $cronable): bool {
+        return (new class($cronable) extends PendingDispatch {
+            public function __destruct() {
+                // empty
+            }
+
+            public function shouldDispatch(): bool {
+                return parent::shouldDispatch();
+            }
+        })->shouldDispatch();
     }
 }
