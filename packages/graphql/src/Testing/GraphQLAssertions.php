@@ -56,7 +56,7 @@ trait GraphQLAssertions {
     protected function getGraphQLSchema(SplFileInfo|string $schema): Schema {
         $schema = Args::content($schema);
 
-        $this->app->bind(SchemaSourceProvider::class, static function () use ($schema): SchemaSourceProvider {
+        $this->override(SchemaSourceProvider::class, static function () use ($schema): SchemaSourceProvider {
             return new TestSchemaProvider($schema);
         });
 
@@ -67,7 +67,7 @@ trait GraphQLAssertions {
     }
 
     protected function getDefaultGraphQLSchema(): Schema {
-        $this->app->bind(SchemaSourceProvider::class, function (): SchemaSourceProvider {
+        $this->override(SchemaSourceProvider::class, function (): SchemaSourceProvider {
             return new SchemaStitcher(
                 $this->app->make(Repository::class)->get('lighthouse.schema.register', ''),
             );

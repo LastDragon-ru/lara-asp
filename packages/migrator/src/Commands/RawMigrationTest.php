@@ -30,7 +30,7 @@ class RawMigrationTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $this->app->bind(Composer::class, static function () use ($composer) {
+        $this->override(Composer::class, static function () use ($composer) {
             return $composer;
         });
 

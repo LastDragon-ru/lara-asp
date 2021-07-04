@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
@@ -54,5 +55,9 @@ class TestCase extends PackageTestCase {
             'sql'      => $sql,
             'bindings' => $builder->getBindings(),
         ];
+    }
+
+    public function getContainer(): Container {
+        return parent::getContainer();
     }
 }

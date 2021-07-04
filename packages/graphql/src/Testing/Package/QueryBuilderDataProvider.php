@@ -12,7 +12,7 @@ class QueryBuilderDataProvider extends ArrayDataProvider {
             'Builder' => [
                 new UnknownValue(),
                 static function (TestCase $test): QueryBuilder {
-                    return $test->getApplication()->make('db')->table('tmp');
+                    return $test->getContainer()->make('db')->table('tmp');
                 },
             ],
         ]);

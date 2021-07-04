@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Package;
 
-use Illuminate\Foundation\Application;
+use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Testing\Assertions\Assertions;
 use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
 use LastDragon_ru\LaraASP\Testing\SetUpTraits;
@@ -16,7 +16,7 @@ use Orchestra\Testbench\TestCase as TestbenchTestCase;
  *
  * @required orchestra/testbench package
  */
-class TestCase extends TestbenchTestCase {
+abstract class TestCase extends TestbenchTestCase {
     use SetUpTraits;
     use Assertions;
     use Concerns;
@@ -24,7 +24,7 @@ class TestCase extends TestbenchTestCase {
     use WithTempFile;
     use WithTempDirectory;
 
-    public function getApplication(): Application {
+    protected function getContainer(): Container {
         return $this->app;
     }
 }
