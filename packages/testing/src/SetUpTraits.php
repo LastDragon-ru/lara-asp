@@ -51,7 +51,6 @@ trait SetUpTraits {
 
     protected function setUp(): void {
         // Parent
-        /** @noinspection PhpUndefinedClassInspection */
         parent::setUp();
 
         // Set traits Up
@@ -71,7 +70,6 @@ trait SetUpTraits {
         }
 
         // Parent
-        /** @noinspection PhpUndefinedClassInspection */
         parent::tearDown();
     }
 }
