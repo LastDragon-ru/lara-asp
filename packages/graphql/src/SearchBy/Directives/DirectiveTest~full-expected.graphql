@@ -59,9 +59,14 @@ input SearchByComplexRelationNestedA {
   count: SearchByScalarInt
 
   """
+  Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+  """
+  exists: Boolean
+
+  """
   Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
   """
-  not: Boolean! = false
+  notExists: Boolean! = false
 
   """Complex operator marker."""
   relation: SearchByTypeFlag! = yes
@@ -82,9 +87,14 @@ input SearchByComplexRelationNestedB {
   count: SearchByScalarInt
 
   """
+  Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+  """
+  exists: Boolean
+
+  """
   Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
   """
-  not: Boolean! = false
+  notExists: Boolean! = false
 
   """Complex operator marker."""
   relation: SearchByTypeFlag! = yes
@@ -105,9 +115,14 @@ input SearchByComplexRelationNestedC {
   count: SearchByScalarInt
 
   """
+  Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+  """
+  exists: Boolean
+
+  """
   Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
   """
-  not: Boolean! = false
+  notExists: Boolean! = false
 
   """Complex operator marker."""
   relation: SearchByTypeFlag! = yes

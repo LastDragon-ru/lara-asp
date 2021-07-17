@@ -63,9 +63,14 @@ class Relation implements ComplexOperator {
                 count: {$count}
 
                 """
+                Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+                """
+                exists: Boolean
+
+                """
                 Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
                 """
-                not: Boolean! = false
+                notExists: Boolean! = false
             }
             DEF,
         );
@@ -92,14 +97,14 @@ class Relation implements ComplexOperator {
         }
 
         // Possible variants:
-        // * where                = whereHas
-        // * where + not          = doesntHave
-        // * has + not + operator = error?
+        // * where                      = whereHas
+        // * where + notExists          = doesntHave
+        // * has + notExists + operator = error?
 
-        // Conditions & Not
-        $relation = (new ModelHelper($builder))->getRelation($property);
-        $has      = $conditions['where'] ?? null;
-        $not      = (bool) ($conditions['not'] ?? false);
+        // Conditions
+        $relation  = (new ModelHelper($builder))->getRelation($property);
+        $has       = $conditions['where'] ?? null;
+        $notExists = (bool) ($conditions['notExists'] ?? false);
 
         // Build
         $alias    = $relation->getRelationCountHash(false);
@@ -112,7 +117,7 @@ class Relation implements ComplexOperator {
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;
-        } elseif ($not) {
+        } elseif ($notExists) {
             $count    = 1;
             $operator = '<';
         } else {

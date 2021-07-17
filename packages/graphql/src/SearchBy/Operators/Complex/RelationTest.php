@@ -106,7 +106,24 @@ class RelationTest extends TestCase {
                     'relation' => 'yes',
                 ],
             ],
-            '{relation: yes, not: yes}'                              => [
+            '{relation: yes, exists: true}'                          => [
+                [
+                    'sql'      => 'select * from "table_a" where exists ('.
+                        'select * from "table_b" '.
+                        'where "table_a"."id" = "table_b"."table_a_id"'.
+                        ')',
+                    'bindings' => [],
+                ],
+                static function (): EloquentBuilder {
+                    return RelationTest__ModelA::query();
+                },
+                'test',
+                [
+                    'relation' => 'yes',
+                    'exists'   => true,
+                ],
+            ],
+            '{relation: yes, notExists: true}'                       => [
                 [
                     'sql'      => 'select * from "table_a" where not exists ('.
                         'select * from "table_b" '.
@@ -119,8 +136,8 @@ class RelationTest extends TestCase {
                 },
                 'test',
                 [
-                    'relation' => 'yes',
-                    'not'      => true,
+                    'relation'  => 'yes',
+                    'notExists' => true,
                 ],
             ],
             '{relation: {property: {equal: 1}}}'                     => [
