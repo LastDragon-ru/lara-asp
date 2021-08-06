@@ -15,14 +15,9 @@ use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortLogicException;
 use LogicException;
 
-use function array_keys;
-use function count;
 use function implode;
 use function in_array;
 use function is_a;
-use function is_array;
-use function key;
-use function reset;
 
 class DatabaseBuilder {
     /**
@@ -65,10 +60,10 @@ class DatabaseBuilder {
     ): EloquentBuilder|QueryBuilder {
         foreach ((array) $clauses as $clause) {
             $clause = new SortClause($clause);
-            $column = $clause->getName();
+            $column = $clause->getColumn();
 
             if ($clause->isRelation()) {
-                $builder = $this->processRelation($builder, $stack, $column, $clause->getClauses());
+                $builder = $this->processRelation($builder, $stack, $column, $clause->getChild());
             } else {
                 $builder = $this->processColumn($builder, $stack, $column, $clause->getDirection());
             }

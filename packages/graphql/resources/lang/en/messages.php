@@ -16,8 +16,6 @@ return [
         'errors' => [
             'unsupported_relation' => 'Relation of type `:relation` cannot be used for sort, only `:supported` supported.',
             'unsupported_builder'  => 'Relation cannot be used with `:builder`.',
-            'too_many_properties'  => 'Only one property allowed, found: `:properties`.',
-            'empty_clause'         => 'Sort clause cannot be empty.',
         ],
     ],
 ];
