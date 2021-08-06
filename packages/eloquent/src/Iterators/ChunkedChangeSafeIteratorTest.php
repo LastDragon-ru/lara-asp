@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
+use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
 
 use function count;
@@ -31,12 +31,17 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
-        $spy      = Mockery::spy(static fn() => null);
-        $db       = $this->app->make('db');
-        $query    = TestObject::query()->orderByDesc('value');
-        $count    = count($db->getQueryLog());
-        $iterator = (new ChunkedChangeSafeIterator(2, $query))->each(Closure::fromCallable($spy));
-        $actual   = [];
+        $spyBefore = Mockery::spy(static fn() => null);
+        $spyAfter  = Mockery::spy(static fn() => null);
+        $db        = $this->app->make('db');
+        $log       = $this->getQueryLog($db);
+        $query     = TestObject::query()->orderByDesc('value');
+        $count     = count($log);
+        $iterator  = (new ChunkedChangeSafeIterator($query))
+            ->setChunkSize(2)
+            ->onBeforeChunk(Closure::fromCallable($spyBefore))
+            ->onAfterChunk(Closure::fromCallable($spyAfter));
+        $actual    = [];
 
         foreach ($iterator as $model) {
             $actual[] = $model;
@@ -46,7 +51,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
             }
         }
 
-        $count    = count($db->getQueryLog()) - $count;
+        $count    = count($log) - $count;
         $key      = (new TestObject())->getKeyName();
         $expected = (clone $query)->reorder($key)->get()->all();
 
@@ -58,29 +63,49 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         // 4 - third chunk (because second chunk returned value)
         // 5 - last empty chunk (because third chunk returned value)
 
-        $spy
+        $spyBefore
             ->shouldHaveBeenCalled()
             ->withArgs(static function (Collection $items): bool {
                 return $items->count() >= 1;
             })
             ->times(3);
+        $spyBefore
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Collection $items): bool {
+                return $items->isEmpty();
+            })
+            ->once();
+        $spyAfter
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Collection $items): bool {
+                return $items->count() >= 1;
+            })
+            ->times(3);
+        $spyAfter
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Collection $items): bool {
+                return $items->isEmpty();
+            })
+            ->once();
     }
 
     /**
      * @covers ::getIterator
+     * @covers ::getDefaultLimit
+     * @covers ::getDefaultOffset
      */
-    public function testGetIteratorLimit(): void {
+    public function testGetIteratorQueryDefaults(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
         $db       = $this->app->make('db');
         $table    = (new TestObject())->getTable();
-        $query    = $db->table($table)->select()->limit(2)->orderByDesc('value');
-        $iterator = new ChunkedChangeSafeIterator(1, $query);
+        $query    = $db->table($table)->select()->limit(2)->offset(1)->orderByDesc('value');
+        $iterator = (new ChunkedChangeSafeIterator($query, 'value'))->setChunkSize(1);
         $actual   = iterator_to_array($iterator);
-        $count    = (clone $query)->count();
-        $expected = (clone $query)->reorder()->orderBy('id')->limit(2)->get()->all();
+        $count    = (clone $query)->offset(0)->count();
+        $expected = (clone $query)->reorder()->offset(0)->orderBy('value')->limit(2)->get()->all();
 
         $this->assertEquals(3, $count);
         $this->assertCount(2, $actual);
@@ -89,17 +114,19 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
 
     /**
      * @covers ::getIterator
+     * @covers ::getDefaultLimit
+     * @covers ::getDefaultOffset
      */
-    public function testGetIteratorLimitEloquent(): void {
+    public function testGetIteratorEloquentDefaults(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
-        $query    = TestObject::query()->limit(2)->orderByDesc('value');
-        $iterator = new ChunkedChangeSafeIterator(1, $query);
+        $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
+        $iterator = (new ChunkedChangeSafeIterator($query, 'value'))->setChunkSize(1);
         $actual   = iterator_to_array($iterator);
-        $count    = (clone $query)->count();
-        $expected = (clone $query)->reorder()->orderByKey()->limit(2)->get()->all();
+        $count    = (clone $query)->offset(0)->count();
+        $expected = (clone $query)->reorder()->offset(0)->orderBy('value')->limit(2)->get()->all();
 
         $this->assertEquals(3, $count);
         $this->assertCount(2, $actual);
@@ -112,6 +139,6 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     public function testGetIteratorUnion(): void {
         $this->expectExceptionObject(new InvalidArgumentException('Queries with UNION is not supported.'));
 
-        new ChunkedChangeSafeIterator(1, TestObject::query()->union(TestObject::query()->toBase()));
+        new ChunkedChangeSafeIterator(TestObject::query()->union(TestObject::query()->toBase()));
     }
 }

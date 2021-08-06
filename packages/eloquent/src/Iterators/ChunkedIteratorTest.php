@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Testing\Database\WithQueryLog;
+use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
 
 use function count;
@@ -30,41 +30,65 @@ class ChunkedIteratorTest extends TestCase {
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
-        $spy      = Mockery::spy(static fn() => null);
-        $db       = $this->app->make('db');
-        $table    = (new TestObject())->getTable();
-        $query    = $db->table($table)->select()->orderByDesc('value');
-        $expected = (clone $query)->get()->all();
-        $count    = count($db->getQueryLog());
-        $iterator = (new ChunkedIterator(2, $query))->each(Closure::fromCallable($spy));
-        $actual   = iterator_to_array($iterator);
+        $spyBefore = Mockery::spy(static fn() => null);
+        $spyAfter  = Mockery::spy(static fn() => null);
+        $db        = $this->app->make('db');
+        $log       = $this->getQueryLog($db);
+        $table     = (new TestObject())->getTable();
+        $query     = $db->table($table)->select()->orderByDesc('value');
+        $expected  = (clone $query)->get()->all();
+        $count     = count($log);
+        $iterator  = (new ChunkedIterator($query))
+            ->onBeforeChunk(Closure::fromCallable($spyBefore))
+            ->onAfterChunk(Closure::fromCallable($spyAfter));
+        $actual    = iterator_to_array($iterator);
 
         $this->assertEquals($expected, $actual);
-        $this->assertEquals(2, count($db->getQueryLog()) - $count);
+        $this->assertEquals(2, count($log) - $count);
 
-        $spy
+        $spyBefore
             ->shouldHaveBeenCalled()
             ->withArgs(static function (Collection $items): bool {
-                return $items->count() >= 1;
+                return $items->count() === 3;
             })
-            ->twice();
+            ->once();
+        $spyBefore
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Collection $items): bool {
+                return $items->isEmpty();
+            })
+            ->once();
+        $spyAfter
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Collection $items): bool {
+                return $items->count() === 3;
+            })
+            ->once();
+        $spyAfter
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Collection $items): bool {
+                return $items->isEmpty();
+            })
+            ->once();
     }
 
     /**
      * @covers ::getIterator
+     * @covers ::getDefaultLimit
+     * @covers ::getDefaultOffset
      */
-    public function testGetIteratorLimit(): void {
+    public function testGetIteratorQueryDefaults(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
         $db       = $this->app->make('db');
         $table    = (new TestObject())->getTable();
-        $query    = $db->table($table)->select()->limit(2)->orderByDesc('value');
-        $iterator = new ChunkedIterator(1, $query);
+        $query    = $db->table($table)->limit(2)->offset(1)->orderByDesc('value');
+        $iterator = (new ChunkedIterator($query))->setChunkSize(1);
         $actual   = iterator_to_array($iterator);
-        $count    = (clone $query)->count();
-        $expected = (clone $query)->limit(2)->get()->all();
+        $count    = (clone $query)->offset(0)->count();
+        $expected = (clone $query)->get()->all();
 
         $this->assertEquals(3, $count);
         $this->assertCount(2, $actual);
@@ -73,17 +97,19 @@ class ChunkedIteratorTest extends TestCase {
 
     /**
      * @covers ::getIterator
+     * @covers ::getDefaultLimit
+     * @covers ::getDefaultOffset
      */
-    public function testGetIteratorLimitEloquent(): void {
+    public function testGetIteratorEloquentDefaults(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
-        $query    = TestObject::query()->limit(2)->orderByDesc('value');
-        $iterator = new ChunkedIterator(1, $query);
+        $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
+        $iterator = (new ChunkedIterator($query))->setChunkSize(1);
         $actual   = iterator_to_array($iterator);
-        $count    = (clone $query)->count();
-        $expected = (clone $query)->limit(2)->get()->all();
+        $count    = (clone $query)->offset(0)->count();
+        $expected = (clone $query)->get()->all();
 
         $this->assertEquals(3, $count);
         $this->assertCount(2, $actual);
@@ -102,7 +128,7 @@ class ChunkedIteratorTest extends TestCase {
 
         $query    = TestObject::query()->where('value', '<', 4)->limit(2)->orderByDesc('value');
         $second   = TestObject::query()->where('value', '>=', 4)->limit(2)->orderByDesc('value');
-        $iterator = new ChunkedIterator(1, $query->union($second->toBase()));
+        $iterator = new ChunkedIterator($query->union($second->toBase()));
         $actual   = iterator_to_array($iterator);
         $count    = (clone $query)->count();
         $expected = (clone $query)->get()->all();
@@ -114,6 +140,8 @@ class ChunkedIteratorTest extends TestCase {
 
     /**
      * @covers ::getIterator
+     * @covers ::getDefaultLimit
+     * @covers ::getDefaultOffset
      */
     public function testGetIteratorUnionLimit(): void {
         TestObject::factory()->create(['value' => '1']);
@@ -124,9 +152,9 @@ class ChunkedIteratorTest extends TestCase {
 
         $query    = TestObject::query()->where('value', '<', 4)->limit(2)->orderByDesc('value');
         $second   = TestObject::query()->where('value', '>=', 4)->limit(2)->orderByDesc('value');
-        $iterator = new ChunkedIterator(1, $query->union($second->toBase())->limit(3));
+        $iterator = new ChunkedIterator($query->union($second->toBase())->limit(3)->offset(1));
         $actual   = iterator_to_array($iterator);
-        $count    = (clone $query)->count();
+        $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 
         $this->assertCount(3, $actual);

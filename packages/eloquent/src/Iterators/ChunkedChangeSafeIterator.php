@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use stdClass;
-use Traversable;
 
 use function is_array;
 use function is_object;
@@ -36,15 +36,15 @@ use function is_object;
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()
  * @see https://github.com/laravel/framework/issues/35400
  */
-class ChunkedChangeSafeIterator extends Iterator {
+class ChunkedChangeSafeIterator extends IteratorImpl {
     private string $column;
 
-    public function __construct(int $chunk, QueryBuilder|EloquentBuilder $builder, string $column = null) {
-        parent::__construct($chunk, $builder);
+    public function __construct(QueryBuilder|EloquentBuilder $builder, string $column = null) {
+        parent::__construct($builder);
 
         $this->column = $column ?? $builder->getDefaultKeyName();
 
-        // Unfortunately the `forPageAfterId()` doesn't correctly work with UNION,
+        // Unfortunately the Laravel doesn't correctly work with UNION,
         // it just adds conditional to the main query, and this leads to an
         // infinite loop.
         if ($this->hasUnions($builder)) {
@@ -52,46 +52,50 @@ class ChunkedChangeSafeIterator extends Iterator {
         }
     }
 
-    public function getIterator(): Traversable {
-        $last  = null;
-        $index = 0;
-        $limit = $this->getLimit($this->builder);
+    public function getColumn(): string {
+        return $this->column;
+    }
 
-        do {
-            $items = (clone $this->builder)
-                ->reorder()
-                ->forPageAfterId($this->chunk, $last, $this->column)
-                ->get();
-            $count = $items->count();
-            $last  = $this->column($items->last());
+    protected function getChunk(EloquentBuilder|QueryBuilder $builder, int $chunk): Collection {
+        $column  = $this->getColumn();
+        $builder = $builder->reorder()->orderBy($column, 'asc')->limit($chunk);
 
-            if ($this->each) {
-                ($this->each)($items);
-            }
+        if ($this->getOffset()) {
+            $builder->where($column, '>', $this->getOffset());
+        }
 
-            foreach ($items as $item) {
-                yield $index++ => $item;
+        return $builder->get();
+    }
 
-                if ($index >= $limit) {
-                    break 2;
-                }
-            }
+    protected function chunkProcessed(Collection $items): bool {
+        $last     = $this->column($items->last());
+        $continue = $last && $this->setOffset($last);
 
-            // The '0' here to select rows that may be created while iteration
-        } while ($count > 0);
+        return parent::chunkProcessed($items)
+            && $continue;
     }
 
     protected function column(Model|stdClass|array|null $item): mixed {
-        $value = null;
+        $value  = null;
+        $column = $this->getColumn();
 
         if (is_object($item)) {
-            $value = $item->{$this->column};
+            $value = $item->{$column};
         } elseif (is_array($item)) {
-            $value = $item[$this->column];
+            $value = $item[$column];
         } else {
             // empty
         }
 
         return $value;
+    }
+
+    protected function hasUnions(QueryBuilder|EloquentBuilder $query): bool {
+        return (bool) $this->getQueryBuilder($query)->unions;
+    }
+
+    protected function getDefaultOffset(EloquentBuilder|QueryBuilder $builder): ?int {
+        // Because Builder contains SQL offset, not column value.
+        return null;
     }
 }

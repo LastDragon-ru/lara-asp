@@ -18,9 +18,15 @@ class QueryBuilderMixin {
     }
 
     public function iterator(): Closure {
-        return function (int $chunk = 100): Traversable {
+        return function (int $chunk = null): Traversable {
             /** @var \Illuminate\Database\Query\Builder $this */
-            return new ChunkedIterator($chunk, $this);
+            $iterator = new ChunkedIterator($this);
+
+            if ($chunk) {
+                $iterator->setChunkSize($chunk);
+            }
+
+            return $iterator;
         };
     }
 }

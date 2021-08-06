@@ -2,7 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
-use Traversable;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Collection;
+
+use function count;
 
 /**
  * The iterator that grabs rows by chunk.
@@ -17,35 +21,26 @@ use Traversable;
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  */
-class ChunkedIterator extends Iterator {
-    public function getIterator(): Traversable {
-        $page  = 0;
-        $index = 0;
-        $limit = $this->getLimit($this->builder);
-
-        do {
-            $page  = $page + 1;
-            $items = $this->builder->forPage($page, $this->chunk)->get();
-            $count = $items->count();
-
-            if ($this->each) {
-                ($this->each)($items);
-            }
-
-            foreach ($items as $item) {
-                yield $index++ => $item;
-
-                if ($index >= $limit) {
-                    break 2;
-                }
-            }
-        } while ($count >= $this->chunk);
-    }
-
+class ChunkedIterator extends IteratorImpl {
     /**
      * Returns change safe iterator.
      */
     public function safe(string $column = null): ChunkedChangeSafeIterator {
-        return (new ChunkedChangeSafeIterator($this->chunk, $this->builder, $column))->each($this->each);
+        return (new ChunkedChangeSafeIterator($this->builder, $column))
+            ->setLimit($this->getLimit())
+            ->setOffset($this->getOffset())
+            ->setChunkSize($this->getChunkSize())
+            ->onBeforeChunk($this->beforeChunk)
+            ->onAfterChunk($this->afterChunk);
+    }
+
+    protected function getChunk(EloquentBuilder|QueryBuilder $builder, int $chunk): Collection {
+        return $builder->offset($this->getOffset())->limit($chunk)->get();
+    }
+
+    protected function chunkProcessed(Collection $items): bool {
+        $this->setOffset($this->getOffset() + count($items));
+
+        return parent::chunkProcessed($items);
     }
 }
