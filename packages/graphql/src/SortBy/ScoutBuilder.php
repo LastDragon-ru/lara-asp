@@ -34,7 +34,7 @@ class ScoutBuilder {
 
             // Column
             $column = $this->columnResolver
-                ? $this->columnResolver->getColumn($path)
+                ? $this->columnResolver->getColumn($builder->model, $path)
                 : implode('.', $path);
 
             // Order

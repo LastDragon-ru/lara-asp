@@ -143,7 +143,7 @@ class ScoutBuilderTest extends TestCase {
                         /**
                          * @inheritDoc
                          */
-                        public function getColumn(array $path): string {
+                        public function getColumn(Model $model, array $path): string {
                             return 'properties/'.implode('/', $path);
                         }
                     };
