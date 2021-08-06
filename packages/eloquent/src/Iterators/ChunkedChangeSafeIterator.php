@@ -27,13 +27,6 @@ use function is_object;
  *   the value that lover than the internal pointer;
  * - queries with UNION is not supported.
  *
- * To create an instance you can use:
- *
- *      // $query is \Illuminate\Database\Query\Builder
- *      //        or \Illuminate\Database\Eloquent\Builder
- *      $query->iterator()->safe()
- *
- * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()
  * @see https://github.com/laravel/framework/issues/35400
  */
 class ChunkedChangeSafeIterator extends IteratorImpl {

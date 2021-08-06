@@ -15,15 +15,15 @@ use function count;
  * generators instead of {@link \Closure}. Be careful, you should not modify/delete
  * the items while iteration or you will get unexpected results (eg missing
  * items). If you need to modify/delete items while iteration you can use
- * {@link \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()}
- * that will return the change safe iterator.
+ * {@link \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator}.
  *
- * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator::safe()
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  */
 class ChunkedIterator extends IteratorImpl {
     /**
      * Returns change safe iterator.
+     *
+     * @deprecated Will be removed in the next release.
      */
     public function safe(string $column = null): ChunkedChangeSafeIterator {
         return (new ChunkedChangeSafeIterator($this->builder, $column))

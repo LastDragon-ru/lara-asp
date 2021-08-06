@@ -45,6 +45,18 @@ class EloquentBuilderMixinTest extends TestCase {
     }
 
     /**
+     * @covers ::changeSafeIterator
+     */
+    public function testChangeSafeIterator(): void {
+        $model = new class() extends Model {
+            // empty
+        };
+
+        $this->assertTrue(Builder::hasGlobalMacro('changeSafeIterator'));
+        $this->assertInstanceOf(Traversable::class, $model->query()->changeSafeIterator());
+    }
+
+    /**
      * @covers ::orderByKey
      * @covers ::orderByKeyDesc
      */

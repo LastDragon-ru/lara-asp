@@ -26,4 +26,12 @@ class QueryBuilderMixinTest extends TestCase {
         $this->assertTrue(Builder::hasMacro('iterator'));
         $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->iterator());
     }
+
+    /**
+     * @covers ::changeSafeIterator
+     */
+    public function testChangeSafeIteratorQueryBuilder(): void {
+        $this->assertTrue(Builder::hasMacro('changeSafeIterator'));
+        $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->changeSafeIterator());
+    }
 }
