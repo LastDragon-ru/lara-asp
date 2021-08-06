@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Database\QueryLog;
 
 use Illuminate\Database\Connection;
+use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use WeakMap;
@@ -43,12 +44,13 @@ trait WithQueryLog {
 
     /**
      * @param \Illuminate\Database\Connection
+     *          |\Illuminate\Database\ConnectionResolverInterface
      *          |\Illuminate\Database\Eloquent\Model
      *          |class-string<\Illuminate\Database\Eloquent\Model>
      *          |string
      *          |null $connection
      */
-    protected function getQueryLog(Connection|Model|string $connection = null): QueryLog {
+    protected function getQueryLog(ConnectionResolverInterface|Connection|Model|string $connection = null): QueryLog {
         // Normalize connection
         if (is_string($connection) && is_a($connection, Model::class, true)) {
             $connection = new $connection();
@@ -56,6 +58,8 @@ trait WithQueryLog {
 
         if ($connection instanceof Model) {
             $connection = $connection->getConnection();
+        } elseif ($connection instanceof ConnectionResolverInterface) {
+            $connection = $connection->connection();
         } else {
             $connection = $this->app->make('db')->connection($connection);
         }
