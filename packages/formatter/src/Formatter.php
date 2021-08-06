@@ -19,6 +19,7 @@ use function is_null;
 use function is_string;
 use function mb_strlen;
 use function mb_substr;
+use function sprintf;
 use function str_pad;
 use function str_replace;
 use function trim;
@@ -434,25 +435,31 @@ class Formatter {
 
                     foreach ($attributes as $attribute => $value) {
                         if (!$formatter->setAttribute($attribute, $value)) {
-                            throw new OutOfBoundsException(
-                                "\\NumberFormatter::setAttribute() failed: '{$attribute}' is unknown/invalid.",
-                            );
+                            throw new OutOfBoundsException(sprintf(
+                                '%s::setAttribute() failed: `%s` is unknown/invalid.',
+                                NumberFormatter::class,
+                                $attribute,
+                            ));
                         }
                     }
 
                     foreach ($symbols as $symbol => $value) {
                         if (!$formatter->setSymbol($symbol, $value)) {
-                            throw new OutOfBoundsException(
-                                "\\NumberFormatter::setSymbol() failed: '{$symbol}' is unknown/invalid.",
-                            );
+                            throw new OutOfBoundsException(sprintf(
+                                '%s::setSymbol() failed: `%s` is unknown/invalid.',
+                                NumberFormatter::class,
+                                $symbol,
+                            ));
                         }
                     }
 
                     foreach ($texts as $text => $value) {
                         if (!$formatter->setTextAttribute($text, $value)) {
-                            throw new OutOfBoundsException(
-                                "\\NumberFormatter::setTextAttribute() failed: '{$text}' is unknown/invalid.",
-                            );
+                            throw new OutOfBoundsException(sprintf(
+                                '%s::setTextAttribute() failed: `%s` is unknown/invalid.',
+                                NumberFormatter::class,
+                                $text,
+                            ));
                         }
                     }
                 }
