@@ -26,7 +26,7 @@ class ChunkedIterator extends IteratorImpl {
      * @deprecated Will be removed in the next release.
      */
     public function safe(string $column = null): ChunkedChangeSafeIterator {
-        return (new ChunkedChangeSafeIterator($this->builder, $column))
+        return (new ChunkedChangeSafeIterator($this->getBuilder(), $column))
             ->setLimit($this->getLimit())
             ->setOffset($this->getOffset())
             ->setChunkSize($this->getChunkSize())

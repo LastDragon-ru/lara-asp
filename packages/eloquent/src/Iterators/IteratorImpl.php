@@ -24,8 +24,8 @@ abstract class IteratorImpl implements Iterator {
     public function __construct(
         protected QueryBuilder|EloquentBuilder $builder,
     ) {
-        $this->setLimit($this->getDefaultLimit($this->builder));
-        $this->setOffset($this->getDefaultOffset($this->builder));
+        $this->setLimit($this->getDefaultLimit());
+        $this->setOffset($this->getDefaultOffset());
     }
 
     public function getLimit(): ?int {
@@ -93,7 +93,7 @@ abstract class IteratorImpl implements Iterator {
         // Iterate
         do {
             $chunk = $limit ? min($chunk, $limit - $index) : $chunk;
-            $items = $this->getChunk((clone $this->builder)->offset(0), $chunk);
+            $items = $this->getChunk((clone $this->getBuilder())->offset(0), $chunk);
 
             $this->chunkLoaded($items);
 
@@ -132,8 +132,8 @@ abstract class IteratorImpl implements Iterator {
         return true;
     }
 
-    protected function getDefaultLimit(QueryBuilder|EloquentBuilder $builder): ?int {
-        $builder = $this->getQueryBuilder($builder);
+    protected function getDefaultLimit(): ?int {
+        $builder = $this->getQueryBuilder();
         $limit   = null;
 
         if ($builder->unions) {
@@ -145,8 +145,8 @@ abstract class IteratorImpl implements Iterator {
         return $limit;
     }
 
-    protected function getDefaultOffset(QueryBuilder|EloquentBuilder $builder): ?int {
-        $builder = $this->getQueryBuilder($builder);
+    protected function getDefaultOffset(): ?int {
+        $builder = $this->getQueryBuilder();
         $limit   = null;
 
         if ($builder->unions) {
@@ -158,7 +158,13 @@ abstract class IteratorImpl implements Iterator {
         return $limit;
     }
 
-    protected function getQueryBuilder(QueryBuilder|EloquentBuilder $builder): QueryBuilder {
+    protected function getBuilder(): EloquentBuilder|QueryBuilder {
+        return $this->builder;
+    }
+
+    protected function getQueryBuilder(): QueryBuilder {
+        $builder = $this->getBuilder();
+
         if ($builder instanceof EloquentBuilder) {
             $builder = $builder->toBase();
         }

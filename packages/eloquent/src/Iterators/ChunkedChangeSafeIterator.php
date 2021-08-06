@@ -40,7 +40,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         // Unfortunately the Laravel doesn't correctly work with UNION,
         // it just adds conditional to the main query, and this leads to an
         // infinite loop.
-        if ($this->hasUnions($builder)) {
+        if ($this->hasUnions()) {
             throw new InvalidArgumentException('Queries with UNION is not supported.');
         }
     }
@@ -83,11 +83,11 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         return $value;
     }
 
-    protected function hasUnions(QueryBuilder|EloquentBuilder $query): bool {
-        return (bool) $this->getQueryBuilder($query)->unions;
+    protected function hasUnions(): bool {
+        return (bool) $this->getQueryBuilder()->unions;
     }
 
-    protected function getDefaultOffset(EloquentBuilder|QueryBuilder $builder): ?int {
+    protected function getDefaultOffset(): ?int {
         // Because Builder contains SQL offset, not column value.
         return null;
     }
