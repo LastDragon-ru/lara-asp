@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Eloquent\Mixins;
 use Closure;
 use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator;
 use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator;
-use Traversable;
 
 class QueryBuilderMixin {
     public function getDefaultKeyName(): Closure {
@@ -19,7 +18,7 @@ class QueryBuilderMixin {
     }
 
     public function iterator(): Closure {
-        return function (int $chunk = null): Traversable {
+        return function (int $chunk = null): ChunkedIterator {
             /** @var \Illuminate\Database\Query\Builder $this */
             $iterator = new ChunkedIterator($this);
 
@@ -32,7 +31,7 @@ class QueryBuilderMixin {
     }
 
     public function changeSafeIterator(): Closure {
-        return function (int $chunk = null, string $column = null): Traversable {
+        return function (int $chunk = null, string $column = null): ChunkedChangeSafeIterator {
             /** @var \Illuminate\Database\Query\Builder $this */
             $iterator = new ChunkedChangeSafeIterator($this, $column);
 
