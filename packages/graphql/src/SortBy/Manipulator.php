@@ -7,6 +7,7 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortByException;
 
 use function sprintf;
 use function tap;

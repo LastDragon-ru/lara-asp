@@ -12,6 +12,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortLogicException;
 use LogicException;
 
 use function array_keys;
@@ -63,31 +64,13 @@ class DatabaseBuilder {
         array $clauses,
     ): EloquentBuilder|QueryBuilder {
         foreach ((array) $clauses as $clause) {
-            // Empty?
-            if (!$clause) {
-                throw new SortLogicException($this->translator->get(
-                    'sort_by.errors.empty_clause',
-                ));
-            }
+            $clause = new SortClause($clause);
+            $column = $clause->getName();
 
-            // More than one property?
-            if (count($clause) > 1) {
-                throw new SortLogicException($this->translator->get(
-                    'sort_by.errors.too_many_properties',
-                    [
-                        'properties' => implode('`, `', array_keys($clause)),
-                    ],
-                ));
-            }
-
-            // Apply
-            $direction = reset($clause);
-            $column    = key($clause);
-
-            if (is_array($direction)) {
-                $builder = $this->processRelation($builder, $stack, $column, $direction);
+            if ($clause->isRelation()) {
+                $builder = $this->processRelation($builder, $stack, $column, $clause->getClauses());
             } else {
-                $builder = $this->processColumn($builder, $stack, $column, $direction);
+                $builder = $this->processColumn($builder, $stack, $column, $clause->getDirection());
             }
         }
 
