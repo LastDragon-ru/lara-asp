@@ -450,6 +450,8 @@ There are three types of operators:
 
 # `@sortBy` directive
 
+## Eloquent/Database
+
 The main feature - the ability to sort results by relation properties, at the moment supported the following relation types:
 
 - `HasOne` (https://laravel.com/docs/8.x/eloquent-relationships#one-to-one)
@@ -538,6 +540,20 @@ input UsersSort {
 
 ```
 </details>
+
+
+## Scout
+
+[Scout](https://laravel.com/docs/8.x/scout) is also supported 🤩 (tested on v9). By default `@sortBy` will convert nested/related properties into dot string: `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`ScoutColumnResolver`](./src/SortBy/Contracts/ScoutColumnResolver.php):
+
+```php
+// AppProvider
+
+$this->app->bind(
+    LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\ScoutColumnResolver::class,  
+    MyScoutColumnResolver::class,
+);
+```
 
 
 # Relations

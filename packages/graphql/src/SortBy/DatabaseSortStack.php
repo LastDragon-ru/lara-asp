@@ -10,7 +10,7 @@ use function array_pop;
 use function end;
 use function implode;
 
-class SortStack {
+class DatabaseSortStack {
     /**
      * @var array<array<string,\Illuminate\Database\Eloquent\Builder>>
      */

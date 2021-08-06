@@ -8,14 +8,17 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\ScoutBuilder as SortByScoutBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
-class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective {
+class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
     public const Name          = 'SortBy';
     public const TypeDirection = 'SortByDirection';
 
@@ -50,7 +53,11 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     /**
      * @inheritdoc
      */
-    public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
-        return (new SortBuilder($this->translator))->build($builder, $value);
+    public function handleBuilder($builder, mixed $value): EloquentBuilder|QueryBuilder {
+        return (new DatabaseBuilder($this->translator))->build($builder, $value);
+    }
+
+    public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {
+        return $this->container->make(SortByScoutBuilder::class)->build($builder, $value);
     }
 }

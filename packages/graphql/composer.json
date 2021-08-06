@@ -27,13 +27,15 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
+    "laravel/scout": "^9.2",
     "mockery/mockery": "^1.4",
     "phpunit/phpunit": "^9.5.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "orchestra/testbench": "^6.9.0"
   },
   "suggest": {
-    "ext-fileinfo": "Required for league/flysystem"
+    "ext-fileinfo": "Required for league/flysystem",
+    "laravel/scout": "Required for the @sortBy directive to work with Scout Builder."
   },
   "autoload": {
     "psr-4": {

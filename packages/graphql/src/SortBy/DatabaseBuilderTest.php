@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortClauseEmpty;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortClauseTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortLogicException;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -25,9 +28,9 @@ use function sprintf;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\SortBuilder
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\DatabaseBuilder
  */
-class SortBuilderTest extends TestCase {
+class DatabaseBuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -69,17 +72,13 @@ class SortBuilderTest extends TestCase {
                         [],
                     ],
                     'empty clause'           => [
-                        new SortLogicException(
-                            'Sort clause cannot be empty.',
-                        ),
+                        new SortClauseEmpty(),
                         [
                             [],
                         ],
                     ],
                     'more than one property' => [
-                        new SortLogicException(
-                            'Only one property allowed, found: `a`, `b`.',
-                        ),
+                        new SortClauseTooManyProperties(['a', 'b']),
                         [
                             [
                                 'a' => 'asc',
