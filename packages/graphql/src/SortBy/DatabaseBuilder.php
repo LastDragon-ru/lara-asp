@@ -23,7 +23,7 @@ use function is_array;
 use function key;
 use function reset;
 
-class SortBuilder {
+class DatabaseBuilder {
     /**
      * @var array<class-string<\Illuminate\Database\Eloquent\Relations\Relation>>
      */
@@ -47,7 +47,7 @@ class SortBuilder {
      */
     public function build(EloquentBuilder|QueryBuilder $builder, array $clauses): EloquentBuilder|QueryBuilder {
         return $builder instanceof EloquentBuilder
-            ? $this->process($builder, new SortStack($builder), $clauses)
+            ? $this->process($builder, new DatabaseSortStack($builder), $clauses)
             : $this->process($builder, null, $clauses);
     }
     // </editor-fold>
@@ -59,7 +59,7 @@ class SortBuilder {
      */
     protected function process(
         EloquentBuilder|QueryBuilder $builder,
-        SortStack|null $stack,
+        DatabaseSortStack|null $stack,
         array $clauses,
     ): EloquentBuilder|QueryBuilder {
         foreach ((array) $clauses as $clause) {
@@ -96,7 +96,7 @@ class SortBuilder {
 
     protected function processColumn(
         EloquentBuilder|QueryBuilder $builder,
-        SortStack|null $stack,
+        DatabaseSortStack|null $stack,
         string $column,
         string $direction,
     ): EloquentBuilder|QueryBuilder {
@@ -126,7 +126,7 @@ class SortBuilder {
      */
     protected function processRelation(
         EloquentBuilder|QueryBuilder $builder,
-        SortStack|null $stack,
+        DatabaseSortStack|null $stack,
         string $name,
         array $clauses,
     ): EloquentBuilder {

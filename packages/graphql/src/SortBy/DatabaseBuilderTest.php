@@ -25,9 +25,9 @@ use function sprintf;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\SortBuilder
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\DatabaseBuilder
  */
-class SortBuilderTest extends TestCase {
+class DatabaseBuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

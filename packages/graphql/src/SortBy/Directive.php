@@ -51,6 +51,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @inheritdoc
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
-        return (new SortBuilder($this->translator))->build($builder, $value);
+        return (new DatabaseBuilder($this->translator))->build($builder, $value);
     }
 }
