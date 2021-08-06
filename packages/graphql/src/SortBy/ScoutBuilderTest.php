@@ -47,19 +47,19 @@ class ScoutBuilderTest extends TestCase {
         ]);
         $builder   = $directive->handleScoutBuilder($builder, $clause);
         $actual    = json_decode(json_encode($builder), true);
-        $expected  = $expected + [
-                'model'         => [],
-                'query'         => '',
-                'callback'      => null,
-                'queryCallback' => null,
-                'index'         => null,
-                'wheres'        => [],
-                'whereIns'      => [],
-                'limit'         => null,
-                'orders'        => [],
-            ];
+        $default   = [
+            'model'         => [],
+            'query'         => '',
+            'callback'      => null,
+            'queryCallback' => null,
+            'index'         => null,
+            'wheres'        => [],
+            'whereIns'      => [],
+            'limit'         => null,
+            'orders'        => [],
+        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected + $default, $actual + $default);
     }
     // </editor-fold>
 
