@@ -107,9 +107,9 @@ class Usage {
     }
 
     /**
-     * @param array<string> $stack
+     * @param array<T> $stack
      *
-     * @return array<string>
+     * @return array<T>
      */
     protected function values(string $type, array $stack): array {
         $types  = $this->types[$type]['types'] ?? [];
