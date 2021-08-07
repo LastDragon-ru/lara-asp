@@ -26,12 +26,12 @@ namespace LastDragon_ru\LaraASP\Testing\Providers;
  */
 class MergeDataProvider extends BaseDataProvider {
     /**
-     * @var array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider>
+     * @var array<DataProvider>
      */
     private array $providers;
 
     /**
-     * @param array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider> $providers
+     * @param array<DataProvider> $providers
      */
     public function __construct(array $providers) {
         $this->providers = $providers;
@@ -40,7 +40,7 @@ class MergeDataProvider extends BaseDataProvider {
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     /**
-     * @return array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider>
+     * @return array<DataProvider>
      */
     protected function getProviders(): array {
         return $this->providers;

@@ -11,10 +11,11 @@ use Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider;
 use Nuwave\Lighthouse\Schema\Source\SchemaStitcher;
 use Nuwave\Lighthouse\Testing\MocksResolvers;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
+use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 /**
- * @mixin \PHPUnit\Framework\TestCase
+ * @mixin TestCase
  */
 trait GraphQLAssertions {
     use MocksResolvers;

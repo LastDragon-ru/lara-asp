@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
+use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Translation\Translator;
@@ -23,7 +25,7 @@ class DateTimeRule extends DateRule {
         $value = parent::getValue($value);
         $tz    = $this->config->get('app.timezone') ?: 'UTC';
 
-        if ($value && $tz) {
+        if ($tz && ($value instanceof DateTime || $value instanceof DateTimeImmutable)) {
             $value = $value->setTimezone($tz);
         }
 

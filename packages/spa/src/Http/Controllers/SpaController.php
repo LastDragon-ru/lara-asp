@@ -3,12 +3,9 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
-use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
-use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Package;
 
 class SpaController extends Controller {
@@ -21,12 +18,6 @@ class SpaController extends Controller {
      */
     public function settings(Repository $config): array {
         return $this->getSettings($config);
-    }
-
-    public function user(Request $request): UserResource|NullResource {
-        return $request->user()
-            ? new UserResource($request->user())
-            : new NullResource();
     }
     // </editor-fold>
 

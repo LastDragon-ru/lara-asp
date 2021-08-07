@@ -12,7 +12,7 @@ class Header extends Response {
     protected string $name;
 
     /**
-     * @param array<\PHPUnit\Framework\Constraint\Constraint> $constraints
+     * @param array<Constraint> $constraints
      */
     public function __construct(string $name, array $constraints = []) {
         parent::__construct(...$constraints);

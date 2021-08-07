@@ -49,9 +49,9 @@ class QueueableConfigTest extends TestCase {
      * @covers ::config
      * @dataProvider dataProviderConfig
      *
-     * @param array<mixed>|\Exception $expected
-     * @param array<mixed>            $appConfig
-     * @param array<mixed>            $queueableConfig
+     * @param array<mixed>|Exception $expected
+     * @param array<mixed>           $appConfig
+     * @param array<mixed>           $queueableConfig
      */
     public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
         $container    = Container::getInstance();

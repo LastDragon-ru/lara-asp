@@ -6,6 +6,7 @@ use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\ImpossibleCreateSortClause;
@@ -74,7 +75,7 @@ class Manipulator extends AstManipulator {
             : $node->fields;
 
         foreach ($fields as $field) {
-            /** @var \GraphQL\Language\AST\InputValueDefinitionNode|\GraphQL\Type\Definition\InputObjectField $field */
+            /** @var InputValueDefinitionNode|InputObjectField $field */
 
             // Is supported?
             $fieldDefinition = Directive::TypeDirection;

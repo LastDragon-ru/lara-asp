@@ -311,11 +311,11 @@ class ResourceTest extends TestCase {
                 ],
                 new
                 /**
-                 * @property \DateTimeInterface                                 $date
-                 * @property \DateTimeInterface                                 $datetime
-                 * @property \DateTimeInterface                                 $date_no_cast
-                 * @property array<\DateTimeInterface>                          $nested
-                 * @property \Illuminate\Support\Collection<\DateTimeInterface> $collection
+                 * @property DateTimeInterface             $date
+                 * @property DateTimeInterface             $datetime
+                 * @property DateTimeInterface             $date_no_cast
+                 * @property array<DateTimeInterface>      $nested
+                 * @property Collection<DateTimeInterface> $collection
                  */
                 class($date, $format) extends Model {
                     public function __construct(DateTimeInterface $date, string $format) {

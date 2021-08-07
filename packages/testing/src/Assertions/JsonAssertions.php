@@ -5,11 +5,12 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
+use PHPUnit\Framework\Assert;
 use SplFileInfo;
 use stdClass;
 
 /**
- * @mixin \PHPUnit\Framework\Assert
+ * @mixin Assert
  */
 trait JsonAssertions {
     /**

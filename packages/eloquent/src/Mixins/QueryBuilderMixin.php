@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Mixins;
 
 use Closure;
+use Illuminate\Database\Query\Builder;
 use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator;
 use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator;
 
@@ -14,7 +15,7 @@ class QueryBuilderMixin {
         return function (): string {
             /**
              * @phpstan-ignore-next-line https://github.com/phpstan/phpstan/issues/4488
-             * @var \Illuminate\Database\Query\Builder $this
+             * @var Builder $this
              */
             return $this->defaultKeyName();
         };
@@ -22,7 +23,7 @@ class QueryBuilderMixin {
 
     public function iterator(): Closure {
         return function (int $chunk = null): ChunkedIterator {
-            /** @var \Illuminate\Database\Query\Builder $this */
+            /** @var Builder $this */
             $iterator = new ChunkedIterator($this);
 
             if ($chunk) {
@@ -35,7 +36,7 @@ class QueryBuilderMixin {
 
     public function changeSafeIterator(): Closure {
         return function (int $chunk = null, string $column = null): ChunkedChangeSafeIterator {
-            /** @var \Illuminate\Database\Query\Builder $this */
+            /** @var Builder $this */
             $iterator = new ChunkedChangeSafeIterator($this, $column);
 
             if ($chunk) {

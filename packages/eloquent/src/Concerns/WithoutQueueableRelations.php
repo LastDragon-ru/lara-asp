@@ -2,9 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * @see https://github.com/laravel/framework/issues/26877
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 trait WithoutQueueableRelations {
     /**

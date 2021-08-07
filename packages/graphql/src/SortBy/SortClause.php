@@ -56,9 +56,6 @@ class SortClause {
         return $this->child;
     }
 
-    /**
-     * @return array<string,mixed>|null
-     */
     public function getChildClause(): ?static {
         return $this->isRelation()
             ? new self($this->getChild())

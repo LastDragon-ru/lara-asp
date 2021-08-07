@@ -2,14 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
-use Closure;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Facades\Date;
-use LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NullResource;
-use LastDragon_ru\LaraASP\Spa\Http\Resources\UserResource;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
@@ -23,7 +17,6 @@ use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
-use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 
 /**
  * @internal
@@ -71,34 +64,6 @@ class SpaControllerTest extends TestCase {
 
         $this->get("{$prefix}/settings", $headers)->assertThat($expected);
     }
-
-    /**
-     * @covers ::user
-     *
-     * @dataProvider dataProviderUser
-     *
-     * @param array<mixed> $headers
-     */
-    public function testUser(
-        Response $expected,
-        bool $routes = true,
-        string $prefix = null,
-        array $headers = [],
-        Closure $user = null,
-    ): void {
-        $this->setSettings([
-            'routes.enabled' => $routes,
-            'routes.prefix'  => $prefix,
-        ]);
-
-        $this->loadRoutes();
-
-        if ($user) {
-            $this->actingAs($user());
-        }
-
-        $this->get("{$prefix}/user", $headers)->assertThat($expected);
-    }
     //</editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -127,47 +92,6 @@ class SpaControllerTest extends TestCase {
                     [
                         'custom' => 'value',
                     ],
-                ],
-            ]),
-        ))->getData();
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function dataProviderUser(): array {
-        return (new CompositeDataProvider(
-            $this->getEnabledDataProvider(),
-            $this->getPrefixDataProvider(),
-            $this->getAcceptDataProvider(),
-            new ArrayDataProvider([
-                'guest'                     => [
-                    new OkResponse(NullResource::class),
-                    null,
-                ],
-                'user (email not verified)' => [
-                    new OkResponse(UserResource::class, [
-                        'name'     => 'Test',
-                        'verified' => false,
-                    ]),
-                    static function (): Model {
-                        return (new User())->forceFill([
-                            'name'              => 'Test',
-                            'email_verified_at' => null,
-                        ]);
-                    },
-                ],
-                'user (email verified)'     => [
-                    new OkResponse(UserResource::class, [
-                        'name'     => 'Test',
-                        'verified' => true,
-                    ]),
-                    static function (): Model {
-                        return (new User())->forceFill([
-                            'name'              => 'Test',
-                            'email_verified_at' => Date::now(),
-                        ]);
-                    },
                 ],
             ]),
         ))->getData();

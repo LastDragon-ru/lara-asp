@@ -21,7 +21,7 @@ use function is_a;
 
 class DatabaseBuilder {
     /**
-     * @var array<class-string<\Illuminate\Database\Eloquent\Relations\Relation>>
+     * @var array<class-string<Relation>>
      */
     protected array $relations = [
         BelongsTo::class,

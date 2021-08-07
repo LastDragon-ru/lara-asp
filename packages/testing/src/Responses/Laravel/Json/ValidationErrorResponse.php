@@ -40,7 +40,7 @@ class ValidationErrorResponse extends Response {
     }
 
     /**
-     * @param array<string,array<string>|string>|null $errors
+     * @param array<string,array<string>|string> $errors
      *
      * @return array<mixed>
      */

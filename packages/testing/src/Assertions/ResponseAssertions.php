@@ -2,11 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Constraint\Constraint;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * @mixin \PHPUnit\Framework\Assert
+ * @mixin Assert
  */
 trait ResponseAssertions {
     /**

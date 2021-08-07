@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Utils;
 use LastDragon_ru\LaraASP\Testing\Package;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SplFileInfo;
 
 use function mkdir;
 use function register_shutdown_function;
@@ -28,7 +29,7 @@ trait WithTempDirectory {
             );
 
             foreach ($files as $file) {
-                /** @var \SplFileInfo $file */
+                /** @var SplFileInfo $file */
                 if ($file->isDir()) {
                     rmdir($file->getRealPath());
                 } else {

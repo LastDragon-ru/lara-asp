@@ -6,6 +6,7 @@ use Closure;
 use EmptyIterator;
 use Generator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 
@@ -77,7 +78,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     /**
-     * @return \Generator<array<\Illuminate\Database\Eloquent\Model|array<string,mixed>>>
+     * @return Generator<array<Model|array<string,mixed>>>
      */
     public function getIterator(): Generator {
         // Prepare
@@ -108,12 +109,12 @@ abstract class IteratorImpl implements Iterator {
     }
 
     /**
-     * @return \Illuminate\Support\Collection<\Illuminate\Database\Eloquent\Model|array<string,mixed>>
+     * @return Collection<Model|array<string,mixed>>
      */
     abstract protected function getChunk(QueryBuilder|EloquentBuilder $builder, int $chunk): Collection;
 
     /**
-     * @param \Illuminate\Support\Collection<\Illuminate\Database\Eloquent\Model|array<string,mixed>> $items
+     * @param Collection<Model|array<string,mixed>> $items
      */
     protected function chunkLoaded(Collection $items): void {
         if ($this->beforeChunk && !$items->isEmpty()) {
@@ -122,7 +123,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     /**
-     * @param \Illuminate\Support\Collection<\Illuminate\Database\Eloquent\Model|array<string,mixed>> $items
+     * @param Collection<Model|array<string,mixed>> $items
      */
     protected function chunkProcessed(Collection $items): bool {
         if ($this->afterChunk && !$items->isEmpty()) {

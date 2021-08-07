@@ -2,8 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Database;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unlike {@link \Illuminate\Foundation\Testing\RefreshDatabase} will refresh
@@ -11,9 +13,9 @@ use Illuminate\Foundation\Testing\RefreshDatabaseState;
  *
  * @required {@link \Illuminate\Foundation\Testing\TestCase}
  *
- * @property-read \Illuminate\Foundation\Application $app
+ * @property-read Application $app
  *
- * @mixin \PHPUnit\Framework\TestCase
+ * @mixin TestCase
  */
 trait RefreshDatabaseIfEmpty {
     use RefreshDatabase {

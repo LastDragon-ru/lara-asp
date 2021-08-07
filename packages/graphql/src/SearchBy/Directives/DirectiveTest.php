@@ -75,7 +75,6 @@ class DirectiveTest extends TestCase {
         // Collect
         $operators = [];
 
-        /** @var \GraphQL\Type\Definition\ObjectType $query */
         foreach ($query->getFields() as $field) {
             $node       = $field->getArg('where')->astNode;
             $directives = $locator->associatedOfType($node, Directive::class);

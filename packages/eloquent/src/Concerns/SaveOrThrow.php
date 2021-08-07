@@ -3,18 +3,18 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
 
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 
 use function tap;
 
 /**
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 trait SaveOrThrow {
     /**
      * @inheritdoc
      */
     public function save(array $options = []) {
-        /** @noinspection PhpUndefinedClassInspection */
         return tap(parent::save($options), static function (bool $result): void {
             if (!$result) {
                 throw new Exception('An unknown error occurred while saving the model.');
@@ -26,7 +26,6 @@ trait SaveOrThrow {
      * @inheritdoc
      */
     public function delete() {
-        /** @noinspection PhpUndefinedClassInspection */
         return tap(parent::delete(), static function (?bool $result): void {
             if ($result === false) {
                 throw new Exception('An unknown error occurred while deleting the model.');
