@@ -35,10 +35,10 @@ trait Override {
     /**
      * @template T
      *
-     * @param class-string<T>                            $class
-     * @param null|Closure(T|MockInterface, TestCase): T $factory
+     * @param class-string<T>                                           $class
+     * @param null|(Closure(T&MockInterface, TestCase):T&MockInterface) $factory
      *
-     * @return T|MockInterface
+     * @return T&MockInterface
      */
     protected function override(string $class, Closure $factory = null): mixed {
         // Overridden?
