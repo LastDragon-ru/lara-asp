@@ -4,10 +4,11 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
 use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchema;
+use PHPUnit\Framework\Assert;
 use SplFileInfo;
 
 /**
- * @mixin \PHPUnit\Framework\Assert
+ * @mixin Assert
  */
 trait XmlAssertions {
     /**

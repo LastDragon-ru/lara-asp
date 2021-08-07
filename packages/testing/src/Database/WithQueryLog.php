@@ -2,6 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Database;
 
+use Illuminate\Foundation\Application;
+use PHPUnit\Framework\TestCase;
+
 /**
  * Enable QueryLog (the {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits} is required).
  *
@@ -10,9 +13,9 @@ namespace LastDragon_ru\LaraASP\Testing\Database;
  * @required {@link \Illuminate\Foundation\Testing\TestCase}
  * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
  *
- * @property-read \Illuminate\Foundation\Application $app
+ * @property-read Application $app
  *
- * @mixin \PHPUnit\Framework\TestCase
+ * @mixin TestCase
  */
 trait WithQueryLog {
     private bool $withQueryLogEnabled = false;

@@ -2,10 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
+use Illuminate\Support\ServiceProvider;
+
 /**
  * @see \LastDragon_ru\LaraASP\Core\Translator
  *
- * @mixin \Illuminate\Support\ServiceProvider
+ * @mixin ServiceProvider
  */
 trait ProviderWithTranslations {
     use ProviderHelper;

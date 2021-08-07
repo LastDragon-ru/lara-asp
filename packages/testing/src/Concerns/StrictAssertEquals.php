@@ -3,13 +3,14 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use LastDragon_ru\LaraASP\Testing\Comparators\ScalarStrictComparator;
+use PHPUnit\Framework\Test;
 
 /**
  * Makes `assertEquals` strict.
  *
  * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
  *
- * @mixin \PHPUnit\Framework\Test
+ * @mixin Test
  */
 trait StrictAssertEquals {
     public function setUpStrictAssertEquals(): void {

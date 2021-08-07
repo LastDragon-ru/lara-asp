@@ -2,10 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
+use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Queue\CronableRegistrator;
 
 /**
- * @mixin \Illuminate\Support\ServiceProvider
+ * @mixin ServiceProvider
  */
 trait ProviderWithSchedule {
     /**

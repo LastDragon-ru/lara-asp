@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentXsdSchemaM
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileRelaxNgSchemaMatcher;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileXsdSchemaMatcher;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use LibXMLError;
 use PHPUnit\Framework\Constraint\Constraint;
 use SplFileInfo;
 
@@ -25,7 +26,7 @@ use const PHP_EOL;
 class XmlMatchesSchema extends Constraint {
     protected SplFileInfo $schema;
     /**
-     * @var array<\LibXMLError>
+     * @var array<LibXMLError>
      */
     protected array $errors = [];
 
