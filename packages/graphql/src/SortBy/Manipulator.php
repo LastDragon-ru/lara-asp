@@ -9,9 +9,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\ImpossibleCreateSortClause;
-
-use function tap;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedCreateSortClause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedCreateSortClauseForField;
 
 class Manipulator extends AstManipulator {
     // <editor-fold desc="API">
@@ -32,7 +31,7 @@ class Manipulator extends AstManipulator {
         }
 
         if (!($type instanceof ListTypeNode)) {
-            throw new ImpossibleCreateSortClause($this->getNodeTypeName($node));
+            throw new FailedCreateSortClause($this->getNodeTypeName($node));
         }
 
         // Update
@@ -93,13 +92,15 @@ class Manipulator extends AstManipulator {
             if ($field instanceof InputValueDefinitionNode) {
                 // TODO [SortBy] We probably not need all directives from the
                 //      original Input type, but cloning is the easiest way...
-                $type->fields[] = tap(
-                    $field->cloneDeep(),
-                    static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
-                        $field->type        = Parser::typeReference($fieldDefinition);
-                        $field->description = Parser::description("\"\"\"{$description}\"\"\"");
-                    },
-                );
+                $clone = $field->cloneDeep();
+
+                if ($clone instanceof InputValueDefinitionNode) {
+                    $field->type        = Parser::typeReference($fieldDefinition);
+                    $field->description = Parser::description("\"\"\"{$description}\"\"\"");
+                    $type->fields[]     = $clone;
+                } else {
+                    throw new FailedCreateSortClauseForField($node->name->value, $field->name->value);
+                }
             } else {
                 $type->fields[] = Parser::inputValueDefinition(
                     <<<DEF

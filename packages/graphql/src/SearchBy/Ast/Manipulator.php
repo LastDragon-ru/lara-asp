@@ -25,9 +25,10 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\RelationOperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedCreateSearchCondition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedCreateSearchConditionForField;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ImpossibleCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
@@ -43,7 +44,6 @@ use function count;
 use function implode;
 use function is_null;
 use function json_encode;
-use function tap;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     protected Metadata $metadata;
@@ -77,7 +77,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             if (!($type instanceof NamedTypeNode)) {
-                throw new ImpossibleCreateSearchCondition($node->name->value);
+                throw new FailedCreateSearchCondition($node->name->value);
             }
 
             // Update
@@ -206,13 +206,15 @@ class Manipulator extends AstManipulator implements TypeProvider {
             if ($fieldDefinition) {
                 // TODO [SearchBy] We probably not need all directives from the
                 //      original Input type, but cloning is the easiest way...
-                $type->fields[] = tap(
-                    $field->cloneDeep(),
-                    static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
-                        $field->type        = Parser::typeReference($fieldDefinition);
-                        $field->description = $description;
-                    },
-                );
+                $clone = $field->cloneDeep();
+
+                if ($clone instanceof InputValueDefinitionNode) {
+                    $clone->type        = Parser::typeReference($fieldDefinition);
+                    $clone->description = $description;
+                    $type->fields[]     = $clone;
+                } else {
+                    throw new FailedCreateSearchConditionForField($node->name->value, $fieldName);
+                }
             } elseif ($fieldTypeNode) {
                 throw new NotImplemented($fieldType);
             } else {
@@ -397,7 +399,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * @return array<class-string<Operator>>
+     * @return array<Operator>
      */
     protected function getEnumOperators(string $enum, bool $nullable): array {
         $operators = $this->metadata->getEnumOperators($enum, $nullable);
@@ -410,7 +412,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * @return array<class-string<Operator>>
+     * @return array<Operator>
      */
     protected function getScalarOperators(string $scalar, bool $nullable): array {
         $operators = $this->metadata->getScalarOperators($scalar, $nullable);
