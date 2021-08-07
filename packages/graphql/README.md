@@ -30,7 +30,6 @@ Features:
 + `not (<condition>)` support;
 + Relations support (except Query Builder);
 + Custom operators support
-+ Localization support;
 + easy to use and safe.
 
 Let's start:
@@ -585,15 +584,6 @@ class Comment extends Model {
     }
 }
 
-```
-
-
-# Localization
-
-Some of the error messages can be translated, to do it you should publish translations and translate them
-
-```shell
-php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider --tag=translations
 ```
 
 
