@@ -9,8 +9,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedCreateSortClauseForField;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\ImpossibleCreateSortClause;
 
 class Manipulator extends AstManipulator {
     // <editor-fold desc="API">
@@ -31,7 +31,7 @@ class Manipulator extends AstManipulator {
         }
 
         if (!($type instanceof ListTypeNode)) {
-            throw new ImpossibleCreateSortClause($this->getNodeTypeName($node));
+            throw new FailedCreateSortClause($this->getNodeTypeName($node));
         }
 
         // Update

@@ -25,10 +25,10 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\RelationOperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedCreateSearchConditionForField;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ImpossibleCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
@@ -44,7 +44,6 @@ use function count;
 use function implode;
 use function is_null;
 use function json_encode;
-use function tap;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     protected Metadata $metadata;
@@ -78,7 +77,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             if (!($type instanceof NamedTypeNode)) {
-                throw new ImpossibleCreateSearchCondition($node->name->value);
+                throw new FailedCreateSearchCondition($node->name->value);
             }
 
             // Update

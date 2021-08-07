@@ -6,7 +6,7 @@ use Throwable;
 
 use function sprintf;
 
-class ImpossibleCreateSortClause extends SortByException {
+class FailedCreateSortClause extends SortByException {
     public function __construct(
         protected string $type,
         Throwable $previous = null,
