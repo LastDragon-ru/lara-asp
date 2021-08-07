@@ -399,7 +399,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * @return array<class-string<Operator>>
+     * @return array<Operator>
      */
     protected function getEnumOperators(string $enum, bool $nullable): array {
         $operators = $this->metadata->getEnumOperators($enum, $nullable);
@@ -412,7 +412,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * @return array<class-string<Operator>>
+     * @return array<Operator>
      */
     protected function getScalarOperators(string $scalar, bool $nullable): array {
         $operators = $this->metadata->getScalarOperators($scalar, $nullable);
