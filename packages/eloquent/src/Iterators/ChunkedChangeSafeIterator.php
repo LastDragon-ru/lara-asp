@@ -61,11 +61,14 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     }
 
     protected function chunkProcessed(Collection $items): bool {
-        $last     = $this->column($items->last());
-        $continue = $last && $this->setOffset($last);
+        $last = $this->column($items->last());
+
+        if ($last) {
+            $this->setOffset($last);
+        }
 
         return parent::chunkProcessed($items)
-            && $continue;
+            && $last;
     }
 
     protected function column(Model|stdClass|array|null $item): mixed {
