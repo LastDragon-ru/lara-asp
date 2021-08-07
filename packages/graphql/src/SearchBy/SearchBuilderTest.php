@@ -218,7 +218,7 @@ class SearchBuilderTest extends TestCase {
                 string $name,
                 bool $nullable,
             ): InputObjectTypeDefinitionNode {
-                // TODO: Implement getDefinition() method.
+                throw new Exception('Should not be used.');
             }
         };
         $search  = new SearchBuilder([$complex]);
