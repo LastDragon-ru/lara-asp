@@ -1,0 +1,7 @@
+parameters:
+    ignoreErrors:
+        # Readability is also matter...
+        -
+            message: "#^Left side of \\|\\| is always false\\.$#"
+            count: 1
+            path: packages/testing/src/Constraints/Response/Response.php
