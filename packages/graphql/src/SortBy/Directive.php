@@ -9,7 +9,6 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\ScoutBuilder as SortByScoutBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -24,7 +23,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
 
     public function __construct(
         protected Container $container,
-        protected PackageTranslator $translator,
         protected DirectiveLocator $directives,
     ) {
         // empty
@@ -54,7 +52,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @inheritdoc
      */
     public function handleBuilder($builder, mixed $value): EloquentBuilder|QueryBuilder {
-        return (new DatabaseBuilder($this->translator))->build($builder, $value);
+        return $this->container->make(DatabaseBuilder::class)->build($builder, $value);
     }
 
     public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {

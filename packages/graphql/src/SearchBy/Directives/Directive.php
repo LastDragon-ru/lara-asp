@@ -9,7 +9,6 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -32,7 +31,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
 
     public function __construct(
         protected Container $container,
-        protected PackageTranslator $translator,
     ) {
         // empty
     }
@@ -69,7 +67,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             ->all();
 
         return (new SearchBuilder(
-            $this->translator,
             $operators,
         ))->build($builder, $value);
     }

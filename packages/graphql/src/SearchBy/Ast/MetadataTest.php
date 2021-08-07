@@ -15,18 +15,23 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotComplexOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotDefinition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionAlreadyDefined;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchByException;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use stdClass;
 
 use function array_map;
-use function sprintf;
 
 /**
  * @internal
@@ -95,10 +100,7 @@ class MetadataTest extends TestCase {
      * @covers ::getScalarOperators
      */
     public function testGetScalarOperatorsUnknownScalar(): void {
-        $this->expectExceptionObject(new SearchByException(sprintf(
-            'Scalar `%s` is not defined.',
-            'unknown',
-        )));
+        $this->expectExceptionObject(new ScalarUnknown('unknown'));
 
         (new Metadata($this->app, new Usage()))->getScalarOperators('unknown', false);
     }
@@ -182,11 +184,7 @@ class MetadataTest extends TestCase {
      * @covers ::getOperatorInstance
      */
     public function testGetOperatorInstanceNotAnOperator(): void {
-        $this->expectExceptionObject(new SearchByException(sprintf(
-            'Operator `%s` must implement `%s`.',
-            stdClass::class,
-            Operator::class,
-        )));
+        $this->expectExceptionObject(new ClassIsNotOperator(stdClass::class));
 
         (new Metadata($this->app, new Usage()))->getOperatorInstance(stdClass::class);
     }
@@ -250,11 +248,7 @@ class MetadataTest extends TestCase {
      * @covers ::getComplexOperatorInstance
      */
     public function testGetComplexOperatorInstanceNotAnOperator(): void {
-        $this->expectExceptionObject(new SearchByException(sprintf(
-            'Operator `%s` must implement `%s`.',
-            stdClass::class,
-            ComplexOperator::class,
-        )));
+        $this->expectExceptionObject(new ClassIsNotComplexOperator(stdClass::class));
 
         (new Metadata($this->app, new Usage()))->getComplexOperatorInstance(stdClass::class);
     }
@@ -301,11 +295,7 @@ class MetadataTest extends TestCase {
      * @covers ::addDefinition
      */
     public function testAddDefinitionNotADefinition(): void {
-        $this->expectExceptionObject(new SearchByException(sprintf(
-            'Definition `%s` must implement `%s`.',
-            stdClass::class,
-            TypeDefinition::class,
-        )));
+        $this->expectExceptionObject(new ClassIsNotDefinition(stdClass::class));
 
         (new Metadata($this->app, new Usage()))->addDefinition('type', stdClass::class);
     }
@@ -326,10 +316,7 @@ class MetadataTest extends TestCase {
             }
         };
 
-        $this->expectExceptionObject(new SearchByException(sprintf(
-            'Definition `%s` already defined.',
-            'test',
-        )));
+        $this->expectExceptionObject(new DefinitionAlreadyDefined('test'));
 
         $metadata->addDefinition('test', $a::class);
         $metadata->addDefinition('test', $b::class);
@@ -353,10 +340,7 @@ class MetadataTest extends TestCase {
      * @covers ::getDefinition
      */
     public function testGetDefinitionUnknownDefinition(): void {
-        $this->expectExceptionObject(new SearchByException(sprintf(
-            'Definition `%s` is not defined.',
-            'unknown',
-        )));
+        $this->expectExceptionObject(new DefinitionUnknown('unknown'));
 
         (new Metadata($this->app, new Usage()))->getDefinition('unknown');
     }
@@ -389,18 +373,12 @@ class MetadataTest extends TestCase {
         return [
             'ok'              => [true, 'scalar', [IsNot::class]],
             'unknown scalar'  => [
-                new SearchByException(sprintf(
-                    'Scalar `%s` is not defined.',
-                    'unknown',
-                )),
+                new ScalarUnknown('unknown'),
                 'scalar',
                 'unknown',
             ],
             'empty operators' => [
-                new SearchByException(sprintf(
-                    'Operator list for scalar `%s` cannot be empty.',
-                    'scalar',
-                )),
+                new ScalarNoOperators('scalar'),
                 'scalar',
                 [],
             ],

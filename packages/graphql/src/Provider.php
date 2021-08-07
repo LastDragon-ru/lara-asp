@@ -28,7 +28,6 @@ class Provider extends ServiceProvider {
 
     public function boot(Dispatcher $dispatcher): void {
         $this->bootConfig();
-        $this->bootTranslations();
         $this->bootDirectives($dispatcher);
         $this->bootEnums();
     }

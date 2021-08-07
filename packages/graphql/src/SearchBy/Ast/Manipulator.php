@@ -21,7 +21,15 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\RelationOperatorDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchByException;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionImpossibleToCreateType;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ImpossibleCreateSearchCondition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -35,7 +43,6 @@ use function count;
 use function implode;
 use function is_null;
 use function json_encode;
-use function sprintf;
 use function tap;
 
 class Manipulator extends AstManipulator implements TypeProvider {
@@ -70,10 +77,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             if (!($type instanceof NamedTypeNode)) {
-                throw new SearchByException(sprintf(
-                    'Impossible to create Search Condition for `%s`.',
-                    $node->name->value,
-                ));
+                throw new ImpossibleCreateSearchCondition($node->name->value);
             }
 
             // Update
@@ -112,10 +116,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $definition = $this->metadata->getDefinition($type)->get($internal, $scalar, $nullable);
 
         if (!$definition) {
-            throw new SearchByException(sprintf(
-                'Impossible to create type `%s`',
-                $type,
-            ));
+            throw new DefinitionImpossibleToCreateType($type, $scalar, $nullable);
         }
 
         // Save
@@ -165,10 +166,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             $fieldName = $field->name->value;
 
             if (isset($type->fields[$fieldName])) {
-                throw new SearchByException(sprintf(
-                    'Property with name `%s` already defined.',
-                    $fieldName,
-                ));
+                throw new InputFieldAlreadyDefined($fieldName);
             }
 
             // Determine type
@@ -220,10 +218,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                     },
                 );
             } elseif ($fieldTypeNode) {
-                throw new SearchByException(sprintf(
-                    'Hmm... Seems `%s` not yet supported :( Please contact to developer.',
-                    $fieldType,
-                ));
+                throw new NotImplemented($fieldType);
             } else {
                 // empty
             }
@@ -352,12 +347,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         );
 
         if ($name !== $definition->name->value) {
-            throw new SearchByException(sprintf(
-                'Generated type for complex operator `%s` must be named as `%s`, but its name is `%s`.',
-                $operator::class,
-                $name,
-                $definition->name->value,
-            ));
+            throw new ComplexOperatorInvalidTypeName($operator::class, $name, $definition->name->value);
         }
 
         $this->removeFakeTypeDefinition($name);
@@ -417,10 +407,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operators = $this->metadata->getEnumOperators($enum, $nullable);
 
         if (empty($operators)) {
-            throw new SearchByException(sprintf(
-                'List of operators for enum `%s` is empty.',
-                $enum,
-            ));
+            throw new EnumNoOperators($enum);
         }
 
         return $operators;
@@ -433,10 +420,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operators = $this->metadata->getScalarOperators($scalar, $nullable);
 
         if (empty($operators)) {
-            throw new SearchByException(sprintf(
-                'List of operators for scalar `%s` is empty.',
-                $scalar,
-            ));
+            throw new ScalarNoOperators($scalar);
         }
 
         return $operators;
@@ -492,17 +476,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $fake = $this->getTypeDefinitionNode($name);
 
         if (!($fake instanceof InputObjectTypeDefinitionNode)) {
-            throw new SearchByException(sprintf(
-                'Fake type definition `%s` is not exists.',
-                $name,
-            ));
+            throw new FakeTypeDefinitionUnknown($name);
         }
 
         if (count($fake->fields) !== 1 || $fake->fields[0]->name->value !== 'fake') {
-            throw new SearchByException(sprintf(
-                'Type definition `%s` is not a fake.',
-                $name,
-            ));
+            throw new FakeTypeDefinitionIsNotFake($name);
         }
 
         // Remove

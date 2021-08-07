@@ -7,9 +7,8 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortByException;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\ImpossibleCreateSortClause;
 
-use function sprintf;
 use function tap;
 
 class Manipulator extends AstManipulator {
@@ -31,10 +30,7 @@ class Manipulator extends AstManipulator {
         }
 
         if (!($type instanceof ListTypeNode)) {
-            throw new SortByException(sprintf(
-                'Impossible to create Sort Clause for `%s`.',
-                $node->name->value,
-            ));
+            throw new ImpossibleCreateSortClause($node->name->value);
         }
 
         // Update

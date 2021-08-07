@@ -5,14 +5,16 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorNotFound;
 
 use function array_keys;
 use function count;
-use function implode;
 use function key;
 use function reset;
 
@@ -37,10 +39,7 @@ class SearchBuilder {
      *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator
      *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator> $operators
      */
-    public function __construct(
-        protected PackageTranslator $translator,
-        array $operators,
-    ) {
+    public function __construct(array $operators) {
         foreach ($operators as $operator) {
             if ($operator instanceof ComparisonOperator) {
                 $this->comparison[$operator->getName()] = $operator;
@@ -78,12 +77,7 @@ class SearchBuilder {
     ): EloquentBuilder|QueryBuilder {
         // More than one property?
         if (count($input) > 1) {
-            throw new SearchLogicException($this->translator->get(
-                'search_by.errors.too_many_properties',
-                [
-                    'properties' => implode('`, `', array_keys($input)),
-                ],
-            ));
+            throw new SearchConditionTooManyProperties(array_keys($input));
         }
 
         // On this level, each item can be one of the following
@@ -169,19 +163,12 @@ class SearchBuilder {
     ): EloquentBuilder|QueryBuilder {
         // Empty?
         if (count($conditions) <= 0) {
-            throw new SearchLogicException($this->translator->get(
-                'search_by.errors.empty_condition',
-            ));
+            throw new SearchConditionEmpty();
         }
 
         // More than one operator?
         if (count($conditions) > 1) {
-            throw new SearchLogicException($this->translator->get(
-                'search_by.errors.too_many_operators',
-                [
-                    'operators' => implode('`, `', array_keys($conditions)),
-                ],
-            ));
+            throw new SearchConditionTooManyOperators(array_keys($conditions));
         }
 
         // Get Operator
@@ -191,12 +178,7 @@ class SearchBuilder {
 
         // Found?
         if (!$operator) {
-            throw new SearchLogicException($this->translator->get(
-                'search_by.errors.unknown_operator',
-                [
-                    'operator' => $name,
-                ],
-            ));
+            throw new OperatorNotFound($name);
         }
 
         // Table Alias?

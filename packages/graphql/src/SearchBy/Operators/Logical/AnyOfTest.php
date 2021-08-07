@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Closure;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
@@ -28,16 +27,13 @@ class AnyOfTest extends TestCase {
      * @dataProvider dataProviderApply
      *
      * @param array{sql: string, bindings: array<mixed>} $expected
-     * @param array<mixed> $conditions
+     * @param array<mixed>                               $conditions
      */
     public function testApply(array $expected, Closure $builder, array $conditions, ?string $tableAlias): void {
-        $search   = new SearchBuilder(
-            $this->app->make(PackageTranslator::class),
-            [
-                $this->app->make(Equal::class),
-                $this->app->make(NotEqual::class),
-            ],
-        );
+        $search   = new SearchBuilder([
+            $this->app->make(Equal::class),
+            $this->app->make(NotEqual::class),
+        ]);
         $operator = $this->app->make(AnyOf::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($search, $builder, $conditions, $tableAlias);

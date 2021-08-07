@@ -8,6 +8,13 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotComplexOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotDefinition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionAlreadyDefined;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
@@ -25,7 +32,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchByException;
 
 use function array_map;
 use function array_push;
@@ -34,7 +40,6 @@ use function array_values;
 use function is_a;
 use function is_array;
 use function is_string;
-use function sprintf;
 
 use const SORT_REGULAR;
 
@@ -140,17 +145,11 @@ class Metadata {
      */
     public function addScalar(string $scalar, array|string $operators): void {
         if (is_string($operators) && !$this->isScalar($operators)) {
-            throw new SearchByException(sprintf(
-                'Scalar `%s` is not defined.',
-                $operators,
-            ));
+            throw new ScalarUnknown($operators);
         }
 
         if (is_array($operators) && empty($operators)) {
-            throw new SearchByException(sprintf(
-                'Operator list for scalar `%s` cannot be empty.',
-                $scalar,
-            ));
+            throw new ScalarNoOperators($scalar);
         }
 
         $this->scalars[$scalar] = $operators;
@@ -162,10 +161,7 @@ class Metadata {
     public function getScalarOperators(string $scalar, bool $nullable): array {
         // Is Scalar?
         if (!$this->isScalar($scalar)) {
-            throw new SearchByException(sprintf(
-                'Scalar `%s` is not defined.',
-                $scalar,
-            ));
+            throw new ScalarUnknown($scalar);
         }
 
         // Base
@@ -208,11 +204,7 @@ class Metadata {
         if (!isset($this->operators[$class])) {
             // Is operator?
             if (!is_a($class, Operator::class, true)) {
-                throw new SearchByException(sprintf(
-                    'Operator `%s` must implement `%s`.',
-                    $class,
-                    Operator::class,
-                ));
+                throw new ClassIsNotOperator($class);
             }
 
             // Create Instance
@@ -238,11 +230,7 @@ class Metadata {
         if (!isset($this->complex[$class])) {
             // Is operator?
             if (!is_a($class, ComplexOperator::class, true)) {
-                throw new SearchByException(sprintf(
-                    'Operator `%s` must implement `%s`.',
-                    $class,
-                    ComplexOperator::class,
-                ));
+                throw new ClassIsNotComplexOperator($class);
             }
 
             // Create Instance
@@ -273,19 +261,12 @@ class Metadata {
     public function addDefinition(string $type, string $definition): void {
         // Defined?
         if (isset($this->definitions[$type]) && $this->definitions[$type]::class !== $definition) {
-            throw new SearchByException(sprintf(
-                'Definition `%s` already defined.',
-                $type,
-            ));
+            throw new DefinitionAlreadyDefined($type);
         }
 
         // Is Definition?
         if (!is_a($definition, TypeDefinition::class, true)) {
-            throw new SearchByException(sprintf(
-                'Definition `%s` must implement `%s`.',
-                $definition,
-                TypeDefinition::class,
-            ));
+            throw new ClassIsNotDefinition($definition);
         }
 
         // Add
@@ -294,10 +275,7 @@ class Metadata {
 
     public function getDefinition(string $type): TypeDefinition {
         if (!isset($this->definitions[$type])) {
-            throw new SearchByException(sprintf(
-                'Definition `%s` is not defined.',
-                $type,
-            ));
+            throw new DefinitionUnknown($type);
         }
 
         return $this->definitions[$type];

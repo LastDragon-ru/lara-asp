@@ -6,7 +6,6 @@ use Closure;
 use Exception;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\ObjectType;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
@@ -205,10 +204,7 @@ class DirectiveTest extends TestCase {
         }
 
         $builder   = $builder($this);
-        $directive = new class(
-            $this->app,
-            $this->app->make(PackageTranslator::class),
-        ) extends Directive {
+        $directive = new class($this->app) extends Directive {
             /**
              * @inheritDoc
              */

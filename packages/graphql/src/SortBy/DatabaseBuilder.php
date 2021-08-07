@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortLogicException;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LogicException;
 
 use function implode;
@@ -30,9 +30,7 @@ class DatabaseBuilder {
         HasOneThrough::class,
     ];
 
-    public function __construct(
-        protected PackageTranslator $translator,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -110,18 +108,13 @@ class DatabaseBuilder {
     ): EloquentBuilder {
         // QueryBuilder?
         if ($builder instanceof QueryBuilder) {
-            throw new SortLogicException($this->translator->get(
-                'sort_by.errors.unsupported_builder',
-                [
-                    'builder' => QueryBuilder::class,
-                ],
-            ));
+            throw new BuilderUnsupported($builder::class);
         }
 
         // Relation?
         $parentBuilder = $stack->getBuilder();
         $parentAlias   = $stack->getTableAlias();
-        $relation      = $this->getRelation($parentBuilder, $name);
+        $relation      = $this->getRelation($parentBuilder, $name, $stack);
         $stack         = $stack->push($name, $relation->getRelated()->newQueryWithoutRelationships());
 
         if (!$stack->hasTableAlias()) {
@@ -196,7 +189,7 @@ class DatabaseBuilder {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getRelation(EloquentBuilder $builder, string $name): Relation {
+    protected function getRelation(EloquentBuilder $builder, string $name, DatabaseSortStack|null $stack): Relation {
         $relation  = (new ModelHelper($builder))->getRelation($name);
         $supported = false;
 
@@ -208,13 +201,11 @@ class DatabaseBuilder {
         }
 
         if (!$supported) {
-            throw new SortLogicException($this->translator->get(
-                'sort_by.errors.unsupported_relation',
-                [
-                    'relation'  => $relation::class,
-                    'supported' => implode('`, `', $this->relations),
-                ],
-            ));
+            throw new RelationUnsupported(
+                implode('.', [...$stack->getPath(), $name]),
+                $relation::class,
+                $this->relations,
+            );
         }
 
         return $relation;

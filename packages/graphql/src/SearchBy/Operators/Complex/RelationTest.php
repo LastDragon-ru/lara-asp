@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\BuilderUnsupported;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LogicException;
 
@@ -31,7 +31,7 @@ class RelationTest extends TestCase {
      * @dataProvider dataProviderApply
      *
      * @param array{sql: string, bindings: array<mixed>}|\Exception $expected
-     * @param array<mixed> $conditions
+     * @param array<mixed>                                          $conditions
      */
     public function testApply(
         array|Exception $expected,
@@ -43,14 +43,11 @@ class RelationTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $search   = new SearchBuilder(
-            $this->app->make(PackageTranslator::class),
-            [
-                $this->app->make(Equal::class),
-                $this->app->make(NotEqual::class),
-                $this->app->make(Relation::class),
-            ],
-        );
+        $search   = new SearchBuilder([
+            $this->app->make(Equal::class),
+            $this->app->make(NotEqual::class),
+            $this->app->make(Relation::class),
+        ]);
         $relation = $this->app->make(Relation::class);
         $builder  = $builder($this);
         $builder  = $relation->apply($search, $builder, $property, $conditions);
@@ -68,11 +65,7 @@ class RelationTest extends TestCase {
     public function dataProviderApply(): array {
         return [
             'query builder not supported'                            => [
-                new SearchLogicException(sprintf(
-                    'Operator `%s` cannot be used with `%s`.',
-                    'relation',
-                    QueryBuilder::class,
-                )),
+                new BuilderUnsupported(QueryBuilder::class),
                 static function (self $test): QueryBuilder {
                     return $test->app->make('db')->table('tmp');
                 },
@@ -180,9 +173,7 @@ class RelationTest extends TestCase {
                 ],
             ],
             '{relation: yes, count: { multiple operators }}'         => [
-                new SearchLogicException(
-                    'Only one comparison operator allowed, found: `equal`, `lt`',
-                ),
+                new SearchConditionTooManyOperators(['equal', 'lt']),
                 static function (): EloquentBuilder {
                     return RelationTest__ModelA::query();
                 },
