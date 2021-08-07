@@ -13,6 +13,10 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorNotFound;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
@@ -245,9 +249,7 @@ class SearchBuilderTest extends TestCase {
                 new BuilderDataProvider(),
                 new ArrayDataProvider([
                     'more than one property'           => [
-                        new SearchLogicException(
-                            'Only one property allowed, found: `a`, `b`.',
-                        ),
+                        new SearchConditionTooManyProperties(['a', 'b']),
                         [
                             'a' => [
                                 'equal' => 2,
@@ -430,17 +432,13 @@ class SearchBuilderTest extends TestCase {
                 new BuilderDataProvider(),
                 new ArrayDataProvider([
                     'empty'                            => [
-                        new SearchLogicException(
-                            'Search condition cannot be empty.',
-                        ),
+                        new SearchConditionEmpty(),
                         'property',
                         [],
                         null,
                     ],
                     'more than one condition'          => [
-                        new SearchLogicException(
-                            'Only one comparison operator allowed, found: `equal`, `in`.',
-                        ),
+                        new SearchConditionTooManyOperators(['equal', 'in']),
                         'property',
                         [
                             'equal' => 'yes',
@@ -449,9 +447,7 @@ class SearchBuilderTest extends TestCase {
                         null,
                     ],
                     'unknown operator'                 => [
-                        new SearchLogicException(
-                            'Operator `unk` not found.',
-                        ),
+                        new OperatorNotFound('unk'),
                         'property',
                         [
                             'unk' => 'yes',

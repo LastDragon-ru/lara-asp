@@ -12,8 +12,8 @@ use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchLogicException;
 
 use function is_array;
 use function reset;
@@ -87,13 +87,7 @@ class Relation implements ComplexOperator {
     ): EloquentBuilder {
         // QueryBuilder?
         if ($builder instanceof QueryBuilder) {
-            throw new SearchLogicException($this->translator->get(
-                'search_by.errors.unsupported_option',
-                [
-                    'operator' => $this->getName(),
-                    'option'   => QueryBuilder::class,
-                ],
-            ));
+            throw new BuilderUnsupported($builder::class);
         }
 
         // Possible variants:
