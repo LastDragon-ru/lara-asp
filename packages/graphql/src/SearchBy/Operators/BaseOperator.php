@@ -19,4 +19,6 @@ abstract class BaseOperator implements Operator {
 
         DEF;
     }
+
+    abstract protected function getDescription(): string;
 }
