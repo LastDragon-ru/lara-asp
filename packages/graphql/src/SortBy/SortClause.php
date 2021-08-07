@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortClauseEmpty;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortClauseTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
 
 use function array_keys;
 use function count;
