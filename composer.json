@@ -60,9 +60,9 @@
     "ext-pdo_sqlite": "*",
     "laravel/scout": "^9.2",
     "mockery/mockery": "^1.4",
-    "nunomaduro/larastan": "^0.7.0",
+    "nunomaduro/larastan": "^0.7.12",
     "orchestra/testbench": "^6.9.0",
-    "phpstan/phpstan": "^0.12.77",
+    "phpstan/phpstan": "^0.12.94",
     "phpunit/phpunit": "^9.5.0",
     "slevomat/coding-standard": "dev-master",
     "squizlabs/php_codesniffer": "dev-master",
@@ -117,8 +117,12 @@
     ],
     "release:validate": [
       "./vendor/bin/monorepo-builder validate",
+      "@phpstan",
       "@phpunit",
       "@phpcs"
+    ],
+    "phpstan": [
+      "@php ./vendor/bin/phpstan analyse"
     ],
     "phpunit": [
       "@php ./vendor/bin/phpunit"
