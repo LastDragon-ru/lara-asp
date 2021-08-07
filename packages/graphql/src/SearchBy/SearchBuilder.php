@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
@@ -40,10 +39,7 @@ class SearchBuilder {
      *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator
      *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator> $operators
      */
-    public function __construct(
-        protected PackageTranslator $translator,
-        array $operators,
-    ) {
+    public function __construct(array $operators) {
         foreach ($operators as $operator) {
             if ($operator instanceof ComparisonOperator) {
                 $this->comparison[$operator->getName()] = $operator;

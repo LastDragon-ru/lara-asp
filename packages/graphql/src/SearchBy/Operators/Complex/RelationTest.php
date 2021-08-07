@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\PackageTranslator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
@@ -44,14 +43,11 @@ class RelationTest extends TestCase {
             $this->expectExceptionObject($expected);
         }
 
-        $search   = new SearchBuilder(
-            $this->app->make(PackageTranslator::class),
-            [
-                $this->app->make(Equal::class),
-                $this->app->make(NotEqual::class),
-                $this->app->make(Relation::class),
-            ],
-        );
+        $search   = new SearchBuilder([
+            $this->app->make(Equal::class),
+            $this->app->make(NotEqual::class),
+            $this->app->make(Relation::class),
+        ]);
         $relation = $this->app->make(Relation::class);
         $builder  = $builder($this);
         $builder  = $relation->apply($search, $builder, $property, $conditions);
