@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 use Illuminate\Foundation\Auth\User;
 
 /**
- * @property \Illuminate\Foundation\Auth\User $resource
+ * @property User $resource
  */
 class UserResource extends Resource {
     public function __construct(User $resource) {

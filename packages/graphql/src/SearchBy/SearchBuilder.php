@@ -20,24 +20,22 @@ use function reset;
 
 class SearchBuilder {
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>
+     * @var array<string, ComplexOperator>
      */
     protected array $complex = [];
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator>
+     * @var array<string, LogicalOperator>
      */
     protected array $logical = [];
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator>
+     * @var array<string, ComparisonOperator>
      */
     protected array $comparison = [];
 
     /**
-     * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator
-     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator
-     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator> $operators
+     * @param array<ComparisonOperator|LogicalOperator|ComplexOperator> $operators
      */
     public function __construct(array $operators) {
         foreach ($operators as $operator) {

@@ -15,7 +15,7 @@ use function sprintf;
 
 class EnumCast implements CastsAttributes {
     /**
-     * @param class-string<\LastDragon_ru\LaraASP\Eloquent\Enum> $enum
+     * @param class-string<Enum> $enum
      */
     public function __construct(
         protected string $enum,

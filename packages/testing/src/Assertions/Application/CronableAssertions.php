@@ -5,10 +5,12 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
+use PHPUnit\Framework\Assert;
 
 use function array_filter;
 use function count;
@@ -20,15 +22,15 @@ use function str_contains;
 /**
  * @required {@link \Illuminate\Foundation\Testing\TestCase}
  *
- * @property-read \Illuminate\Foundation\Application $app
+ * @property-read Application $app
  *
- * @mixin \PHPUnit\Framework\Assert
+ * @mixin Assert
  */
 trait CronableAssertions {
     /**
      * Asserts that {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} is registered.
      *
-     * @param class-string<\LastDragon_ru\LaraASP\Queue\Contracts\Cronable> $cronable
+     * @param class-string<Cronable> $cronable
      */
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
         $this->assertTrue(
@@ -50,9 +52,8 @@ trait CronableAssertions {
     }
 
     /**
-     * @param \LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable
-     *      |class-string<\LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable> $queueable
-     * @param array<string, mixed> $settings
+     * @param ConfigurableQueueable|class-string<ConfigurableQueueable> $queueable
+     * @param array<string, mixed>                                      $settings
      */
     protected function setQueueableConfig(ConfigurableQueueable|string $queueable, array $settings): void {
         $config = $this->app->make(Repository::class);

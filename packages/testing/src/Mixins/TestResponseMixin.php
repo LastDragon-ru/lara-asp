@@ -22,7 +22,7 @@ use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 class TestResponseMixin {
     public function getContentType(): Closure {
         return function (): ?string {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             return $this->headers->get('Content-Type');
         };
     }
@@ -33,7 +33,7 @@ class TestResponseMixin {
             // one time, so we should use a cloned response and cache the
             // created PSR response (to avoid double code execution).
 
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             if (!isset($this->psrResponse)) {
                 /** @phpstan-ignore-next-line */
                 $this->psrResponse = (new PsrHttpFactory(
@@ -50,7 +50,7 @@ class TestResponseMixin {
 
     public function assertThat(): Closure {
         return function (Constraint $constraint, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertThatResponse($this, $constraint, $message);
 
             return $this;
@@ -59,7 +59,7 @@ class TestResponseMixin {
 
     public function assertJsonMatchesSchema(): Closure {
         return function (JsonSchema $schema, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertJsonMatchesSchema($schema, $this->json(), $message);
 
             return $this;
@@ -68,7 +68,7 @@ class TestResponseMixin {
 
     public function assertContentType(): Closure {
         return function (string $contentType, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertThatResponse($this, new ContentType($contentType), $message);
 
             return $this;
@@ -77,7 +77,7 @@ class TestResponseMixin {
 
     public function assertStatusCode(): Closure {
         return function (int $statusCode, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertThatResponse($this, new StatusCode($statusCode), $message);
 
             return $this;
@@ -86,7 +86,7 @@ class TestResponseMixin {
 
     public function assertXmlMatchesSchema(): Closure {
         return function (SplFileInfo $schema, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertXmlMatchesSchema($schema, $this->getContent(), $message);
 
             return $this;

@@ -30,8 +30,8 @@ class RelationTest extends TestCase {
      *
      * @dataProvider dataProviderApply
      *
-     * @param array{sql: string, bindings: array<mixed>}|\Exception $expected
-     * @param array<mixed>                                          $conditions
+     * @param array{sql: string, bindings: array<mixed>}|Exception $expected
+     * @param array<mixed>                                         $conditions
      */
     public function testApply(
         array|Exception $expected,

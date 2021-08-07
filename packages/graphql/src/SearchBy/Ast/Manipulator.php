@@ -160,7 +160,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Add searchable fields
         $description = Parser::description('"""Property condition."""');
 
-        /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
+        /** @var InputValueDefinitionNode $field */
         foreach ($node->fields as $field) {
             // Name should be unique
             $fieldName = $field->name->value;
@@ -397,7 +397,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
+     * @return array<class-string<Operator>>
      */
     protected function getEnumOperators(string $enum, bool $nullable): array {
         $operators = $this->metadata->getEnumOperators($enum, $nullable);
@@ -410,7 +410,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>
+     * @return array<class-string<Operator>>
      */
     protected function getScalarOperators(string $scalar, bool $nullable): array {
         $operators = $this->metadata->getScalarOperators($scalar, $nullable);

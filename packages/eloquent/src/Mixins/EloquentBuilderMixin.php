@@ -15,7 +15,7 @@ class EloquentBuilderMixin extends QueryBuilderMixin {
         return function (string $direction = 'asc'): Builder {
             /**
              * @phpstan-ignore-next-line https://github.com/phpstan/phpstan/issues/4488
-             * @var \Illuminate\Database\Eloquent\Builder $this
+             * @var Builder $this
              */
             return $this->orderBy($this->getDefaultKeyName(), $direction);
         };
@@ -25,7 +25,7 @@ class EloquentBuilderMixin extends QueryBuilderMixin {
         return function (): Builder {
             /**
              * @phpstan-ignore-next-line https://github.com/phpstan/phpstan/issues/4488
-             * @var \Illuminate\Database\Eloquent\Builder $this
+             * @var Builder $this
              */
             return $this->orderByKey('desc');
         };

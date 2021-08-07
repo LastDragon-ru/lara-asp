@@ -17,7 +17,7 @@ class EnumHelper extends Enum {
      *
      * @see https://lighthouse-php.com/master/the-basics/types.html#enum
      *
-     * @param class-string<\LastDragon_ru\LaraASP\Core\Enum> $enum
+     * @param class-string<Enum> $enum
      */
     public static function getType(string $enum, ?string $name = null): EnumType {
         $class      = new ReflectionClass($enum);
