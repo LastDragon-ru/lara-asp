@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions;
 use GraphQL\Error\ClientAware;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 
-class SortLogicException extends SortByException implements ClientAware {
+abstract class SortLogicException extends SortByException implements ClientAware {
     public function isClientSafe(): bool {
         return true;
     }

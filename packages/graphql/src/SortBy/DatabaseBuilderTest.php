@@ -12,9 +12,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortClauseEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortClauseTooManyProperties;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\SortLogicException;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -23,7 +24,6 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use LogicException;
 
-use function implode;
 use function sprintf;
 
 /**
@@ -103,10 +103,7 @@ class DatabaseBuilderTest extends TestCase {
                         ],
                     ],
                     'query builder not supported' => [
-                        new SortLogicException(sprintf(
-                            'Relation cannot be used with `%s`.',
-                            QueryBuilder::class,
-                        )),
+                        new BuilderUnsupported(QueryBuilder::class),
                         [
                             [
                                 'test' => ['name' => 'asc'],
@@ -131,16 +128,16 @@ class DatabaseBuilderTest extends TestCase {
                     ],
                 ],
                 'unsupported'        => [
-                    new SortLogicException(sprintf(
-                        'Relation of type `%s` cannot be used for sort, only `%s` supported.',
+                    new RelationUnsupported(
+                        'unsupported',
                         HasMany::class,
-                        implode('`, `', [
+                        [
                             BelongsTo::class,
                             HasOne::class,
                             MorphOne::class,
                             HasOneThrough::class,
-                        ]),
-                    )),
+                        ],
+                    ),
                     static function (): EloquentBuilder {
                         return SortBuilderTest__ModelA::query();
                     },

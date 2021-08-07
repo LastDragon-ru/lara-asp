@@ -54,7 +54,14 @@ class DatabaseSortStack {
         return ((array) end($this->stack) + ['', null])[1] ?? $this->builder;
     }
 
+    /**
+     * @return array<string>
+     */
+    public function getPath(): array {
+        return array_filter(array_column($this->stack, 0));
+    }
+
     protected function path(): string {
-        return implode('.', array_filter(array_column($this->stack, 0)));
+        return implode('.', $this->getPath());
     }
 }

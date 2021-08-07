@@ -12,10 +12,4 @@ return [
             'empty_condition'     => 'Search condition cannot be empty.',
         ],
     ],
-    'sort_by'   => [
-        'errors' => [
-            'unsupported_relation' => 'Relation of type `:relation` cannot be used for sort, only `:supported` supported.',
-            'unsupported_builder'  => 'Relation cannot be used with `:builder`.',
-        ],
-    ],
 ];
