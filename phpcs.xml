@@ -67,6 +67,9 @@
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
         <properties>
             <property name="searchAnnotations" value="true"/>
+            <property name="ignoredAnnotationNames" type="array">
+                <element value="@dataProvider"/>
+            </property>
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace"/>
