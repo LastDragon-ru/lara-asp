@@ -3,10 +3,11 @@ includes:
     - ./vendor/nunomaduro/larastan/extension.neon
     - ./vendor/phpstan/phpstan-phpunit/extension.neon
     - ./vendor/phpstan/phpstan-phpunit/rules.neon
+    - phpstan-baseline.neon
 
 parameters:
     paths:
         - packages
 
     # The level 8 is the highest level
-    level: 3
+    level: 4

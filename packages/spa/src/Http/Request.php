@@ -24,7 +24,7 @@ abstract class Request extends FormRequest {
 
         // Replace values
         foreach ($validator->getRules() as $attribute => $rules) {
-            /** @var ValueProvider $provider */
+            /** @var ValueProvider|null $provider */
             $provider = Arr::last($rules, static function ($rule) {
                 return $rule instanceof ValueProvider;
             });

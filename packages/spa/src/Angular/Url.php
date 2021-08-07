@@ -54,7 +54,6 @@ class Url {
     /**
      * @param array<string, mixed> $parameters
      */
-    #[Pure]
     public function build(array $parameters = []): string {
         // Check
         $params = $this->getParameters();
@@ -95,7 +94,6 @@ class Url {
     /**
      * @return array<string>
      */
-    #[Pure]
     private function extract(string $template): array {
         $names = [];
         $parts = explode('/', parse_url($template, PHP_URL_PATH));
@@ -109,8 +107,7 @@ class Url {
         return $names;
     }
 
-    #[Pure]
-    private function serialize(mixed $value): string|array|null {
+    private function serialize(mixed $value): string|array {
         if (is_float($value)) {
             $value = str_replace(',', '.', (string) $value);
         } elseif (is_bool($value)) {
