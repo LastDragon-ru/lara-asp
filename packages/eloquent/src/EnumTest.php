@@ -58,6 +58,8 @@ class EnumTest_Enum extends Enum {
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @property string $value
  */
 class EnumTest_Model extends TestObject {
     /**
