@@ -12,7 +12,10 @@ class QueryBuilderMixin {
          * @internal
          */
         return function (): string {
-            /** @var \Illuminate\Database\Query\Builder $this */
+            /**
+             * @phpstan-ignore-next-line https://github.com/phpstan/phpstan/issues/4488
+             * @var \Illuminate\Database\Query\Builder $this
+             */
             return $this->defaultKeyName();
         };
     }

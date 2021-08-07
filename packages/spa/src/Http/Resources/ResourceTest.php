@@ -309,7 +309,15 @@ class ResourceTest extends TestCase {
                         'collection_date_no_cast' => $date->format(Package::DateTimeFormat),
                     ],
                 ],
-                new class($date, $format) extends Model {
+                new
+                /**
+                 * @property \DateTimeInterface                                 $date
+                 * @property \DateTimeInterface                                 $datetime
+                 * @property \DateTimeInterface                                 $date_no_cast
+                 * @property array<\DateTimeInterface>                          $nested
+                 * @property \Illuminate\Support\Collection<\DateTimeInterface> $collection
+                 */
+                class($date, $format) extends Model {
                     public function __construct(DateTimeInterface $date, string $format) {
                         parent::__construct([]);
 

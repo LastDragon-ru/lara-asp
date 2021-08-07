@@ -35,13 +35,13 @@ class TestResponseMixin {
 
             /** @var \Illuminate\Testing\TestResponse $this */
             if (!isset($this->psrResponse)) {
-                $psrFactory        = new PsrHttpFactory(
+                /** @phpstan-ignore-next-line */
+                $this->psrResponse = (new PsrHttpFactory(
                     new ServerRequestFactory(),
                     new StreamFactory(),
                     new UploadedFileFactory(),
                     new ResponseFactory(),
-                );
-                $this->psrResponse = $psrFactory->createResponse(clone $this->baseResponse);
+                ))->createResponse(clone $this->baseResponse);
             }
 
             return $this->psrResponse;

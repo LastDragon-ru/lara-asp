@@ -290,13 +290,6 @@ class Metadata {
     }
 
     /**
-     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>
-     */
-    public function getUsedOperators(string $type): array {
-        return $this->usages[$type] ?? [];
-    }
-
-    /**
      * @return \LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Usage<
      *      \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|
      *      \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator
