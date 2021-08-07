@@ -27,7 +27,7 @@ class Usage {
      */
     protected array $types = [];
     /**
-     * @var array<array{id:string,type:string,types:array<string>,values:array<T>}>
+     * @var array<array{id:int,type:string,types:array<string>,values:array<T>}>
      */
     protected array $stack = [];
 
