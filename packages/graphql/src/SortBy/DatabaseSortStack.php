@@ -12,7 +12,7 @@ use function implode;
 
 class DatabaseSortStack {
     /**
-     * @var array<array<string,Builder>>
+     * @var array<array{string,Builder}>
      */
     protected array $stack = [];
     /**
