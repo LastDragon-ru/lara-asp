@@ -71,6 +71,9 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
             && $last;
     }
 
+    /**
+     * @param Model|stdClass|array<mixed>|null $item
+     */
     protected function column(Model|stdClass|array|null $item): mixed {
         $value  = null;
         $column = $this->getColumn();

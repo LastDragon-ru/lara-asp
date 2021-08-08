@@ -19,8 +19,9 @@ class ConfigMergerTest extends TestCase {
      *
      * @dataProvider dataProviderMerge
      *
-     * @param array<mixed> $target
-     * @param array<mixed> $configs
+     * @param array<mixed>|Exception $expected
+     * @param array<mixed>           $target
+     * @param array<mixed>           $configs
      */
     public function testMerge(
         array|Exception $expected,

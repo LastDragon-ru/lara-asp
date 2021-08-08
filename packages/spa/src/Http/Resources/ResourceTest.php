@@ -65,6 +65,8 @@ class ResourceTest extends TestCase {
      * @covers ::mapResourceData
      *
      * @dataProvider dataProviderMapResourceData
+     *
+     * @param array<mixed>|Exception $expected
      */
     public function testMapResourceData(array|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {

@@ -42,6 +42,9 @@ class TestData {
         return file_get_contents($this->path($path));
     }
 
+    /**
+     * @return array<mixed>|string|int|float|bool|null
+     */
     public function json(string $path = '.json'): array|string|int|float|bool|null {
         return Args::getJson($this->file($path), true);
     }

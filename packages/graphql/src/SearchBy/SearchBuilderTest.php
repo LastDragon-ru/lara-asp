@@ -43,7 +43,8 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcess
      *
-     * @param array<mixed> $conditions
+     * @param array<mixed>|Exception $expected
+     * @param array<mixed>           $conditions
      */
     public function testProcess(
         array|Exception $expected,
@@ -78,7 +79,8 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcessComparison
      *
-     * @param array<mixed> $conditions
+     * @param array<mixed>|Exception $expected
+     * @param array<mixed>           $conditions
      */
     public function testProcessComparison(
         array|Exception $expected,

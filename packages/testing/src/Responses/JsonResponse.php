@@ -18,6 +18,9 @@ use function array_filter;
 use function json_encode;
 
 class JsonResponse extends Response {
+    /**
+     * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $content
+     */
     public function __construct(
         StatusCode $code,
         JsonSchema $schema,

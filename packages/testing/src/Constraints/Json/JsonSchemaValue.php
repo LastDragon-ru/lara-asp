@@ -9,6 +9,9 @@ use Opis\JsonSchema\Uri;
 use stdClass;
 
 class JsonSchemaValue implements JsonSchema {
+    /**
+     * @param JsonSerializable|stdClass|array<mixed>|string $schema
+     */
     public function __construct(
         protected JsonSerializable|stdClass|array|string $schema,
     ) {
