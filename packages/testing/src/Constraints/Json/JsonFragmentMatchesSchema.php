@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 use Illuminate\Support\Arr;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 
+use function is_array;
 use function sprintf;
 
 /**
@@ -24,11 +25,11 @@ class JsonFragmentMatchesSchema extends JsonMatchesSchema {
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
     public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
-        return parent::evaluate(
-            Arr::get(Args::getJson($other, true), $this->path),
-            $description,
-            $returnResult,
-        );
+        $actual = Args::getJson($other, true);
+        $actual = is_array($actual) ? Arr::get($actual, $this->path) : null;
+        $result = parent::evaluate($actual, $description, $returnResult);
+
+        return $result;
     }
 
     public function toString(): string {
