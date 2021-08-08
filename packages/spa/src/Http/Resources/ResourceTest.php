@@ -48,6 +48,8 @@ class ResourceTest extends TestCase {
      * @covers ::collection
      *
      * @dataProvider dataProviderCollection
+     *
+     * @param class-string $expected
      */
     public function testCollection(string $expected, mixed $value): void {
         $class  = get_class(new class(null) extends Resource {
