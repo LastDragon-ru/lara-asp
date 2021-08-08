@@ -24,10 +24,7 @@ class JsonMatchesFragment extends Constraint {
         // empty
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate($other, $description, $returnResult)
             && (new JsonMatches(json_encode(Args::getJson($this->json))))->evaluate(
                 json_encode(Arr::get(Args::getJson($other, true), $this->path)),
