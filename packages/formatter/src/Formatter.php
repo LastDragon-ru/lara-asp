@@ -202,7 +202,7 @@ class Formatter {
             ->format((float) $value);
     }
 
-    public function decimal(?float $value, int $decimals = null): string {
+    public function decimal(float|int|null $value, int $decimals = null): string {
         $type  = static::Decimal;
         $value = (float) $value;
 
@@ -528,8 +528,21 @@ class Formatter {
         );
     }
 
+    /**
+     * @template T of NumberFormatter|IntlDateFormatter
+     *
+     * @param Closure(): T $closure
+     *
+     * @return T
+     */
     private function getIntlFormatter(mixed $type, Closure $closure): NumberFormatter|IntlDateFormatter {
-        return $this->instanceCacheGet([__METHOD__, $type], $closure);
+        $formatter = $this->instanceCacheGet([__METHOD__, $type], $closure);
+
+        if ($formatter === null) {
+
+        }
+
+        return $formatter;
     }
 
     protected function getOptions(string $type, mixed $default = null): mixed {

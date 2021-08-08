@@ -37,7 +37,7 @@ trait RawSqlHelper {
     }
 
     protected function getRawPath(string $type = null): string {
-        $path = (new ReflectionClass($this))->getFileName();
+        $path = (string) (new ReflectionClass($this))->getFileName();
         $file = basename($path, '.php');
         $dir  = dirname($path);
 
