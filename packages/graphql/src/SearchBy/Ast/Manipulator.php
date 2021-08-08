@@ -25,8 +25,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\RelationOperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedCreateSearchCondition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedCreateSearchConditionForField;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchConditionForField;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
@@ -77,7 +77,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             if (!($type instanceof NamedTypeNode)) {
-                throw new FailedCreateSearchCondition($node->name->value);
+                throw new FailedToCreateSearchCondition($node->name->value);
             }
 
             // Update
@@ -213,7 +213,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                     $clone->description = $description;
                     $type->fields[]     = $clone;
                 } else {
-                    throw new FailedCreateSearchConditionForField($node->name->value, $fieldName);
+                    throw new FailedToCreateSearchConditionForField($node->name->value, $fieldName);
                 }
             } elseif ($fieldTypeNode) {
                 throw new NotImplemented($fieldType);

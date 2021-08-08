@@ -6,18 +6,24 @@ use Throwable;
 
 use function sprintf;
 
-class FailedCreateSortClause extends SortByException {
+class FailedToCreateSortClauseForField extends SortByException {
     public function __construct(
         protected string $type,
+        protected string $field,
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'Impossible to create Sort Clause for `%s`.',
+            'Failed to create Sort Clause for field `%s` in `%s`.',
+            $this->field,
             $this->type,
         ), $previous);
     }
 
     public function getType(): string {
         return $this->type;
+    }
+
+    public function getField(): string {
+        return $this->field;
     }
 }

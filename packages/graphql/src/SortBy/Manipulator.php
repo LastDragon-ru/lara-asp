@@ -9,8 +9,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedCreateSortClause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedCreateSortClauseForField;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClauseForField;
 
 class Manipulator extends AstManipulator {
     // <editor-fold desc="API">
@@ -31,7 +31,7 @@ class Manipulator extends AstManipulator {
         }
 
         if (!($type instanceof ListTypeNode)) {
-            throw new FailedCreateSortClause($this->getNodeTypeName($node));
+            throw new FailedToCreateSortClause($this->getNodeTypeName($node));
         }
 
         // Update
@@ -99,7 +99,7 @@ class Manipulator extends AstManipulator {
                     $field->description = Parser::description("\"\"\"{$description}\"\"\"");
                     $type->fields[]     = $clone;
                 } else {
-                    throw new FailedCreateSortClauseForField($this->getNodeName($node), $field->name->value);
+                    throw new FailedToCreateSortClauseForField($this->getNodeName($node), $field->name->value);
                 }
             } else {
                 $type->fields[] = Parser::inputValueDefinition(

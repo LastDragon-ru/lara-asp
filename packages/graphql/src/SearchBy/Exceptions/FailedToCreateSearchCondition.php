@@ -6,24 +6,18 @@ use Throwable;
 
 use function sprintf;
 
-class FailedCreateSearchConditionForField extends SearchByException {
+class FailedToCreateSearchCondition extends SearchByException {
     public function __construct(
         protected string $type,
-        protected string $field,
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'Impossible to create Search Condition for field `%s` in `%s`.',
-            $this->field,
+            'Impossible to create Search Condition for `%s`.',
             $this->type,
         ), $previous);
     }
 
     public function getType(): string {
         return $this->type;
-    }
-
-    public function getField(): string {
-        return $this->field;
     }
 }
