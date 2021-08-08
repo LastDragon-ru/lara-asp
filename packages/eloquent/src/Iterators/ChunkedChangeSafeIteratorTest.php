@@ -38,9 +38,16 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         $count     = count($log);
         $iterator  = (new ChunkedChangeSafeIterator($query))
             ->setChunkSize(2)
-            ->onBeforeChunk(Closure::fromCallable($spyBefore))
-            ->onAfterChunk(Closure::fromCallable($spyAfter));
-        $actual    = [];
+            ->onBeforeChunk(
+                /** @phpstan-ignore-next-line False positive, see https://github.com/phpstan/phpstan-mockery/issues/34 */
+                Closure::fromCallable($spyBefore),
+            )
+            ->onAfterChunk(
+                /** @phpstan-ignore-next-line False positive, see https://github.com/phpstan/phpstan-mockery/issues/34 */
+                Closure::fromCallable($spyAfter),
+            );
+
+        $actual = [];
 
         foreach ($iterator as $model) {
             $actual[] = $model;
