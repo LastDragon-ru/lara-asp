@@ -67,7 +67,7 @@ class Url {
 
         // Replace params
         $url        = Utils::uriFor($this->getTemplate());
-        $parameters = $this->serialize($parameters);
+        $parameters = (array) $this->serialize($parameters);
 
         foreach ($params as $param) {
             $url = $url->withPath(str_replace(":{$param}", $parameters[$param], $url->getPath()));
@@ -96,7 +96,7 @@ class Url {
      */
     private function extract(string $template): array {
         $names = [];
-        $parts = explode('/', parse_url($template, PHP_URL_PATH));
+        $parts = explode('/', (string) parse_url($template, PHP_URL_PATH));
 
         foreach ($parts as $part) {
             if (str_starts_with($part, ':')) {
@@ -108,7 +108,7 @@ class Url {
     }
 
     /**
-     * @return string|array<string>
+     * @return string|array<mixed>
      */
     private function serialize(mixed $value): string|array {
         if (is_float($value)) {

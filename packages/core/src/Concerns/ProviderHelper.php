@@ -24,7 +24,7 @@ trait ProviderHelper {
      */
     protected function getPath(string $path): string {
         $class = new ReflectionClass(self::class);
-        $path  = dirname($class->getFileName()).'/'.ltrim($path, '/');
+        $path  = dirname((string) $class->getFileName()).'/'.ltrim($path, '/');
 
         return $path;
     }

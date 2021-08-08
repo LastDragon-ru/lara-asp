@@ -66,7 +66,7 @@ class SmartMigratorTest extends TestCase {
         $repository
             ->shouldReceive('getLast')
             ->once()
-            ->andReturn(json_decode(json_encode($migrations)));
+            ->andReturn(json_decode((string) json_encode($migrations)));
 
         // Vars
         $migrator = new SmartMigrator(

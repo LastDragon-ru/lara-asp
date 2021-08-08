@@ -87,7 +87,7 @@ class TestResponseMixin {
     public function assertXmlMatchesSchema(): Closure {
         return function (SplFileInfo $schema, string $message = ''): TestResponse {
             /** @var TestResponse $this */
-            Assert::assertXmlMatchesSchema($schema, $this->getContent(), $message);
+            Assert::assertXmlMatchesSchema($schema, (string) $this->getContent(), $message);
 
             return $this;
         };

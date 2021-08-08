@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use DateTimeInterface;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -32,9 +33,9 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritdoc
      *
-     * @return array<mixed>
+     * @return array<mixed>|Arrayable|JsonSerializable
      */
-    public function toArray($request): array {
+    public function toArray($request): mixed {
         if ($this->resource instanceof Model) {
             throw new LogicException(
                 'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',

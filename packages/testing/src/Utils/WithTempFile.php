@@ -4,25 +4,24 @@ namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use LastDragon_ru\LaraASP\Testing\Package;
 use SplFileInfo;
+use Symfony\Component\Filesystem\Filesystem;
 
-use function file_put_contents;
 use function register_shutdown_function;
 use function sys_get_temp_dir;
-use function tempnam;
-use function unlink;
 
 trait WithTempFile {
     protected function getTempFile(string $content = null): SplFileInfo {
+        $fs   = new Filesystem();
         $pkg  = Package::Name;
-        $path = tempnam(sys_get_temp_dir(), $pkg);
+        $path = $fs->tempnam(sys_get_temp_dir(), $pkg);
         $file = new SplFileInfo($path);
 
         if ($content) {
-            file_put_contents($path, $content);
+            $fs->dumpFile($path, $content);
         }
 
-        register_shutdown_function(static function () use ($path): void {
-            unlink($path);
+        register_shutdown_function(static function () use ($fs, $path): void {
+            $fs->remove($path);
         });
 
         return $file;

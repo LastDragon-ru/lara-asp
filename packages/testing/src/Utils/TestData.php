@@ -3,13 +3,13 @@
 namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use DOMDocument;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentClass;
 use ReflectionClass;
 use RuntimeException;
 use SplFileInfo;
 
 use function basename;
 use function dirname;
-use function file_get_contents;
 use function ltrim;
 use function sprintf;
 use function str_replace;
@@ -19,15 +19,24 @@ use function str_starts_with;
  * Small helper to load data associated with test.
  */
 class TestData {
-    private ReflectionClass $test;
+    private string $path;
 
+    /**
+     * @param class-string $test
+     */
     public function __construct(string $test) {
-        $this->test = new ReflectionClass($test);
+        $path = (new ReflectionClass($test))->getFileName();
+
+        if (!$path) {
+            throw new InvalidArgumentClass('$test', $test);
+        }
+
+        $this->path = $path;
     }
 
     public function path(string $path): string {
-        $dir  = dirname(str_replace('\\', '/', $this->test->getFileName()));
-        $name = basename($this->test->getFileName(), '.php');
+        $dir  = dirname(str_replace('\\', '/', $this->path));
+        $name = basename($this->path, '.php');
         $path = str_starts_with($path, '.') || str_starts_with($path, '~') ? $path : '/'.ltrim($path, '/');
         $path = "{$dir}/{$name}{$path}";
 
@@ -39,13 +48,14 @@ class TestData {
     }
 
     public function content(string $path): string {
-        return file_get_contents($this->path($path));
+        return Args::content($this->file($path));
     }
 
     /**
      * @return array<mixed>|string|int|float|bool|null
      */
     public function json(string $path = '.json'): array|string|int|float|bool|null {
+        /** @phpstan-ignore-next-line */
         return Args::getJson($this->file($path), true);
     }
 

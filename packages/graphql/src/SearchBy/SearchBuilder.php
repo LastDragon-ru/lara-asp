@@ -56,7 +56,7 @@ class SearchBuilder {
     // <editor-fold desc="API">
     // =========================================================================
     /**
-     * @param array<mixed> $conditions
+     * @param array<string,mixed> $conditions
      */
     public function build(EloquentBuilder|QueryBuilder $builder, array $conditions): EloquentBuilder|QueryBuilder {
         return $this->process($builder, $conditions);
@@ -66,7 +66,7 @@ class SearchBuilder {
     // <editor-fold desc="Process">
     // =========================================================================
     /**
-     * @param array<mixed> $input
+     * @param array<string,mixed> $input
      */
     public function process(
         EloquentBuilder|QueryBuilder $builder,

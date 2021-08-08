@@ -47,7 +47,7 @@ class Metadata {
     /**
      * Determines default operators available for each scalar type.
      *
-     * @var array<string, array<string>|string>
+     * @var array<string, array<class-string<Operator>>|string>
      */
     protected array $scalars = [
         // Standard types

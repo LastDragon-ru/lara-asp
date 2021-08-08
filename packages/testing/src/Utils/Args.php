@@ -22,7 +22,10 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 
+use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 
 /**
  * @internal
@@ -33,9 +36,20 @@ class Args {
     }
 
     public static function content(SplFileInfo|string $file): string {
-        return $file instanceof SplFileInfo
-            ? file_get_contents(static::getFile($file)->getPathname())
-            : $file;
+        $content = $file;
+
+        if ($file instanceof SplFileInfo) {
+            $content = file_get_contents(static::getFile($file)->getPathname());
+
+            if ($content === false) {
+                throw new InvalidArgumentSplFileInfoIsNotReadable('$file', $file);
+            }
+        } else {
+            // FIXME [phpstan] https://github.com/phpstan/phpstan/issues/5207
+            $content = $file;
+        }
+
+        return $content;
     }
 
     /**
@@ -64,6 +78,26 @@ class Args {
         } elseif (is_scalar($json)) {
             // no action
         } else {
+            throw new InvalidArgumentJson('$json', $json);
+        }
+
+        return $json;
+    }
+
+    public static function getJsonString(mixed $json): string {
+        $json = json_encode($json);
+
+        if ($json === false) {
+            throw new InvalidArgumentJson('$json', $json);
+        }
+
+        return $json;
+    }
+
+    public static function getJsonPrettyString(mixed $json): string {
+        $json = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        if ($json === false) {
             throw new InvalidArgumentJson('$json', $json);
         }
 

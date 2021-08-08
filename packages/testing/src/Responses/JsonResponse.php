@@ -15,7 +15,6 @@ use SplFileInfo;
 use stdClass;
 
 use function array_filter;
-use function json_encode;
 
 class JsonResponse extends Response {
     /**
@@ -36,7 +35,7 @@ class JsonResponse extends Response {
             new JsonBody(...array_filter([
                 new JsonMatchesSchema($schema),
                 $content
-                    ? new JsonMatches(json_encode($content))
+                    ? new JsonMatches(Args::getJsonString($content))
                     : null,
             ])),
         );

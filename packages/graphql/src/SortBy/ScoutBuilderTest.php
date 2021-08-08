@@ -48,7 +48,7 @@ class ScoutBuilderTest extends TestCase {
             },
         ]);
         $builder   = $directive->handleScoutBuilder($builder, $clause);
-        $actual    = json_decode(json_encode($builder), true);
+        $actual    = json_decode((string) json_encode($builder), true);
         $default   = [
             'model'         => [],
             'query'         => '',

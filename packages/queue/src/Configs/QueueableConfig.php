@@ -26,31 +26,21 @@ use function is_null;
 class QueueableConfig {
     public const Debug = 'debug';
 
-    protected Repository            $global;
-    protected ConfigurableQueueable $queueable;
-    protected Container             $container;
-    /**
-     * @var array<string, mixed>
-     */
-    protected array                 $properties;
     /**
      * @var array<string, mixed>|null
      */
-    protected ?array                $config = null;
+    protected ?array $config = null;
 
     /**
-     * @param array<mixed> $properties
+     * @param array<string, mixed> $properties
      */
     public function __construct(
-        Container $container,
-        Repository $global,
-        ConfigurableQueueable $queueable,
-        array $properties,
+        protected Container $container,
+        protected Repository $global,
+        protected ConfigurableQueueable $queueable,
+        protected array $properties,
     ) {
-        $this->global     = $global;
-        $this->queueable  = $queueable;
-        $this->container  = $container;
-        $this->properties = $properties;
+        // empty
     }
 
     // <editor-fold desc="API">
@@ -92,7 +82,7 @@ class QueueableConfig {
      */
     public function getDefaultConfig(): array {
         return $this->properties + [
-                static::Debug => false, // Not used directly, but you may use it for debug the job
+                (string) static::Debug => false, // Not used directly, but you may use it for debug the job
             ];
     }
 

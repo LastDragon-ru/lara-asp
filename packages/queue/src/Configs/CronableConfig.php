@@ -11,8 +11,8 @@ class CronableConfig extends QueueableConfig {
      */
     public function getDefaultConfig(): array {
         return parent::getDefaultConfig() + [
-                static::Cron    => '* * * * *', // = every minute
-                static::Enabled => true,
+                (string) static::Cron    => '* * * * *', // = every minute
+                (string) static::Enabled => true,
             ];
     }
 }

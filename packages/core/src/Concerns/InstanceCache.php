@@ -12,6 +12,8 @@ use function json_encode;
 use function ksort;
 use function mb_strtolower;
 
+use const JSON_THROW_ON_ERROR;
+
 trait InstanceCache {
     /**
      * @var array<string, mixed>
@@ -73,6 +75,6 @@ trait InstanceCache {
             ksort($keys);
         }
 
-        return mb_strtolower(json_encode($keys));
+        return mb_strtolower(json_encode($keys, JSON_THROW_ON_ERROR));
     }
 }

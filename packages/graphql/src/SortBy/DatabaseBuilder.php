@@ -105,7 +105,7 @@ class DatabaseBuilder {
         DatabaseSortStack|null $stack,
         string $name,
         array $clauses,
-    ): EloquentBuilder {
+    ): EloquentBuilder|QueryBuilder {
         // QueryBuilder?
         if ($builder instanceof QueryBuilder) {
             throw new BuilderUnsupported($builder::class);

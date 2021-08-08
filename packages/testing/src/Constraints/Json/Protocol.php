@@ -5,13 +5,13 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 use Composer\Util\Platform;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\Package;
+use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Opis\JsonSchema\Uri;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 
 use function array_map;
 use function explode;
-use function file_get_contents;
 use function http_build_query;
 use function implode;
 use function ltrim;
@@ -90,7 +90,7 @@ class Protocol {
         // Uri::parseQueryString() cannot be used because of
         // https://github.com/opis/uri/issues/1
         $params = HeaderUtils::parseQuery((string) $uri->query());
-        $schema = file_get_contents($file->getPathname());
+        $schema = Args::content($file);
         $schema = (new Template($schema))->build($params);
 
         // Return

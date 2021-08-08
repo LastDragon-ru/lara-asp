@@ -78,7 +78,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     /**
-     * @return Generator<array<Model|array<string,mixed>>>
+     * @return Generator<Model|array<string,mixed>>
      */
     public function getIterator(): Generator {
         // Prepare
