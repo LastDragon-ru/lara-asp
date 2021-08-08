@@ -188,7 +188,7 @@ class InstanceCacheTest_QueueableEntity implements QueueableEntity {
         return $this->relations;
     }
 
-    public function getQueueableConnection(): string {
+    public function getQueueableConnection(): ?string {
         return $this->connection;
     }
 }
