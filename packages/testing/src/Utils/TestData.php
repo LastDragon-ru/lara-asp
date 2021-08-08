@@ -7,11 +7,9 @@ use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentClass;
 use ReflectionClass;
 use RuntimeException;
 use SplFileInfo;
-use Symfony\Component\Filesystem\Filesystem;
 
 use function basename;
 use function dirname;
-use function file_get_contents;
 use function ltrim;
 use function sprintf;
 use function str_replace;
@@ -21,8 +19,7 @@ use function str_starts_with;
  * Small helper to load data associated with test.
  */
 class TestData {
-    private string     $path;
-    private Filesystem $fs;
+    private string $path;
 
     /**
      * @param class-string $test
@@ -58,7 +55,8 @@ class TestData {
      * @return array<mixed>|string|int|float|bool|null
      */
     public function json(string $path = '.json'): array|string|int|float|bool|null {
-        return Args::getJson($this->file($path), true); /** @phpstan-ignore-line */
+        /** @phpstan-ignore-next-line */
+        return Args::getJson($this->file($path), true);
     }
 
     public function dom(string $path = '.xml'): DOMDocument {

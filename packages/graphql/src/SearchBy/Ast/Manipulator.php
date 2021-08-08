@@ -65,7 +65,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     public function update(DirectiveNode $directive, InputValueDefinitionNode $node): void {
         // Transform
         $def       = $this->getTypeDefinitionNode($node);
-        $operators = $this->metadata->getUsage()->get($def->name->value);
+        $operators = $this->metadata->getUsage()->get($this->getNodeName($def));
 
         if (empty($operators)) {
             $type = null;
