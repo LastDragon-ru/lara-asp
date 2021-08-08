@@ -10,9 +10,9 @@ use function is_null;
 
 abstract class Request extends FormRequest {
     /**
-     * @inheritdoc
+     * @return array<mixed>
      */
-    public function validated() {
+    public function validated(): array {
         // We need `\Illuminate\Validation\Validator::getRules()` but it doesn't
         // exists in `\Illuminate\Contracts\Validation\Validator`.
         $validator = $this->getValidatorInstance();
