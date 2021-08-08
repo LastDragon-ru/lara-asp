@@ -43,4 +43,8 @@ class ChunkedIterator extends IteratorImpl {
 
         return parent::chunkProcessed($items);
     }
+
+    public function getOffset(): int {
+        return (int) parent::getOffset();
+    }
 }
