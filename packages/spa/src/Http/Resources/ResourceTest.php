@@ -256,7 +256,7 @@ class ResourceTest extends TestCase {
                     'array'            => [1, 2, 3, $date],
                     'SafeResource'     => new class() implements SafeResource, JsonSerializable {
                         /**
-                         * @inheritdoc
+                         * @return array<mixed>
                          */
                         public function jsonSerialize(): array {
                             return [
@@ -277,7 +277,7 @@ class ResourceTest extends TestCase {
                         }
 
                         /**
-                         * @inheritdoc
+                         * @return array<mixed>
                          */
                         public function jsonSerialize(): array {
                             return [
