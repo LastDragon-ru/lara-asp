@@ -46,11 +46,12 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template T of \GraphQL\Language\AST\TypeDefinitionNode
+     * @template TInterface of TypeDefinitionNode
+     * @template TClass of Node
      *
-     * @param T $definition
+     * @param TInterface&TClass $definition
      *
-     * @return T
+     * @return TInterface&TClass
      */
     protected function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
         $name = $this->getNodeName($definition);
