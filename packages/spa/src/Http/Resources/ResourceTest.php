@@ -77,7 +77,7 @@ class ResourceTest extends TestCase {
             /**
              * @inheritdoc
              */
-            public function toArray($request): array {
+            public function toArray($request): mixed {
                 if ($this->resource instanceof Model) {
                     $properties = [];
 
