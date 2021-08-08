@@ -61,7 +61,11 @@ trait Override {
             return $mock;
         });
 
-        $this->getContainer()->bind($class, Closure::fromCallable($this->overrides[$class]));
+        $this->getContainer()->bind(
+            $class,
+            /** @phpstan-ignore-next-line False positive, see https://github.com/phpstan/phpstan-mockery/issues/34 */
+            Closure::fromCallable($this->overrides[$class]),
+        );
 
         // Return
         return $mock;
