@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 use Closure;
 use Illuminate\Contracts\Queue\QueueableEntity;
+use InvalidArgumentException;
 
 use function array_key_exists;
 use function array_map;
@@ -57,6 +58,7 @@ trait InstanceCache {
     }
 
     protected function instanceCacheKey(mixed $keys): string {
+        // Prepare
         if (is_array($keys)) {
             $keys = array_map(static function ($key) {
                 if ($key instanceof QueueableEntity) {
@@ -73,6 +75,14 @@ trait InstanceCache {
             ksort($keys);
         }
 
-        return mb_strtolower(json_encode($keys));
+        // Encode
+        $keys = json_encode($keys);
+
+        if ($keys === false) {
+            throw new InvalidArgumentException('The `$keys` cannot be serialized into JSON.');
+        }
+
+        // Return
+        return mb_strtolower($keys);
     }
 }
