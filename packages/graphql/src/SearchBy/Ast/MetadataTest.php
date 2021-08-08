@@ -186,6 +186,7 @@ class MetadataTest extends TestCase {
     public function testGetOperatorInstanceNotAnOperator(): void {
         $this->expectExceptionObject(new ClassIsNotOperator(stdClass::class));
 
+        /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->getOperatorInstance(stdClass::class);
     }
 
@@ -250,6 +251,7 @@ class MetadataTest extends TestCase {
     public function testGetComplexOperatorInstanceNotAnOperator(): void {
         $this->expectExceptionObject(new ClassIsNotComplexOperator(stdClass::class));
 
+        /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->getComplexOperatorInstance(stdClass::class);
     }
 
@@ -297,6 +299,7 @@ class MetadataTest extends TestCase {
     public function testAddDefinitionNotADefinition(): void {
         $this->expectExceptionObject(new ClassIsNotDefinition(stdClass::class));
 
+        /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->addDefinition('type', stdClass::class);
     }
 
