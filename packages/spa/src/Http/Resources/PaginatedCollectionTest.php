@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
@@ -59,7 +60,7 @@ class PaginatedCollectionTest extends TestCase {
         ];
 
         $this->assertEquals($expected, json_decode(
-            $resource->toResponse(null)->content(),
+            $resource->toResponse(new Request())->content(),
             true,
         ));
     }
@@ -108,7 +109,7 @@ class PaginatedCollectionTest extends TestCase {
         ];
 
         $this->assertEquals($expected, json_decode(
-            $resource->toResponse(null)->content(),
+            $resource->toResponse(new Request())->content(),
             true,
         ));
     }
