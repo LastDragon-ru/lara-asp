@@ -36,7 +36,7 @@ class JsonResponse extends Response {
             new JsonBody(...array_filter([
                 new JsonMatchesSchema($schema),
                 $content
-                    ? new JsonMatches(json_encode($content))
+                    ? new JsonMatches(Args::getJsonString($content))
                     : null,
             ])),
         );

@@ -81,6 +81,16 @@ class Args {
         return $json;
     }
 
+    public static function getJsonString(mixed $json): string {
+        $json = json_encode($json);
+
+        if ($json === false) {
+            throw new InvalidArgumentJson('$json', $json);
+        }
+
+        return $json;
+    }
+
     public static function getFile(mixed $file): SplFileInfo {
         if (!($file instanceof SplFileInfo)) {
             throw new InvalidArgumentSplFileInfo('$file', $file);
