@@ -4,32 +4,36 @@ namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-
-use function tap;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * @mixin Model
+ * @mixin Model|Pivot
  */
 trait SaveOrThrow {
     /**
      * @inheritdoc
      */
     public function save(array $options = []) {
-        return tap(parent::save($options), static function (bool $result): void {
-            if (!$result) {
-                throw new Exception('An unknown error occurred while saving the model.');
-            }
-        });
+        $result = parent::save($options);
+
+        if (!$result) {
+            throw new Exception('An unknown error occurred while saving the model.');
+        }
+
+        return $result;
     }
 
     /**
      * @inheritdoc
      */
     public function delete() {
-        return tap(parent::delete(), static function (?bool $result): void {
-            if ($result === false) {
-                throw new Exception('An unknown error occurred while deleting the model.');
-            }
-        });
+        /** @var bool|int|false $result */
+        $result = parent::delete();
+
+        if ($result === false) {
+            throw new Exception('An unknown error occurred while deleting the model.');
+        }
+
+        return $result;
     }
 }

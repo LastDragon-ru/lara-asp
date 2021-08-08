@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use Exception;
+use Illuminate\Http\Request;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use stdClass;
@@ -64,7 +65,7 @@ class ResourceCollectionTest extends TestCase {
         ];
 
         $this->assertEquals($expected, json_decode(
-            $resource->toResponse(null)->content(),
+            $resource->toResponse(new Request())->content(),
             true,
         ));
     }

@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
@@ -114,7 +115,7 @@ class ResourceTest extends TestCase {
             'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',
         ));
 
-        $this->assertIsArray($resource->toArray(null));
+        $this->assertIsArray($resource->toArray(new Request()));
     }
 
     /**
@@ -152,7 +153,7 @@ class ResourceTest extends TestCase {
 
         $this->expectExceptionObject(new Exception('mapResourceData'));
 
-        $resource->with(null);
+        $resource->with(new Request());
     }
     // </editor-fold>
 
