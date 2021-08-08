@@ -59,7 +59,7 @@ abstract class DirectorySeeder extends Seeder {
 
     protected function getSeederBasePath(): string {
         $class = new ReflectionClass($this);
-        $base  = dirname($class->getFileName());
+        $base  = dirname((string) $class->getFileName());
         $name  = $class->getShortName();
 
         return "{$base}/{$name}";
