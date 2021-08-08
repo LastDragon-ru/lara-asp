@@ -63,7 +63,7 @@ class Usage {
     }
 
     /**
-     * @param T ...$value
+     * @param class-string<T> ...$value
      */
     public function addValue(mixed ...$value): void {
         $current = array_key_last($this->stack);

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 use LogicException;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 use function sprintf;
 
@@ -21,30 +22,68 @@ class UsageTest extends TestCase {
      * @covers ::addType
      */
     public function testUsage(): void {
-        $usage = new Usage();
+        $usage   = new Usage();
+        $classAA = new class() extends stdClass {
+            // empty
+        };
+        $classAB = new class() extends stdClass {
+            // empty
+        };
+        $classBA = new class() extends stdClass {
+            // empty
+        };
+        $classBB = new class() extends stdClass {
+            // empty
+        };
+        $classCA = new class() extends stdClass {
+            // empty
+        };
+        $classCB = new class() extends stdClass {
+            // empty
+        };
+        $classDA = new class() extends stdClass {
+            // empty
+        };
 
         $a = $usage->start('A');
-        $usage->addValue('a');
+        $usage->addValue($classAA::class);
         $b = $usage->start('B');
-        $usage->addValue('b', 'b', 'bb');
+        $usage->addValue($classBA::class, $classBA::class, $classBB::class);
         $usage->end($b);
         $ca = $usage->start('C');
-        $usage->addValue('c');
+        $usage->addValue($classCA::class);
         $cb = $usage->start('C');
-        $usage->addValue('cb');
+        $usage->addValue($classCB::class);
         $usage->end($cb);
         $usage->end($ca);
-        $usage->addValue('aa');
+        $usage->addValue($classAB::class);
         $usage->end($a);
         $d = $usage->start('D');
-        $usage->addValue('d');
+        $usage->addValue($classDA::class);
         $usage->addType('B');
         $usage->end($d);
 
-        $this->assertEqualsCanonicalizing(['a', 'b', 'bb', 'c', 'aa', 'cb'], $usage->get('A'));
-        $this->assertEqualsCanonicalizing(['b', 'bb'], $usage->get('B'));
-        $this->assertEqualsCanonicalizing(['c', 'cb'], $usage->get('C'));
-        $this->assertEqualsCanonicalizing(['b', 'bb', 'd'], $usage->get('D'));
+        $this->assertEqualsCanonicalizing([
+            $classAA::class,
+            $classBA::class,
+            $classBB::class,
+            $classCA::class,
+            $classAB::class,
+            $classCB::class,
+        ], $usage->get('A'));
+        $this->assertEqualsCanonicalizing([
+            $classBA::class,
+            $classBB::class,
+        ], $usage->get('B'));
+        $this->assertEqualsCanonicalizing([
+            $classCA::class,
+            $classCB::class,
+        ], $usage->get('C'));
+        $this->assertEqualsCanonicalizing([
+            $classBA::class,
+            $classBB::class,
+            $classDA::class,
+        ], $usage->get('D'));
     }
 
     /**
@@ -76,7 +115,7 @@ class UsageTest extends TestCase {
      * @covers ::addValue
      */
     public function testAddValueWithoutStart(): void {
-        (new Usage())->addValue(1);
+        (new Usage())->addValue(stdClass::class);
 
         $this->assertTrue(true);
     }
