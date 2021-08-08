@@ -15,6 +15,8 @@ use stdClass;
 trait JsonAssertions {
     /**
      * Asserts that JSON matches schema.
+     *
+     * @param JsonSerializable|SplFileInfo|stdClass|array<string>|string|int|float|bool|null $json
      */
     public static function assertJsonMatchesSchema(
         JsonSchema $schema,

@@ -20,10 +20,13 @@ class SmartMigrator extends Migrator {
     // <editor-fold desc="\Illuminate\Database\Migrations\Migrator">
     // =========================================================================
     /**
-     * @inheritdoc
-     * @noinspection PhpMissingReturnTypeInspection
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+     *
+     * @param array<string>|string $paths
+     *
+     * @return array<string>
      */
-    public function getMigrationFiles($paths) {
+    public function getMigrationFiles($paths): array {
         if (is_string($paths)) {
             $paths = [$paths];
         }

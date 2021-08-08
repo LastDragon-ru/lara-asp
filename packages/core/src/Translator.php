@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Core;
 
+use Countable;
 use Illuminate\Contracts\Translation\Translator as TranslatorContract;
 
 /**
@@ -18,6 +19,8 @@ abstract class Translator implements TranslatorContract {
 
     /**
      * @inheritDoc
+     *
+     * @param array<mixed> $replace
      */
     public function get($key, array $replace = [], $locale = null) {
         return $this->translator->get($this->key($key), $replace, $locale);
@@ -25,6 +28,9 @@ abstract class Translator implements TranslatorContract {
 
     /**
      * @inheritDoc
+     *
+     * @param Countable|int|array<mixed> $number
+     * @param array<mixed>               $replace
      */
     public function choice($key, $number, array $replace = [], $locale = null): string {
         return $this->translator->choice($this->key($key), $number, $replace, $locale);

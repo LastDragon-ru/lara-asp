@@ -30,6 +30,8 @@ class EloquentModelComparator extends ObjectComparator {
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $processed
      */
     public function assertEquals(
         $expected,
@@ -38,7 +40,7 @@ class EloquentModelComparator extends ObjectComparator {
         $canonicalize = false,
         $ignoreCase = false,
         array &$processed = [],
-    ) {
+    ): void {
         // If classes different we just call parent to fail
         if (!($actual instanceof Model) || !($expected instanceof Model) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);

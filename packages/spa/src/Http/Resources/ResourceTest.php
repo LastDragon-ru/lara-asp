@@ -65,6 +65,8 @@ class ResourceTest extends TestCase {
      * @covers ::mapResourceData
      *
      * @dataProvider dataProviderMapResourceData
+     *
+     * @param array<mixed>|Exception $expected
      */
     public function testMapResourceData(array|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
@@ -254,7 +256,7 @@ class ResourceTest extends TestCase {
                     'array'            => [1, 2, 3, $date],
                     'SafeResource'     => new class() implements SafeResource, JsonSerializable {
                         /**
-                         * @inheritdoc
+                         * @return array<mixed>
                          */
                         public function jsonSerialize(): array {
                             return [
@@ -275,7 +277,7 @@ class ResourceTest extends TestCase {
                         }
 
                         /**
-                         * @inheritdoc
+                         * @return array<mixed>
                          */
                         public function jsonSerialize(): array {
                             return [

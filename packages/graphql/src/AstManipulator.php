@@ -69,7 +69,7 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template T of object
+     * @template T of \Nuwave\Lighthouse\Support\Contracts\Directive
      *
      * @param class-string<T> $class
      *

@@ -36,10 +36,7 @@ class XmlMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @inheritdoc
-     */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         if ($other instanceof SplFileInfo) {
             $other = Args::getFile($other);
         } else {
@@ -49,10 +46,7 @@ class XmlMatchesSchema extends Constraint {
         return parent::evaluate($other, $description, $returnResult);
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function matches($other): bool {
+    protected function matches(mixed $other): bool {
         // Create constraint
         $isRelaxNg  = strtolower($this->schema->getExtension()) === 'rng';
         $constraint = null;

@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 trait SaveOrThrow {
     /**
-     * @inheritdoc
+     * @param array<mixed> $options
      */
-    public function save(array $options = []) {
+    public function save(array $options = []): bool {
         $result = parent::save($options);
 
         if (!$result) {
@@ -23,11 +23,8 @@ trait SaveOrThrow {
         return $result;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function delete() {
-        /** @var bool|int|false $result */
+    public function delete(): bool|int|null {
+        /** @var bool|int|null $result */
         $result = parent::delete();
 
         if ($result === false) {

@@ -107,6 +107,9 @@ class Url {
         return $names;
     }
 
+    /**
+     * @return string|array<string>
+     */
     private function serialize(mixed $value): string|array {
         if (is_float($value)) {
             $value = str_replace(',', '.', (string) $value);

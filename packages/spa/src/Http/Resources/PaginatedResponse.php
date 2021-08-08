@@ -10,8 +10,10 @@ use Illuminate\Http\Resources\Json\PaginatedResourceResponse;
 class PaginatedResponse extends PaginatedResourceResponse {
     /**
      * @inheritdoc
+     *
+     * @return array<mixed>
      */
-    protected function paginationInformation($request) {
+    protected function paginationInformation($request): array {
         return [
             'meta' => parent::paginationInformation($request)['meta'],
         ];
@@ -19,8 +21,12 @@ class PaginatedResponse extends PaginatedResourceResponse {
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $paginated
+     *
+     * @return array<mixed>
      */
-    protected function meta($paginated) {
+    protected function meta($paginated): array {
         return [
             'current_page' => (int) $paginated['current_page'],
             'last_page'    => isset($paginated['last_page'])
@@ -37,8 +43,10 @@ class PaginatedResponse extends PaginatedResourceResponse {
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $data
      */
-    protected function haveDefaultWrapperAndDataIsUnwrapped($data) {
+    protected function haveDefaultWrapperAndDataIsUnwrapped($data): bool {
         // Our Resources always unwrapped and we always need a wrapper for
         // paginated results.
         return true;

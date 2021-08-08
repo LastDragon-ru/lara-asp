@@ -38,7 +38,8 @@ class DatabaseBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderBuild
      *
-     * @param array<mixed> $clause
+     * @param array<mixed>|Exception $expected
+     * @param array<mixed>           $clause
      */
     public function testBuild(array|Exception $expected, Closure $builder, array $clause): void {
         if ($expected instanceof Exception) {

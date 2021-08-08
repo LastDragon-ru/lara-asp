@@ -38,6 +38,11 @@ class Args {
             : $file;
     }
 
+    /**
+     * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $json
+     *
+     * @return stdClass|array<mixed>|string|int|float|bool|null
+     */
     public static function getJson(
         JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $json,
         bool $associative = false,

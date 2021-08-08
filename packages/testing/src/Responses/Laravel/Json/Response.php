@@ -16,6 +16,9 @@ use function is_string;
 class Response extends JsonResponse {
     use WithTestData;
 
+    /**
+     * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $content
+     */
     public function __construct(
         StatusCode $code,
         JsonSchema|string $resource,

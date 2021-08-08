@@ -9,7 +9,7 @@ class ScalarStrictComparator extends ScalarComparator {
     /**
      * @inheritdoc
      */
-    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false) {
+    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false): void {
         if ($expected !== $actual) {
             throw new ComparisonFailure(
                 $expected,

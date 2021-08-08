@@ -14,6 +14,9 @@ use function json_encode;
 use function sprintf;
 
 class JsonMatchesFragment extends Constraint {
+    /**
+     * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $json
+     */
     public function __construct(
         protected string $path,
         protected JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $json,
@@ -21,10 +24,7 @@ class JsonMatchesFragment extends Constraint {
         // empty
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate($other, $description, $returnResult)
             && (new JsonMatches(json_encode(Args::getJson($this->json))))->evaluate(
                 json_encode(Arr::get(Args::getJson($other, true), $this->path)),

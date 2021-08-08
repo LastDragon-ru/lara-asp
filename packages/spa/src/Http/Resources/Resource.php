@@ -31,6 +31,8 @@ abstract class Resource extends JsonResource implements SafeResource {
     // =========================================================================
     /**
      * @inheritdoc
+     *
+     * @return array<mixed>
      */
     public function toArray($request): array {
         if ($this->resource instanceof Model) {
@@ -44,13 +46,15 @@ abstract class Resource extends JsonResource implements SafeResource {
 
     /**
      * @inheritdoc
+     *
+     * @return array<mixed>
      */
     public function with($request): array {
         return $this->mapResourceData(parent::with($request), []);
     }
 
     /**
-     * @inheritdoc
+     * @param array<mixed> $data
      */
     public function additional(array $data): self {
         return parent::additional($this->mapResourceData($data, []));
@@ -58,6 +62,10 @@ abstract class Resource extends JsonResource implements SafeResource {
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
      */
     protected function filter($data): array {
         // Why do we need this? Resources can contain different types, and we
@@ -76,6 +84,8 @@ abstract class Resource extends JsonResource implements SafeResource {
 
     /**
      * @inheritdoc
+     *
+     * @return AnonymousResourceCollection<mixed>
      */
     public static function collection($resource): AnonymousResourceCollection {
         // TODO [spa]: I'm definitely not sure that we need to support $preserveKeys

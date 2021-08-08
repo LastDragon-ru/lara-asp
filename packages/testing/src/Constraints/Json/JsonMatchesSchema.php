@@ -32,10 +32,7 @@ class JsonMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @inheritdoc
-     */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getJson($other),
             $description,

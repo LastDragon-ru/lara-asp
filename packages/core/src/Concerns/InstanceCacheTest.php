@@ -164,7 +164,7 @@ class InstanceCacheTest_Cache {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class InstanceCacheTest_QueueableEntity implements QueueableEntity {
-    private mixed   $id;
+    private mixed $id;
     /**
      * @var array<string>
      */
@@ -177,24 +177,18 @@ class InstanceCacheTest_QueueableEntity implements QueueableEntity {
         $this->connection = $connection;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getQueueableId() {
+    public function getQueueableId(): mixed {
         return $this->id;
     }
 
     /**
-     * @inheritdoc
+     * @return array<string>
      */
-    public function getQueueableRelations() {
+    public function getQueueableRelations(): array {
         return $this->relations;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getQueueableConnection() {
+    public function getQueueableConnection(): ?string {
         return $this->connection;
     }
 }
