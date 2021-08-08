@@ -105,6 +105,7 @@ class Relation implements ComplexOperator {
         if ($conditions['count'] ?? null) {
             $query    = $builder->toBase()->newQuery();
             $query    = $search->processComparison($query, 'tmp', $conditions['count']);
+            $query    = $query instanceof EloquentBuilder ? $query->toBase() : $query;
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;

@@ -31,8 +31,6 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use stdClass;
 
-use function array_map;
-
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata
@@ -283,7 +281,11 @@ class MetadataTest extends TestCase {
      */
     public function testAddDefinition(): void {
         $metadata   = new Metadata($this->app, new Usage());
-        $definition = Mockery::mock(TypeDefinition::class);
+        $definition = new class() implements TypeDefinition {
+            public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
+                return null;
+            }
+        };
 
         $metadata->addDefinition('test', $definition::class);
 
@@ -330,7 +332,11 @@ class MetadataTest extends TestCase {
      */
     public function testGetDefinition(): void {
         $metadata   = new Metadata($this->app, new Usage());
-        $definition = Mockery::mock(TypeDefinition::class);
+        $definition = new class() implements TypeDefinition {
+            public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
+                return null;
+            }
+        };
 
         $metadata->addDefinition('test', $definition::class);
 
@@ -397,9 +403,13 @@ class MetadataTest extends TestCase {
      * @return array<class-string>
      */
     protected function toClassNames(array $objects): array {
-        return array_map(static function (object $object): string {
-            return $object::class;
-        }, $objects);
+        $classes = [];
+
+        foreach ($objects as $object) {
+            $classes[] = $object::class;
+        }
+
+        return $classes;
     }
     // </editor-fold>
 }

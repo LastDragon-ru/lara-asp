@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\Helpers\EnumHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Repository as MetadataRepository;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Usage;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
@@ -57,9 +58,9 @@ class Provider extends ServiceProvider {
     protected function registerSearchByDirective(): void {
         $this->app->singleton(MetadataRepository::class);
         $this->app->bind(Metadata::class, function (Application $app): Metadata {
-            $usage    = $app->make(Usage::class);
+            /** @var array<string,array<class-string<Operator>>|string> $scalars */
             $scalars  = (array) $app->make(Repository::class)->get("{$this->getName()}.search_by.scalars");
-            $metadata = new Metadata($app, $usage);
+            $metadata = new Metadata($app, $app->make(Usage::class));
 
             foreach ($scalars as $scalar => $operators) {
                 $metadata->addScalar($scalar, $operators);
