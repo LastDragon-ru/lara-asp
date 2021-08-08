@@ -10,6 +10,7 @@ use stdClass;
 
 class CreatedResponse extends Response {
     /**
+     * @param JsonSchema|class-string $resource
      * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $content
      */
     public function __construct(

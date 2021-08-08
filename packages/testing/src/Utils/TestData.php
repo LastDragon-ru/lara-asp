@@ -21,6 +21,9 @@ use function str_starts_with;
 class TestData {
     private ReflectionClass $test;
 
+    /**
+     * @param class-string $test
+     */
     public function __construct(string $test) {
         $this->test = new ReflectionClass($test);
     }
