@@ -22,7 +22,10 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 
+use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 
 /**
  * @internal
@@ -83,6 +86,16 @@ class Args {
 
     public static function getJsonString(mixed $json): string {
         $json = json_encode($json);
+
+        if ($json === false) {
+            throw new InvalidArgumentJson('$json', $json);
+        }
+
+        return $json;
+    }
+
+    public static function getJsonPrettyString(mixed $json): string {
+        $json = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         if ($json === false) {
             throw new InvalidArgumentJson('$json', $json);
