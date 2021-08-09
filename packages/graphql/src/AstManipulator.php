@@ -53,7 +53,7 @@ abstract class AstManipulator {
      * @return T
      */
     protected function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
-        $name = $definition->name->value;
+        $name = $this->getNodeName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
             throw new PackageException(sprintf(
@@ -82,6 +82,12 @@ abstract class AstManipulator {
         return $node instanceof Node
             ? ASTHelper::getUnderlyingTypeName($node)
             : $node;
+    }
+
+    protected function getNodeName(TypeDefinitionNode|Type $node): string {
+        return $node instanceof TypeDefinitionNode
+            ? $node->name->value
+            : $node->name;
     }
     //</editor-fold>
 }

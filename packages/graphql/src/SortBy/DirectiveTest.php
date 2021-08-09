@@ -2,7 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
+use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 /**
  * @internal
@@ -20,6 +23,47 @@ class DirectiveTest extends TestCase {
         $this->assertGraphQLSchemaEquals(
             $this->getTestData()->file($expected),
             $this->getTestData()->file($graphql),
+        );
+    }
+
+    /**
+     * @covers ::manipulateArgDefinition
+     */
+    public function testManipulateArgDefinitionTypeRegistry(): void {
+        $a = new InputObjectType([
+            'name'   => 'A',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::string(),
+                ],
+                [
+                    'name' => 'flag',
+                    'type' => Type::boolean(),
+                ],
+            ],
+        ]);
+        $b = new InputObjectType([
+            'name'   => 'B',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::string(),
+                ],
+                [
+                    'name' => 'child',
+                    'type' => $a,
+                ],
+            ],
+        ]);
+
+        $registry = $this->app->make(TypeRegistry::class);
+        $registry->register($a);
+        $registry->register($b);
+
+        $this->assertGraphQLSchemaEquals(
+            $this->getTestData()->file('~registry-expected.graphql'),
+            $this->getTestData()->file('~registry.graphql'),
         );
     }
     // </editor-fold>
