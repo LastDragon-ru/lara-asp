@@ -15,27 +15,19 @@ type Query {
 
 """Sort clause for input A (only one property allowed at a time)."""
 input SortByClauseA {
-  """
-  {"kind":"StringValue","loc":{"start":0,"end":22},"value":"Property clause.","block":true}
-  """
+  """Property clause."""
   name: SortByDirection
 
-  """
-  {"kind":"StringValue","loc":{"start":0,"end":22},"value":"Property clause.","block":true}
-  """
+  """Property clause."""
   flag: SortByDirection
 }
 
 """Sort clause for input B (only one property allowed at a time)."""
 input SortByClauseB {
-  """
-  {"kind":"StringValue","loc":{"start":0,"end":22},"value":"Property clause.","block":true}
-  """
+  """Property clause."""
   name: SortByDirection
 
-  """
-  {"kind":"StringValue","loc":{"start":0,"end":22},"value":"Property clause.","block":true}
-  """
+  """Property clause."""
   child: SortByClauseA
 }
 

@@ -68,7 +68,7 @@ class Manipulator extends AstManipulator {
         ));
 
         // Add sortable fields
-        $description = Parser::description('"""Property clause."""');
+        $description = 'Property clause.';
         $fields      = $node instanceof InputObjectType
             ? $node->getFields()
             : $node->fields;
@@ -96,7 +96,7 @@ class Manipulator extends AstManipulator {
                     $field->cloneDeep(),
                     static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
                         $field->type        = Parser::typeReference($fieldDefinition);
-                        $field->description = $description;
+                        $field->description = Parser::description("\"\"\"{$description}\"\"\"");
                     },
                 );
             } else {
