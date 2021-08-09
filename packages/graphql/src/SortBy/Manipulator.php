@@ -6,6 +6,7 @@ use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\ImpossibleCreateSortClause;
 
@@ -21,7 +22,7 @@ class Manipulator extends AstManipulator {
         if (!($node->type instanceof ListTypeNode)) {
             $def = $this->getTypeDefinitionNode($node);
 
-            if ($def instanceof InputObjectTypeDefinitionNode) {
+            if ($def instanceof InputObjectTypeDefinitionNode || $def instanceof InputObjectType) {
                 $name = $this->getInputType($def);
                 $type = Parser::typeReference("[{$name}!]");
             }
@@ -30,7 +31,7 @@ class Manipulator extends AstManipulator {
         }
 
         if (!($type instanceof ListTypeNode)) {
-            throw new ImpossibleCreateSortClause($node->name->value);
+            throw new ImpossibleCreateSortClause($this->getNodeTypeName($node));
         }
 
         // Update
@@ -43,7 +44,7 @@ class Manipulator extends AstManipulator {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    protected function getInputType(InputObjectTypeDefinitionNode $node): string {
+    protected function getInputType(InputObjectTypeDefinitionNode|InputObjectType $node): string {
         // Exists?
         $name = $this->getTypeName($node);
 
@@ -55,7 +56,7 @@ class Manipulator extends AstManipulator {
         $type = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Sort clause for input {$node->name->value} (only one property allowed at a time).
+            Sort clause for input {$this->getNodeName($node)} (only one property allowed at a time).
             """
             input {$name} {
                 """
@@ -67,31 +68,47 @@ class Manipulator extends AstManipulator {
         ));
 
         // Add sortable fields
-        $reference   = Parser::typeReference(Directive::TypeDirection);
         $description = Parser::description('"""Property clause."""');
+        $fields      = $node instanceof InputObjectType
+            ? $node->getFields()
+            : $node->fields;
 
-        /** @var \GraphQL\Language\AST\InputValueDefinitionNode $field */
-        foreach ($node->fields as $field) {
+        foreach ($fields as $field) {
+            /** @var \GraphQL\Language\AST\InputValueDefinitionNode|\GraphQL\Type\Definition\InputObjectField $field */
+
             // Is supported?
-            $fieldTypeNode   = $this->getTypeDefinitionNode($field);
-            $fieldDefinition = $reference;
+            $fieldDefinition = Directive::TypeDirection;
+            $fieldTypeNode   = $field instanceof InputValueDefinitionNode
+                ? $this->getTypeDefinitionNode($field)
+                : $field->getType();
 
-            if ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
-                $fieldDefinition = Parser::typeReference($this->getInputType($fieldTypeNode));
+            if ($fieldTypeNode instanceof InputObjectTypeDefinitionNode || $fieldTypeNode instanceof InputObjectType) {
+                $fieldDefinition = $this->getInputType($fieldTypeNode);
             } else {
                 // empty
             }
 
             // Create new Field
-            // TODO [SortBy] We probably not need all directives from the
-            //      original Input type, but cloning is the easiest way...
-            $type->fields[] = tap(
-                $field->cloneDeep(),
-                static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
-                    $field->type        = $fieldDefinition;
-                    $field->description = $description;
-                },
-            );
+            if ($field instanceof InputValueDefinitionNode) {
+                // TODO [SortBy] We probably not need all directives from the
+                //      original Input type, but cloning is the easiest way...
+                $type->fields[] = tap(
+                    $field->cloneDeep(),
+                    static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
+                        $field->type        = Parser::typeReference($fieldDefinition);
+                        $field->description = $description;
+                    },
+                );
+            } else {
+                $type->fields[] = Parser::inputValueDefinition(
+                    <<<DEF
+                    """
+                    {$description}
+                    """
+                    {$field->name}: {$fieldDefinition}
+                    DEF,
+                );
+            }
         }
 
         // Remove dummy
@@ -126,8 +143,8 @@ class Manipulator extends AstManipulator {
 
     // <editor-fold desc="Names">
     // =========================================================================
-    protected function getTypeName(InputObjectTypeDefinitionNode $node): string {
-        return Directive::Name."Clause{$node->name->value}";
+    protected function getTypeName(InputObjectTypeDefinitionNode|InputObjectType $node): string {
+        return Directive::Name."Clause{$this->getNodeName($node)}";
     }
     // </editor-fold>
 }
