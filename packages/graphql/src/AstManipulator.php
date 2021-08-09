@@ -4,9 +4,11 @@ namespace LastDragon_ru\LaraASP\GraphQL;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Type\Definition\Type;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function sprintf;
 
@@ -14,6 +16,7 @@ abstract class AstManipulator {
     public function __construct(
         protected DirectiveLocator $directives,
         protected DocumentAST $document,
+        protected TypeRegistry $types,
     ) {
         $this->addDefaultTypeDefinitions();
     }
@@ -31,11 +34,13 @@ abstract class AstManipulator {
         return (bool) $this->getTypeDefinitionNode($name);
     }
 
-    protected function getTypeDefinitionNode(Node|string $node): ?TypeDefinitionNode {
-        $type       = $node instanceof Node
-            ? ASTHelper::getUnderlyingTypeName($node)
-            : $node;
-        $definition = $this->document->types[$type] ?? null;
+    protected function getTypeDefinitionNode(Node|string $node): TypeDefinitionNode|Type|null {
+        $name       = $this->getNodeTypeName($node);
+        $definition = $this->document->types[$name] ?? null;
+
+        if ($this->types->has($name)) {
+            $definition = $this->types->get($name);
+        }
 
         return $definition;
     }
@@ -71,6 +76,12 @@ abstract class AstManipulator {
      */
     protected function getNodeDirective(Node $node, string $class): ?object {
         return $this->directives->associatedOfType($node, $class)->first();
+    }
+
+    protected function getNodeTypeName(Node|string $node): string {
+        return $node instanceof Node
+            ? ASTHelper::getUnderlyingTypeName($node)
+            : $node;
     }
     //</editor-fold>
 }

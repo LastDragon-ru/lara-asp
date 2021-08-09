@@ -12,6 +12,7 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
@@ -32,7 +33,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
-use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -51,13 +51,13 @@ class Manipulator extends AstManipulator implements TypeProvider {
     public function __construct(
         DirectiveLocator $directives,
         DocumentAST $document,
+        TypeRegistry $types,
         Repository $metadata,
         protected Container $container,
-        protected TypeRegistry $types,
     ) {
         $this->metadata = $metadata->get($document);
 
-        parent::__construct($directives, $document);
+        parent::__construct($directives, $document, $types);
     }
 
     // <editor-fold desc="Update">
@@ -170,29 +170,25 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             // Determine type
-            $fieldType       = ASTHelper::getUnderlyingTypeName($field);
+            $fieldType       = $this->getNodeTypeName($field);
             $fieldNullable   = !($field->type instanceof NonNullTypeNode);
             $fieldTypeNode   = $this->getTypeDefinitionNode($field);
             $fieldDefinition = null;
 
-            if (is_null($fieldTypeNode)) {
-                $fieldTypeDefinition = null;
-
-                if ($this->types->has($fieldType)) {
-                    $fieldTypeDefinition = $this->types->get($fieldType);
-                }
-
-                if ($fieldTypeDefinition && $fieldTypeDefinition->astNode) {
-                    $fieldTypeNode = $fieldTypeDefinition->astNode;
-                } elseif ($fieldTypeDefinition instanceof EnumType) {
+            if ($fieldTypeNode instanceof Type) {
+                if ($fieldTypeNode->astNode) {
+                    $fieldTypeNode = $fieldTypeNode->astNode;
+                } elseif ($fieldTypeNode instanceof EnumType) {
                     $fieldTypeNode = $this->getFakeEnumTypeNode($fieldType);
-                } elseif ($fieldTypeDefinition instanceof ScalarType) {
-                    $fieldTypeNode = $this->getScalarTypeNode($fieldType);
-                } elseif ($this->metadata->isScalar($fieldType)) {
+                } elseif ($fieldTypeNode instanceof ScalarType) {
                     $fieldTypeNode = $this->getScalarTypeNode($fieldType);
                 } else {
-                    // empty
+                    $fieldTypeNode = null;
                 }
+            } elseif ($this->metadata->isScalar($fieldType)) {
+                $fieldTypeNode = $this->getScalarTypeNode($fieldType);
+            } else {
+                // empty
             }
 
             // Create Type for Search
