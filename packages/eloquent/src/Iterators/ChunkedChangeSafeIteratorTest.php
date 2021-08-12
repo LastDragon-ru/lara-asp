@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
-use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
@@ -65,28 +64,10 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
 
         $spyBefore
             ->shouldHaveBeenCalled()
-            ->withArgs(static function (Collection $items): bool {
-                return $items->count() >= 1;
-            })
-            ->times(3);
-        $spyBefore
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Collection $items): bool {
-                return $items->isEmpty();
-            })
-            ->once();
-        $spyAfter
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Collection $items): bool {
-                return $items->count() >= 1;
-            })
             ->times(3);
         $spyAfter
             ->shouldHaveBeenCalled()
-            ->withArgs(static function (Collection $items): bool {
-                return $items->isEmpty();
-            })
-            ->once();
+            ->times(3);
     }
 
     /**

@@ -116,7 +116,7 @@ abstract class IteratorImpl implements Iterator {
      * @param \Illuminate\Support\Collection<\Illuminate\Database\Eloquent\Model|array<string,mixed>> $items
      */
     protected function chunkLoaded(Collection $items): void {
-        if ($this->beforeChunk) {
+        if ($this->beforeChunk && !$items->isEmpty()) {
             ($this->beforeChunk)($items);
         }
     }
@@ -125,7 +125,7 @@ abstract class IteratorImpl implements Iterator {
      * @param \Illuminate\Support\Collection<\Illuminate\Database\Eloquent\Model|array<string,mixed>> $items
      */
     protected function chunkProcessed(Collection $items): bool {
-        if ($this->afterChunk) {
+        if ($this->afterChunk && !$items->isEmpty()) {
             ($this->afterChunk)($items);
         }
 
