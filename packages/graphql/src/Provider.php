@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL;
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -29,12 +30,12 @@ class Provider extends ServiceProvider {
     public function boot(Dispatcher $dispatcher): void {
         $this->bootConfig();
         $this->bootDirectives($dispatcher);
-        $this->bootEnums();
     }
 
     public function register(): void {
         parent::register();
 
+        $this->registerEnums();
         $this->registerSearchByDirective();
     }
 
@@ -68,19 +69,23 @@ class Provider extends ServiceProvider {
         });
     }
 
-    protected function bootEnums(): void {
-        $registry = $this->app->make(TypeRegistry::class);
-        $enums    = (array) $this->app->make(Repository::class)->get("{$this->getName()}.enums");
+    protected function registerEnums(): void {
+        $this->app->afterResolving(
+            TypeRegistry::class,
+            function (TypeRegistry $registry, Container $container): void {
+                $enums = (array) $container->make(Repository::class)->get("{$this->getName()}.enums");
 
-        foreach ($enums as $name => $enum) {
-            if (is_int($name)) {
-                $name = null;
-            }
+                foreach ($enums as $name => $enum) {
+                    if (is_int($name)) {
+                        $name = null;
+                    }
 
-            if ($enum) {
-                $registry->register(EnumHelper::getType($enum, $name));
-            }
-        }
+                    if ($enum) {
+                        $registry->register(EnumHelper::getType($enum, $name));
+                    }
+                }
+            },
+        );
     }
 
     protected function getName(): string {
