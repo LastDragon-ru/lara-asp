@@ -39,11 +39,9 @@ class ChunkedIteratorTest extends TestCase {
         $count     = count($log);
         $iterator  = (new ChunkedIterator($query))
             ->onBeforeChunk(
-                /** @phpstan-ignore-next-line False positive, see https://github.com/phpstan/phpstan-mockery/issues/34 */
                 Closure::fromCallable($spyBefore),
             )
             ->onAfterChunk(
-                /** @phpstan-ignore-next-line False positive, see https://github.com/phpstan/phpstan-mockery/issues/34 */
                 Closure::fromCallable($spyAfter),
             );
 

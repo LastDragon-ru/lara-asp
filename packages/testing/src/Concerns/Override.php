@@ -63,7 +63,6 @@ trait Override {
 
         $this->getContainer()->bind(
             $class,
-            /** @phpstan-ignore-next-line False positive, see https://github.com/phpstan/phpstan-mockery/issues/34 */
             Closure::fromCallable($this->overrides[$class]),
         );
 
