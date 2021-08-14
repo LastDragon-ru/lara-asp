@@ -15,7 +15,6 @@ use PHPUnit\Framework\Assert;
 use function array_filter;
 use function count;
 use function is_object;
-use function is_subclass_of;
 use function sprintf;
 use function str_contains;
 
