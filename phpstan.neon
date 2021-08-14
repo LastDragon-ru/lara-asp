@@ -10,4 +10,4 @@ parameters:
         - packages
 
     # The level 8 is the highest level
-    level: 7
+    level: 8
