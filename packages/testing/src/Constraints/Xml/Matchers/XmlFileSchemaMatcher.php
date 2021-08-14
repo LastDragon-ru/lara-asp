@@ -21,9 +21,9 @@ abstract class XmlFileSchemaMatcher implements XmlSchemaMatcher {
         }
 
         // Create Reader
-        $reader = new XMLReader();
+        $reader = XMLReader::open($xml->getPathname());
 
-        if (!$reader->open($xml->getPathname())) {
+        if (!($reader instanceof XMLReader)) {
             throw new RuntimeException(sprintf('Failed to load XML from `%s`.', $xml->getPathname()));
         }
 
