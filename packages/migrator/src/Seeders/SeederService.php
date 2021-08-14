@@ -46,18 +46,15 @@ class SeederService {
         return $seeded;
     }
 
+    /**
+     * @param class-string<Model>|Model $model
+     */
     public function isModelSeeded(string|Model $model): bool {
         if (is_string($model) && is_subclass_of($model, Model::class, true)) {
             $model = new $model();
         }
 
-        if ($model instanceof Model) {
-            $model = $model->getTable();
-        } else {
-            throw new InvalidArgumentException('The `$target` should be model or model class name.');
-        }
-
-        return $this->isTableSeeded($model);
+        return $this->isTableSeeded($model->getTable());
     }
 
     public function isTableSeeded(string $table): bool {
