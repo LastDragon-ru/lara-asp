@@ -14,7 +14,7 @@ use function config;
  * @coversDefaultClass \LastDragon_ru\LaraASP\Formatter\Formatter
  */
 class FormatterTest extends TestCase {
-    protected ?Formatter $formatter;
+    protected Formatter $formatter;
 
     // <editor-fold desc="Setup">
     // =========================================================================
@@ -27,7 +27,7 @@ class FormatterTest extends TestCase {
     public function tearDown(): void {
         parent::tearDown();
 
-        $this->formatter = null;
+        unset($this->formatter);
     }
     // </editor-fold>
 
