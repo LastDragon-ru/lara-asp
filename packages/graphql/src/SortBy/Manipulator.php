@@ -95,8 +95,8 @@ class Manipulator extends AstManipulator {
                 $clone = $field->cloneDeep();
 
                 if ($clone instanceof InputValueDefinitionNode) {
-                    $field->type        = Parser::typeReference($fieldDefinition);
-                    $field->description = Parser::description("\"\"\"{$description}\"\"\"");
+                    $clone->type        = Parser::typeReference($fieldDefinition);
+                    $clone->description = Parser::description("\"\"\"{$description}\"\"\"");
                     $type->fields[]     = $clone;
                 } else {
                     throw new FailedToCreateSortClauseForField($this->getNodeName($node), $field->name->value);
