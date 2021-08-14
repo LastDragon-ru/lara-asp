@@ -76,7 +76,7 @@ class DirectiveTest extends TestCase {
         $operators = [];
 
         foreach ($query->getFields() as $field) {
-            $node       = $field->getArg('where')->astNode;
+            $node       = $field->getArg('where')?->astNode;
             $directives = $locator->associatedOfType($node, Directive::class);
 
             $this->assertCount(1, $directives);
