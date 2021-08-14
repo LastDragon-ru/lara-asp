@@ -15,6 +15,7 @@ use function explode;
 use function http_build_query;
 use function implode;
 use function ltrim;
+use function parse_url;
 use function preg_match;
 use function rawurldecode;
 use function rawurlencode;
@@ -50,7 +51,7 @@ class Protocol {
         $path   = implode('/', array_map(static function (string $segment): string {
             return rawurlencode($segment);
         }, explode('/', ltrim($path, '/'))));
-        $uri    = Uri::create("{$scheme}://{$host}/{$path}?{$query}");
+        $uri    = new Uri((array) parse_url("{$scheme}://{$host}/{$path}?{$query}"));
 
         // Return
         return $uri;
@@ -66,7 +67,7 @@ class Protocol {
         }
 
         // Decode path
-        $path = $uri->path();
+        $path = (string) $uri->path();
         $path = implode('/', array_map(static function (string $segment): string {
             return rawurldecode($segment);
         }, explode('/', $path)));
