@@ -23,6 +23,7 @@ trait SaveOrThrow {
         return $result;
     }
 
+    /* @phpstan-ignore-next-line `Model::delete()` and `Pivot::::delete()` return different types. */
     public function delete(): bool|int|null {
         /** @var bool|int|null $result */
         $result = parent::delete();

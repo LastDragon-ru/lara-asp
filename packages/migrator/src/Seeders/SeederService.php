@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 use function in_array;
 use function is_string;
-use function is_subclass_of;
 
 class SeederService {
     /**
@@ -49,7 +48,7 @@ class SeederService {
      * @param class-string<Model>|Model $model
      */
     public function isModelSeeded(string|Model $model): bool {
-        if (is_string($model) && is_subclass_of($model, Model::class, true)) {
+        if (is_string($model)) {
             $model = new $model();
         }
 

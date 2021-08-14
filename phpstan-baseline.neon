@@ -1,6 +1,56 @@
 parameters:
     ignoreErrors:
-        # False positive, see https://github.com/phpstan/phpstan-mockery/issues/34
+        # Unwanted strict rules
+        # (is there a better way to disable them?)
+        - "#^Only booleans are allowed in an if condition, .+? given\\.$#"
+        - "#^Only booleans are allowed in a negated boolean, .+? given\\.$#"
+        - "#^Only booleans are allowed in a ternary operator condition, .+? given\\.$#"
+        - "#^Only booleans are allowed in an elseif condition, .+? given\\.$#"
+        - "#^Only booleans are allowed in &&, .+? given on the (left|right) side\\.$#"
+        - "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
+        -
+            message: "#does not call parent constructor from#"
+            path: packages/**/*Test.php
+
+        # Larastan doesn't support phpstan/phpstan-strict-rules
+        - "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assert[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\[^\\\\]+(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\:\\:assert[^(]+\\(\\)\\.$#"
+
+        # Sometimes it is needed...
+        # https://github.com/phpstan/phpstan/issues/3296
+        -
+            message: "#^Variable method call on .+?\\.$#"
+            paths:
+                - packages/graphql/src/Helpers/ModelHelper.php
+                - packages/testing/src/SetUpTraits.php
+        -
+            message: "#^Variable property access on .+?\\.$#"
+            paths:
+                - packages/queue/src/QueueableConfigurator.php
+
+        # False positive
+        # https://github.com/nunomaduro/larastan/issues/483
+        # https://github.com/nunomaduro/larastan/pull/917
+        -
+            message: "#^Dynamic call to static method Illuminate\\\\Foundation\\\\Application\\:\\:configurationIsCached\\(\\)\\.$#"
+            paths:
+                - packages/core/src/Concerns/ProviderWithConfig.php
+
+        # False positive
+        # https://github.com/nunomaduro/larastan/pull/912
+        # https://github.com/nunomaduro/larastan/pull/914
+        - "#^Call to an undefined method (Illuminate\\\\Database\\\\(Eloquent|Query)\\\\Builder\\|?)+\\:\\:(getDefaultKeyName|iterator|changeSafeIterator)\\(\\)\\.$#"
+        - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:(orderByKey|orderByKeyDesc)\\(\\)\\.$#"
+
+        # False positive
+        # https://github.com/nunomaduro/larastan/pull/913
+        - "#^Parameter \\#1 \\$query of method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:leftJoinSub\\(\\) expects Closure\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|string, Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)? given\\.$#"
+
+        # False positive
+        # https://github.com/phpstan/phpstan-mockery/issues/34
         -
             message: "#^Parameter \\#1 \\$callback of static method Closure\\:\\:fromCallable\\(\\) expects callable\\(\\)\\: mixed, Mockery\\\\MockInterface given\\.$#"
             count: 2

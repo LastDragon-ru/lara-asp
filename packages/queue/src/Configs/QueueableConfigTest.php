@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Queue\Configs;
 use Exception;
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
-use Illuminate\Support\DateFactory;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Concerns\Configurable;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
@@ -31,8 +30,7 @@ class QueueableConfigTest extends TestCase {
     public function testGetQueueClass(string $expected, string $class): void {
         $container    = Container::getInstance();
         $repository   = new Repository();
-        $dateFactory  = new DateFactory();
-        $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
+        $configurator = new QueueableConfigurator($container, $repository);
         $properties   = [];
         $queueable    = new $class($configurator);
         $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
@@ -55,8 +53,7 @@ class QueueableConfigTest extends TestCase {
     public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
         $container    = Container::getInstance();
         $repository   = new Repository();
-        $dateFactory  = new DateFactory();
-        $configurator = new class($container, $repository, $dateFactory) extends QueueableConfigurator {
+        $configurator = new class($container, $repository) extends QueueableConfigurator {
             /**
              * @inheritdoc
              */

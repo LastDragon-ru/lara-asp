@@ -67,7 +67,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $def       = $this->getTypeDefinitionNode($node);
         $operators = $this->metadata->getUsage()->get($this->getNodeName($def));
 
-        if (empty($operators)) {
+        if (!$operators) {
             $type = null;
             $name = null;
 
@@ -406,7 +406,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     protected function getEnumOperators(string $enum, bool $nullable): array {
         $operators = $this->metadata->getEnumOperators($enum, $nullable);
 
-        if (empty($operators)) {
+        if (!$operators) {
             throw new EnumNoOperators($enum);
         }
 
@@ -419,7 +419,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     protected function getScalarOperators(string $scalar, bool $nullable): array {
         $operators = $this->metadata->getScalarOperators($scalar, $nullable);
 
-        if (empty($operators)) {
+        if (!$operators) {
             throw new ScalarNoOperators($scalar);
         }
 

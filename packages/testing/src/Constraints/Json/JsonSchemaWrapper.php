@@ -20,10 +20,8 @@ class JsonSchemaWrapper implements JsonSchema {
     ) {
         if ($schema instanceof JsonSchemaFile || $schema instanceof self) {
             $schema = $schema->getSchema();
-        } elseif ($schema instanceof SplFileInfo) {
-            $schema = Protocol::getUri($schema);
         } else {
-            // empty
+            $schema = Protocol::getUri($schema);
         }
 
         $this->schema = Protocol::getUri($rootSchema, array_merge($rootParameters, [

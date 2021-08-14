@@ -48,7 +48,7 @@ class ValidationErrorResponse extends Response {
         $properties = [];
 
         foreach ($errors as $key => $error) {
-            if (is_null($error) || (is_array($error) && empty($error))) {
+            if (is_null($error) || (is_array($error) && !$error)) {
                 $properties[$key] = [
                     'type'     => 'array',
                     'minItems' => 1,

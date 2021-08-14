@@ -30,9 +30,7 @@ class EloquentModelComparatorTest extends TestCase {
      * @dataProvider dataProviderAssertEquals
      */
     public function testAssertEquals(bool|string $equals, mixed $expected, mixed $actual): void {
-        if ($equals === true) {
-            $this->assertTrue(true);
-        } else {
+        if ($equals !== true) {
             $this->expectException(ComparisonFailure::class);
             $this->expectErrorMessageMatches($equals ?: '/Failed asserting that two models are equal/i');
         }
@@ -41,6 +39,7 @@ class EloquentModelComparatorTest extends TestCase {
 
         $comparator->setFactory(Factory::getInstance());
         $comparator->assertEquals($expected, $actual);
+        $this->assertTrue($equals);
     }
     // </editor-fold>
 

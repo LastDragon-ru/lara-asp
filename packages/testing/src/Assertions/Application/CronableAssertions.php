@@ -15,7 +15,6 @@ use PHPUnit\Framework\Assert;
 use function array_filter;
 use function count;
 use function is_object;
-use function is_subclass_of;
 use function sprintf;
 use function str_contains;
 
@@ -33,11 +32,6 @@ trait CronableAssertions {
      * @param class-string<Cronable> $cronable
      */
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
-        $this->assertTrue(
-            is_subclass_of($cronable, Cronable::class, true),
-            sprintf('The `%s` must be instance of `%s`.', $cronable, Cronable::class),
-        );
-
         $this->setQueueableConfig($cronable, [
             CronableConfig::Enabled => true,
         ]);

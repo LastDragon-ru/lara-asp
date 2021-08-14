@@ -148,7 +148,7 @@ class Metadata {
             throw new ScalarUnknown($operators);
         }
 
-        if (is_array($operators) && empty($operators)) {
+        if (is_array($operators) && !$operators) {
             throw new ScalarNoOperators($scalar);
         }
 

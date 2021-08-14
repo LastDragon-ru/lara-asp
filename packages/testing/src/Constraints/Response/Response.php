@@ -97,7 +97,7 @@ class Response extends Constraint {
             $description[] = $this->getResponseDescription($other);
         }
 
-        $description = array_map(static function (string $text) {
+        $description = array_map(static function (string $text): string {
             return trim($text, PHP_EOL);
         }, $description);
         $description = array_unique($description);

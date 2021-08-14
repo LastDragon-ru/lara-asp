@@ -32,7 +32,7 @@ abstract class DirectorySeeder extends Seeder {
     // =========================================================================
     public function run(): void {
         $paths = (new Collection($this->paths))
-            ->map(function (string $path) {
+            ->map(function (string $path): string {
                 return $this->getSeederPath($path);
             })
             ->unique();
@@ -71,7 +71,7 @@ abstract class DirectorySeeder extends Seeder {
     protected function getSeedersFromPath(string $path): array {
         $map     = ClassMapGenerator::createMap($path);
         $classes = (new Collection($map))
-            ->filter(static function (string $path, string $class) {
+            ->filter(static function (string $path, string $class): bool {
                 return !str_ends_with($path, 'Test.php')
                     && is_subclass_of($class, Seeder::class, true)
                     && $class !== static::class;

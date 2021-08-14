@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 
@@ -14,7 +15,7 @@ class ErrorResponseTest extends TestCase {
      * @covers ::evaluate
      */
     public function testEvaluate(): void {
-        $response   = $this->getJson(__FUNCTION__)->toPsrResponse();
+        $response   = Factory::make($this->getJson(__FUNCTION__));
         $constraint = new ErrorResponse(new NotFound());
 
         $this->assertEquals(true, $constraint->evaluate($response, '', true));

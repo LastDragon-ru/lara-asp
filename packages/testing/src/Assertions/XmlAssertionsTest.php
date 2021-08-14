@@ -21,9 +21,9 @@ class XmlAssertionsTest extends TestCase {
             use XmlAssertions;
         };
 
-        $assertion->assertXmlMatchesSchema($data->file('.rng'), $data->dom('.xml'));
-        $assertion->assertXmlMatchesSchema($data->file('.xsd'), $data->dom('.xml'));
-        $assertion->assertXmlMatchesSchema($data->file('.rng'), $data->file('.xml'));
-        $assertion->assertXmlMatchesSchema($data->file('.xsd'), $data->file('.xml'));
+        $assertion::assertXmlMatchesSchema($data->file('.rng'), $data->dom('.xml'));
+        $assertion::assertXmlMatchesSchema($data->file('.xsd'), $data->dom('.xml'));
+        $assertion::assertXmlMatchesSchema($data->file('.rng'), $data->file('.xml'));
+        $assertion::assertXmlMatchesSchema($data->file('.xsd'), $data->file('.xml'));
     }
 }

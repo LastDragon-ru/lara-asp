@@ -26,7 +26,7 @@ class EnumCast implements CastsAttributes {
     /**
      * @inheritdoc
      *
-     * @param array<string, mixed> $attributes
+     * @param array<mixed> $attributes
      */
     public function get($model, string $key, $value, array $attributes): ?Enum {
         if (is_null($value) || $value instanceof $this->enum) {
@@ -47,7 +47,7 @@ class EnumCast implements CastsAttributes {
     /**
      * @inheritdoc
      *
-     * @param array<string, mixed> $attributes
+     * @param array<mixed> $attributes
      */
     public function set($model, string $key, $value, array $attributes): string|int|null {
         if (!is_null($value)) {

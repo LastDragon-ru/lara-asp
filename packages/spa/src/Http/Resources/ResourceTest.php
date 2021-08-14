@@ -84,7 +84,7 @@ class ResourceTest extends TestCase {
                     $properties = [];
 
                     foreach ($this->resource->getAttributes() as $key => $value) {
-                        $properties[$key] = $this->resource->{$key};
+                        $properties[$key] = $this->resource->getAttribute((string) $key);
                     }
 
                     return $properties;

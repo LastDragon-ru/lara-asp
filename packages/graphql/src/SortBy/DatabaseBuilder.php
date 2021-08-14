@@ -56,7 +56,7 @@ class DatabaseBuilder {
         DatabaseSortStack|null $stack,
         array $clauses,
     ): EloquentBuilder|QueryBuilder {
-        foreach ((array) $clauses as $clause) {
+        foreach ($clauses as $clause) {
             $clause = new SortClause($clause);
             $column = $clause->getColumn();
 
