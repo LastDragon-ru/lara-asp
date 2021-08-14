@@ -16,7 +16,7 @@ class QueryLog implements Countable {
         // empty
     }
 
-    public function getName(): string {
+    public function getName(): ?string {
         return $this->getConnection()->getName();
     }
 
