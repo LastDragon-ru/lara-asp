@@ -7,6 +7,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class Body extends Response {
     protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
-        return $constraint->evaluate((string) $other->getBody(), '', true);
+        return (bool) $constraint->evaluate((string) $other->getBody(), '', true);
     }
 }
