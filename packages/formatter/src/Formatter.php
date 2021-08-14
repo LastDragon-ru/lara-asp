@@ -243,7 +243,7 @@ class Formatter {
      */
     public function percent(?float $value, int $decimals = null): string {
         $type  = static::Percent;
-        $value = $value / 100;
+        $value = (float) $value / 100;
 
         return $this
             ->getIntlNumberFormatter($type, $decimals, function () use ($type, $decimals): int {
