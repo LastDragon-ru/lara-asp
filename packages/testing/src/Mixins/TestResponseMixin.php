@@ -20,13 +20,6 @@ use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
  * @internal
  */
 class TestResponseMixin {
-    public function getContentType(): Closure {
-        return function (): ?string {
-            /** @var TestResponse $this */
-            return $this->headers->get('Content-Type');
-        };
-    }
-
     public function toPsrResponse(): Closure {
         return function (): ResponseInterface {
             // Some responses (eg StreamedResponse) should be read only
