@@ -219,7 +219,7 @@ class DirectiveTest extends TestCase {
             }
         };
 
-        $this->assertNotNull($directive->handleBuilder($builder, $input));
+        $this->assertEquals($expected, (bool) $directive->handleBuilder($builder, $input));
     }
 
     // </editor-fold>

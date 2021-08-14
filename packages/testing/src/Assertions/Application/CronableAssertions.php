@@ -33,11 +33,6 @@ trait CronableAssertions {
      * @param class-string<Cronable> $cronable
      */
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
-        $this->assertTrue(
-            is_subclass_of($cronable, Cronable::class, true),
-            sprintf('The `%s` must be instance of `%s`.', $cronable, Cronable::class),
-        );
-
         $this->setQueueableConfig($cronable, [
             CronableConfig::Enabled => true,
         ]);

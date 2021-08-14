@@ -2,12 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Mixins;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator;
+use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
-use Traversable;
 
 /**
  * @internal
@@ -36,24 +38,40 @@ class EloquentBuilderMixinTest extends TestCase {
      * @covers ::iterator
      */
     public function testIterator(): void {
-        $model = new class() extends Model {
+        $actual = null;
+        $model  = new class() extends Model {
             // empty
         };
 
         $this->assertTrue(Builder::hasGlobalMacro('iterator'));
-        $this->assertInstanceOf(Traversable::class, $model->query()->iterator());
+
+        try {
+            $actual = $model->query()->iterator();
+        } catch (Exception) {
+            // empty
+        }
+
+        $this->assertInstanceOf(ChunkedIterator::class, $actual);
     }
 
     /**
      * @covers ::changeSafeIterator
      */
     public function testChangeSafeIterator(): void {
-        $model = new class() extends Model {
+        $actual = null;
+        $model  = new class() extends Model {
             // empty
         };
 
         $this->assertTrue(Builder::hasGlobalMacro('changeSafeIterator'));
-        $this->assertInstanceOf(Traversable::class, $model->query()->changeSafeIterator());
+
+        try {
+            $actual = $model->query()->changeSafeIterator();
+        } catch (Exception) {
+            // empty
+        }
+
+        $this->assertInstanceOf(ChunkedChangeSafeIterator::class, $actual);
     }
 
     /**

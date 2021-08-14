@@ -115,8 +115,11 @@ class UsageTest extends TestCase {
      * @covers ::addValue
      */
     public function testAddValueWithoutStart(): void {
-        (new Usage())->addValue(stdClass::class);
+        $usage = new Usage();
+        $usage->addValue(stdClass::class);
 
-        $this->assertTrue(true);
+        $this->expectExceptionObject(new LogicException('Stack is empty.'));
+
+        $usage->end(0);
     }
 }

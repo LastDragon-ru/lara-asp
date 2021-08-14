@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use InvalidArgumentException;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
@@ -43,12 +42,8 @@ class SearchBuilder {
                 $this->comparison[$operator->getName()] = $operator;
             } elseif ($operator instanceof LogicalOperator) {
                 $this->logical[$operator->getName()] = $operator;
-            } elseif ($operator instanceof ComplexOperator) {
-                $this->complex[$operator->getName()] = $operator;
             } else {
-                throw new InvalidArgumentException(
-                    'Unsupported operator type.',
-                );
+                $this->complex[$operator->getName()] = $operator;
             }
         }
     }

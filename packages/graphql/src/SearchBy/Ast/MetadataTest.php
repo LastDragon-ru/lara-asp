@@ -173,7 +173,6 @@ class MetadataTest extends TestCase {
 
         $metadata->getUsage()->end($u);
 
-        $this->assertNotNull($a);
         $this->assertSame($a, $b);
         $this->assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
@@ -238,7 +237,6 @@ class MetadataTest extends TestCase {
 
         $metadata->getUsage()->end($u);
 
-        $this->assertNotNull($a);
         $this->assertSame($a, $b);
         $this->assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
@@ -272,8 +270,6 @@ class MetadataTest extends TestCase {
             ->twice();
 
         $metadata->addDefinitions($provider);
-
-        $this->assertTrue(true);
     }
 
     /**
@@ -292,7 +288,15 @@ class MetadataTest extends TestCase {
         // The second call must be fine, because definition the same
         $metadata->addDefinition('test', $definition::class);
 
-        $this->assertTrue(true);
+        $actual = null;
+
+        try {
+            $actual = $metadata->getDefinition('test');
+        } catch (Exception) {
+            // empty
+        }
+
+        $this->assertInstanceOf(TypeDefinition::class, $actual);
     }
 
     /**
@@ -340,7 +344,13 @@ class MetadataTest extends TestCase {
 
         $metadata->addDefinition('test', $definition::class);
 
-        $actual = $metadata->getDefinition('test');
+        $actual = null;
+
+        try {
+            $actual = $metadata->getDefinition('test');
+        } catch (Exception) {
+            // empty
+        }
 
         $this->assertInstanceOf(TypeDefinition::class, $actual);
     }
