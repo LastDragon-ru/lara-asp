@@ -230,6 +230,7 @@ class Formatter {
 
     public function currency(?float $value, string $currency = null): string {
         $type     = static::Currency;
+        $value    = (float) $value;
         $currency = $currency ?: $this->getOptions($type, 'USD');
 
         return $this
