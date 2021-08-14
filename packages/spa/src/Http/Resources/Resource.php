@@ -57,7 +57,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @param array<mixed> $data
      */
-    public function additional(array $data): self {
+    public function additional(array $data): static {
         return parent::additional($this->mapResourceData($data, []));
     }
 
