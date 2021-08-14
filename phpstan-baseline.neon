@@ -4,6 +4,11 @@ parameters:
         # (is there a better way to disable them?)
         - "#^Only booleans are allowed in an if condition, .+? given\\.$#"
         - "#^Only booleans are allowed in a negated boolean, .+? given\\.$#"
+        - "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assert[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\[^\\\\]+(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\:\\:assert[^(]+\\(\\)\\.$#"
 
         # False positive, see https://github.com/phpstan/phpstan-mockery/issues/34
         -
