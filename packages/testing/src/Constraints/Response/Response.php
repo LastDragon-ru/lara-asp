@@ -118,11 +118,10 @@ class Response extends Constraint {
 
     protected function getResponseDescription(ResponseInterface $response): string {
         $contentType = mb_strtolower(explode(';', $response->getHeaderLine('Content-Type'))[0]);
-        $isText      = false
-            || str_starts_with($contentType, 'text/')   // text
-            || str_ends_with($contentType, '+xml')      // xml based
-            || str_ends_with($contentType, '+json')     // json based
-            || in_array($contentType, [                 // other
+        $isText      = str_starts_with($contentType, 'text/')   // text
+            || str_ends_with($contentType, '+xml')              // xml based
+            || str_ends_with($contentType, '+json')             // json based
+            || in_array($contentType, [                         // other
                 'application/json',
             ], true);
         $description = $isText

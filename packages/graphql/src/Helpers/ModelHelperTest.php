@@ -109,7 +109,7 @@ class ModelHelperTest__Model extends Model {
     /**
      * @noinspection  PhpMissingReturnTypeInspection
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint
-     * @phpstan-ignore-next-line
+     * @phpstan-ignore-next-line Required for test
      */
     public function noTypeHint() {
         return $this->belongsTo(self::class);

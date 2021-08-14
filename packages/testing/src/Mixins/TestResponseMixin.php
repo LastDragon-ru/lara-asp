@@ -35,7 +35,7 @@ class TestResponseMixin {
 
             /** @var TestResponse $this */
             if (!isset($this->psrResponse)) {
-                /** @phpstan-ignore-next-line */
+                /* @phpstan-ignore-next-line `psrResponse` is our property only */
                 $this->psrResponse = (new PsrHttpFactory(
                     new ServerRequestFactory(),
                     new StreamFactory(),

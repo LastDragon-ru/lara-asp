@@ -36,17 +36,14 @@ class Args {
     }
 
     public static function content(SplFileInfo|string $file): string {
-        $content = $file;
+        if (is_string($file)) {
+            return $file;
+        }
 
-        if ($file instanceof SplFileInfo) {
-            $content = file_get_contents(static::getFile($file)->getPathname());
+        $content = file_get_contents(static::getFile($file)->getPathname());
 
-            if ($content === false) {
-                throw new InvalidArgumentSplFileInfoIsNotReadable('$file', $file);
-            }
-        } else {
-            // FIXME [phpstan] https://github.com/phpstan/phpstan/issues/5207
-            $content = $file;
+        if ($content === false) {
+            throw new InvalidArgumentSplFileInfoIsNotReadable('$file', $file);
         }
 
         return $content;
