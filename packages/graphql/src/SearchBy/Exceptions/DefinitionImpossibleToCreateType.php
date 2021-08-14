@@ -9,14 +9,14 @@ use function sprintf;
 class DefinitionImpossibleToCreateType extends SearchByException {
     public function __construct(
         protected string $name,
-        protected string $scalar,
-        protected bool $nullable,
+        protected ?string $scalar,
+        protected ?bool $nullable,
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Definition `%s`: Impossible to create type for scalar `%s`.',
             $this->name,
-            $this->scalar.($this->nullable ? '' : '!'),
+            ($this->scalar ?: 'null').($this->nullable ? '' : '!'),
         ), $previous);
     }
 
@@ -24,11 +24,11 @@ class DefinitionImpossibleToCreateType extends SearchByException {
         return $this->name;
     }
 
-    public function getScalar(): string {
+    public function getScalar(): ?string {
         return $this->scalar;
     }
 
-    public function isNullable(): bool {
+    public function isNullable(): ?bool {
         return $this->nullable;
     }
 }
