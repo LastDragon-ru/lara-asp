@@ -44,6 +44,7 @@ class ProtocolTest extends TestCase {
         $actual = (new Protocol())($uri);
 
         $this->assertEquals($expected, $actual);
+        $this->assertNotNull($actual);
         $this->assertNotNull(json_decode($actual));
     }
 
