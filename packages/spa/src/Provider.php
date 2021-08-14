@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa;
 
+use Exception;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Support\ServiceProvider;
@@ -38,9 +39,12 @@ class Provider extends ServiceProvider {
                 return;
             }
 
-            $handler->map(UnresolvedValueException::class, static function (UnresolvedValueException $exception) {
-                return new NotFoundHttpException($exception->getMessage() ?: 'Not found.', $exception);
-            });
+            $handler->map(
+                UnresolvedValueException::class,
+                static function (UnresolvedValueException $exception): Exception {
+                    return new NotFoundHttpException($exception->getMessage() ?: 'Not found.', $exception);
+                },
+            );
         });
     }
     // </editor-fold>

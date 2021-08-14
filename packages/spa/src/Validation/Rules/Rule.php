@@ -30,7 +30,7 @@ abstract class Rule implements RuleContract {
             ->mapWithKeys(function (string $variant) use ($replace) {
                 return [$variant => $this->translator->get($variant, $replace)];
             })
-            ->first(static function (string $value, string $key) {
+            ->first(static function (string $value, string $key): bool {
                 return $key !== $value;
             });
 

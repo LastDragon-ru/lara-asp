@@ -52,7 +52,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
     // <editor-fold desc="\Illuminate\Contracts\Support\Renderable">
     // =========================================================================
     public function render(): string {
-        return $this->ifInitialized(function () {
+        return $this->ifInitialized(function (): string {
             return parent::render();
         });
     }
