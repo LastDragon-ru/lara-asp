@@ -1,5 +1,10 @@
 parameters:
     ignoreErrors:
+        # Unwanted strict rules
+        # (is there a better way to disable them?)
+        - "#^Only booleans are allowed in an if condition, .+? given\\.$#"
+        - "#^Only booleans are allowed in a negated boolean, .+? given\\.$#"
+
         # False positive, see https://github.com/phpstan/phpstan-mockery/issues/34
         -
             message: "#^Parameter \\#1 \\$callback of static method Closure\\:\\:fromCallable\\(\\) expects callable\\(\\)\\: mixed, Mockery\\\\MockInterface given\\.$#"
