@@ -81,8 +81,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             // Update
-            $operators  = $this->metadata->getUsage()->get($name);
             $node->type = $type;
+            $operators  = $name
+                ? $this->metadata->getUsage()->get($name)
+                : [];
         }
 
         // Update

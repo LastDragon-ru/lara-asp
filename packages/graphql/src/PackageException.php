@@ -3,7 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL;
 
 use Exception;
+use Throwable;
 
-class PackageException extends Exception {
-    // empty
+abstract class PackageException extends Exception {
+    public function __construct(string $message = '', Throwable $previous = null) {
+        parent::__construct($message, 0, $previous);
+    }
 }

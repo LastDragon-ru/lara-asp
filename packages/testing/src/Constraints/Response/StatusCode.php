@@ -16,6 +16,6 @@ class StatusCode extends Response {
     }
 
     protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
-        return $constraint->evaluate($other->getStatusCode(), '', true);
+        return (bool) $constraint->evaluate($other->getStatusCode(), '', true);
     }
 }

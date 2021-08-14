@@ -78,7 +78,7 @@ class Url {
         // Add query params
         if ($parameters) {
             $query = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
-            $query = preg_replace('/%5B\d+%5D/ui', '', $query);
+            $query = (string) preg_replace('/%5B\d+%5D/ui', '', $query);
 
             if ($url->getQuery()) {
                 $url = $url->withQuery("{$url->getQuery()}&{$query}");

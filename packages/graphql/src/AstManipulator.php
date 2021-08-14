@@ -2,15 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL;
 
+use Exception;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
-
-use function sprintf;
 
 abstract class AstManipulator {
     public function __construct(
@@ -31,15 +32,27 @@ abstract class AstManipulator {
     // <editor-fold desc="AST Helpers">
     // =========================================================================
     protected function isTypeDefinitionExists(string $name): bool {
-        return (bool) $this->getTypeDefinitionNode($name);
+        try {
+            return (bool) $this->getTypeDefinitionNode($name);
+        } catch (Exception) {
+            return false;
+        }
     }
 
-    protected function getTypeDefinitionNode(Node|string $node): TypeDefinitionNode|Type|null {
+    protected function getTypeDefinitionNode(Node|string $node): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
         $definition = $this->document->types[$name] ?? null;
 
-        if ($this->types->has($name)) {
+        if (!$definition) {
+            $definition = Type::getStandardTypes()[$name] ?? null;
+        }
+
+        if (!$definition && $this->types->has($name)) {
             $definition = $this->types->get($name);
+        }
+
+        if (!$definition) {
+            throw new TypeDefinitionUnknown($name);
         }
 
         return $definition;
@@ -57,10 +70,7 @@ abstract class AstManipulator {
         $name = $this->getNodeName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
-            throw new PackageException(sprintf(
-                'Type Definition `%s` already defined.',
-                $name,
-            ));
+            throw new TypeDefinitionAlreadyDefined($name);
         }
 
         $this->document->setTypeDefinition($definition);

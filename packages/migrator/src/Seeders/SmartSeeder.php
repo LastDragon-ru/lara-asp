@@ -2,9 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
 use function is_string;
+use function is_subclass_of;
 
 /**
  * Smart Seeder. Unlike standard seeder checks, and stops seeding if the
@@ -19,6 +21,9 @@ abstract class SmartSeeder extends Seeder {
 
     // <editor-fold desc="Extension">
     // =========================================================================
+    /**
+     * @return class-string<Model>|string|null
+     */
     protected function getTarget(): ?string {
         return null;
     }
@@ -28,9 +33,18 @@ abstract class SmartSeeder extends Seeder {
     }
 
     protected function isSeeded(): bool {
-        return $this->getTarget()
-            ? $this->service->isModelSeeded($this->getTarget())
-            : $this->service->isSeeded();
+        $target = $this->getTarget();
+        $seeded = false;
+
+        if (is_string($target) && is_subclass_of($target, Model::class, true)) {
+            $seeded = $this->service->isModelSeeded($target);
+        } elseif ($target) {
+            $seeded = $this->service->isTableSeeded($target);
+        } else {
+            $seeded = $this->service->isSeeded();
+        }
+
+        return $seeded;
     }
     // </editor-fold>
 

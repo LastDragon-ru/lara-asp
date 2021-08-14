@@ -16,7 +16,6 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Job;
 use LastDragon_ru\LaraASP\Queue\Queueables\Listener;
 use LastDragon_ru\LaraASP\Queue\Queueables\Mail;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 /**
  * @internal
@@ -108,26 +107,6 @@ class QueueableConfigTest extends TestCase {
         }
 
         $this->assertEquals($expected, $config->config());
-    }
-
-    /**
-     * @covers ::config
-     */
-    public function testConfigInjectionIntoGetQueueConfig(): void {
-        $container    = Container::getInstance();
-        $repository   = new Repository();
-        $dateFactory  = new DateFactory();
-        $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
-        $queueable    = new class($configurator) extends Job {
-            /**
-             * @inheritdoc
-             */
-            public function getQueueConfig(stdClass $injected = null): array {
-                return ['injected' => $injected::class];
-            }
-        };
-
-        $this->assertEquals(stdClass::class, $configurator->config($queueable)->get('injected'));
     }
     // </editor-fold>
 

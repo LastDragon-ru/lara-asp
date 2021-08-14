@@ -113,7 +113,7 @@ class Response extends Constraint {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
-        return $constraint->evaluate($other, '', true);
+        return (bool) $constraint->evaluate($other, '', true);
     }
 
     protected function getResponseDescription(ResponseInterface $response): string {

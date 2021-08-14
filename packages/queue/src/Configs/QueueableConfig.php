@@ -69,7 +69,7 @@ class QueueableConfig {
     protected function config(): array {
         if (is_null($this->config)) {
             $global       = (array) $this->global->get($this->getApplicationConfig());
-            $config       = (array) $this->container->call([$this->queueable, 'getQueueConfig']);
+            $config       = $this->queueable->getQueueConfig();
             $target       = $this->getDefaultConfig() + $config;
             $this->config = (new ConfigMerger())->merge($target, $config, $global);
         }

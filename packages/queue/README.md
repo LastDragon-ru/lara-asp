@@ -47,12 +47,8 @@ class MyJobWithConfig extends Job {
 
     /**
      * Default config.
-     *
-     * @param \Illuminate\Foundation\Application|null $app you can use DI here too
-     *                                                    
-     * @return array
      */
-    public function getQueueConfig(Application $app = null): array {
+    public function getQueueConfig(): array {
         return [
                 'queue'    => 'queue',
                 'settings' => [
