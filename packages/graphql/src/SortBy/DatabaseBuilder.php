@@ -61,9 +61,9 @@ class DatabaseBuilder {
             $column = $clause->getColumn();
 
             if ($clause->isRelation()) {
-                $builder = $this->processRelation($builder, $stack, $column, $clause->getChild());
+                $builder = $this->processRelation($builder, $stack, $column, (array) $clause->getChild());
             } else {
-                $builder = $this->processColumn($builder, $stack, $column, $clause->getDirection());
+                $builder = $this->processColumn($builder, $stack, $column, (string) $clause->getDirection());
             }
         }
 
@@ -98,7 +98,7 @@ class DatabaseBuilder {
     }
 
     /**
-     * @param array<mixed> $clauses
+     * @param array<string,mixed> $clauses
      */
     protected function processRelation(
         EloquentBuilder|QueryBuilder $builder,
@@ -112,6 +112,7 @@ class DatabaseBuilder {
         }
 
         // Relation?
+        $stack       ??= new DatabaseSortStack($builder);
         $parentBuilder = $stack->getBuilder();
         $parentAlias   = $stack->getTableAlias();
         $relation      = $this->getRelation($parentBuilder, $name, $stack);
@@ -189,7 +190,7 @@ class DatabaseBuilder {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getRelation(EloquentBuilder $builder, string $name, DatabaseSortStack|null $stack): Relation {
+    protected function getRelation(EloquentBuilder $builder, string $name, DatabaseSortStack $stack): Relation {
         $relation  = (new ModelHelper($builder))->getRelation($name);
         $supported = false;
 
