@@ -23,7 +23,7 @@ class TraversableDataProvider extends BaseDataProvider {
     }
 
     /**
-     * @return array<mixed>
+     * @inheritDoc
      */
     public function getData(bool $raw = false): array {
         return $this->replaceExpectedValues(iterator_to_array($this->traversable), $raw);
