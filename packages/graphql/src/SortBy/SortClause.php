@@ -58,7 +58,7 @@ class SortClause {
 
     public function getChildClause(): ?static {
         return $this->isRelation()
-            ? new static($this->getChild())
+            ? new static((array) $this->getChild())
             : null;
     }
 
