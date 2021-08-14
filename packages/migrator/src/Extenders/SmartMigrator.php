@@ -22,7 +22,7 @@ class SmartMigrator extends Migrator {
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      *
-     * @param array<string>|string $paths
+     * @param array<mixed>|string $paths
      *
      * @return array<string>
      */
@@ -32,7 +32,7 @@ class SmartMigrator extends Migrator {
         }
 
         foreach ($paths as $path) {
-            foreach (Finder::create()->in($path)->directories() as $dir) {
+            foreach (Finder::create()->in((string) $path)->directories() as $dir) {
                 $paths[] = $dir->getPathname();
             }
         }
