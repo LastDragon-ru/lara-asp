@@ -25,10 +25,10 @@ class InstanceCacheTest extends TestCase {
         $object = new stdClass();
 
         $this->assertNull($cache->instanceCacheGet('a'));
-        $this->assertSame($object, $cache->instanceCacheGet('b', static function () use ($object) {
+        $this->assertSame($object, $cache->instanceCacheGet('b', static function () use ($object): stdClass {
             return $object;
         }));
-        $this->assertSame($object, $cache->instanceCacheGet('b', static function () {
+        $this->assertSame($object, $cache->instanceCacheGet('b', static function (): stdClass {
             return new stdClass();
         }));
     }
@@ -164,7 +164,7 @@ class InstanceCacheTest_Cache {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class InstanceCacheTest_QueueableEntity implements QueueableEntity {
-    private mixed   $id;
+    private mixed $id;
     /**
      * @var array<string>
      */
@@ -177,24 +177,18 @@ class InstanceCacheTest_QueueableEntity implements QueueableEntity {
         $this->connection = $connection;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getQueueableId() {
+    public function getQueueableId(): mixed {
         return $this->id;
     }
 
     /**
-     * @inheritdoc
+     * @return array<string>
      */
-    public function getQueueableRelations() {
+    public function getQueueableRelations(): array {
         return $this->relations;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getQueueableConnection() {
+    public function getQueueableConnection(): ?string {
         return $this->connection;
     }
 }

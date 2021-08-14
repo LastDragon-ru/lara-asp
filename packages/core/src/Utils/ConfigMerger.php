@@ -110,7 +110,7 @@ class ConfigMerger {
                         $target[$key] = [static::Replace => true] + (array) $value;
                     } elseif (is_string(key($target[$key]))) {
                         $this->process($target[$key], (array) $value, $current);
-                    } elseif (empty($target[$key])) {
+                    } elseif (!$target[$key]) {
                         $target[$key] = (array) $value;
                     } else {
                         $target[$key] = array_values((array) $value);

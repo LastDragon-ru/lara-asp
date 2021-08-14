@@ -13,14 +13,14 @@ use Illuminate\Database\Eloquent\Builder;
 class EloquentBuilderMixin extends QueryBuilderMixin {
     public function orderByKey(): Closure {
         return function (string $direction = 'asc'): Builder {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            /** @var Builder $this */
             return $this->orderBy($this->getDefaultKeyName(), $direction);
         };
     }
 
     public function orderByKeyDesc(): Closure {
         return function (): Builder {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            /** @var Builder $this */
             return $this->orderByKey('desc');
         };
     }

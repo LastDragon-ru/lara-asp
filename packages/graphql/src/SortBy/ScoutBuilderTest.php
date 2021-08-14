@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProp
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function implode;
+use function is_array;
 use function json_decode;
 use function json_encode;
 
@@ -27,7 +28,8 @@ class ScoutBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderBuild
      *
-     * @param array<mixed> $clause
+     * @param array<mixed>|Exception $expected
+     * @param array<mixed>           $clause
      */
     public function testBuild(array|Exception $expected, array $clause, Closure $resolver = null): void {
         if ($expected instanceof Exception) {
@@ -46,7 +48,7 @@ class ScoutBuilderTest extends TestCase {
             },
         ]);
         $builder   = $directive->handleScoutBuilder($builder, $clause);
-        $actual    = json_decode(json_encode($builder), true);
+        $actual    = json_decode((string) json_encode($builder), true);
         $default   = [
             'model'         => [],
             'query'         => '',
@@ -59,7 +61,9 @@ class ScoutBuilderTest extends TestCase {
             'orders'        => [],
         ];
 
-        $this->assertEquals($expected + $default, $actual + $default);
+        if (is_array($expected)) {
+            $this->assertEquals($expected + $default, $actual + $default);
+        }
     }
     // </editor-fold>
 

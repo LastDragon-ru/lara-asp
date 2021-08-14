@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 
 class OperatorDirective extends BaseDirective {
@@ -17,7 +18,7 @@ class OperatorDirective extends BaseDirective {
     }
 
     /**
-     * @return class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>
+     * @return class-string<ComplexOperator>
      */
     public function getClass(): string {
         return $this->directiveArgValue('class');

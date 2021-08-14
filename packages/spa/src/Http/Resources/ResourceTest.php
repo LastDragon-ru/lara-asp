@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
@@ -47,6 +48,8 @@ class ResourceTest extends TestCase {
      * @covers ::collection
      *
      * @dataProvider dataProviderCollection
+     *
+     * @param class-string $expected
      */
     public function testCollection(string $expected, mixed $value): void {
         $class  = get_class(new class(null) extends Resource {
@@ -64,6 +67,8 @@ class ResourceTest extends TestCase {
      * @covers ::mapResourceData
      *
      * @dataProvider dataProviderMapResourceData
+     *
+     * @param array<mixed>|Exception $expected
      */
     public function testMapResourceData(array|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
@@ -74,12 +79,12 @@ class ResourceTest extends TestCase {
             /**
              * @inheritdoc
              */
-            public function toArray($request): array {
+            public function toArray($request): mixed {
                 if ($this->resource instanceof Model) {
                     $properties = [];
 
                     foreach ($this->resource->getAttributes() as $key => $value) {
-                        $properties[$key] = $this->resource->{$key};
+                        $properties[$key] = $this->resource->getAttribute((string) $key);
                     }
 
                     return $properties;
@@ -114,7 +119,7 @@ class ResourceTest extends TestCase {
             'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',
         ));
 
-        $this->assertIsArray($resource->toArray(null));
+        $this->assertIsArray($resource->toArray(new Request()));
     }
 
     /**
@@ -152,7 +157,7 @@ class ResourceTest extends TestCase {
 
         $this->expectExceptionObject(new Exception('mapResourceData'));
 
-        $resource->with(null);
+        $resource->with(new Request());
     }
     // </editor-fold>
 
@@ -253,7 +258,7 @@ class ResourceTest extends TestCase {
                     'array'            => [1, 2, 3, $date],
                     'SafeResource'     => new class() implements SafeResource, JsonSerializable {
                         /**
-                         * @inheritdoc
+                         * @return array<mixed>
                          */
                         public function jsonSerialize(): array {
                             return [
@@ -274,7 +279,7 @@ class ResourceTest extends TestCase {
                         }
 
                         /**
-                         * @inheritdoc
+                         * @return array<mixed>
                          */
                         public function jsonSerialize(): array {
                             return [
@@ -309,7 +314,15 @@ class ResourceTest extends TestCase {
                         'collection_date_no_cast' => $date->format(Package::DateTimeFormat),
                     ],
                 ],
-                new class($date, $format) extends Model {
+                new
+                /**
+                 * @property DateTimeInterface             $date
+                 * @property DateTimeInterface             $datetime
+                 * @property DateTimeInterface             $date_no_cast
+                 * @property array<DateTimeInterface>      $nested
+                 * @property Collection<DateTimeInterface> $collection
+                 */
+                class($date, $format) extends Model {
                     public function __construct(DateTimeInterface $date, string $format) {
                         parent::__construct([]);
 

@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use InvalidArgumentException;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
@@ -20,24 +19,22 @@ use function reset;
 
 class SearchBuilder {
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>
+     * @var array<string, ComplexOperator>
      */
     protected array $complex = [];
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator>
+     * @var array<string, LogicalOperator>
      */
     protected array $logical = [];
 
     /**
-     * @var array<string, \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator>
+     * @var array<string, ComparisonOperator>
      */
     protected array $comparison = [];
 
     /**
-     * @param array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator
-     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator
-     *      |\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator> $operators
+     * @param array<ComparisonOperator|LogicalOperator|ComplexOperator> $operators
      */
     public function __construct(array $operators) {
         foreach ($operators as $operator) {
@@ -45,12 +42,8 @@ class SearchBuilder {
                 $this->comparison[$operator->getName()] = $operator;
             } elseif ($operator instanceof LogicalOperator) {
                 $this->logical[$operator->getName()] = $operator;
-            } elseif ($operator instanceof ComplexOperator) {
-                $this->complex[$operator->getName()] = $operator;
             } else {
-                throw new InvalidArgumentException(
-                    'Unsupported operator type.',
-                );
+                $this->complex[$operator->getName()] = $operator;
             }
         }
     }
@@ -58,7 +51,7 @@ class SearchBuilder {
     // <editor-fold desc="API">
     // =========================================================================
     /**
-     * @param array<mixed> $conditions
+     * @param array<string,mixed> $conditions
      */
     public function build(EloquentBuilder|QueryBuilder $builder, array $conditions): EloquentBuilder|QueryBuilder {
         return $this->process($builder, $conditions);
@@ -68,7 +61,7 @@ class SearchBuilder {
     // <editor-fold desc="Process">
     // =========================================================================
     /**
-     * @param array<mixed> $input
+     * @param array<string,mixed> $input
      */
     public function process(
         EloquentBuilder|QueryBuilder $builder,

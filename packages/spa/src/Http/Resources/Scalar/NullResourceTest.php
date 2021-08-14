@@ -15,7 +15,7 @@ class NullResourceTest extends TestCase {
      * @covers ::toResponse
      */
     public function testToResponse(): void {
-        Route::get(__METHOD__, static function () {
+        Route::get(__METHOD__, static function (): mixed {
             return new NullResource();
         });
 

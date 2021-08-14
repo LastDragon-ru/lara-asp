@@ -5,16 +5,17 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 use Composer\Util\Platform;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\Package;
+use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Opis\JsonSchema\Uri;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 
 use function array_map;
 use function explode;
-use function file_get_contents;
 use function http_build_query;
 use function implode;
 use function ltrim;
+use function parse_url;
 use function preg_match;
 use function rawurldecode;
 use function rawurlencode;
@@ -50,7 +51,7 @@ class Protocol {
         $path   = implode('/', array_map(static function (string $segment): string {
             return rawurlencode($segment);
         }, explode('/', ltrim($path, '/'))));
-        $uri    = Uri::create("{$scheme}://{$host}/{$path}?{$query}");
+        $uri    = new Uri((array) parse_url("{$scheme}://{$host}/{$path}?{$query}"));
 
         // Return
         return $uri;
@@ -66,7 +67,7 @@ class Protocol {
         }
 
         // Decode path
-        $path = $uri->path();
+        $path = (string) $uri->path();
         $path = implode('/', array_map(static function (string $segment): string {
             return rawurldecode($segment);
         }, explode('/', $path)));
@@ -90,7 +91,7 @@ class Protocol {
         // Uri::parseQueryString() cannot be used because of
         // https://github.com/opis/uri/issues/1
         $params = HeaderUtils::parseQuery((string) $uri->query());
-        $schema = file_get_contents($file->getPathname());
+        $schema = Args::content($file);
         $schema = (new Template($schema))->build($params);
 
         // Return

@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentXsdSchemaM
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileRelaxNgSchemaMatcher;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileXsdSchemaMatcher;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use LibXMLError;
 use PHPUnit\Framework\Constraint\Constraint;
 use SplFileInfo;
 
@@ -25,7 +26,7 @@ use const PHP_EOL;
 class XmlMatchesSchema extends Constraint {
     protected SplFileInfo $schema;
     /**
-     * @var array<\LibXMLError>
+     * @var array<LibXMLError>
      */
     protected array $errors = [];
 
@@ -35,10 +36,7 @@ class XmlMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @inheritdoc
-     */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         if ($other instanceof SplFileInfo) {
             $other = Args::getFile($other);
         } else {
@@ -48,10 +46,7 @@ class XmlMatchesSchema extends Constraint {
         return parent::evaluate($other, $description, $returnResult);
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function matches($other): bool {
+    protected function matches(mixed $other): bool {
         // Create constraint
         $isRelaxNg  = strtolower($this->schema->getExtension()) === 'rng';
         $constraint = null;

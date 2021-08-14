@@ -31,8 +31,6 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use stdClass;
 
-use function array_map;
-
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata
@@ -175,7 +173,6 @@ class MetadataTest extends TestCase {
 
         $metadata->getUsage()->end($u);
 
-        $this->assertNotNull($a);
         $this->assertSame($a, $b);
         $this->assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
@@ -186,6 +183,7 @@ class MetadataTest extends TestCase {
     public function testGetOperatorInstanceNotAnOperator(): void {
         $this->expectExceptionObject(new ClassIsNotOperator(stdClass::class));
 
+        /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->getOperatorInstance(stdClass::class);
     }
 
@@ -239,7 +237,6 @@ class MetadataTest extends TestCase {
 
         $metadata->getUsage()->end($u);
 
-        $this->assertNotNull($a);
         $this->assertSame($a, $b);
         $this->assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
@@ -250,6 +247,7 @@ class MetadataTest extends TestCase {
     public function testGetComplexOperatorInstanceNotAnOperator(): void {
         $this->expectExceptionObject(new ClassIsNotComplexOperator(stdClass::class));
 
+        /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->getComplexOperatorInstance(stdClass::class);
     }
 
@@ -272,8 +270,6 @@ class MetadataTest extends TestCase {
             ->twice();
 
         $metadata->addDefinitions($provider);
-
-        $this->assertTrue(true);
     }
 
     /**
@@ -281,14 +277,26 @@ class MetadataTest extends TestCase {
      */
     public function testAddDefinition(): void {
         $metadata   = new Metadata($this->app, new Usage());
-        $definition = Mockery::mock(TypeDefinition::class);
+        $definition = new class() implements TypeDefinition {
+            public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
+                return null;
+            }
+        };
 
         $metadata->addDefinition('test', $definition::class);
 
         // The second call must be fine, because definition the same
         $metadata->addDefinition('test', $definition::class);
 
-        $this->assertTrue(true);
+        $actual = null;
+
+        try {
+            $actual = $metadata->getDefinition('test');
+        } catch (Exception) {
+            // empty
+        }
+
+        $this->assertInstanceOf(TypeDefinition::class, $actual);
     }
 
     /**
@@ -297,6 +305,7 @@ class MetadataTest extends TestCase {
     public function testAddDefinitionNotADefinition(): void {
         $this->expectExceptionObject(new ClassIsNotDefinition(stdClass::class));
 
+        /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->addDefinition('type', stdClass::class);
     }
 
@@ -327,11 +336,21 @@ class MetadataTest extends TestCase {
      */
     public function testGetDefinition(): void {
         $metadata   = new Metadata($this->app, new Usage());
-        $definition = Mockery::mock(TypeDefinition::class);
+        $definition = new class() implements TypeDefinition {
+            public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
+                return null;
+            }
+        };
 
         $metadata->addDefinition('test', $definition::class);
 
-        $actual = $metadata->getDefinition('test');
+        $actual = null;
+
+        try {
+            $actual = $metadata->getDefinition('test');
+        } catch (Exception) {
+            // empty
+        }
 
         $this->assertInstanceOf(TypeDefinition::class, $actual);
     }
@@ -394,9 +413,13 @@ class MetadataTest extends TestCase {
      * @return array<class-string>
      */
     protected function toClassNames(array $objects): array {
-        return array_map(static function (object $object): string {
-            return $object::class;
-        }, $objects);
+        $classes = [];
+
+        foreach ($objects as $object) {
+            $classes[] = $object::class;
+        }
+
+        return $classes;
     }
     // </editor-fold>
 }

@@ -54,7 +54,6 @@ class Url {
     /**
      * @param array<string, mixed> $parameters
      */
-    #[Pure]
     public function build(array $parameters = []): string {
         // Check
         $params = $this->getParameters();
@@ -68,7 +67,7 @@ class Url {
 
         // Replace params
         $url        = Utils::uriFor($this->getTemplate());
-        $parameters = $this->serialize($parameters);
+        $parameters = (array) $this->serialize($parameters);
 
         foreach ($params as $param) {
             $url = $url->withPath(str_replace(":{$param}", $parameters[$param], $url->getPath()));
@@ -79,7 +78,7 @@ class Url {
         // Add query params
         if ($parameters) {
             $query = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
-            $query = preg_replace('/%5B\d+%5D/ui', '', $query);
+            $query = (string) preg_replace('/%5B\d+%5D/ui', '', $query);
 
             if ($url->getQuery()) {
                 $url = $url->withQuery("{$url->getQuery()}&{$query}");
@@ -95,10 +94,9 @@ class Url {
     /**
      * @return array<string>
      */
-    #[Pure]
     private function extract(string $template): array {
         $names = [];
-        $parts = explode('/', parse_url($template, PHP_URL_PATH));
+        $parts = explode('/', (string) parse_url($template, PHP_URL_PATH));
 
         foreach ($parts as $part) {
             if (str_starts_with($part, ':')) {
@@ -109,8 +107,10 @@ class Url {
         return $names;
     }
 
-    #[Pure]
-    private function serialize(mixed $value): string|array|null {
+    /**
+     * @return string|array<mixed>
+     */
+    private function serialize(mixed $value): string|array {
         if (is_float($value)) {
             $value = str_replace(',', '.', (string) $value);
         } elseif (is_bool($value)) {

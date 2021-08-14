@@ -27,7 +27,7 @@ class Usage {
      */
     protected array $types = [];
     /**
-     * @var array<array{id:string,type:string,types:array<string>,values:array<T>}>
+     * @var array<array{id:int,type:string,types:array<string>,values:array<T>}>
      */
     protected array $stack = [];
 
@@ -63,7 +63,7 @@ class Usage {
     }
 
     /**
-     * @param T $value
+     * @param class-string<T> ...$value
      */
     public function addValue(mixed ...$value): void {
         $current = array_key_last($this->stack);
@@ -109,7 +109,7 @@ class Usage {
     /**
      * @param array<string> $stack
      *
-     * @return array<string>
+     * @return array<T>
      */
     protected function values(string $type, array $stack): array {
         $types  = $this->types[$type]['types'] ?? [];

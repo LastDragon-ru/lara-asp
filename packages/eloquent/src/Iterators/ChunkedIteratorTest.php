@@ -38,9 +38,14 @@ class ChunkedIteratorTest extends TestCase {
         $expected  = (clone $query)->get()->all();
         $count     = count($log);
         $iterator  = (new ChunkedIterator($query))
-            ->onBeforeChunk(Closure::fromCallable($spyBefore))
-            ->onAfterChunk(Closure::fromCallable($spyAfter));
-        $actual    = iterator_to_array($iterator);
+            ->onBeforeChunk(
+                Closure::fromCallable($spyBefore),
+            )
+            ->onAfterChunk(
+                Closure::fromCallable($spyAfter),
+            );
+
+        $actual = iterator_to_array($iterator);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals(2, count($log) - $count);

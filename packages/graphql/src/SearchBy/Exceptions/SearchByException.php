@@ -2,11 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions;
 
-use Exception;
-use Throwable;
+use LastDragon_ru\LaraASP\GraphQL\PackageException;
 
-abstract class SearchByException extends Exception {
-    public function __construct(string $message, Throwable $previous = null) {
-        parent::__construct($message, 0, $previous);
-    }
+abstract class SearchByException extends PackageException {
+    // empty
 }

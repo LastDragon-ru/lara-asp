@@ -32,10 +32,7 @@ class JsonMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @inheritdoc
-     */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getJson($other),
             $description,
@@ -67,11 +64,15 @@ class JsonMatchesSchema extends Constraint {
         $description = parent::additionalFailureDescription($other);
 
         if ($this->result) {
-            $formatted    = (new ErrorFormatter())->format($this->result->error());
-            $padding      = '    ';
-            $description .= PHP_EOL.$padding.'Errors: ';
-            $description .= ltrim(preg_replace('/^/m', $padding, $this->prettify($formatted)));
-            $description .= PHP_EOL;
+            $error = $this->result->error();
+
+            if ($error) {
+                $formatted    = (new ErrorFormatter())->format($error);
+                $padding      = '    ';
+                $description .= PHP_EOL.$padding.'Errors: ';
+                $description .= ltrim((string) preg_replace('/^/m', $padding, $this->prettify($formatted)));
+                $description .= PHP_EOL;
+            }
         }
 
         return $description;
@@ -87,7 +88,7 @@ class JsonMatchesSchema extends Constraint {
     // =========================================================================
     protected function getValidator(): Validator {
         $validator = new Validator();
-        $validator->resolver()->registerProtocol(Protocol::Scheme, new Protocol());
+        $validator->resolver()?->registerProtocol(Protocol::Scheme, new Protocol());
 
         return $validator;
     }

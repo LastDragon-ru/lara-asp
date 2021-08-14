@@ -12,7 +12,7 @@ class Header extends Response {
     protected string $name;
 
     /**
-     * @param array<\PHPUnit\Framework\Constraint\Constraint> $constraints
+     * @param array<Constraint> $constraints
      */
     public function __construct(string $name, array $constraints = []) {
         parent::__construct(...$constraints);
@@ -41,7 +41,7 @@ class Header extends Response {
     protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
         $header  = $other->getHeader($this->getName());
         $header  = count($header) === 1 ? reset($header) : $header;
-        $matches = $constraint->evaluate($header, '', true);
+        $matches = (bool) $constraint->evaluate($header, '', true);
 
         return $matches;
     }

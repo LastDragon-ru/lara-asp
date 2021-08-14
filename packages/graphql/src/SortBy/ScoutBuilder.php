@@ -38,7 +38,11 @@ class ScoutBuilder {
                 : implode('.', $path);
 
             // Order
-            $builder->orderBy($column, $direction);
+            if ($direction) {
+                $builder->orderBy($column, $direction);
+            } else {
+                $builder->orderBy($column);
+            }
         }
 
         return $builder;

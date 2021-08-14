@@ -21,7 +21,7 @@ use function is_a;
 
 class DatabaseBuilder {
     /**
-     * @var array<class-string<\Illuminate\Database\Eloquent\Relations\Relation>>
+     * @var array<class-string<Relation>>
      */
     protected array $relations = [
         BelongsTo::class,
@@ -56,14 +56,14 @@ class DatabaseBuilder {
         DatabaseSortStack|null $stack,
         array $clauses,
     ): EloquentBuilder|QueryBuilder {
-        foreach ((array) $clauses as $clause) {
+        foreach ($clauses as $clause) {
             $clause = new SortClause($clause);
             $column = $clause->getColumn();
 
             if ($clause->isRelation()) {
-                $builder = $this->processRelation($builder, $stack, $column, $clause->getChild());
+                $builder = $this->processRelation($builder, $stack, $column, (array) $clause->getChild());
             } else {
-                $builder = $this->processColumn($builder, $stack, $column, $clause->getDirection());
+                $builder = $this->processColumn($builder, $stack, $column, (string) $clause->getDirection());
             }
         }
 
@@ -98,20 +98,21 @@ class DatabaseBuilder {
     }
 
     /**
-     * @param array<mixed> $clauses
+     * @param array<string,mixed> $clauses
      */
     protected function processRelation(
         EloquentBuilder|QueryBuilder $builder,
         DatabaseSortStack|null $stack,
         string $name,
         array $clauses,
-    ): EloquentBuilder {
+    ): EloquentBuilder|QueryBuilder {
         // QueryBuilder?
         if ($builder instanceof QueryBuilder) {
             throw new BuilderUnsupported($builder::class);
         }
 
         // Relation?
+        $stack       ??= new DatabaseSortStack($builder);
         $parentBuilder = $stack->getBuilder();
         $parentAlias   = $stack->getTableAlias();
         $relation      = $this->getRelation($parentBuilder, $name, $stack);
@@ -189,7 +190,7 @@ class DatabaseBuilder {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getRelation(EloquentBuilder $builder, string $name, DatabaseSortStack|null $stack): Relation {
+    protected function getRelation(EloquentBuilder $builder, string $name, DatabaseSortStack $stack): Relation {
         $relation  = (new ModelHelper($builder))->getRelation($name);
         $supported = false;
 

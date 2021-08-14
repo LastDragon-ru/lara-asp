@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\Eloquent\Casts\EnumCast;
 
 abstract class Enum extends BaseEnum implements Castable {
     /**
-     * @inheritdoc
+     * @param array<mixed> $arguments
      */
     public static function castUsing(array $arguments): CastsAttributes {
         return new EnumCast(static::class);

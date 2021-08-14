@@ -23,7 +23,7 @@ use const PHP_EOL;
 
 class Response extends Constraint {
     /**
-     * @var array<\PHPUnit\Framework\Constraint\Constraint>
+     * @var array<Constraint>
      */
     protected array       $constraints;
     protected ?Constraint $failed = null;
@@ -33,7 +33,7 @@ class Response extends Constraint {
     }
 
     /**
-     * @return array<\PHPUnit\Framework\Constraint\Constraint>
+     * @return array<Constraint>
      */
     public function getConstraints(): array {
         return $this->constraints;
@@ -41,10 +41,7 @@ class Response extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
-    /**
-     * @inheritdoc
-     */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool {
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         return parent::evaluate(
             Args::getResponse($other),
             $description,
@@ -100,7 +97,7 @@ class Response extends Constraint {
             $description[] = $this->getResponseDescription($other);
         }
 
-        $description = array_map(static function (string $text) {
+        $description = array_map(static function (string $text): string {
             return trim($text, PHP_EOL);
         }, $description);
         $description = array_unique($description);
@@ -116,16 +113,15 @@ class Response extends Constraint {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
-        return $constraint->evaluate($other, '', true);
+        return (bool) $constraint->evaluate($other, '', true);
     }
 
     protected function getResponseDescription(ResponseInterface $response): string {
         $contentType = mb_strtolower(explode(';', $response->getHeaderLine('Content-Type'))[0]);
-        $isText      = false
-            || str_starts_with($contentType, 'text/')   // text
-            || str_ends_with($contentType, '+xml')      // xml based
-            || str_ends_with($contentType, '+json')     // json based
-            || in_array($contentType, [                 // other
+        $isText      = str_starts_with($contentType, 'text/')   // text
+            || str_ends_with($contentType, '+xml')              // xml based
+            || str_ends_with($contentType, '+json')             // json based
+            || in_array($contentType, [                         // other
                 'application/json',
             ], true);
         $description = $isText

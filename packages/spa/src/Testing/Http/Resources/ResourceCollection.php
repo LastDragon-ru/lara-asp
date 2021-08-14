@@ -13,10 +13,7 @@ class ResourceCollection extends JsonSchemaWrapper {
     use WithTestData;
 
     /**
-     * @param \LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaWrapper
-     *      |\LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaFile
-     *      |\SplFileInfo
-     *      |class-string $schema
+     * @param JsonSchemaWrapper|JsonSchemaFile|SplFileInfo|class-string $schema
      */
     public function __construct(
         JsonSchemaWrapper|JsonSchemaFile|SplFileInfo|string $schema,

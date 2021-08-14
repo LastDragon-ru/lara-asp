@@ -10,9 +10,9 @@ use function is_null;
 
 abstract class Request extends FormRequest {
     /**
-     * @inheritdoc
+     * @return array<mixed>
      */
-    public function validated() {
+    public function validated(): array {
         // We need `\Illuminate\Validation\Validator::getRules()` but it doesn't
         // exists in `\Illuminate\Contracts\Validation\Validator`.
         $validator = $this->getValidatorInstance();
@@ -24,10 +24,11 @@ abstract class Request extends FormRequest {
 
         // Replace values
         foreach ($validator->getRules() as $attribute => $rules) {
-            /** @var \LastDragon_ru\LaraASP\Spa\Http\ValueProvider $provider */
-            $provider = Arr::last($rules, static function ($rule) {
+            /** @var ValueProvider|null $provider */
+            $provider  = Arr::last($rules, static function ($rule): bool {
                 return $rule instanceof ValueProvider;
             });
+            $attribute = (string) $attribute;
 
             if ($provider && Arr::has($validated, $attribute)) {
                 $value = Arr::get($validated, $attribute);

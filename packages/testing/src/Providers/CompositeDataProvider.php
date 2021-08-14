@@ -37,7 +37,7 @@ use function reset;
  */
 class CompositeDataProvider extends BaseDataProvider {
     /**
-     * @var array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider>
+     * @var array<DataProvider>
      */
     private array $providers;
 
@@ -48,7 +48,7 @@ class CompositeDataProvider extends BaseDataProvider {
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     /**
-     * @return array<\LastDragon_ru\LaraASP\Testing\Providers\DataProvider>
+     * @return array<DataProvider>
      */
     protected function getProviders(): array {
         return $this->providers;

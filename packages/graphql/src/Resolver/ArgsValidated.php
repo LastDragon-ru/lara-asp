@@ -50,7 +50,7 @@ abstract class ArgsValidated implements Arrayable, ValidatesWhenResolved {
 
     protected function createValidator(): Validator {
         $args       = $this->args->get();
-        $rules      = $this->container->call([$this, 'rules']);
+        $rules      = $this->container->call([$this, 'rules']); /** @phpstan-ignore-line */
         $messages   = $this->messages();
         $attributes = $this->attributes();
         $validator  = $this->factory->make($args, $rules, $messages, $attributes);

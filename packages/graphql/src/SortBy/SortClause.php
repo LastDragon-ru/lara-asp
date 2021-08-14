@@ -23,7 +23,7 @@ class SortClause {
     /**
      * @param array<string,mixed> $clause
      */
-    public function __construct(array $clause) {
+    final public function __construct(array $clause) {
         // Empty?
         if (!$clause) {
             throw new SortClauseEmpty();
@@ -56,12 +56,9 @@ class SortClause {
         return $this->child;
     }
 
-    /**
-     * @return array<string,mixed>|null
-     */
     public function getChildClause(): ?static {
         return $this->isRelation()
-            ? new static($this->getChild())
+            ? new static((array) $this->getChild())
             : null;
     }
 

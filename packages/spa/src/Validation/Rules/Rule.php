@@ -21,16 +21,16 @@ abstract class Rule implements RuleContract {
     // <editor-fold desc="Rule">
     // =========================================================================
     /**
-     * @inheritdoc
+     * @return array<mixed>|string
      */
-    public function message() {
+    public function message(): array|string {
         $replace     = $this->getMessageReplace();
         $variants    = $this->getMessageVariants();
         $translation = (new Collection($variants))
             ->mapWithKeys(function (string $variant) use ($replace) {
                 return [$variant => $this->translator->get($variant, $replace)];
             })
-            ->first(static function (string $value, string $key) {
+            ->first(static function (string $value, string $key): bool {
                 return $key !== $value;
             });
 

@@ -3,12 +3,13 @@
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel;
 use LastDragon_ru\LaraASP\Queue\CronableRegistrator;
 use LogicException;
 
 /**
  * @property array<string> $schedule {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} classes
- * @mixin \Illuminate\Foundation\Console\Kernel
+ * @mixin Kernel
  */
 trait ConsoleKernelWithSchedule {
     protected function schedule(Schedule $schedule): void {

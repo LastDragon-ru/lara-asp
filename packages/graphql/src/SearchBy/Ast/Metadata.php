@@ -47,7 +47,7 @@ class Metadata {
     /**
      * Determines default operators available for each scalar type.
      *
-     * @var array<string, array<string>|string>
+     * @var array<string, array<class-string<Operator>>|string>
      */
     protected array $scalars = [
         // Standard types
@@ -104,21 +104,21 @@ class Metadata {
     /**
      * Cached operators instances.
      *
-     * @var array<string,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>
+     * @var array<string,Operator>
      */
     protected array $operators = [];
 
     /**
      * Cached complex operators instances.
      *
-     * @var array<string,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>
+     * @var array<string,ComplexOperator>
      */
     protected array $complex = [];
 
     /**
      * Types definitions.
      *
-     * @var array<string,\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition>
+     * @var array<string,TypeDefinition>
      */
     protected array $definitions = [];
 
@@ -141,14 +141,14 @@ class Metadata {
     }
 
     /**
-     * @param array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>|string $operators
+     * @param array<class-string<Operator>>|string $operators
      */
     public function addScalar(string $scalar, array|string $operators): void {
         if (is_string($operators) && !$this->isScalar($operators)) {
             throw new ScalarUnknown($operators);
         }
 
-        if (is_array($operators) && empty($operators)) {
+        if (is_array($operators) && !$operators) {
             throw new ScalarNoOperators($scalar);
         }
 
@@ -156,7 +156,7 @@ class Metadata {
     }
 
     /**
-     * @return array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>
+     * @return array<Operator>
      */
     public function getScalarOperators(string $scalar, bool $nullable): array {
         // Is Scalar?
@@ -189,7 +189,7 @@ class Metadata {
     }
 
     /**
-     * @return array<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>
+     * @return array<Operator>
      */
     public function getEnumOperators(string $enum, bool $nullable): array {
         return $this->isScalar($enum)
@@ -198,7 +198,7 @@ class Metadata {
     }
 
     /**
-     * @param class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator> $class
+     * @param class-string<Operator> $class
      */
     public function getOperatorInstance(string $class): Operator {
         if (!isset($this->operators[$class])) {
@@ -224,7 +224,7 @@ class Metadata {
     }
 
     /**
-     * @param class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator> $class
+     * @param class-string<ComplexOperator> $class
      */
     public function getComplexOperatorInstance(string $class): ComplexOperator {
         if (!isset($this->complex[$class])) {
@@ -256,7 +256,7 @@ class Metadata {
     }
 
     /**
-     * @param class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition> $definition
+     * @param class-string<TypeDefinition> $definition
      */
     public function addDefinition(string $type, string $definition): void {
         // Defined?
@@ -290,17 +290,7 @@ class Metadata {
     }
 
     /**
-     * @return array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator>>
-     */
-    public function getUsedOperators(string $type): array {
-        return $this->usages[$type] ?? [];
-    }
-
-    /**
-     * @return \LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Usage<
-     *      \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator|
-     *      \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator
-     *      >
+     * @return Usage<Operator|ComplexOperator>
      */
     public function getUsage(): Usage {
         return $this->usage;

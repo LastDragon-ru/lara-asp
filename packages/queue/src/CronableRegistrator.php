@@ -53,7 +53,7 @@ class CronableRegistrator {
         }
 
         // Enabled?
-        /** @var \LastDragon_ru\LaraASP\Queue\Contracts\Cronable $job */
+        /** @var Cronable $job */
         $job        = $this->application->make($cronable);
         $config     = $this->configurator->config($job);
         $cron       = $config->get(CronableConfig::Cron);

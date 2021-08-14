@@ -3,54 +3,20 @@
 namespace LastDragon_ru\LaraASP\Testing\Mixins;
 
 use Closure;
-use Http\Factory\Guzzle\ResponseFactory;
-use Http\Factory\Guzzle\ServerRequestFactory;
-use Http\Factory\Guzzle\StreamFactory;
-use Http\Factory\Guzzle\UploadedFileFactory;
 use Illuminate\Testing\TestResponse;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode;
 use PHPUnit\Framework\Constraint\Constraint;
-use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
-use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
 /**
  * @internal
  */
 class TestResponseMixin {
-    public function getContentType(): Closure {
-        return function (): ?string {
-            /** @var \Illuminate\Testing\TestResponse $this */
-            return $this->headers->get('Content-Type');
-        };
-    }
-
-    public function toPsrResponse(): Closure {
-        return function (): ResponseInterface {
-            // Some responses (eg StreamedResponse) should be read only
-            // one time, so we should use a cloned response and cache the
-            // created PSR response (to avoid double code execution).
-
-            /** @var \Illuminate\Testing\TestResponse $this */
-            if (!isset($this->psrResponse)) {
-                $psrFactory        = new PsrHttpFactory(
-                    new ServerRequestFactory(),
-                    new StreamFactory(),
-                    new UploadedFileFactory(),
-                    new ResponseFactory(),
-                );
-                $this->psrResponse = $psrFactory->createResponse(clone $this->baseResponse);
-            }
-
-            return $this->psrResponse;
-        };
-    }
-
     public function assertThat(): Closure {
         return function (Constraint $constraint, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertThatResponse($this, $constraint, $message);
 
             return $this;
@@ -59,7 +25,7 @@ class TestResponseMixin {
 
     public function assertJsonMatchesSchema(): Closure {
         return function (JsonSchema $schema, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertJsonMatchesSchema($schema, $this->json(), $message);
 
             return $this;
@@ -68,7 +34,7 @@ class TestResponseMixin {
 
     public function assertContentType(): Closure {
         return function (string $contentType, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertThatResponse($this, new ContentType($contentType), $message);
 
             return $this;
@@ -77,7 +43,7 @@ class TestResponseMixin {
 
     public function assertStatusCode(): Closure {
         return function (int $statusCode, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
+            /** @var TestResponse $this */
             Assert::assertThatResponse($this, new StatusCode($statusCode), $message);
 
             return $this;
@@ -86,8 +52,8 @@ class TestResponseMixin {
 
     public function assertXmlMatchesSchema(): Closure {
         return function (SplFileInfo $schema, string $message = ''): TestResponse {
-            /** @var \Illuminate\Testing\TestResponse $this */
-            Assert::assertXmlMatchesSchema($schema, $this->getContent(), $message);
+            /** @var TestResponse $this */
+            Assert::assertXmlMatchesSchema($schema, (string) $this->getContent(), $message);
 
             return $this;
         };

@@ -2,8 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
+use Illuminate\Support\ServiceProvider;
+
 /**
- * @mixin \Illuminate\Support\ServiceProvider
+ * @mixin ServiceProvider
  */
 trait ProviderWithRoutes {
     use ProviderHelper;

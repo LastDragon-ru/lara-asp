@@ -2,22 +2,24 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
+use Illuminate\Container\Container as ContainerImpl;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
 
-use function app;
-
 abstract class RawMigration extends Migration {
     use RawSqlHelper;
 
+    protected Container  $container;
+    protected Filesystem $files;
+
     public function __construct(
-        protected Container|null $container = null,
-        protected Filesystem|null $files = null,
+        Container|null $container = null,
+        Filesystem|null $files = null,
     ) {
-        $this->container ??= app();
-        $this->files     ??= $this->getContainer()->make(Filesystem::class);
+        $this->container = $container ?? ContainerImpl::getInstance();
+        $this->files     = $files ?? $this->getContainer()->make(Filesystem::class);
     }
 
     // <editor-fold desc="\LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper">

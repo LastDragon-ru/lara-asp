@@ -9,6 +9,10 @@ use SplFileInfo;
 use stdClass;
 
 class OkResponse extends Response {
+    /**
+     * @param JsonSchema|class-string $resource
+     * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $content
+     */
     public function __construct(
         JsonSchema|string $resource,
         JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $content = null,

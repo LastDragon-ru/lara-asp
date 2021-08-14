@@ -1,18 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions;
 
 use Throwable;
 
 use function sprintf;
 
-class ImpossibleCreateSortClause extends SortByException {
+class FailedToCreateSearchCondition extends SearchByException {
     public function __construct(
         protected string $type,
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'Impossible to create Sort Clause for `%s`.',
+            'Impossible to create Search Condition for `%s`.',
             $this->type,
         ), $previous);
     }

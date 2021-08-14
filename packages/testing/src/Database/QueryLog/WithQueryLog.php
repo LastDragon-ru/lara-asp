@@ -5,7 +5,9 @@ namespace LastDragon_ru\LaraASP\Testing\Database\QueryLog;
 use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Application;
 use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use WeakMap;
 
 use function is_a;
@@ -18,13 +20,13 @@ use function sprintf;
  * @required {@link \Illuminate\Foundation\Testing\TestCase}
  * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
  *
- * @property-read \Illuminate\Foundation\Application $app
+ * @property-read Application $app
  *
- * @mixin \PHPUnit\Framework\TestCase
+ * @mixin TestCase
  */
 trait WithQueryLog {
     /**
-     * @var \WeakMap<\Illuminate\Database\Connection, \LastDragon_ru\LaraASP\Testing\Database\QueryLog\QueryLog>
+     * @var WeakMap<Connection, QueryLog>
      */
     private WeakMap $withQueryLogConnections;
 
@@ -34,7 +36,7 @@ trait WithQueryLog {
 
     protected function tearDownWithQueryLog(): void {
         foreach ($this->withQueryLogConnections as $connection => $log) {
-            /** @var \Illuminate\Database\Connection $connection */
+            /** @var Connection $connection */
             $connection->disableQueryLog();
             $connection->flushQueryLog();
         }
@@ -43,12 +45,7 @@ trait WithQueryLog {
     }
 
     /**
-     * @param \Illuminate\Database\Connection
-     *          |\Illuminate\Database\ConnectionResolverInterface
-     *          |\Illuminate\Database\Eloquent\Model
-     *          |class-string<\Illuminate\Database\Eloquent\Model>
-     *          |string
-     *          |null $connection
+     * @param Connection|ConnectionResolverInterface|Model|class-string<Model>|string|null $connection
      */
     protected function getQueryLog(ConnectionResolverInterface|Connection|Model|string $connection = null): QueryLog {
         // Normalize connection

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
@@ -23,9 +24,9 @@ class TestCase extends PackageTestCase {
     use GraphQLAssertions;
 
     /**
-     * @inheritdoc
+     * @return array<class-string<ServiceProvider>>
      */
-    protected function getPackageProviders($app): array {
+    protected function getPackageProviders(mixed $app): array {
         return [
             Provider::class,
             LighthouseServiceProvider::class,

@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LogicException;
 use stdClass;
 
+use function is_string;
 use function sprintf;
 
 /**
@@ -28,13 +29,19 @@ class ModelHelperTest extends TestCase {
      * @covers ::getRelation
      *
      * @dataProvider dataProviderGetRelation
+     *
+     * @param Exception|class-string $expected
      */
     public function testGetRelation(Exception|string $expected, Closure $model, string $name): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 
-        $this->assertInstanceOf($expected, (new ModelHelper($model()))->getRelation($name));
+        $actual = (new ModelHelper($model()))->getRelation($name);
+
+        if (is_string($expected)) {
+            $this->assertInstanceOf($expected, $actual);
+        }
     }
     // </editor-fold>
 
@@ -102,6 +109,7 @@ class ModelHelperTest__Model extends Model {
     /**
      * @noinspection  PhpMissingReturnTypeInspection
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint
+     * @phpstan-ignore-next-line Required for test
      */
     public function noTypeHint() {
         return $this->belongsTo(self::class);

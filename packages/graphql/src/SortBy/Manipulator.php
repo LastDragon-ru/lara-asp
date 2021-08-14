@@ -6,11 +6,11 @@ use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\ImpossibleCreateSortClause;
-
-use function tap;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClauseForField;
 
 class Manipulator extends AstManipulator {
     // <editor-fold desc="API">
@@ -31,7 +31,7 @@ class Manipulator extends AstManipulator {
         }
 
         if (!($type instanceof ListTypeNode)) {
-            throw new ImpossibleCreateSortClause($this->getNodeTypeName($node));
+            throw new FailedToCreateSortClause($this->getNodeTypeName($node));
         }
 
         // Update
@@ -74,7 +74,7 @@ class Manipulator extends AstManipulator {
             : $node->fields;
 
         foreach ($fields as $field) {
-            /** @var \GraphQL\Language\AST\InputValueDefinitionNode|\GraphQL\Type\Definition\InputObjectField $field */
+            /** @var InputValueDefinitionNode|InputObjectField $field */
 
             // Is supported?
             $fieldDefinition = Directive::TypeDirection;
@@ -92,13 +92,15 @@ class Manipulator extends AstManipulator {
             if ($field instanceof InputValueDefinitionNode) {
                 // TODO [SortBy] We probably not need all directives from the
                 //      original Input type, but cloning is the easiest way...
-                $type->fields[] = tap(
-                    $field->cloneDeep(),
-                    static function (InputValueDefinitionNode $field) use ($fieldDefinition, $description): void {
-                        $field->type        = Parser::typeReference($fieldDefinition);
-                        $field->description = Parser::description("\"\"\"{$description}\"\"\"");
-                    },
-                );
+                $clone = $field->cloneDeep();
+
+                if ($clone instanceof InputValueDefinitionNode) {
+                    $clone->type        = Parser::typeReference($fieldDefinition);
+                    $clone->description = Parser::description("\"\"\"{$description}\"\"\"");
+                    $type->fields[]     = $clone;
+                } else {
+                    throw new FailedToCreateSortClauseForField($this->getNodeName($node), $field->name->value);
+                }
             } else {
                 $type->fields[] = Parser::inputValueDefinition(
                     <<<DEF

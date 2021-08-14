@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\ObjectType;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
@@ -28,7 +29,6 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use Nuwave\Lighthouse\Exceptions\DefinitionException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use ReflectionMethod;
@@ -75,9 +75,8 @@ class DirectiveTest extends TestCase {
         // Collect
         $operators = [];
 
-        /** @var \GraphQL\Type\Definition\ObjectType $query */
         foreach ($query->getFields() as $field) {
-            $node       = $field->getArg('where')->astNode;
+            $node       = $field->getArg('where')?->astNode;
             $directives = $locator->associatedOfType($node, Directive::class);
 
             $this->assertCount(1, $directives);
@@ -165,8 +164,7 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      */
     public function testManipulateArgDefinitionUnknownType(): void {
-        $this->expectException(DefinitionException::class);
-        $this->expectExceptionMessage('Lighthouse failed while trying to load a type: UnknownType');
+        $this->expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
 
         $this->printGraphQLSchema($this->getTestData()->file('~unknown.graphql'));
     }
@@ -221,7 +219,7 @@ class DirectiveTest extends TestCase {
             }
         };
 
-        $this->assertNotNull($directive->handleBuilder($builder, $input));
+        $this->assertEquals($expected, (bool) $directive->handleBuilder($builder, $input));
     }
 
     // </editor-fold>

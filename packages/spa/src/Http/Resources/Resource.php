@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use DateTimeInterface;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -31,8 +32,10 @@ abstract class Resource extends JsonResource implements SafeResource {
     // =========================================================================
     /**
      * @inheritdoc
+     *
+     * @return array<mixed>|Arrayable|JsonSerializable
      */
-    public function toArray($request): array {
+    public function toArray($request): mixed {
         if ($this->resource instanceof Model) {
             throw new LogicException(
                 'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',
@@ -44,20 +47,26 @@ abstract class Resource extends JsonResource implements SafeResource {
 
     /**
      * @inheritdoc
+     *
+     * @return array<mixed>
      */
     public function with($request): array {
         return $this->mapResourceData(parent::with($request), []);
     }
 
     /**
-     * @inheritdoc
+     * @param array<mixed> $data
      */
-    public function additional(array $data): self {
+    public function additional(array $data): static {
         return parent::additional($this->mapResourceData($data, []));
     }
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
      */
     protected function filter($data): array {
         // Why do we need this? Resources can contain different types, and we
@@ -76,6 +85,8 @@ abstract class Resource extends JsonResource implements SafeResource {
 
     /**
      * @inheritdoc
+     *
+     * @return AnonymousResourceCollection<mixed>
      */
     public static function collection($resource): AnonymousResourceCollection {
         // TODO [spa]: I'm definitely not sure that we need to support $preserveKeys

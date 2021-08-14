@@ -39,10 +39,9 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     // <editor-fold desc="\Illuminate\Contracts\Support\DeferrableProvider">
     // =========================================================================
     /**
-     * @inheritdoc
-     * @noinspection PhpMissingReturnTypeInspection
+     * @return array<string>
      */
-    public function provides() {
+    public function provides(): array {
         return [...parent::provides(), 'migrator', 'command.seeder.make', RawMigrationCreator::class];
     }
     // </editor-fold>

@@ -3,10 +3,11 @@
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 use Illuminate\Contracts\Foundation\CachesConfiguration;
+use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 
 /**
- * @mixin \Illuminate\Support\ServiceProvider
+ * @mixin ServiceProvider
  */
 trait ProviderWithConfig {
     use ProviderHelper;

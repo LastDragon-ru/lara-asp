@@ -4,13 +4,14 @@ namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 use Closure;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use ReflectionClass;
 
 use function dirname;
 use function ltrim;
 
 /**
- * @mixin \Illuminate\Support\ServiceProvider
+ * @mixin ServiceProvider
  */
 trait ProviderHelper {
     /**
@@ -23,7 +24,7 @@ trait ProviderHelper {
      */
     protected function getPath(string $path): string {
         $class = new ReflectionClass(self::class);
-        $path  = dirname($class->getFileName()).'/'.ltrim($path, '/');
+        $path  = dirname((string) $class->getFileName()).'/'.ltrim($path, '/');
 
         return $path;
     }

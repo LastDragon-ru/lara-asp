@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Mixins;
 use Illuminate\Testing\TestResponse;
 use LastDragon_ru\LaraASP\Testing\Assertions\JsonAssertions;
 use LastDragon_ru\LaraASP\Testing\Assertions\XmlAssertions;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory;
 use PHPUnit\Framework\Assert as PHPUnitAssert;
 use PHPUnit\Framework\Constraint\Constraint;
 
@@ -23,6 +24,6 @@ class Assert extends PHPUnitAssert {
         Constraint $constraint,
         string $message = '',
     ): void {
-        static::assertThat($response->toPsrResponse(), $constraint, $message);
+        static::assertThat(Factory::make($response), $constraint, $message);
     }
 }

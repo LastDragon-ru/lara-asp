@@ -3,34 +3,35 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
 
 use Exception;
-
-use function tap;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model|Pivot
  */
 trait SaveOrThrow {
     /**
-     * @inheritdoc
+     * @param array<mixed> $options
      */
-    public function save(array $options = []) {
-        /** @noinspection PhpUndefinedClassInspection */
-        return tap(parent::save($options), static function (bool $result): void {
-            if (!$result) {
-                throw new Exception('An unknown error occurred while saving the model.');
-            }
-        });
+    public function save(array $options = []): bool {
+        $result = parent::save($options);
+
+        if (!$result) {
+            throw new Exception('An unknown error occurred while saving the model.');
+        }
+
+        return $result;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function delete() {
-        /** @noinspection PhpUndefinedClassInspection */
-        return tap(parent::delete(), static function (?bool $result): void {
-            if ($result === false) {
-                throw new Exception('An unknown error occurred while deleting the model.');
-            }
-        });
+    /* @phpstan-ignore-next-line `Model::delete()` and `Pivot::::delete()` return different types. */
+    public function delete(): bool|int|null {
+        /** @var bool|int|null $result */
+        $result = parent::delete();
+
+        if ($result === false) {
+            throw new Exception('An unknown error occurred while deleting the model.');
+        }
+
+        return $result;
     }
 }

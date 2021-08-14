@@ -5,11 +5,9 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
 
 use function in_array;
 use function is_string;
-use function is_subclass_of;
 
 class SeederService {
     /**
@@ -46,18 +44,15 @@ class SeederService {
         return $seeded;
     }
 
+    /**
+     * @param class-string<Model>|Model $model
+     */
     public function isModelSeeded(string|Model $model): bool {
-        if (is_string($model) && is_subclass_of($model, Model::class, true)) {
+        if (is_string($model)) {
             $model = new $model();
         }
 
-        if ($model instanceof Model) {
-            $model = $model->getTable();
-        } else {
-            throw new InvalidArgumentException('The `$target` should be model or model class name.');
-        }
-
-        return $this->isTableSeeded($model);
+        return $this->isTableSeeded($model->getTable());
     }
 
     public function isTableSeeded(string $table): bool {

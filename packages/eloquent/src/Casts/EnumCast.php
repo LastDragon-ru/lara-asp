@@ -15,7 +15,7 @@ use function sprintf;
 
 class EnumCast implements CastsAttributes {
     /**
-     * @param class-string<\LastDragon_ru\LaraASP\Eloquent\Enum> $enum
+     * @param class-string<Enum> $enum
      */
     public function __construct(
         protected string $enum,
@@ -25,6 +25,8 @@ class EnumCast implements CastsAttributes {
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $attributes
      */
     public function get($model, string $key, $value, array $attributes): ?Enum {
         if (is_null($value) || $value instanceof $this->enum) {
@@ -44,6 +46,8 @@ class EnumCast implements CastsAttributes {
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $attributes
      */
     public function set($model, string $key, $value, array $attributes): string|int|null {
         if (!is_null($value)) {

@@ -20,14 +20,12 @@ use function is_string;
  * Queueable configurator.
  */
 class QueueableConfigurator {
-    protected Container   $container;
-    protected Repository  $config;
-    protected DateFactory $dateFactory;
+    protected Container  $container;
+    protected Repository $config;
 
-    public function __construct(Container $container, Repository $config, DateFactory $dateFactory) {
-        $this->dateFactory = $dateFactory;
-        $this->container   = $container;
-        $this->config      = $config;
+    public function __construct(Container $container, Repository $config) {
+        $this->container = $container;
+        $this->config    = $config;
     }
 
     public function config(ConfigurableQueueable $queueable): QueueableConfig {
@@ -50,9 +48,9 @@ class QueueableConfigurator {
         $novalue    = __METHOD__;
         $properties = array_keys($this->getQueueableProperties());
         $preparers  = [
-            'retryUntil' => function ($value): ?DateTimeInterface {
+            'retryUntil' => static function ($value): ?DateTimeInterface {
                 if (is_string($value)) {
-                    $value = $this->dateFactory->now()->add($value);
+                    $value = DateFactory::now()->add($value);
                 }
 
                 return $value;
@@ -71,7 +69,7 @@ class QueueableConfigurator {
     }
 
     /**
-     * @inheritdoc
+     * @return array<string, mixed>
      */
     protected function getQueueableProperties(): array {
         // TODO [laravel] [update] Check available queue properties.

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
 interface TypeDefinitionProvider {
     /**
-     * @return array<string,class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition>>
+     * @return array<string,class-string<TypeDefinition>>
      */
     public function getDefinitions(): array;
 }

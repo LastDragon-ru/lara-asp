@@ -7,13 +7,15 @@ use Illuminate\Contracts\Container\Container;
 use LogicException;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
+use Mockery\MockInterface;
 use OutOfBoundsException;
+use PHPUnit\Framework\TestCase;
 
 use function sprintf;
 
 trait Override {
     /**
-     * @var array<class-string,\Mockery\MockInterface>
+     * @var array<class-string,MockInterface>
      */
     private array $overrides = [];
 
@@ -33,10 +35,10 @@ trait Override {
     /**
      * @template T
      *
-     * @param class-string<T> $class
-     * @param null|\Closure(T|\Mockery\MockInterface, \Tests\TestCase): T $factory
+     * @param class-string<T>                                           $class
+     * @param null|(Closure(T&MockInterface, TestCase):T&MockInterface) $factory
      *
-     * @return T|\Mockery\MockInterface
+     * @return T&MockInterface
      */
     protected function override(string $class, Closure $factory = null): mixed {
         // Overridden?
@@ -59,7 +61,10 @@ trait Override {
             return $mock;
         });
 
-        $this->getContainer()->bind($class, Closure::fromCallable($this->overrides[$class]));
+        $this->getContainer()->bind(
+            $class,
+            Closure::fromCallable($this->overrides[$class]),
+        );
 
         // Return
         return $mock;

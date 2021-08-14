@@ -2,8 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
+use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory as ResponseFactory;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 
 /**
@@ -18,15 +20,17 @@ class ValidationErrorResponseTest extends TestCase {
      *
      * @dataProvider dataProviderEvaluate
      *
-     * @param array<string,string> $rules
+     * @param array<string,string>      $rules
      * @param array<string,string>|null $errors
      */
     public function testEvaluate(bool $expected, array $rules, ?array $errors): void {
-        Route::get(__FUNCTION__, static function (Request $request) use ($rules) {
-            return $request->validate($rules);
+        Route::get(__FUNCTION__, function (Request $request) use ($rules) {
+            return $this->app
+                ->make(ValidatorFactory::class)
+                ->validate($request->all(), $rules);
         });
 
-        $response   = $this->getJson(__FUNCTION__)->toPsrResponse();
+        $response   = ResponseFactory::make($this->getJson(__FUNCTION__));
         $constraint = new ValidationErrorResponse($errors);
 
         $this->assertEquals($expected, $constraint->evaluate($response, '', true));

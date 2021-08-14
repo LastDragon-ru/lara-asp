@@ -37,7 +37,7 @@ class TemplateTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array<string|null, string, array<string,string>>>
+     * @return array<string,array{string|Exception, string, array<string,string>}>
      */
     public function dataProviderBuild(): array {
         return [

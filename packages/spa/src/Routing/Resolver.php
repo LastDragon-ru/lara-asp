@@ -41,7 +41,7 @@ abstract class Resolver {
     /**
      * Returns value.
      *
-     * @throws \LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException
+     * @throws UnresolvedValueException
      */
     public function get(mixed $value, Request $request = null, Route $route = null): mixed {
         $route      = $route ?: $this->router->getCurrentRoute();
@@ -62,7 +62,7 @@ abstract class Resolver {
     /**
      * Returns the value (used while substituting bindings)
      *
-     * @throws \LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException
+     * @throws UnresolvedValueException
      */
     public function bind(mixed $value, Route $route): mixed {
         return $this->get($value, null, $route);

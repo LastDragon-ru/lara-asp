@@ -20,16 +20,19 @@ class SmartMigrator extends Migrator {
     // <editor-fold desc="\Illuminate\Database\Migrations\Migrator">
     // =========================================================================
     /**
-     * @inheritdoc
-     * @noinspection PhpMissingReturnTypeInspection
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+     *
+     * @param array<mixed>|string $paths
+     *
+     * @return array<string>
      */
-    public function getMigrationFiles($paths) {
+    public function getMigrationFiles($paths): array {
         if (is_string($paths)) {
             $paths = [$paths];
         }
 
         foreach ($paths as $path) {
-            foreach (Finder::create()->in($path)->directories() as $dir) {
+            foreach (Finder::create()->in((string) $path)->directories() as $dir) {
                 $paths[] = $dir->getPathname();
             }
         }

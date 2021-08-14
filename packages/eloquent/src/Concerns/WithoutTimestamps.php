@@ -2,8 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 trait WithoutTimestamps {
     /**

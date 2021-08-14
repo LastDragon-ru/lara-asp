@@ -34,10 +34,14 @@ class EventsDispatcher extends Dispatcher {
      * make impossible create configurable event listeners so we need to fix it.
      *
      * @see          https://github.com/laravel/framework/issues/25272
-     * @noinspection PhpMissingReturnTypeInspection
+     *
      * @inheritdoc
+     *
+     * @param array<mixed> $arguments
+     *
+     * @return array<mixed>
      */
-    protected function createListenerAndJob($class, $method, $arguments) {
+    protected function createListenerAndJob($class, $method, $arguments): array {
         $listener = $this->container->make($class);
         $options  = $this->propagateListenerOptions(
             $listener,

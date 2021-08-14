@@ -30,6 +30,8 @@ class EloquentModelComparator extends ObjectComparator {
 
     /**
      * @inheritdoc
+     *
+     * @param array<mixed> $processed
      */
     public function assertEquals(
         $expected,
@@ -38,7 +40,7 @@ class EloquentModelComparator extends ObjectComparator {
         $canonicalize = false,
         $ignoreCase = false,
         array &$processed = [],
-    ) {
+    ): void {
         // If classes different we just call parent to fail
         if (!($actual instanceof Model) || !($expected instanceof Model) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
@@ -75,6 +77,9 @@ class EloquentModelComparator extends ObjectComparator {
 
         // Normalize attributes
         foreach ($model->getAttributes() as $key => $value) {
+            // Just for the ... phpstan.
+            $key = (string) $key;
+
             // This will force Laravel to convert properties into the right types.
             $model->setAttribute($key, $model->getAttribute($key));
 

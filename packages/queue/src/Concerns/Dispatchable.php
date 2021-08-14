@@ -11,13 +11,13 @@ trait Dispatchable {
     use WithInitialization;
 
     public function dispatch(): PendingDispatch {
-        return $this->ifInitialized(function () {
+        return $this->ifInitialized(function (): PendingDispatch {
             return new PendingDispatch($this);
         });
     }
 
     public function run(): mixed {
-        return $this->ifInitialized(function () {
+        return $this->ifInitialized(function (): PendingDispatch {
             return app(Dispatcher::class)->dispatchNow($this);
         });
     }

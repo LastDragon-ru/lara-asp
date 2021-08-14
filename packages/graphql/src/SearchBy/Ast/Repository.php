@@ -8,7 +8,7 @@ use WeakMap;
 
 class Repository {
     /**
-     * @var \WeakMap<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata>
+     * @var WeakMap<Metadata>
      */
     protected WeakMap $map;
 

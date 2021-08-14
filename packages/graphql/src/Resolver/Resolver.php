@@ -31,10 +31,10 @@ class Resolver {
     ): mixed {
         try {
             // Bind
-            $this->container->bind(Root::class, static function () use ($root) {
+            $this->container->bind(Root::class, static function () use ($root): Root {
                 return new Root($root);
             });
-            $this->container->bind(Args::class, static function () use ($args) {
+            $this->container->bind(Args::class, static function () use ($args): Args {
                 return new Args($args);
             });
 
