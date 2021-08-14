@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
 
 use function in_array;
 use function is_string;
