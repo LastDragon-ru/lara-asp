@@ -1,4 +1,4 @@
-name: PHP Code Sniffer
+name: PHP Stan
 
 on:
   push:
@@ -32,8 +32,8 @@ jobs:
         run: |
           echo "::set-output name=value::$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | join(", ")' -r -c composer.json)"
 
-  php-code-sniffer:
-    name: "Check"
+  php-stan-analyze:
+    name: "Analyze"
     runs-on: ubuntu-latest
     needs:
       - settings
@@ -47,9 +47,8 @@ jobs:
         with:
           php-version: ${{ needs.settings.outputs.version }}
           extensions: ${{ needs.settings.outputs.extensions }}
-          tools: cs2pr
       - name: Install dependencies
         uses: "ramsey/composer-install@v1"
       - name: Execute
         run: |
-          vendor/bin/phpcs --report=checkstyle | cs2pr
+          vendor/bin/phpstan analyse
