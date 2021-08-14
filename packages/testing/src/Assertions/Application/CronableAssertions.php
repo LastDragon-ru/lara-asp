@@ -44,7 +44,7 @@ trait CronableAssertions {
 
         $message  = $message ?: sprintf('The `%s` is not registered as scheduled job.', $cronable);
         $schedule = $this->app->make(Schedule::class);
-        $events   = array_filter($schedule->events(), static function (Event $event) use ($cronable): bool {
+        $events   = array_filter((array) $schedule->events(), static function (Event $event) use ($cronable): bool {
             return str_contains($event->description ?? '', $cronable);
         });
 
