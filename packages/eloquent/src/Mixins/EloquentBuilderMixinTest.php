@@ -35,7 +35,7 @@ class EloquentBuilderMixinTest extends TestCase {
     }
 
     /**
-     * @covers ::iterator
+     * @covers ::getChunkedIterator
      */
     public function testIterator(): void {
         $actual = null;
@@ -43,10 +43,10 @@ class EloquentBuilderMixinTest extends TestCase {
             // empty
         };
 
-        $this->assertTrue(Builder::hasGlobalMacro('iterator'));
+        $this->assertTrue(Builder::hasGlobalMacro('getChunkedIterator'));
 
         try {
-            $actual = $model->query()->iterator();
+            $actual = $model->query()->getChunkedIterator();
         } catch (Exception) {
             // empty
         }
@@ -55,7 +55,7 @@ class EloquentBuilderMixinTest extends TestCase {
     }
 
     /**
-     * @covers ::changeSafeIterator
+     * @covers ::getChangeSafeIterator
      */
     public function testChangeSafeIterator(): void {
         $actual = null;
@@ -63,10 +63,10 @@ class EloquentBuilderMixinTest extends TestCase {
             // empty
         };
 
-        $this->assertTrue(Builder::hasGlobalMacro('changeSafeIterator'));
+        $this->assertTrue(Builder::hasGlobalMacro('getChangeSafeIterator'));
 
         try {
-            $actual = $model->query()->changeSafeIterator();
+            $actual = $model->query()->getChangeSafeIterator();
         } catch (Exception) {
             // empty
         }

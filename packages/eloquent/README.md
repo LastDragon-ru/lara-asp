@@ -26,7 +26,7 @@ $query->chunk(100, function ($users) {
     }
 });
 
-foreach ($query->iterator() as $user) {
+foreach ($query->getChunkedIterator() as $user) {
     // ...
 }
 ```
@@ -36,11 +36,11 @@ Iterators also support limit/offset, by default it will try to get them from the
 ```php
 $query = \App\Models\User::query()->offset(10)->limit(20);
 
-foreach ($query->iterator() as $user) {
+foreach ($query->getChunkedIterator() as $user) {
     // ... 20 items from 10 
 }
 
-foreach ($query->iterator()->setOffset(0) as $user) {
+foreach ($query->getChunkedIterator()->setOffset(0) as $user) {
     // ...20 items from 0
 }
 ```
@@ -58,7 +58,7 @@ To create a change safe instance you can use:
 ```php
 $query = \App\Models\User::query();
 
-foreach ($query->changeSafeIterator() as $user) {
+foreach ($query->getChangeSafeIterator() as $user) {
     // ...
 }
 ```
@@ -69,8 +69,8 @@ foreach ($query->changeSafeIterator() as $user) {
 
 Name                  | Description
 --------------------- | ----
-`iterator()`          | Create [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) instance.
-`changeSafeIterator()`| Create [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) instance.
+`getChunkedIterator()`| Return [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) instance.
+`getChunkedIterator()`| Return [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) instance.
 
 ## `\Illuminate\Database\Eloquent\Builder`
 

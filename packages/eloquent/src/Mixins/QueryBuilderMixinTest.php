@@ -20,18 +20,18 @@ class QueryBuilderMixinTest extends TestCase {
     }
 
     /**
-     * @covers ::iterator
+     * @covers ::getChunkedIterator
      */
     public function testIteratorQueryBuilder(): void {
-        $this->assertTrue(Builder::hasMacro('iterator'));
-        $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->iterator());
+        $this->assertTrue(Builder::hasMacro('getChunkedIterator'));
+        $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->getChunkedIterator());
     }
 
     /**
-     * @covers ::changeSafeIterator
+     * @covers ::getChangeSafeIterator
      */
     public function testChangeSafeIteratorQueryBuilder(): void {
-        $this->assertTrue(Builder::hasMacro('changeSafeIterator'));
-        $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->changeSafeIterator());
+        $this->assertTrue(Builder::hasMacro('getChangeSafeIterator'));
+        $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->getChangeSafeIterator());
     }
 }

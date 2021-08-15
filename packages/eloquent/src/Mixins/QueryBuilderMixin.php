@@ -21,7 +21,7 @@ class QueryBuilderMixin {
         };
     }
 
-    public function iterator(): Closure {
+    public function getChunkedIterator(): Closure {
         return function (int $chunk = null): ChunkedIterator {
             /** @var Builder $this */
             $iterator = new ChunkedIterator($this);
@@ -34,7 +34,7 @@ class QueryBuilderMixin {
         };
     }
 
-    public function changeSafeIterator(): Closure {
+    public function getChangeSafeIterator(): Closure {
         return function (int $chunk = null, string $column = null): ChunkedChangeSafeIterator {
             /** @var Builder $this */
             $iterator = new ChunkedChangeSafeIterator($this, $column);
