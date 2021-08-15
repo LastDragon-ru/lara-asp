@@ -1,3 +1,32 @@
+## [0.7.0](https://github.com/LastDragon-ru/lara-asp/compare/0.6.1...0.7.0) (2021-08-15)
+
+☣ | Breaking changes
+:---: | :---
+
+### Features
+
+* **eloquent:** `iterator()` and `changeSafeIterator()` builder's macros renamed to `getChunkedIterator()` and `getChangeSafeIterator()` accordingly. ([c1140a4](https://github.com/LastDragon-ru/lara-asp/commit/c1140a49ce688241aad701a6c4e67561de4d1447)) ☣
+* **eloquent:** Iterators will support offset, `each()` replaced by `onAfterChunk()`, also added `onBeforeChunk()`. ([4276a2c](https://github.com/LastDragon-ru/lara-asp/commit/4276a2c259661296df2ab5f93921c23b4a1aea22)) ☣
+* **graphql:** `@searchBy`: short-named operators (`lt`, `lte`, etc) renamed into full form (`lessThan`, etc). ([be2d5f8](https://github.com/LastDragon-ru/lara-asp/commit/be2d5f824fb5642d7ef5dac2081c2ce76e15ac79)) ☣
+* **graphql:** `@searchBy`: Relation will use `notExists` instead of `not` + added `exists`. ([63072fa](https://github.com/LastDragon-ru/lara-asp/commit/63072fafa46d6c63eb17d539b5a9f04a98124efd)) ☣
+* **grapqhl:** `@sortBy` exceptions rework: each error will have its own exception. Unfortunately, the commit also remove translations support. ([4f99e92](https://github.com/LastDragon-ru/lara-asp/commit/4f99e9215208fb242ddf8c271ccb545d2315f318)) ☣
+* **queue:** `CronableRegistrator` will not dispatch jobs marked as `ShouldBeUnique` if they already dispatched. ([40624e4](https://github.com/LastDragon-ru/lara-asp/commit/40624e4b9ff24652b697e714cf3bf541dce674cd))
+* **queue:** Removed DI support for `getQueueConfig()`. ([da57176](https://github.com/LastDragon-ru/lara-asp/commit/da571767429def535681d8f09bdc3d4e6cc47289)) ☣
+* **testing:** `CronableAssertions::setQueueableConfig()` will accept instance of `ConfigurableQueueable`. ([cd6430e](https://github.com/LastDragon-ru/lara-asp/commit/cd6430e835dd8fcb84a4e85e961119abfbf3ac81))
+* **testing:** `WithQueryLog::getQueryLog()` will accept `\Illuminate\Database\ConnectionResolverInterface`. ([9243d47](https://github.com/LastDragon-ru/lara-asp/commit/9243d47849c016834b21a1213f58f5400e7c9a32))
+* **testing:** Added `Override::override()` helper. ([7598390](https://github.com/LastDragon-ru/lara-asp/commit/759839045f9f4e0d97f66e8d53555e5479198c97))
+* **testing:** Added a new `WithQueryLog` trait that can work with any connection (the old one marked as deprecated). ([1f7a8c3](https://github.com/LastDragon-ru/lara-asp/commit/1f7a8c3f0a87a42c50d457b43bf70e551f914172))
+* **testing:** Removed `TestResponse::getContentType()` macro (not needed for testing). ([ebf2f6d](https://github.com/LastDragon-ru/lara-asp/commit/ebf2f6d6eee31ff1d133253f62104cf18f21c581)) ☣
+* **testing:** Removed `TestResponse::toPsrResponse()` macro, `LastDragon_ru\\LaraASP\\Testing\\Constraints\\Response\\Factory::make()` should be used instead. ([7e000da](https://github.com/LastDragon-ru/lara-asp/commit/7e000da6a2820db43e82faf2b1f0cade1ed5de37)) ☣
+
+
+### Bug Fixes
+
+* **eloquent:** `Iterator::onBeforeChunk()`/`Iterator::onAfterChunk()` will be called only for non-empty chunks. ([140825c](https://github.com/LastDragon-ru/lara-asp/commit/140825c2c59098d8664f88471d053e330c1f4f2c))
+* **graphql:** Enums registration moved to `afterResolving` callback. ([2a6288b](https://github.com/LastDragon-ru/lara-asp/commit/2a6288b8f90b584ec17bc2dac32f046c5e4defcc))
+* **migrator:** Added missed semicolon to `migration-anonymous.stub`. ([64118fa](https://github.com/LastDragon-ru/lara-asp/commit/64118fa988527329593aefe42e4889994ddbfec8))
+
+
 ### [0.6.1](https://github.com/LastDragon-ru/lara-asp/compare/0.6.0...0.6.1) (2021-06-26)
 
 
