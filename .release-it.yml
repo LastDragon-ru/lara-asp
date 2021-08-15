@@ -13,3 +13,5 @@ plugins:
     "preset": conventionalcommits
     "infile": CHANGELOG.md
     "ignoreRecommendedBump": true
+    "gitRawCommitsOpts":
+      merges: null
