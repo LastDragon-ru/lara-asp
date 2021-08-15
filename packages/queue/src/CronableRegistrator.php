@@ -6,7 +6,6 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Bus\PendingDispatch;
-use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
@@ -15,9 +14,7 @@ use Psr\Log\LoggerInterface;
 
 use function array_filter;
 use function array_merge;
-use function is_subclass_of;
 use function json_encode;
-use function sprintf;
 
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
@@ -37,16 +34,9 @@ class CronableRegistrator {
      * Register {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} as
      * scheduled job. This method shouldn't be used until the app booted.
      *
-     * @param string $cronable {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} class
+     * @param class-string<Cronable> $cronable
      */
     public function register(string $cronable): void {
-        // Cronable?
-        if (!is_subclass_of($cronable, Cronable::class, true)) {
-            throw new InvalidArgumentException(
-                sprintf('The `$cronable` must implement %s.', Cronable::class),
-            );
-        }
-
         // Registration only makes sense when the app running in console.
         if (!$this->application->runningInConsole()) {
             throw new LogicException('The application is not running in console.');

@@ -4,15 +4,12 @@ namespace LastDragon_ru\LaraASP\Queue;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
-use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 use LogicException;
 use Mockery;
 use Mockery\MockInterface;
-
-use function sprintf;
 
 /**
  * @internal
@@ -66,26 +63,15 @@ class CronableRegistratorTest extends TestCase {
     /**
      * @covers ::register
      */
-    public function testRegisterNotCronable(): void {
-        $registrator = new class() extends CronableRegistrator {
-            /** @noinspection PhpMissingParentConstructorInspection */
-            public function __construct() {
-                // empty
+    public function testRegisterNotConsole(): void {
+        $cronable    = new class() implements Cronable {
+            /**
+             * @inheritDoc
+             */
+            public function getQueueConfig(): array {
+                return [];
             }
         };
-
-        $this->expectExceptionObject(new InvalidArgumentException(
-            sprintf('The `$cronable` must implement %s.', Cronable::class),
-        ));
-
-        $registrator->register($this::class);
-    }
-
-    /**
-     * @covers ::register
-     */
-    public function testRegisterNotConsole(): void {
-        $cronable    = Mockery::mock(Cronable::class)::class;
         $application = Mockery::mock(Application::class);
         $application
             ->shouldReceive('runningInConsole')
@@ -103,7 +89,7 @@ class CronableRegistratorTest extends TestCase {
 
         $this->expectExceptionObject(new LogicException('The application is not running in console.'));
 
-        $registrator->register($cronable);
+        $registrator->register($cronable::class);
     }
 
     /**
