@@ -9,8 +9,8 @@
     "url": "https://github.com/LastDragon-ru/lara-asp"
   },
   "devDependencies": {
-    "@release-it/bumper": "^2.0.0",
-    "@release-it/conventional-changelog": "^2.0.1",
+    "@release-it/bumper": "^3.0.0",
+    "@release-it/conventional-changelog": "^3.0.1",
     "release-it": "*"
   }
 }
