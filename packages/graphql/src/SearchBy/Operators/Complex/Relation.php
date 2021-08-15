@@ -42,7 +42,7 @@ class Relation implements ComplexOperator {
         return Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Conditions for the related objects (`has()`/`doesntHave()`) for input {$type->name->value}.
+            Conditions for the related objects (`has()`/`doesntHave()`) for input {$ast->getNodeName($type)}.
 
             See also:
             * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence

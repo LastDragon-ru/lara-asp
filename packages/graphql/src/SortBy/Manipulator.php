@@ -99,7 +99,7 @@ class Manipulator extends AstManipulator {
                     $clone->description = Parser::description("\"\"\"{$description}\"\"\"");
                     $type->fields[]     = $clone;
                 } else {
-                    throw new FailedToCreateSortClauseForField($this->getNodeName($node), $field->name->value);
+                    throw new FailedToCreateSortClauseForField($this->getNodeName($node), $this->getNodeName($field));
                 }
             } else {
                 $type->fields[] = Parser::inputValueDefinition(

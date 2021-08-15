@@ -77,7 +77,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             if (!($type instanceof NamedTypeNode)) {
-                throw new FailedToCreateSearchCondition($node->name->value);
+                throw new FailedToCreateSearchCondition($this->getNodeName($node));
             }
 
             // Update
@@ -122,7 +122,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Save
-        $name = $definition->name->value;
+        $name = $this->getNodeName($definition);
 
         $this->addTypeDefinition($definition);
         $this->metadata->addType($internal, $name);
@@ -151,7 +151,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $type      = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Available conditions for input {$node->name->value} (only one property allowed at a time).
+            Available conditions for input {$this->getNodeName($node)} (only one property allowed at a time).
             """
             input {$name} {
                 {$content}
@@ -165,7 +165,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         /** @var InputValueDefinitionNode $field */
         foreach ($node->fields as $field) {
             // Name should be unique
-            $fieldName = $field->name->value;
+            $fieldName = $this->getNodeName($field);
 
             if (isset($type->fields[$fieldName])) {
                 throw new InputFieldAlreadyDefined($fieldName);
@@ -215,7 +215,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                     $clone->description = $description;
                     $type->fields[]     = $clone;
                 } else {
-                    throw new FailedToCreateSearchConditionForField($node->name->value, $fieldName);
+                    throw new FailedToCreateSearchConditionForField($this->getNodeName($node), $fieldName);
                 }
             } elseif ($fieldTypeNode) {
                 throw new NotImplemented($fieldType);
@@ -242,7 +242,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Determine supported operators
-        $enum      = $type->name->value;
+        $enum      = $this->getNodeName($type);
         $usage     = $this->metadata->getUsage()->start($name);
         $operators = $this->getEnumOperators($enum, $nullable);
 
@@ -281,7 +281,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Determine supported operators
         $usage     = $this->metadata->getUsage()->start($name);
-        $scalar    = $type->name->value;
+        $scalar    = $this->getNodeName($type);
         $operators = $this->getScalarOperators($scalar, $nullable);
 
         // Add type
@@ -313,7 +313,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         ScalarTypeDefinitionNode|EnumTypeDefinitionNode $node,
         bool $nullable,
     ): string {
-        return $operator->getDefinition($this, $node->name->value, $nullable);
+        return $operator->getDefinition($this, $this->getNodeName($node), $nullable);
     }
 
     protected function getComplexType(
@@ -346,8 +346,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
             DEF,
         );
 
-        if ($name !== $definition->name->value) {
-            throw new ComplexOperatorInvalidTypeName($operator::class, $name, $definition->name->value);
+        if ($name !== $this->getNodeName($definition)) {
+            throw new ComplexOperatorInvalidTypeName($operator::class, $name, $this->getNodeName($definition));
         }
 
         $this->removeFakeTypeDefinition($name);
@@ -376,22 +376,22 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     protected function getConditionTypeName(InputObjectTypeDefinitionNode $node): string {
-        return Directive::Name."Condition{$node->name->value}";
+        return Directive::Name."Condition{$this->getNodeName($node)}";
     }
 
     protected function getEnumTypeName(EnumTypeDefinitionNode $node, bool $nullable): string {
-        return Directive::Name."Enum{$node->name->value}".($nullable ? 'OrNull' : '');
+        return Directive::Name."Enum{$this->getNodeName($node)}".($nullable ? 'OrNull' : '');
     }
 
     protected function getScalarTypeName(ScalarTypeDefinitionNode $node, bool $nullable): string {
-        return Directive::Name."Scalar{$node->name->value}".($nullable ? 'OrNull' : '');
+        return Directive::Name."Scalar{$this->getNodeName($node)}".($nullable ? 'OrNull' : '');
     }
 
     protected function getComplexTypeName(
         InputObjectTypeDefinitionNode $node,
         ComplexOperator $operator,
     ): string {
-        $name     = $node->name->value;
+        $name     = $this->getNodeName($node);
         $operator = Str::studly($operator->getName());
 
         return Directive::Name."Complex{$operator}{$name}";
@@ -479,7 +479,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             throw new FakeTypeDefinitionUnknown($name);
         }
 
-        if (count($fake->fields) !== 1 || $fake->fields[0]->name->value !== 'fake') {
+        if (count($fake->fields) !== 1 || $this->getNodeName($fake->fields[0]) !== 'fake') {
             throw new FakeTypeDefinitionIsNotFake($name);
         }
 

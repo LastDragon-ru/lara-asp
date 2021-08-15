@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL;
 
 use Exception;
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\Type;
@@ -95,8 +96,8 @@ abstract class AstManipulator {
             : $node;
     }
 
-    protected function getNodeName(TypeDefinitionNode|Type $node): string {
-        return $node instanceof TypeDefinitionNode
+    public function getNodeName(InputValueDefinitionNode|TypeDefinitionNode|Type $node): string {
+        return $node instanceof TypeDefinitionNode || $node instanceof InputValueDefinitionNode
             ? $node->name->value
             : $node->name;
     }
