@@ -10,6 +10,8 @@
 * **graphql:** `@searchBy`: short-named operators (`lt`, `lte`, etc) renamed into full form (`lessThan`, etc). ([be2d5f8](https://github.com/LastDragon-ru/lara-asp/commit/be2d5f824fb5642d7ef5dac2081c2ce76e15ac79)) ☣
 * **graphql:** `@searchBy`: Relation will use `notExists` instead of `not` + added `exists`. ([63072fa](https://github.com/LastDragon-ru/lara-asp/commit/63072fafa46d6c63eb17d539b5a9f04a98124efd)) ☣
 * **grapqhl:** `@sortBy` exceptions rework: each error will have its own exception. Unfortunately, the commit also remove translations support. ([4f99e92](https://github.com/LastDragon-ru/lara-asp/commit/4f99e9215208fb242ddf8c271ccb545d2315f318)) ☣
+* **graphql:** `@sortBy` will support types from `TypeRegistry`. ([20f3be5](https://github.com/LastDragon-ru/lara-asp/commit/20f3be5950be758989a9a8da9b9bc998ded16cf2))
+* **graphql:** `@sortBy`: Laravel Scout support. ([4c1bb9c](https://github.com/LastDragon-ru/lara-asp/commit/4c1bb9c088266ccb55b528187730664a09998ad1))
 * **queue:** `CronableRegistrator` will not dispatch jobs marked as `ShouldBeUnique` if they already dispatched. ([40624e4](https://github.com/LastDragon-ru/lara-asp/commit/40624e4b9ff24652b697e714cf3bf541dce674cd))
 * **queue:** Removed DI support for `getQueueConfig()`. ([da57176](https://github.com/LastDragon-ru/lara-asp/commit/da571767429def535681d8f09bdc3d4e6cc47289)) ☣
 * **testing:** `CronableAssertions::setQueueableConfig()` will accept instance of `ConfigurableQueueable`. ([cd6430e](https://github.com/LastDragon-ru/lara-asp/commit/cd6430e835dd8fcb84a4e85e961119abfbf3ac81))
