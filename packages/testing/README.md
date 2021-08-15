@@ -87,15 +87,15 @@ These assertions can be used without Laravel at all (#4).
 
 Name                  | Description
 --------------------- | ----
-[`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L12) | Asserts that JSON matches schema
-[`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L18)   | Asserts that XML matches schema (XSD or Relax NG).
-[`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L22)    | Asserts that PSR Response satisfies given constraint.
+[`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L17) | Asserts that JSON matches schema
+[`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L15)   | Asserts that XML matches schema (XSD or Relax NG).
+[`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L14)    | Asserts that PSR Response satisfies given constraint.
 
 ## Laravel
 
 Name                  | Description
 --------------------- | ----
-[`assertCronableRegistered()`](./src/Assertions/Application/CronableAssertions.php#L22) | Asserts that [Cronable](../queue/README.md#cron-jobs) is registered.
+[`assertCronableRegistered()`](./src/Assertions/Application/CronableAssertions.php#L30) | Asserts that [Cronable](../queue/README.md#cron-jobs) is registered.
 
 # Laravel Response Testing
 
