@@ -42,7 +42,7 @@ parameters:
         # False positive
         # https://github.com/nunomaduro/larastan/pull/912
         # https://github.com/nunomaduro/larastan/pull/914
-        - "#^Call to an undefined method (Illuminate\\\\Database\\\\(Eloquent|Query)\\\\Builder\\|?)+\\:\\:(getDefaultKeyName|iterator|changeSafeIterator)\\(\\)\\.$#"
+        - "#^Call to an undefined method (Illuminate\\\\Database\\\\(Eloquent|Query)\\\\Builder\\|?)+\\:\\:(getDefaultKeyName|getChunkedIterator|getChangeSafeIterator)\\(\\)\\.$#"
         - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:(orderByKey|orderByKeyDesc)\\(\\)\\.$#"
 
         # False positive
