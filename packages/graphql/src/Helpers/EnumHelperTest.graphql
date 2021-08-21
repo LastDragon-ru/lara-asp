@@ -12,12 +12,12 @@ description description description description Description description
 description description description.
 """
 enum B {
-  a
-  b
+  A
+  B
 }
 
 enum EnumHelperTest__A {
-  a
+  AaA
 
   """
   Summary summary summary summary summary summary. Summary summary summary
@@ -32,7 +32,7 @@ enum EnumHelperTest__A {
   description description description description Description description
   description description description.
   """
-  b
+  BbB
 }
 
 type Query {

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Helpers;
 
 use GraphQL\Type\Definition\EnumType;
+use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Core\Enum;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
@@ -28,7 +29,7 @@ class EnumHelper extends Enum {
         ];
 
         $enum::lookup(static function (ReflectionMethod $method) use (&$definition): void {
-            $definition['values'][$method->getName()] = [
+            $definition['values'][Str::studly($method->getName())] = [
                 'value'       => $method->invoke(null)->getValue(),
                 'description' => static::description($method),
             ];

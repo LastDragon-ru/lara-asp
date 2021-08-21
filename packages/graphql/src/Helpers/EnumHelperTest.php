@@ -42,7 +42,7 @@ class EnumHelperTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class EnumHelperTest__A extends Enum {
-    public static function a(): static {
+    public static function aaA(): static {
         return static::make(__FUNCTION__);
     }
 
@@ -59,7 +59,7 @@ class EnumHelperTest__A extends Enum {
      * description description description description Description description
      * description description description.
      */
-    public static function b(): static {
+    public static function bbB(): static {
         return static::make(__FUNCTION__);
     }
 }
