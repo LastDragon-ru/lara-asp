@@ -31,6 +31,13 @@ parameters:
             paths:
                 - packages/queue/src/QueueableConfigurator.php
 
+        # PHPStan is not so smart 😥
+        # https://github.com/phpstan/phpstan/issues/3465
+        -
+            message: "#^Call to protected method serializeDate\\(\\) of class#"
+            paths:
+                - packages/eloquent/src/Concerns/WithDateSerializationTest.php
+
         # False positive
         # https://github.com/nunomaduro/larastan/issues/483
         # https://github.com/nunomaduro/larastan/pull/917

@@ -4,9 +4,11 @@ namespace LastDragon_ru\LaraASP\Eloquent;
 
 use Illuminate\Database\Eloquent\Relations\Pivot as EloquentPivot;
 use LastDragon_ru\LaraASP\Eloquent\Concerns\SaveOrThrow;
+use LastDragon_ru\LaraASP\Eloquent\Concerns\WithDateSerialization;
 use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutQueueableRelations;
 
 class Pivot extends EloquentPivot {
     use SaveOrThrow;
+    use WithDateSerialization;
     use WithoutQueueableRelations;
 }
