@@ -11,33 +11,50 @@ use ReflectionException;
 use ReflectionNamedType;
 
 use function is_a;
+use function is_string;
 use function sprintf;
 
 class ModelHelper {
-    protected bool  $builder;
-    protected Model $model;
+    private bool  $builder;
+    private Model $model;
 
-    public function __construct(Builder|Model $model) {
+    /**
+     * @param Builder|Model|class-string<Model> $model
+     */
+    public function __construct(Builder|Model|string $model) {
+        if (is_string($model)) {
+            $model = new $model();
+        }
+
         $this->builder = $model instanceof Builder;
         $this->model   = $model instanceof Builder
             ? $model->getModel()
             : $model;
     }
 
+    protected function isBuilder(): bool {
+        return $this->builder;
+    }
+
+    public function getModel(): Model {
+        return $this->model;
+    }
+
     public function getRelation(string $name): Relation {
         $relation = null;
 
         try {
-            $class = new ReflectionClass($this->model);
+            $model = $this->getModel();
+            $class = new ReflectionClass($model);
             $type  = $class->getMethod($name)->getReturnType();
 
             if ($type instanceof ReflectionNamedType && is_a($type->getName(), Relation::class, true)) {
-                if ($this->builder) {
-                    $relation = Relation::noConstraints(function () use ($name) {
-                        return $this->model->newModelInstance()->{$name}();
+                if ($this->isBuilder()) {
+                    $relation = Relation::noConstraints(static function () use ($model, $name) {
+                        return $model->newModelInstance()->{$name}();
                     });
                 } else {
-                    $relation = $this->model->{$name}();
+                    $relation = $model->{$name}();
                 }
             }
         } catch (ReflectionException) {
