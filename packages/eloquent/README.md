@@ -67,10 +67,10 @@ foreach ($query->getChangeSafeIterator() as $user) {
 
 ## `\Illuminate\Database\Query\Builder`
 
-Name                  | Description
---------------------- | ----
-`getChunkedIterator()`| Return [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) instance.
-`getChunkedIterator()`| Return [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) instance.
+Name                             | Description
+-------------------------------- | ----
+`getChunkedIterator()`           | Return [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) instance.
+`getChangeSafeIteratorIterator()`| Return [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) instance.
 
 ## `\Illuminate\Database\Eloquent\Builder`
 
