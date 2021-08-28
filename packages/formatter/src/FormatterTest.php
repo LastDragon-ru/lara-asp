@@ -116,6 +116,7 @@ class FormatterTest extends TestCase {
     public function testPercent(): void {
         $this->assertEquals('10%', $this->formatter->percent(10));
         $this->assertEquals('25%', $this->formatter->percent(24.59));
+        $this->assertEquals('24.59%', $this->formatter->percent(24.59, 2));
         $this->assertEquals("56\u{00A0}%", $this->formatter->forLocale('ru_RU')->percent(56.09));
     }
 
