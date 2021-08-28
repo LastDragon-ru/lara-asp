@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Testing\SetUpTraits;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempDirectory;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
+use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
 
 /**
@@ -23,6 +24,7 @@ abstract class TestCase extends TestbenchTestCase {
     use WithTestData;
     use WithTempFile;
     use WithTempDirectory;
+    use WithTranslations;
 
     protected function getContainer(): Container {
         return $this->app;
