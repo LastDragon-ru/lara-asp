@@ -14,7 +14,7 @@ use WeakMap;
 
 class Factory {
     /**
-     * @var WeakMap<Response,ResponseInterface>
+     * @var WeakMap<TestResponse|Response,ResponseInterface>
      */
     protected static WeakMap $cache;
 
@@ -35,7 +35,7 @@ class Factory {
     }
 
     /**
-     * @return WeakMap<Response,ResponseInterface>
+     * @return WeakMap<TestResponse|Response,ResponseInterface>
      */
     protected static function getCache(): WeakMap {
         if (!isset(static::$cache)) {

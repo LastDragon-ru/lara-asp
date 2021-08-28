@@ -28,20 +28,20 @@ trait WithQueryLog {
     /**
      * @var WeakMap<Connection, QueryLog>
      */
-    private WeakMap $withQueryLogConnections;
+    private WeakMap $withQueryLog;
 
     protected function setUpWithQueryLog(): void {
-        $this->withQueryLogConnections = new WeakMap();
+        $this->withQueryLog = new WeakMap();
     }
 
     protected function tearDownWithQueryLog(): void {
-        foreach ($this->withQueryLogConnections as $connection => $log) {
+        foreach ($this->withQueryLog as $connection => $log) {
             /** @var Connection $connection */
             $connection->disableQueryLog();
             $connection->flushQueryLog();
         }
 
-        unset($this->withQueryLogConnections);
+        unset($this->withQueryLog);
     }
 
     /**
@@ -73,11 +73,10 @@ trait WithQueryLog {
         $connection->enableQueryLog();
 
         // Exists?
-        if (!isset($this->withQueryLogConnections[$connection])) {
-            $this->withQueryLogConnections[$connection] = new QueryLog($connection);
-        }
+        $log                             = $this->withQueryLog[$connection] ?? new QueryLog($connection);
+        $this->withQueryLog[$connection] = $log;
 
         // Return
-        return $this->withQueryLogConnections[$connection];
+        return $log;
     }
 }
