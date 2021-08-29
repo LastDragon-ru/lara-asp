@@ -166,8 +166,7 @@ class Formatter {
      */
     public const Secret = 'secret';
 
-    protected Application $app;
-    private string        $locale;
+    private string $locale;
 
     /**
      * @var array<IntlDateFormatter>
@@ -179,8 +178,11 @@ class Formatter {
      */
     private array $numbersFormatters = [];
 
-    public function __construct(Application $app) {
-        $this->app    = $app;
+    public function __construct(
+        private Application $app,
+        private Repository $config,
+        private PackageTranslator $translator,
+    ) {
         $this->locale = $this->getDefaultLocale();
     }
 
@@ -190,7 +192,7 @@ class Formatter {
      * Create a new formatter for the specified locale.
      */
     public function forLocale(string $locale): static {
-        $formatter         = $this->app->make(static::class);
+        $formatter         = $this->app()->make(static::class);
         $formatter->locale = $locale;
 
         return $formatter;
@@ -203,6 +205,17 @@ class Formatter {
         return $this->locale;
     }
 
+    protected function app(): Application {
+        return $this->app;
+    }
+
+    protected function getConfig(): Repository {
+        return $this->config;
+    }
+
+    protected function getTranslator(): PackageTranslator {
+        return $this->translator;
+    }
     // </editor-fold>
 
     // <editor-fold desc="Formats">
@@ -357,40 +370,36 @@ class Formatter {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function getDefaultLocale(): string {
-        return $this->app->getLocale() ?: Locale::getDefault();
+        return $this->app()->getLocale() ?: Locale::getDefault();
     }
 
     protected function getDefaultTimezone(): string {
-        return $this->app->make(Repository::class)->get('app.timezone') ?: 'UTC';
+        return $this->getConfig()->get('app.timezone') ?: 'UTC';
     }
 
     protected function getOptions(string $type, mixed $default = null): mixed {
         $package = Package::Name;
-        $config  = $this->app->make(Repository::class);
         $key     = "{$package}.options.{$type}";
 
-        return $config->get($key, $default);
+        return $this->getConfig()->get($key, $default);
     }
 
     protected function getLocaleOptions(string $type, string $option): mixed {
         $package = Package::Name;
         $locale  = $this->getLocale();
-        $config  = $this->app->make(Repository::class);
         $pattern = null
-            ?? $config->get("{$package}.locales.{$locale}.{$type}.{$option}")
-            ?? $config->get("{$package}.all.{$type}.{$option}");
+            ?? $this->getConfig()->get("{$package}.locales.{$locale}.{$type}.{$option}")
+            ?? $this->getConfig()->get("{$package}.all.{$type}.{$option}");
 
         return $pattern;
     }
 
     /**
+     * @param array<string>|string $key
      * @param array<string, mixed> $replace
      */
-    protected function getTranslation(string $key, array $replace = []): string {
-        $translator  = $this->app->make(PackageTranslator::class);
-        $translation = $translator->get($key, $replace, $this->getLocale());
-
-        return $translation;
+    protected function getTranslation(array|string $key, array $replace = []): string {
+        return $this->getTranslator()->get($key, $replace, $this->getLocale());
     }
 
     protected function getTimezone(DateTimeZone|string $tz = null): ?DateTimeZone {
