@@ -45,7 +45,6 @@ class QueueableConfigurator {
 
     public function configure(ConfigurableQueueable $queueable): void {
         $config     = $this->config($queueable);
-        $novalue    = __METHOD__;
         $properties = array_keys($this->getQueueableProperties());
         $preparers  = [
             'retryUntil' => static function ($value): ?DateTimeInterface {
@@ -58,9 +57,8 @@ class QueueableConfigurator {
         ];
 
         foreach ($properties as $property) {
-            $value = $config->get($property, $novalue);
-
-            if ($value !== $novalue) {
+            if ($config->isRedefined($property)) {
+                $value                  = $config->get($property);
                 $queueable->{$property} = isset($preparers[$property])
                     ? $preparers[$property]($value)
                     : $value;

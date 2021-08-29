@@ -48,7 +48,7 @@ class QueueableConfigTest extends TestCase {
      *
      * @param array<mixed>|Exception $expected
      * @param array<mixed>           $appConfig
-     * @param array<mixed>           $queueableConfig
+     * @param array<string,mixed>    $queueableConfig
      */
     public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
         $container    = Container::getInstance();
@@ -64,16 +64,12 @@ class QueueableConfigTest extends TestCase {
         $properties   = $configurator->getQueueableProperties();
         $queueable    = new class($configurator, $queueableConfig) extends Job {
             /**
-             * @var array<mixed>
-             */
-            private array $config;
-
-            /**
              * @param array<string,mixed> $config
              */
-            public function __construct(QueueableConfigurator $configurator, array $config) {
-                $this->config = $config;
-
+            public function __construct(
+                QueueableConfigurator $configurator,
+                private array $config,
+            ) {
                 parent::__construct($configurator);
             }
 

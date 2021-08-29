@@ -57,6 +57,14 @@ class QueueableConfig {
     public function setting(string $key): mixed {
         return $this->get("settings.{$key}");
     }
+
+    /**
+     * @internal
+     */
+    public function isRedefined(string $key): bool {
+        return Arr::has((array) $this->global->get($this->getApplicationConfig()), $key)
+            || Arr::has($this->queueable->getQueueConfig(), $key);
+    }
     // </editor-fold>
 
     // <editor-fold desc="Functions">
