@@ -38,8 +38,10 @@ class QueryLog implements Countable {
         return $this->getConnection()->getQueryLog();
     }
 
-    public function flush(): void {
+    public function flush(): static {
         $this->getConnection()->flushQueryLog();
+
+        return $this;
     }
 
     public function count(): int {
