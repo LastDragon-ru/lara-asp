@@ -24,8 +24,6 @@ use function is_null;
  * - `onConnection()`, `onQueue()`, etc calls
  */
 class QueueableConfig {
-    public const Debug = 'debug';
-
     /**
      * @var array<string, mixed>|null
      */
@@ -81,9 +79,7 @@ class QueueableConfig {
      * @return array<string,mixed>
      */
     public function getDefaultConfig(): array {
-        return $this->properties + [
-                (string) static::Debug => false, // Not used directly, but you may use it for debug the job
-            ];
+        return $this->properties;
     }
 
     protected function getApplicationConfig(): string {

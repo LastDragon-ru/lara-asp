@@ -47,7 +47,7 @@ class CronableRegistrator {
         $job        = $this->application->make($cronable);
         $config     = $this->configurator->config($job);
         $cron       = $config->get(CronableConfig::Cron);
-        $debug      = $config->get(CronableConfig::Debug);
+        $debug      = (bool) $this->config->get('app.debug');
         $enabled    = $config->get(CronableConfig::Enabled);
         $properties = [
             'cronable' => $cronable,
@@ -77,7 +77,7 @@ class CronableRegistrator {
             ->schedule
             ->job($job)
             ->cron($cron)
-            ->description($this->getDescription($cronable, $job, $config))
+            ->description($this->getDescription($cronable, $job, $config, $debug))
             ->after(function () use ($debug, $properties): void {
                 if ($debug) {
                     $this->logger->info('Cron job was dispatched successfully.', $properties);
@@ -85,13 +85,20 @@ class CronableRegistrator {
             });
     }
 
-    protected function getDescription(string $cronable, Cronable $job, QueueableConfig $config): string {
+    /**
+     * @param class-string<Cronable> $cronable
+     */
+    protected function getDescription(
+        string $cronable,
+        Cronable $job,
+        QueueableConfig $config,
+        bool $debug = false,
+    ): string {
         $actual      = $job::class;
         $settings    = $this->getDescriptionSettings($config);
-        $overridden  = $cronable !== $actual;
         $description = $cronable;
 
-        if ($overridden && $this->config->get('app.debug')) {
+        if ($cronable !== $actual && $debug) {
             $description .= " (overridden by {$actual})";
         }
 
