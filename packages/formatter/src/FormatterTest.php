@@ -306,8 +306,8 @@ class FormatterTest extends TestCase {
      * @covers ::filesize
      */
     public function testFilesize(): void {
-        $this->assertEquals('10 bytes', $this->formatter->filesize(10));
-        $this->assertEquals('10.33 MB', $this->formatter->filesize(10 * 1024 * 1024 + 1024 * 334));
+        $this->assertEquals('10 B', $this->formatter->filesize(10));
+        $this->assertEquals('10.33 MiB', $this->formatter->filesize(10 * 1024 * 1024 + 1024 * 334));
     }
 
     /**

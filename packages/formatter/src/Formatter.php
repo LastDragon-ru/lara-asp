@@ -318,12 +318,15 @@ class Formatter {
         $bytes    = (int) $bytes;
         $unit     = 0;
         $units    = [
-            $this->getTranslation('filesize.bytes'),
-            $this->getTranslation('filesize.KB'),
-            $this->getTranslation('filesize.MB'),
-            $this->getTranslation('filesize.GB'),
-            $this->getTranslation('filesize.TB'),
-            $this->getTranslation('filesize.PB'),
+            $this->getTranslation(['filesize.B', 'B']),
+            $this->getTranslation(['filesize.KiB', 'KiB']),
+            $this->getTranslation(['filesize.MiB', 'MiB']),
+            $this->getTranslation(['filesize.GiB', 'GiB']),
+            $this->getTranslation(['filesize.TiB', 'TiB']),
+            $this->getTranslation(['filesize.PiB', 'PiB']),
+            $this->getTranslation(['filesize.EiB', 'EiB']),
+            $this->getTranslation(['filesize.ZiB', 'ZiB']),
+            $this->getTranslation(['filesize.YiB', 'YiB']),
         ];
         $decimals = $decimals ?: $this->getOptions(static::Filesize, 2);
 
