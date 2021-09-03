@@ -17,7 +17,7 @@ trait Dispatchable {
     }
 
     public function run(): mixed {
-        return $this->ifInitialized(function (): PendingDispatch {
+        return $this->ifInitialized(function (): mixed {
             return app(Dispatcher::class)->dispatchNow($this);
         });
     }
