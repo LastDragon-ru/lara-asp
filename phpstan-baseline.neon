@@ -52,6 +52,10 @@ parameters:
             message: "#^Dynamic call to static method Illuminate\\\\Foundation\\\\Application\\:\\:configurationIsCached\\(\\)\\.$#"
             paths:
                 - packages/core/src/Concerns/ProviderWithConfig.php
+        -
+            message: "#^Dynamic call to static method Symfony\\\\Component\\\\HttpFoundation\\\\Response::getContent\\(\\)\\.$#"
+            paths:
+                - packages/testing/src/Mixins/TestResponseMixin.php
 
         # False positive
         # https://github.com/nunomaduro/larastan/pull/912
