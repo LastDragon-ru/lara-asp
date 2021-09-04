@@ -2,10 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
+use Cron\CronExpression;
+use Exception;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Bus\PendingDispatch;
+use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
@@ -13,7 +16,6 @@ use LogicException;
 use Psr\Log\LoggerInterface;
 
 use function array_filter;
-use function array_merge;
 use function json_encode;
 
 use const JSON_UNESCAPED_SLASHES;
@@ -42,34 +44,25 @@ class CronableRegistrator {
             throw new LogicException('The application is not running in console.');
         }
 
-        // Enabled?
+        // Prepare
         /** @var Cronable $job */
-        $job        = $this->application->make($cronable);
-        $config     = $this->configurator->config($job);
-        $cron       = $config->get(CronableConfig::Cron);
-        $debug      = (bool) $this->config->get('app.debug');
-        $enabled    = $config->get(CronableConfig::Enabled);
-        $properties = [
-            'cronable' => $cronable,
-            'actual'   => $job::class,
-        ];
+        $job     = $this->application->make($cronable);
+        $config  = $this->configurator->config($job);
+        $cron    = $config->get(CronableConfig::Cron);
+        $enabled = $config->get(CronableConfig::Enabled);
 
-        if (!$cron || !$enabled) {
-            if ($debug) {
-                $this->logger->info('Cron job is disabled.', array_merge($properties, [
-                    'enabled' => $enabled,
-                    'cron'    => $cron,
-                ]));
+        // Enabled?
+        if (!$enabled) {
+            if ($this->isDue($cron)) {
+                $this->jobDisabled($cronable, $job, $config);
             }
 
             return;
         }
 
         // Should?
-        if (!$this->shouldDispatch($job)) {
-            if ($debug) {
-                $this->logger->info('Cron job already dispatched.', $properties);
-            }
+        if ($this->isLocked($job) && $this->isDue($cron)) {
+            $this->jobLocked($cronable, $job, $config);
         }
 
         // Register
@@ -77,28 +70,21 @@ class CronableRegistrator {
             ->schedule
             ->job($job)
             ->cron($cron)
-            ->description($this->getDescription($cronable, $job, $config, $debug))
-            ->after(function () use ($debug, $properties): void {
-                if ($debug) {
-                    $this->logger->info('Cron job was dispatched successfully.', $properties);
-                }
+            ->description($this->getDescription($cronable, $job, $config))
+            ->after(function () use ($cronable, $job, $config): void {
+                $this->jobDispatched($cronable, $job, $config);
             });
     }
 
     /**
      * @param class-string<Cronable> $cronable
      */
-    protected function getDescription(
-        string $cronable,
-        Cronable $job,
-        QueueableConfig $config,
-        bool $debug = false,
-    ): string {
+    protected function getDescription(string $cronable, Cronable $job, QueueableConfig $config): string {
         $actual      = $job::class;
         $settings    = $this->getDescriptionSettings($config);
         $description = $cronable;
 
-        if ($cronable !== $actual && $debug) {
+        if ($cronable !== $actual) {
             $description .= " (overridden by {$actual})";
         }
 
@@ -120,8 +106,16 @@ class CronableRegistrator {
         return $settings;
     }
 
-    protected function shouldDispatch(Cronable $cronable): bool {
-        return (new class($cronable) extends PendingDispatch {
+    protected function isDue(?string $cron): bool {
+        try {
+            return $cron && (new CronExpression($cron))->isDue(Date::now());
+        } catch (Exception) {
+            return false;
+        }
+    }
+
+    protected function isLocked(Cronable $cronable): bool {
+        return !(new class($cronable) extends PendingDispatch {
             public function __destruct() {
                 // empty
             }
@@ -130,5 +124,31 @@ class CronableRegistrator {
                 return parent::shouldDispatch();
             }
         })->shouldDispatch();
+    }
+
+    protected function jobLocked(string $cronable, Cronable $job, QueueableConfig $config): void {
+        $this->logger->notice('Cron job is locked.', $this->getLogContext($cronable, $job, $config));
+    }
+
+    protected function jobDisabled(string $cronable, Cronable $job, QueueableConfig $config): void {
+        $this->logger->info('Cron job is disabled.', $this->getLogContext($cronable, $job, $config));
+    }
+
+    /**
+     * @param class-string<Cronable> $cronable
+     */
+    protected function jobDispatched(string $cronable, Cronable $job, QueueableConfig $config): void {
+        $this->logger->info('Cron job was dispatched successfully.', $this->getLogContext($cronable, $job, $config));
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    protected function getLogContext(string $cronable, Cronable $job, QueueableConfig $config): array {
+        return [
+            'cronable' => $cronable,
+            'actual'   => $job::class,
+            'cron'     => $config->get(CronableConfig::Cron),
+        ];
     }
 }
