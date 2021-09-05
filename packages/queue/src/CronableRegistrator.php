@@ -13,13 +13,8 @@ use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LogicException;
 use Psr\Log\LoggerInterface;
 
-use function array_filter;
-use function json_encode;
 use function method_exists;
 use function sprintf;
-
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
 
 class CronableRegistrator {
     public function __construct(
@@ -66,40 +61,14 @@ class CronableRegistrator {
             ->job($job)
             ->cron($cron)
             ->timezone($timezone)
-            ->description($this->getDescription($cronable, $job, $config))
+            ->description($this->getJobName($cronable, $job, $config))
             ->after(function () use ($cronable, $job, $config): void {
                 $this->jobDispatched($cronable, $job, $config);
             });
     }
 
-    /**
-     * @param class-string<Cronable> $cronable
-     */
-    protected function getDescription(string $cronable, Cronable $job, QueueableConfig $config): string {
-        $actual      = $job::class;
-        $settings    = $this->getDescriptionSettings($config);
-        $description = $cronable;
-
-        if ($cronable !== $actual) {
-            $description .= " (overridden by {$actual})";
-        }
-
-        if ($settings) {
-            $description .= "\n".json_encode($settings, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        }
-
-        return $description;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getDescriptionSettings(QueueableConfig $config): array {
-        $settings = array_filter($config->all());
-
-        unset($settings['cron']);
-
-        return $settings;
+    protected function getJobName(string $cronable, Cronable $job, QueueableConfig $config): string {
+        return method_exists($job, 'displayName') ? $job->displayName() : $cronable;
     }
 
     protected function isDue(?string $cron): bool {
@@ -113,7 +82,6 @@ class CronableRegistrator {
     protected function jobDisabled(string $cronable, Cronable $job, QueueableConfig $config): void {
         $this->logger->info(
             sprintf('Cron job `%s` is disabled.', $this->getJobName($cronable, $job, $config)),
-            $this->getLogContext($cronable, $job, $config),
         );
     }
 
@@ -123,23 +91,6 @@ class CronableRegistrator {
     protected function jobDispatched(string $cronable, Cronable $job, QueueableConfig $config): void {
         $this->logger->info(
             sprintf('Cron job `%s` dispatched successfully.', $this->getJobName($cronable, $job, $config)),
-            $this->getLogContext($cronable, $job, $config),
         );
-    }
-
-    protected function getJobName(string $cronable, Cronable $job, QueueableConfig $config): string {
-        return method_exists($job, 'displayName') ? $job->displayName() : $cronable;
-    }
-
-    /**
-     * @return array<string,mixed>
-     */
-    protected function getLogContext(string $cronable, Cronable $job, QueueableConfig $config): array {
-        return [
-            'cronable' => $cronable,
-            'class'    => $job::class,
-            'cron'     => $config->get(CronableConfig::Cron),
-            'timezone' => $config->get(CronableConfig::Timezone),
-        ];
     }
 }
