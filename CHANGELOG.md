@@ -1,3 +1,28 @@
+## [0.8.0](https://github.com/LastDragon-ru/lara-asp/compare/0.7.0...0.8.0) (2021-09-05)
+
+☣ | Breaking changes
+:---: | :---
+
+### Features
+
+* **core:** Package `Translator` allows to specify default translation (will be used if the translation string doesn't exist). ([c9e1e5d](https://github.com/LastDragon-ru/lara-asp/commit/c9e1e5d0fc36e11686c07fc7b712474c7d3cd83d))
+* **eloquent:** New trait `WithDateSerialization` that will serialize dates that implements `JsonSerializable by `JsonSerializable::jsonSerialize()` instead of hardcoded `Carbon::toJSON()`. ([085fc47](https://github.com/LastDragon-ru/lara-asp/commit/085fc4790eb3ee4ba212fce5e3095e22c76f08e9)) ☣
+* **graphql:** `Enum` properties will be converted into studly case (to be compatible with PHP Enums). ([3a9e15a](https://github.com/LastDragon-ru/lara-asp/commit/3a9e15a514533672b312a7c88ae47f0c8bf086b7)) ☣
+* **graphql:** `ModelHelper::__construct()` accept `class-string<\Illuminate\Database\Eloquent\Model>`. ([e3d92be](https://github.com/LastDragon-ru/lara-asp/commit/e3d92be27e37af6f1c29e51a29ec7998989104a7))
+* **queue:** `CronableRegistrator` will use job name as description (= description will not contain settings anymore) and will not add context to log messages. ([04fc1ea](https://github.com/LastDragon-ru/lara-asp/commit/04fc1ea6bdb6865165ec299bcc6329c426b52b3c)) ☣
+* **queue:** Added `timezone` setting for `Cronable`. ([8810c7f](https://github.com/LastDragon-ru/lara-asp/commit/8810c7ff34dfbc22c261662274ffca819f38aec9))
+* **queue:** Removed `QueueableConfig::Debug`. ([ae9653a](https://github.com/LastDragon-ru/lara-asp/commit/ae9653aa1b62c1ea4e79fe578d5ffa3e91055739)) ☣
+* **testing:** Added `WithTranslations` helper that allows replacing translation while tests. ([5e0d4e4](https://github.com/LastDragon-ru/lara-asp/commit/5e0d4e47eca54c0d7fa29947d17641acf422fd11))
+
+
+### Bug Fixes
+
+* **formatter:** Filesize units (MB => MiB, etc). ([5fc4ba7](https://github.com/LastDragon-ru/lara-asp/commit/5fc4ba70b28195b280d966846cb0f27fdbc2fbca))
+* **queue**: TypeError : `LastDragon_ru\LaraASP\Queue\Queueables\Job::LastDragon_ru\LaraASP\Queue\Concerns\{closure}`: Return value must be of type `Illuminate\Foundation\Bus\PendingDispatch`, `null` returned. ([58e2f20](https://github.com/LastDragon-ru/lara-asp/commit/58e2f20fd5f01816e7990504255037c55515dee9))
+* **queue:** `CronableRegistrator` removed incorrect realization to check the locked status of the job. ([033de61](https://github.com/LastDragon-ru/lara-asp/commit/033de61607dad2f4c3bcd02585d8bf41b864da42))
+* **testing:** `JsonSchemaValue` will not evaluate schema in constructor (regression). ([3c51269](https://github.com/LastDragon-ru/lara-asp/commit/3c512692cf27db85b118f1623af5545be30cd5bd))
+
+
 ## [0.7.0](https://github.com/LastDragon-ru/lara-asp/compare/0.6.1...0.7.0) (2021-08-15)
 
 ☣ | Breaking changes
