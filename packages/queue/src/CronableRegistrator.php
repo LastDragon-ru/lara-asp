@@ -45,10 +45,11 @@ class CronableRegistrator {
 
         // Prepare
         /** @var Cronable $job */
-        $job     = $this->application->make($cronable);
-        $config  = $this->configurator->config($job);
-        $cron    = $config->get(CronableConfig::Cron);
-        $enabled = $config->get(CronableConfig::Enabled);
+        $job      = $this->application->make($cronable);
+        $config   = $this->configurator->config($job);
+        $cron     = $config->get(CronableConfig::Cron);
+        $enabled  = $config->get(CronableConfig::Enabled);
+        $timezone = $config->get(CronableConfig::Timezone);
 
         // Enabled?
         if (!$enabled) {
@@ -64,6 +65,7 @@ class CronableRegistrator {
             ->schedule
             ->job($job)
             ->cron($cron)
+            ->timezone($timezone)
             ->description($this->getDescription($cronable, $job, $config))
             ->after(function () use ($cronable, $job, $config): void {
                 $this->jobDispatched($cronable, $job, $config);
@@ -137,6 +139,7 @@ class CronableRegistrator {
             'cronable' => $cronable,
             'class'    => $job::class,
             'cron'     => $config->get(CronableConfig::Cron),
+            'timezone' => $config->get(CronableConfig::Timezone),
         ];
     }
 }

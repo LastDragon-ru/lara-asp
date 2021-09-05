@@ -44,6 +44,11 @@ class CronableRegistratorTest extends TestCase {
                 ->once()
                 ->andReturnSelf();
             $schedule
+                ->shouldReceive('timezone')
+                ->with('Europe/Moscow')
+                ->once()
+                ->andReturnSelf();
+            $schedule
                 ->shouldReceive('description')
                 ->once()
                 ->andReturnSelf();
@@ -54,8 +59,9 @@ class CronableRegistratorTest extends TestCase {
         });
 
         $this->setQueueableConfig($cronable, [
-            CronableConfig::Cron    => '* * * * *',
-            CronableConfig::Enabled => true,
+            CronableConfig::Cron     => '* * * * *',
+            CronableConfig::Enabled  => true,
+            CronableConfig::Timezone => 'Europe/Moscow',
         ]);
 
         $registrator = $this->app->make(CronableRegistrator::class);
