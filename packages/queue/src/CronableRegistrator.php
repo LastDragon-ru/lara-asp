@@ -15,6 +15,8 @@ use Psr\Log\LoggerInterface;
 
 use function array_filter;
 use function json_encode;
+use function method_exists;
+use function sprintf;
 
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
@@ -107,14 +109,24 @@ class CronableRegistrator {
     }
 
     protected function jobDisabled(string $cronable, Cronable $job, QueueableConfig $config): void {
-        $this->logger->info('Cron job is disabled.', $this->getLogContext($cronable, $job, $config));
+        $this->logger->info(
+            sprintf('Cron job `%s` is disabled.', $this->getJobName($cronable, $job, $config)),
+            $this->getLogContext($cronable, $job, $config),
+        );
     }
 
     /**
      * @param class-string<Cronable> $cronable
      */
     protected function jobDispatched(string $cronable, Cronable $job, QueueableConfig $config): void {
-        $this->logger->info('Cron job was dispatched successfully.', $this->getLogContext($cronable, $job, $config));
+        $this->logger->info(
+            sprintf('Cron job `%s` dispatched successfully.', $this->getJobName($cronable, $job, $config)),
+            $this->getLogContext($cronable, $job, $config),
+        );
+    }
+
+    protected function getJobName(string $cronable, Cronable $job, QueueableConfig $config): string {
+        return method_exists($job, 'displayName') ? $job->displayName() : $cronable;
     }
 
     /**
@@ -123,7 +135,7 @@ class CronableRegistrator {
     protected function getLogContext(string $cronable, Cronable $job, QueueableConfig $config): array {
         return [
             'cronable' => $cronable,
-            'actual'   => $job::class,
+            'class'    => $job::class,
             'cron'     => $config->get(CronableConfig::Cron),
         ];
     }
