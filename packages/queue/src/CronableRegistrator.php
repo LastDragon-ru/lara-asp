@@ -5,9 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue;
 use Cron\CronExpression;
 use Exception;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
@@ -24,7 +22,6 @@ use const JSON_UNESCAPED_UNICODE;
 class CronableRegistrator {
     public function __construct(
         protected Application $application,
-        protected Repository $config,
         protected Schedule $schedule,
         protected QueueableConfigurator $configurator,
         protected LoggerInterface $logger,
@@ -58,11 +55,6 @@ class CronableRegistrator {
             }
 
             return;
-        }
-
-        // Should?
-        if ($this->isLocked($job) && $this->isDue($cron)) {
-            $this->jobLocked($cronable, $job, $config);
         }
 
         // Register
@@ -112,22 +104,6 @@ class CronableRegistrator {
         } catch (Exception) {
             return false;
         }
-    }
-
-    protected function isLocked(Cronable $cronable): bool {
-        return !(new class($cronable) extends PendingDispatch {
-            public function __destruct() {
-                // empty
-            }
-
-            public function shouldDispatch(): bool {
-                return parent::shouldDispatch();
-            }
-        })->shouldDispatch();
-    }
-
-    protected function jobLocked(string $cronable, Cronable $job, QueueableConfig $config): void {
-        $this->logger->notice('Cron job is locked.', $this->getLogContext($cronable, $job, $config));
     }
 
     protected function jobDisabled(string $cronable, Cronable $job, QueueableConfig $config): void {
