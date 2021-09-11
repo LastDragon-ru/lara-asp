@@ -15,6 +15,7 @@ use PHPUnit\Framework\Assert;
 use function array_filter;
 use function count;
 use function is_object;
+use function method_exists;
 use function sprintf;
 use function str_contains;
 
@@ -37,12 +38,9 @@ trait CronableAssertions {
         ]);
 
         $message  = $message ?: sprintf('The `%s` is not registered as scheduled job.', $cronable);
-        $schedule = $this->app->make(Schedule::class);
-        $events   = array_filter((array) $schedule->events(), static function (Event $event) use ($cronable): bool {
-            return str_contains($event->description ?? '', $cronable);
-        });
+        $expected = $this->isCronableRegistered($cronable);
 
-        $this->assertEquals(1, count($events), $message);
+        $this->assertTrue($expected, $message);
     }
 
     /**
@@ -56,5 +54,20 @@ trait CronableAssertions {
         $target = [ConfigMerger::Strict => false] + (array) $config->get($key);
 
         $config->set($key, $merger->merge($target, $settings));
+    }
+
+    /**
+     * @param class-string<Cronable> $cronable
+     */
+    protected function isCronableRegistered(string $cronable): bool {
+        $schedule = $this->app->make(Schedule::class);
+        $expected = method_exists($cronable, 'displayName')
+            ? $this->app->make($cronable)->displayName()
+            : $cronable;
+        $events   = array_filter((array) $schedule->events(), static function (Event $event) use ($expected): bool {
+            return str_contains($event->description ?? '', $expected);
+        });
+
+        return count($events) === 1;
     }
 }
