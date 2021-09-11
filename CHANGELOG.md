@@ -1,3 +1,10 @@
+### [0.8.1](https://github.com/LastDragon-ru/lara-asp/compare/0.8.0...0.8.1) (2021-09-11)
+
+
+### Bug Fixes
+
+* **testing:** `CronableAssertions::assertCronableRegistered()` will correctly check registration of `Cronable`. ([a2437db](https://github.com/LastDragon-ru/lara-asp/commit/a2437dbe9eb402b54c9a1992ca2246433d45374d))
+
 ## [0.8.0](https://github.com/LastDragon-ru/lara-asp/compare/0.7.0...0.8.0) (2021-09-05)
 
 ☣ | Breaking changes
