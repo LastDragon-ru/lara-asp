@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\Factory;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use LastDragon_ru\LaraASP\Queue\Concerns\Configurable;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithInitialization;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
@@ -15,9 +14,22 @@ use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueable {
     use Queueable;
     use SerializesModels;
-    use Configurable;
     use WithConfig;
     use WithInitialization;
+
+    public function __construct() {
+        // empty
+    }
+
+    // <editor-fold desc="ConfigurableQueueable">
+    // =========================================================================
+    /**
+     * @inheritDoc
+     */
+    public function getQueueConfig(): array {
+        return [];
+    }
+    // </editor-fold>
 
     // <editor-fold desc="\Illuminate\Contracts\Mail\Mailable">
     // =========================================================================

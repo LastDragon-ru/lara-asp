@@ -62,10 +62,7 @@ class MailTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class MailTest_Mail extends Mail implements Initializable {
-    /** @noinspection PhpMissingParentConstructorInspection */
-    public function __construct() {
-        // empty
-    }
+    // empty
 }
 
 // @phpcs:enable

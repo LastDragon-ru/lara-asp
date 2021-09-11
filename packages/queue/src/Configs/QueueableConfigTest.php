@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Queue\Concerns\Configurable;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\QueueableConfigurator;
@@ -62,15 +61,14 @@ class QueueableConfigTest extends TestCase {
             }
         };
         $properties   = $configurator->getQueueableProperties();
-        $queueable    = new class($configurator, $queueableConfig) extends Job {
+        $queueable    = new class($queueableConfig) extends Job {
             /**
              * @param array<string,mixed> $config
              */
             public function __construct(
-                QueueableConfigurator $configurator,
                 private array $config,
             ) {
-                parent::__construct($configurator);
+                parent::__construct();
             }
 
             /**
@@ -235,8 +233,14 @@ class QueueableConfigTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class QueueableConfigTest_getQueueClass implements ConfigurableQueueable {
-    use Configurable;
     use WithConfig;
+
+    /**
+     * @inheritDoc
+     */
+    public function getQueueConfig(): array {
+        return [];
+    }
 }
 
 /**
