@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions;
 
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 
 class SortByDirective extends Directive {
     // Lighthouse loads all classes from directive namespace this leads to

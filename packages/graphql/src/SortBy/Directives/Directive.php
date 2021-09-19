@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
@@ -9,6 +9,8 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\DatabaseBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\ScoutBuilder as SortByScoutBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;

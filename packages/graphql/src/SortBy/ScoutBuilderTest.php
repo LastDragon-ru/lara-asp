@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\ScoutColumnResolver;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;

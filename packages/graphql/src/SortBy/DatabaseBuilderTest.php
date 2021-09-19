@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
