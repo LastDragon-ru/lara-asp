@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Database\Sorter as DatabaseSorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Scout\Sorter as ScoutSorter;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
-use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
@@ -25,7 +24,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
 
     public function __construct(
         protected Container $container,
-        protected DirectiveLocator $directives,
     ) {
         // empty
     }
