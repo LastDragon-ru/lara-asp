@@ -13,7 +13,7 @@
 ### Features
 
 * **core:** Package `Translator` allows to specify default translation (will be used if the translation string doesn't exist). ([c9e1e5d](https://github.com/LastDragon-ru/lara-asp/commit/c9e1e5d0fc36e11686c07fc7b712474c7d3cd83d))
-* **eloquent:** New trait `WithDateSerialization` that will serialize dates that implements `JsonSerializable by `JsonSerializable::jsonSerialize()` instead of hardcoded `Carbon::toJSON()`. ([085fc47](https://github.com/LastDragon-ru/lara-asp/commit/085fc4790eb3ee4ba212fce5e3095e22c76f08e9)) ☣
+* **eloquent:** New trait `WithDateSerialization` that will serialize dates that implements `JsonSerializable` by `JsonSerializable::jsonSerialize()` instead of hardcoded `Carbon::toJSON()`. ([085fc47](https://github.com/LastDragon-ru/lara-asp/commit/085fc4790eb3ee4ba212fce5e3095e22c76f08e9)) ☣
 * **graphql:** `Enum` properties will be converted into studly case (to be compatible with PHP Enums). ([3a9e15a](https://github.com/LastDragon-ru/lara-asp/commit/3a9e15a514533672b312a7c88ae47f0c8bf086b7)) ☣
 * **graphql:** `ModelHelper::__construct()` accept `class-string<\Illuminate\Database\Eloquent\Model>`. ([e3d92be](https://github.com/LastDragon-ru/lara-asp/commit/e3d92be27e37af6f1c29e51a29ec7998989104a7))
 * **queue:** `CronableRegistrator` will use job name as description (= description will not contain settings anymore) and will not add context to log messages. ([04fc1ea](https://github.com/LastDragon-ru/lara-asp/commit/04fc1ea6bdb6865165ec299bcc6329c426b52b3c)) ☣
