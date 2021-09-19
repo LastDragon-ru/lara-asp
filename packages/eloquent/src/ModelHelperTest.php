@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Helpers;
+namespace LastDragon_ru\LaraASP\Eloquent;
 
 use Closure;
 use Exception;
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
@@ -20,7 +20,7 @@ use function sprintf;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Helpers\ModelHelper
+ * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\ModelHelper
  */
 class ModelHelperTest extends TestCase {
     // <editor-fold desc="Tests">
