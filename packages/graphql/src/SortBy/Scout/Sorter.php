@@ -1,13 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Scout;
 
 use Laravel\Scout\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\ScoutColumnResolver;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\SortClause;
 
 use function implode;
 
-class ScoutBuilder {
+class Sorter {
     public function __construct(
         protected ?ScoutColumnResolver $columnResolver = null,
     ) {
@@ -19,7 +20,7 @@ class ScoutBuilder {
     /**
      * @param array<mixed> $clauses
      */
-    public function build(Builder $builder, array $clauses): Builder {
+    public function handle(Builder $builder, array $clauses): Builder {
         foreach ($clauses as $clause) {
             // Path
             $clause    = new SortClause($clause);

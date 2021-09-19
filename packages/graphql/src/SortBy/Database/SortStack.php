@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Database;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -10,7 +10,7 @@ use function array_pop;
 use function end;
 use function implode;
 
-class DatabaseSortStack {
+class SortStack {
     /**
      * @var array<array{string,Builder}>
      */

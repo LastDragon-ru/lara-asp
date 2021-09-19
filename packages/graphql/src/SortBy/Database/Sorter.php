@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Database;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,13 +13,14 @@ use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\SortClause;
 use LogicException;
 
 use function implode;
 use function in_array;
 use function is_a;
 
-class DatabaseBuilder {
+class Sorter {
     /**
      * @var array<class-string<Relation>>
      */
@@ -39,9 +40,9 @@ class DatabaseBuilder {
     /**
      * @param array<mixed> $clauses
      */
-    public function build(EloquentBuilder|QueryBuilder $builder, array $clauses): EloquentBuilder|QueryBuilder {
+    public function handle(EloquentBuilder|QueryBuilder $builder, array $clauses): EloquentBuilder|QueryBuilder {
         return $builder instanceof EloquentBuilder
-            ? $this->process($builder, new DatabaseSortStack($builder), $clauses)
+            ? $this->process($builder, new SortStack($builder), $clauses)
             : $this->process($builder, null, $clauses);
     }
     // </editor-fold>
@@ -53,7 +54,7 @@ class DatabaseBuilder {
      */
     protected function process(
         EloquentBuilder|QueryBuilder $builder,
-        DatabaseSortStack|null $stack,
+        SortStack|null $stack,
         array $clauses,
     ): EloquentBuilder|QueryBuilder {
         foreach ($clauses as $clause) {
@@ -72,7 +73,7 @@ class DatabaseBuilder {
 
     protected function processColumn(
         EloquentBuilder|QueryBuilder $builder,
-        DatabaseSortStack|null $stack,
+        SortStack|null $stack,
         string $column,
         string $direction,
     ): EloquentBuilder|QueryBuilder {
@@ -102,7 +103,7 @@ class DatabaseBuilder {
      */
     protected function processRelation(
         EloquentBuilder|QueryBuilder $builder,
-        DatabaseSortStack|null $stack,
+        SortStack|null $stack,
         string $name,
         array $clauses,
     ): EloquentBuilder|QueryBuilder {
@@ -112,7 +113,7 @@ class DatabaseBuilder {
         }
 
         // Relation?
-        $stack       ??= new DatabaseSortStack($builder);
+        $stack       ??= new SortStack($builder);
         $parentBuilder = $stack->getBuilder();
         $parentAlias   = $stack->getTableAlias();
         $relation      = $this->getRelation($parentBuilder, $name, $stack);
@@ -190,7 +191,7 @@ class DatabaseBuilder {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getRelation(EloquentBuilder $builder, string $name, DatabaseSortStack $stack): Relation {
+    protected function getRelation(EloquentBuilder $builder, string $name, SortStack $stack): Relation {
         $relation  = (new ModelHelper($builder))->getRelation($name);
         $supported = false;
 

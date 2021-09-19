@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Scout;
 
 use Closure;
 use Exception;
@@ -19,20 +19,20 @@ use function json_encode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\ScoutBuilder
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Scout\Sorter
  */
-class ScoutBuilderTest extends TestCase {
+class SorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::build
+     * @covers ::handle
      *
-     * @dataProvider dataProviderBuild
+     * @dataProvider dataProviderHandle
      *
      * @param array<mixed>|Exception $expected
      * @param array<mixed>           $clause
      */
-    public function testBuild(array|Exception $expected, array $clause, Closure $resolver = null): void {
+    public function testHandle(array|Exception $expected, array $clause, Closure $resolver = null): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
@@ -73,7 +73,7 @@ class ScoutBuilderTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderBuild(): array {
+    public function dataProviderHandle(): array {
         return [
             'empty clause'           => [
                 new SortClauseEmpty(),

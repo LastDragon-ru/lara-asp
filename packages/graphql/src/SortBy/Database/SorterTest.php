@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Database;
 
 use Closure;
 use Exception;
@@ -27,20 +27,20 @@ use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\DatabaseBuilder
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Database\Sorter
  */
-class DatabaseBuilderTest extends TestCase {
+class SorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::build
+     * @covers ::handle
      *
-     * @dataProvider dataProviderBuild
+     * @dataProvider dataProviderHandle
      *
      * @param array<mixed>|Exception $expected
      * @param array<mixed>           $clause
      */
-    public function testBuild(array|Exception $expected, Closure $builder, array $clause): void {
+    public function testHandle(array|Exception $expected, Closure $builder, array $clause): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
@@ -59,7 +59,7 @@ class DatabaseBuilderTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderBuild(): array {
+    public function dataProviderHandle(): array {
         return (new MergeDataProvider([
             'Both'     => (new CompositeDataProvider(
                 new BuilderDataProvider(),

@@ -9,9 +9,9 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\DatabaseBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Database\Sorter as DatabaseSorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\ScoutBuilder as SortByScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Scout\Sorter as ScoutSorter;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -54,10 +54,10 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @inheritdoc
      */
     public function handleBuilder($builder, mixed $value): EloquentBuilder|QueryBuilder {
-        return $this->container->make(DatabaseBuilder::class)->build($builder, $value);
+        return $this->container->make(DatabaseSorter::class)->handle($builder, $value);
     }
 
     public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {
-        return $this->container->make(SortByScoutBuilder::class)->build($builder, $value);
+        return $this->container->make(ScoutSorter::class)->handle($builder, $value);
     }
 }
