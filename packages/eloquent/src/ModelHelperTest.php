@@ -8,15 +8,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
-use LogicException;
 use stdClass;
 
 use function is_string;
-use function sprintf;
 
 /**
  * @internal
@@ -68,24 +67,15 @@ class ModelHelperTest extends TestCase {
             ]),
             new ArrayDataProvider([
                 'noTypeHint'  => [
-                    new LogicException(sprintf(
-                        'Property `%s` is not a relation.',
-                        'noTypeHint',
-                    )),
+                    new PropertyIsNotRelation(new ModelHelperTest__Model(), 'noTypeHint'),
                     'noTypeHint',
                 ],
                 'notRelation' => [
-                    new LogicException(sprintf(
-                        'Property `%s` is not a relation.',
-                        'notRelation',
-                    )),
+                    new PropertyIsNotRelation(new ModelHelperTest__Model(), 'notRelation'),
                     'notRelation',
                 ],
                 'union'       => [
-                    new LogicException(sprintf(
-                        'Property `%s` is not a relation.',
-                        'union',
-                    )),
+                    new PropertyIsNotRelation(new ModelHelperTest__Model(), 'union'),
                     'union',
                 ],
                 'ok'          => [
@@ -107,8 +97,8 @@ class ModelHelperTest extends TestCase {
  */
 class ModelHelperTest__Model extends Model {
     /**
-     * @noinspection  PhpMissingReturnTypeInspection
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint
+     * @noinspection             PhpMissingReturnTypeInspection
+     * @phpcsSuppress            SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint
      * @phpstan-ignore-next-line Required for test
      */
     public function noTypeHint() {

@@ -8,15 +8,13 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LogicException;
-
-use function sprintf;
 
 /**
  * @internal
@@ -73,10 +71,7 @@ class RelationTest extends TestCase {
                 [],
             ],
             'not a relation'                                         => [
-                new LogicException(sprintf(
-                    'Property `%s` is not a relation.',
-                    'delete',
-                )),
+                new PropertyIsNotRelation(new RelationTest__ModelA(), 'delete'),
                 static function (): EloquentBuilder {
                     return RelationTest__ModelA::query();
                 },

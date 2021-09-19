@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
@@ -22,9 +23,6 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
-use LogicException;
-
-use function sprintf;
 
 /**
  * @internal
@@ -115,10 +113,7 @@ class DatabaseBuilderTest extends TestCase {
             )),
             'Eloquent' => (new ArrayDataProvider([
                 'not a relation'     => [
-                    new LogicException(sprintf(
-                        'Property `%s` is not a relation.',
-                        'delete',
-                    )),
+                    new PropertyIsNotRelation(new SortBuilderTest__ModelA(), 'delete'),
                     static function (): EloquentBuilder {
                         return SortBuilderTest__ModelA::query();
                     },

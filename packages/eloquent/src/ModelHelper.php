@@ -5,14 +5,13 @@ namespace LastDragon_ru\LaraASP\Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use LogicException;
+use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 
 use function is_a;
 use function is_string;
-use function sprintf;
 
 class ModelHelper {
     private bool  $builder;
@@ -62,10 +61,7 @@ class ModelHelper {
         }
 
         if (!($relation instanceof Relation)) {
-            throw new LogicException(sprintf(
-                'Property `%s` is not a relation.',
-                $name,
-            ));
+            throw new PropertyIsNotRelation($this->getModel(), $name);
         }
 
         return $relation;
