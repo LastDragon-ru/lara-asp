@@ -6,7 +6,6 @@ use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\ScoutColumnResolver;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
@@ -38,7 +37,7 @@ class BuilderTest extends TestCase {
         }
 
         if ($resolver) {
-            $this->override(ScoutColumnResolver::class, $resolver);
+            $this->override(ColumnResolver::class, $resolver);
         }
 
         $directive = $this->app->make(Directive::class);
@@ -143,8 +142,8 @@ class BuilderTest extends TestCase {
                         ],
                     ],
                 ],
-                static function (): ScoutColumnResolver {
-                    return new class() implements ScoutColumnResolver {
+                static function (): ColumnResolver {
+                    return new class() implements ColumnResolver {
                         /**
                          * @inheritDoc
                          */

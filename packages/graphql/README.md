@@ -549,7 +549,7 @@ input UsersSort {
 // AppProvider
 
 $this->app->bind(
-    LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\ScoutColumnResolver::class,  
+    LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\ColumnResolver::class,  
     MyScoutColumnResolver::class,
 );
 ```

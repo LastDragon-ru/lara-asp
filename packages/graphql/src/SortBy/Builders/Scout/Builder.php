@@ -4,13 +4,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
 
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\ScoutColumnResolver;
 
 use function implode;
 
 class Builder {
     public function __construct(
-        protected ?ScoutColumnResolver $columnResolver = null,
+        protected ?ColumnResolver $columnResolver = null,
     ) {
         // empty
     }
