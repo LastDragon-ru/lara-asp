@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Scout;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
 
 use Closure;
 use Exception;
@@ -19,9 +19,9 @@ use function json_encode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Scout\Sorter
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder
  */
-class SorterTest extends TestCase {
+class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

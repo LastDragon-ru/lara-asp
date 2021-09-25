@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Database;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,16 +11,16 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\SortClause;
 use LogicException;
 
 use function implode;
 use function in_array;
 use function is_a;
 
-class Sorter {
+class Builder {
     /**
      * @var array<class-string<Relation>>
      */
@@ -42,7 +42,7 @@ class Sorter {
      */
     public function handle(EloquentBuilder|QueryBuilder $builder, array $clauses): EloquentBuilder|QueryBuilder {
         return $builder instanceof EloquentBuilder
-            ? $this->process($builder, new SortStack($builder), $clauses)
+            ? $this->process($builder, new Stack($builder), $clauses)
             : $this->process($builder, null, $clauses);
     }
     // </editor-fold>
@@ -54,11 +54,11 @@ class Sorter {
      */
     protected function process(
         EloquentBuilder|QueryBuilder $builder,
-        SortStack|null $stack,
+        Stack|null $stack,
         array $clauses,
     ): EloquentBuilder|QueryBuilder {
         foreach ($clauses as $clause) {
-            $clause = new SortClause($clause);
+            $clause = new Clause($clause);
             $column = $clause->getColumn();
 
             if ($clause->isRelation()) {
@@ -73,7 +73,7 @@ class Sorter {
 
     protected function processColumn(
         EloquentBuilder|QueryBuilder $builder,
-        SortStack|null $stack,
+        Stack|null $stack,
         string $column,
         string $direction,
     ): EloquentBuilder|QueryBuilder {
@@ -103,7 +103,7 @@ class Sorter {
      */
     protected function processRelation(
         EloquentBuilder|QueryBuilder $builder,
-        SortStack|null $stack,
+        Stack|null $stack,
         string $name,
         array $clauses,
     ): EloquentBuilder|QueryBuilder {
@@ -113,7 +113,7 @@ class Sorter {
         }
 
         // Relation?
-        $stack       ??= new SortStack($builder);
+        $stack       ??= new Stack($builder);
         $parentBuilder = $stack->getBuilder();
         $parentAlias   = $stack->getTableAlias();
         $relation      = $this->getRelation($parentBuilder, $name, $stack);
@@ -191,7 +191,7 @@ class Sorter {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getRelation(EloquentBuilder $builder, string $name, SortStack $stack): Relation {
+    protected function getRelation(EloquentBuilder $builder, string $name, Stack $stack): Relation {
         $relation  = (new ModelHelper($builder))->getRelation($name);
         $supported = false;
 

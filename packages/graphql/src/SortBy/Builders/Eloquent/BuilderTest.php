@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Database;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
 
 use Closure;
 use Exception;
@@ -27,9 +27,9 @@ use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Database\Sorter
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder
  */
-class SorterTest extends TestCase {
+class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
