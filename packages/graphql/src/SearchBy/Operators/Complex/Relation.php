@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
+use Closure;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\Parser;
@@ -117,10 +118,13 @@ class Relation implements ComplexOperator {
         }
 
         // Build
-        return $builder->whereHas(
+        return $this->build(
+            $builder,
             $property,
+            $operator,
+            $count,
             static function (
-                EloquentBuilder|QueryBuilder $builder,
+                EloquentBuilder $builder,
             ) use (
                 $relation,
                 $search,
@@ -135,8 +139,16 @@ class Relation implements ComplexOperator {
                     ? $search->process($builder, $has, $alias)
                     : $builder;
             },
-            $operator,
-            $count,
         );
+    }
+
+    protected function build(
+        EloquentBuilder $builder,
+        string $property,
+        string $operator,
+        int $count,
+        Closure $closure,
+    ): EloquentBuilder {
+        return $builder->whereHas($property, $closure, $operator, $count);
     }
 }
