@@ -14,7 +14,7 @@ class EloquentBuilderMixin extends QueryBuilderMixin {
     public function orderByKey(): Closure {
         return function (string $direction = 'asc'): Builder {
             /** @var Builder $this */
-            return $this->orderBy($this->getDefaultKeyName(), $direction);
+            return $this->orderBy($this->qualifyColumn($this->getDefaultKeyName()), $direction);
         };
     }
 
