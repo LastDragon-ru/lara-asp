@@ -38,6 +38,13 @@
       "src/**Test.php"
     ]
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "LastDragon_ru\\LaraASP\\Queue\\Provider"
+      ]
+    }
+  },
   "config": {
     "sort-packages": true,
     "optimize-autoloader": true

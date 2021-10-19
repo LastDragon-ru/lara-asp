@@ -110,7 +110,8 @@
         "LastDragon_ru\\LaraASP\\Migrator\\Provider",
         "LastDragon_ru\\LaraASP\\Formatter\\Provider",
         "LastDragon_ru\\LaraASP\\Spa\\Provider",
-        "LastDragon_ru\\LaraASP\\GraphQL\\Provider"
+        "LastDragon_ru\\LaraASP\\GraphQL\\Provider",
+        "LastDragon_ru\\LaraASP\\Queue\\Provider"
       ]
     }
   },
