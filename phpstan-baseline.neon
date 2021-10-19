@@ -49,19 +49,9 @@ parameters:
         # https://github.com/nunomaduro/larastan/issues/483
         # https://github.com/nunomaduro/larastan/pull/917
         -
-            message: "#^Dynamic call to static method Illuminate\\\\Foundation\\\\Application\\:\\:configurationIsCached\\(\\)\\.$#"
-            paths:
-                - packages/core/src/Concerns/ProviderWithConfig.php
-        -
             message: "#^Dynamic call to static method Symfony\\\\Component\\\\HttpFoundation\\\\Response::getContent\\(\\)\\.$#"
             paths:
                 - packages/testing/src/Mixins/TestResponseMixin.php
-
-        # False positive
-        # https://github.com/nunomaduro/larastan/pull/912
-        # https://github.com/nunomaduro/larastan/pull/914
-        - "#^Call to an undefined method (Illuminate\\\\Database\\\\(Eloquent|Query)\\\\Builder\\|?)+\\:\\:(getDefaultKeyName|getChunkedIterator|getChangeSafeIterator)\\(\\)\\.$#"
-        - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:(orderByKey|orderByKeyDesc)\\(\\)\\.$#"
 
         # False positive
         # https://github.com/nunomaduro/larastan/pull/913
