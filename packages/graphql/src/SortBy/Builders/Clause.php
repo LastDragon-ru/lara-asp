@@ -2,71 +2,25 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders;
 
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
-
-use function array_keys;
-use function count;
-use function is_array;
-use function is_string;
-use function key;
-use function reset;
-
 class Clause {
-    protected string  $column;
-    protected ?string $direction = null;
     /**
-     * @var array<string,mixed>|null
+     * @param non-empty-array<string> $path
      */
-    protected ?array $child = null;
-
-    /**
-     * @param array<string,mixed> $clause
-     */
-    final public function __construct(array $clause) {
-        // Empty?
-        if (!$clause) {
-            throw new SortClauseEmpty();
-        }
-
-        // More than one property?
-        if (count($clause) > 1) {
-            throw new SortClauseTooManyProperties(array_keys($clause));
-        }
-
-        // Parse
-        $direction       = reset($clause);
-        $this->column    = key($clause);
-        $this->child     = is_array($direction) ? $direction : null;
-        $this->direction = is_string($direction) ? $direction : null;
+    public function __construct(
+        protected array $path,
+        protected ?string $direction,
+    ) {
+        // empty
     }
 
-    public function getColumn(): string {
-        return $this->column;
+    /**
+     * @return non-empty-array<string>
+     */
+    public function getPath(): array {
+        return $this->path;
     }
 
     public function getDirection(): ?string {
         return $this->direction;
-    }
-
-    /**
-     * @return array<string,mixed>|null
-     */
-    public function getChild(): ?array {
-        return $this->child;
-    }
-
-    public function getChildClause(): ?static {
-        return $this->isRelation()
-            ? new static((array) $this->getChild())
-            : null;
-    }
-
-    public function isColumn(): bool {
-        return $this->getDirection() !== null;
-    }
-
-    public function isRelation(): bool {
-        return !$this->isColumn();
     }
 }

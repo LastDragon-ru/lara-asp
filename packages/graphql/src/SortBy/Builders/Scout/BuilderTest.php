@@ -5,10 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Builder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
+use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function implode;
@@ -29,9 +27,9 @@ class BuilderTest extends TestCase {
      * @dataProvider dataProviderHandle
      *
      * @param array<mixed>|Exception $expected
-     * @param array<mixed>           $clause
+     * @param array<Clause>          $clauses
      */
-    public function testHandle(array|Exception $expected, array $clause, Closure $resolver = null): void {
+    public function testHandle(array|Exception $expected, array $clauses, Closure $resolver = null): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
@@ -40,16 +38,15 @@ class BuilderTest extends TestCase {
             $this->override(ColumnResolver::class, $resolver);
         }
 
-        $directive = $this->app->make(Directive::class);
-        $builder   = $this->app->make(Builder::class, [
+        $builder = $this->app->make(ScoutBuilder::class, [
             'query' => '',
             'model' => new class() extends Model {
                 // empty
             },
         ]);
-        $builder   = $directive->handleScoutBuilder($builder, $clause);
-        $actual    = json_decode((string) json_encode($builder), true);
-        $default   = [
+        $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
+        $actual  = json_decode((string) json_encode($builder), true);
+        $default = [
             'model'         => [],
             'query'         => '',
             'callback'      => null,
@@ -74,28 +71,13 @@ class BuilderTest extends TestCase {
      */
     public function dataProviderHandle(): array {
         return [
-            'empty clause'           => [
-                new SortClauseEmpty(),
-                [
-                    [],
-                ],
-            ],
-            'more than one property' => [
-                new SortClauseTooManyProperties(['a', 'b']),
-                [
-                    [
-                        'a' => 'asc',
-                        'b' => 'asc',
-                    ],
-                ],
-            ],
-            'empty'                  => [
+            'empty'                => [
                 [
                     // empty
                 ],
                 [],
             ],
-            'clause'                 => [
+            'clause'               => [
                 [
                     'orders' => [
                         [
@@ -110,23 +92,20 @@ class BuilderTest extends TestCase {
                             'column'    => 'c.d.e',
                             'direction' => 'desc',
                         ],
-                    ],
-                ],
-                [
-                    [
-                        'a' => 'asc',
-                    ],
-                    [
-                        'b' => 'desc',
-                    ],
-                    [
-                        'c' => [
-                            'd' => ['e' => 'desc'],
+                        [
+                            'column'    => 'null',
+                            'direction' => 'asc',
                         ],
                     ],
                 ],
+                [
+                    new Clause(['a'], 'asc'),
+                    new Clause(['b'], 'desc'),
+                    new Clause(['c', 'd', 'e'], 'desc'),
+                    new Clause(['null'], null),
+                ],
             ],
-            'clause with resolver'   => [
+            'clause with resolver' => [
                 [
                     'orders' => [
                         [
@@ -136,11 +115,7 @@ class BuilderTest extends TestCase {
                     ],
                 ],
                 [
-                    [
-                        'a' => [
-                            'b' => 'asc',
-                        ],
-                    ],
+                    new Clause(['a', 'b'], 'asc'),
                 ],
                 static function (): ColumnResolver {
                     return new class() implements ColumnResolver {

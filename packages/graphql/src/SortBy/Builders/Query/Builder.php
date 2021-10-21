@@ -1,30 +1,33 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
 
-use Laravel\Scout\Builder as ScoutBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
 
-use function implode;
+use function count;
+use function reset;
 
 class Builder {
-    public function __construct(
-        protected ?ColumnResolver $columnResolver = null,
-    ) {
+    public function __construct() {
         // empty
     }
 
     /**
      * @param array<Clause> $clauses
      */
-    public function handle(ScoutBuilder $builder, array $clauses): ScoutBuilder {
+    public function handle(QueryBuilder $builder, array $clauses): QueryBuilder {
         foreach ($clauses as $clause) {
             // Column
             $path      = $clause->getPath();
+            $column    = reset($path);
             $direction = $clause->getDirection();
-            $column    = $this->columnResolver
-                ? $this->columnResolver->getColumn($builder->model, $path)
-                : implode('.', $path);
+
+            // Nested?
+            if (count($path) > 1) {
+                throw new BuilderUnsupported($builder::class);
+            }
 
             // Order
             if ($direction) {

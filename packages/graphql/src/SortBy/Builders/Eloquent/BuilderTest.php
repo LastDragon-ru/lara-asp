@@ -11,15 +11,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -38,17 +33,16 @@ class BuilderTest extends TestCase {
      * @dataProvider dataProviderHandle
      *
      * @param array<mixed>|Exception $expected
-     * @param array<mixed>           $clause
+     * @param array<Clause>          $clauses
      */
-    public function testHandle(array|Exception $expected, Closure $builder, array $clause): void {
+    public function testHandle(array|Exception $expected, Closure $builder, array $clauses): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 
-        $directive = $this->app->make(Directive::class);
-        $builder   = $builder($this);
-        $builder   = $directive->handleBuilder($builder, $clause);
-        $actual    = $this->getSql($builder);
+        $builder = $builder($this);
+        $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
+        $actual  = $this->getSql($builder);
 
         $this->assertEquals($expected, $actual);
     }
@@ -62,53 +56,14 @@ class BuilderTest extends TestCase {
     public function dataProviderHandle(): array {
         return (new MergeDataProvider([
             'Both'     => (new CompositeDataProvider(
-                new BuilderDataProvider(),
+                new EloquentBuilderDataProvider(),
                 new ArrayDataProvider([
-                    'empty'                  => [
+                    'empty' => [
                         [
                             'sql'      => 'select * from "tmp"',
                             'bindings' => [],
                         ],
                         [],
-                    ],
-                    'empty clause'           => [
-                        new SortClauseEmpty(),
-                        [
-                            [],
-                        ],
-                    ],
-                    'more than one property' => [
-                        new SortClauseTooManyProperties(['a', 'b']),
-                        [
-                            [
-                                'a' => 'asc',
-                                'b' => 'asc',
-                            ],
-                        ],
-                    ],
-                ]),
-            )),
-            'Query'    => (new CompositeDataProvider(
-                new QueryBuilderDataProvider(),
-                new ArrayDataProvider([
-                    'simple condition'            => [
-                        [
-                            'sql'      => 'select * from "tmp" order by "a" asc',
-                            'bindings' => [],
-                        ],
-                        [
-                            [
-                                'a' => 'asc',
-                            ],
-                        ],
-                    ],
-                    'query builder not supported' => [
-                        new BuilderUnsupported(QueryBuilder::class),
-                        [
-                            [
-                                'test' => ['name' => 'asc'],
-                            ],
-                        ],
                     ],
                 ]),
             )),
@@ -119,9 +74,7 @@ class BuilderTest extends TestCase {
                         return SortBuilderTest__ModelA::query();
                     },
                     [
-                        [
-                            'delete' => ['name' => 'asc'],
-                        ],
+                        new Clause(['delete', 'name'], 'asc'),
                     ],
                 ],
                 'unsupported'        => [
@@ -139,9 +92,7 @@ class BuilderTest extends TestCase {
                         return SortBuilderTest__ModelA::query();
                     },
                     [
-                        [
-                            'unsupported' => ['name' => 'asc'],
-                        ],
+                        new Clause(['unsupported', 'name'], 'asc'),
                     ],
                 ],
                 'simple condition'   => [
@@ -153,12 +104,8 @@ class BuilderTest extends TestCase {
                         return SortBuilderTest__ModelA::query();
                     },
                     [
-                        [
-                            'a' => 'asc',
-                        ],
-                        [
-                            'b' => 'desc',
-                        ],
+                        new Clause(['a'], 'asc'),
+                        new Clause(['b'], 'desc'),
                     ],
                 ],
                 BelongsTo::class     => [
@@ -189,25 +136,11 @@ class BuilderTest extends TestCase {
                         return SortBuilderTest__ModelA::query();
                     },
                     [
-                        [
-                            'belongsToB' => ['name' => 'asc'],
-                        ],
-                        [
-                            'belongsToB' => ['created_at' => 'desc'],
-                        ],
-                        [
-                            'belongsToB' => [
-                                'belongsToC' => ['name' => 'desc'],
-                            ],
-                        ],
-                        [
-                            'belongsToB' => [
-                                'belongsToC' => ['created_at' => 'desc'],
-                            ],
-                        ],
-                        [
-                            'name' => 'asc',
-                        ],
+                        new Clause(['belongsToB', 'name'], 'asc'),
+                        new Clause(['belongsToB', 'created_at'], 'desc'),
+                        new Clause(['belongsToB', 'belongsToC', 'name'], 'desc'),
+                        new Clause(['belongsToB', 'belongsToC', 'created_at'], 'desc'),
+                        new Clause(['name'], 'asc'),
                     ],
                 ],
                 HasOne::class        => [
@@ -239,25 +172,11 @@ class BuilderTest extends TestCase {
                         return SortBuilderTest__ModelA::query();
                     },
                     [
-                        [
-                            'hasOneB' => ['name' => 'asc'],
-                        ],
-                        [
-                            'hasOneB' => ['created_at' => 'desc'],
-                        ],
-                        [
-                            'hasOneB' => [
-                                'hasOneC' => ['name' => 'desc'],
-                            ],
-                        ],
-                        [
-                            'hasOneB' => [
-                                'hasOneC' => ['created_at' => 'desc'],
-                            ],
-                        ],
-                        [
-                            'name' => 'asc',
-                        ],
+                        new Clause(['hasOneB', 'name'], 'asc'),
+                        new Clause(['hasOneB', 'created_at'], 'desc'),
+                        new Clause(['hasOneB', 'hasOneC', 'name'], 'desc'),
+                        new Clause(['hasOneB', 'hasOneC', 'created_at'], 'desc'),
+                        new Clause(['name'], 'asc'),
                     ],
                 ],
                 MorphOne::class      => [
@@ -293,25 +212,11 @@ class BuilderTest extends TestCase {
                         return SortBuilderTest__ModelA::query();
                     },
                     [
-                        [
-                            'morphOneB' => ['name' => 'asc'],
-                        ],
-                        [
-                            'morphOneB' => ['created_at' => 'desc'],
-                        ],
-                        [
-                            'morphOneB' => [
-                                'morphOneC' => ['name' => 'desc'],
-                            ],
-                        ],
-                        [
-                            'morphOneB' => [
-                                'morphOneC' => ['created_at' => 'desc'],
-                            ],
-                        ],
-                        [
-                            'name' => 'asc',
-                        ],
+                        new Clause(['morphOneB', 'name'], 'asc'),
+                        new Clause(['morphOneB', 'created_at'], 'desc'),
+                        new Clause(['morphOneB', 'morphOneC', 'name'], 'desc'),
+                        new Clause(['morphOneB', 'morphOneC', 'created_at'], 'desc'),
+                        new Clause(['name'], 'asc'),
                     ],
                 ],
                 HasOneThrough::class => [
@@ -352,25 +257,11 @@ class BuilderTest extends TestCase {
                         return SortBuilderTest__ModelA::query();
                     },
                     [
-                        [
-                            'hasOneThroughC' => ['name' => 'asc'],
-                        ],
-                        [
-                            'hasOneThroughC' => ['created_at' => 'desc'],
-                        ],
-                        [
-                            'hasOneThroughC' => [
-                                'hasOneThroughA' => ['name' => 'desc'],
-                            ],
-                        ],
-                        [
-                            'hasOneThroughC' => [
-                                'hasOneThroughA' => ['created_at' => 'desc'],
-                            ],
-                        ],
-                        [
-                            'name' => 'asc',
-                        ],
+                        new Clause(['hasOneThroughC', 'name'], 'asc'),
+                        new Clause(['hasOneThroughC', 'created_at'], 'desc'),
+                        new Clause(['hasOneThroughC', 'hasOneThroughA', 'name'], 'desc'),
+                        new Clause(['hasOneThroughC', 'hasOneThroughA', 'created_at'], 'desc'),
+                        new Clause(['name'], 'asc'),
                     ],
                 ],
             ])),

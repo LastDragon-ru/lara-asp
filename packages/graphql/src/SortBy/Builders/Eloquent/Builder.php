@@ -8,17 +8,18 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LogicException;
 
+use function array_slice;
+use function count;
 use function implode;
 use function in_array;
 use function is_a;
+use function reset;
 
 class Builder {
     /**
@@ -38,33 +39,29 @@ class Builder {
     // <editor-fold desc="API">
     // =========================================================================
     /**
-     * @param array<mixed> $clauses
+     * @param array<Clause> $clauses
      */
-    public function handle(EloquentBuilder|QueryBuilder $builder, array $clauses): EloquentBuilder|QueryBuilder {
-        return $builder instanceof EloquentBuilder
-            ? $this->process($builder, new Stack($builder), $clauses)
-            : $this->process($builder, null, $clauses);
+    public function handle(EloquentBuilder $builder, array $clauses): EloquentBuilder {
+        return $this->process($builder, new Stack($builder), $clauses);
     }
     // </editor-fold>
 
     // <editor-fold desc="Process">
     // =========================================================================
     /**
-     * @param array<mixed> $clauses
+     * @param array<Clause> $clauses
      */
-    protected function process(
-        EloquentBuilder|QueryBuilder $builder,
-        Stack|null $stack,
-        array $clauses,
-    ): EloquentBuilder|QueryBuilder {
+    protected function process(EloquentBuilder $builder, Stack $stack, array $clauses): EloquentBuilder {
         foreach ($clauses as $clause) {
-            $clause = new Clause($clause);
-            $column = $clause->getColumn();
+            // Column
+            $path      = $clause->getPath();
+            $column    = reset($path);
+            $direction = $clause->getDirection();
 
-            if ($clause->isRelation()) {
-                $builder = $this->processRelation($builder, $stack, $column, (array) $clause->getChild());
+            if (count($path) > 1) {
+                $builder = $this->processRelation($builder, $stack, $column, $clause);
             } else {
-                $builder = $this->processColumn($builder, $stack, $column, (string) $clause->getDirection());
+                $builder = $this->processColumn($builder, $stack, $column, $direction);
             }
         }
 
@@ -72,48 +69,46 @@ class Builder {
     }
 
     protected function processColumn(
-        EloquentBuilder|QueryBuilder $builder,
-        Stack|null $stack,
+        EloquentBuilder $builder,
+        Stack $stack,
         string $column,
-        string $direction,
-    ): EloquentBuilder|QueryBuilder {
-        if ($stack && $builder instanceof EloquentBuilder) {
-            if ($stack->hasTableAlias()) {
-                if (!$builder->getQuery()->columns) {
-                    $builder = $builder->addSelect($builder->qualifyColumn('*'));
-                }
-
-                $alias   = "{$stack->getTableAlias()}_{$column}";
-                $aliased = "{$stack->getTableAlias()}.{$column} as {$alias}";
-                $column  = $alias;
-
-                if (!in_array($aliased, $builder->getQuery()->columns, true)) {
-                    $builder = $builder->addSelect($aliased);
-                }
-            } else {
-                $column = $builder->qualifyColumn($column);
+        ?string $direction,
+    ): EloquentBuilder {
+        // Add column
+        if ($stack->hasTableAlias()) {
+            if (!$builder->getQuery()->columns) {
+                $builder = $builder->addSelect($builder->qualifyColumn('*'));
             }
+
+            $alias   = "{$stack->getTableAlias()}_{$column}";
+            $aliased = "{$stack->getTableAlias()}.{$column} as {$alias}";
+            $column  = $alias;
+
+            if (!in_array($aliased, $builder->getQuery()->columns, true)) {
+                $builder = $builder->addSelect($aliased);
+            }
+        } else {
+            $column = $builder->qualifyColumn($column);
         }
 
-        return $builder->orderBy($column, $direction);
+        // Order
+        if ($direction) {
+            $builder = $builder->orderBy($column, $direction);
+        } else {
+            $builder = $builder->orderBy($column);
+        }
+
+        // Return
+        return $builder;
     }
 
-    /**
-     * @param array<string,mixed> $clauses
-     */
     protected function processRelation(
-        EloquentBuilder|QueryBuilder $builder,
-        Stack|null $stack,
+        EloquentBuilder $builder,
+        Stack $stack,
         string $name,
-        array $clauses,
-    ): EloquentBuilder|QueryBuilder {
-        // QueryBuilder?
-        if ($builder instanceof QueryBuilder) {
-            throw new BuilderUnsupported($builder::class);
-        }
-
+        Clause $clause,
+    ): EloquentBuilder {
         // Relation?
-        $stack       ??= new Stack($builder);
         $parentBuilder = $stack->getBuilder();
         $parentAlias   = $stack->getTableAlias();
         $relation      = $this->getRelation($parentBuilder, $name, $stack);
@@ -182,7 +177,12 @@ class Builder {
 
         // Return
         try {
-            return $this->process($builder, $stack, [$clauses]);
+            $path      = array_slice($clause->getPath(), 1);
+            $direction = $clause->getDirection();
+
+            return $path
+                ? $this->process($builder, $stack, [new Clause($path, $direction)])
+                : $builder;
         } finally {
             $stack->pop();
         }

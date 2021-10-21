@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Convert property into Scout column.
+ * Convert nested property into Scout column.
  */
 interface ColumnResolver {
     /**
