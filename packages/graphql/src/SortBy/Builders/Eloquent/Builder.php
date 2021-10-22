@@ -83,10 +83,11 @@ class Builder {
             ->limit(1);
         $alias    = $related->getTable();
         $stack    = [$root];
+        $current  = 'sort_by';
 
         foreach ($relations as $name) {
             $stack[]  = $name;
-            $current  = "sort_by_{$name}";
+            $current  = "{$current}_{$name}";
             $relation = $this->getRelation($relation->getRelated()->newQuery(), $name, $stack);
             $query    = $this->joinRelation($query, $relation, $alias, $current);
             $alias    = $current;

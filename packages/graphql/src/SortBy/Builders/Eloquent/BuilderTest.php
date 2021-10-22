@@ -180,8 +180,9 @@ class BuilderTest extends TestCase {
                                                 "table_a"
                                             where
                                                 "ModelC_belongsToA" = ?
-                                        ) as "sort_by_belongsToA"
-                                            on "sort_by_belongsToA"."id" = "sort_by_belongsToC"."belongs_to_a_id"
+                                        ) as "sort_by_belongsToC_belongsToA"
+                                            on "sort_by_belongsToC_belongsToA"."id"
+                                                = "sort_by_belongsToC"."belongs_to_a_id"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
                                         and "ModelA_belongsToB" = ?
