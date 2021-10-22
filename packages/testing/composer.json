@@ -28,6 +28,7 @@
     "ext-mbstring": "*",
     "composer/composer": "^2.0.0",
     "doctrine/dbal": "^2.12.0|^3.0.0",
+    "doctrine/sql-formatter": "^1.1",
     "http-interop/http-factory-guzzle": "^1.0.0",
     "laravel/framework": "^8.22.1",
     "mockery/mockery": "^1.4",
@@ -38,7 +39,6 @@
     "symfony/psr-http-message-bridge": "^2.0.0"
   },
   "require-dev": {
-    "doctrine/sql-formatter": "^1.1",
     "guzzlehttp/psr7": "^1.7.0",
     "phpunit/phpunit": "^9.5.0",
     "orchestra/testbench": "^6.9.0"
