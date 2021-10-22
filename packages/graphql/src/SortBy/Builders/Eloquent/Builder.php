@@ -77,10 +77,7 @@ class Builder {
         $related  = $relation->getRelated();
         $query    = $relation
             ->getRelationExistenceQuery($related->newQuery(), $builder)
-            ->mergeConstraintsFrom($relation->getQuery())
-            ->select($related->qualifyColumn($column))
-            ->reorder()
-            ->limit(1);
+            ->mergeConstraintsFrom($relation->getQuery());
         $alias    = $related->getTable();
         $stack    = [$root];
         $current  = 'sort_by';
@@ -93,6 +90,13 @@ class Builder {
             $alias    = $current;
         }
 
+        // We need only one row
+        $query = $query
+            ->select("{$alias}.{$column}")
+            ->reorder()
+            ->limit(1);
+
+        // Return
         return $query;
     }
     // </editor-fold>
