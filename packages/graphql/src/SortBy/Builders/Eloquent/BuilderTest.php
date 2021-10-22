@@ -128,7 +128,7 @@ class BuilderTest extends TestCase {
                                         "table_b"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
-                                        and "a" = ?
+                                        and "ModelA_belongsToB" = ?
                                     limit
                                         1
                                 ) asc,
@@ -139,7 +139,7 @@ class BuilderTest extends TestCase {
                                         "table_b"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
-                                        and "a" = ?
+                                        and "ModelA_belongsToB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -157,7 +157,7 @@ class BuilderTest extends TestCase {
                                             on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
-                                        and "a" = ?
+                                        and "ModelA_belongsToB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -173,9 +173,19 @@ class BuilderTest extends TestCase {
                                                 "table_c"
                                         ) as "sort_by_belongsToC"
                                             on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "table_a"
+                                            where
+                                                "ModelC_belongsToA" = ?
+                                        ) as "sort_by_belongsToC_belongsToA"
+                                            on "sort_by_belongsToC_belongsToA"."id"
+                                                = "sort_by_belongsToC"."belongs_to_a_id"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
-                                        and "a" = ?
+                                        and "ModelA_belongsToB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -183,10 +193,11 @@ class BuilderTest extends TestCase {
                             SQL
                         ,
                         'bindings' => [
-                            'a',
-                            'a',
-                            'a',
-                            'a',
+                            'ModelA_belongsToB_value',
+                            'ModelA_belongsToB_value',
+                            'ModelA_belongsToB_value',
+                            'ModelC_belongsToA_value',
+                            'ModelA_belongsToB_value',
                         ],
                     ],
                     static function (): EloquentBuilder {
@@ -196,7 +207,7 @@ class BuilderTest extends TestCase {
                         new Clause(['belongsToB', 'name'], 'asc'),
                         new Clause(['belongsToB', 'created_at'], 'desc'),
                         new Clause(['belongsToB', 'belongsToC', 'name'], 'desc'),
-                        new Clause(['belongsToB', 'belongsToC', 'created_at'], 'desc'),
+                        new Clause(['belongsToB', 'belongsToC', 'belongsToA', 'created_at'], 'desc'),
                         new Clause(['name'], 'asc'),
                     ],
                 ],
@@ -215,7 +226,7 @@ class BuilderTest extends TestCase {
                                         "table_b"
                                     where
                                         "table_a"."id" = "table_b"."model_a_id"
-                                        and "b" = ?
+                                        and "ModelA_hasOneB" = ?
                                     limit
                                         1
                                 ) asc,
@@ -226,7 +237,7 @@ class BuilderTest extends TestCase {
                                         "table_b"
                                     where
                                         "table_a"."id" = "table_b"."model_a_id"
-                                        and "b" = ?
+                                        and "ModelA_hasOneB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -243,7 +254,7 @@ class BuilderTest extends TestCase {
                                         ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
                                     where
                                         "table_a"."id" = "table_b"."model_a_id"
-                                        and "b" = ?
+                                        and "ModelA_hasOneB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -260,7 +271,7 @@ class BuilderTest extends TestCase {
                                         ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
                                     where
                                         "table_a"."id" = "table_b"."model_a_id"
-                                        and "b" = ?
+                                        and "ModelA_hasOneB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -268,10 +279,10 @@ class BuilderTest extends TestCase {
                             SQL
                         ,
                         'bindings' => [
-                            'b',
-                            'b',
-                            'b',
-                            'b',
+                            'ModelA_hasOneB_value',
+                            'ModelA_hasOneB_value',
+                            'ModelA_hasOneB_value',
+                            'ModelA_hasOneB_value',
                         ],
                     ],
                     static function (): EloquentBuilder {
@@ -301,7 +312,7 @@ class BuilderTest extends TestCase {
                                     where
                                         "table_a"."id" = "table_b"."morphable_a_id"
                                         and "table_b"."morphable_a_type" = ?
-                                        and "c" = ?
+                                        and "ModelA_morphOneB" = ?
                                     limit
                                         1
                                 ) asc,
@@ -313,7 +324,7 @@ class BuilderTest extends TestCase {
                                     where
                                         "table_a"."id" = "table_b"."morphable_a_id"
                                         and "table_b"."morphable_a_type" = ?
-                                        and "c" = ?
+                                        and "ModelA_morphOneB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -333,7 +344,7 @@ class BuilderTest extends TestCase {
                                     where
                                         "table_a"."id" = "table_b"."morphable_a_id"
                                         and "table_b"."morphable_a_type" = ?
-                                        and "c" = ?
+                                        and "ModelA_morphOneB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -353,7 +364,7 @@ class BuilderTest extends TestCase {
                                     where
                                         "table_a"."id" = "table_b"."morphable_a_id"
                                         and "table_b"."morphable_a_type" = ?
-                                        and "c" = ?
+                                        and "ModelA_morphOneB" = ?
                                     limit
                                         1
                                 ) desc,
@@ -362,15 +373,15 @@ class BuilderTest extends TestCase {
                         ,
                         'bindings' => [
                             SortBuilderTest__ModelA::class,
-                            'c',
+                            'ModelA_morphOneB_value',
                             SortBuilderTest__ModelA::class,
-                            'c',
+                            'ModelA_morphOneB_value',
                             SortBuilderTest__ModelB::class,
                             SortBuilderTest__ModelA::class,
-                            'c',
+                            'ModelA_morphOneB_value',
                             SortBuilderTest__ModelB::class,
                             SortBuilderTest__ModelA::class,
-                            'c',
+                            'ModelA_morphOneB_value',
                         ],
                     ],
                     static function (): EloquentBuilder {
@@ -508,19 +519,19 @@ class SortBuilderTest__ModelA extends Model {
     public function belongsToB(): BelongsTo {
         return $this
             ->belongsTo(SortBuilderTest__ModelB::class)
-            ->where('a', '=', 'a');
+            ->where('ModelA_belongsToB', '=', 'ModelA_belongsToB_value');
     }
 
     public function hasOneB(): HasOne {
         return $this
             ->hasOne(SortBuilderTest__ModelB::class, 'model_a_id')
-            ->where('b', '=', 'b');
+            ->where('ModelA_hasOneB', '=', 'ModelA_hasOneB_value');
     }
 
     public function morphOneB(): MorphOne {
         return $this
             ->morphOne(SortBuilderTest__ModelB::class, 'morphable_a')
-            ->where('c', '=', 'c');
+            ->where('ModelA_morphOneB', '=', 'ModelA_morphOneB_value');
     }
 
     public function hasOneThroughC(): HasOneThrough {
@@ -600,5 +611,11 @@ class SortBuilderTest__ModelC extends Model {
             'local_key',
             'second_local_key',
         );
+    }
+
+    public function belongsToA(): BelongsTo {
+        return $this
+            ->belongsTo(SortBuilderTest__ModelA::class)
+            ->where('ModelC_belongsToA', '=', 'ModelC_belongsToA_value');
     }
 }
