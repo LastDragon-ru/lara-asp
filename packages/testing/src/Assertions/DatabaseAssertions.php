@@ -13,7 +13,7 @@ use PHPUnit\Framework\Assert;
  */
 trait DatabaseAssertions {
     /**
-     * Asserts that SQL equals SQL.
+     * Asserts that SQL Query equals SQL Query.
      *
      * @param DatabaseQuery|QueryBuilder|EloquentBuilder|array{query: string, bindings: array<mixed>}|string $expected
      * @param DatabaseQuery|QueryBuilder|EloquentBuilder|array{query: string, bindings: array<mixed>}|string $actual

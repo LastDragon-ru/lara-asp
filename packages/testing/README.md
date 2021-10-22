@@ -90,6 +90,7 @@ Name                  | Description
 [`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L17) | Asserts that JSON matches schema
 [`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L15)   | Asserts that XML matches schema (XSD or Relax NG).
 [`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L14)    | Asserts that PSR Response satisfies given constraint.
+[`assertDatabaseQueryEquals()`](./src/Assertions/DatabaseAssertions.php) | Asserts that SQL Query equals SQL Query.
 
 ## Laravel
 
