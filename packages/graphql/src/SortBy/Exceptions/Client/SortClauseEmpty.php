@@ -2,10 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client;
 
-use Throwable;
+use function sprintf;
 
-class SortClauseEmpty extends SortLogicException {
-    public function __construct(Throwable $previous = null) {
-        parent::__construct('Sort clause cannot be empty.', $previous);
+class SortClauseEmpty extends SortClauseInvalid {
+    protected function getReason(): string {
+        return sprintf(
+            'Sort Clause `%s`: Sort clause cannot be empty.',
+            $this->getIndex(),
+        );
     }
 }

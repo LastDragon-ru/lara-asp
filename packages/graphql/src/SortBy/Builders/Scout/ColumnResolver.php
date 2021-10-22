@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Convert property into Scout column.
+ * Convert nested property into Scout column.
  */
-interface ScoutColumnResolver {
+interface ColumnResolver {
     /**
      * @param array<string> $path
      */

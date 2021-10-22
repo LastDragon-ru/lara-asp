@@ -1,14 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
 
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Builder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\ScoutColumnResolver;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
+use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function implode;
@@ -18,38 +16,37 @@ use function json_encode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\ScoutBuilder
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder
  */
-class ScoutBuilderTest extends TestCase {
+class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::build
+     * @covers ::handle
      *
-     * @dataProvider dataProviderBuild
+     * @dataProvider dataProviderHandle
      *
      * @param array<mixed>|Exception $expected
-     * @param array<mixed>           $clause
+     * @param array<Clause>          $clauses
      */
-    public function testBuild(array|Exception $expected, array $clause, Closure $resolver = null): void {
+    public function testHandle(array|Exception $expected, array $clauses, Closure $resolver = null): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 
         if ($resolver) {
-            $this->override(ScoutColumnResolver::class, $resolver);
+            $this->override(ColumnResolver::class, $resolver);
         }
 
-        $directive = $this->app->make(Directive::class);
-        $builder   = $this->app->make(Builder::class, [
+        $builder = $this->app->make(ScoutBuilder::class, [
             'query' => '',
             'model' => new class() extends Model {
                 // empty
             },
         ]);
-        $builder   = $directive->handleScoutBuilder($builder, $clause);
-        $actual    = json_decode((string) json_encode($builder), true);
-        $default   = [
+        $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
+        $actual  = json_decode((string) json_encode($builder), true);
+        $default = [
             'model'         => [],
             'query'         => '',
             'callback'      => null,
@@ -72,30 +69,15 @@ class ScoutBuilderTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderBuild(): array {
+    public function dataProviderHandle(): array {
         return [
-            'empty clause'           => [
-                new SortClauseEmpty(),
-                [
-                    [],
-                ],
-            ],
-            'more than one property' => [
-                new SortClauseTooManyProperties(['a', 'b']),
-                [
-                    [
-                        'a' => 'asc',
-                        'b' => 'asc',
-                    ],
-                ],
-            ],
-            'empty'                  => [
+            'empty'                => [
                 [
                     // empty
                 ],
                 [],
             ],
-            'clause'                 => [
+            'clause'               => [
                 [
                     'orders' => [
                         [
@@ -110,23 +92,20 @@ class ScoutBuilderTest extends TestCase {
                             'column'    => 'c.d.e',
                             'direction' => 'desc',
                         ],
-                    ],
-                ],
-                [
-                    [
-                        'a' => 'asc',
-                    ],
-                    [
-                        'b' => 'desc',
-                    ],
-                    [
-                        'c' => [
-                            'd' => ['e' => 'desc'],
+                        [
+                            'column'    => 'null',
+                            'direction' => 'asc',
                         ],
                     ],
                 ],
+                [
+                    new Clause(['a'], 'asc'),
+                    new Clause(['b'], 'desc'),
+                    new Clause(['c', 'd', 'e'], 'desc'),
+                    new Clause(['null'], null),
+                ],
             ],
-            'clause with resolver'   => [
+            'clause with resolver' => [
                 [
                     'orders' => [
                         [
@@ -136,14 +115,10 @@ class ScoutBuilderTest extends TestCase {
                     ],
                 ],
                 [
-                    [
-                        'a' => [
-                            'b' => 'asc',
-                        ],
-                    ],
+                    new Clause(['a', 'b'], 'asc'),
                 ],
-                static function (): ScoutColumnResolver {
-                    return new class() implements ScoutColumnResolver {
+                static function (): ColumnResolver {
+                    return new class() implements ColumnResolver {
                         /**
                          * @inheritDoc
                          */
