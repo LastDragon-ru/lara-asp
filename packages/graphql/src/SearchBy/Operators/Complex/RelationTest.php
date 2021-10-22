@@ -16,6 +16,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
+use function is_array;
+
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation
@@ -28,8 +30,8 @@ class RelationTest extends TestCase {
      *
      * @dataProvider dataProviderApply
      *
-     * @param array{sql: string, bindings: array<mixed>}|Exception $expected
-     * @param array<mixed>                                         $conditions
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param array<mixed>                                           $conditions
      */
     public function testApply(
         array|Exception $expected,
@@ -49,9 +51,12 @@ class RelationTest extends TestCase {
         $relation = $this->app->make(Relation::class);
         $builder  = $builder($this);
         $builder  = $relation->apply($search, $builder, $property, $conditions);
-        $actual   = $this->getSql($builder);
 
-        $this->assertEquals($expected, $actual);
+        if (is_array($expected)) {
+            $this->assertDatabaseQueryEquals($expected, $builder);
+        } else {
+            $this->fail('Something wrong...');
+        }
     }
     // </editor-fold>
 
@@ -80,7 +85,7 @@ class RelationTest extends TestCase {
             ],
             '{relation: yes}'                                        => [
                 [
-                    'sql'      => 'select * from "table_a" where exists ('.
+                    'query'    => 'select * from "table_a" where exists ('.
                         'select * from "table_b" '.
                         'where "table_a"."id" = "table_b"."table_a_id"'.
                         ')',
@@ -96,7 +101,7 @@ class RelationTest extends TestCase {
             ],
             '{relation: yes, exists: true}'                          => [
                 [
-                    'sql'      => 'select * from "table_a" where exists ('.
+                    'query'    => 'select * from "table_a" where exists ('.
                         'select * from "table_b" '.
                         'where "table_a"."id" = "table_b"."table_a_id"'.
                         ')',
@@ -113,7 +118,7 @@ class RelationTest extends TestCase {
             ],
             '{relation: yes, notExists: true}'                       => [
                 [
-                    'sql'      => 'select * from "table_a" where not exists ('.
+                    'query'    => 'select * from "table_a" where not exists ('.
                         'select * from "table_b" '.
                         'where "table_a"."id" = "table_b"."table_a_id"'.
                         ')',
@@ -130,7 +135,7 @@ class RelationTest extends TestCase {
             ],
             '{relation: {property: {equal: 1}}}'                     => [
                 [
-                    'sql'      => 'select * from "table_a" where exists ('.
+                    'query'    => 'select * from "table_a" where exists ('.
                         'select * from "table_b" where '.
                         '"table_a"."id" = "table_b"."table_a_id" and "table_b"."property" = ?'.
                         ')',
@@ -150,7 +155,7 @@ class RelationTest extends TestCase {
             ],
             '{relation: yes, count: {equal: 1}}'                     => [
                 [
-                    'sql'      => 'select * from "table_a" where ('.
+                    'query'    => 'select * from "table_a" where ('.
                         'select count(*) from "table_b" where '.
                         '"table_a"."id" = "table_b"."table_a_id"'.
                         ') = 345',
@@ -183,10 +188,10 @@ class RelationTest extends TestCase {
             ],
             '{relation: yes, where: {{property: {equal: 1}}}} (own)' => [
                 [
-                    'sql'      => 'select * from "table_a" where exists ('.
-                        'select * from "table_a" as "table_alias_0" where '.
-                        '"table_a"."id" = "table_alias_0"."relation_test___model_a_id" '.
-                        'and "table_alias_0"."property" = ?'.
+                    'query'    => 'select * from "table_a" where exists ('.
+                        'select * from "table_a" as "laravel_reserved_0" where '.
+                        '"table_a"."id" = "laravel_reserved_0"."relation_test___model_a_id" '.
+                        'and "laravel_reserved_0"."property" = ?'.
                         ')',
                     'bindings' => [123],
                 ],

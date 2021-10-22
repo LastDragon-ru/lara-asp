@@ -12,6 +12,8 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 
+use function is_array;
+
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder
@@ -24,8 +26,8 @@ class BuilderTest extends TestCase {
      *
      * @dataProvider dataProviderHandle
      *
-     * @param array<mixed>|Exception $expected
-     * @param array<Clause>          $clauses
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param array<Clause>                                          $clauses
      */
     public function testHandle(array|Exception $expected, Closure $builder, array $clauses): void {
         if ($expected instanceof Exception) {
@@ -34,9 +36,12 @@ class BuilderTest extends TestCase {
 
         $builder = $builder($this);
         $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
-        $actual  = $this->getSql($builder);
 
-        $this->assertEquals($expected, $actual);
+        if (is_array($expected)) {
+            $this->assertDatabaseQueryEquals($expected, $builder);
+        } else {
+            $this->fail('Something wrong...');
+        }
     }
     // </editor-fold>
 
@@ -51,14 +56,14 @@ class BuilderTest extends TestCase {
             new ArrayDataProvider([
                 'empty'                => [
                     [
-                        'sql'      => 'select * from "tmp"',
+                        'query'    => 'select * from "tmp"',
                         'bindings' => [],
                     ],
                     [],
                 ],
                 'simple condition'     => [
                     [
-                        'sql'      => 'select * from "tmp" order by "a" asc',
+                        'query'    => 'select * from "tmp" order by "a" asc',
                         'bindings' => [],
                     ],
                     [
