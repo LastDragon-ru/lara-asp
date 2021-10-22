@@ -87,7 +87,7 @@ class Builder {
         foreach ($relations as $name) {
             $stack[]  = $name;
             $current  = "sort_by_{$name}";
-            $relation = $this->getRelation($query, $name, $stack);
+            $relation = $this->getRelation($relation->getRelated()->newQuery(), $name, $stack);
             $query    = $this->joinRelation($query, $relation, $alias, $current);
             $alias    = $current;
         }

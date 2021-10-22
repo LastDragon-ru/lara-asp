@@ -153,8 +153,7 @@ class BuilderTest extends TestCase {
                                                 *
                                             from
                                                 "table_c"
-                                        ) as "sort_by_belongsToC"
-                                            on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
+                                        ) as "sort_by_belongsToC" on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
                                         and "a" = ?
@@ -171,8 +170,15 @@ class BuilderTest extends TestCase {
                                                 *
                                             from
                                                 "table_c"
-                                        ) as "sort_by_belongsToC"
-                                            on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
+                                        ) as "sort_by_belongsToC" on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "table_a"
+                                            where
+                                                "ModelC_belongsToA" = ?
+                                        ) as "sort_by_belongsToA" on "sort_by_belongsToA"."id" = "sort_by_belongsToC"."belongs_to_a_id"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
                                         and "a" = ?
@@ -186,6 +192,7 @@ class BuilderTest extends TestCase {
                             'a',
                             'a',
                             'a',
+                            'ModelC_belongsToA_value',
                             'a',
                         ],
                     ],
@@ -196,7 +203,7 @@ class BuilderTest extends TestCase {
                         new Clause(['belongsToB', 'name'], 'asc'),
                         new Clause(['belongsToB', 'created_at'], 'desc'),
                         new Clause(['belongsToB', 'belongsToC', 'name'], 'desc'),
-                        new Clause(['belongsToB', 'belongsToC', 'created_at'], 'desc'),
+                        new Clause(['belongsToB', 'belongsToC', 'belongsToA', 'created_at'], 'desc'),
                         new Clause(['name'], 'asc'),
                     ],
                 ],
@@ -600,5 +607,11 @@ class SortBuilderTest__ModelC extends Model {
             'local_key',
             'second_local_key',
         );
+    }
+
+    public function belongsToA(): BelongsTo {
+        return $this
+            ->belongsTo(SortBuilderTest__ModelA::class)
+            ->where('ModelC_belongsToA', '=', 'ModelC_belongsToA_value');
     }
 }
