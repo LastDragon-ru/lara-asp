@@ -145,7 +145,7 @@ class BuilderTest extends TestCase {
                                 ) desc,
                                 (
                                     select
-                                        "table_b"."name"
+                                        "sort_by_belongsToC"."name"
                                     from
                                         "table_b"
                                         inner join (
@@ -163,7 +163,7 @@ class BuilderTest extends TestCase {
                                 ) desc,
                                 (
                                     select
-                                        "table_b"."created_at"
+                                        "sort_by_belongsToC_belongsToA"."created_at"
                                     from
                                         "table_b"
                                         inner join (
@@ -243,7 +243,7 @@ class BuilderTest extends TestCase {
                                 ) desc,
                                 (
                                     select
-                                        "table_b"."name"
+                                        "sort_by_hasOneC"."name"
                                     from
                                         "table_b"
                                         inner join (
@@ -260,7 +260,7 @@ class BuilderTest extends TestCase {
                                 ) desc,
                                 (
                                     select
-                                        "table_b"."created_at"
+                                        "sort_by_hasOneC"."created_at"
                                     from
                                         "table_b"
                                         inner join (
@@ -330,7 +330,7 @@ class BuilderTest extends TestCase {
                                 ) desc,
                                 (
                                     select
-                                        "table_b"."name"
+                                        "sort_by_morphOneC"."name"
                                     from
                                         "table_b"
                                         inner join (
@@ -350,7 +350,7 @@ class BuilderTest extends TestCase {
                                 ) desc,
                                 (
                                     select
-                                        "table_b"."created_at"
+                                        "sort_by_morphOneC"."created_at"
                                     from
                                         "table_b"
                                         inner join (
@@ -427,7 +427,7 @@ class BuilderTest extends TestCase {
                                 ) desc,
                                 (
                                     select
-                                        "table_c"."name"
+                                        "sort_by_hasOneThroughA"."name"
                                     from
                                         "table_c"
                                         inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
@@ -449,7 +449,7 @@ class BuilderTest extends TestCase {
                                 ) desc,
                                 (
                                     select
-                                        "table_c"."created_at"
+                                        "sort_by_hasOneThroughA"."created_at"
                                     from
                                         "table_c"
                                         inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
