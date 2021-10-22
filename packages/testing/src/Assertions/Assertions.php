@@ -9,4 +9,5 @@ trait Assertions {
     use JsonAssertions;
     use CronableAssertions;
     use ResponseAssertions;
+    use DatabaseAssertions;
 }

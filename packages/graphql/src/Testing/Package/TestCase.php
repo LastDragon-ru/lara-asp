@@ -34,6 +34,9 @@ class TestCase extends PackageTestCase {
     }
 
     /**
+     * @deprecated Please use
+     *      {@link \LastDragon_ru\LaraASP\Testing\Assertions\DatabaseAssertions::assertDatabaseQueryEquals()}
+     *
      * @return array{sql: string, bindings: array<mixed>}
      */
     protected function getSql(EloquentBuilder|QueryBuilder $builder): array {

@@ -58,6 +58,7 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
+    "doctrine/sql-formatter": "^1.1",
     "laravel/scout": "^9.2",
     "mockery/mockery": "^1.4",
     "nunomaduro/larastan": "^0.7.12",

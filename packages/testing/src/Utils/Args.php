@@ -3,7 +3,11 @@
 namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use DOMDocument;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use JsonSerializable;
+use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentDatabaseQuery;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentJson;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentResponse;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentSplFileInfo;
@@ -149,5 +153,32 @@ class Args {
         }
 
         return $psr;
+    }
+
+    public static function getDatabaseQuery(mixed $query): Query {
+        $sql      = null;
+        $bindings = [];
+
+        if ($query instanceof QueryBuilder || $query instanceof EloquentBuilder) {
+            $sql      = $query->toSql();
+            $bindings = $query->getBindings();
+        } elseif ($query instanceof Query) {
+            $sql      = $query->getQuery();
+            $bindings = $query->getBindings();
+        } elseif (is_array($query)) {
+            $sql      = $query['query'] ?? null;
+            $bindings = $query['bindings'] ?? null;
+        } elseif (is_string($query)) {
+            $sql      = $query;
+            $bindings = [];
+        } else {
+            // empty
+        }
+
+        if (!is_string($sql)) {
+            throw new InvalidArgumentDatabaseQuery('$query', $query);
+        }
+
+        return new Query($sql, $bindings);
     }
 }
