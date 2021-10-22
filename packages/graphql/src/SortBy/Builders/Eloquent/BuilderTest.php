@@ -42,9 +42,8 @@ class BuilderTest extends TestCase {
 
         $builder = $builder($this);
         $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
-        $actual  = $this->getSql($builder);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 
@@ -60,7 +59,7 @@ class BuilderTest extends TestCase {
                 new ArrayDataProvider([
                     'empty' => [
                         [
-                            'sql'      => 'select * from "tmp"',
+                            'query'    => 'select * from "tmp"',
                             'bindings' => [],
                         ],
                         [],
@@ -97,7 +96,7 @@ class BuilderTest extends TestCase {
                 ],
                 'simple condition'   => [
                     [
-                        'sql'      => 'select * from "table_a" order by "table_a"."a" asc, "table_a"."b" desc',
+                        'query'    => 'select * from "table_a" order by "a" asc, "b" desc',
                         'bindings' => [],
                     ],
                     static function (): EloquentBuilder {
@@ -110,25 +109,77 @@ class BuilderTest extends TestCase {
                 ],
                 BelongsTo::class     => [
                     [
-                        'sql'      => ''.
-                            'select'.
-                            ' "table_a".*,'.
-                            ' "table_alias_0"."name" as "table_alias_0_name",'.
-                            ' "table_alias_0"."created_at" as "table_alias_0_created_at",'.
-                            ' "table_alias_1"."name" as "table_alias_1_name",'.
-                            ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
-                            'from "table_a" '.
-                            'left join (select * from "table_b" where "a" = ?)'.
-                            ' as "table_alias_0" on "table_alias_0"."id" = "table_a"."belongs_to_b_id" '.
-                            'left join (select * from "table_c")'.
-                            ' as "table_alias_1" on "table_alias_1"."id" = "table_alias_0"."belongs_to_c_id" '.
-                            'order by'.
-                            ' "table_alias_0_name" asc,'.
-                            ' "table_alias_0_created_at" desc,'.
-                            ' "table_alias_1_name" desc,'.
-                            ' "table_alias_1_created_at" desc,'.
-                            ' "table_a"."name" asc',
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "table_a"
+                            order by
+                                (
+                                    select
+                                        "table_b"."name"
+                                    from
+                                        "table_b"
+                                    where
+                                        "table_a"."belongs_to_b_id" = "table_b"."id"
+                                        and "a" = ?
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "table_b"."created_at"
+                                    from
+                                        "table_b"
+                                    where
+                                        "table_a"."belongs_to_b_id" = "table_b"."id"
+                                        and "a" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "table_b"."name"
+                                    from
+                                        "table_b"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "table_c"
+                                        ) as "sort_by_belongsToC"
+                                            on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
+                                    where
+                                        "table_a"."belongs_to_b_id" = "table_b"."id"
+                                        and "a" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "table_b"."created_at"
+                                    from
+                                        "table_b"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "table_c"
+                                        ) as "sort_by_belongsToC"
+                                            on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
+                                    where
+                                        "table_a"."belongs_to_b_id" = "table_b"."id"
+                                        and "a" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                "name" asc
+                            SQL
+                        ,
                         'bindings' => [
+                            'a',
+                            'a',
+                            'a',
                             'a',
                         ],
                     ],
@@ -145,26 +196,75 @@ class BuilderTest extends TestCase {
                 ],
                 HasOne::class        => [
                     [
-                        'sql'      => ''.
-                            'select'.
-                            ' "table_a".*,'.
-                            ' "table_alias_0"."name" as "table_alias_0_name",'.
-                            ' "table_alias_0"."created_at" as "table_alias_0_created_at",'.
-                            ' "table_alias_1"."name" as "table_alias_1_name",'.
-                            ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
-                            'from "table_a" '.
-                            'left join (select * from "table_b" where'.
-                            ' "b" = ?'.
-                            ') as "table_alias_0" on "table_alias_0"."model_a_id" = "table_a"."id" '.
-                            'left join (select * from "table_c"'.
-                            ') as "table_alias_1" on "table_alias_1"."model_b_id" = "table_alias_0"."id" '.
-                            'order by'.
-                            ' "table_alias_0_name" asc,'.
-                            ' "table_alias_0_created_at" desc,'.
-                            ' "table_alias_1_name" desc,'.
-                            ' "table_alias_1_created_at" desc,'.
-                            ' "table_a"."name" asc',
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "table_a"
+                            order by
+                                (
+                                    select
+                                        "table_b"."name"
+                                    from
+                                        "table_b"
+                                    where
+                                        "table_a"."id" = "table_b"."model_a_id"
+                                        and "b" = ?
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "table_b"."created_at"
+                                    from
+                                        "table_b"
+                                    where
+                                        "table_a"."id" = "table_b"."model_a_id"
+                                        and "b" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "table_b"."name"
+                                    from
+                                        "table_b"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "table_c"
+                                        ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
+                                    where
+                                        "table_a"."id" = "table_b"."model_a_id"
+                                        and "b" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "table_b"."created_at"
+                                    from
+                                        "table_b"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "table_c"
+                                        ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
+                                    where
+                                        "table_a"."id" = "table_b"."model_a_id"
+                                        and "b" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                "name" asc
+                            SQL
+                        ,
                         'bindings' => [
+                            'b',
+                            'b',
+                            'b',
                             'b',
                         ],
                     ],
@@ -181,31 +281,90 @@ class BuilderTest extends TestCase {
                 ],
                 MorphOne::class      => [
                     [
-                        'sql'      => ''.
-                            'select'.
-                            ' "table_a".*,'.
-                            ' "table_alias_0"."name" as "table_alias_0_name",'.
-                            ' "table_alias_0"."created_at" as "table_alias_0_created_at",'.
-                            ' "table_alias_1"."name" as "table_alias_1_name",'.
-                            ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
-                            'from "table_a" '.
-                            'left join (select * from "table_b" where'.
-                            ' "c" = ?'.
-                            ') as "table_alias_0" on "table_alias_0"."morphable_a_id" = "table_a"."id" and'.
-                            ' "table_alias_0"."morphable_a_type" = ? '.
-                            'left join (select * from "table_c"'.
-                            ') as "table_alias_1" on "table_alias_1"."morphable_b_id" = "table_alias_0"."id" and'.
-                            ' "table_alias_1"."morphable_b_type" = ? '.
-                            'order by'.
-                            ' "table_alias_0_name" asc,'.
-                            ' "table_alias_0_created_at" desc,'.
-                            ' "table_alias_1_name" desc,'.
-                            ' "table_alias_1_created_at" desc,'.
-                            ' "table_a"."name" asc',
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "table_a"
+                            order by
+                                (
+                                    select
+                                        "table_b"."name"
+                                    from
+                                        "table_b"
+                                    where
+                                        "table_a"."id" = "table_b"."morphable_a_id"
+                                        and "table_b"."morphable_a_type" = ?
+                                        and "c" = ?
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "table_b"."created_at"
+                                    from
+                                        "table_b"
+                                    where
+                                        "table_a"."id" = "table_b"."morphable_a_id"
+                                        and "table_b"."morphable_a_type" = ?
+                                        and "c" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "table_b"."name"
+                                    from
+                                        "table_b"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "table_c"
+                                        ) as "sort_by_morphOneC"
+                                            on "sort_by_morphOneC"."morphable_b_id" = "table_b"."id"
+                                        and "sort_by_morphOneC"."morphable_b_type" = ?
+                                    where
+                                        "table_a"."id" = "table_b"."morphable_a_id"
+                                        and "table_b"."morphable_a_type" = ?
+                                        and "c" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "table_b"."created_at"
+                                    from
+                                        "table_b"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "table_c"
+                                        ) as "sort_by_morphOneC"
+                                            on "sort_by_morphOneC"."morphable_b_id" = "table_b"."id"
+                                        and "sort_by_morphOneC"."morphable_b_type" = ?
+                                    where
+                                        "table_a"."id" = "table_b"."morphable_a_id"
+                                        and "table_b"."morphable_a_type" = ?
+                                        and "c" = ?
+                                    limit
+                                        1
+                                ) desc,
+                                "name" asc
+                            SQL
+                        ,
                         'bindings' => [
+                            SortBuilderTest__ModelA::class,
                             'c',
                             SortBuilderTest__ModelA::class,
+                            'c',
                             SortBuilderTest__ModelB::class,
+                            SortBuilderTest__ModelA::class,
+                            'c',
+                            SortBuilderTest__ModelB::class,
+                            SortBuilderTest__ModelA::class,
+                            'c',
                         ],
                     ],
                     static function (): EloquentBuilder {
@@ -221,34 +380,81 @@ class BuilderTest extends TestCase {
                 ],
                 HasOneThrough::class => [
                     [
-                        'sql'      => ''.
-                            'select'.
-                            ' "table_a".*,'.
-                            ' "table_alias_0"."name" as "table_alias_0_name",'.
-                            ' "table_alias_0"."created_at" as "table_alias_0_created_at",'.
-                            ' "table_alias_1"."name" as "table_alias_1_name",'.
-                            ' "table_alias_1"."created_at" as "table_alias_1_created_at" '.
-                            'from "table_a" '.
-                            'left join ('.
-                            'select'.
-                            ' "table_b"."id" as "table_alias_0_id",'.
-                            ' "table_c".*'.' '.
-                            'from "table_c" '.
-                            'inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"'.
-                            ') as "table_alias_0" on "table_alias_0"."table_alias_0_id" = "table_a"."local_key" '.
-                            'left join ('.
-                            'select'.
-                            ' "table_b"."id" as "table_alias_1_id",'.
-                            ' "table_a".* '.
-                            'from "table_a" '.
-                            'inner join "table_b" on "table_b"."second_local_key" = "table_a"."second_key"'.
-                            ') as "table_alias_1" on "table_alias_1"."table_alias_1_id" = "table_alias_0"."local_key" '.
-                            'order by'.
-                            ' "table_alias_0_name" asc,'.
-                            ' "table_alias_0_created_at" desc,'.
-                            ' "table_alias_1_name" desc,'.
-                            ' "table_alias_1_created_at" desc,'.
-                            ' "table_a"."name" asc',
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "table_a"
+                            order by
+                                (
+                                    select
+                                        "table_c"."name"
+                                    from
+                                        "table_c"
+                                        inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
+                                    where
+                                        "table_a"."local_key" = "table_b"."first_key"
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "table_c"."created_at"
+                                    from
+                                        "table_c"
+                                        inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
+                                    where
+                                        "table_a"."local_key" = "table_b"."first_key"
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "table_c"."name"
+                                    from
+                                        "table_c"
+                                        inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
+                                        inner join (
+                                            select
+                                                "table_b"."id" as "sort_by_hasOneThroughA_key",
+                                                "table_a".*
+                                            from
+                                                "table_a"
+                                                inner join "table_b"
+                                                    on "table_b"."second_local_key" = "table_a"."second_key"
+                                        ) as "sort_by_hasOneThroughA"
+                                            on "sort_by_hasOneThroughA"."sort_by_hasOneThroughA_key"
+                                                   = "table_c"."local_key"
+                                    where
+                                        "table_a"."local_key" = "table_b"."first_key"
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "table_c"."created_at"
+                                    from
+                                        "table_c"
+                                        inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
+                                        inner join (
+                                            select
+                                                "table_b"."id" as "sort_by_hasOneThroughA_key",
+                                                "table_a".*
+                                            from
+                                                "table_a"
+                                                inner join "table_b"
+                                                    on "table_b"."second_local_key" = "table_a"."second_key"
+                                        ) as "sort_by_hasOneThroughA"
+                                            on "sort_by_hasOneThroughA"."sort_by_hasOneThroughA_key"
+                                                   = "table_c"."local_key"
+                                    where
+                                        "table_a"."local_key" = "table_b"."first_key"
+                                    limit
+                                        1
+                                ) desc,
+                                "name" asc
+                            SQL
+                        ,
                         'bindings' => [
                             // empty
                         ],
