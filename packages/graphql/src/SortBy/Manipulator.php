@@ -88,27 +88,8 @@ class Manipulator extends AstManipulator {
             }
 
             // Create new Field
-            if ($field instanceof InputValueDefinitionNode) {
-                // TODO [SortBy] We probably not need all directives from the
-                //      original Input type, but cloning is the easiest way...
-                $clone = $field->cloneDeep();
-
-                if ($clone instanceof InputValueDefinitionNode) {
-                    $clone->type        = Parser::typeReference($fieldDefinition);
-                    $clone->description = Parser::description("\"\"\"{$description}\"\"\"");
-                    $type->fields[]     = $clone;
-                } else {
-                    throw new FailedToCreateSortClauseForField($this->getNodeName($node), $this->getNodeName($field));
-                }
-            } else {
-                $type->fields[] = Parser::inputValueDefinition(
-                    <<<DEF
-                    """
-                    {$description}
-                    """
-                    {$field->name}: {$fieldDefinition}
-                    DEF,
-                );
+            if (!$this->copyFieldToType($type, $field, $fieldDefinition, $description)) {
+                throw new FailedToCreateSortClauseForField($this->getNodeName($node), $this->getNodeName($field));
             }
         }
 

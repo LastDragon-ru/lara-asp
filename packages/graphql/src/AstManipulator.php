@@ -3,9 +3,11 @@
 namespace LastDragon_ru\LaraASP\GraphQL;
 
 use Exception;
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\WrappingType;
@@ -119,6 +121,40 @@ abstract class AstManipulator {
         return $node instanceof TypeDefinitionNode || $node instanceof InputValueDefinitionNode
             ? $node->name->value
             : $node->name;
+    }
+
+    protected function copyFieldToType(
+        InputObjectTypeDefinitionNode $type,
+        InputValueDefinitionNode|InputObjectField $field,
+        string $newFieldType,
+        string $newFieldDescription,
+    ): bool {
+        $newField = null;
+
+        if ($field instanceof InputValueDefinitionNode) {
+            $clone = $field->cloneDeep();
+
+            if ($clone instanceof InputValueDefinitionNode) {
+                $clone->type        = Parser::typeReference($newFieldType);
+                $clone->description = Parser::description("\"\"\"{$newFieldDescription}\"\"\"");
+                $newField           = $clone;
+            }
+        } else {
+            $newField = Parser::inputValueDefinition(
+                <<<DEF
+                """
+                {$newFieldDescription}
+                """
+                {$field->name}: {$newFieldType}
+                DEF,
+            );
+        }
+
+        if ($newField) {
+            $type->fields[] = $newField;
+        }
+
+        return (bool) $newField;
     }
     //</editor-fold>
 }

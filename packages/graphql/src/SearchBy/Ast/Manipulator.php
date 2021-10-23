@@ -215,27 +215,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
             // Create new Field
             if ($fieldDefinition) {
-                if ($field instanceof InputValueDefinitionNode) {
-                    // TODO [SearchBy] We probably not need all directives from the
-                    //      original Input type, but cloning is the easiest way...
-                    $clone = $field->cloneDeep();
-
-                    if ($clone instanceof InputValueDefinitionNode) {
-                        $clone->type        = Parser::typeReference($fieldDefinition);
-                        $clone->description = Parser::description("\"\"\"{$description}\"\"\"");
-                        $type->fields[]     = $clone;
-                    } else {
-                        throw new FailedToCreateSearchConditionForField($this->getNodeName($node), $fieldName);
-                    }
-                } else {
-                    $type->fields[] = Parser::inputValueDefinition(
-                        <<<DEF
-                        """
-                        {$description}
-                        """
-                        {$field->name}: {$fieldDefinition}
-                        DEF,
-                    );
+                if (!$this->copyFieldToType($type, $field, $fieldDefinition, $description)) {
+                    throw new FailedToCreateSearchConditionForField($this->getNodeName($node), $fieldName);
                 }
             } else {
                 throw new NotImplemented($fieldType);
