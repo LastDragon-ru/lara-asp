@@ -6,6 +6,7 @@ use Cron\CronExpression;
 use Exception;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
@@ -58,7 +59,9 @@ class CronableRegistrator {
         // Register
         $this
             ->schedule
-            ->job($job)
+            ->call(static function () use ($job): bool {
+                return (bool) new PendingDispatch($job);
+            })
             ->cron($cron)
             ->timezone($timezone)
             ->description($this->getJobName($cronable, $job, $config))

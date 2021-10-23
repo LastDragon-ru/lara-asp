@@ -35,7 +35,7 @@ class CronableRegistratorTest extends TestCase {
 
         $this->override(Schedule::class, static function (MockInterface $schedule): void {
             $schedule
-                ->shouldReceive('job')
+                ->shouldReceive('call')
                 ->once()
                 ->andReturnSelf();
             $schedule
