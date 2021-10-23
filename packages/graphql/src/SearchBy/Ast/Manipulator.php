@@ -11,11 +11,14 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ScalarType;
-use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
@@ -71,7 +74,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             $type = null;
             $name = null;
 
-            if ($def instanceof InputObjectTypeDefinitionNode) {
+            if ($def instanceof InputObjectTypeDefinitionNode || $def instanceof InputObjectType) {
                 $name = $this->getInputType($def);
                 $type = Parser::typeReference($name);
             }
@@ -131,7 +134,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return $name;
     }
 
-    public function getInputType(InputObjectTypeDefinitionNode $node): string {
+    public function getInputType(InputObjectTypeDefinitionNode|InputObjectType $node): string {
         // Exists?
         $name = $this->getConditionTypeName($node);
 
@@ -160,10 +163,14 @@ class Manipulator extends AstManipulator implements TypeProvider {
         ));
 
         // Add searchable fields
-        $description = Parser::description('"""Property condition."""');
+        $description = 'Property condition.';
+        $fields      = $node instanceof InputObjectType
+            ? $node->getFields()
+            : $node->fields;
 
-        /** @var InputValueDefinitionNode $field */
-        foreach ($node->fields as $field) {
+        foreach ($fields as $field) {
+            /** @var InputValueDefinitionNode|InputObjectField $field */
+
             // Name should be unique
             $fieldName = $this->getNodeName($field);
 
@@ -173,32 +180,34 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
             // Determine type
             $fieldType       = $this->getNodeTypeName($field);
-            $fieldNullable   = !($field->type instanceof NonNullTypeNode);
-            $fieldTypeNode   = $this->getTypeDefinitionNode($field);
+            $fieldNullable   = $field instanceof InputValueDefinitionNode
+                ? !($field->type instanceof NonNullTypeNode)
+                : !($field->getType() instanceof NonNull);
+            $fieldTypeNode   = null;
             $fieldDefinition = null;
 
-            if ($fieldTypeNode instanceof Type) {
-                if ($fieldTypeNode->astNode) {
-                    $fieldTypeNode = $fieldTypeNode->astNode;
-                } elseif ($fieldTypeNode instanceof EnumType) {
-                    $fieldTypeNode = $this->getFakeEnumTypeNode($fieldType);
-                } elseif ($fieldTypeNode instanceof ScalarType) {
+            try {
+                $fieldTypeNode = $this->getTypeDefinitionNode($field);
+            } catch (TypeDefinitionUnknown $exception) {
+                if ($this->metadata->isScalar($fieldType)) {
                     $fieldTypeNode = $this->getScalarTypeNode($fieldType);
                 } else {
-                    $fieldTypeNode = null;
+                    throw $exception;
                 }
-            } elseif ($this->metadata->isScalar($fieldType)) {
-                $fieldTypeNode = $this->getScalarTypeNode($fieldType);
-            } else {
-                // empty
             }
 
             // Create Type for Search
             if ($fieldTypeNode instanceof ScalarTypeDefinitionNode) {
                 $fieldDefinition = $this->getScalarType($fieldTypeNode, $fieldNullable);
+            } elseif ($fieldTypeNode instanceof ScalarType) {
+                $fieldDefinition = $this->getScalarType($fieldTypeNode, $fieldNullable);
             } elseif ($fieldTypeNode instanceof InputObjectTypeDefinitionNode) {
                 $fieldDefinition = $this->getComplexType($field, $fieldTypeNode, $fieldNullable);
+            } elseif ($fieldTypeNode instanceof InputObjectType) {
+                $fieldDefinition = $this->getComplexType($field, $fieldTypeNode, $fieldNullable);
             } elseif ($fieldTypeNode instanceof EnumTypeDefinitionNode) {
+                $fieldDefinition = $this->getEnumType($fieldTypeNode, $fieldNullable);
+            } elseif ($fieldTypeNode instanceof EnumType) {
                 $fieldDefinition = $this->getEnumType($fieldTypeNode, $fieldNullable);
             } else {
                 // empty
@@ -206,21 +215,30 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
             // Create new Field
             if ($fieldDefinition) {
-                // TODO [SearchBy] We probably not need all directives from the
-                //      original Input type, but cloning is the easiest way...
-                $clone = $field->cloneDeep();
+                if ($field instanceof InputValueDefinitionNode) {
+                    // TODO [SearchBy] We probably not need all directives from the
+                    //      original Input type, but cloning is the easiest way...
+                    $clone = $field->cloneDeep();
 
-                if ($clone instanceof InputValueDefinitionNode) {
-                    $clone->type        = Parser::typeReference($fieldDefinition);
-                    $clone->description = $description;
-                    $type->fields[]     = $clone;
+                    if ($clone instanceof InputValueDefinitionNode) {
+                        $clone->type        = Parser::typeReference($fieldDefinition);
+                        $clone->description = Parser::description("\"\"\"{$description}\"\"\"");
+                        $type->fields[]     = $clone;
+                    } else {
+                        throw new FailedToCreateSearchConditionForField($this->getNodeName($node), $fieldName);
+                    }
                 } else {
-                    throw new FailedToCreateSearchConditionForField($this->getNodeName($node), $fieldName);
+                    $type->fields[] = Parser::inputValueDefinition(
+                        <<<DEF
+                        """
+                        {$description}
+                        """
+                        {$field->name}: {$fieldDefinition}
+                        DEF,
+                    );
                 }
-            } elseif ($fieldTypeNode) {
-                throw new NotImplemented($fieldType);
             } else {
-                // empty
+                throw new NotImplemented($fieldType);
             }
         }
 
@@ -231,7 +249,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return $name;
     }
 
-    public function getEnumType(EnumTypeDefinitionNode $type, bool $nullable): string {
+    public function getEnumType(EnumTypeDefinitionNode|EnumType $type, bool $nullable): string {
         // Exists?
         $name = $this->getEnumTypeName($type, $nullable);
 
@@ -269,7 +287,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return $name;
     }
 
-    public function getScalarType(ScalarTypeDefinitionNode $type, bool $nullable): string {
+    public function getScalarType(ScalarTypeDefinitionNode|ScalarType $type, bool $nullable): string {
         // Exists?
         $name = $this->getScalarTypeName($type, $nullable);
 
@@ -310,15 +328,15 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     protected function getOperatorType(
         Operator $operator,
-        ScalarTypeDefinitionNode|EnumTypeDefinitionNode $node,
+        ScalarTypeDefinitionNode|ScalarType|EnumTypeDefinitionNode|EnumType $node,
         bool $nullable,
     ): string {
         return $operator->getDefinition($this, $this->getNodeName($node), $nullable);
     }
 
     protected function getComplexType(
-        InputValueDefinitionNode $field,
-        InputObjectTypeDefinitionNode $type,
+        InputValueDefinitionNode|InputObjectField $field,
+        InputObjectTypeDefinitionNode|InputObjectType $type,
         bool $nullable,
     ): string {
         // Exists?
@@ -375,20 +393,20 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return Directive::Name.'Type'.Str::studly($name).($scalar ?: '').($nullable ? 'OrNull' : '');
     }
 
-    protected function getConditionTypeName(InputObjectTypeDefinitionNode $node): string {
+    protected function getConditionTypeName(InputObjectTypeDefinitionNode|InputObjectType $node): string {
         return Directive::Name."Condition{$this->getNodeName($node)}";
     }
 
-    protected function getEnumTypeName(EnumTypeDefinitionNode $node, bool $nullable): string {
+    protected function getEnumTypeName(EnumTypeDefinitionNode|EnumType $node, bool $nullable): string {
         return Directive::Name."Enum{$this->getNodeName($node)}".($nullable ? 'OrNull' : '');
     }
 
-    protected function getScalarTypeName(ScalarTypeDefinitionNode $node, bool $nullable): string {
+    protected function getScalarTypeName(ScalarTypeDefinitionNode|ScalarType $node, bool $nullable): string {
         return Directive::Name."Scalar{$this->getNodeName($node)}".($nullable ? 'OrNull' : '');
     }
 
     protected function getComplexTypeName(
-        InputObjectTypeDefinitionNode $node,
+        InputObjectTypeDefinitionNode|InputObjectType $node,
         ComplexOperator $operator,
     ): string {
         $name     = $this->getNodeName($node);
@@ -427,7 +445,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     protected function getComplexOperator(
-        InputValueDefinitionNode|InputObjectTypeDefinitionNode ...$nodes,
+        InputValueDefinitionNode|InputObjectTypeDefinitionNode|InputObjectField|InputObjectType ...$nodes,
     ): ComplexOperator {
         // Class
         $class = null;
@@ -490,11 +508,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
     public function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
         // TODO [GraphQL] Is there any better way for this?
         return Parser::scalarTypeDefinition("scalar {$scalar}");
-    }
-
-    protected function getFakeEnumTypeNode(string $scalar): EnumTypeDefinitionNode {
-        // TODO [GraphQL] Is there any better way for this?
-        return Parser::enumTypeDefinition("enum {$scalar} { fake }");
     }
     // </editor-fold>
 }

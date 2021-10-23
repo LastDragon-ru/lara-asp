@@ -1,48 +1,212 @@
-enum EnumCreateProgrammatically {
-  """test property"""
-  property
-}
-
-input InputA {
-  enum: EnumCreateProgrammatically
-}
-
 type Query {
-  a(where: SearchByConditionInputA): ID!
+  a(where: SearchByConditionTestTypeB): ID!
 }
 
 """
-Available conditions for input InputA (only one property allowed at a time).
+Conditions for the related objects (`has()`/`doesntHave()`) for input TestTypeA.
+
+See also:
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
 """
-input SearchByConditionInputA {
+input SearchByComplexRelationTestTypeA {
+  """Additional conditions."""
+  where: SearchByConditionTestTypeA
+
+  """Count conditions."""
+  count: SearchByScalarInt
+
+  """
+  Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+  """
+  exists: Boolean
+
+  """
+  Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
+  """
+  notExists: Boolean! = false
+
+  """Complex operator marker."""
+  relation: SearchByTypeFlag! = yes
+}
+
+"""
+Available conditions for input TestTypeA (only one property allowed at a time).
+"""
+input SearchByConditionTestTypeA {
   """All of the conditions must be true."""
-  allOf: [SearchByConditionInputA!]
+  allOf: [SearchByConditionTestTypeA!]
 
   """Any of the conditions must be true."""
-  anyOf: [SearchByConditionInputA!]
+  anyOf: [SearchByConditionTestTypeA!]
 
   """Not."""
-  not: SearchByConditionInputA
+  not: SearchByConditionTestTypeA
 
   """Property condition."""
-  enum: SearchByEnumEnumCreateProgrammaticallyOrNull
+  name: SearchByScalarStringOrNull
+
+  """Property condition."""
+  flag: SearchByScalarBooleanOrNull
+
+  """Property condition."""
+  value: SearchByEnumTestEnumOrNull
 }
 
 """
-Available operators for enum EnumCreateProgrammatically (only one operator allowed at a time).
+Available conditions for input TestTypeB (only one property allowed at a time).
 """
-input SearchByEnumEnumCreateProgrammaticallyOrNull {
+input SearchByConditionTestTypeB {
+  """All of the conditions must be true."""
+  allOf: [SearchByConditionTestTypeB!]
+
+  """Any of the conditions must be true."""
+  anyOf: [SearchByConditionTestTypeB!]
+
+  """Not."""
+  not: SearchByConditionTestTypeB
+
+  """Property condition."""
+  name: SearchByScalarString
+
+  """Property condition."""
+  child: SearchByComplexRelationTestTypeA
+}
+
+"""
+Available operators for enum TestEnum (only one operator allowed at a time).
+"""
+input SearchByEnumTestEnumOrNull {
   """Equal (`=`)."""
-  equal: EnumCreateProgrammatically
+  equal: TestEnum
 
   """Not Equal (`!=`)."""
-  notEqual: EnumCreateProgrammatically
+  notEqual: TestEnum
 
   """Within a set of values."""
-  in: [EnumCreateProgrammatically!]
+  in: [TestEnum!]
 
   """Outside a set of values."""
-  notIn: [EnumCreateProgrammatically!]
+  notIn: [TestEnum!]
+
+  """Is NULL?"""
+  isNull: SearchByTypeFlag
+
+  """Is NOT NULL?"""
+  isNotNull: SearchByTypeFlag
+}
+
+"""
+Available operators for scalar Boolean (only one operator allowed at a time).
+"""
+input SearchByScalarBooleanOrNull {
+  """Equal (`=`)."""
+  equal: Boolean
+
+  """Is NULL?"""
+  isNull: SearchByTypeFlag
+
+  """Is NOT NULL?"""
+  isNotNull: SearchByTypeFlag
+}
+
+"""
+Available operators for scalar Int! (only one operator allowed at a time).
+"""
+input SearchByScalarInt {
+  """Equal (`=`)."""
+  equal: Int
+
+  """Not Equal (`!=`)."""
+  notEqual: Int
+
+  """Less than (`<`)."""
+  lessThan: Int
+
+  """Less than or equal to (`<=`)."""
+  lessThanOrEqual: Int
+
+  """Greater than (`>`)."""
+  greaterThan: Int
+
+  """Greater than or equal to (`>=`)."""
+  greaterThanOrEqual: Int
+
+  """Within a set of values."""
+  in: [Int!]
+
+  """Outside a set of values."""
+  notIn: [Int!]
+
+  """Within a range."""
+  between: SearchByTypeRangeInt
+
+  """Outside a range."""
+  notBetween: SearchByTypeRangeInt
+}
+
+"""
+Available operators for scalar String! (only one operator allowed at a time).
+"""
+input SearchByScalarString {
+  """Equal (`=`)."""
+  equal: String
+
+  """Not Equal (`!=`)."""
+  notEqual: String
+
+  """Like."""
+  like: String
+
+  """Not like."""
+  notLike: String
+
+  """Within a set of values."""
+  in: [String!]
+
+  """Outside a set of values."""
+  notIn: [String!]
+
+  """Contains."""
+  contains: String
+
+  """Starts with a string."""
+  startsWith: String
+
+  """Ends with a string."""
+  endsWith: String
+}
+
+"""
+Available operators for scalar String (only one operator allowed at a time).
+"""
+input SearchByScalarStringOrNull {
+  """Equal (`=`)."""
+  equal: String
+
+  """Not Equal (`!=`)."""
+  notEqual: String
+
+  """Like."""
+  like: String
+
+  """Not like."""
+  notLike: String
+
+  """Within a set of values."""
+  in: [String!]
+
+  """Outside a set of values."""
+  notIn: [String!]
+
+  """Contains."""
+  contains: String
+
+  """Starts with a string."""
+  startsWith: String
+
+  """Ends with a string."""
+  endsWith: String
 
   """Is NULL?"""
   isNull: SearchByTypeFlag
@@ -53,4 +217,25 @@ input SearchByEnumEnumCreateProgrammaticallyOrNull {
 
 enum SearchByTypeFlag {
   yes
+}
+
+input SearchByTypeRangeInt {
+  min: Int!
+  max: Int!
+}
+
+enum TestEnum {
+  """test property"""
+  property
+}
+
+input TestTypeA {
+  name: String
+  flag: Boolean
+  value: [TestEnum!]
+}
+
+input TestTypeB {
+  name: String!
+  child: TestTypeA
 }

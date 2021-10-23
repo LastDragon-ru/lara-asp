@@ -6,7 +6,9 @@ use Exception;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -40,7 +42,7 @@ abstract class AstManipulator {
         }
     }
 
-    protected function getTypeDefinitionNode(Node|string $node): TypeDefinitionNode|Type {
+    protected function getTypeDefinitionNode(Node|InputObjectField|string $node): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
         $definition = $this->document->types[$name] ?? null;
 
@@ -86,17 +88,34 @@ abstract class AstManipulator {
      *
      * @return T|null
      */
-    protected function getNodeDirective(Node $node, string $class): ?object {
-        return $this->directives->associatedOfType($node, $class)->first();
-    }
-
-    protected function getNodeTypeName(Node|string $node): string {
+    protected function getNodeDirective(Node|Type|InputObjectField $node, string $class): ?object {
+        // TODO [graphql] Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         return $node instanceof Node
-            ? ASTHelper::getUnderlyingTypeName($node)
-            : $node;
+            ? $this->directives->associatedOfType($node, $class)->first()
+            : null;
     }
 
-    public function getNodeName(InputValueDefinitionNode|TypeDefinitionNode|Type $node): string {
+    protected function getNodeTypeName(Node|InputObjectField|string $node): string {
+        $name = null;
+
+        if ($node instanceof InputObjectField) {
+            $type = $node->getType();
+
+            if ($type instanceof WrappingType) {
+                $name = $type->getWrappedType(true)->name;
+            } else {
+                $name = $type->name;
+            }
+        } elseif ($node instanceof Node) {
+            $name = ASTHelper::getUnderlyingTypeName($node);
+        } else {
+            $name = $node;
+        }
+
+        return $name;
+    }
+
+    public function getNodeName(InputValueDefinitionNode|TypeDefinitionNode|InputObjectField|Type $node): string {
         return $node instanceof TypeDefinitionNode || $node instanceof InputValueDefinitionNode
             ? $node->name->value
             : $node->name;

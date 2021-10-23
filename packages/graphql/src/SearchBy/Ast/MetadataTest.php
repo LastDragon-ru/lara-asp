@@ -6,6 +6,8 @@ use Exception;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\InputObjectType;
 use Hamcrest\Core\IsNot;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -205,8 +207,8 @@ class MetadataTest extends TestCase {
 
             public function getDefinition(
                 Manipulator $ast,
-                InputValueDefinitionNode $field,
-                InputObjectTypeDefinitionNode $type,
+                InputValueDefinitionNode|InputObjectField $field,
+                InputObjectTypeDefinitionNode|InputObjectType $type,
                 string $name,
                 bool $nullable,
             ): InputObjectTypeDefinitionNode {

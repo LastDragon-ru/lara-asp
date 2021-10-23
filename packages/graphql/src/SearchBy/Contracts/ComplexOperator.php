@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\InputObjectType;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
@@ -19,8 +21,8 @@ interface ComplexOperator {
 
     public function getDefinition(
         Manipulator $ast,
-        InputValueDefinitionNode $field,
-        InputObjectTypeDefinitionNode $type,
+        InputValueDefinitionNode|InputObjectField $field,
+        InputObjectTypeDefinitionNode|InputObjectType $type,
         string $name,
         bool $nullable,
     ): InputObjectTypeDefinitionNode;

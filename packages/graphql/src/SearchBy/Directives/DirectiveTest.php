@@ -5,7 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 use Closure;
 use Exception;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains;
@@ -182,15 +184,51 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      */
     public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {
-        $this->app->make(TypeRegistry::class)->register(new EnumType([
-            'name'   => 'EnumCreateProgrammatically',
+        $enum  = new EnumType([
+            'name'   => 'TestEnum',
             'values' => [
                 'property' => [
                     'value'       => 123,
                     'description' => 'test property',
                 ],
             ],
-        ]));
+        ]);
+        $typeA = new InputObjectType([
+            'name'   => 'TestTypeA',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::string(),
+                ],
+                [
+                    'name' => 'flag',
+                    'type' => Type::boolean(),
+                ],
+                [
+                    'name' => 'value',
+                    'type' => Type::listOf(Type::nonNull($enum)),
+                ],
+            ],
+        ]);
+        $typeB = new InputObjectType([
+            'name'   => 'TestTypeB',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::nonNull(Type::string()),
+                ],
+                [
+                    'name' => 'child',
+                    'type' => $typeA,
+                ],
+            ],
+        ]);
+
+        $registry = $this->app->make(TypeRegistry::class);
+
+        $registry->register($enum);
+        $registry->register($typeA);
+        $registry->register($typeB);
 
         $this->assertGraphQLSchemaEquals(
             $this->getTestData()->file('~programmatically-expected.graphql'),
