@@ -51,7 +51,7 @@ class DirectiveTest extends TestCase {
                 ],
                 [
                     'name' => 'flag',
-                    'type' => Type::boolean(),
+                    'type' => Type::nonNull(Type::boolean()),
                 ],
             ],
         ]);

@@ -1,6 +1,6 @@
 input A {
   name: String
-  flag: Boolean
+  flag: Boolean!
 }
 
 input B {
