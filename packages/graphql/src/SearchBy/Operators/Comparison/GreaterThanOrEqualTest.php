@@ -20,7 +20,7 @@ class GreaterThanOrEqualTest extends TestCase {
      *
      * @dataProvider dataProviderApply
      *
-     * @param array{sql: string, bindings: array<mixed>} $expected
+     * @param array{query: string, bindings: array<mixed>} $expected
      */
     public function testApply(
         array $expected,
@@ -31,12 +31,8 @@ class GreaterThanOrEqualTest extends TestCase {
         $operator = $this->app->make(GreaterThanOrEqual::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($builder, $property, $value);
-        $actual   = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 
@@ -51,7 +47,7 @@ class GreaterThanOrEqualTest extends TestCase {
             new ArrayDataProvider([
                 'greater than or equal' => [
                     [
-                        'sql'      => 'select * from "tmp" where "property" >= ?',
+                        'query'    => 'select * from "tmp" where "property" >= ?',
                         'bindings' => [123],
                     ],
                     'property',

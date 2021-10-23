@@ -20,7 +20,7 @@ class NotInTest extends TestCase {
      *
      * @dataProvider dataProviderApply
      *
-     * @param array{sql: string, bindings: array<mixed>} $expected
+     * @param array{query: string, bindings: array<mixed>} $expected
      */
     public function testApply(
         array $expected,
@@ -31,12 +31,8 @@ class NotInTest extends TestCase {
         $operator = $this->app->make(NotIn::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($builder, $property, $value);
-        $actual   = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 
@@ -51,7 +47,7 @@ class NotInTest extends TestCase {
             new ArrayDataProvider([
                 'ok' => [
                     [
-                        'sql'      => 'select * from "tmp" where "property" not in (?, ?, ?)',
+                        'query'    => 'select * from "tmp" where "property" not in (?, ?, ?)',
                         'bindings' => ['abc', 2, 4],
                     ],
                     'property',

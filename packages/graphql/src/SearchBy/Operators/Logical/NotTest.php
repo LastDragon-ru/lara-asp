@@ -26,8 +26,8 @@ class NotTest extends TestCase {
      *
      * @dataProvider dataProviderApply
      *
-     * @param array{sql: string, bindings: array<mixed>} $expected
-     * @param array<mixed>                               $conditions
+     * @param array{query: string, bindings: array<mixed>} $expected
+     * @param array<mixed>                                 $conditions
      */
     public function testApply(array $expected, Closure $builder, array $conditions, ?string $tableAlias): void {
         $search   = new SearchBuilder([
@@ -38,12 +38,8 @@ class NotTest extends TestCase {
         $operator = $this->app->make(Not::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($search, $builder, $conditions, $tableAlias);
-        $actual   = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 
@@ -59,7 +55,7 @@ class NotTest extends TestCase {
                 new ArrayDataProvider([
                     'not with alias' => [
                         [
-                            'sql'      => 'select * from "tmp" where not ((("alias"."a" = ?) and ("alias"."b" != ?)))',
+                            'query'    => 'select * from "tmp" where not ((("alias"."a" = ?) and ("alias"."b" != ?)))',
                             'bindings' => [
                                 2,
                                 22,
@@ -80,7 +76,7 @@ class NotTest extends TestCase {
                 new ArrayDataProvider([
                     'not' => [
                         [
-                            'sql'      => 'select * from "tmp" where not ((("a" = ?) and ("b" != ?)))',
+                            'query'    => 'select * from "tmp" where not ((("a" = ?) and ("b" != ?)))',
                             'bindings' => [
                                 2,
                                 22,
@@ -101,7 +97,7 @@ class NotTest extends TestCase {
                 new ArrayDataProvider([
                     'not' => [
                         [
-                            'sql'      => 'select * from "tmp" where not ((("tmp"."a" = ?) and ("tmp"."b" != ?)))',
+                            'query'    => 'select * from "tmp" where not ((("tmp"."a" = ?) and ("tmp"."b" != ?)))',
                             'bindings' => [
                                 2,
                                 22,

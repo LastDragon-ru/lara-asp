@@ -31,6 +31,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Mockery;
 
+use function is_array;
+
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder
@@ -43,8 +45,8 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcess
      *
-     * @param array<mixed>|Exception $expected
-     * @param array<mixed>           $conditions
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param array<mixed>                                           $conditions
      */
     public function testProcess(
         array|Exception $expected,
@@ -66,12 +68,12 @@ class SearchBuilderTest extends TestCase {
         ]);
         $builder = $builder($this);
         $builder = $search->process($builder, $conditions, $tableAlias);
-        $actual  = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        if (is_array($expected)) {
+            $this->assertDatabaseQueryEquals($expected, $builder);
+        } else {
+            $this->fail('Something wrong...');
+        }
     }
 
     /**
@@ -79,8 +81,8 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcessComparison
      *
-     * @param array<mixed>|Exception $expected
-     * @param array<mixed>           $conditions
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param array<mixed>                                           $conditions
      */
     public function testProcessComparison(
         array|Exception $expected,
@@ -100,12 +102,12 @@ class SearchBuilderTest extends TestCase {
         ]);
         $builder = $builder($this);
         $builder = $search->processComparison($builder, $property, $conditions, $tableAlias);
-        $actual  = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        if (is_array($expected)) {
+            $this->assertDatabaseQueryEquals($expected, $builder);
+        } else {
+            $this->fail('Something wrong...');
+        }
     }
 
     /**
@@ -113,7 +115,7 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcessLogicalOperator
      *
-     * @param array<mixed> $expected
+     * @param array{query: string, bindings: array<mixed>} $expected
      */
     public function testProcessLogicalOperator(array $expected, Closure $builder): void {
         $conditions = [1, 2];
@@ -142,12 +144,8 @@ class SearchBuilderTest extends TestCase {
 
         $builder = $builder($this);
         $builder = $search->processLogicalOperator($builder, $logical, $conditions);
-        $actual  = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
 
     /**
@@ -155,7 +153,7 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcessComplexOperator
      *
-     * @param array<mixed> $expected
+     * @param array{query: string, bindings: array<mixed>} $expected
      */
     public function testProcessComplexOperator(array $expected, Closure $builder): void {
         $conditions = [1, 2, 4];
@@ -184,12 +182,8 @@ class SearchBuilderTest extends TestCase {
 
         $builder = $builder($this);
         $builder = $search->processComplexOperator($builder, $complex, $property, $conditions);
-        $actual  = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
 
     /**
@@ -257,7 +251,7 @@ class SearchBuilderTest extends TestCase {
                     ],
                     'valid condition with table alias' => [
                         [
-                            'sql'      => 'select * from "tmp" where ('.
+                            'query'    => 'select * from "tmp" where ('.
                                 'not ((("alias"."a" != ?) and ((("alias"."a" = ?) or ("alias"."b" != ?)))))'.
                                 ')',
                             'bindings' => [
@@ -300,7 +294,7 @@ class SearchBuilderTest extends TestCase {
                 new ArrayDataProvider([
                     'valid condition' => [
                         [
-                            'sql'      => 'select * from "tmp" where ('.
+                            'query'    => 'select * from "tmp" where ('.
                                 'not ((("a" != ?) and ((("a" = ?) or ("b" != ?)))))'.
                                 ')',
                             'bindings' => [
@@ -343,7 +337,7 @@ class SearchBuilderTest extends TestCase {
                 new ArrayDataProvider([
                     'valid condition' => [
                         [
-                            'sql'      => 'select * from "tmp" where ('.
+                            'query'    => 'select * from "tmp" where ('.
                                 'not ((("tmp"."a" != ?) and ((("tmp"."a" = ?) or ("tmp"."b" != ?)))))'.
                                 ')',
                             'bindings' => [
@@ -393,7 +387,7 @@ class SearchBuilderTest extends TestCase {
             new ArrayDataProvider([
                 'ok' => [
                     [
-                        'sql'      => 'select * from "tmp" where ((1 = 1))',
+                        'query'    => 'select * from "tmp" where ((1 = 1))',
                         'bindings' => [],
                     ],
                 ],
@@ -410,7 +404,7 @@ class SearchBuilderTest extends TestCase {
             new ArrayDataProvider([
                 'ok' => [
                     [
-                        'sql'      => 'select * from "tmp" where (1 = 1)',
+                        'query'    => 'select * from "tmp" where (1 = 1)',
                         'bindings' => [],
                     ],
                 ],
@@ -451,7 +445,7 @@ class SearchBuilderTest extends TestCase {
                     ],
                     'valid condition with table alias' => [
                         [
-                            'sql'      => 'select * from "tmp" where "alias"."property" = ?',
+                            'query'    => 'select * from "tmp" where "alias"."property" = ?',
                             'bindings' => [
                                 123,
                             ],
@@ -469,7 +463,7 @@ class SearchBuilderTest extends TestCase {
                 new ArrayDataProvider([
                     'valid condition' => [
                         [
-                            'sql'      => 'select * from "tmp" where "property" = ?',
+                            'query'    => 'select * from "tmp" where "property" = ?',
                             'bindings' => [
                                 123,
                             ],
@@ -487,7 +481,7 @@ class SearchBuilderTest extends TestCase {
                 new ArrayDataProvider([
                     'valid condition' => [
                         [
-                            'sql'      => 'select * from "tmp" where "tmp"."property" = ?',
+                            'query'    => 'select * from "tmp" where "tmp"."property" = ?',
                             'bindings' => [
                                 123,
                             ],

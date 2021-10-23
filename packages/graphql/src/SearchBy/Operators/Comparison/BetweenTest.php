@@ -20,7 +20,7 @@ class BetweenTest extends TestCase {
      *
      * @dataProvider dataProviderApply
      *
-     * @param array{sql: string, bindings: array<mixed>} $expected
+     * @param array{query: string, bindings: array<mixed>} $expected
      */
     public function testApply(
         array $expected,
@@ -31,12 +31,8 @@ class BetweenTest extends TestCase {
         $operator = $this->app->make(Between::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($builder, $property, $value);
-        $actual   = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 
@@ -51,7 +47,7 @@ class BetweenTest extends TestCase {
             new ArrayDataProvider([
                 'between' => [
                     [
-                        'sql'      => 'select * from "tmp" where "property" between ? and ?',
+                        'query'    => 'select * from "tmp" where "property" between ? and ?',
                         'bindings' => [1, 2],
                     ],
                     'property',

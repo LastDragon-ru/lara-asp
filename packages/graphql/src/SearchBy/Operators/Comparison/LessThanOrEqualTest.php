@@ -20,7 +20,7 @@ class LessThanOrEqualTest extends TestCase {
      *
      * @dataProvider dataProviderApply
      *
-     * @param array{sql: string, bindings: array<mixed>} $expected
+     * @param array{query: string, bindings: array<mixed>} $expected
      */
     public function testApply(
         array $expected,
@@ -31,12 +31,8 @@ class LessThanOrEqualTest extends TestCase {
         $operator = $this->app->make(LessThanOrEqual::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($builder, $property, $value);
-        $actual   = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 
@@ -51,7 +47,7 @@ class LessThanOrEqualTest extends TestCase {
             new ArrayDataProvider([
                 'less than or equal' => [
                     [
-                        'sql'      => 'select * from "tmp" where "property" <= ?',
+                        'query'    => 'select * from "tmp" where "property" <= ?',
                         'bindings' => [123],
                     ],
                     'property',

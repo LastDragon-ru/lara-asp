@@ -26,8 +26,8 @@ class AllOfTest extends TestCase {
      *
      * @dataProvider dataProviderApply
      *
-     * @param array{sql: string, bindings: array<mixed>} $expected
-     * @param array<mixed>                               $conditions
+     * @param array{query: string, bindings: array<mixed>} $expected
+     * @param array<mixed>                                 $conditions
      */
     public function testApply(array $expected, Closure $builder, array $conditions, ?string $tableAlias): void {
         $search   = new SearchBuilder([
@@ -37,12 +37,8 @@ class AllOfTest extends TestCase {
         $operator = $this->app->make(AllOf::class);
         $builder  = $builder($this);
         $builder  = $operator->apply($search, $builder, $conditions, $tableAlias);
-        $actual   = [
-            'sql'      => $builder->toSql(),
-            'bindings' => $builder->getBindings(),
-        ];
 
-        $this->assertEquals($expected, $actual);
+        $this->assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 
@@ -58,7 +54,7 @@ class AllOfTest extends TestCase {
                 new ArrayDataProvider([
                     'allOf with alias' => [
                         [
-                            'sql'      => 'select * from "tmp" where ("alias"."a" = ?) and ("alias"."b" != ?)',
+                            'query'    => 'select * from "tmp" where ("alias"."a" = ?) and ("alias"."b" != ?)',
                             'bindings' => [
                                 2,
                                 22,
@@ -77,7 +73,7 @@ class AllOfTest extends TestCase {
                 new ArrayDataProvider([
                     'allOf' => [
                         [
-                            'sql'      => 'select * from "tmp" where ("a" = ?) and ("b" != ?)',
+                            'query'    => 'select * from "tmp" where ("a" = ?) and ("b" != ?)',
                             'bindings' => [
                                 2,
                                 22,
@@ -96,7 +92,7 @@ class AllOfTest extends TestCase {
                 new ArrayDataProvider([
                     'allOf' => [
                         [
-                            'sql'      => 'select * from "tmp" where ("tmp"."a" = ?) and ("tmp"."b" != ?)',
+                            'query'    => 'select * from "tmp" where ("tmp"."a" = ?) and ("tmp"."b" != ?)',
                             'bindings' => [
                                 2,
                                 22,
