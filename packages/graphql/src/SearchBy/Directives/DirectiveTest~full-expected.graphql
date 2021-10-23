@@ -530,6 +530,15 @@ input SearchByScalarString {
 
   """Outside a set of values."""
   notIn: [String!]
+
+  """Contains."""
+  contains: String
+
+  """Starts with a string."""
+  startsWith: String
+
+  """Ends with a string."""
+  endsWith: String
 }
 
 """
@@ -553,6 +562,15 @@ input SearchByScalarStringOrNull {
 
   """Outside a set of values."""
   notIn: [String!]
+
+  """Contains."""
+  contains: String
+
+  """Starts with a string."""
+  startsWith: String
+
+  """Ends with a string."""
+  endsWith: String
 
   """Is NULL?"""
   isNull: SearchByTypeFlag

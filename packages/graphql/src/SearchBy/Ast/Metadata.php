@@ -16,6 +16,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\EndsWith;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
@@ -29,6 +31,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\StartsWith;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
@@ -69,6 +72,9 @@ class Metadata {
             NotLike::class,
             In::class,
             NotIn::class,
+            Contains::class,
+            StartsWith::class,
+            EndsWith::class,
         ],
 
         // Special types

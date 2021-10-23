@@ -8,6 +8,8 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\EndsWith;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
@@ -21,6 +23,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\StartsWith;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
@@ -90,6 +93,8 @@ class DirectiveTest extends TestCase {
             [
                 'a' => [
                     Between::class,
+                    Contains::class,
+                    EndsWith::class,
                     Equal::class,
                     GreaterThan::class,
                     GreaterThanOrEqual::class,
@@ -103,6 +108,7 @@ class DirectiveTest extends TestCase {
                     NotEqual::class,
                     NotIn::class,
                     NotLike::class,
+                    StartsWith::class,
                     Relation::class,
                     AllOf::class,
                     AnyOf::class,
@@ -110,6 +116,8 @@ class DirectiveTest extends TestCase {
                 ],
                 'b' => [
                     Between::class,
+                    Contains::class,
+                    EndsWith::class,
                     Equal::class,
                     GreaterThan::class,
                     GreaterThanOrEqual::class,
@@ -123,6 +131,7 @@ class DirectiveTest extends TestCase {
                     NotEqual::class,
                     NotIn::class,
                     NotLike::class,
+                    StartsWith::class,
                     Relation::class,
                     AllOf::class,
                     AnyOf::class,
