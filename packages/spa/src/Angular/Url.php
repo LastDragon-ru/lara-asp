@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Spa\Angular;
 
 use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Pure;
 
 use function array_diff_key;
 use function array_fill_keys;
@@ -38,7 +37,6 @@ class Url {
         $this->parameters = $this->extract($template);
     }
 
-    #[Pure]
     public function getTemplate(): string {
         return $this->template;
     }
@@ -46,7 +44,6 @@ class Url {
     /**
      * @return array<string>
      */
-    #[Pure]
     public function getParameters(): array {
         return $this->parameters;
     }
