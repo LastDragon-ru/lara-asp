@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
@@ -21,6 +23,8 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     use WithTestObject;
     use WithQueryLog;
 
+    // <editor-fold desc="Tests">
+    // =========================================================================
     /**
      * @covers ::getIterator
      * @covers ::each
@@ -79,8 +83,10 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      * @covers ::getIterator
      * @covers ::getDefaultLimit
      * @covers ::getDefaultOffset
+     *
+     * @dataProvider dataProviderGetIteratorColumn
      */
-    public function testGetIteratorQueryDefaults(): void {
+    public function testGetIteratorQueryDefaults(string $column): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
@@ -88,10 +94,10 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         $db       = $this->app->make('db');
         $table    = (new TestObject())->getTable();
         $query    = $db->table($table)->select()->limit(2)->offset(1)->orderByDesc('value');
-        $iterator = (new ChunkedChangeSafeIterator($query, 'value'))->setChunkSize(1);
+        $iterator = (new ChunkedChangeSafeIterator($query, $column))->setChunkSize(1);
         $actual   = iterator_to_array($iterator);
         $count    = (clone $query)->offset(0)->count();
-        $expected = (clone $query)->reorder()->offset(0)->orderBy('value')->limit(2)->get()->all();
+        $expected = (clone $query)->reorder()->offset(0)->orderBy($column)->limit(2)->get()->all();
 
         $this->assertEquals(3, $count);
         $this->assertCount(2, $actual);
@@ -102,17 +108,19 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      * @covers ::getIterator
      * @covers ::getDefaultLimit
      * @covers ::getDefaultOffset
+     *
+     * @dataProvider dataProviderGetIteratorColumn
      */
-    public function testGetIteratorEloquentDefaults(): void {
+    public function testGetIteratorEloquentDefaults(string $column): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
         $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
-        $iterator = (new ChunkedChangeSafeIterator($query, 'value'))->setChunkSize(1);
+        $iterator = (new ChunkedChangeSafeIterator($query, $column))->setChunkSize(1);
         $actual   = iterator_to_array($iterator);
         $count    = (clone $query)->offset(0)->count();
-        $expected = (clone $query)->reorder()->offset(0)->orderBy('value')->limit(2)->get()->all();
+        $expected = (clone $query)->reorder()->offset(0)->orderBy($column)->limit(2)->get()->all();
 
         $this->assertEquals(3, $count);
         $this->assertCount(2, $actual);
@@ -127,4 +135,60 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
 
         new ChunkedChangeSafeIterator(TestObject::query()->union(TestObject::query()->toBase()));
     }
+
+    /**
+     * @covers ::getDefaultColumn
+     *
+     * @dataProvider dataProviderGetDefaultColumn
+     *
+     * @param Closure(): (EloquentBuilder|QueryBuilder) $factory
+     */
+    public function testGetDefaultColumn(string $expected, Closure $factory): void {
+        $iterator = new class() extends ChunkedChangeSafeIterator {
+            /** @noinspection PhpMissingParentConstructorInspection */
+            public function __construct() {
+                // empty
+            }
+
+            public function getDefaultColumn(EloquentBuilder|QueryBuilder $builder): string {
+                return parent::getDefaultColumn($builder);
+            }
+        };
+
+        $this->assertEquals($expected, $iterator->getDefaultColumn($factory()));
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string,array{string}>
+     */
+    public function dataProviderGetIteratorColumn(): array {
+        return [
+            'short'     => ['value'],
+            'qualified' => ['test_objects.value'],
+        ];
+    }
+
+    /**
+     * @return array<string,array{string,Closure(): (EloquentBuilder|QueryBuilder)}>
+     */
+    public function dataProviderGetDefaultColumn(): array {
+        return [
+            QueryBuilder::class    => [
+                'test_objects.id',
+                static function (): QueryBuilder {
+                    return TestObject::query()->toBase();
+                },
+            ],
+            EloquentBuilder::class => [
+                'test_objects.id',
+                static function (): EloquentBuilder {
+                    return TestObject::query();
+                },
+            ],
+        ];
+    }
+    // </editor-fold>
 }

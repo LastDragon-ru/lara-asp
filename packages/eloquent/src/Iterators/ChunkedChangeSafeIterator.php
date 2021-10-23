@@ -9,8 +9,11 @@ use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use stdClass;
 
+use function end;
+use function explode;
 use function is_array;
 use function is_object;
+use function trim;
 
 /**
  * The iterator that grabs rows by chunk and safe for changing/deleting rows
@@ -35,7 +38,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     public function __construct(QueryBuilder|EloquentBuilder $builder, string $column = null) {
         parent::__construct($builder);
 
-        $this->column = $column ?? $builder->getDefaultKeyName();
+        $this->column = $column ?? $this->getDefaultColumn($builder);
 
         // Unfortunately the Laravel doesn't correctly work with UNION,
         // it just adds conditional to the main query, and this leads to an
@@ -51,7 +54,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
 
     protected function getChunk(EloquentBuilder|QueryBuilder $builder, int $chunk): Collection {
         $column  = $this->getColumn();
-        $builder = $builder->reorder()->orderBy($column, 'asc')->limit($chunk);
+        $builder = $builder->reorder()->orderBy($column)->limit($chunk);
 
         if ($this->getOffset()) {
             $builder->where($column, '>', $this->getOffset());
@@ -76,7 +79,8 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
      */
     protected function column(Model|stdClass|array|null $item): mixed {
         $value  = null;
-        $column = $this->getColumn();
+        $column = explode('.', $this->getColumn());
+        $column = trim(end($column), '`"[]');
 
         if (is_object($item)) {
             $value = $item->{$column};
@@ -96,5 +100,17 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     protected function getDefaultOffset(): ?int {
         // Because Builder contains SQL offset, not column value.
         return null;
+    }
+
+    protected function getDefaultColumn(QueryBuilder|EloquentBuilder $builder): string {
+        $column = $builder->getDefaultKeyName();
+
+        if ($builder instanceof EloquentBuilder) {
+            $column = $builder->qualifyColumn($column);
+        } else {
+            $column = "{$builder->from}.{$column}";
+        }
+
+        return $column;
     }
 }
