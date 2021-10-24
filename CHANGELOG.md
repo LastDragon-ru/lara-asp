@@ -1,3 +1,35 @@
+## [0.9.0](https://github.com/LastDragon-ru/lara-asp/compare/0.8.1...0.9.0) (2021-10-24)
+
+☣ | Breaking changes
+:---: | :---
+
+### Features
+
+* `guzzlehttp/psr7:^2.0` support. ([c33899d](https://github.com/LastDragon-ru/lara-asp/commit/c33899d900a4498ed0ee79bef334825bb0d167bb))
+* **eloquent,graphql:** `ModelHelper` moved into `eloquent` package. ([34d99ed](https://github.com/LastDragon-ru/lara-asp/commit/34d99ed7a43aee6e8ad3f26145d53d8ff9fd5d6d)) ☣
+* **eloquent:** `EloquentBuilder::orderByKey()` mixin will use qualified key name. ([155dacb](https://github.com/LastDragon-ru/lara-asp/commit/155dacbc1f43b494ae9c68234421f1a5a7f08171))
+* **eloquent:** `ModelHelper::getRelation()` will throw `PropertyIsNotRelation` instead of `LogicException`. ([7f350a9](https://github.com/LastDragon-ru/lara-asp/commit/7f350a9782a276edb5092fd46be4c5d481998816))
+* **graphql:** `@searchBy` will support types from `TypeRegistry`. ([1a92006](https://github.com/LastDragon-ru/lara-asp/commit/1a9200654e3f38c5cb99ad6dd6738f1f83f45670)) ☣
+* **graphql:** `@searchBy`: new operators for `String`: `contains`, `startsWith`, `endsWith`. ([f2f44b7](https://github.com/LastDragon-ru/lara-asp/commit/f2f44b77517f25c7f7e242ae8db123be79089fa2))
+* **graphql:** `@sortBy` support input type auto-generation by existing `type`. ([06da4a7](https://github.com/LastDragon-ru/lara-asp/commit/06da4a77ee5d84cbace4ee385986d52f20848427))
+* **graphql:** `@sortBy` will use dependent subqueries instead of joins. ([a1e4608](https://github.com/LastDragon-ru/lara-asp/commit/a1e4608c83efdc5035eb0c58b7ae7389c9ab2c08)) ☣
+* **graphql:** New directive `sortByUnsortable` that allow exclude fields from sort. ([10a39ab](https://github.com/LastDragon-ru/lara-asp/commit/10a39ab221a443885467ee84f78ddbe041afc0eb))
+* **queue:** `CronableRegistrator` will use `PendingDispatch` (so `ShouldBeUnique` should work now). ([6c4cbd0](https://github.com/LastDragon-ru/lara-asp/commit/6c4cbd0ce20fea1e5143a9b502ebc9ec0194096e))
+* **queue:** `Dispatchable::run()` will use `dispatchSync()` instead of `dispatchNow()`. ([50ecb56](https://github.com/LastDragon-ru/lara-asp/commit/50ecb568186342a0a14aa9c2c0fdcd38da0ba4ce)) ☣
+* **queue:** Injection of `QueueableConfigurator` into `__construct()` not needed anymore, `Container::afterResolving()` will be used instead. ([aebffad](https://github.com/LastDragon-ru/lara-asp/commit/aebffad5d8c8eaddfea02305025aaa51a0844ea2))
+* **testing:** New assertion: `assertDatabaseQueryEquals()`. ([64fa090](https://github.com/LastDragon-ru/lara-asp/commit/64fa090f9558da4cb298eb534482630679777184))
+
+
+### Bug Fixes
+
+* **eloquent:** Fixed "Integrity constraint violation: 1052 Column 'id' in order clause is ambiguous" for `ChunkedChangeSafeIterator` (it will use qualified column name for default). ([5695af5](https://github.com/LastDragon-ru/lara-asp/commit/5695af5d6d24f067eba6f4173f33ec4b1e5dbd19))
+
+
+### Code Refactoring
+
+* **graphql:** `LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\ScoutColumnResolver` renamed to `\LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\ColumnResolver` ([339cf58](https://github.com/LastDragon-ru/lara-asp/commit/339cf58ae9b3d9f7aae39e4838fbce9b962bf444)) ☣
+
+
 ### [0.8.1](https://github.com/LastDragon-ru/lara-asp/compare/0.8.0...0.8.1) (2021-09-11)
 
 
