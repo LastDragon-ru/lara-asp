@@ -1,0 +1,29 @@
+type Query {
+  test(order: _ @sortBy): Test! @all
+  testList(order: _ @sortBy): [Test!]! @all
+}
+
+type Test {
+  scalar: ID
+  scalarNotNull: ID!
+  nested: Nested
+  nestedNotNull: Nested!
+  enum: Value
+  enumNotNull: Value!
+  list: [ID!]
+  listNotNull: [ID!]!
+  resolver: String @field(
+    resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\NullResolver"
+  )
+  unsortable: ID! @sortByUnsortable
+}
+
+type Nested {
+  value: String
+  nested: Nested
+}
+
+enum Value {
+  one
+  two
+}

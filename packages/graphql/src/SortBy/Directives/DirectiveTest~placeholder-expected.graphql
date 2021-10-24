@@ -1,23 +1,14 @@
-input Nested {
+type Nested {
   value: String
   nested: Nested
 }
 
-input Properties {
-  idScalar: ID
-  idScalarNotNull: ID!
-  nested: Nested
-  nestedNotNull: Nested!
-  enum: Value
-  enumNotNull: Value!
-  unsortable: ID!
-}
-
 type Query {
-  test(order: [SortByClauseProperties!]): ID!
+  test(order: [SortByClauseTest!]): Test!
+  testList(order: [SortByClauseTest!]): [Test!]!
 }
 
-"""Sort clause for input Nested (only one property allowed at a time)."""
+"""Sort clause for type Nested (only one property allowed at a time)."""
 input SortByClauseNested {
   """Property clause."""
   value: SortByDirection
@@ -26,15 +17,13 @@ input SortByClauseNested {
   nested: SortByClauseNested
 }
 
-"""
-Sort clause for input Properties (only one property allowed at a time).
-"""
-input SortByClauseProperties {
+"""Sort clause for type Test (only one property allowed at a time)."""
+input SortByClauseTest {
   """Property clause."""
-  idScalar: SortByDirection
+  scalar: SortByDirection
 
   """Property clause."""
-  idScalarNotNull: SortByDirection
+  scalarNotNull: SortByDirection
 
   """Property clause."""
   nested: SortByClauseNested
@@ -53,6 +42,19 @@ input SortByClauseProperties {
 enum SortByDirection {
   asc
   desc
+}
+
+type Test {
+  scalar: ID
+  scalarNotNull: ID!
+  nested: Nested
+  nestedNotNull: Nested!
+  enum: Value
+  enumNotNull: Value!
+  list: [ID!]
+  listNotNull: [ID!]!
+  resolver: String
+  unsortable: ID!
 }
 
 enum Value {

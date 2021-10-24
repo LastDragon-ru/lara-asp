@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
 use Exception;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -14,6 +15,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query\Builder as SortByQueryBu
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder as SortByScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Mockery\MockInterface;
@@ -68,14 +70,71 @@ class DirectiveTest extends TestCase {
                 ],
             ],
         ]);
+        $c = new ObjectType([
+            'name'   => 'C',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::string(),
+                ],
+                [
+                    'name' => 'flag',
+                    'type' => Type::nonNull(Type::boolean()),
+                ],
+                [
+                    'name' => 'list',
+                    'type' => Type::nonNull(Type::listOf(Type::nonNull(Type::boolean()))),
+                ],
+            ],
+        ]);
+        $d = new ObjectType([
+            'name'   => 'D',
+            'fields' => [
+                [
+                    'name' => 'child',
+                    'type' => Type::nonNull($c),
+                ],
+            ],
+        ]);
 
         $registry = $this->app->make(TypeRegistry::class);
         $registry->register($a);
         $registry->register($b);
+        $registry->register($c);
+        $registry->register($d);
 
         $this->assertGraphQLSchemaEquals(
             $this->getTestData()->file('~registry-expected.graphql'),
             $this->getTestData()->file('~registry.graphql'),
+        );
+    }
+
+    /**
+     * @covers ::manipulateArgDefinition
+     */
+    public function testManipulateArgDefinitionTypeRegistryEmpty(): void {
+        $type = new ObjectType([
+            'name'   => 'TestType',
+            'fields' => [
+                [
+                    'name' => 'list',
+                    'type' => Type::nonNull(Type::listOf(Type::nonNull(Type::boolean()))),
+                ],
+            ],
+        ]);
+
+        $this->expectExceptionObject(new FailedToCreateSortClause('type TestType'));
+
+        $registry = $this->app->make(TypeRegistry::class);
+        $registry->register($type);
+
+        $this->getGraphQLSchema(
+            /** @lang GraphQL */
+            <<<'GRAPHQL'
+            type Query {
+              test(order: _ @sortBy): TestType! @all
+            }
+            GRAPHQL,
         );
     }
 
@@ -195,7 +254,8 @@ class DirectiveTest extends TestCase {
      */
     public function dataProviderManipulateArgDefinition(): array {
         return [
-            'full' => ['~full-expected.graphql', '~full.graphql'],
+            'full'        => ['~full-expected.graphql', '~full.graphql'],
+            'placeholder' => ['~placeholder-expected.graphql', '~placeholder.graphql'],
         ];
     }
 

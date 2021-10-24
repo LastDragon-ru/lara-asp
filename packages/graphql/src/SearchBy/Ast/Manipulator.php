@@ -483,7 +483,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Remove
-        unset($this->document->types[$name]);
+        $this->removeTypeDefinition($name);
     }
 
     public function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
