@@ -463,8 +463,11 @@ How to use:
 
 ```graphql
 type Query {
+  "You can use normal input type"
   users(order: UsersSort @sortBy): ID! @all
-  comments(order: CommentsSort @sortBy): ID! @all
+    
+  "or `_` to generate type automatically 😛"
+  comments(order: _ @sortBy): [Comment!]! @all
 }
 
 input UsersSort {
@@ -472,9 +475,14 @@ input UsersSort {
   name: String!
 }
 
-input CommentsSort {
+type Comment {
   text: String
-  user: UsersSort
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
 }
 ```
 
@@ -494,25 +502,35 @@ query {
 <summary>Generated GraphQL schema</summary>
 
 ```graphql
-input CommentsSort {
+type Comment {
   text: String
-  user: UsersSort
+  user: User
 }
 
 type Query {
+  """You can use normal input type"""
   users(order: [SortByClauseUsersSort!]): ID!
-  comments(order: [SortByClauseCommentsSort!]): ID!
+
+  """or `_` to generate type automatically 😛"""
+  comments(order: [SortByClauseComment!]): [Comment!]!
 }
 
-"""
-Sort clause for input CommentsSort (only one property allowed at a time).
-"""
-input SortByClauseCommentsSort {
+"""Sort clause for type Comment (only one property allowed at a time)."""
+input SortByClauseComment {
   """Property clause."""
   text: SortByDirection
 
   """Property clause."""
-  user: SortByClauseUsersSort
+  user: SortByClauseUser
+}
+
+"""Sort clause for type User (only one property allowed at a time)."""
+input SortByClauseUser {
+  """Property clause."""
+  id: SortByDirection
+
+  """Property clause."""
+  name: SortByDirection
 }
 
 """
@@ -532,11 +550,15 @@ enum SortByDirection {
   desc
 }
 
-input UsersSort {
+type User {
   id: ID!
   name: String!
 }
 
+input UsersSort {
+  id: ID!
+  name: String!
+}
 ```
 </details>
 
@@ -553,6 +575,16 @@ $this->app->bind(
     MyScoutColumnResolver::class,
 );
 ```
+
+
+## Input type auto-generation
+
+As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@sortBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
+
+- with list/array type
+- with `@field` directive
+- with `@sortByUnsortable` directive 
+- with any directive that implements [`Unsortable`](./src/SortBy/Contracts/Unsortable.php)
 
 
 # Relations

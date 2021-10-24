@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 /**
- * Marks that property should be excluded from sort.
+ * Marks that field should be excluded from sort.
  */
 interface Unsortable extends Directive {
     // empty
