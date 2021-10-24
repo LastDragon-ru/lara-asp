@@ -15,6 +15,7 @@ type Test {
   resolver: String @field(
     resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\NullResolver"
   )
+  unsortable: ID! @sortByUnsortable
 }
 
 type Nested {

@@ -33,6 +33,7 @@ use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function trim;
 
@@ -150,7 +151,7 @@ abstract class AstManipulator {
      *
      * @return T|null
      */
-    protected function getNodeDirective(Node|Type|InputObjectField|FieldDefinition $node, string $class): ?object {
+    protected function getNodeDirective(Node|Type|InputObjectField|FieldDefinition $node, string $class): ?Directive {
         // TODO [graphql] Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         return $node instanceof Node
             ? $this->directives->associatedOfType($node, $class)->first()

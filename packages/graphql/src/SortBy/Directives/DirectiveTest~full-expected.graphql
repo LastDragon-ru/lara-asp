@@ -10,6 +10,7 @@ input Properties {
   nestedNotNull: Nested!
   enum: Value
   enumNotNull: Value!
+  unsortable: ID!
 }
 
 type Query {

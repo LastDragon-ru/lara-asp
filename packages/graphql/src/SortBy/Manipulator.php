@@ -14,6 +14,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Unsortable;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClauseForField;
@@ -104,8 +105,10 @@ class Manipulator extends AstManipulator {
                 continue;
             }
 
-            // Ignored?
-            // TODO Not implemented
+            // Unsortable?
+            if ($this->getNodeDirective($field, Unsortable::class)) {
+                continue;
+            }
 
             // Is supported?
             $fieldDefinition = Directive::TypeDirection;

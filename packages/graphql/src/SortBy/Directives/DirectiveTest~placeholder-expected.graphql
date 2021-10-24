@@ -45,6 +45,7 @@ type Test {
   list: [ID!]
   listNotNull: [ID!]!
   resolver: String
+  unsortable: ID!
 }
 
 enum Value {
