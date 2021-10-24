@@ -2,29 +2,38 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClauseForField;
+use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
+
+use function count;
 
 class Manipulator extends AstManipulator {
     // <editor-fold desc="API">
     // =========================================================================
-    public function update(InputValueDefinitionNode $node): ListTypeNode {
+    public function update(InputValueDefinitionNode $node, FieldDefinitionNode $query): ListTypeNode {
         // Convert
         $type = null;
 
         if (!($node->type instanceof ListTypeNode)) {
-            $def = $this->getTypeDefinitionNode($node);
+            $definition  = $this->getTypeDefinitionNode($this->isPlaceholder($node) ? $query : $node);
+            $isSupported = $definition instanceof InputObjectTypeDefinitionNode
+                || $definition instanceof ObjectTypeDefinitionNode
+                || $definition instanceof InputObjectType
+                || $definition instanceof ObjectType;
 
-            if ($def instanceof InputObjectTypeDefinitionNode || $def instanceof InputObjectType) {
-                $name = $this->getInputType($def);
+            if ($isSupported) {
+                $name = $this->getInputType($definition);
                 $type = Parser::typeReference("[{$name}!]");
             }
         } else {
@@ -45,7 +54,9 @@ class Manipulator extends AstManipulator {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    protected function getInputType(InputObjectTypeDefinitionNode|InputObjectType $node): string {
+    protected function getInputType(
+        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
+    ): string {
         // Exists?
         $name = $this->getTypeName($node);
 
@@ -57,7 +68,7 @@ class Manipulator extends AstManipulator {
         $type = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Sort clause for input {$this->getNodeName($node)} (only one property allowed at a time).
+            Sort clause for {$this->getNodeFullName($node)} (only one property allowed at a time).
             """
             input {$name} {
                 """
@@ -70,12 +81,23 @@ class Manipulator extends AstManipulator {
 
         // Add sortable fields
         $description = 'Property clause.';
-        $fields      = $node instanceof InputObjectType
+        $fields      = $node instanceof InputObjectType || $node instanceof ObjectType
             ? $node->getFields()
             : $node->fields;
 
         foreach ($fields as $field) {
-            /** @var InputValueDefinitionNode|InputObjectField $field */
+            // Convertable?
+            if ($this->isList($field)) {
+                continue;
+            }
+
+            // Resolver?
+            if ($this->getNodeDirective($field, FieldResolver::class)) {
+                continue;
+            }
+
+            // Ignored?
+            // TODO Not implemented
 
             // Is supported?
             $fieldDefinition = Directive::TypeDirection;
@@ -95,6 +117,11 @@ class Manipulator extends AstManipulator {
 
         // Remove dummy
         unset($type->fields[0]);
+
+        // Empty?
+        if (count($type->fields) === 0) {
+            throw new FailedToCreateSortClause($this->getNodeFullName($node));
+        }
 
         // Return
         return $name;
@@ -125,7 +152,9 @@ class Manipulator extends AstManipulator {
 
     // <editor-fold desc="Names">
     // =========================================================================
-    protected function getTypeName(InputObjectTypeDefinitionNode|InputObjectType $node): string {
+    protected function getTypeName(
+        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
+    ): string {
         return Directive::Name."Clause{$this->getNodeName($node)}";
     }
     // </editor-fold>

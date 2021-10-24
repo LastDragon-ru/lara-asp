@@ -3,12 +3,22 @@
 namespace LastDragon_ru\LaraASP\GraphQL;
 
 use Exception;
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
@@ -36,6 +46,37 @@ abstract class AstManipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================
+    protected function isPlaceholder(Node|InputObjectField|string $node): bool {
+        // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
+        return $this->getNodeTypeName($node) === '_';
+    }
+
+    protected function isList(
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $node,
+    ): bool {
+        $isList = false;
+
+        if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
+            $type = $node->getType();
+
+            if ($type instanceof NonNull) {
+                $type = $type->getWrappedType(false);
+            }
+
+            $isList = $type instanceof ListOfType;
+        } else {
+            $type = $node->type;
+
+            if ($type instanceof NonNullTypeNode) {
+                $type = $type->type;
+            }
+
+            $isList = $type instanceof ListTypeNode;
+        }
+
+        return $isList;
+    }
+
     protected function isTypeDefinitionExists(string $name): bool {
         try {
             return (bool) $this->getTypeDefinitionNode($name);
@@ -44,7 +85,9 @@ abstract class AstManipulator {
         }
     }
 
-    protected function getTypeDefinitionNode(Node|InputObjectField|string $node): TypeDefinitionNode|Type {
+    protected function getTypeDefinitionNode(
+        Node|InputObjectField|FieldDefinition|string $node,
+    ): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
         $definition = $this->document->types[$name] ?? null;
 
@@ -90,18 +133,20 @@ abstract class AstManipulator {
      *
      * @return T|null
      */
-    protected function getNodeDirective(Node|Type|InputObjectField $node, string $class): ?object {
+    protected function getNodeDirective(Node|Type|InputObjectField|FieldDefinition $node, string $class): ?object {
         // TODO [graphql] Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         return $node instanceof Node
             ? $this->directives->associatedOfType($node, $class)->first()
             : null;
     }
 
-    protected function getNodeTypeName(Node|InputObjectField|string $node): string {
+    protected function getNodeTypeName(
+        Node|Type|InputObjectField|FieldDefinition|string $node,
+    ): string {
         $name = null;
 
-        if ($node instanceof InputObjectField) {
-            $type = $node->getType();
+        if ($node instanceof Type || $node instanceof InputObjectField || $node instanceof FieldDefinition) {
+            $type = $node instanceof Type ? $node : $node->getType();
 
             if ($type instanceof WrappingType) {
                 $name = $type->getWrappedType(true)->name;
@@ -117,15 +162,34 @@ abstract class AstManipulator {
         return $name;
     }
 
-    public function getNodeName(InputValueDefinitionNode|TypeDefinitionNode|InputObjectField|Type $node): string {
-        return $node instanceof TypeDefinitionNode || $node instanceof InputValueDefinitionNode
-            ? $node->name->value
-            : $node->name;
+    public function getNodeName(
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $node,
+    ): string {
+        $name = $node->name;
+
+        if ($name instanceof NameNode) {
+            $name = $name->value;
+        }
+
+        return $name;
+    }
+
+    protected function getNodeFullName(
+        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
+    ): string {
+        $name   = $this->getNodeName($node);
+        $prefix = 'type';
+
+        if ($node instanceof InputObjectTypeDefinitionNode || $node instanceof InputObjectType) {
+            $prefix = 'input';
+        }
+
+        return "{$prefix} {$name}";
     }
 
     protected function copyFieldToType(
         InputObjectTypeDefinitionNode $type,
-        InputValueDefinitionNode|InputObjectField $field,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         string $newFieldType,
         string $newFieldDescription,
     ): bool {
@@ -145,7 +209,7 @@ abstract class AstManipulator {
                 """
                 {$newFieldDescription}
                 """
-                {$field->name}: {$newFieldType}
+                {$this->getNodeName($field)}: {$newFieldType}
                 DEF,
             );
         }

@@ -1,0 +1,53 @@
+type Nested {
+  value: String
+  nested: Nested
+}
+
+type Query {
+  test(order: [SortByClauseTest!]): Test!
+  testList(order: [SortByClauseTest!]): [Test!]!
+}
+
+"""Sort clause for type Test (only one property allowed at a time)."""
+input SortByClauseTest {
+  """Property clause."""
+  scalar: SortByDirection
+
+  """Property clause."""
+  scalarNotNull: SortByDirection
+
+  """Property clause."""
+  nested: SortByDirection
+
+  """Property clause."""
+  nestedNotNull: SortByDirection
+
+  """Property clause."""
+  enum: SortByDirection
+
+  """Property clause."""
+  enumNotNull: SortByDirection
+}
+
+"""Sort direction."""
+enum SortByDirection {
+  asc
+  desc
+}
+
+type Test {
+  scalar: ID
+  scalarNotNull: ID!
+  nested: Nested
+  nestedNotNull: Nested!
+  enum: Value
+  enumNotNull: Value!
+  list: [ID!]
+  listNotNull: [ID!]!
+  resolver: String
+}
+
+enum Value {
+  one
+  two
+}
