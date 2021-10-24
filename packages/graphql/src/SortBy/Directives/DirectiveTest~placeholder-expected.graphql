@@ -8,6 +8,15 @@ type Query {
   testList(order: [SortByClauseTest!]): [Test!]!
 }
 
+"""Sort clause for type Nested (only one property allowed at a time)."""
+input SortByClauseNested {
+  """Property clause."""
+  value: SortByDirection
+
+  """Property clause."""
+  nested: SortByClauseNested
+}
+
 """Sort clause for type Test (only one property allowed at a time)."""
 input SortByClauseTest {
   """Property clause."""
@@ -17,10 +26,10 @@ input SortByClauseTest {
   scalarNotNull: SortByDirection
 
   """Property clause."""
-  nested: SortByDirection
+  nested: SortByClauseNested
 
   """Property clause."""
-  nestedNotNull: SortByDirection
+  nestedNotNull: SortByClauseNested
 
   """Property clause."""
   enum: SortByDirection

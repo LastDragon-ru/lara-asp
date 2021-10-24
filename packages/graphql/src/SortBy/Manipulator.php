@@ -113,8 +113,12 @@ class Manipulator extends AstManipulator {
             // Is supported?
             $fieldDefinition = Directive::TypeDirection;
             $fieldTypeNode   = $this->getTypeDefinitionNode($field);
+            $isNested        = $fieldTypeNode instanceof InputObjectTypeDefinitionNode
+                || $fieldTypeNode instanceof ObjectTypeDefinitionNode
+                || $fieldTypeNode instanceof InputObjectType
+                || $fieldTypeNode instanceof ObjectType;
 
-            if ($fieldTypeNode instanceof InputObjectTypeDefinitionNode || $fieldTypeNode instanceof InputObjectType) {
+            if ($isNested) {
                 $fieldDefinition = $this->getInputType($fieldTypeNode);
             } else {
                 // empty

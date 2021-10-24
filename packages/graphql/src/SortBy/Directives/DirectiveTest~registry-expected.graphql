@@ -14,10 +14,14 @@ type C {
   list: [Boolean!]!
 }
 
+type D {
+  child: C!
+}
+
 type Query {
   a(order: [SortByClauseA!]): ID!
   b(order: [SortByClauseB!]): ID!
-  c(order: [SortByClauseC!]): C!
+  c(order: [SortByClauseD!]): D!
 }
 
 """Sort clause for input A (only one property allowed at a time)."""
@@ -45,6 +49,12 @@ input SortByClauseC {
 
   """Property clause."""
   flag: SortByDirection
+}
+
+"""Sort clause for type D (only one property allowed at a time)."""
+input SortByClauseD {
+  """Property clause."""
+  child: SortByClauseC
 }
 
 """Sort direction."""

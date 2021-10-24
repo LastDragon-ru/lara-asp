@@ -87,11 +87,21 @@ class DirectiveTest extends TestCase {
                 ],
             ],
         ]);
+        $d = new ObjectType([
+            'name'   => 'D',
+            'fields' => [
+                [
+                    'name' => 'child',
+                    'type' => Type::nonNull($c),
+                ],
+            ],
+        ]);
 
         $registry = $this->app->make(TypeRegistry::class);
         $registry->register($a);
         $registry->register($b);
         $registry->register($c);
+        $registry->register($d);
 
         $this->assertGraphQLSchemaEquals(
             $this->getTestData()->file('~registry-expected.graphql'),

@@ -1,5 +1,5 @@
 type Query {
   a(order: A @sortBy): ID! @all
   b(order: B @sortBy): ID! @all
-  c(order: _ @sortBy): C! @all
+  c(order: _ @sortBy): D! @all
 }
