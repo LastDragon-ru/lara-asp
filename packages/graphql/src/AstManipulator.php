@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL;
 
 use Exception;
+use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
@@ -11,15 +12,20 @@ use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
@@ -27,6 +33,8 @@ use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+
+use function trim;
 
 abstract class AstManipulator {
     public function __construct(
@@ -126,6 +134,15 @@ abstract class AstManipulator {
         return $definition;
     }
 
+    protected function removeTypeDefinition(string $name): void {
+        if (!$this->isTypeDefinitionExists($name)) {
+            throw new TypeDefinitionUnknown($name);
+        }
+
+        // Remove
+        unset($this->document->types[$name]);
+    }
+
     /**
      * @template T of \Nuwave\Lighthouse\Support\Contracts\Directive
      *
@@ -153,6 +170,8 @@ abstract class AstManipulator {
             } else {
                 $name = $type->name;
             }
+        } elseif ($node instanceof TypeDefinitionNode) {
+            $name = $this->getNodeName($node);
         } elseif ($node instanceof Node) {
             $name = ASTHelper::getUnderlyingTypeName($node);
         } else {
@@ -174,17 +193,28 @@ abstract class AstManipulator {
         return $name;
     }
 
-    protected function getNodeFullName(
-        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
+    protected function getNodeTypeFullName(
+        Node|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
-        $name   = $this->getNodeName($node);
-        $prefix = 'type';
+        $name   = $this->getNodeTypeName($node);
+        $node   = $this->getTypeDefinitionNode($name);
+        $prefix = null;
 
         if ($node instanceof InputObjectTypeDefinitionNode || $node instanceof InputObjectType) {
             $prefix = 'input';
+        } elseif ($node instanceof ObjectTypeDefinitionNode || $node instanceof ObjectType) {
+            $prefix = 'type';
+        } elseif ($node instanceof ScalarTypeDefinitionNode || $node instanceof ScalarType) {
+            $prefix = 'scalar';
+        } elseif ($node instanceof EnumTypeDefinitionNode || $node instanceof EnumType) {
+            $prefix = 'enum';
+        } elseif ($node instanceof UnionTypeDefinitionNode || $node instanceof UnionType) {
+            $prefix = 'union';
+        } else {
+            // empty
         }
 
-        return "{$prefix} {$name}";
+        return trim("{$prefix} {$name}");
     }
 
     protected function copyFieldToType(
