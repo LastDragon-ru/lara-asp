@@ -20,20 +20,6 @@ use function count;
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  */
 class ChunkedIterator extends IteratorImpl {
-    /**
-     * Returns change safe iterator.
-     *
-     * @deprecated Will be removed in the next release.
-     */
-    public function safe(string $column = null): ChunkedChangeSafeIterator {
-        return (new ChunkedChangeSafeIterator($this->getBuilder(), $column))
-            ->setLimit($this->getLimit())
-            ->setOffset($this->getOffset())
-            ->setChunkSize($this->getChunkSize())
-            ->onBeforeChunk($this->beforeChunk)
-            ->onAfterChunk($this->afterChunk);
-    }
-
     protected function getChunk(EloquentBuilder|QueryBuilder $builder, int $chunk): Collection {
         return $builder->offset($this->getOffset())->limit($chunk)->get();
     }
