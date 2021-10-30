@@ -31,6 +31,10 @@ use function trim;
  * - queries with UNION is not supported.
  *
  * @see https://github.com/laravel/framework/issues/35400
+ *
+ * @template T
+ *
+ * @extends IteratorImpl<T>
  */
 class ChunkedChangeSafeIterator extends IteratorImpl {
     private string $column;

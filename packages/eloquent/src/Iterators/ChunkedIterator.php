@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
+use IteratorAggregate;
 
 use function count;
 
@@ -18,6 +19,10 @@ use function count;
  * {@link \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator}.
  *
  * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
+ *
+ * @template T
+ *
+ * @extends IteratorImpl<T>
  */
 class ChunkedIterator extends IteratorImpl {
     protected function getChunk(EloquentBuilder|QueryBuilder $builder, int $chunk): Collection {

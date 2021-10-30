@@ -9,22 +9,30 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
+use LastDragon_ru\LaraASP\Core\Observer\Subject;
 
 use function min;
 
 /**
+ * @template T
+ *
+ * @implements Iterator<T>
+ *
  * @internal
  */
 abstract class IteratorImpl implements Iterator {
-    protected ?Closure        $beforeChunk = null;
-    protected ?Closure        $afterChunk  = null;
-    protected ?int            $limit       = null;
-    protected int             $chunk       = 1000;
-    protected string|int|null $offset      = null;
+    protected Subject         $beforeChunk;
+    protected Subject         $afterChunk;
+    protected ?int            $limit  = null;
+    protected int             $chunk  = 1000;
+    protected string|int|null $offset = null;
 
     public function __construct(
         protected QueryBuilder|EloquentBuilder $builder,
     ) {
+        $this->beforeChunk = new Subject();
+        $this->afterChunk  = new Subject();
+
         $this->setLimit($this->getDefaultLimit());
         $this->setOffset($this->getDefaultOffset());
     }
@@ -59,26 +67,28 @@ abstract class IteratorImpl implements Iterator {
         return $this;
     }
 
-    /**
-     * Sets the closure that will be called after received each chunk.
-     */
     public function onBeforeChunk(?Closure $closure): static {
-        $this->beforeChunk = $closure;
+        if ($closure) {
+            $this->beforeChunk->attach($closure);
+        } else {
+            $this->beforeChunk->reset();
+        }
 
         return $this;
     }
 
-    /**
-     * Sets the closure that will be called after chunk processed.
-     */
     public function onAfterChunk(?Closure $closure): static {
-        $this->afterChunk = $closure;
+        if ($closure) {
+            $this->afterChunk->attach($closure);
+        } else {
+            $this->afterChunk->reset();
+        }
 
         return $this;
     }
 
     /**
-     * @return Generator<Model|array<string,mixed>>
+     * @return Generator<T>
      */
     public function getIterator(): Generator {
         // Prepare
@@ -109,25 +119,25 @@ abstract class IteratorImpl implements Iterator {
     }
 
     /**
-     * @return Collection<Model|array<string,mixed>>
+     * @return Collection<T>
      */
     abstract protected function getChunk(QueryBuilder|EloquentBuilder $builder, int $chunk): Collection;
 
     /**
-     * @param Collection<Model|array<string,mixed>> $items
+     * @param Collection<T> $items
      */
     protected function chunkLoaded(Collection $items): void {
-        if ($this->beforeChunk && !$items->isEmpty()) {
-            ($this->beforeChunk)($items);
+        if (!$items->isEmpty()) {
+            $this->beforeChunk->notify($items);
         }
     }
 
     /**
-     * @param Collection<Model|array<string,mixed>> $items
+     * @param Collection<T> $items
      */
     protected function chunkProcessed(Collection $items): bool {
-        if ($this->afterChunk && !$items->isEmpty()) {
-            ($this->afterChunk)($items);
+        if (!$items->isEmpty()) {
+            $this->afterChunk->notify($items);
         }
 
         return true;

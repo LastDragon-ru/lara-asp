@@ -64,4 +64,7 @@ parameters:
         # https://github.com/phpstan/phpstan-mockery/issues/34
         -
             message: "#^Parameter \\#1 \\$callback of static method Closure\\:\\:fromCallable\\(\\) expects callable\\(\\)\\: mixed, Mockery\\\\MockInterface given\\.$#"
-            path: packages/**/*Test.php
+            paths:
+                - packages/**/*Test.php
+                - packages/testing/src/Package/TestCase.php
+                - packages/testing/src/TestCase.php

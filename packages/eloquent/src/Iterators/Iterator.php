@@ -3,10 +3,14 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use IteratorAggregate;
 
 /**
  * @template T
+ *
+ * @extends IteratorAggregate<T>
  */
 interface Iterator extends IteratorAggregate {
     public function getLimit(): ?int;
@@ -31,14 +35,18 @@ interface Iterator extends IteratorAggregate {
     public function setOffset(string|int|null $offset): static;
 
     /**
-     * Sets the closure that will be called after received each non-empty chunk.
+     * Adds the closure that will be called after received each non-empty chunk.
+     *
+     * @param Closure(Collection<T>): void|null $closure `null` removes all observers
      *
      * @return $this<T>
      */
     public function onBeforeChunk(?Closure $closure): static;
 
     /**
-     * Sets the closure that will be called after non-empty chunk processed.
+     * Adds the closure that will be called after non-empty chunk processed.
+     *
+     * @param Closure(Collection<T>): void|null $closure `null` removes all observers
      *
      * @return $this<T>
      */
