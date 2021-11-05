@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use IteratorAggregate;
 

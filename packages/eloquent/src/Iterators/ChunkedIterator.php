@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
-use IteratorAggregate;
 
 use function count;
 
