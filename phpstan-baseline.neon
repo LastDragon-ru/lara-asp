@@ -31,13 +31,6 @@ parameters:
             paths:
                 - packages/queue/src/QueueableConfigurator.php
 
-        # PHPStan is not so smart 😥
-        # https://github.com/phpstan/phpstan/issues/3465
-        -
-            message: "#^Call to protected method serializeDate\\(\\) of class#"
-            paths:
-                - packages/eloquent/src/Concerns/WithDateSerializationTest.php
-
         # False positive
         # https://github.com/phpstan/phpstan/issues/5551
         -
@@ -61,11 +54,6 @@ parameters:
                 - packages/testing/src/Mixins/TestResponseMixin.php
 
         # False positive
-        # https://github.com/nunomaduro/larastan/pull/913
-        - "#^Parameter \\#1 \\$query of method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:(joinSub|leftJoinSub)\\(\\) expects Closure\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|string, Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)? given\\.$#"
-        - "#^Parameter \\#1 \\$column of method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:orderBy\\(\\) expects Closure\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|Illuminate\\\\Database\\\\Query\\\\Expression\\|string, Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\|string given\\.$#"
-
-        # False positive
         # https://github.com/phpstan/phpstan-mockery/issues/34
         -
             message: "#^Parameter \\#1 \\$callback of static method Closure\\:\\:fromCallable\\(\\) expects callable\\(\\)\\: mixed, Mockery\\\\MockInterface given\\.$#"
@@ -77,7 +65,3 @@ parameters:
         # False positive (= requires too much time to fix)
         # https://github.com/nunomaduro/larastan/issues/1009
         - "#^Parameter \\#\\d+ \\$[^ ]+ of method Illuminate\\\\Database\\\\(Eloquent|Query)\\\\Builder(\\<[^>]+\\>)?\\:\\:(whereBetween|whereIn|whereNotIn|whereNull|whereNotNull|whereNotBetween|whereHas|orderBy|joinSub|reorder)\\(\\) expects (.+?\\|)?non\\-empty\\-string(\\|null)?, (.+?) given\\.$#"
-        -
-            message: "#^Method LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Iterators\\\\ChunkedChangeSafeIterator\\:\\:getDefaultColumn\\(\\) should return non\\-empty\\-string but returns string\\.$#"
-            paths:
-                - packages/eloquent/src/Iterators/ChunkedChangeSafeIterator.php
