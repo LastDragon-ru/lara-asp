@@ -54,12 +54,18 @@ trait GraphQLAssertions {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getGraphQLSchema(SplFileInfo|string $schema): Schema {
+    protected function useGraphQLSchema(SplFileInfo|string $schema): static {
         $schema = Args::content($schema);
 
         $this->override(SchemaSourceProvider::class, static function () use ($schema): SchemaSourceProvider {
             return new TestSchemaProvider($schema);
         });
+
+        return $this;
+    }
+
+    protected function getGraphQLSchema(SplFileInfo|string $schema): Schema {
+        $this->useGraphQLSchema($schema);
 
         $graphql = $this->app->make(SchemaBuilder::class);
         $schema  = $graphql->schema();
