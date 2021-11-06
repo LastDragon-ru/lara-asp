@@ -66,3 +66,11 @@ parameters:
                 - packages/**/*Test.php
                 - packages/testing/src/Package/TestCase.php
                 - packages/testing/src/TestCase.php
+
+        # False positive (= requires too much time to fix)
+        # https://github.com/nunomaduro/larastan/issues/1009
+        - "#^Parameter \\#\\d+ \\$[^ ]+ of method Illuminate\\\\Database\\\\(Eloquent|Query)\\\\Builder(\\<[^>]+\\>)?\\:\\:(whereBetween|whereIn|whereNotIn|whereNull|whereNotNull|whereNotBetween|whereHas|orderBy|joinSub|reorder)\\(\\) expects (.+?\\|)?non\\-empty\\-string(\\|null)?, (.+?) given\\.$#"
+        -
+            message: "#^Method LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Iterators\\\\ChunkedChangeSafeIterator\\:\\:getDefaultColumn\\(\\) should return non\\-empty\\-string but returns string\\.$#"
+            paths:
+                - packages/eloquent/src/Iterators/ChunkedChangeSafeIterator.php
