@@ -75,7 +75,7 @@ abstract class SmartSeeder extends Seeder {
      * Output "skipped" message.
      */
     protected function skipped(string $reason = null): void {
-        if (isset($this->command)) {
+        if ($this->command !== null) {
             $this->command->getOutput()
                 ->writeln('<comment>         skipped</comment>'.($reason ? " ({$reason})" : ''));
         }
