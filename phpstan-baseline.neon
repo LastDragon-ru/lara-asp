@@ -46,6 +46,13 @@ parameters:
                 - packages/testing/src/Constraints/Response/Factory.php
 
         # False positive
+        # https://github.com/phpstan/phpstan/issues/5866
+        -
+            message: "#^Dead catch \\- Throwable is never thrown in the try block\\.$#"
+            paths:
+                - packages/testing/src/Utils/Args.php
+
+        # False positive
         # https://github.com/nunomaduro/larastan/issues/483
         # https://github.com/nunomaduro/larastan/pull/917
         -
