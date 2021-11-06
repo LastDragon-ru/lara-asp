@@ -54,6 +54,7 @@
     "symfony/filesystem": "^5.2.0",
     "symfony/finder": "^5.1.0",
     "symfony/http-foundation": "^5.2.0",
+    "symfony/mime": "^5.3",
     "symfony/psr-http-message-bridge": "^2.0.0"
   },
   "require-dev": {
