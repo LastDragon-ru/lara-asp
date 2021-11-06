@@ -91,8 +91,8 @@ class DatabaseQueryComparator extends ObjectComparator {
             $matches = array_values($matches);
             $matches = array_flip($matches);
 
-            uksort($matches, static function (string $a, string $b): int {
-                return strlen($b) <=> strlen($a);
+            uksort($matches, static function (string|int $a, string|int $b): int {
+                return strlen((string) $b) <=> strlen((string) $a);
             });
 
             foreach ($matches as $match => $index) {
