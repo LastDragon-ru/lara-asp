@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,8 +10,7 @@ use LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories\Factory;
  */
 class TestObjectFactory extends Factory {
     /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var string
+     * @var class-string<Model>
      */
     protected $model = TestObject::class;
 

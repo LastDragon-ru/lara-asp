@@ -390,9 +390,8 @@ class Formatter {
     protected function getLocaleOptions(string $type, string $option): mixed {
         $package = Package::Name;
         $locale  = $this->getLocale();
-        $pattern = null
-            ?? $this->getConfig()->get("{$package}.locales.{$locale}.{$type}.{$option}")
-            ?? $this->getConfig()->get("{$package}.all.{$type}.{$option}");
+        $pattern = $this->getConfig()->get("{$package}.locales.{$locale}.{$type}.{$option}")
+            ?: $this->getConfig()->get("{$package}.all.{$type}.{$option}");
 
         return $pattern;
     }

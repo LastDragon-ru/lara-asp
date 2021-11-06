@@ -144,28 +144,20 @@ abstract class IteratorImpl implements Iterator {
 
     protected function getDefaultLimit(): ?int {
         $builder = $this->getQueryBuilder();
-        $limit   = null;
-
-        if ($builder->unions) {
-            $limit = $builder->unionLimit ?? $limit;
-        } else {
-            $limit = $builder->limit ?? $limit;
-        }
+        $limit   = $builder->unions
+            ? $builder->unionLimit
+            : $builder->limit;
 
         return $limit;
     }
 
     protected function getDefaultOffset(): ?int {
         $builder = $this->getQueryBuilder();
-        $limit   = null;
+        $offset  = $builder->unions
+            ? $builder->unionOffset
+            : $builder->offset;
 
-        if ($builder->unions) {
-            $limit = $builder->unionOffset ?? $limit;
-        } else {
-            $limit = $builder->offset ?? $limit;
-        }
-
-        return $limit;
+        return $offset;
     }
 
     protected function getBuilder(): EloquentBuilder|QueryBuilder {

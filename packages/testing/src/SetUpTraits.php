@@ -26,7 +26,7 @@ trait SetUpTraits {
      * @beforeClass
      */
     public static function setUpTraitsSetUp(): void {
-        static::$setUpTraits = array_filter(array_map(static function (string $trait): ?string {
+        self::$setUpTraits = array_filter(array_map(static function (string $trait): ?string {
             // Self?
             if ($trait === __TRAIT__) {
                 return null;
@@ -46,7 +46,7 @@ trait SetUpTraits {
      * @afterClass
      */
     public static function setUpTraitsTearDown(): void {
-        static::$setUpTraits = [];
+        self::$setUpTraits = [];
     }
 
     protected function setUp(): void {
@@ -54,7 +54,7 @@ trait SetUpTraits {
         parent::setUp();
 
         // Set traits Up
-        foreach (static::$setUpTraits as $trait) {
+        foreach (self::$setUpTraits as $trait) {
             if (method_exists($this, "setUp{$trait}")) {
                 $this->{"setUp{$trait}"}();
             }
@@ -63,7 +63,7 @@ trait SetUpTraits {
 
     protected function tearDown(): void {
         // Tear traits Down
-        foreach (static::$setUpTraits as $trait) {
+        foreach (self::$setUpTraits as $trait) {
             if (method_exists($this, "tearDown{$trait}")) {
                 $this->{"tearDown{$trait}"}();
             }

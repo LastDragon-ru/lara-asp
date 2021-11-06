@@ -25,6 +25,8 @@ class QueueableConfigTest extends TestCase {
     /**
      * @covers ::getQueueClass
      * @dataProvider dataProviderGetQueueClass
+     *
+     * @param class-string<ConfigurableQueueable> $class
      */
     public function testGetQueueClass(string $expected, string $class): void {
         $container    = Container::getInstance();

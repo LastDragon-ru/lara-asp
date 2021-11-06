@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Resolver;
 
+use ArrayAccess;
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Validation\ValidationException as IlluminateValidationException;
@@ -65,8 +66,13 @@ class Resolver {
                 implode('.', $resolveInfo->path),
             ), $exception->validator);
         } finally {
-            unset($this->container[Root::class]);
-            unset($this->container[Args::class]);
+            // Container Contract doesn't allow to remove instances.
+            $container = $this->container;
+
+            if ($container instanceof ArrayAccess) {
+                unset($container[Root::class]);
+                unset($container[Args::class]);
+            }
         }
     }
 }
