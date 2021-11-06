@@ -15,23 +15,23 @@ class EnumTest extends TestCase {
      * @covers ::__toString
      */
     public function testToString(): void {
-        $this->assertEquals('1', (string) EnumTest_A::i());
-        $this->assertEquals('a', (string) EnumTest_A::a());
+        self::assertEquals('1', (string) EnumTest_A::i());
+        self::assertEquals('a', (string) EnumTest_A::a());
     }
 
     /**
      * @covers ::jsonSerialize
      */
     public function testJsonSerialize(): void {
-        $this->assertEquals(json_encode(1), json_encode(EnumTest_A::i()));
-        $this->assertEquals(json_encode('a'), json_encode(EnumTest_A::a()));
+        self::assertEquals(json_encode(1), json_encode(EnumTest_A::i()));
+        self::assertEquals(json_encode('a'), json_encode(EnumTest_A::a()));
     }
 
     /**
      * @covers ::getValues
      */
     public function testGetValues(): void {
-        $this->assertEquals([
+        self::assertEquals([
             'a' => EnumTest_A::a(),
             'b' => EnumTest_A::b(),
             1   => EnumTest_A::i(),
@@ -42,18 +42,18 @@ class EnumTest extends TestCase {
      * @covers ::getValue
      */
     public function testGetValue(): void {
-        $this->assertEquals(1, EnumTest_A::i()->getValue());
-        $this->assertEquals('a', EnumTest_A::a()->getValue());
+        self::assertEquals(1, EnumTest_A::i()->getValue());
+        self::assertEquals('a', EnumTest_A::a()->getValue());
     }
 
     /**
      * @covers ::get
      */
     public function testGet(): void {
-        $this->assertSame(EnumTest_A::a(), EnumTest_A::get('a'));
-        $this->assertSame(EnumTest_A::i(), EnumTest_A::get(1));
-        $this->assertNotSame(EnumTest_A::a(), EnumTest_B::a());
-        $this->assertEquals(EnumTest_A::a()->getValue(), EnumTest_B::a()->getValue());
+        self::assertSame(EnumTest_A::a(), EnumTest_A::get('a'));
+        self::assertSame(EnumTest_A::i(), EnumTest_A::get(1));
+        self::assertNotSame(EnumTest_A::a(), EnumTest_B::a());
+        self::assertEquals(EnumTest_A::a()->getValue(), EnumTest_B::a()->getValue());
     }
 }
 

@@ -24,7 +24,7 @@ class IntRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new IntRule($translator);
 
-        $this->assertEquals($expected, $rule->passes('attribute', $value));
+        self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
     /**
@@ -34,7 +34,7 @@ class IntRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new IntRule($translator);
 
-        $this->assertEquals('The :attribute is not an integer.', $rule->message());
+        self::assertEquals('The :attribute is not an integer.', $rule->message());
     }
     // </editor-fold>
 

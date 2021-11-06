@@ -35,7 +35,7 @@ class MergeDataProviderTest extends TestCase {
             '0 / 1' => [$f->getValue(), 'value e'],
         ];
 
-        $this->assertEquals($e, (new MergeDataProvider([
+        self::assertEquals($e, (new MergeDataProvider([
             'a' => new ArrayDataProvider($a),
             'b' => new ArrayDataProvider($b),
             0   => new ArrayDataProvider($c),
@@ -62,7 +62,7 @@ class MergeDataProviderTest extends TestCase {
             'b / b' => [$f, 'value c'],
         ];
 
-        $this->assertEquals($e, (new MergeDataProvider([
+        self::assertEquals($e, (new MergeDataProvider([
             'a' => new ArrayDataProvider($a),
             'b' => new ArrayDataProvider($b),
         ]))->getData(true));

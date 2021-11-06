@@ -49,7 +49,7 @@ class ContainsTest extends TestCase {
         $operator = $this->app->make(Contains::class);
         $builder  = $operator->apply($builder, $property, $value);
 
-        $this->assertDatabaseQueryEquals($expected, $builder);
+        self::assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 

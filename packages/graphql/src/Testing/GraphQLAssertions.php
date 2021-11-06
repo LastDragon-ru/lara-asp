@@ -30,7 +30,7 @@ trait GraphQLAssertions {
         Schema|SplFileInfo|string $schema,
         string $message = '',
     ): void {
-        $this->assertEquals(
+        self::assertEquals(
             Args::content($expected),
             $this->printGraphQLSchema($schema),
             $message,
@@ -44,7 +44,7 @@ trait GraphQLAssertions {
         SplFileInfo|string $expected,
         string $message = '',
     ): void {
-        $this->assertGraphQLSchemaEquals(
+        self::assertGraphQLSchemaEquals(
             $expected,
             $this->getDefaultGraphQLSchema(),
             $message,

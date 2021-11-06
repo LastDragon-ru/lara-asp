@@ -38,7 +38,7 @@ class TranslatorTest extends TestCase {
             // empty
         };
 
-        $this->assertEquals($expected, $translator->choice($key, $number, $replace, $locale));
+        self::assertEquals($expected, $translator->choice($key, $number, $replace, $locale));
     }
 
     /**
@@ -64,7 +64,7 @@ class TranslatorTest extends TestCase {
             // empty
         };
 
-        $this->assertEquals($expected, $translator->get($key, $replace, $locale));
+        self::assertEquals($expected, $translator->get($key, $replace, $locale));
     }
     //</editor-fold>
 

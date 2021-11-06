@@ -24,7 +24,7 @@ class SmartMigratorTest extends TestCase {
      * @covers \LastDragon_ru\LaraASP\Migrator\Provider::registerMigrator
      */
     public function testProvider(): void {
-        $this->assertInstanceOf(SmartMigrator::class, $this->app->make('migrator'));
+        self::assertInstanceOf(SmartMigrator::class, $this->app->make('migrator'));
     }
 
     /**
@@ -83,7 +83,7 @@ class SmartMigratorTest extends TestCase {
             'pretend' => true,
         ]);
 
-        $this->assertEquals(
+        self::assertEquals(
             trim($this->getTestData()->content($expectedUp)),
             trim(str_replace("\r\n", "\n", $output->fetch())),
         );
@@ -93,7 +93,7 @@ class SmartMigratorTest extends TestCase {
             'pretend' => true,
         ]);
 
-        $this->assertEquals(
+        self::assertEquals(
             trim($this->getTestData()->content($expectedDown)),
             trim(str_replace("\r\n", "\n", $output->fetch())),
         );

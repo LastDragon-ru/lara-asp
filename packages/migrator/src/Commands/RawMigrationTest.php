@@ -39,7 +39,7 @@ class RawMigrationTest extends TestCase {
         $path   = $this->getTempDirectory();
         $finder = Finder::create()->in($path);
 
-        $this->assertCount(0, $finder->files());
+        self::assertCount(0, $finder->files());
 
         // Call
         $this->artisan("{$pkg}:raw-migration", [
@@ -61,6 +61,6 @@ class RawMigrationTest extends TestCase {
             ->values()
             ->all();
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 }

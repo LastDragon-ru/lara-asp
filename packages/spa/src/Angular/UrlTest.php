@@ -24,8 +24,8 @@ class UrlTest extends TestCase {
     public function testConstruct(array $expected, string $template): void {
         $url = new Url($template);
 
-        $this->assertEquals($template, $url->getTemplate());
-        $this->assertEquals($expected, $url->getParameters());
+        self::assertEquals($template, $url->getTemplate());
+        self::assertEquals($expected, $url->getParameters());
     }
 
     /**
@@ -37,10 +37,10 @@ class UrlTest extends TestCase {
      */
     public function testBuild(string|Exception $expected, string $template, array $parameters): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
-        $this->assertEquals($expected, (new Url($template))->build($parameters));
+        self::assertEquals($expected, (new Url($template))->build($parameters));
     }
     // </editor-fold>
 

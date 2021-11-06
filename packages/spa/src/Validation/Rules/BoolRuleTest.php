@@ -21,7 +21,7 @@ class BoolRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new BoolRule($translator);
 
-        $this->assertEquals($expected, $rule->passes('attribute', $value));
+        self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
     /**
@@ -31,7 +31,7 @@ class BoolRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new BoolRule($translator);
 
-        $this->assertEquals('The :attribute is not a boolean.', $rule->message());
+        self::assertEquals('The :attribute is not a boolean.', $rule->message());
     }
     // </editor-fold>
 

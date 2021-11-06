@@ -47,8 +47,8 @@ class ChunkedIteratorTest extends TestCase {
 
         $actual = iterator_to_array($iterator);
 
-        $this->assertEquals($expected, $actual);
-        $this->assertEquals(2, count($log) - $count);
+        self::assertEquals($expected, $actual);
+        self::assertEquals(2, count($log) - $count);
 
         $spyBefore
             ->shouldHaveBeenCalled()
@@ -76,9 +76,9 @@ class ChunkedIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 
-        $this->assertEquals(3, $count);
-        $this->assertCount(2, $actual);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals(3, $count);
+        self::assertCount(2, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -97,9 +97,9 @@ class ChunkedIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 
-        $this->assertEquals(3, $count);
-        $this->assertCount(2, $actual);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals(3, $count);
+        self::assertCount(2, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -119,9 +119,9 @@ class ChunkedIteratorTest extends TestCase {
         $count    = (clone $query)->count();
         $expected = (clone $query)->get()->all();
 
-        $this->assertCount(4, $actual);
-        $this->assertEquals(4, $count);
-        $this->assertEquals($expected, $actual);
+        self::assertCount(4, $actual);
+        self::assertEquals(4, $count);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -143,8 +143,8 @@ class ChunkedIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 
-        $this->assertCount(3, $actual);
-        $this->assertEquals(3, $count);
-        $this->assertEquals($expected, $actual);
+        self::assertCount(3, $actual);
+        self::assertEquals(3, $count);
+        self::assertEquals($expected, $actual);
     }
 }

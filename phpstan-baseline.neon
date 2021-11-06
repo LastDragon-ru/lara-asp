@@ -11,12 +11,9 @@ parameters:
         -
             message: "#does not call parent constructor from#"
             path: packages/**/*Test.php
-        -
-            message: "#^Dynamic call to static method ([^:]+)\\:\\:(fail|assert[^(]+)\\(\\)\\.$#"
-            path: packages/**/*Test.php
 
         # Larastan doesn't support phpstan/phpstan-strict-rules
-        - "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assert[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\:\\:assert[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\[^\\\\]+(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"

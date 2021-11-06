@@ -21,7 +21,7 @@ class DatabaseQueryComparatorTest extends TestCase {
      * @dataProvider dataProviderAccepts
      */
     public function testAccepts(bool $equals, mixed $expected, mixed $actual): void {
-        $this->assertEquals($equals, (new DatabaseQueryComparator())->accepts($expected, $actual));
+        self::assertEquals($equals, (new DatabaseQueryComparator())->accepts($expected, $actual));
     }
 
     /**
@@ -31,8 +31,8 @@ class DatabaseQueryComparatorTest extends TestCase {
      */
     public function testAssertEquals(bool|string $equals, mixed $expected, mixed $actual): void {
         if ($equals !== true) {
-            $this->expectException(ComparisonFailure::class);
-            $this->expectErrorMessageMatches($equals ?: '/Failed asserting that two database queries are equal/i');
+            self::expectException(ComparisonFailure::class);
+            self::expectErrorMessageMatches($equals ?: '/Failed asserting that two database queries are equal/i');
         }
 
         $comparator = new DatabaseQueryComparator();
@@ -40,7 +40,7 @@ class DatabaseQueryComparatorTest extends TestCase {
         $comparator->setFactory(Factory::getInstance());
         $comparator->assertEquals($expected, $actual);
 
-        $this->assertTrue($equals);
+        self::assertTrue($equals);
     }
 
     /**
@@ -78,7 +78,7 @@ class DatabaseQueryComparatorTest extends TestCase {
                 AND laravel_reserved_1.c > 10
             SQL;
 
-        $this->assertEquals($expected, $comparator->normalize($query)->getQuery());
+        self::assertEquals($expected, $comparator->normalize($query)->getQuery());
     }
     // </editor-fold>
 

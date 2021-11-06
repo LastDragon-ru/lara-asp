@@ -78,7 +78,7 @@ Name                  | Description
 
 # Assertions
 
-:warning: | By default package overrides scalar comparator to make it strict! So `$this->assertEquals(true, 1)` is `false`.
+:warning: | By default package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
 :---: | :---
 
 ## General
@@ -437,7 +437,7 @@ class ResponseInterfaceTest extends TestCase {
         /** @var \Psr\Http\Message\ResponseInterface $response */
         $response = null;
 
-        $this->assertThatResponse($response, new Response(
+        self::assertThatResponse($response, new Response(
             new Ok(),
             new JsonContentType(),
         ));

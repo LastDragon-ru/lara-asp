@@ -19,12 +19,12 @@ class ScalarStrictComparatorTest extends TestCase {
      */
     public function testAssertEquals(bool $equals, mixed $expected, mixed $actual): void {
         if (!$equals) {
-            $this->expectException(ComparisonFailure::class);
+            self::expectException(ComparisonFailure::class);
         }
 
         (new ScalarStrictComparator())->assertEquals($expected, $actual);
 
-        $this->assertTrue($equals);
+        self::assertTrue($equals);
     }
     // </editor-fold>
 

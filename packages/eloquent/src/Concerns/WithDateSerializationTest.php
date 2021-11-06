@@ -32,7 +32,7 @@ class WithDateSerializationTest extends TestCase {
             ->shouldReceive('jsonSerialize')
             ->never();
 
-        $this->assertEquals(Date::make($date)?->toJSON(), $trait->serializeDate($date));
+        self::assertEquals(Date::make($date)?->toJSON(), $trait->serializeDate($date));
 
         // Carbon/JsonSerializable date
         $date = Mockery::mock(DateTime::class, JsonSerializable::class);
@@ -41,6 +41,6 @@ class WithDateSerializationTest extends TestCase {
             ->once()
             ->andReturn('json');
 
-        $this->assertEquals('json', $trait->serializeDate($date));
+        self::assertEquals('json', $trait->serializeDate($date));
     }
 }

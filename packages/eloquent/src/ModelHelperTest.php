@@ -33,13 +33,13 @@ class ModelHelperTest extends TestCase {
      */
     public function testGetRelation(Exception|string $expected, Closure $model, string $name): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $actual = (new ModelHelper($model()))->getRelation($name);
 
         if (is_string($expected)) {
-            $this->assertInstanceOf($expected, $actual);
+            self::assertInstanceOf($expected, $actual);
         }
     }
     // </editor-fold>

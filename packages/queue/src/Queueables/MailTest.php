@@ -22,25 +22,25 @@ class MailTest extends TestCase {
      * @covers ::queue
      */
     public function testQueueUninitializedInitializable(): void {
-        $this->expectExceptionObject($this->getException());
+        self::expectExceptionObject($this->getException());
 
         (new MailTest_Mail())->queue($this->app->make(QueueFactory::class));
     }
 
     public function testLaterUninitializedInitializable(): void {
-        $this->expectExceptionObject($this->getException());
+        self::expectExceptionObject($this->getException());
 
         (new MailTest_Mail())->later(10, $this->app->make(QueueFactory::class));
     }
 
     public function testSendUninitializedInitializable(): void {
-        $this->expectExceptionObject($this->getException());
+        self::expectExceptionObject($this->getException());
 
         (new MailTest_Mail())->send($this->app->make(MailFactory::class));
     }
 
     public function testRenderUninitializedInitializable(): void {
-        $this->expectExceptionObject($this->getException());
+        self::expectExceptionObject($this->getException());
 
         (new MailTest_Mail())->render();
     }

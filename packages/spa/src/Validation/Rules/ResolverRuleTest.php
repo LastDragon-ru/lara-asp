@@ -31,7 +31,7 @@ class ResolverRuleTest extends TestCase {
         };
         $rule       = new ResolverRule($translator, $resolver);
 
-        $this->assertTrue($rule->passes('attribute', 'value'));
+        self::assertTrue($rule->passes('attribute', 'value'));
     }
 
     /**
@@ -50,7 +50,7 @@ class ResolverRuleTest extends TestCase {
         };
         $rule       = new ResolverRule($translator, $resolver);
 
-        $this->assertFalse($rule->passes('attribute', 'value'));
+        self::assertFalse($rule->passes('attribute', 'value'));
     }
 
     /**
@@ -69,7 +69,7 @@ class ResolverRuleTest extends TestCase {
         };
         $rule       = new ResolverRule($translator, $resolver);
 
-        $this->assertEquals('The :attribute not found.', $rule->message());
+        self::assertEquals('The :attribute not found.', $rule->message());
     }
     // </editor-fold>
 }

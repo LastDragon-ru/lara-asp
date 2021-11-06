@@ -63,7 +63,7 @@ class UsageTest extends TestCase {
         $usage->addType('B');
         $usage->end($d);
 
-        $this->assertEqualsCanonicalizing([
+        self::assertEqualsCanonicalizing([
             $classAA::class,
             $classBA::class,
             $classBB::class,
@@ -71,15 +71,15 @@ class UsageTest extends TestCase {
             $classAB::class,
             $classCB::class,
         ], $usage->get('A'));
-        $this->assertEqualsCanonicalizing([
+        self::assertEqualsCanonicalizing([
             $classBA::class,
             $classBB::class,
         ], $usage->get('B'));
-        $this->assertEqualsCanonicalizing([
+        self::assertEqualsCanonicalizing([
             $classCA::class,
             $classCB::class,
         ], $usage->get('C'));
-        $this->assertEqualsCanonicalizing([
+        self::assertEqualsCanonicalizing([
             $classBA::class,
             $classBB::class,
             $classDA::class,
@@ -90,7 +90,7 @@ class UsageTest extends TestCase {
      * @covers ::end
      */
     public function testEndWithoutStart(): void {
-        $this->expectExceptionObject(new LogicException('Stack is empty.'));
+        self::expectExceptionObject(new LogicException('Stack is empty.'));
 
         (new Usage())->end(1);
     }
@@ -99,7 +99,7 @@ class UsageTest extends TestCase {
      * @covers ::end
      */
     public function testEndInvalidIndex(): void {
-        $this->expectExceptionObject(new OutOfBoundsException(sprintf(
+        self::expectExceptionObject(new OutOfBoundsException(sprintf(
             'Index mismatch: required `%s`, `%s` given.',
             0,
             123,
@@ -118,7 +118,7 @@ class UsageTest extends TestCase {
         $usage = new Usage();
         $usage->addValue(stdClass::class);
 
-        $this->expectExceptionObject(new LogicException('Stack is empty.'));
+        self::expectExceptionObject(new LogicException('Stack is empty.'));
 
         $usage->end(0);
     }

@@ -36,16 +36,16 @@ class ProtocolTest extends TestCase {
      */
     public function testInvoke(Exception|string $expected, string $content, array $parameters): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $file   = $this->getTempFile($content);
         $uri    = Protocol::getUri($file, $parameters);
         $actual = (new Protocol())($uri);
 
-        $this->assertEquals($expected, $actual);
-        $this->assertNotNull($actual);
-        $this->assertNotNull(json_decode($actual));
+        self::assertEquals($expected, $actual);
+        self::assertNotNull($actual);
+        self::assertNotNull(json_decode($actual));
     }
 
     /**
@@ -61,15 +61,15 @@ class ProtocolTest extends TestCase {
         $params = ['a' => 'a', 'b' => 'b'];
         $actual = Protocol::getUri($file, $params);
 
-        $this->assertEquals(Protocol::Scheme, $actual->scheme());
-        $this->assertEquals($host, $actual->host());
-        $this->assertEquals(null, $actual->port());
-        $this->assertEquals($host, $actual->authority());
-        $this->assertEquals(null, $actual->user());
-        $this->assertEquals(null, $actual->pass());
-        $this->assertEquals($path, $actual->path());
-        $this->assertEquals(http_build_query($params), $actual->query());
-        $this->assertEquals(null, $actual->fragment());
+        self::assertEquals(Protocol::Scheme, $actual->scheme());
+        self::assertEquals($host, $actual->host());
+        self::assertEquals(null, $actual->port());
+        self::assertEquals($host, $actual->authority());
+        self::assertEquals(null, $actual->user());
+        self::assertEquals(null, $actual->pass());
+        self::assertEquals($path, $actual->path());
+        self::assertEquals(http_build_query($params), $actual->query());
+        self::assertEquals(null, $actual->fragment());
     }
     // </editor-fold>
 

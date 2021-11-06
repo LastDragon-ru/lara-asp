@@ -96,7 +96,7 @@ class CronableRegistratorTest extends TestCase {
             }
         };
 
-        $this->expectExceptionObject(new LogicException('The application is not running in console.'));
+        self::expectExceptionObject(new LogicException('The application is not running in console.'));
 
         $registrator->register($cronable::class);
     }
@@ -144,7 +144,7 @@ class CronableRegistratorTest extends TestCase {
             }
         };
 
-        $this->assertEquals($expected, $registrator->isDue($cron));
+        self::assertEquals($expected, $registrator->isDue($cron));
     }
     // </editor-fold>
 

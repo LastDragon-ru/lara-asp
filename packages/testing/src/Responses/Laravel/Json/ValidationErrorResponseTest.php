@@ -33,7 +33,7 @@ class ValidationErrorResponseTest extends TestCase {
         $response   = ResponseFactory::make($this->getJson(__FUNCTION__));
         $constraint = new ValidationErrorResponse($errors);
 
-        $this->assertEquals($expected, $constraint->evaluate($response, '', true));
+        self::assertEquals($expected, $constraint->evaluate($response, '', true));
     }
     // </editor-fold>
 

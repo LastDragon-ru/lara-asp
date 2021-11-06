@@ -46,8 +46,8 @@ class MetadataTest extends TestCase {
     public function testIsScalar(): void {
         $metadata = new Metadata($this->app, new Usage());
 
-        $this->assertTrue($metadata->isScalar(Directive::ScalarInt));
-        $this->assertFalse($metadata->isScalar('unknown'));
+        self::assertTrue($metadata->isScalar(Directive::ScalarInt));
+        self::assertFalse($metadata->isScalar('unknown'));
     }
 
     /**
@@ -57,14 +57,14 @@ class MetadataTest extends TestCase {
      */
     public function testAddScalar(Exception|bool $expected, string $scalar, mixed $operators): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $metadata = new Metadata($this->app, new Usage());
 
         $metadata->addScalar($scalar, $operators);
 
-        $this->assertEquals($expected, $metadata->isScalar($scalar));
+        self::assertEquals($expected, $metadata->isScalar($scalar));
     }
 
     /**
@@ -78,19 +78,19 @@ class MetadataTest extends TestCase {
         $metadata->addScalar($scalar, [Equal::class, Equal::class]);
         $metadata->addScalar($alias, $scalar);
 
-        $this->assertEquals(
+        self::assertEquals(
             [Equal::class],
             $this->toClassNames($metadata->getScalarOperators($scalar, false)),
         );
-        $this->assertEquals(
+        self::assertEquals(
             [Equal::class, IsNull::class, IsNotNull::class],
             $this->toClassNames($metadata->getScalarOperators($scalar, true)),
         );
-        $this->assertEquals(
+        self::assertEquals(
             $metadata->getScalarOperators($scalar, false),
             $metadata->getScalarOperators($alias, false),
         );
-        $this->assertEquals(
+        self::assertEquals(
             $metadata->getScalarOperators($scalar, true),
             $metadata->getScalarOperators($alias, true),
         );
@@ -100,7 +100,7 @@ class MetadataTest extends TestCase {
      * @covers ::getScalarOperators
      */
     public function testGetScalarOperatorsUnknownScalar(): void {
-        $this->expectExceptionObject(new ScalarUnknown('unknown'));
+        self::expectExceptionObject(new ScalarUnknown('unknown'));
 
         (new Metadata($this->app, new Usage()))->getScalarOperators('unknown', false);
     }
@@ -117,27 +117,27 @@ class MetadataTest extends TestCase {
         $metadata->addScalar($alias, $enum);
         $metadata->addScalar(Directive::ScalarEnum, [NotEqual::class, NotEqual::class]);
 
-        $this->assertEquals(
+        self::assertEquals(
             [NotEqual::class],
             $this->toClassNames($metadata->getEnumOperators('unknown', false)),
         );
-        $this->assertEquals(
+        self::assertEquals(
             [NotEqual::class, IsNull::class, IsNotNull::class],
             $this->toClassNames($metadata->getEnumOperators('unknown', true)),
         );
-        $this->assertEquals(
+        self::assertEquals(
             [Equal::class],
             $this->toClassNames($metadata->getEnumOperators($enum, false)),
         );
-        $this->assertEquals(
+        self::assertEquals(
             [Equal::class, IsNull::class, IsNotNull::class],
             $this->toClassNames($metadata->getEnumOperators($enum, true)),
         );
-        $this->assertEquals(
+        self::assertEquals(
             $metadata->getEnumOperators($enum, false),
             $metadata->getEnumOperators($alias, false),
         );
-        $this->assertEquals(
+        self::assertEquals(
             $metadata->getEnumOperators($enum, true),
             $metadata->getEnumOperators($alias, true),
         );
@@ -175,15 +175,15 @@ class MetadataTest extends TestCase {
 
         $metadata->getUsage()->end($u);
 
-        $this->assertSame($a, $b);
-        $this->assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
+        self::assertSame($a, $b);
+        self::assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
 
     /**
      * @covers ::getOperatorInstance
      */
     public function testGetOperatorInstanceNotAnOperator(): void {
-        $this->expectExceptionObject(new ClassIsNotOperator(stdClass::class));
+        self::expectExceptionObject(new ClassIsNotOperator(stdClass::class));
 
         /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->getOperatorInstance(stdClass::class);
@@ -239,15 +239,15 @@ class MetadataTest extends TestCase {
 
         $metadata->getUsage()->end($u);
 
-        $this->assertSame($a, $b);
-        $this->assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
+        self::assertSame($a, $b);
+        self::assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
 
     /**
      * @covers ::getComplexOperatorInstance
      */
     public function testGetComplexOperatorInstanceNotAnOperator(): void {
-        $this->expectExceptionObject(new ClassIsNotComplexOperator(stdClass::class));
+        self::expectExceptionObject(new ClassIsNotComplexOperator(stdClass::class));
 
         /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->getComplexOperatorInstance(stdClass::class);
@@ -298,14 +298,14 @@ class MetadataTest extends TestCase {
             // empty
         }
 
-        $this->assertInstanceOf(TypeDefinition::class, $actual);
+        self::assertInstanceOf(TypeDefinition::class, $actual);
     }
 
     /**
      * @covers ::addDefinition
      */
     public function testAddDefinitionNotADefinition(): void {
-        $this->expectExceptionObject(new ClassIsNotDefinition(stdClass::class));
+        self::expectExceptionObject(new ClassIsNotDefinition(stdClass::class));
 
         /** @phpstan-ignore-next-line Required for test */
         (new Metadata($this->app, new Usage()))->addDefinition('type', stdClass::class);
@@ -327,7 +327,7 @@ class MetadataTest extends TestCase {
             }
         };
 
-        $this->expectExceptionObject(new DefinitionAlreadyDefined('test'));
+        self::expectExceptionObject(new DefinitionAlreadyDefined('test'));
 
         $metadata->addDefinition('test', $a::class);
         $metadata->addDefinition('test', $b::class);
@@ -354,14 +354,14 @@ class MetadataTest extends TestCase {
             // empty
         }
 
-        $this->assertInstanceOf(TypeDefinition::class, $actual);
+        self::assertInstanceOf(TypeDefinition::class, $actual);
     }
 
     /**
      * @covers ::getDefinition
      */
     public function testGetDefinitionUnknownDefinition(): void {
-        $this->expectExceptionObject(new DefinitionUnknown('unknown'));
+        self::expectExceptionObject(new DefinitionUnknown('unknown'));
 
         (new Metadata($this->app, new Usage()))->getDefinition('unknown');
     }
@@ -373,15 +373,15 @@ class MetadataTest extends TestCase {
     public function testGetType(): void {
         $metadata = new Metadata($this->app, new Usage());
 
-        $this->assertNull($metadata->getType('test'));
+        self::assertNull($metadata->getType('test'));
 
         $metadata->addType('test', 'TestType');
 
-        $this->assertEquals('TestType', $metadata->getType('test'));
+        self::assertEquals('TestType', $metadata->getType('test'));
 
         $metadata->addType('test', 'TestType2');
 
-        $this->assertEquals('TestType2', $metadata->getType('test'));
+        self::assertEquals('TestType2', $metadata->getType('test'));
     }
     // </editor-fold>
 

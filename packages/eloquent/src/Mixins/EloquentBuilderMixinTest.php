@@ -30,8 +30,8 @@ class EloquentBuilderMixinTest extends TestCase {
             protected $primaryKey = 'idddd';
         };
 
-        $this->assertTrue(Builder::hasGlobalMacro('getDefaultKeyName'));
-        $this->assertEquals('idddd', $model->query()->getDefaultKeyName());
+        self::assertTrue(Builder::hasGlobalMacro('getDefaultKeyName'));
+        self::assertEquals('idddd', $model->query()->getDefaultKeyName());
     }
 
     /**
@@ -43,7 +43,7 @@ class EloquentBuilderMixinTest extends TestCase {
             // empty
         };
 
-        $this->assertTrue(Builder::hasGlobalMacro('getChunkedIterator'));
+        self::assertTrue(Builder::hasGlobalMacro('getChunkedIterator'));
 
         try {
             $actual = $model->query()->getChunkedIterator();
@@ -51,7 +51,7 @@ class EloquentBuilderMixinTest extends TestCase {
             // empty
         }
 
-        $this->assertInstanceOf(ChunkedIterator::class, $actual);
+        self::assertInstanceOf(ChunkedIterator::class, $actual);
     }
 
     /**
@@ -63,7 +63,7 @@ class EloquentBuilderMixinTest extends TestCase {
             // empty
         };
 
-        $this->assertTrue(Builder::hasGlobalMacro('getChangeSafeIterator'));
+        self::assertTrue(Builder::hasGlobalMacro('getChangeSafeIterator'));
 
         try {
             $actual = $model->query()->getChangeSafeIterator();
@@ -71,7 +71,7 @@ class EloquentBuilderMixinTest extends TestCase {
             // empty
         }
 
-        $this->assertInstanceOf(ChunkedChangeSafeIterator::class, $actual);
+        self::assertInstanceOf(ChunkedChangeSafeIterator::class, $actual);
     }
 
     /**
@@ -82,8 +82,8 @@ class EloquentBuilderMixinTest extends TestCase {
         $a = TestObject::factory()->create();
         $b = TestObject::factory()->create();
 
-        $this->assertEquals([$a, $b], TestObject::query()->orderByKey()->get()->all());
-        $this->assertEquals([$b, $a], TestObject::query()->orderByKey('desc')->get()->all());
-        $this->assertEquals([$b, $a], TestObject::query()->orderByKeyDesc()->get()->all());
+        self::assertEquals([$a, $b], TestObject::query()->orderByKey()->get()->all());
+        self::assertEquals([$b, $a], TestObject::query()->orderByKey('desc')->get()->all());
+        self::assertEquals([$b, $a], TestObject::query()->orderByKeyDesc()->get()->all());
     }
 }

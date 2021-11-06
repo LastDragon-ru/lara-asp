@@ -17,7 +17,7 @@ class ProviderTest extends TestCase {
         $actual   = $this->app->make(ProviderTest_ConfigurableQueueable::class)->queue ?? null;
         $expected = 'test';
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 }
 

@@ -26,14 +26,14 @@ class ResourceCollectionTest extends TestCase {
      */
     public function testConstruct(bool|Exception $expected, string $class): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         new class($class, []) extends ResourceCollection {
             // empty
         };
 
-        $this->assertTrue($expected);
+        self::assertTrue($expected);
     }
 
     /**
@@ -64,7 +64,7 @@ class ResourceCollectionTest extends TestCase {
             ],
         ];
 
-        $this->assertEquals($expected, json_decode(
+        self::assertEquals($expected, json_decode(
             $resource->toResponse(new Request())->content(),
             true,
         ));

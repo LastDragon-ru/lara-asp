@@ -38,7 +38,7 @@ class QueueableConfigTest extends TestCase {
             }
         };
 
-        $this->assertEquals($expected, $config->getQueueClass());
+        self::assertEquals($expected, $config->getQueueClass());
     }
 
     /**
@@ -94,10 +94,10 @@ class QueueableConfigTest extends TestCase {
         $repository->set($config->getApplicationConfig(), $appConfig);
 
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
-        $this->assertEquals($expected, $config->config());
+        self::assertEquals($expected, $config->config());
     }
     // </editor-fold>
 

@@ -16,9 +16,9 @@ class StatusCodeTest extends TestCase {
      * @covers ::evaluate
      */
     public function testEvaluate(): void {
-        $this->expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
+        self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
-        $this->assertFalse((new StatusCode(200))->evaluate(new stdClass()));
+        self::assertFalse((new StatusCode(200))->evaluate(new stdClass()));
     }
 
     /**
@@ -36,8 +36,8 @@ class StatusCodeTest extends TestCase {
             }
         };
 
-        $this->assertTrue($constraint->matches($valid));
-        $this->assertFalse($constraint->matches($invalid));
+        self::assertTrue($constraint->matches($valid));
+        self::assertFalse($constraint->matches($invalid));
     }
 
     /**
@@ -46,6 +46,6 @@ class StatusCodeTest extends TestCase {
     public function testToString(): void {
         $constraint = new StatusCode(200);
 
-        $this->assertEquals('has Status Code is equal to 200', $constraint->toString());
+        self::assertEquals('has Status Code is equal to 200', $constraint->toString());
     }
 }

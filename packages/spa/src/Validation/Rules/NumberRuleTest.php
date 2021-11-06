@@ -24,7 +24,7 @@ class NumberRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new NumberRule($translator);
 
-        $this->assertEquals($expected, $rule->passes('attribute', $value));
+        self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
     /**
@@ -34,7 +34,7 @@ class NumberRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new NumberRule($translator);
 
-        $this->assertEquals('The :attribute is not an number.', $rule->message());
+        self::assertEquals('The :attribute is not an number.', $rule->message());
     }
     // </editor-fold>
 

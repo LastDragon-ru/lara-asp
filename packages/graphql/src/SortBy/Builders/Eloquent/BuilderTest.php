@@ -39,16 +39,16 @@ class BuilderTest extends TestCase {
      */
     public function testHandle(array|Exception $expected, Closure $builder, array $clauses): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $builder = $builder($this);
         $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
 
         if (is_array($expected)) {
-            $this->assertDatabaseQueryEquals($expected, $builder);
+            self::assertDatabaseQueryEquals($expected, $builder);
         } else {
-            $this->fail('Something wrong...');
+            self::fail('Something wrong...');
         }
     }
     // </editor-fold>

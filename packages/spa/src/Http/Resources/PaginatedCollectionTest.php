@@ -59,7 +59,7 @@ class PaginatedCollectionTest extends TestCase {
             ],
         ];
 
-        $this->assertEquals($expected, json_decode(
+        self::assertEquals($expected, json_decode(
             $resource->toResponse(new Request())->content(),
             true,
         ));
@@ -108,7 +108,7 @@ class PaginatedCollectionTest extends TestCase {
             ],
         ];
 
-        $this->assertEquals($expected, json_decode(
+        self::assertEquals($expected, json_decode(
             $resource->toResponse(new Request())->content(),
             true,
         ));

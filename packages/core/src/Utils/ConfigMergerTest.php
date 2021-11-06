@@ -29,13 +29,13 @@ class ConfigMergerTest extends TestCase {
         array ...$configs,
     ): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $merger = new ConfigMerger();
         $actual = $merger->merge($target, ... $configs);
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
     // </editor-fold>
 

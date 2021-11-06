@@ -53,7 +53,7 @@ class DirectiveTest extends TestCase {
      * @dataProvider dataProviderManipulateArgDefinition
      */
     public function testManipulateArgDefinition(string $expected, string $graphql): void {
-        $this->assertGraphQLSchemaEquals(
+        self::assertGraphQLSchemaEquals(
             $this->getTestData()->file($expected),
             $this->getTestData()->file($graphql),
         );
@@ -75,7 +75,7 @@ class DirectiveTest extends TestCase {
         $types   = $schema->getTypeMap();
         $query   = $types['Query'];
 
-        $this->assertInstanceOf(ObjectType::class, $query);
+        self::assertInstanceOf(ObjectType::class, $query);
 
         // Collect
         $operators = [];
@@ -84,14 +84,14 @@ class DirectiveTest extends TestCase {
             $node       = $field->getArg('where')?->astNode;
             $directives = $locator->associatedOfType($node, Directive::class);
 
-            $this->assertCount(1, $directives);
+            self::assertCount(1, $directives);
 
             $operators[$field->name] = $method->invoke($directives->first(), Directive::ArgOperators);
 
             sort($operators[$field->name]);
         }
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'a' => [
                     Between::class,
@@ -175,7 +175,7 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      */
     public function testManipulateArgDefinitionUnknownType(): void {
-        $this->expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
+        self::expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
 
         $this->printGraphQLSchema($this->getTestData()->file('~unknown.graphql'));
     }
@@ -230,7 +230,7 @@ class DirectiveTest extends TestCase {
         $registry->register($typeA);
         $registry->register($typeB);
 
-        $this->assertGraphQLSchemaEquals(
+        self::assertGraphQLSchemaEquals(
             $this->getTestData()->file('~programmatically-expected.graphql'),
             $this->getTestData()->file('~programmatically.graphql'),
         );
@@ -245,7 +245,7 @@ class DirectiveTest extends TestCase {
      */
     public function testHandleBuilder(bool|Exception $expected, Closure $builder, array $input): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $builder   = $builder($this);
@@ -266,7 +266,7 @@ class DirectiveTest extends TestCase {
             }
         };
 
-        $this->assertEquals($expected, (bool) $directive->handleBuilder($builder, $input));
+        self::assertEquals($expected, (bool) $directive->handleBuilder($builder, $input));
     }
 
     // </editor-fold>

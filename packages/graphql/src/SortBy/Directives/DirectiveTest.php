@@ -34,7 +34,7 @@ class DirectiveTest extends TestCase {
      * @dataProvider dataProviderManipulateArgDefinition
      */
     public function testManipulateArgDefinition(string $expected, string $graphql): void {
-        $this->assertGraphQLSchemaEquals(
+        self::assertGraphQLSchemaEquals(
             $this->getTestData()->file($expected),
             $this->getTestData()->file($graphql),
         );
@@ -103,7 +103,7 @@ class DirectiveTest extends TestCase {
         $registry->register($c);
         $registry->register($d);
 
-        $this->assertGraphQLSchemaEquals(
+        self::assertGraphQLSchemaEquals(
             $this->getTestData()->file('~registry-expected.graphql'),
             $this->getTestData()->file('~registry.graphql'),
         );
@@ -123,7 +123,7 @@ class DirectiveTest extends TestCase {
             ],
         ]);
 
-        $this->expectExceptionObject(new FailedToCreateSortClause('type TestType'));
+        self::expectExceptionObject(new FailedToCreateSortClause('type TestType'));
 
         $registry = $this->app->make(TypeRegistry::class);
         $registry->register($type);
@@ -148,7 +148,7 @@ class DirectiveTest extends TestCase {
      */
     public function testGetClauses(Exception|array $expected, array $clauses): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $directive = new class() extends Directive {
@@ -165,7 +165,7 @@ class DirectiveTest extends TestCase {
             }
         };
 
-        $this->assertEquals($expected, $directive->getClauses($clauses));
+        self::assertEquals($expected, $directive->getClauses($clauses));
     }
 
     /**

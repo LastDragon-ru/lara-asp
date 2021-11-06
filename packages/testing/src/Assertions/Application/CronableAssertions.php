@@ -40,7 +40,7 @@ trait CronableAssertions {
         $message  = $message ?: sprintf('The `%s` is not registered as scheduled job.', $cronable);
         $expected = $this->isCronableRegistered($cronable);
 
-        $this->assertTrue($expected, $message);
+        self::assertTrue($expected, $message);
     }
 
     /**

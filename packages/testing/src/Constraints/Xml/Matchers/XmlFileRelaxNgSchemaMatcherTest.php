@@ -22,7 +22,7 @@ class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
         $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.xml');
         $c      = new XmlFileRelaxNgSchemaMatcher();
 
-        $this->assertTrue($c->isMatchesSchema($schema, $xml));
+        self::assertTrue($c->isMatchesSchema($schema, $xml));
     }
 
     /**
@@ -33,7 +33,7 @@ class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
         $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.invalid.xml');
         $c      = new XmlFileRelaxNgSchemaMatcher();
 
-        $this->assertFalse($c->isMatchesSchema($schema, $xml));
+        self::assertFalse($c->isMatchesSchema($schema, $xml));
     }
 
     /**
@@ -43,6 +43,6 @@ class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $c      = new XmlFileRelaxNgSchemaMatcher();
 
-        $this->assertFalse($c->isMatchesSchema($schema, new DOMDocument()));
+        self::assertFalse($c->isMatchesSchema($schema, new DOMDocument()));
     }
 }

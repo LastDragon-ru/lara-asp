@@ -24,13 +24,13 @@ class TemplateTest extends TestCase {
      */
     public function testBuild(Exception|string $expected, string $content, array $parameters): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $actual = (new Template($content))->build($parameters);
 
-        $this->assertEquals($expected, $actual);
-        $this->assertNotNull(json_decode($actual));
+        self::assertEquals($expected, $actual);
+        self::assertNotNull(json_decode($actual));
     }
     // </editor-fold>
 

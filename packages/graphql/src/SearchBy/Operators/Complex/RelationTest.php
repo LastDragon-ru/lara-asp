@@ -40,7 +40,7 @@ class RelationTest extends TestCase {
         array $conditions = [],
     ): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $search   = new SearchBuilder([
@@ -53,9 +53,9 @@ class RelationTest extends TestCase {
         $builder  = $relation->apply($search, $builder, $property, $conditions);
 
         if (is_array($expected)) {
-            $this->assertDatabaseQueryEquals($expected, $builder);
+            self::assertDatabaseQueryEquals($expected, $builder);
         } else {
-            $this->fail('Something wrong...');
+            self::fail('Something wrong...');
         }
     }
     // </editor-fold>

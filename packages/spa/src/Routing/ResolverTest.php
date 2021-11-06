@@ -42,17 +42,17 @@ class ResolverTest extends TestCase {
         $b = $resolver->get(123);
         $c = $resolver->get(456);
 
-        $this->assertNotNull($a);
-        $this->assertEquals(123, $a->id);
-        $this->assertSame($a, $b);
-        $this->assertNotSame($a, $c);
+        self::assertNotNull($a);
+        self::assertEquals(123, $a->id);
+        self::assertSame($a, $b);
+        self::assertNotSame($a, $c);
     }
 
     /**
      * @covers ::get
      */
     public function testGetUnresolvedValue(): void {
-        $this->expectException(UnresolvedValueException::class);
+        self::expectException(UnresolvedValueException::class);
 
         $router   = $this->app->make(Router::class);
         $resolver = new class($router) extends Resolver {

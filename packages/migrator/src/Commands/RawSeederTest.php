@@ -22,7 +22,7 @@ class RawSeederTest extends TestCase {
         $path   = $this->getTempDirectory();
         $finder = Finder::create()->in($path);
 
-        $this->assertCount(0, $finder->files());
+        self::assertCount(0, $finder->files());
 
         // Redefine path where files will be generated.
         $this->app->useDatabasePath($path);
@@ -44,6 +44,6 @@ class RawSeederTest extends TestCase {
             ->values()
             ->all();
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 }

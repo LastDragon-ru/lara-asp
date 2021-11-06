@@ -32,7 +32,7 @@ class NotLikeTest extends TestCase {
         $builder  = $builder($this);
         $builder  = $operator->apply($builder, $property, $value);
 
-        $this->assertDatabaseQueryEquals($expected, $builder);
+        self::assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 

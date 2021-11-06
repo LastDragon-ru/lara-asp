@@ -35,8 +35,8 @@ class QueueableConfiguratorTest extends TestCase {
 
         $configurator->configure($queueable);
 
-        $this->assertEquals(60, $queueable->timeout);
-        $this->assertEquals(123, $queueable->tries ?? null);         // @phpstan-ignore-line
-        $this->assertEquals(345, $queueable->maxExceptions ?? null); // @phpstan-ignore-line
+        self::assertEquals(60, $queueable->timeout);
+        self::assertEquals(123, $queueable->tries ?? null);         // @phpstan-ignore-line
+        self::assertEquals(345, $queueable->maxExceptions ?? null);
     }
 }

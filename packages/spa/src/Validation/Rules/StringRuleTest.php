@@ -21,7 +21,7 @@ class StringRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new StringRule($translator);
 
-        $this->assertEquals($expected, $rule->passes('attribute', $value));
+        self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
     /**
@@ -31,7 +31,7 @@ class StringRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new StringRule($translator);
 
-        $this->assertEquals('The :attribute is not a string.', $rule->message());
+        self::assertEquals('The :attribute is not a string.', $rule->message());
     }
     // </editor-fold>
 

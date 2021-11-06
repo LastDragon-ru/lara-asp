@@ -25,7 +25,7 @@ class EnumCastTest extends TestCase {
      */
     public function testGet(Exception|Enum|null $expected, mixed $value): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $cast  = new EnumCast(EnumCastTest_Enum::class);
@@ -35,7 +35,7 @@ class EnumCastTest extends TestCase {
             // empty
         };
 
-        $this->assertEquals($expected, $cast->get($model, $key, $value, $attrs));
+        self::assertEquals($expected, $cast->get($model, $key, $value, $attrs));
     }
 
     /**
@@ -45,7 +45,7 @@ class EnumCastTest extends TestCase {
      */
     public function testSet(Exception|string|int|null $expected, mixed $value): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $cast  = new EnumCast(EnumCastTest_Enum::class);
@@ -55,7 +55,7 @@ class EnumCastTest extends TestCase {
             // empty
         };
 
-        $this->assertEquals($expected, $cast->set($model, $key, $value, $attrs));
+        self::assertEquals($expected, $cast->set($model, $key, $value, $attrs));
     }
     // </editor-fold>
 

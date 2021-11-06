@@ -33,7 +33,7 @@ class ResourceCollectionTest extends TestCase {
             $message = $exception->getMessage();
         }
 
-        $this->assertEquals($expected, $actual, $message);
+        self::assertEquals($expected, $actual, $message);
     }
     // </editor-fold>
 

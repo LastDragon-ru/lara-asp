@@ -23,7 +23,7 @@ class DateRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new DateRule($translator);
 
-        $this->assertEquals($expected, $rule->passes('attribute', $value));
+        self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
     /**
@@ -33,7 +33,7 @@ class DateRuleTest extends TestCase {
         $translator = $this->app->make(Translator::class);
         $rule       = new DateRule($translator);
 
-        $this->assertEquals('The :attribute is not a valid date.', $rule->message());
+        self::assertEquals('The :attribute is not a valid date.', $rule->message());
     }
 
     /**
@@ -43,14 +43,14 @@ class DateRuleTest extends TestCase {
      */
     public function testGetValue(Exception|string|null $expected, string $value): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $translator = $this->app->make(Translator::class);
         $rule       = new DateRule($translator);
         $date       = $rule->getValue($value);
 
-        $this->assertEquals($expected, $date ? $date->format('Y-m-d\TH:i:s.uP') : null);
+        self::assertEquals($expected, $date ? $date->format('Y-m-d\TH:i:s.uP') : null);
     }
     // </editor-fold>
 

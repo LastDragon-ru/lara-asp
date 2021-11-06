@@ -63,8 +63,8 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         $key      = (new TestObject())->getKeyName();
         $expected = (clone $query)->reorder($key)->get()->all();
 
-        $this->assertEquals($expected, $actual);
-        $this->assertEquals(5, $count);
+        self::assertEquals($expected, $actual);
+        self::assertEquals(5, $count);
         // 1 - first chunk
         // 2 - second chunk
         // 3 - create #4
@@ -99,9 +99,9 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->reorder()->offset(0)->orderBy($column)->limit(2)->get()->all();
 
-        $this->assertEquals(3, $count);
-        $this->assertCount(2, $actual);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals(3, $count);
+        self::assertCount(2, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -122,16 +122,16 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->reorder()->offset(0)->orderBy($column)->limit(2)->get()->all();
 
-        $this->assertEquals(3, $count);
-        $this->assertCount(2, $actual);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals(3, $count);
+        self::assertCount(2, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
      * @covers ::getIterator
      */
     public function testGetIteratorUnion(): void {
-        $this->expectExceptionObject(new InvalidArgumentException('Queries with UNION is not supported.'));
+        self::expectExceptionObject(new InvalidArgumentException('Queries with UNION is not supported.'));
 
         new ChunkedChangeSafeIterator(TestObject::query()->union(TestObject::query()->toBase()));
     }
@@ -155,7 +155,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
             }
         };
 
-        $this->assertEquals($expected, $iterator->getDefaultColumn($factory()));
+        self::assertEquals($expected, $iterator->getDefaultColumn($factory()));
     }
     // </editor-fold>
 

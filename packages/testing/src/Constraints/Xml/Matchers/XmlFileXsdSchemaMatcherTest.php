@@ -22,7 +22,7 @@ class XmlFileXsdSchemaMatcherTest extends TestCase {
         $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.xml');
         $c      = new XmlFileXsdSchemaMatcher();
 
-        $this->assertTrue($c->isMatchesSchema($schema, $xml));
+        self::assertTrue($c->isMatchesSchema($schema, $xml));
     }
 
     /**
@@ -33,7 +33,7 @@ class XmlFileXsdSchemaMatcherTest extends TestCase {
         $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.invalid.xml');
         $c      = new XmlFileXsdSchemaMatcher();
 
-        $this->assertFalse($c->isMatchesSchema($schema, $xml));
+        self::assertFalse($c->isMatchesSchema($schema, $xml));
     }
 
     /**
@@ -43,6 +43,6 @@ class XmlFileXsdSchemaMatcherTest extends TestCase {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $c      = new XmlFileXsdSchemaMatcher();
 
-        $this->assertFalse($c->isMatchesSchema($schema, new DOMDocument()));
+        self::assertFalse($c->isMatchesSchema($schema, new DOMDocument()));
     }
 }

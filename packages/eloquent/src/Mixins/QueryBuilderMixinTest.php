@@ -15,23 +15,23 @@ class QueryBuilderMixinTest extends TestCase {
      * @covers ::getDefaultKeyName
      */
     public function testGetDefaultKeyNameQueryBuilder(): void {
-        $this->assertTrue(Builder::hasMacro('getDefaultKeyName'));
-        $this->assertEquals('id', $this->app->make('db')->query()->getDefaultKeyName());
+        self::assertTrue(Builder::hasMacro('getDefaultKeyName'));
+        self::assertEquals('id', $this->app->make('db')->query()->getDefaultKeyName());
     }
 
     /**
      * @covers ::getChunkedIterator
      */
     public function testIteratorQueryBuilder(): void {
-        $this->assertTrue(Builder::hasMacro('getChunkedIterator'));
-        $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->getChunkedIterator());
+        self::assertTrue(Builder::hasMacro('getChunkedIterator'));
+        self::assertInstanceOf(Traversable::class, $this->app->make('db')->query()->getChunkedIterator());
     }
 
     /**
      * @covers ::getChangeSafeIterator
      */
     public function testChangeSafeIteratorQueryBuilder(): void {
-        $this->assertTrue(Builder::hasMacro('getChangeSafeIterator'));
-        $this->assertInstanceOf(Traversable::class, $this->app->make('db')->query()->getChangeSafeIterator());
+        self::assertTrue(Builder::hasMacro('getChangeSafeIterator'));
+        self::assertInstanceOf(Traversable::class, $this->app->make('db')->query()->getChangeSafeIterator());
     }
 }

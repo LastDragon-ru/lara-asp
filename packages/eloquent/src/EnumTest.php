@@ -22,19 +22,19 @@ class EnumTest extends TestCase {
         $model->value = 'a';
         $model->save();
 
-        $this->assertEquals($model->refresh()->value, EnumTest_Enum::a());
+        self::assertEquals($model->refresh()->value, EnumTest_Enum::a());
 
         // From enum
         $model->value = EnumTest_Enum::a();
         $model->save();
 
-        $this->assertEquals($model->refresh()->value, EnumTest_Enum::a());
+        self::assertEquals($model->refresh()->value, EnumTest_Enum::a());
 
         // Null
         $model->value = null;
         $model->save();
 
-        $this->assertNull($model->refresh()->value);
+        self::assertNull($model->refresh()->value);
     }
 }
 

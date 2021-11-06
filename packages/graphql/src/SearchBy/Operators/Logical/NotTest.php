@@ -39,7 +39,7 @@ class NotTest extends TestCase {
         $builder  = $builder($this);
         $builder  = $operator->apply($search, $builder, $conditions, $tableAlias);
 
-        $this->assertDatabaseQueryEquals($expected, $builder);
+        self::assertDatabaseQueryEquals($expected, $builder);
     }
     // </editor-fold>
 

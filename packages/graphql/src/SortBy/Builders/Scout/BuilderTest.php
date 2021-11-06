@@ -31,7 +31,7 @@ class BuilderTest extends TestCase {
      */
     public function testHandle(array|Exception $expected, array $clauses, Closure $resolver = null): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         if ($resolver) {
@@ -59,7 +59,7 @@ class BuilderTest extends TestCase {
         ];
 
         if (is_array($expected)) {
-            $this->assertEquals($expected + $default, $actual + $default);
+            self::assertEquals($expected + $default, $actual + $default);
         }
     }
     // </editor-fold>

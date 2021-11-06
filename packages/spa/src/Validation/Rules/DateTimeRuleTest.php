@@ -25,7 +25,7 @@ class DateTimeRuleTest extends TestCase {
         $config     = $this->app->make(Repository::class);
         $rule       = new DateTimeRule($translator, $config);
 
-        $this->assertEquals($expected, $rule->passes('attribute', $value));
+        self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
     /**
@@ -36,7 +36,7 @@ class DateTimeRuleTest extends TestCase {
         $config     = $this->app->make(Repository::class);
         $rule       = new DateTimeRule($translator, $config);
 
-        $this->assertEquals('The :attribute is not a valid datetime.', $rule->message());
+        self::assertEquals('The :attribute is not a valid datetime.', $rule->message());
     }
 
     /**
@@ -46,7 +46,7 @@ class DateTimeRuleTest extends TestCase {
      */
     public function testGetValue(string|Exception $expected, ?string $tz, string $value): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $translator = $this->app->make(Translator::class);
@@ -57,7 +57,7 @@ class DateTimeRuleTest extends TestCase {
 
         $date = $rule->getValue($value);
 
-        $this->assertEquals($expected, $date ? $date->format('Y-m-d\TH:i:s.uP') : null);
+        self::assertEquals($expected, $date ? $date->format('Y-m-d\TH:i:s.uP') : null);
     }
     // </editor-fold>
 

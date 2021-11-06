@@ -33,10 +33,10 @@ class XmlMatchesSchemaTest extends TestCase {
         $result     = $constraint->evaluate($xml, '', true);
 
         if (is_string($expected)) {
-            $this->assertFalse($result);
-            $this->assertStringContainsString($expected, $constraint->additionalFailureDescription($xml));
+            self::assertFalse($result);
+            self::assertStringContainsString($expected, $constraint->additionalFailureDescription($xml));
         } else {
-            $this->assertEquals($expected, $result);
+            self::assertEquals($expected, $result);
         }
     }
     // </editor-fold>

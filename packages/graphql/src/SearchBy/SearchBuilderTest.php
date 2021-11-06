@@ -57,7 +57,7 @@ class SearchBuilderTest extends TestCase {
         string $tableAlias = null,
     ): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $search  = new SearchBuilder([
@@ -72,9 +72,9 @@ class SearchBuilderTest extends TestCase {
         $builder = $search->process($builder, $conditions, $tableAlias);
 
         if (is_array($expected)) {
-            $this->assertDatabaseQueryEquals($expected, $builder);
+            self::assertDatabaseQueryEquals($expected, $builder);
         } else {
-            $this->fail('Something wrong...');
+            self::fail('Something wrong...');
         }
     }
 
@@ -94,7 +94,7 @@ class SearchBuilderTest extends TestCase {
         string $tableAlias = null,
     ): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $search  = new SearchBuilder([
@@ -106,9 +106,9 @@ class SearchBuilderTest extends TestCase {
         $builder = $search->processComparison($builder, $property, $conditions, $tableAlias);
 
         if (is_array($expected)) {
-            $this->assertDatabaseQueryEquals($expected, $builder);
+            self::assertDatabaseQueryEquals($expected, $builder);
         } else {
-            $this->fail('Something wrong...');
+            self::fail('Something wrong...');
         }
     }
 
@@ -147,7 +147,7 @@ class SearchBuilderTest extends TestCase {
         $builder = $builder($this);
         $builder = $search->processLogicalOperator($builder, $logical, $conditions);
 
-        $this->assertDatabaseQueryEquals($expected, $builder);
+        self::assertDatabaseQueryEquals($expected, $builder);
     }
 
     /**
@@ -185,7 +185,7 @@ class SearchBuilderTest extends TestCase {
         $builder = $builder($this);
         $builder = $search->processComplexOperator($builder, $complex, $property, $conditions);
 
-        $this->assertDatabaseQueryEquals($expected, $builder);
+        self::assertDatabaseQueryEquals($expected, $builder);
     }
 
     /**
@@ -221,11 +221,11 @@ class SearchBuilderTest extends TestCase {
         };
         $search  = new SearchBuilder([$complex]);
 
-        $this->assertSame($complex, $search->getComplexOperator([
+        self::assertSame($complex, $search->getComplexOperator([
             $complex->getName() => 'yes',
         ]));
 
-        $this->assertNull($search->getComplexOperator([]));
+        self::assertNull($search->getComplexOperator([]));
     }
     //</editor-fold>
 

@@ -24,11 +24,11 @@ class InstanceCacheTest extends TestCase {
         $cache  = new InstanceCacheTest_Cache();
         $object = new stdClass();
 
-        $this->assertNull($cache->instanceCacheGet('a'));
-        $this->assertSame($object, $cache->instanceCacheGet('b', static function () use ($object): stdClass {
+        self::assertNull($cache->instanceCacheGet('a'));
+        self::assertSame($object, $cache->instanceCacheGet('b', static function () use ($object): stdClass {
             return $object;
         }));
-        $this->assertSame($object, $cache->instanceCacheGet('b', static function (): stdClass {
+        self::assertSame($object, $cache->instanceCacheGet('b', static function (): stdClass {
             return new stdClass();
         }));
     }
@@ -40,11 +40,11 @@ class InstanceCacheTest extends TestCase {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
 
-        $this->assertFalse($cache->instanceCacheHas($key));
-        $this->assertNull($cache->instanceCacheGet($key, static function () {
+        self::assertFalse($cache->instanceCacheHas($key));
+        self::assertNull($cache->instanceCacheGet($key, static function () {
             return null;
         }));
-        $this->assertTrue($cache->instanceCacheHas($key));
+        self::assertTrue($cache->instanceCacheHas($key));
     }
 
     /**
@@ -54,9 +54,9 @@ class InstanceCacheTest extends TestCase {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
 
-        $this->assertFalse($cache->instanceCacheHas($key));
-        $this->assertNull($cache->instanceCacheSet($key, null));
-        $this->assertTrue($cache->instanceCacheHas($key));
+        self::assertFalse($cache->instanceCacheHas($key));
+        self::assertNull($cache->instanceCacheSet($key, null));
+        self::assertTrue($cache->instanceCacheHas($key));
     }
 
     /**
@@ -66,10 +66,10 @@ class InstanceCacheTest extends TestCase {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
 
-        $this->assertTrue($cache->instanceCacheSet($key, true));
-        $this->assertTrue($cache->instanceCacheHas($key));
-        $this->assertTrue($cache->instanceCacheUnset($key));
-        $this->assertFalse($cache->instanceCacheHas($key));
+        self::assertTrue($cache->instanceCacheSet($key, true));
+        self::assertTrue($cache->instanceCacheHas($key));
+        self::assertTrue($cache->instanceCacheUnset($key));
+        self::assertFalse($cache->instanceCacheHas($key));
     }
 
     /**
@@ -79,12 +79,12 @@ class InstanceCacheTest extends TestCase {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
 
-        $this->assertTrue($cache->instanceCacheSet($key, true));
-        $this->assertTrue($cache->instanceCacheHas($key));
+        self::assertTrue($cache->instanceCacheSet($key, true));
+        self::assertTrue($cache->instanceCacheHas($key));
 
         $cache->instanceCacheClear();
 
-        $this->assertFalse($cache->instanceCacheHas($key));
+        self::assertFalse($cache->instanceCacheHas($key));
     }
 
     /**
@@ -92,7 +92,7 @@ class InstanceCacheTest extends TestCase {
      * @dataProvider dataProviderInstanceCacheKey
      */
     public function testInstanceCacheKey(string $expected, mixed $keys): void {
-        $this->assertEquals($expected, (new InstanceCacheTest_Cache())->instanceCacheKey($keys));
+        self::assertEquals($expected, (new InstanceCacheTest_Cache())->instanceCacheKey($keys));
     }
     //</editor-fold>
 

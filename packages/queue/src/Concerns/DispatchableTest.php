@@ -21,7 +21,7 @@ class DispatchableTest extends TestCase {
             use Dispatchable;
         };
 
-        $this->expectExceptionObject(new RuntimeException(sprintf('The `%s` is not initialized.', $job::class)));
+        self::expectExceptionObject(new RuntimeException(sprintf('The `%s` is not initialized.', $job::class)));
 
         $job->dispatch();
     }
@@ -33,7 +33,7 @@ class DispatchableTest extends TestCase {
             use Dispatchable;
         };
 
-        $this->expectExceptionObject(new RuntimeException(sprintf('The `%s` is not initialized.', $job::class)));
+        self::expectExceptionObject(new RuntimeException(sprintf('The `%s` is not initialized.', $job::class)));
 
         $job->run();
     }

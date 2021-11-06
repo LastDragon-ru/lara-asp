@@ -101,7 +101,7 @@ class RequestTest extends TestCase {
         $request->setContainer($this->app);
         $request->setRedirector($this->app->make(Redirector::class));
 
-        $this->assertEquals([
+        self::assertEquals([
             'rule'              => true,
             'rule_nullable'     => null,
             'resolver'          => ['a' => 1],

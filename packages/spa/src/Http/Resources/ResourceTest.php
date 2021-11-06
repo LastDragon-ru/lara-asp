@@ -34,14 +34,14 @@ class ResourceTest extends TestCase {
      */
     public function testConstruct(bool|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         new class($value) extends Resource {
             // empty
         };
 
-        $this->assertTrue($expected);
+        self::assertTrue($expected);
     }
 
     /**
@@ -57,7 +57,7 @@ class ResourceTest extends TestCase {
         });
         $actual = $class::collection($value);
 
-        $this->assertInstanceOf($expected, $actual);
+        self::assertInstanceOf($expected, $actual);
     }
 
     /**
@@ -72,7 +72,7 @@ class ResourceTest extends TestCase {
      */
     public function testMapResourceData(array|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
         $resource = new class($value) extends Resource {
@@ -95,10 +95,10 @@ class ResourceTest extends TestCase {
         };
 
         if ($expected instanceof Exception) {
-            $this->expectExceptionObject($expected);
+            self::expectExceptionObject($expected);
         }
 
-        $this->assertEquals($expected, json_decode(
+        self::assertEquals($expected, json_decode(
             $resource->response()->content(),
             true,
         ));
@@ -115,11 +115,11 @@ class ResourceTest extends TestCase {
             // empty
         };
 
-        $this->expectExceptionObject(new LogicException(
+        self::expectExceptionObject(new LogicException(
             'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',
         ));
 
-        $this->assertIsArray($resource->toArray(new Request()));
+        self::assertIsArray($resource->toArray(new Request()));
     }
 
     /**
@@ -135,7 +135,7 @@ class ResourceTest extends TestCase {
             }
         };
 
-        $this->expectExceptionObject(new Exception('mapResourceData'));
+        self::expectExceptionObject(new Exception('mapResourceData'));
 
         $resource->additional([
             'additional' => 'value',
@@ -155,7 +155,7 @@ class ResourceTest extends TestCase {
             }
         };
 
-        $this->expectExceptionObject(new Exception('mapResourceData'));
+        self::expectExceptionObject(new Exception('mapResourceData'));
 
         $resource->with(new Request());
     }

@@ -13,6 +13,6 @@ class ExpectedValueTest extends TestCase {
      * @covers ::getValue
      */
     public function testGetValue(): void {
-        $this->assertEquals(1, (new ExpectedValue(1))->getValue());
+        self::assertEquals(1, (new ExpectedValue(1))->getValue());
     }
 }

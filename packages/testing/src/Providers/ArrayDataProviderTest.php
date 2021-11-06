@@ -23,7 +23,7 @@ class ArrayDataProviderTest extends TestCase {
             [$f->getValue(), 'value final'],
         ];
 
-        $this->assertEquals($e, (new ArrayDataProvider($a))->getData());
+        self::assertEquals($e, (new ArrayDataProvider($a))->getData());
     }
 
     /**
@@ -40,6 +40,6 @@ class ArrayDataProviderTest extends TestCase {
             [$f, 'value final'],
         ];
 
-        $this->assertEquals($e, (new ArrayDataProvider($a))->getData(true));
+        self::assertEquals($e, (new ArrayDataProvider($a))->getData(true));
     }
 }

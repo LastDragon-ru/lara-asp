@@ -30,7 +30,7 @@ class EnumHelperTest extends TestCase {
             }
             GRAPHQL;
 
-        $this->assertGraphQLSchemaEquals($expected, $actual);
+        self::assertGraphQLSchemaEquals($expected, $actual);
     }
 }
 

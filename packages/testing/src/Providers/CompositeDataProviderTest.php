@@ -33,7 +33,7 @@ class CompositeDataProviderTest extends TestCase {
             '1'         => ['expected final', 'value final'],
         ];
 
-        $this->assertEquals($e, (new CompositeDataProvider(
+        self::assertEquals($e, (new CompositeDataProvider(
             new ArrayDataProvider($a),
             new ArrayDataProvider($b),
             new ArrayDataProvider($c),
@@ -60,7 +60,7 @@ class CompositeDataProviderTest extends TestCase {
             '1'     => [$f, 'value final'],
         ];
 
-        $this->assertEquals($e, (new CompositeDataProvider(
+        self::assertEquals($e, (new CompositeDataProvider(
             new ArrayDataProvider($a),
             new ArrayDataProvider($b),
         ))->getData(true));
@@ -79,7 +79,7 @@ class CompositeDataProviderTest extends TestCase {
             ['expected final', 'value final'],
         ];
 
-        $this->assertEquals($e, (new CompositeDataProvider(
+        self::assertEquals($e, (new CompositeDataProvider(
             new ArrayDataProvider($a),
         ))->getData());
     }

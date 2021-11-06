@@ -16,9 +16,9 @@ class ContentTypeTest extends TestCase {
      * @covers ::evaluate
      */
     public function testEvaluate(): void {
-        $this->expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
+        self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
-        $this->assertFalse((new ContentType(''))->evaluate(new stdClass()));
+        self::assertFalse((new ContentType(''))->evaluate(new stdClass()));
     }
 
     /**
@@ -37,9 +37,9 @@ class ContentTypeTest extends TestCase {
             }
         };
 
-        $this->assertTrue($constraint->matches($valid));
-        $this->assertTrue($constraint->matches($valid2));
-        $this->assertFalse($constraint->matches($invalid));
+        self::assertTrue($constraint->matches($valid));
+        self::assertTrue($constraint->matches($valid2));
+        self::assertFalse($constraint->matches($invalid));
     }
 
     /**
@@ -48,7 +48,7 @@ class ContentTypeTest extends TestCase {
     public function testToString(): void {
         $constraint = new ContentType('example/text');
 
-        $this->assertEquals(
+        self::assertEquals(
             'has Content-Type header that is equal to \'example/text\' or starts with "example/text;"',
             $constraint->toString(),
         );

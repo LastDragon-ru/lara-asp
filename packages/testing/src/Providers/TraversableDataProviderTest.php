@@ -24,7 +24,7 @@ class TraversableDataProviderTest extends TestCase {
             [$f->getValue(), 'value final'],
         ];
 
-        $this->assertEquals($e, (new TraversableDataProvider($a))->getData());
+        self::assertEquals($e, (new TraversableDataProvider($a))->getData());
     }
 
     /**
@@ -41,6 +41,6 @@ class TraversableDataProviderTest extends TestCase {
             [$f, 'value final'],
         ];
 
-        $this->assertEquals($e, (new TraversableDataProvider($a))->getData(true));
+        self::assertEquals($e, (new TraversableDataProvider($a))->getData(true));
     }
 }

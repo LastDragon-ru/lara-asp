@@ -17,9 +17,9 @@ class HeaderTest extends TestCase {
      * @covers ::evaluate
      */
     public function testEvaluate(): void {
-        $this->expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
+        self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
-        $this->assertFalse((new Header('Test'))->evaluate(new stdClass()));
+        self::assertFalse((new Header('Test'))->evaluate(new stdClass()));
     }
 
     /**
@@ -37,8 +37,8 @@ class HeaderTest extends TestCase {
             }
         };
 
-        $this->assertTrue($constraint->matches($valid));
-        $this->assertTrue($constraint->matches($invalid));
+        self::assertTrue($constraint->matches($valid));
+        self::assertTrue($constraint->matches($invalid));
     }
 
     /**
@@ -56,8 +56,8 @@ class HeaderTest extends TestCase {
             }
         };
 
-        $this->assertTrue($constraint->matches($valid));
-        $this->assertFalse($constraint->matches($invalid));
+        self::assertTrue($constraint->matches($valid));
+        self::assertFalse($constraint->matches($invalid));
     }
 
     /**
@@ -66,7 +66,7 @@ class HeaderTest extends TestCase {
     public function testToString(): void {
         $constraint = new Header('Content-Type');
 
-        $this->assertEquals('has Content-Type header', $constraint->toString());
+        self::assertEquals('has Content-Type header', $constraint->toString());
     }
 
     /**
@@ -75,6 +75,6 @@ class HeaderTest extends TestCase {
     public function testToStringConstraints(): void {
         $constraint = new Header('Content-Type', [new IsEqual('example/text')]);
 
-        $this->assertEquals("has Content-Type header that is equal to 'example/text'", $constraint->toString());
+        self::assertEquals("has Content-Type header that is equal to 'example/text'", $constraint->toString());
     }
 }
