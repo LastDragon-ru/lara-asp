@@ -10,7 +10,6 @@ use LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories\Factory;
  */
 class TestObjectFactory extends Factory {
     /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      * @var class-string<Model>
      */
     protected $model = TestObject::class;
