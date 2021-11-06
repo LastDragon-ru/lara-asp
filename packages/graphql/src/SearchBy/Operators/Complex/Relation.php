@@ -134,7 +134,7 @@ class Relation implements ComplexOperator {
                 $has,
             ): EloquentBuilder|QueryBuilder {
                 if ($alias === $relation->getRelationCountHash(false)) {
-                    $alias = null;
+                    $alias = $builder->getModel()->getTable();
                 }
 
                 return is_array($has)

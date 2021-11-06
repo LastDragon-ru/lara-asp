@@ -177,8 +177,6 @@ class SearchBuilder {
         // Table Alias?
         if ($tableAlias) {
             $property = "{$tableAlias}.{$property}";
-        } elseif ($builder instanceof EloquentBuilder) {
-            $property = $builder->qualifyColumn($property);
         } else {
             // empty
         }
