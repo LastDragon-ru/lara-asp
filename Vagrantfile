@@ -22,11 +22,15 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "/project"
 
   # Synced Folder
-  config.vm.synced_folder ".", "/project",
-    type: "smb",
-    smb_username: settings['smb']['username'],
-    smb_password: settings['smb']['password'],
-    mount_options: ["vers=default,mfsymlinks,dir_mode=0775,file_mode=0775"]
+  if settings['smb']
+    config.vm.synced_folder ".", "/project",
+      type: "smb",
+      smb_username: settings['smb']['username'],
+      smb_password: settings['smb']['password'],
+      mount_options: ["vers=default,mfsymlinks,dir_mode=0775,file_mode=0775"]
+  else
+    config.vm.synced_folder ".", "/project"
+  end
 
   # Ssh
   config.vm.network        :forwarded_port, id: 'ssh', guest: 22, host: 2222, auto_correct: true
@@ -53,7 +57,7 @@ Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |v|
      v.name   = "vagrant##{config.vm.hostname}@" +  Digest::SHA1.hexdigest(__FILE__)
      v.cpus   = Etc.nprocessors
-     v.memory = settings['vm']['memory'] || "2048"
+     v.memory = settings['vm'] && settings['vm'] ? settings['vm']['memory'] : "2048"
      v.customize ["modifyvm", :id, "--description", __dir__]
   end
 
@@ -75,22 +79,24 @@ Vagrant.configure(2) do |config|
     fi
   SHELL
 
-  if settings['gpg']['keys'] || nil
-    settings['gpg']['keys'].each do | key, path |
-      if path
-        config.vm.provision "file", source: path, destination: "~/gpg-#{key}-key.asc"
-        config.vm.provision "gpg import #{key} key", type: "shell", privileged: false, inline: <<-SHELL
-          gpg --batch --import ~/gpg-#{key}-key.asc
-        SHELL
+  if settings['gpg']
+    if settings['gpg']['keys']
+      settings['gpg']['keys'].each do | key, path |
+        if path
+          config.vm.provision "file", source: path, destination: "~/gpg-#{key}-key.asc"
+          config.vm.provision "gpg import #{key} key", type: "shell", privileged: false, inline: <<-SHELL
+            gpg --batch --import ~/gpg-#{key}-key.asc
+          SHELL
+        end
       end
     end
-  end
 
-  if settings['gpg']['forward']['local'] || nil
-    config.ssh.extra_args = [
-      "-o", "RemoteForward=#{settings['gpg']['forward']['remote']} #{settings['gpg']['forward']['local']}",
-      "-o", "StreamLocalBindUnlink=yes"
-    ]
+    if settings['gpg']['forward'] && settings['gpg']['forward']['local']
+      config.ssh.extra_args = [
+        "-o", "RemoteForward=#{settings['gpg']['forward']['remote']} #{settings['gpg']['forward']['local']}",
+        "-o", "StreamLocalBindUnlink=yes"
+      ]
+    end
   end
 
   # Provision
