@@ -28,8 +28,6 @@ Vagrant.configure(2) do |config|
       smb_username: settings['smb']['username'],
       smb_password: settings['smb']['password'],
       mount_options: ["vers=default,mfsymlinks,dir_mode=0775,file_mode=0775"]
-  else
-    config.vm.synced_folder ".", "/project"
   end
 
   # Ssh
