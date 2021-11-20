@@ -6,6 +6,7 @@ parameters:
     level: 8
 
 includes:
+    - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
     - ./vendor/phpstan/phpstan-mockery/extension.neon
     - ./vendor/phpstan/phpstan-phpunit/extension.neon
     - ./vendor/phpstan/phpstan-phpunit/rules.neon
