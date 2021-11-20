@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
-use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use PHPUnit\Framework\Constraint\JsonMatches;
@@ -60,11 +59,14 @@ class EnumTypeTest extends TestCase {
                 new Ok(),
                 new JsonContentType(),
                 new JsonBody(
-                    new JsonMatches(json_encode([
-                        'data' => [
-                            'test' => EnumTypeTest__Enum::b(),
-                        ]
-                    ], JSON_THROW_ON_ERROR))
+                    new JsonMatches(json_encode(
+                        [
+                            'data' => [
+                                'test' => EnumTypeTest__Enum::b(),
+                            ],
+                        ],
+                        JSON_THROW_ON_ERROR,
+                    )),
                 ),
             ));
     }

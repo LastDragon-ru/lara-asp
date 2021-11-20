@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Utils\Enum;
 
-use GraphQL\Type\Definition\EnumType as GraphQLEnumType;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Core\Enum;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -12,11 +11,11 @@ use ReflectionMethod;
 use function trim;
 
 /**
- * @internal {@see EnumType}
+ * @internal {@see \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType}
  */
 class Factory extends Enum {
     /**
-     * Converts {@link Enum} into config definition for {@link GraphQLEnumType}.
+     * Converts {@see Enum} into config definition for {@see \GraphQL\Type\Definition\EnumType}.
      *
      * @param class-string<Enum> $enum
      *

@@ -4,10 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\Utils\Enum;
 
 use GraphQL\Type\Definition\EnumType as GraphQLEnumType;
 use LastDragon_ru\LaraASP\Core\Enum;
-use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 /**
- * Special wrapper for {@link Enum} that can be reqistered in {@link TypeRegistry}.
+ * Special wrapper for {@see Enum} that can be registered in the
+ * {@see \Nuwave\Lighthouse\Schema\TypeRegistry}.
  *
  * @see https://lighthouse-php.com/master/the-basics/types.html#enum
  */
