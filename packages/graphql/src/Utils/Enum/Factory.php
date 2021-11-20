@@ -1,8 +1,7 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Helpers;
+namespace LastDragon_ru\LaraASP\GraphQL\Utils\Enum;
 
-use GraphQL\Type\Definition\EnumType;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Core\Enum;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -11,16 +10,18 @@ use ReflectionMethod;
 
 use function trim;
 
-class EnumHelper extends Enum {
+/**
+ * @internal {@see \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType}
+ */
+class Factory extends Enum {
     /**
-     * Converts {@link \LastDragon_ru\LaraASP\Core\Enum} into GraphQL enum that
-     * can be reqistered in {@link \Nuwave\Lighthouse\Schema\TypeRegistry}.
-     *
-     * @see https://lighthouse-php.com/master/the-basics/types.html#enum
+     * Converts {@see Enum} into config definition for {@see \GraphQL\Type\Definition\EnumType}.
      *
      * @param class-string<Enum> $enum
+     *
+     * @return array<string,mixed>
      */
-    public static function getType(string $enum, ?string $name = null): EnumType {
+    public static function getDefinition(string $enum, ?string $name = null): array {
         $class      = new ReflectionClass($enum);
         $definition = [
             'name'        => $name ?: $class->getShortName(),
@@ -30,12 +31,12 @@ class EnumHelper extends Enum {
 
         $enum::lookup(static function (ReflectionMethod $method) use (&$definition): void {
             $definition['values'][Str::studly($method->getName())] = [
-                'value'       => $method->invoke(null)->getValue(),
+                'value'       => $method->invoke(null),
                 'description' => static::description($method),
             ];
         });
 
-        return new EnumType($definition);
+        return $definition;
     }
 
     protected static function description(ReflectionClass|ReflectionMethod $object): ?string {

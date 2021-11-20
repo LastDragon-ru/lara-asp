@@ -9,13 +9,13 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
-use LastDragon_ru\LaraASP\GraphQL\Helpers\EnumHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Repository as MetadataRepository;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Usage;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
@@ -81,9 +81,7 @@ class Provider extends ServiceProvider {
                         $name = null;
                     }
 
-                    if ($enum) {
-                        $registry->register(EnumHelper::getType($enum, $name));
-                    }
+                    $registry->register(new EnumType($enum, $name));
                 }
             },
         );
