@@ -630,14 +630,17 @@ namespace LastDragon_ru\LaraASP\GraphQL;
 
 use App\MyEnum;
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\Factory;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 class Provider extends ServiceProvider {
     public function register(): void {
-        $registry = $this->app->make(TypeRegistry::class);
-
-        $registry->register(Factory::getType(MyEnum::class));
+        $this->app->afterResolving(
+            TypeRegistry::class,
+            static function (TypeRegistry $registry): void {
+                $registry->register(new EnumType(MyEnum::class));
+            },
+        );
     }
 }
 
