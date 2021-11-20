@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Helpers;
+namespace LastDragon_ru\LaraASP\GraphQL\Utils\Enum;
 
 use LastDragon_ru\LaraASP\Core\Enum;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -8,15 +8,15 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Helpers\EnumHelper
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\Factory
  */
-class EnumHelperTest extends TestCase {
+class FactoryTest extends TestCase {
     /**
      * @covers ::getType
      */
     public function testGetType(): void {
-        $a        = EnumHelper::getType(EnumHelperTest__A::class);
-        $b        = EnumHelper::getType(EnumHelperTest__B::class, 'B');
+        $a        = Factory::getType(EnumHelperTest__A::class);
+        $b        = Factory::getType(EnumHelperTest__B::class, 'B');
         $registry = $this->app->make(TypeRegistry::class);
 
         $registry->register($a);

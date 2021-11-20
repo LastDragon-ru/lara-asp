@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Helpers;
+namespace LastDragon_ru\LaraASP\GraphQL\Utils\Enum;
 
 use GraphQL\Type\Definition\EnumType;
 use Illuminate\Support\Str;
@@ -11,7 +11,7 @@ use ReflectionMethod;
 
 use function trim;
 
-class EnumHelper extends Enum {
+class Factory extends Enum {
     /**
      * Converts {@link \LastDragon_ru\LaraASP\Core\Enum} into GraphQL enum that
      * can be reqistered in {@link \Nuwave\Lighthouse\Schema\TypeRegistry}.
