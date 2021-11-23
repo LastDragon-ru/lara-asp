@@ -12,6 +12,13 @@ use IteratorAggregate;
  * @extends IteratorAggregate<T>
  */
 interface Iterator extends IteratorAggregate {
+    public function getIndex(): int;
+
+    /**
+     * @return $this<T>
+     */
+    public function setIndex(int $index): static;
+
     public function getLimit(): ?int;
 
     /**

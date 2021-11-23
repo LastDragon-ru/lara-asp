@@ -27,7 +27,8 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     // =========================================================================
     /**
      * @covers ::getIterator
-     * @covers ::each
+     * @covers ::getOffset
+     * @covers ::getIndex
      */
     public function testGetIterator(): void {
         TestObject::factory()->create(['value' => '1']);
@@ -70,6 +71,9 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         // 3 - create #4
         // 4 - third chunk (because second chunk returned value)
         // 5 - last empty chunk (because third chunk returned value)
+
+        self::assertEquals(count($expected), $iterator->getIndex());
+        self::assertEquals(count($expected), $iterator->getOffset());
 
         $spyBefore
             ->shouldHaveBeenCalled()

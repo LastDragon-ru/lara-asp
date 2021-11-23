@@ -22,7 +22,8 @@ class ChunkedIteratorTest extends TestCase {
 
     /**
      * @covers ::getIterator
-     * @covers ::each
+     * @covers ::getOffset
+     * @covers ::getIndex
      */
     public function testGetIterator(): void {
         TestObject::factory()->create(['value' => '1']);
@@ -49,6 +50,8 @@ class ChunkedIteratorTest extends TestCase {
 
         self::assertEquals($expected, $actual);
         self::assertEquals(2, count($log) - $count);
+        self::assertEquals(count($expected), $iterator->getIndex());
+        self::assertEquals(count($expected), $iterator->getOffset());
 
         $spyBefore
             ->shouldHaveBeenCalled()

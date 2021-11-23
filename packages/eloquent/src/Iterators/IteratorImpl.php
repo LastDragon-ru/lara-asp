@@ -22,6 +22,7 @@ use function min;
 abstract class IteratorImpl implements Iterator {
     protected Subject         $beforeChunk;
     protected Subject         $afterChunk;
+    protected int             $index  = 0;
     protected ?int            $limit  = null;
     protected int             $chunk  = 1000;
     protected string|int|null $offset = null;
@@ -34,6 +35,16 @@ abstract class IteratorImpl implements Iterator {
 
         $this->setLimit($this->getDefaultLimit());
         $this->setOffset($this->getDefaultOffset());
+    }
+
+    public function getIndex(): int {
+        return $this->index;
+    }
+
+    public function setIndex(int $index): static {
+        $this->index = $index;
+
+        return $this;
     }
 
     public function getLimit(): ?int {
@@ -91,7 +102,7 @@ abstract class IteratorImpl implements Iterator {
      */
     public function getIterator(): Generator {
         // Prepare
-        $index = 0;
+        $index = $this->getIndex();
         $chunk = $this->limit ? min($this->limit, $this->chunk) : $this->chunk;
         $limit = $this->limit;
 
@@ -109,6 +120,8 @@ abstract class IteratorImpl implements Iterator {
 
             foreach ($items as $item) {
                 yield $index++ => $item;
+
+                $this->setIndex($index);
             }
 
             if (!$this->chunkProcessed($items) || ($limit && $index >= $limit)) {
