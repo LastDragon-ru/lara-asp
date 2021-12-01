@@ -48,7 +48,7 @@ class CronableRegistrator {
         $timezone = $config->get(CronableConfig::Timezone);
 
         // Enabled?
-        if (!$enabled) {
+        if (!$enabled || $cron === null) {
             if ($this->isDue($cron)) {
                 $this->jobDisabled($cronable, $job, $config);
             }

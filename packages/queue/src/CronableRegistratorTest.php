@@ -126,6 +126,35 @@ class CronableRegistratorTest extends TestCase {
     }
 
     /**
+     * @covers ::register
+     */
+    public function testRegisterCronIsNull(): void {
+        $cronable = new class() implements Cronable {
+            /**
+             * @inheritDoc
+             */
+            public function getQueueConfig(): array {
+                return [];
+            }
+        };
+
+        $this->override(Schedule::class, static function (MockInterface $mock): void {
+            $mock
+                ->shouldReceive('call')
+                ->never();
+        });
+
+        $this->setQueueableConfig($cronable, [
+            CronableConfig::Cron    => null,
+            CronableConfig::Enabled => true,
+        ]);
+
+        $registrator = $this->app->make(CronableRegistrator::class);
+
+        $registrator->register($cronable::class);
+    }
+
+    /**
      * @covers ::isDue
      *
      * @dataProvider dataProviderIsDue
