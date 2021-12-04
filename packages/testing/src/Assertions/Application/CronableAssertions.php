@@ -35,6 +35,7 @@ trait CronableAssertions {
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
         $this->setQueueableConfig($cronable, [
             CronableConfig::Enabled => true,
+            CronableConfig::Cron    => '* * * * *',
         ]);
 
         $message  = $message ?: sprintf('The `%s` is not registered as scheduled job.', $cronable);
