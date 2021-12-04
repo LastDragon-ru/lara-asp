@@ -46,6 +46,18 @@ class FormatterTest extends TestCase {
     }
 
     /**
+     * @covers ::forTimezone
+     */
+    public function testForTimezone(): void {
+        $timezone  = 'Europe/Moscow';
+        $formatter = $this->formatter->forTimezone($timezone);
+
+        self::assertNotSame($this->formatter, $formatter);
+        self::assertNotEquals($this->formatter->getTimezone(), $formatter->getTimezone());
+        self::assertSame($formatter, $formatter->forTimezone($timezone));
+    }
+
+    /**
      * @covers ::integer
      */
     public function testInteger(): void {

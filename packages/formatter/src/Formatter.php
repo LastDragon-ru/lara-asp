@@ -9,6 +9,7 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
+use IntlTimeZone;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateNumberFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatDate;
@@ -166,7 +167,8 @@ class Formatter {
      */
     public const Secret = 'secret';
 
-    private ?string $locale = null;
+    private ?string                               $locale   = null;
+    private IntlTimeZone|DateTimeZone|string|null $timezone = null;
 
     /**
      * @var array<IntlDateFormatter>
@@ -201,12 +203,30 @@ class Formatter {
 
         return $formatter;
     }
+
+    /**
+     * Create a new formatter for the specified timezone.
+     */
+    public function forTimezone(IntlTimeZone|DateTimeZone|string $timezone): static {
+        $formatter = $this;
+
+        if ($this->timezone !== $timezone) {
+            $formatter           = $this->app()->make(static::class);
+            $formatter->timezone = $timezone;
+        }
+
+        return $formatter;
+    }
     // </editor-fold>
 
     // <editor-fold desc="Getters & Setters">
     // =========================================================================
     public function getLocale(): string {
         return $this->locale ?: $this->getDefaultLocale();
+    }
+
+    public function getTimezone(): IntlTimeZone|DateTimeZone|string|null {
+        return $this->timezone ?: $this->getDefaultTimezone();
     }
 
     protected function app(): Application {
@@ -296,25 +316,25 @@ class Formatter {
     public function time(
         ?DateTimeInterface $value,
         string|int $format = null,
-        DateTimeZone|string $tz = null,
+        IntlTimeZone|DateTimeZone|string $timezone = null,
     ): string {
-        return $this->formatDateTime(self::Time, $value, $format, $tz);
+        return $this->formatDateTime(self::Time, $value, $format, $timezone);
     }
 
     public function date(
         ?DateTimeInterface $value,
         string|int $format = null,
-        DateTimeZone|string $tz = null,
+        IntlTimeZone|DateTimeZone|string $timezone = null,
     ): string {
-        return $this->formatDateTime(self::Date, $value, $format, $tz);
+        return $this->formatDateTime(self::Date, $value, $format, $timezone);
     }
 
     public function datetime(
         ?DateTimeInterface $value,
         string|int $format = null,
-        DateTimeZone|string $tz = null,
+        IntlTimeZone|DateTimeZone|string $timezone = null,
     ): string {
-        return $this->formatDateTime(self::DateTime, $value, $format, $tz);
+        return $this->formatDateTime(self::DateTime, $value, $format, $timezone);
     }
 
     public function filesize(?int $bytes, int $decimals = null): string {
@@ -380,8 +400,8 @@ class Formatter {
         return $this->app()->getLocale() ?: Locale::getDefault();
     }
 
-    protected function getDefaultTimezone(): string {
-        return $this->getConfig()->get('app.timezone') ?: 'UTC';
+    protected function getDefaultTimezone(): IntlTimeZone|DateTimeZone|string|null {
+        return $this->getConfig()->get('app.timezone') ?: null;
     }
 
     protected function getOptions(string $type, mixed $default = null): mixed {
@@ -408,29 +428,17 @@ class Formatter {
         return $this->getTranslator()->get($key, $replace, $this->getLocale());
     }
 
-    protected function getTimezone(DateTimeZone|string $tz = null): ?DateTimeZone {
-        if (is_null($tz)) {
-            $tz = $this->getDefaultTimezone();
-        }
-
-        if (is_string($tz)) {
-            $tz = new DateTimeZone($tz);
-        }
-
-        return $tz;
-    }
-
     protected function formatDateTime(
         string $type,
         ?DateTimeInterface $value,
         string|int $format = null,
-        DateTimeZone|string $tz = null,
+        IntlTimeZone|DateTimeZone|string $timezone = null,
     ): string {
         if (is_null($value)) {
             return '';
         }
 
-        $formatter = $this->getIntlDateFormatter($type, $format, $tz);
+        $formatter = ($timezone ? $this->forTimezone($timezone) : $this)->getIntlDateFormatter($type, $format);
         $value     = $formatter->format($value);
 
         if ($value === false) {
@@ -446,10 +454,9 @@ class Formatter {
     private function getIntlDateFormatter(
         string $type,
         string|int $format = null,
-        DateTimeZone|string $tz = null,
     ): IntlDateFormatter {
-        $key       = json_encode([$type, $format, $tz], JSON_THROW_ON_ERROR);
-        $formatter = $this->dateFormatters[$key] ?? $this->createIntlDateFormatter($type, $format, $tz);
+        $key       = json_encode([$type, $format], JSON_THROW_ON_ERROR);
+        $formatter = $this->dateFormatters[$key] ?? $this->createIntlDateFormatter($type, $format);
 
         if ($formatter) {
             $this->dateFormatters[$key] = $formatter;
@@ -463,12 +470,11 @@ class Formatter {
     private function createIntlDateFormatter(
         string $type,
         string|int $format = null,
-        DateTimeZone|string $tz = null,
     ): ?IntlDateFormatter {
         $formatter = null;
         $pattern   = '';
         $format    = $format ?: $this->getOptions($type, IntlDateFormatter::SHORT);
-        $tz        = $this->getTimezone($tz);
+        $tz        = $this->getTimezone();
 
         if (is_string($format)) {
             $pattern = (string) $this->getLocaleOptions($type, $format);
