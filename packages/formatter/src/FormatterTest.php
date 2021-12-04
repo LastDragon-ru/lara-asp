@@ -42,6 +42,7 @@ class FormatterTest extends TestCase {
 
         self::assertNotSame($this->formatter, $formatter);
         self::assertNotEquals($this->formatter->getLocale(), $formatter->getLocale());
+        self::assertSame($formatter, $formatter->forLocale($locale));
     }
 
     /**

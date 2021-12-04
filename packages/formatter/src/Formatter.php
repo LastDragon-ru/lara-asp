@@ -166,7 +166,7 @@ class Formatter {
      */
     public const Secret = 'secret';
 
-    private string $locale;
+    private ?string $locale = null;
 
     /**
      * @var array<IntlDateFormatter>
@@ -183,7 +183,7 @@ class Formatter {
         private Repository $config,
         private PackageTranslator $translator,
     ) {
-        $this->locale = $this->getDefaultLocale();
+        // empty
     }
 
     // <editor-fold desc="Factory">
@@ -191,9 +191,13 @@ class Formatter {
     /**
      * Create a new formatter for the specified locale.
      */
-    public function forLocale(string $locale): static {
-        $formatter         = $this->app()->make(static::class);
-        $formatter->locale = $locale;
+    public function forLocale(?string $locale): static {
+        $formatter = $this;
+
+        if ($this->locale !== $locale) {
+            $formatter         = $this->app()->make(static::class);
+            $formatter->locale = $locale;
+        }
 
         return $formatter;
     }
@@ -202,7 +206,7 @@ class Formatter {
     // <editor-fold desc="Getters & Setters">
     // =========================================================================
     public function getLocale(): string {
-        return $this->locale;
+        return $this->locale ?: $this->getDefaultLocale();
     }
 
     protected function app(): Application {
