@@ -207,7 +207,7 @@ class Formatter {
     /**
      * Create a new formatter for the specified timezone.
      */
-    public function forTimezone(IntlTimeZone|DateTimeZone|string $timezone): static {
+    public function forTimezone(IntlTimeZone|DateTimeZone|string|null $timezone): static {
         $formatter = $this;
 
         if ($this->timezone !== $timezone) {
