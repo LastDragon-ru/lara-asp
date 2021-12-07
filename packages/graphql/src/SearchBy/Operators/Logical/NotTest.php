@@ -97,7 +97,7 @@ class NotTest extends TestCase {
                 new ArrayDataProvider([
                     'not' => [
                         [
-                            'query'    => 'select * from "tmp" where not ((("a" = ?) and ("b" != ?)))',
+                            'query'    => 'select * from "tmp" where not ((("tmp"."a" = ?) and ("tmp"."b" != ?)))',
                             'bindings' => [
                                 2,
                                 22,

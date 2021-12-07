@@ -92,7 +92,7 @@ class AnyOfTest extends TestCase {
                 new ArrayDataProvider([
                     'allOf' => [
                         [
-                            'query'    => 'select * from "tmp" where ("a" = ?) or ("b" != ?)',
+                            'query'    => 'select * from "tmp" where ("tmp"."a" = ?) or ("tmp"."b" != ?)',
                             'bindings' => [
                                 2,
                                 22,

@@ -340,7 +340,7 @@ class SearchBuilderTest extends TestCase {
                     'valid condition' => [
                         [
                             'query'    => 'select * from "tmp" where ('.
-                                'not ((("a" != ?) and ((("a" = ?) or ("b" != ?)))))'.
+                                'not ((("tmp"."a" != ?) and ((("tmp"."a" = ?) or ("tmp"."b" != ?)))))'.
                                 ')',
                             'bindings' => [
                                 1,
@@ -483,7 +483,7 @@ class SearchBuilderTest extends TestCase {
                 new ArrayDataProvider([
                     'valid condition' => [
                         [
-                            'query'    => 'select * from "tmp" where "property" = ?',
+                            'query'    => 'select * from "tmp" where "tmp"."property" = ?',
                             'bindings' => [
                                 123,
                             ],
