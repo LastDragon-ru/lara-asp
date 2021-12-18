@@ -127,11 +127,14 @@ EOT
     sudo apt-get install -y php8.0-{cli,common,mbstring,bcmath,zip,intl,mbstring,xml,xdebug,curl,gd,imagick,ldap,pdo-sqlite}
     sudo sed -i 's/^error_reporting = .\+$/error_reporting = E_ALL/'            /etc/php/8.0/cli/php.ini
     sudo sed -i 's/^display_errors = .\+$/display_errors = On/'                 /etc/php/8.0/cli/php.ini
+    sudo sed -i 's/^;opcache\.enable=.\+$/opcache.enable=1/'                    /etc/php/8.0/cli/php.ini
+    sudo sed -i 's/^;opcache\.enable_cli=.\+$/opcache.enable_cli=1/'            /etc/php/8.0/cli/php.ini
     sudo tee -a /etc/php/8.0/mods-available/xdebug.ini > /dev/null <<"EOT"
-xdebug.remote_enable        = 1
-xdebug.remote_host          = "10.0.2.2"
-xdebug.profiler_output_dir  = "/project/.xdebug"
-xdebug.profiler_output_name = "%u%R.cg"
+xdebug.output_dir = /project/.xdebug
+xdebug.profiler_output_name = callgrind.out.%t.%r
+xdebug.client_host = 10.0.2.2
+xdebug.mode = debug
+xdebug.start_with_request = trigger
 EOT
   SHELL
 
@@ -142,6 +145,10 @@ EOT
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     sudo -H php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     rm composer-setup.php
+
+    if ! grep -q "COMPOSER_RUNTIME_ENV" /etc/environment; then
+      sudo echo "COMPOSER_RUNTIME_ENV=virtualbox" >> /etc/environment
+    fi
   SHELL
 
   config.vm.provision "composer install", type: "shell", privileged: false, inline: <<-SHELL
