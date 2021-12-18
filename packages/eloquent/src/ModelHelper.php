@@ -39,6 +39,14 @@ class ModelHelper {
         return $this->model;
     }
 
+    public function isRelation(string $name): bool {
+        try {
+            return (bool) $this->getRelation($name);
+        } catch (PropertyIsNotRelation) {
+            return false;
+        }
+    }
+
     public function getRelation(string $name): Relation {
         $relation = null;
 

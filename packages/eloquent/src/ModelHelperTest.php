@@ -42,6 +42,20 @@ class ModelHelperTest extends TestCase {
             self::assertInstanceOf($expected, $actual);
         }
     }
+
+    /**
+     * @covers ::isRelation
+     *
+     * @dataProvider dataProviderGetRelation
+     *
+     * @param Exception|class-string $expected
+     */
+    public function testIsRelation(Exception|string $expected, Closure $model, string $name): void {
+        $actual   = (new ModelHelper($model()))->isRelation($name);
+        $expected = !($expected instanceof Exception);
+
+        self::assertEquals($expected, $actual);
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
