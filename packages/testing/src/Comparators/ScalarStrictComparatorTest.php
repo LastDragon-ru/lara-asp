@@ -24,7 +24,7 @@ class ScalarStrictComparatorTest extends TestCase {
 
         (new ScalarStrictComparator())->assertEquals($expected, $actual);
 
-        self::assertTrue($equals);
+        self::assertEquals($expected, $actual);
     }
     // </editor-fold>
 

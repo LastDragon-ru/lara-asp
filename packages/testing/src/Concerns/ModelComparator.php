@@ -8,12 +8,14 @@ use PHPUnit\Framework\Test;
 /**
  * Adds {@link \LastDragon_ru\LaraASP\Testing\Comparators\EloquentModelComparator}
  *
- * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
- *
  * @mixin Test
  */
 trait ModelComparator {
-    public function setUpModelComparator(): void {
+    /**
+     * @before
+     * @internal
+     */
+    public function initModelComparator(): void {
         $this->registerComparator(new EloquentModelComparator());
     }
 }

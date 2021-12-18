@@ -8,12 +8,14 @@ use PHPUnit\Framework\Test;
 /**
  * Adds {@link \LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator}
  *
- * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
- *
  * @mixin Test
  */
 trait DatabaseQueryComparator {
-    public function setUpDatabaseQueryComparator(): void {
+    /**
+     * @before
+     * @internal
+     */
+    public function initDatabaseQueryComparator(): void {
         $this->registerComparator(new Comparator());
     }
 }

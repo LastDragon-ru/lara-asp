@@ -14,6 +14,8 @@ use function str_starts_with;
  * short trait name) for traits after Laravel set up. The `@before`/`@after`
  * cannot be used because they may run before the app was created.
  *
+ * @deprecated Please use `@before`/`afterApplicationCreated()`/`beforeApplicationDestroyed()`
+ *
  * @mixin \PHPUnit\Framework\TestCase
  */
 trait SetUpTraits {

@@ -24,7 +24,6 @@ parameters:
             message: "#^Variable method call on .+?\\.$#"
             paths:
                 - packages/eloquent/src/ModelHelper.php
-                - packages/testing/src/SetUpTraits.php
         -
             message: "#^Variable property access on .+?\\.$#"
             paths:

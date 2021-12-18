@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 
 abstract class TestCase extends BaseTestCase {
-    use SetUpTraits;
     use Assertions;
     use Concerns;
     use WithTestData;

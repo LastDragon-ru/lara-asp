@@ -5,22 +5,15 @@ namespace LastDragon_ru\LaraASP\Testing\Database\QueryLog;
 use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Testing\TestCase;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use WeakMap;
-
 use function is_a;
 use function is_string;
 use function sprintf;
 
 /**
  * QueryLog.
- *
- * @required {@link \Illuminate\Foundation\Testing\TestCase}
- * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
- *
- * @property-read Application $app
  *
  * @mixin TestCase
  */
@@ -30,18 +23,24 @@ trait WithQueryLog {
      */
     private WeakMap $withQueryLog;
 
-    protected function setUpWithQueryLog(): void {
-        $this->withQueryLog = new WeakMap();
-    }
+    /**
+     * @before
+     * @internal
+     */
+    public function initWithQueryLog(): void {
+        $this->afterApplicationCreated(function (): void {
+            $this->withQueryLog = new WeakMap();
+        });
 
-    protected function tearDownWithQueryLog(): void {
-        foreach ($this->withQueryLog as $connection => $log) {
-            /** @var Connection $connection */
-            $connection->disableQueryLog();
-            $connection->flushQueryLog();
-        }
+        $this->beforeApplicationDestroyed(function (): void {
+            foreach ($this->withQueryLog as $connection => $log) {
+                /** @var Connection $connection */
+                $connection->disableQueryLog();
+                $connection->flushQueryLog();
+            }
 
-        unset($this->withQueryLog);
+            unset($this->withQueryLog);
+        });
     }
 
     /**
@@ -63,10 +62,12 @@ trait WithQueryLog {
 
         // Valid?
         if (!($connection instanceof Connection)) {
-            throw new InvalidArgumentException(sprintf(
-                'The `$connection` is not invalid. Impossible to create `%s`.',
-                QueryLog::class,
-            ));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The `$connection` is not invalid. Impossible to create `%s`.',
+                    QueryLog::class,
+                ),
+            );
         }
 
         // Enable

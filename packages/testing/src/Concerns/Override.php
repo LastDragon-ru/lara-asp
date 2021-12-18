@@ -4,38 +4,50 @@ namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use Closure;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Foundation\Testing\TestCase;
 use LogicException;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
 use Mockery\MockInterface;
 use OutOfBoundsException;
-use PHPUnit\Framework\TestCase;
-
 use function sprintf;
 
+/**
+ * @mixin TestCase
+ */
 trait Override {
     /**
      * @var array<class-string,MockInterface>
      */
     private array $overrides = [];
 
-    protected function tearDownOverride(): void {
-        foreach ($this->overrides as $class => $spy) {
-            try {
-                $spy->shouldHaveBeenCalled();
-            } catch (InvalidCountException $exception) {
-                throw new OutOfBoundsException(sprintf(
-                    'Override for `%s` should be used at least 1 times but used 0 times.',
-                    $class,
-                ), 0, $exception);
+    /**
+     * @before
+     * @internal
+     */
+    public function initOverride(): void {
+        $this->beforeApplicationDestroyed(function (): void {
+            foreach ($this->overrides as $class => $spy) {
+                try {
+                    $spy->shouldHaveBeenCalled();
+                } catch (InvalidCountException $exception) {
+                    throw new OutOfBoundsException(
+                        sprintf(
+                            'Override for `%s` should be used at least 1 times but used 0 times.',
+                            $class,
+                        ),
+                        0,
+                        $exception,
+                    );
+                }
             }
-        }
+        });
     }
 
     /**
      * @template T
      *
-     * @param class-string<T>                                           $class
+     * @param class-string<T> $class
      * @param null|(Closure(T&MockInterface, TestCase):T&MockInterface) $factory
      *
      * @return T&MockInterface
@@ -43,10 +55,12 @@ trait Override {
     protected function override(string $class, Closure $factory = null): mixed {
         // Overridden?
         if (isset($this->overrides[$class])) {
-            throw new LogicException(sprintf(
-                'Override for `%s` already defined.',
-                $class,
-            ));
+            throw new LogicException(
+                sprintf(
+                    'Override for `%s` already defined.',
+                    $class,
+                ),
+            );
         }
 
         // Mock

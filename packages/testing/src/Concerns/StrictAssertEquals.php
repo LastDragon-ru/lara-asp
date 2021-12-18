@@ -8,12 +8,14 @@ use PHPUnit\Framework\Test;
 /**
  * Makes `assertEquals` strict.
  *
- * @required {@link \LastDragon_ru\LaraASP\Testing\SetUpTraits}
- *
  * @mixin Test
  */
 trait StrictAssertEquals {
-    public function setUpStrictAssertEquals(): void {
+    /**
+     * @after
+     * @internal
+     */
+    public function initStrictAssertEquals(): void {
         $this->registerComparator(new ScalarStrictComparator());
     }
 }
