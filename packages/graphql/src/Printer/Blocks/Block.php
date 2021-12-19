@@ -53,8 +53,6 @@ abstract class Block implements Stringable {
 
     abstract protected function serialize(): string;
 
-    abstract protected function isNormalized(): bool;
-
     protected function eol(): string {
         return $this->settings->getLineEnd();
     }
