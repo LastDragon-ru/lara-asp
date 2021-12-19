@@ -23,17 +23,19 @@ class BlockListTest extends TestCase {
     public function testToString(
         string $expected,
         Settings $settings,
+        int $level,
         int $reserved,
         bool $normalized,
         array $blocks,
     ): void {
-        $list = new class($settings, $reserved, $normalized) extends BlockList {
+        $list = new class($settings, $level, $reserved, $normalized) extends BlockList {
             public function __construct(
                 Settings $settings,
+                int $level,
                 int $reserved,
                 protected bool $normalized,
             ) {
-                parent::__construct($settings, $reserved);
+                parent::__construct($settings, $level, $reserved);
             }
 
             protected function isNormalized(): bool {
@@ -62,6 +64,7 @@ class BlockListTest extends TestCase {
                 STRING,
                 new DefaultSettings(),
                 0,
+                0,
                 false,
                 [
                     'a' => new BlockListTest__Block(false, 'block a'),
@@ -73,6 +76,7 @@ class BlockListTest extends TestCase {
                 STRING,
                 new DefaultSettings(),
                 0,
+                0,
                 false,
                 [
                     'a' => new BlockListTest__Block(true, 'block a'),
@@ -83,6 +87,7 @@ class BlockListTest extends TestCase {
                 block a, block b
                 STRING,
                 new DefaultSettings(),
+                0,
                 0,
                 false,
                 [
@@ -100,6 +105,7 @@ class BlockListTest extends TestCase {
                         return 20;
                     }
                 },
+                0,
                 5,
                 false,
                 [
@@ -114,6 +120,7 @@ class BlockListTest extends TestCase {
                 block b
                 STRING,
                 new DefaultSettings(),
+                0,
                 0,
                 false,
                 [
@@ -137,6 +144,7 @@ class BlockListTest extends TestCase {
                 STRING,
                 new DefaultSettings(),
                 0,
+                0,
                 false,
                 [
                     'a' => new BlockListTest__Block(true, 'block a'),
@@ -154,10 +162,27 @@ class BlockListTest extends TestCase {
                 STRING,
                 new DefaultSettings(),
                 0,
+                0,
                 true,
                 [
                     'b' => new BlockListTest__Block(false, 'block b'),
                     'a' => new BlockListTest__Block(false, 'block a'),
+                ],
+            ],
+            'multi-line with level'                 => [
+                <<<'STRING'
+                    block a
+                STRING,
+                new class() extends DefaultSettings {
+                    public function getIndent(): string {
+                        return '  ';
+                    }
+                },
+                2,
+                0,
+                false,
+                [
+                    'a' => new BlockListTest__Block(true, 'block a'),
                 ],
             ],
         ];

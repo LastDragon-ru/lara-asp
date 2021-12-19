@@ -14,7 +14,7 @@ use const SORT_NATURAL;
  * @internal
  * @implements ArrayAccess<string,Block>
  */
-abstract class BlockList extends Block implements ArrayAccess {
+class BlockList extends Block implements ArrayAccess {
     /**
      * @var array<string,Block>
      */
@@ -29,15 +29,20 @@ abstract class BlockList extends Block implements ArrayAccess {
 
     public function __construct(
         Settings $settings,
+        int $level,
         int $reserved,
     ) {
-        parent::__construct($settings);
+        parent::__construct($settings, $level);
 
         $this->reserved = $reserved;
     }
 
     protected function isMultiline(): bool {
         return count($this->multiline) > 0 || parent::isMultiline();
+    }
+
+    protected function isNormalized(): bool {
+        return false;
     }
 
     protected function serialize(): string {
@@ -54,7 +59,6 @@ abstract class BlockList extends Block implements ArrayAccess {
         }
 
         // Join
-        $eol         = $this->eol();
         $separator   = ",{$this->space()}";
         $isMultiline = count($this->multiline) > 0 || $this->isLineTooLong(
                 $this->reserved + $this->length + mb_strlen($separator) * ($count - 1),
@@ -62,8 +66,10 @@ abstract class BlockList extends Block implements ArrayAccess {
         $content     = '';
 
         if ($isMultiline) {
+            $eol      = $this->eol();
             $last     = $count - 1;
             $index    = 0;
+            $indent   = $this->indent();
             $previous = false;
 
             foreach ($blocks as $block) {
@@ -74,7 +80,7 @@ abstract class BlockList extends Block implements ArrayAccess {
                     $content .= $eol;
                 }
 
-                $content .= $block;
+                $content .= "{$indent}{$block}";
 
                 if ($index < $last) {
                     $content .= $eol;
@@ -113,7 +119,7 @@ abstract class BlockList extends Block implements ArrayAccess {
      */
     public function offsetSet(mixed $offset, mixed $value): void {
         $this->blocks[$offset] = $value;
-        $this->length         += $value->getLength();
+        $this->length          += $value->getLength();
 
         if ($value->isMultiline()) {
             $this->multiline[$offset] = true;
