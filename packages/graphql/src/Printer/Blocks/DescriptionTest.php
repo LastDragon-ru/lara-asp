@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
@@ -18,7 +18,7 @@ class DescriptionTest extends TestCase {
      * @dataProvider dataProviderToString
      */
     public function testToString(string $expected, Settings $settings, int $level, string $description): void {
-        self::assertEquals($expected, (string)(new Description($settings, $level, $description)));
+        self::assertEquals($expected, (string) (new Description($settings, $level, $description)));
     }
     // </editor-fold>
 

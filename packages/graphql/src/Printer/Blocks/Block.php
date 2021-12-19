@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
@@ -11,8 +11,9 @@ use function str_repeat;
  * @internal
  */
 abstract class Block implements Stringable {
-    private ?string $content = null;
-    private ?string $length  = null;
+    private ?string $content   = null;
+    private ?int    $length    = null;
+    private ?bool   $multiline = null;
 
     protected function __construct(
         protected Settings $settings,
@@ -27,8 +28,10 @@ abstract class Block implements Stringable {
 
     protected function getContent(): string {
         if ($this->content === null) {
-            $this->content = $this->serialize();
-            $this->length  = mb_strlen($this->content);
+            $this->content   = $this->serialize();
+            $this->length    = mb_strlen($this->content);
+            $this->multiline = $this->isLineTooLong($this->length)
+                || $this->isStringMultiline($this->content);
         }
 
         return $this->content;
@@ -39,15 +42,26 @@ abstract class Block implements Stringable {
     }
 
     protected function isMultiline(): bool {
-        return $this->isLineTooLong($this->getLength());
+        return $this->getContent() && $this->multiline;
     }
 
     protected function reset(): void {
-        $this->content = null;
-        $this->length  = null;
+        $this->multiline = null;
+        $this->content   = null;
+        $this->length    = null;
     }
 
     abstract protected function serialize(): string;
+
+    abstract protected function isNormalized(): bool;
+
+    protected function eol(): string {
+        return $this->settings->getLineEnd();
+    }
+
+    protected function space(): string {
+        return $this->settings->getSpace();
+    }
 
     protected function indent(): string {
         return str_repeat($this->settings->getIndent(), $this->level);
@@ -55,5 +69,10 @@ abstract class Block implements Stringable {
 
     protected function isLineTooLong(int $length): bool {
         return $length > $this->settings->getLineLength();
+    }
+
+    protected function isStringMultiline(string $string): bool {
+        return mb_strpos($string, "\n") !== false
+            || mb_strpos($string, "\r") !== false;
     }
 }

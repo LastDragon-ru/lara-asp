@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use function mb_strlen;
-use function mb_strpos;
 use function preg_match;
 use function rtrim;
 use function str_ends_with;
@@ -29,9 +28,13 @@ class Description extends Block {
         return true;
     }
 
+    protected function isNormalized(): bool {
+        return $this->settings->isNormalizeDescription();
+    }
+
     protected function serialize(): string {
         // Begin
-        $eol         = $this->settings->getLineEnd();
+        $eol         = $this->eol();
         $indent      = $this->indent();
         $wrapper     = '"""';
         $description = $this->description;
@@ -40,7 +43,7 @@ class Description extends Block {
         $description = str_replace(["\r\n", "\n\r", "\n", "\r"], $eol, $description);
 
         // Normalize?
-        if ($this->settings->isNormalizeDescription()) {
+        if ($this->isNormalized()) {
             $description = rtrim(trim($description, $eol));
 
             if (!$description) {
@@ -56,7 +59,7 @@ class Description extends Block {
         // Multiline? (markdown)
         $length      = mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($description);
         $isMultiline = $this->isLineTooLong($length)
-            || mb_strpos($description, $eol)
+            || $this->isStringMultiline($description)
             || str_starts_with($description, ' ')
             || str_starts_with($description, "\t")
             || str_ends_with($description, '"')
