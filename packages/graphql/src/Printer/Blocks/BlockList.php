@@ -25,16 +25,15 @@ class BlockList extends Block implements ArrayAccess {
      */
     private array $multiline = [];
     private int   $length    = 0;
-    private int   $reserved;
 
     public function __construct(
         Settings $settings,
         int $level,
-        int $reserved,
+        private int $reserved,
+        private bool $normalized = false,
+        private bool $wrapped = false,
     ) {
         parent::__construct($settings, $level);
-
-        $this->reserved = $reserved;
     }
 
     protected function isMultiline(): bool {
@@ -42,7 +41,11 @@ class BlockList extends Block implements ArrayAccess {
     }
 
     protected function isNormalized(): bool {
-        return false;
+        return $this->normalized;
+    }
+
+    protected function isWrapped(): bool {
+        return $this->wrapped;
     }
 
     protected function serialize(): string {
@@ -70,11 +73,11 @@ class BlockList extends Block implements ArrayAccess {
             $last     = $count - 1;
             $index    = 0;
             $indent   = $this->indent();
+            $wrapped  = $this->isWrapped();
             $previous = false;
 
             foreach ($blocks as $block) {
-                // Multiline block should be wrapped by empty lines
-                $multiline = $block->isMultiline();
+                $multiline = $wrapped && $block->isMultiline();
 
                 if (($multiline && $index > 0) || $previous) {
                     $content .= $eol;
