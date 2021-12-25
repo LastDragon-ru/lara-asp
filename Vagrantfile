@@ -9,7 +9,6 @@
 # https://superuser.com/questions/104845/permission-to-make-symbolic-links-in-windows-7
 
 require 'json'
-require 'open3'
 require 'digest/sha1'
 require 'etc'
 
@@ -17,7 +16,7 @@ settings = File.exists?('Vagrant.yml') ? YAML.load_file('Vagrant.yml') : {};
 
 Vagrant.configure(2) do |config|
   config.vm.box            = "ubuntu/focal64"
-  config.vm.hostname       = getHostName()
+  config.vm.hostname       = settings['host'] || getDefaultHost()
   config.vm.network       "private_network", type: "dhcp"
   config.vm.synced_folder ".", "/project"
 
@@ -147,7 +146,7 @@ EOT
     rm composer-setup.php
 
     if ! grep -q "COMPOSER_RUNTIME_ENV" /etc/environment; then
-      sudo echo "COMPOSER_RUNTIME_ENV=virtualbox" >> /etc/environment
+      sudo sh -c "echo "COMPOSER_RUNTIME_ENV=virtualbox" >> /etc/environment"
     fi
   SHELL
 
@@ -206,27 +205,9 @@ def getHostIp(machine)
   result.chomp.split("\n").last
 end
 
-def getHostName()
+def getDefaultHost()
   package   = getPackageName('./composer.json', getPackageName('./package.json', 'project'))
   host      = package.gsub(/^@?([^\/]+)\/(.+)$/, '\2.\1') + '.test'
-  gitTag    = nil
-  gitBranch = nil
-
-  Open3.popen3("git rev-parse --abbrev-ref HEAD") do |stdin, stdout, stderr, wait_thr|
-    gitBranch = stdout.read.strip().gsub(/[^\w\-]/, '-')
-  end
-
-  if gitBranch != 'master'
-    Open3.popen3("git describe --tags --exact-match") do |stdin, stdout, stderr, wait_thr|
-      gitTag = stdout.read.strip()
-    end
-
-    if gitTag && gitTag != ''
-      host = "v#{gitTag}.#{host}"
-    elsif gitBranch && gitBranch != ''
-      host = "#{gitBranch}.#{host}"
-    end
-  end
 
   return host
 end

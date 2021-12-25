@@ -2,15 +2,18 @@
 #
 # $ cp Vagrant.example.yml Vagrant.yml
 
+# Host
+host: null
+
 # VM
 vm:
   memory: 2048
 
 # Smb user/password
 # (to avoid entering every for "vagrant up")
-smb:
-  username: null
-  password: null
+#smb:
+#  username: null
+#  password: null
 
 # Git config
 # (global)
