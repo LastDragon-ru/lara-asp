@@ -23,7 +23,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
       - name: Detect dependencies versions
         id: dependencies
         run: |
@@ -50,6 +50,11 @@ jobs:
     needs:
       - settings
 
+
+    # `continue-on-error: true` will add a red mark in commit/pr, this is
+    # definitely not what I want :( So we exclude some items instead.
+    #
+    # https://github.com/actions/toolkit/issues/399
     strategy:
       fail-fast: false
       matrix:
@@ -58,6 +63,13 @@ jobs:
           - windows-latest
         php: ${{ fromJson(needs.settings.outputs.versions) }}
         dependencies: ${{ fromJson(needs.settings.outputs.dependencies) }}
+        exclude:
+          - dependencies: 'lowest'
+            php: ${{ fromJson(needs.settings.outputs.versions)[1] }}
+          - dependencies: 'lowest'
+            php: ${{ fromJson(needs.settings.outputs.versions)[2] }}
+          - dependencies: 'lowest'
+            php: ${{ fromJson(needs.settings.outputs.versions)[3] }}
 
     steps:
       - name: Disable core.autocrlf
