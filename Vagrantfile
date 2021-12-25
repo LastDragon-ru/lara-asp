@@ -146,7 +146,7 @@ EOT
     rm composer-setup.php
 
     if ! grep -q "COMPOSER_RUNTIME_ENV" /etc/environment; then
-      sudo echo "COMPOSER_RUNTIME_ENV=virtualbox" >> /etc/environment
+      sudo sh -c "echo "COMPOSER_RUNTIME_ENV=virtualbox" >> /etc/environment"
     fi
   SHELL
 
