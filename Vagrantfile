@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
   config.vm.box            = "ubuntu/focal64"
   config.vm.hostname       = settings['host'] || getDefaultHost()
   config.vm.network       "private_network", type: "dhcp"
-  config.vm.synced_folder ".", "/project"
+  config.vm.synced_folder ".", "/project", mount_options: ["dmode=0775,fmode=0775"]
 
   # Synced Folder
   if settings['smb']
