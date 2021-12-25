@@ -46,7 +46,7 @@ jobs:
     name: "PHP ${{ matrix.php }} (${{ matrix.os }} / ${{ matrix.dependencies }})"
 
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.dependencies == 'lowest' && matrix.php == fromJson(needs.settings.outputs.versions)[0] && fromJson(needs.settings.outputs.versions)[1] != null }}
+    continue-on-error: ${{ matrix.dependencies == 'lowest' && matrix.php != fromJson(needs.settings.outputs.versions)[0] && !!fromJson(needs.settings.outputs.versions)[1] }}
     needs:
       - settings
 

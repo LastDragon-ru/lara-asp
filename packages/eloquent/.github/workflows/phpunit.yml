@@ -46,7 +46,7 @@ jobs:
     name: "PHP ${{ matrix.php }} (${{ matrix.os }} / ${{ matrix.dependencies }})"
 
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.beta }}
+    continue-on-error: ${{ matrix.dependencies == 'lowest' && matrix.php != fromJson(needs.settings.outputs.versions)[0] && !!fromJson(needs.settings.outputs.versions)[1] }}
     needs:
       - settings
 
@@ -56,8 +56,6 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-        beta:
-          - false
         php: ${{ fromJson(needs.settings.outputs.versions) }}
         dependencies: ${{ fromJson(needs.settings.outputs.dependencies) }}
 
@@ -71,6 +69,10 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ needs.settings.outputs.extensions }}
+      - name: Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+      - name: Setup problem matchers for PHPUnit
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
       - name: Install dependencies
         uses: "ramsey/composer-install@v1"
         with:
