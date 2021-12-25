@@ -138,7 +138,11 @@
   },
   "config": {
     "sort-packages": true,
-    "optimize-autoloader": true
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": false,
+      "composer/package-versions-deprecated": true
+    }
   },
   "replace": {
     "lastdragon-ru/lara-asp-core": "self.version",
