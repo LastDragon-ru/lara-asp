@@ -1,3 +1,31 @@
+## [0.10.0](https://github.com/LastDragon-ru/lara-asp/compare/0.9.0...0.10.0) (2021-12-25)
+
+| ☣    | Breaking changes |
+|:-----:|:-----------------|
+
+### Features
+
+* **core:** `Observer` implementation. ([9bf13f9](https://github.com/LastDragon-ru/lara-asp/commit/9bf13f9e8d8df201e7decda66cb3f79d2dae731f))
+* **eloquent:** Added `Iterator::$index` that required to count items to continue iteration. ([cd3be87](https://github.com/LastDragon-ru/lara-asp/commit/cd3be875dab4b51286fe414b6bb4210bd94c6b5f))
+* **eloquent:** Added `ModelHelper::isRelation()`. ([b621e97](https://github.com/LastDragon-ru/lara-asp/commit/b621e97b440d92dcbe829a2ad8a28e740682eecc))
+* **eloquent:** Iterators will use `Subject` (so `onBeforeChunk()` and `onAfterChunk()` will not redefine existing callback). ([60858d3](https://github.com/LastDragon-ru/lara-asp/commit/60858d32616161f30a75c8539f00a5aca4392c06)) ☣
+* **eloquent:** Removed `ChunkedIterator::safe()`. ([846de72](https://github.com/LastDragon-ru/lara-asp/commit/846de72c6f865986226a53fdde7f492b7f27cc69)) ☣
+* **formatter:** `Formatter::app()` renamed to `Formatter::getApplication()`. ([6f50747](https://github.com/LastDragon-ru/lara-asp/commit/6f50747aa5bb1dd64820814ee39b4bd8b37db3e7)) ☣
+* **formatter:** Added `Formatter::forTimezone()` to create formatter for specific timezone, also, default timezone set to `null` instead of `UTC`. ([41bc6af](https://github.com/LastDragon-ru/lara-asp/commit/41bc6af7b1c6417c185feeb2a5c7da9ebb97baba)) ☣
+* **formatter:** Better logic for settings locale: by default locale will be `null` and `getDefaultLocale()` will be used. ([dd94a28](https://github.com/LastDragon-ru/lara-asp/commit/dd94a284667ef6a613830841a117272db3770d28))
+* **graphql:** New testing helper `GraphQLAssertions::useGraphQLSchema()`. ([376425c](https://github.com/LastDragon-ru/lara-asp/commit/376425c90ef3459bd7329f96084b98b5811913cf))
+* **testing:** `SetUpTraits` deprecated, `@before`/`afterApplicationCreated()`/`beforeApplicationDestroyed()` can be used instead. ([fee2f29](https://github.com/LastDragon-ru/lara-asp/commit/fee2f2972e024712167e23fefb8eae174c988200)) ☣
+* **testing:** New constraint `MimeType` that checks that response has a `Content-Type` header by given file extension. ([9462814](https://github.com/LastDragon-ru/lara-asp/commit/94628145003afbb705fb85618b22086e2667a6b5))
+
+
+### Bug Fixes
+
+* **graphql:** `@sortBy` will check `FieldResolver` only for `_` (type). ([3b4acc2](https://github.com/LastDragon-ru/lara-asp/commit/3b4acc25460566a0c3f730fe7de7deec51713e89))
+* **graphql:** Enums serialization. ([2dd62a7](https://github.com/LastDragon-ru/lara-asp/commit/2dd62a7e980616072e74e3dd66054c6286116a17)) ☣
+* **queue**: "Cron\CronExpression::__construct(): Argument \#1 ($expression) must be of type string, null given". ([d936445](https://github.com/LastDragon-ru/lara-asp/commit/d93644588ada578960fb1b08e8eff00265899b7a))
+* **testing:** `CronableAssertions::assertCronableRegistered()` will work even if no `cron` defined for the job. ([08a47dc](https://github.com/LastDragon-ru/lara-asp/commit/08a47dc0340f59ae89cda7c610e64fa53f051833))
+
+
 ## [0.9.0](https://github.com/LastDragon-ru/lara-asp/compare/0.8.1...0.9.0) (2021-10-24)
 
 ☣ | Breaking changes
