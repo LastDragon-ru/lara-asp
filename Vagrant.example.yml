@@ -8,9 +8,9 @@ vm:
 
 # Smb user/password
 # (to avoid entering every for "vagrant up")
-smb:
-  username: null
-  password: null
+#smb:
+#  username: null
+#  password: null
 
 # Git config
 # (global)
