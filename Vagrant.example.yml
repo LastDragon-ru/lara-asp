@@ -2,6 +2,9 @@
 #
 # $ cp Vagrant.example.yml Vagrant.yml
 
+# Host
+host: null
+
 # VM
 vm:
   memory: 2048

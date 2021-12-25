@@ -16,7 +16,7 @@ settings = File.exists?('Vagrant.yml') ? YAML.load_file('Vagrant.yml') : {};
 
 Vagrant.configure(2) do |config|
   config.vm.box            = "ubuntu/focal64"
-  config.vm.hostname       = getHostName()
+  config.vm.hostname       = settings['host'] || getDefaultHost()
   config.vm.network       "private_network", type: "dhcp"
   config.vm.synced_folder ".", "/project"
 
@@ -205,7 +205,7 @@ def getHostIp(machine)
   result.chomp.split("\n").last
 end
 
-def getHostName()
+def getDefaultHost()
   package   = getPackageName('./composer.json', getPackageName('./package.json', 'project'))
   host      = package.gsub(/^@?([^\/]+)\/(.+)$/, '\2.\1') + '.test'
 
