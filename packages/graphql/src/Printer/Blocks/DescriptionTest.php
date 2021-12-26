@@ -2,9 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
+use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use function implode;
 
 /**
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Description
@@ -17,8 +19,20 @@ class DescriptionTest extends TestCase {
      *
      * @dataProvider dataProviderToString
      */
-    public function testToString(string $expected, Settings $settings, int $level, string $description): void {
-        self::assertEquals($expected, (string) (new Description($settings, $level, $description)));
+    public function testToString(
+        string $expected,
+        Settings $settings,
+        int $level,
+        int $reserved,
+        string $description,
+    ): void {
+        $actual = (string) (new Description($settings, $level, $reserved, $description));
+
+        self::assertEquals($expected, $actual);
+
+        if ($expected) {
+            self::assertNotNull(Parser::valueLiteral($actual));
+        }
     }
     // </editor-fold>
 
@@ -29,17 +43,18 @@ class DescriptionTest extends TestCase {
      */
     public function dataProviderToString(): array {
         return [
-            'Prints an empty description'                             => [
-                '""""""',
+            'Prints an empty string'                                   => [
+                '',
                 new class() extends DefaultSettings {
                     public function isNormalizeDescription(): bool {
                         return false;
                     }
                 },
                 0,
+                0,
                 '',
             ],
-            'Prints an empty description (normalized)'                => [
+            'Prints an empty string (normalized)'                      => [
                 '',
                 new class() extends DefaultSettings {
                     public function isNormalizeDescription(): bool {
@@ -47,9 +62,10 @@ class DescriptionTest extends TestCase {
                     }
                 },
                 0,
+                0,
                 '',
             ],
-            'Prints an description with only whitespace'              => [
+            'Prints an empty string with only whitespace'              => [
                 '" "',
                 new class() extends DefaultSettings {
                     public function isNormalizeDescription(): bool {
@@ -57,9 +73,10 @@ class DescriptionTest extends TestCase {
                     }
                 },
                 0,
+                0,
                 ' ',
             ],
-            'Prints an description with only whitespace (normalized)' => [
+            'Prints an empty string with only whitespace (normalized)' => [
                 '',
                 new class() extends DefaultSettings {
                     public function isNormalizeDescription(): bool {
@@ -67,18 +84,24 @@ class DescriptionTest extends TestCase {
                     }
                 },
                 0,
+                0,
                 ' ',
             ],
-            'One-line prints a short description'                     => [
-                '"""Short description"""',
-                new DefaultSettings(),
-                0,
-                'Short description',
-            ],
-            'One-line prints a long description'                      => [
+            'One-line prints a short string'                           => [
                 <<<'STRING'
                 """
-                Long description
+                Short string
+                """
+                STRING,
+                new DefaultSettings(),
+                0,
+                0,
+                'Short string',
+            ],
+            'One-line prints a long string'                            => [
+                <<<'STRING'
+                """
+                Long string
                 """
                 STRING,
                 new class() extends DefaultSettings {
@@ -87,27 +110,18 @@ class DescriptionTest extends TestCase {
                     }
                 },
                 0,
-                'Long description',
-            ],
-            'Description is short'                                    => [
-                <<<'STRING'
-                """description"""
-                STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 17;
-                    }
-                },
                 0,
-                'description',
+                'Long string',
             ],
-            'Description is short (indent)'                           => [
+            'String is short (indent)'                                 => [
                 <<<'STRING'
-                    """description"""
+                    """
+                    string
+                    """
                 STRING,
                 new class() extends DefaultSettings {
                     public function getLineLength(): int {
-                        return 21;
+                        return 2;
                     }
 
                     public function getIndent(): string {
@@ -115,17 +129,18 @@ class DescriptionTest extends TestCase {
                     }
                 },
                 2,
-                'description',
+                0,
+                'string',
             ],
-            'Description is long (indent)'                            => [
+            'String is long (indent)'                                  => [
                 <<<'STRING'
                     """
-                    description
+                    string
                     """
                 STRING,
                 new class() extends DefaultSettings {
                     public function getLineLength(): int {
-                        return 21 - 1;
+                        return 22;
                     }
 
                     public function getIndent(): string {
@@ -133,23 +148,43 @@ class DescriptionTest extends TestCase {
                     }
                 },
                 2,
-                'description',
+                20,
+                'string',
             ],
-            'Multi-line description'                                  => [
-                "\"\"\"\nMulti-line\n   description  \n\n\n\"\"\"",
+            'Multi-line string'                                        => [
+                <<<'STRING'
+                """
+                aaa
+                  bbb
+
+
+
+                ccc
+                """
+                STRING,
                 new class() extends DefaultSettings {
                     public function isNormalizeDescription(): bool {
                         return false;
                     }
                 },
                 0,
-                "Multi-line\n   description  \n\n",
+                0,
+                <<<'STRING'
+                aaa
+                  bbb
+
+
+
+                ccc
+                STRING,
             ],
-            'Multi-line description (normalized)'                     => [
+            'Multi-line string (normalized)'                           => [
                 <<<'STRING'
                 """
-                Multi-line
-                   description
+                aaa
+                  bbb
+
+                ccc
                 """
                 STRING,
                 new class() extends DefaultSettings {
@@ -158,25 +193,32 @@ class DescriptionTest extends TestCase {
                     }
                 },
                 0,
-                "Multi-line\n   description  \n\n",
-            ],
-            'Leading space'                                           => [
+                0,
                 <<<'STRING'
-                """
-                  Leading space
-                """
+                aaa
+                  bbb
+
+
+                ccc
+                STRING,
+            ],
+            'Leading space'                                            => [
+                <<<'STRING'
+                """  Leading space"""
                 STRING,
                 new DefaultSettings(),
                 0,
-                "  Leading space",
+                0,
+                '  Leading space',
             ],
-            'Leading tab'                                             => [
-                "\"\"\"\n\tLeading tab\n\"\"\"",
+            'Leading tab'                                              => [
+                "\"\"\"\tLeading tab\"\"\"",
                 new DefaultSettings(),
+                0,
                 0,
                 "\tLeading tab",
             ],
-            'Trailing "'                                              => [
+            'Trailing "'                                               => [
                 <<<'STRING'
                 """
                 Trailing "
@@ -184,9 +226,25 @@ class DescriptionTest extends TestCase {
                 STRING,
                 new DefaultSettings(),
                 0,
+                0,
                 'Trailing "',
             ],
-            'Trailing backslashes'                                    => [
+            'Leading whitespace and trailing "'                        => [
+                <<<'STRING'
+                """
+                  Leading whitespace and trailing "
+                abc
+                """
+                STRING,
+                new DefaultSettings(),
+                0,
+                0,
+                <<<'STRING'
+                  Leading whitespace and trailing "
+                abc
+                STRING,
+            ],
+            'Trailing backslash'                                       => [
                 <<<'STRING'
                 """
                 Trailing \\
@@ -194,33 +252,89 @@ class DescriptionTest extends TestCase {
                 STRING,
                 new DefaultSettings(),
                 0,
+                0,
                 'Trailing \\\\',
             ],
-            'Escape wrapper'                                          => [
+            'Escape wrapper'                                           => [
                 <<<'STRING'
-                """String with \""" wrapper"""
+                """
+                String with \""" wrapper
+                """
                 STRING,
                 new DefaultSettings(),
                 0,
+                0,
                 'String with """ wrapper',
             ],
-            'Indent'                                                  => [
-                <<<'STRING'
-                    """
-                      Multi-line
-                    description
-                    """
-                STRING,
+            'Indent'                                                   => [
+                implode(
+                    "\n",
+                    [
+                        '    """',
+                        '        aaa',
+                        '',
+                        '      bbb  ',
+                        '    ccc    ',
+                        '      ',
+                        '      ddd  ',
+                        '    """',
+                    ],
+                ),
                 new class() extends DefaultSettings {
                     public function getIndent(): string {
                         return '  ';
                     }
                 },
                 2,
-                <<<'STRING'
-                  Multi-line
-                description
-                STRING,
+                0,
+                implode(
+                    "\n",
+                    [
+                        '    aaa',
+                        '',
+                        '  bbb  ',
+                        'ccc    ',
+                        '  ',
+                        '  ddd  ',
+                    ],
+                ),
+            ],
+            'Indent (normalized)'                                      => [
+                implode(
+                    "\n",
+                    [
+                        '    """',
+                        '        aaa',
+                        '',
+                        '      bbb',
+                        '    ccc',
+                        '',
+                        '      ddd',
+                        '    """',
+                    ],
+                ),
+                new class() extends DefaultSettings {
+                    public function getIndent(): string {
+                        return '  ';
+                    }
+
+                    public function isNormalizeDescription(): bool {
+                        return true;
+                    }
+                },
+                2,
+                0,
+                implode(
+                    "\n",
+                    [
+                        '    aaa',
+                        '',
+                        '  bbb  ',
+                        'ccc    ',
+                        '  ',
+                        '  ddd  ',
+                    ],
+                ),
             ],
         ];
     }

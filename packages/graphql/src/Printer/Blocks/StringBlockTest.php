@@ -9,9 +9,9 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use function implode;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\BlockString
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\StringBlock
  */
-class BlockStringTest extends TestCase {
+class StringBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -19,8 +19,27 @@ class BlockStringTest extends TestCase {
      *
      * @dataProvider dataProviderToString
      */
-    public function testToString(string $expected, Settings $settings, int $level, int $reserved, string $string): void {
-        $actual = (string) (new BlockString($settings, $level, $reserved, $string));
+    public function testToString(
+        string $expected,
+        Settings $settings,
+        int $level,
+        int $reserved,
+        string $string,
+    ): void {
+        $actual = (string) (new class($settings, $level, $reserved, $string) extends StringBlock {
+            public function __construct(
+                Settings $settings,
+                int $level,
+                int $reserved,
+                protected string $string,
+            ) {
+                parent::__construct($settings, $level, $reserved);
+            }
+
+            protected function getString(): string {
+                return $this->string;
+            }
+        });
         $parsed = Parser::valueLiteral($actual)->value;
 
         self::assertEquals($expected, $actual);
@@ -56,7 +75,7 @@ class BlockStringTest extends TestCase {
                 0,
                 'Short string',
             ],
-            'One-line prints a long string'    => [
+            'One-line prints a long string'         => [
                 <<<'STRING'
                 """
                 Long string
@@ -71,7 +90,7 @@ class BlockStringTest extends TestCase {
                 0,
                 'Long string',
             ],
-            'String is short (indent)'         => [
+            'String is short (indent)'              => [
                 <<<'STRING'
                     """string"""
                 STRING,
@@ -88,7 +107,7 @@ class BlockStringTest extends TestCase {
                 0,
                 'string',
             ],
-            'String is long (indent)'          => [
+            'String is long (indent)'               => [
                 <<<'STRING'
                     """
                     string
@@ -107,11 +126,13 @@ class BlockStringTest extends TestCase {
                 20,
                 'string',
             ],
-            'Multi-line string'                => [
+            'Multi-line string'                     => [
                 <<<'STRING'
                 """
                 aaa
                   bbb
+
+                ccc
                 """
                 STRING,
                 new DefaultSettings(),
@@ -120,6 +141,8 @@ class BlockStringTest extends TestCase {
                 <<<'STRING'
                 aaa
                   bbb
+
+                ccc
                 STRING,
             ],
             'Leading space'                         => [
@@ -134,6 +157,17 @@ class BlockStringTest extends TestCase {
             'Leading tab'                           => [
                 "\"\"\"\tLeading tab\"\"\"",
                 new DefaultSettings(),
+                0,
+                0,
+                "\tLeading tab",
+            ],
+            'Leading whitespace (single line)'      => [
+                "\"\"\"\tLeading tab\"\"\"",
+                new class() extends DefaultSettings {
+                    public function getLineLength(): int {
+                        return 1;
+                    }
+                },
                 0,
                 0,
                 "\tLeading tab",
@@ -185,14 +219,19 @@ class BlockStringTest extends TestCase {
                 'String with """ wrapper',
             ],
             'Indent'                                => [
-                implode("\n", [
-                    '    """',
-                    '        aaa',
-                    '      bbb  ',
-                    '    ccc    ',
-                    '      ddd  ',
-                    '    """',
-                ]),
+                implode(
+                    "\n",
+                    [
+                        '    """',
+                        '        aaa',
+                        '',
+                        '      bbb  ',
+                        '    ccc    ',
+                        '      ',
+                        '      ddd  ',
+                        '    """',
+                    ],
+                ),
                 new class() extends DefaultSettings {
                     public function getIndent(): string {
                         return '  ';
@@ -200,12 +239,17 @@ class BlockStringTest extends TestCase {
                 },
                 2,
                 0,
-                implode("\n", [
-                    '    aaa',
-                    '  bbb  ',
-                    'ccc    ',
-                    '  ddd  ',
-                ]),
+                implode(
+                    "\n",
+                    [
+                        '    aaa',
+                        '',
+                        '  bbb  ',
+                        'ccc    ',
+                        '  ',
+                        '  ddd  ',
+                    ],
+                ),
             ],
         ];
     }
