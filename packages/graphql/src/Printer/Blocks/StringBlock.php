@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Printer;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use function mb_strlen;
 use function preg_match;
 use function preg_replace;
@@ -15,14 +14,6 @@ use function str_replace;
  * @internal
  */
 abstract class StringBlock extends Block {
-    public function __construct(
-        Settings $settings,
-        int $level,
-        protected int $reserved,
-    ) {
-        parent::__construct($settings, $level);
-    }
-
     abstract protected function getString(): string;
 
     protected function isBlock(): bool {
@@ -47,7 +38,7 @@ abstract class StringBlock extends Block {
         }
 
         // Multiline?
-        $length      = $this->reserved + mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($content);
+        $length      = $this->used + mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($content);
         $isOneliner  = !$this->isStringMultiline($content);
         $isMultiline = $this->isBlock()
             || !$isOneliner

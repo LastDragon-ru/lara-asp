@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use Stringable;
 use function mb_strlen;
+use function mb_strpos;
 use function str_repeat;
 
 /**
@@ -15,9 +16,10 @@ abstract class Block implements Stringable {
     private ?int    $length    = null;
     private ?bool   $multiline = null;
 
-    protected function __construct(
+    public function __construct(
         protected Settings $settings,
         protected int $level = 0,
+        protected int $used = 0,
     ) {
         // empty
     }
@@ -30,7 +32,7 @@ abstract class Block implements Stringable {
         if ($this->content === null) {
             $this->content   = $this->serialize();
             $this->length    = mb_strlen($this->content);
-            $this->multiline = $this->isLineTooLong($this->length)
+            $this->multiline = $this->isLineTooLong($this->length + $this->used)
                 || $this->isStringMultiline($this->content);
         }
 

@@ -23,17 +23,17 @@ class StringBlockTest extends TestCase {
         string $expected,
         Settings $settings,
         int $level,
-        int $reserved,
+        int $used,
         string $string,
     ): void {
-        $actual = (string) (new class($settings, $level, $reserved, $string) extends StringBlock {
+        $actual = (string) (new class($settings, $level, $used, $string) extends StringBlock {
             public function __construct(
                 Settings $settings,
                 int $level,
-                int $reserved,
+                int $used,
                 protected string $string,
             ) {
-                parent::__construct($settings, $level, $reserved);
+                parent::__construct($settings, $level, $used);
             }
 
             protected function getString(): string {

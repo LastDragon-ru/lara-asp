@@ -107,10 +107,6 @@ class BlockTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockTest__Block extends Block {
-    public function __construct(Settings $settings, int $level = 0) {
-        parent::__construct($settings, $level);
-    }
-
     public function getContent(): string {
         return parent::getContent();
     }

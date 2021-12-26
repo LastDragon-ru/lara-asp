@@ -23,10 +23,10 @@ class DescriptionTest extends TestCase {
         string $expected,
         Settings $settings,
         int $level,
-        int $reserved,
+        int $used,
         string $description,
     ): void {
-        $actual = (string) (new Description($settings, $level, $reserved, $description));
+        $actual = (string) (new Description($settings, $level, $used, $description));
 
         self::assertEquals($expected, $actual);
 

@@ -24,12 +24,12 @@ class BlockListTest extends TestCase {
         string $expected,
         Settings $settings,
         int $level,
-        int $reserved,
+        int $used,
         bool $normalized,
         bool $wrapped,
         array $blocks,
     ): void {
-        $list = new BlockList($settings, $level, $reserved, $normalized, $wrapped);
+        $list = new BlockList($settings, $level, $used, $normalized, $wrapped);
 
         foreach ($blocks as $name => $block) {
             $list[$name] = $block;

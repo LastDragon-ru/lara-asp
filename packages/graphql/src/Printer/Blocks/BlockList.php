@@ -29,11 +29,11 @@ class BlockList extends Block implements ArrayAccess {
     public function __construct(
         Settings $settings,
         int $level,
-        private int $reserved,
+        int $used,
         private bool $normalized = false,
         private bool $wrapped = false,
     ) {
-        parent::__construct($settings, $level);
+        parent::__construct($settings, $level, $used);
     }
 
     protected function isMultiline(): bool {
@@ -64,7 +64,7 @@ class BlockList extends Block implements ArrayAccess {
         // Join
         $separator   = ",{$this->space()}";
         $isMultiline = count($this->multiline) > 0 || $this->isLineTooLong(
-                $this->reserved + $this->length + mb_strlen($separator) * ($count - 1),
+                $this->used + $this->length + mb_strlen($separator) * ($count - 1),
             );
         $content     = '';
 

@@ -15,10 +15,10 @@ class Description extends StringBlock {
     public function __construct(
         Settings $settings,
         int $level,
-        int $reserved,
+        int $used,
         protected string $description,
     ) {
-        parent::__construct($settings, $level, $reserved);
+        parent::__construct($settings, $level, $used);
     }
 
     protected function isNormalized(): bool {
