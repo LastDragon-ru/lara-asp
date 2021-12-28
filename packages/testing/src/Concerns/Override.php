@@ -26,22 +26,26 @@ trait Override {
      * @internal
      */
     public function initOverride(): void {
-        $this->beforeApplicationDestroyed(function (): void {
-            foreach ($this->overrides as $class => $spy) {
-                try {
-                    $spy->shouldHaveBeenCalled();
-                } catch (InvalidCountException $exception) {
-                    throw new OutOfBoundsException(
-                        sprintf(
-                            'Override for `%s` should be used at least 1 times but used 0 times.',
-                            $class,
-                        ),
-                        0,
-                        $exception,
-                    );
-                }
+        $this->overrides = [];
+    }
+
+    protected function assertPostConditions(): void {
+        foreach ($this->overrides as $class => $spy) {
+            try {
+                $spy->shouldHaveBeenCalled();
+            } catch (InvalidCountException $exception) {
+                throw new OutOfBoundsException(
+                    sprintf(
+                        'Override for `%s` should be used at least 1 times but used 0 times.',
+                        $class,
+                    ),
+                    0,
+                    $exception,
+                );
             }
-        });
+        }
+
+        parent::assertPostConditions();
     }
 
     /**
