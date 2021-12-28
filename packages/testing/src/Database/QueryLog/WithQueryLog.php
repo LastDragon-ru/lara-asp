@@ -28,9 +28,7 @@ trait WithQueryLog {
      * @internal
      */
     public function initWithQueryLog(): void {
-        $this->afterApplicationCreated(function (): void {
-            $this->withQueryLog = new WeakMap();
-        });
+        $this->withQueryLog = new WeakMap();
 
         $this->beforeApplicationDestroyed(function (): void {
             foreach ($this->withQueryLog as $connection => $log) {
