@@ -4,10 +4,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
 use ArrayAccess;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+
 use function count;
 use function implode;
 use function ksort;
 use function mb_strlen;
+
 use const SORT_NATURAL;
 
 /**
@@ -32,12 +34,11 @@ class BlockList extends Block implements ArrayAccess {
         int $used,
         private bool $normalized = false,
         private bool $wrapped = false,
+        private string $prefix = '',
+        private string $suffix = '',
+        private string $separator = ',',
     ) {
         parent::__construct($settings, $level, $used);
-    }
-
-    protected function isMultiline(): bool {
-        return count($this->multiline) > 0 || parent::isMultiline();
     }
 
     protected function isNormalized(): bool {
@@ -46,6 +47,22 @@ class BlockList extends Block implements ArrayAccess {
 
     protected function isWrapped(): bool {
         return $this->wrapped;
+    }
+
+    public function getPrefix(): ?string {
+        return $this->prefix;
+    }
+
+    public function getSuffix(): ?string {
+        return $this->suffix;
+    }
+
+    public function getSeparator(): string {
+        return $this->separator;
+    }
+
+    protected function isMultiline(): bool {
+        return count($this->multiline) > 0 || parent::isMultiline();
     }
 
     protected function serialize(): string {
@@ -62,17 +79,23 @@ class BlockList extends Block implements ArrayAccess {
         }
 
         // Join
-        $separator   = ",{$this->space()}";
-        $isMultiline = count($this->multiline) > 0 || $this->isLineTooLong(
-            $this->used + $this->length + mb_strlen($separator) * ($count - 1),
-        );
+        $eol         = '';
+        $prefix      = $this->getPrefix();
+        $suffix      = $this->getSuffix();
+        $separator   = "{$this->getSeparator()}{$this->space()}";
+        $length      = $this->used
+            + $this->length
+            + mb_strlen($suffix)
+            + mb_strlen($prefix)
+            + mb_strlen($separator) * ($count - 1);
+        $isMultiline = count($this->multiline) > 0 || $this->isLineTooLong($length);
         $content     = '';
 
         if ($isMultiline) {
             $eol      = $this->eol();
             $last     = $count - 1;
             $index    = 0;
-            $indent   = $this->indent();
+            $indent   = $this->indent($this->level + (int) ($prefix || $suffix));
             $wrapped  = $this->isWrapped();
             $previous = false;
 
@@ -94,6 +117,12 @@ class BlockList extends Block implements ArrayAccess {
             }
         } else {
             $content = implode($separator, $blocks);
+        }
+
+        // Prefix & Suffix
+        if ($prefix || $suffix) {
+            $indent  = $this->indent();
+            $content = "{$prefix}{$eol}{$content}{$eol}{$indent}{$suffix}";
         }
 
         // Return

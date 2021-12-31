@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use Stringable;
+
 use function mb_strlen;
 use function mb_strpos;
 use function str_repeat;
@@ -63,8 +64,8 @@ abstract class Block implements Stringable {
         return $this->settings->getSpace();
     }
 
-    protected function indent(): string {
-        return str_repeat($this->settings->getIndent(), $this->level);
+    protected function indent(int $level = null): string {
+        return str_repeat($this->settings->getIndent(), $level ?? $this->level);
     }
 
     protected function isLineTooLong(int $length): bool {

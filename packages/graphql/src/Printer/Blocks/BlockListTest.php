@@ -28,9 +28,11 @@ class BlockListTest extends TestCase {
         int $used,
         bool $normalized,
         bool $wrapped,
+        string $prefix,
+        string $suffix,
         array $blocks,
     ): void {
-        $list = new BlockList($settings, $level, $used, $normalized, $wrapped);
+        $list = new BlockList($settings, $level, $used, $normalized, $wrapped, $prefix, $suffix);
 
         foreach ($blocks as $name => $block) {
             $list[$name] = $block;
@@ -47,7 +49,7 @@ class BlockListTest extends TestCase {
      */
     public function dataProviderToString(): array {
         return [
-            'one single-line block'                         => [
+            'one single-line block'                                   => [
                 <<<'STRING'
                 block a
                 STRING,
@@ -56,11 +58,13 @@ class BlockListTest extends TestCase {
                 0,
                 false,
                 true,
+                '',
+                '',
                 [
                     'a' => new BlockListTest__Block(false, 'block a'),
                 ],
             ],
-            'one multi-line block'                          => [
+            'one multi-line block'                                    => [
                 <<<'STRING'
                 block a
                 STRING,
@@ -69,11 +73,13 @@ class BlockListTest extends TestCase {
                 0,
                 false,
                 true,
+                '',
+                '',
                 [
                     'a' => new BlockListTest__Block(true, 'block a'),
                 ],
             ],
-            'short block list'                              => [
+            'short block list'                                        => [
                 <<<'STRING'
                 block a, block b
                 STRING,
@@ -82,12 +88,14 @@ class BlockListTest extends TestCase {
                 0,
                 false,
                 true,
+                '',
+                '',
                 [
                     'a' => new BlockListTest__Block(false, 'block a'),
                     'b' => new BlockListTest__Block(false, 'block b'),
                 ],
             ],
-            'long block list'                               => [
+            'long block list'                                         => [
                 <<<'STRING'
                 block b
                 block a
@@ -101,12 +109,14 @@ class BlockListTest extends TestCase {
                 5,
                 false,
                 true,
+                '',
+                '',
                 [
                     'b' => new BlockListTest__Block(false, 'block b'),
                     'a' => new BlockListTest__Block(false, 'block a'),
                 ],
             ],
-            'short block list with multiline block'         => [
+            'short block list with multiline block'                   => [
                 <<<'STRING'
                 block a
 
@@ -117,12 +127,14 @@ class BlockListTest extends TestCase {
                 0,
                 false,
                 true,
+                '',
+                '',
                 [
                     'a' => new BlockListTest__Block(false, 'block a'),
                     'b' => new BlockListTest__Block(true, 'block b'),
                 ],
             ],
-            'block list with multiline blocks'              => [
+            'block list with multiline blocks'                        => [
                 <<<'STRING'
                 block a
 
@@ -141,6 +153,8 @@ class BlockListTest extends TestCase {
                 0,
                 false,
                 true,
+                '',
+                '',
                 [
                     'a' => new BlockListTest__Block(true, 'block a'),
                     'b' => new BlockListTest__Block(false, 'block b'),
@@ -151,7 +165,7 @@ class BlockListTest extends TestCase {
                     'g' => new BlockListTest__Block(true, 'block g'),
                 ],
             ],
-            'block list with multiline blocks without wrap' => [
+            'block list with multiline blocks without wrap'           => [
                 <<<'STRING'
                 block c
                 block b
@@ -162,13 +176,15 @@ class BlockListTest extends TestCase {
                 0,
                 false,
                 false,
+                '',
+                '',
                 [
                     'c' => new BlockListTest__Block(true, 'block c'),
                     'b' => new BlockListTest__Block(false, 'block b'),
                     'a' => new BlockListTest__Block(true, 'block a'),
                 ],
             ],
-            'normalized block list'                         => [
+            'normalized block list'                                   => [
                 <<<'STRING'
                 block a, block b
                 STRING,
@@ -177,12 +193,14 @@ class BlockListTest extends TestCase {
                 0,
                 true,
                 true,
+                '',
+                '',
                 [
                     'b' => new BlockListTest__Block(false, 'block b'),
                     'a' => new BlockListTest__Block(false, 'block a'),
                 ],
             ],
-            'multi-line with level'                         => [
+            'multi-line with level'                                   => [
                 <<<'STRING'
                     block a
                 STRING,
@@ -195,6 +213,132 @@ class BlockListTest extends TestCase {
                 0,
                 false,
                 false,
+                '',
+                '',
+                [
+                    'a' => new BlockListTest__Block(true, 'block a'),
+                ],
+            ],
+            '[prefix & suffix] one single-line block'                 => [
+                <<<'STRING'
+                [block a]
+                STRING,
+                new DefaultSettings(),
+                0,
+                0,
+                false,
+                true,
+                '[',
+                ']',
+                [
+                    'a' => new BlockListTest__Block(false, 'block a'),
+                ],
+            ],
+            '[prefix & suffix] one multi-line block'                  => [
+                <<<'STRING'
+                [
+                    block a
+                ]
+                STRING,
+                new class() extends DefaultSettings {
+                    public function getIndent(): string {
+                        return '    ';
+                    }
+                },
+                0,
+                0,
+                false,
+                true,
+                '[',
+                ']',
+                [
+                    'a' => new BlockListTest__Block(true, 'block a'),
+                ],
+            ],
+            '[prefix & suffix] short block list'                      => [
+                <<<'STRING'
+                [block a, block b]
+                STRING,
+                new DefaultSettings(),
+                0,
+                0,
+                false,
+                true,
+                '[',
+                ']',
+                [
+                    'a' => new BlockListTest__Block(false, 'block a'),
+                    'b' => new BlockListTest__Block(false, 'block b'),
+                ],
+            ],
+            '[prefix & suffix] long block list'                       => [
+                <<<'STRING'
+                [
+                    block b
+                    block a
+                ]
+                STRING,
+                new class() extends DefaultSettings {
+                    public function getLineLength(): int {
+                        return 20;
+                    }
+
+                    public function getIndent(): string {
+                        return '    ';
+                    }
+                },
+                0,
+                5,
+                false,
+                true,
+                '[',
+                ']',
+                [
+                    'b' => new BlockListTest__Block(false, 'block b'),
+                    'a' => new BlockListTest__Block(false, 'block a'),
+                ],
+            ],
+            '[prefix & suffix] short block list with multiline block' => [
+                <<<'STRING'
+                [
+                    block a
+
+                    block b
+                ]
+                STRING,
+                new class() extends DefaultSettings {
+                    public function getIndent(): string {
+                        return '    ';
+                    }
+                },
+                0,
+                0,
+                false,
+                true,
+                '[',
+                ']',
+                [
+                    'a' => new BlockListTest__Block(false, 'block a'),
+                    'b' => new BlockListTest__Block(true, 'block b'),
+                ],
+            ],
+            '[prefix & suffix] multi-line with level'                 => [
+                <<<'STRING'
+                [
+                            block a
+                        ]
+                STRING,
+                new class() extends DefaultSettings {
+                    public function getIndent(): string {
+                        return '    ';
+                    }
+                },
+                2,
+                0,
+                false,
+                false,
+                '[',
+                ']',
                 [
                     'a' => new BlockListTest__Block(true, 'block a'),
                 ],
