@@ -6,6 +6,7 @@ use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+
 use function implode;
 
 /**
@@ -79,7 +80,7 @@ class StringBlockTest extends TestCase {
             ],
             'String is short (indent)'              => [
                 <<<'STRING'
-                    """string"""
+                """string"""
                 STRING,
                 new class() extends DefaultSettings {
                     public function getLineLength(): int {
@@ -87,7 +88,7 @@ class StringBlockTest extends TestCase {
                     }
 
                     public function getIndent(): string {
-                        return '  ';
+                        return '    ';
                     }
                 },
                 2,
@@ -96,7 +97,7 @@ class StringBlockTest extends TestCase {
             ],
             'String is long (indent)'               => [
                 <<<'STRING'
-                    """
+                """
                     string
                     """
                 STRING,
@@ -209,7 +210,7 @@ class StringBlockTest extends TestCase {
                 implode(
                     "\n",
                     [
-                        '    """',
+                        '"""',
                         '        aaa',
                         '',
                         '      bbb  ',

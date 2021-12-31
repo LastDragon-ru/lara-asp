@@ -70,7 +70,7 @@ class StringBlock extends Block {
 
         // Wrap && Escape
         $content = str_replace($wrapper, "\\{$wrapper}", $content);
-        $content = "{$indent}{$wrapper}{$content}{$wrapper}";
+        $content = "{$wrapper}{$content}{$wrapper}";
 
         // Return
         return $content;
