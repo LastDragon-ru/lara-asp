@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
+
 use function mb_strlen;
 
 /**
@@ -233,9 +234,5 @@ class BlockListTest__Block extends Block {
 
     protected function serialize(): string {
         return '';
-    }
-
-    protected function isNormalized(): bool {
-        return false;
     }
 }

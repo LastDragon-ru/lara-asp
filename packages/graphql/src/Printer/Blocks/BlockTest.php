@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+
 use function mb_strlen;
 
 /**
@@ -121,9 +122,5 @@ class BlockTest__Block extends Block {
 
     protected function serialize(): string {
         return '';
-    }
-
-    protected function isNormalized(): bool {
-        return false;
     }
 }

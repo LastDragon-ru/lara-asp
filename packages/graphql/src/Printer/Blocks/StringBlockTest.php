@@ -26,20 +26,7 @@ class StringBlockTest extends TestCase {
         int $used,
         string $string,
     ): void {
-        $actual = (string) (new class($settings, $level, $used, $string) extends StringBlock {
-            public function __construct(
-                Settings $settings,
-                int $level,
-                int $used,
-                protected string $string,
-            ) {
-                parent::__construct($settings, $level, $used);
-            }
-
-            protected function getString(): string {
-                return $this->string;
-            }
-        });
+        $actual = (string) new StringBlock($settings, $level, $used, $string);
         $parsed = Parser::valueLiteral($actual)->value;
 
         self::assertEquals($expected, $actual);

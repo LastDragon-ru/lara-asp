@@ -64,8 +64,8 @@ class BlockList extends Block implements ArrayAccess {
         // Join
         $separator   = ",{$this->space()}";
         $isMultiline = count($this->multiline) > 0 || $this->isLineTooLong(
-                $this->used + $this->length + mb_strlen($separator) * ($count - 1),
-            );
+            $this->used + $this->length + mb_strlen($separator) * ($count - 1),
+        );
         $content     = '';
 
         if ($isMultiline) {
@@ -122,7 +122,7 @@ class BlockList extends Block implements ArrayAccess {
      */
     public function offsetSet(mixed $offset, mixed $value): void {
         $this->blocks[$offset] = $value;
-        $this->length          += $value->getLength();
+        $this->length         += $value->getLength();
 
         if ($value->isMultiline()) {
             $this->multiline[$offset] = true;

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+
 use function preg_replace;
 use function rtrim;
 use function str_replace;
@@ -16,21 +17,17 @@ class Description extends StringBlock {
         Settings $settings,
         int $level,
         int $used,
-        protected string $description,
+        string $string,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($settings, $level, $used, $string, true);
     }
 
     protected function isNormalized(): bool {
         return $this->settings->isNormalizeDescription();
     }
 
-    protected function isBlock(): bool {
-        return true;
-    }
-
     protected function getString(): string {
-        $string = $this->description;
+        $string = parent::getString();
 
         if ($this->isNormalized()) {
             $eol    = $this->eol();

@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Printer;
+use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+
 use function mb_strlen;
 use function preg_match;
 use function preg_replace;
@@ -13,11 +15,23 @@ use function str_replace;
 /**
  * @internal
  */
-abstract class StringBlock extends Block {
-    abstract protected function getString(): string;
+class StringBlock extends Block {
+    public function __construct(
+        Settings $settings,
+        int $level,
+        int $used,
+        protected string $string,
+        protected bool $block = false,
+    ) {
+        parent::__construct($settings, $level, $used);
+    }
+
+    protected function getString(): string {
+        return $this->string;
+    }
 
     protected function isBlock(): bool {
-        return false;
+        return $this->block;
     }
 
     protected function serialize(): string {
