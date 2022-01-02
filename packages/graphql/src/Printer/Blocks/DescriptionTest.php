@@ -6,6 +6,7 @@ use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+
 use function implode;
 
 /**
@@ -115,7 +116,7 @@ class DescriptionTest extends TestCase {
             ],
             'String is short (indent)'                                 => [
                 <<<'STRING'
-                    """
+                """
                     string
                     """
                 STRING,
@@ -134,7 +135,7 @@ class DescriptionTest extends TestCase {
             ],
             'String is long (indent)'                                  => [
                 <<<'STRING'
-                    """
+                """
                     string
                     """
                 STRING,
@@ -270,7 +271,7 @@ class DescriptionTest extends TestCase {
                 implode(
                     "\n",
                     [
-                        '    """',
+                        '"""',
                         '        aaa',
                         '',
                         '      bbb  ',
@@ -303,7 +304,7 @@ class DescriptionTest extends TestCase {
                 implode(
                     "\n",
                     [
-                        '    """',
+                        '"""',
                         '        aaa',
                         '',
                         '      bbb',

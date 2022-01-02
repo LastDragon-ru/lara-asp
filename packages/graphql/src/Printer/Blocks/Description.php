@@ -23,7 +23,7 @@ class Description extends StringBlock {
     }
 
     protected function isNormalized(): bool {
-        return $this->settings->isNormalizeDescription();
+        return $this->getSettings()->isNormalizeDescription();
     }
 
     protected function getString(): string {
@@ -40,8 +40,8 @@ class Description extends StringBlock {
         return $string;
     }
 
-    protected function serialize(): string {
-        $content = parent::serialize();
+    protected function content(): string {
+        $content = parent::content();
 
         if ($content === '""""""') {
             $content = '';

@@ -24,7 +24,7 @@ class BlockTest extends TestCase {
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
-            ->shouldReceive('serialize')
+            ->shouldReceive('content')
             ->once()
             ->andReturn($content);
 
@@ -42,7 +42,7 @@ class BlockTest extends TestCase {
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
-            ->shouldReceive('serialize')
+            ->shouldReceive('content')
             ->once()
             ->andReturn($content);
 
@@ -60,7 +60,7 @@ class BlockTest extends TestCase {
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
-            ->shouldReceive('serialize')
+            ->shouldReceive('content')
             ->once()
             ->andReturn($content);
 
@@ -120,7 +120,7 @@ class BlockTest__Block extends Block {
         return parent::isMultiline();
     }
 
-    protected function serialize(): string {
+    protected function content(): string {
         return '';
     }
 }

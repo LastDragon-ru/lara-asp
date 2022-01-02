@@ -18,34 +18,54 @@ abstract class Block implements Stringable {
     private ?bool   $multiline = null;
 
     public function __construct(
-        protected Settings $settings,
-        protected int $level = 0,
-        protected int $used = 0,
+        private Settings $settings,
+        private int $level = 0,
+        private int $used = 0,
     ) {
         // empty
+    }
+
+    // <editor-fold desc="Getters/Setters">
+    // =========================================================================
+    protected function getSettings(): Settings {
+        return $this->settings;
+    }
+
+    protected function getLevel(): int {
+        return $this->level;
+    }
+
+    protected function getUsed(): int {
+        return $this->used;
+    }
+    //</editor-fold>
+
+    // <editor-fold desc="API">
+    // =========================================================================
+    public function getLength(): int {
+        return $this->length ?? mb_strlen($this->getContent());
+    }
+
+    public function isMultiline(): bool {
+        return $this->getContent() && $this->multiline;
     }
 
     public function __toString(): string {
         return $this->getContent();
     }
+    //</editor-fold>
 
+    // <editor-fold desc="Cache">
+    // =========================================================================
     protected function getContent(): string {
         if ($this->content === null) {
-            $this->content   = $this->serialize();
+            $this->content   = $this->content();
             $this->length    = mb_strlen($this->content);
-            $this->multiline = $this->isLineTooLong($this->length + $this->used)
+            $this->multiline = $this->isLineTooLong($this->length + $this->getUsed())
                 || $this->isStringMultiline($this->content);
         }
 
         return $this->content;
-    }
-
-    protected function getLength(): int {
-        return $this->length ?? mb_strlen($this->getContent());
-    }
-
-    protected function isMultiline(): bool {
-        return $this->getContent() && $this->multiline;
     }
 
     protected function reset(): void {
@@ -54,26 +74,30 @@ abstract class Block implements Stringable {
         $this->length    = null;
     }
 
-    abstract protected function serialize(): string;
+    abstract protected function content(): string;
+    // </editor-fold>
 
+    // <editor-fold desc="Helpers">
+    // =========================================================================
     protected function eol(): string {
-        return $this->settings->getLineEnd();
+        return $this->getSettings()->getLineEnd();
     }
 
     protected function space(): string {
-        return $this->settings->getSpace();
+        return $this->getSettings()->getSpace();
     }
 
     protected function indent(int $level = null): string {
-        return str_repeat($this->settings->getIndent(), $level ?? $this->level);
+        return str_repeat($this->getSettings()->getIndent(), $level ?? $this->getLevel());
     }
 
     protected function isLineTooLong(int $length): bool {
-        return $length > $this->settings->getLineLength();
+        return $length > $this->getSettings()->getLineLength();
     }
 
     protected function isStringMultiline(string $string): bool {
         return mb_strpos($string, "\n") !== false
             || mb_strpos($string, "\r") !== false;
     }
+    // </editor-fold>
 }

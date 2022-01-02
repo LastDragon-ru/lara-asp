@@ -34,7 +34,7 @@ class StringBlock extends Block {
         return $this->block;
     }
 
-    protected function serialize(): string {
+    protected function content(): string {
         // Begin
         $eol     = $this->eol();
         $indent  = $this->indent();
@@ -52,7 +52,7 @@ class StringBlock extends Block {
         }
 
         // Multiline?
-        $length      = $this->used + mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($content);
+        $length      = $this->getUsed() + mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($content);
         $isOneliner  = !$this->isStringMultiline($content);
         $isMultiline = $this->isBlock()
             || !$isOneliner

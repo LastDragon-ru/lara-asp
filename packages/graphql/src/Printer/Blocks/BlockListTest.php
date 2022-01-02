@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
+use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function mb_strlen;
@@ -48,302 +50,478 @@ class BlockListTest extends TestCase {
      * @return array<string,array{string, Settings, int, string}>
      */
     public function dataProviderToString(): array {
-        return [
-            'one single-line block'                                   => [
-                <<<'STRING'
-                block a
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                false,
-                true,
-                '',
-                '',
-                [
-                    'a' => new BlockListTest__Block(false, 'block a'),
-                ],
-            ],
-            'one multi-line block'                                    => [
-                <<<'STRING'
-                block a
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                false,
-                true,
-                '',
-                '',
-                [
-                    'a' => new BlockListTest__Block(true, 'block a'),
-                ],
-            ],
-            'short block list'                                        => [
-                <<<'STRING'
-                block a, block b
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                false,
-                true,
-                '',
-                '',
-                [
-                    'a' => new BlockListTest__Block(false, 'block a'),
-                    'b' => new BlockListTest__Block(false, 'block b'),
-                ],
-            ],
-            'long block list'                                         => [
-                <<<'STRING'
-                block b
-                block a
-                STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 20;
-                    }
-                },
-                0,
-                5,
-                false,
-                true,
-                '',
-                '',
-                [
-                    'b' => new BlockListTest__Block(false, 'block b'),
-                    'a' => new BlockListTest__Block(false, 'block a'),
-                ],
-            ],
-            'short block list with multiline block'                   => [
-                <<<'STRING'
-                block a
-
-                block b
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                false,
-                true,
-                '',
-                '',
-                [
-                    'a' => new BlockListTest__Block(false, 'block a'),
-                    'b' => new BlockListTest__Block(true, 'block b'),
-                ],
-            ],
-            'block list with multiline blocks'                        => [
-                <<<'STRING'
-                block a
-
-                block b
-                block c
-
-                block d
-
-                block e
-                block f
-
-                block g
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                false,
-                true,
-                '',
-                '',
-                [
-                    'a' => new BlockListTest__Block(true, 'block a'),
-                    'b' => new BlockListTest__Block(false, 'block b'),
-                    'c' => new BlockListTest__Block(false, 'block c'),
-                    'd' => new BlockListTest__Block(true, 'block d'),
-                    'e' => new BlockListTest__Block(false, 'block e'),
-                    'f' => new BlockListTest__Block(false, 'block f'),
-                    'g' => new BlockListTest__Block(true, 'block g'),
-                ],
-            ],
-            'block list with multiline blocks without wrap'           => [
-                <<<'STRING'
-                block c
-                block b
-                block a
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                false,
-                false,
-                '',
-                '',
-                [
-                    'c' => new BlockListTest__Block(true, 'block c'),
-                    'b' => new BlockListTest__Block(false, 'block b'),
-                    'a' => new BlockListTest__Block(true, 'block a'),
-                ],
-            ],
-            'normalized block list'                                   => [
-                <<<'STRING'
-                block a, block b
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                true,
-                true,
-                '',
-                '',
-                [
-                    'b' => new BlockListTest__Block(false, 'block b'),
-                    'a' => new BlockListTest__Block(false, 'block a'),
-                ],
-            ],
-            'multi-line with level'                                   => [
-                <<<'STRING'
+        return (new MergeDataProvider([
+            'index'           => new ArrayDataProvider([
+                'one single-line block'                         => [
+                    <<<'STRING'
                     block a
-                STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '  ';
-                    }
-                },
-                2,
-                0,
-                false,
-                false,
-                '',
-                '',
-                [
-                    'a' => new BlockListTest__Block(true, 'block a'),
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(false, 'block a'),
+                    ],
                 ],
-            ],
-            '[prefix & suffix] one single-line block'                 => [
-                <<<'STRING'
-                [block a]
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                false,
-                true,
-                '[',
-                ']',
-                [
-                    'a' => new BlockListTest__Block(false, 'block a'),
-                ],
-            ],
-            '[prefix & suffix] one multi-line block'                  => [
-                <<<'STRING'
-                [
+                'one multi-line block'                          => [
+                    <<<'STRING'
                     block a
-                ]
-                STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
-                0,
-                0,
-                false,
-                true,
-                '[',
-                ']',
-                [
-                    'a' => new BlockListTest__Block(true, 'block a'),
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(true, 'block a'),
+                    ],
                 ],
-            ],
-            '[prefix & suffix] short block list'                      => [
-                <<<'STRING'
-                [block a, block b]
-                STRING,
-                new DefaultSettings(),
-                0,
-                0,
-                false,
-                true,
-                '[',
-                ']',
-                [
-                    'a' => new BlockListTest__Block(false, 'block a'),
-                    'b' => new BlockListTest__Block(false, 'block b'),
+                'short block list'                              => [
+                    <<<'STRING'
+                    block a, block b
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__Block(false, 'block b'),
+                    ],
                 ],
-            ],
-            '[prefix & suffix] long block list'                       => [
-                <<<'STRING'
-                [
+                'long block list'                               => [
+                    <<<'STRING'
                     block b
                     block a
-                ]
-                STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 20;
-                    }
-
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
-                0,
-                5,
-                false,
-                true,
-                '[',
-                ']',
-                [
-                    'b' => new BlockListTest__Block(false, 'block b'),
-                    'a' => new BlockListTest__Block(false, 'block a'),
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getLineLength(): int {
+                            return 20;
+                        }
+                    },
+                    0,
+                    5,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(false, 'block b'),
+                        new BlockListTest__Block(false, 'block a'),
+                    ],
                 ],
-            ],
-            '[prefix & suffix] short block list with multiline block' => [
-                <<<'STRING'
-                [
+                'short block list with multiline block'         => [
+                    <<<'STRING'
                     block a
 
                     block b
-                ]
-                STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
-                0,
-                0,
-                false,
-                true,
-                '[',
-                ']',
-                [
-                    'a' => new BlockListTest__Block(false, 'block a'),
-                    'b' => new BlockListTest__Block(true, 'block b'),
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__Block(true, 'block b'),
+                    ],
                 ],
-            ],
-            '[prefix & suffix] multi-line with level'                 => [
-                <<<'STRING'
-                [
-                            block a
-                        ]
-                STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
-                2,
-                0,
-                false,
-                false,
-                '[',
-                ']',
-                [
-                    'a' => new BlockListTest__Block(true, 'block a'),
+                'block list with multiline blocks'              => [
+                    <<<'STRING'
+                    block a
+
+                    block b
+                    block c
+
+                    block d
+
+                    block e
+                    block f
+
+                    block g
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(true, 'block a'),
+                        new BlockListTest__Block(false, 'block b'),
+                        new BlockListTest__Block(false, 'block c'),
+                        new BlockListTest__Block(true, 'block d'),
+                        new BlockListTest__Block(false, 'block e'),
+                        new BlockListTest__Block(false, 'block f'),
+                        new BlockListTest__Block(true, 'block g'),
+                    ],
                 ],
-            ],
-        ];
+                'block list with multiline blocks without wrap' => [
+                    <<<'STRING'
+                    block c
+                    block b
+                    block a
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    false,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(true, 'block c'),
+                        new BlockListTest__Block(false, 'block b'),
+                        new BlockListTest__Block(true, 'block a'),
+                    ],
+                ],
+                'normalized block list'                         => [
+                    <<<'STRING'
+                    block b, block a
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    true,
+                    true,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(false, 'block b'),
+                        new BlockListTest__Block(false, 'block a'),
+                    ],
+                ],
+                'multi-line with level'                         => [
+                    <<<'STRING'
+                        block a
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getIndent(): string {
+                            return '  ';
+                        }
+                    },
+                    2,
+                    0,
+                    false,
+                    false,
+                    '',
+                    '',
+                    [
+                        new BlockListTest__Block(true, 'block a'),
+                    ],
+                ],
+            ]),
+            'named'           => new ArrayDataProvider([
+                'one single-line block'                         => [
+                    <<<'STRING'
+                    a: block a
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        'a' => new BlockListTest__Block(false, 'block a'),
+                    ],
+                ],
+                'one multi-line block'                          => [
+                    <<<'STRING'
+                    a: block a
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        'a' => new BlockListTest__Block(true, 'block a'),
+                    ],
+                ],
+                'short block list'                              => [
+                    <<<'STRING'
+                    a: block a, b: block b
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        'a' => new BlockListTest__Block(false, 'block a'),
+                        'b' => new BlockListTest__Block(false, 'block b'),
+                    ],
+                ],
+                'long block list'                               => [
+                    <<<'STRING'
+                    b: block b
+                    a: block a
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getLineLength(): int {
+                            return 20;
+                        }
+                    },
+                    0,
+                    5,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        'b' => new BlockListTest__Block(false, 'block b'),
+                        'a' => new BlockListTest__Block(false, 'block a'),
+                    ],
+                ],
+                'short block list with multiline block'         => [
+                    <<<'STRING'
+                    a: block a
+
+                    b: block b
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        'a' => new BlockListTest__Block(false, 'block a'),
+                        'b' => new BlockListTest__Block(true, 'block b'),
+                    ],
+                ],
+                'block list with multiline blocks'              => [
+                    <<<'STRING'
+                    a: block a
+
+                    b: block b
+                    c: block c
+
+                    d: block d
+
+                    e: block e
+                    f: block f
+
+                    g: block g
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '',
+                    '',
+                    [
+                        'a' => new BlockListTest__Block(true, 'block a'),
+                        'b' => new BlockListTest__Block(false, 'block b'),
+                        'c' => new BlockListTest__Block(false, 'block c'),
+                        'd' => new BlockListTest__Block(true, 'block d'),
+                        'e' => new BlockListTest__Block(false, 'block e'),
+                        'f' => new BlockListTest__Block(false, 'block f'),
+                        'g' => new BlockListTest__Block(true, 'block g'),
+                    ],
+                ],
+                'block list with multiline blocks without wrap' => [
+                    <<<'STRING'
+                    c: block c
+                    b: block b
+                    a: block a
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    false,
+                    '',
+                    '',
+                    [
+                        'c' => new BlockListTest__Block(true, 'block c'),
+                        'b' => new BlockListTest__Block(false, 'block b'),
+                        'a' => new BlockListTest__Block(true, 'block a'),
+                    ],
+                ],
+                'normalized block list'                         => [
+                    <<<'STRING'
+                    a: block a, b: block b
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    true,
+                    true,
+                    '',
+                    '',
+                    [
+                        'b' => new BlockListTest__Block(false, 'block b'),
+                        'a' => new BlockListTest__Block(false, 'block a'),
+                    ],
+                ],
+                'multi-line with level'                         => [
+                    <<<'STRING'
+                        a: block a
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getIndent(): string {
+                            return '  ';
+                        }
+                    },
+                    2,
+                    0,
+                    false,
+                    false,
+                    '',
+                    '',
+                    [
+                        'a' => new BlockListTest__Block(true, 'block a'),
+                    ],
+                ],
+            ]),
+            'prefix & suffix' => new ArrayDataProvider([
+                'one single-line block'                 => [
+                    <<<'STRING'
+                    [a: block a]
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '[',
+                    ']',
+                    [
+                        'a' => new BlockListTest__Block(false, 'block a'),
+                    ],
+                ],
+                'one multi-line block'                  => [
+                    <<<'STRING'
+                    [
+                        a: block a
+                    ]
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getIndent(): string {
+                            return '    ';
+                        }
+                    },
+                    0,
+                    0,
+                    false,
+                    true,
+                    '[',
+                    ']',
+                    [
+                        'a' => new BlockListTest__Block(true, 'block a'),
+                    ],
+                ],
+                'short block list'                      => [
+                    <<<'STRING'
+                    [block a, b: block b]
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    true,
+                    '[',
+                    ']',
+                    [
+                        0   => new BlockListTest__Block(false, 'block a'),
+                        'b' => new BlockListTest__Block(false, 'block b'),
+                    ],
+                ],
+                'long block list'                       => [
+                    <<<'STRING'
+                    [
+                        b: block b
+                        a: block a
+                    ]
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getLineLength(): int {
+                            return 20;
+                        }
+
+                        public function getIndent(): string {
+                            return '    ';
+                        }
+                    },
+                    0,
+                    5,
+                    false,
+                    true,
+                    '[',
+                    ']',
+                    [
+                        'b' => new BlockListTest__Block(false, 'block b'),
+                        'a' => new BlockListTest__Block(false, 'block a'),
+                    ],
+                ],
+                'short block list with multiline block' => [
+                    <<<'STRING'
+                    [
+                        block a
+
+                        block b
+                    ]
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getIndent(): string {
+                            return '    ';
+                        }
+                    },
+                    0,
+                    0,
+                    false,
+                    true,
+                    '[',
+                    ']',
+                    [
+                        new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__Block(true, 'block b'),
+                    ],
+                ],
+                'multi-line with level'                 => [
+                    <<<'STRING'
+                    [
+                                block a
+                            ]
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getIndent(): string {
+                            return '    ';
+                        }
+                    },
+                    2,
+                    0,
+                    false,
+                    false,
+                    '[',
+                    ']',
+                    [
+                        new BlockListTest__Block(true, 'block a'),
+                    ],
+                ],
+            ]),
+        ]))->getData();
     }
     //</editor-fold>
 }
@@ -356,19 +534,18 @@ class BlockListTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockListTest__Block extends Block {
-    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(
         protected bool $multiline,
         protected string $content,
     ) {
-        // empty
+        parent::__construct(new DefaultSettings());
     }
 
     protected function getContent(): string {
         return $this->content;
     }
 
-    protected function getLength(): int {
+    public function getLength(): int {
         return mb_strlen($this->getContent());
     }
 
@@ -376,7 +553,7 @@ class BlockListTest__Block extends Block {
         return $this->multiline;
     }
 
-    protected function serialize(): string {
+    protected function content(): string {
         return '';
     }
 }
