@@ -34,7 +34,7 @@ class BlockListTest extends TestCase {
         string $suffix,
         array $blocks,
     ): void {
-        $list = new BlockList($settings, $level, $used, $normalized, $wrapped, $prefix, $suffix);
+        $list = new BlockListTest__BlockList($settings, $level, $used, $normalized, $wrapped, $prefix, $suffix);
 
         foreach ($blocks as $name => $block) {
             $list[$name] = $block;
@@ -528,6 +528,45 @@ class BlockListTest extends TestCase {
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class BlockListTest__BlockList extends BlockList {
+    public function __construct(
+        Settings $settings,
+        int $level,
+        int $used,
+        private bool $normalized = false,
+        private bool $wrapped = false,
+        private string $prefix = '',
+        private string $suffix = '',
+        private string $separator = ',',
+    ) {
+        parent::__construct($settings, $level, $used);
+    }
+
+    protected function isNormalized(): bool {
+        return $this->normalized;
+    }
+
+    protected function isWrapped(): bool {
+        return $this->wrapped;
+    }
+
+    protected function getPrefix(): string {
+        return $this->prefix;
+    }
+
+    protected function getSuffix(): string {
+        return $this->suffix;
+    }
+
+    protected function getSeparator(): string {
+        return $this->separator;
+    }
+}
 
 /**
  * @internal

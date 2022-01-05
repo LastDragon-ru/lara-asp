@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
 
 use ArrayAccess;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 
 use function count;
 use function implode;
@@ -17,7 +16,7 @@ use const SORT_NATURAL;
  * @internal
  * @implements ArrayAccess<string,Block>
  */
-class BlockList extends Block implements ArrayAccess {
+abstract class BlockList extends Block implements ArrayAccess {
     /**
      * @var array<int|string,Block>
      */
@@ -29,37 +28,28 @@ class BlockList extends Block implements ArrayAccess {
     private array $multiline = [];
     private int   $length    = 0;
 
-    public function __construct(
-        Settings $settings,
-        int $level,
-        int $used,
-        private bool $normalized = false,
-        private bool $wrapped = false,
-        private string $prefix = '',
-        private string $suffix = '',
-        private string $separator = ',',
-    ) {
-        parent::__construct($settings, $level, $used);
+    protected function isWrapped(): bool {
+        return false;
     }
 
     protected function isNormalized(): bool {
-        return $this->normalized;
+        return false;
     }
 
-    protected function isWrapped(): bool {
-        return $this->wrapped;
+    protected function isAlwaysMultiline(): bool {
+        return false;
     }
 
-    public function getPrefix(): string {
-        return $this->prefix;
+    protected function getPrefix(): string {
+        return '';
     }
 
-    public function getSuffix(): string {
-        return $this->suffix;
+    protected function getSuffix(): string {
+        return '';
     }
 
-    public function getSeparator(): string {
-        return $this->separator;
+    protected function getSeparator(): string {
+        return ',';
     }
 
     public function isMultiline(): bool {
@@ -142,14 +132,14 @@ class BlockList extends Block implements ArrayAccess {
     /**
      * @param array<int|string,Block> $blocks
      */
-    protected function isMultilineContent(
+    private function isMultilineContent(
         array $blocks,
         string $suffix,
         string $prefix,
-        string $itemSeparator,
+        string $separator,
     ): bool {
-        // Any multiline block?
-        if ($this->multiline) {
+        // Always or Any multiline block?
+        if ($this->isAlwaysMultiline() || $this->multiline) {
             return true;
         }
 
@@ -159,7 +149,7 @@ class BlockList extends Block implements ArrayAccess {
             + $this->length
             + mb_strlen($suffix)
             + mb_strlen($prefix)
-            + mb_strlen($itemSeparator) * ($count - 1);
+            + mb_strlen($separator) * ($count - 1);
 
         return $this->isLineTooLong($length);
     }
