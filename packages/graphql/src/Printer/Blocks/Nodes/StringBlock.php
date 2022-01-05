@@ -1,9 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
+namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes;
 
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Printer;
+use LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 
 use function mb_strlen;
