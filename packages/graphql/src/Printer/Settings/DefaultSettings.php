@@ -6,12 +6,16 @@ use Closure;
 use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
 
 class DefaultSettings implements Settings {
+    public function __construct() {
+        // empty
+    }
+
     public function getSpace(): string {
         return ' ';
     }
 
     public function getIndent(): string {
-        return '  ';
+        return '    ';
     }
 
     public function getFileEnd(): string {
