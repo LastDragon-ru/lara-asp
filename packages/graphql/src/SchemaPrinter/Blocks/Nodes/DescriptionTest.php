@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function implode;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes\Description
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes\Description
  */
 class DescriptionTest extends TestCase {
     // <editor-fold desc="Tests">

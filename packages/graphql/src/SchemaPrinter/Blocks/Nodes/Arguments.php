@@ -1,12 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\NodeList;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\ArgumentsBlockList;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ArgumentsBlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
  * @internal

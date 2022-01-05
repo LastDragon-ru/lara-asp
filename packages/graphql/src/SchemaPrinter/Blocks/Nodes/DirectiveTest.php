@@ -1,15 +1,15 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes\Directive
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes\Directive
  */
 class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">

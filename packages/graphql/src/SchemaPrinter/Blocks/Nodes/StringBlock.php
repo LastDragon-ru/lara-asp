@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Printer;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use function mb_strlen;
 use function preg_match;

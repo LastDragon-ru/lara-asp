@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use Closure;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 class DefaultSettings implements Settings {
     public function __construct() {

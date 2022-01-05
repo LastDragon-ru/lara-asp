@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\AST\BooleanValueNode;
 use GraphQL\Language\AST\EnumValueNode;
@@ -14,12 +14,12 @@ use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\AST\VariableNode;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes\Value
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes\Value
  */
 class ValueTest extends TestCase {
     // <editor-fold desc="Tests">

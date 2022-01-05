@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
 use Closure;
 

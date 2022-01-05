@@ -1,15 +1,15 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 use function mb_strlen;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\NamedBlock
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\NamedBlock
  */
 class NamedBlockTest extends TestCase {
     /**

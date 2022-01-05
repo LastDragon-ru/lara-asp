@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Stringable;
 
 use function mb_strlen;

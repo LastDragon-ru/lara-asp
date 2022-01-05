@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use function preg_replace;
 use function rtrim;

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\AST\ListValueNode;
 use GraphQL\Language\AST\Node;
@@ -8,10 +8,10 @@ use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\Printer;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\ListBlockList;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Blocks\ObjectBlockList;
-use LastDragon_ru\LaraASP\GraphQL\Printer\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 class Value extends Block {
     /**

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Printer\Blocks;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 class ListBlockList extends BlockList {
     protected function getPrefix(): string {
