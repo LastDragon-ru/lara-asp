@@ -2,11 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
+use Closure;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,6 +36,30 @@ class DirectiveTest extends TestCase {
 
         self::assertEquals($expected, $actual);
         self::assertInstanceOf(DirectiveNode::class, $parsed);
+    }
+
+    /**
+     * @covers ::__toString
+     */
+    public function testToStringEvent(): void {
+        $spy        = Mockery::spy(static fn(Event $event) => null);
+        $node       = Parser::directive('@test');
+        $settings   = new DefaultSettings();
+        $dispatcher = new Dispatcher();
+
+        $dispatcher->attach(Closure::fromCallable($spy));
+
+        self::assertNotNull(
+            (string) (new Directive($dispatcher, $settings, 0, 0, $node)),
+        );
+
+        $spy
+            ->shouldHaveBeenCalled()
+            ->withArgs(static function (Event $event) use ($node): bool {
+                return $event instanceof DirectiveUsed
+                    && $event->directive === $node;
+            })
+            ->once();
     }
     // </editor-fold>
 
