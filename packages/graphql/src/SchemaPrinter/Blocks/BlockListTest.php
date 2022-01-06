@@ -530,6 +530,17 @@ class BlockListTest extends TestCase {
                         new BlockListTest__Block(true, 'block a'),
                     ],
                 ],
+                'empty'                                 => [
+                    '',
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    false,
+                    false,
+                    '[',
+                    ']',
+                    [],
+                ],
             ]),
         ]))->getData();
     }

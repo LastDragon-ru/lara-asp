@@ -168,6 +168,15 @@ class ValueTest extends TestCase {
                     STRING,
                 ),
             ],
+            ListValueNode::class.' (empty)'                       => [
+                <<<'STRING'
+                []
+                STRING,
+                new DefaultSettings(),
+                1,
+                0,
+                Parser::valueLiteral('[]'),
+            ],
             ObjectValueNode::class                                => [
                 <<<'STRING'
                 {

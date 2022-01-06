@@ -10,4 +10,8 @@ class ListBlockList extends BlockList {
     protected function getSuffix(): string {
         return ']';
     }
+
+    protected function getEmptyValue(): string {
+        return "{$this->getPrefix()}{$this->getSuffix()}";
+    }
 }

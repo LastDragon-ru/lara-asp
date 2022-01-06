@@ -53,6 +53,10 @@ abstract class BlockList extends Block implements ArrayAccess {
         return ',';
     }
 
+    protected function getEmptyValue(): string {
+        return '';
+    }
+
     public function isMultiline(): bool {
         return count($this->multiline) > 0 || parent::isMultiline();
     }
@@ -77,7 +81,7 @@ abstract class BlockList extends Block implements ArrayAccess {
         $count   = count($blocks);
 
         if (!$count) {
-            return $content;
+            return $this->getEmptyValue();
         }
 
         // Join
