@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
 use Closure;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 
 // TODO: Directive resolver
 // TODO: Throw error if directive definition not found
@@ -18,11 +19,13 @@ interface Settings {
 
     public function getLineLength(): int;
 
-    public function isIncludeUnusedTypes(): bool;
+    public function isIncludeUnusedTypeDefinitions(): bool;
 
     public function isIncludeDirectives(): bool;
 
-    public function isIncludeUnusedDirectivesDefinitions(): bool;
+    public function isIncludeDirectivesInDescription(): bool;
+
+    public function isIncludeUnusedDirectiveDefinitions(): bool;
 
     /**
      * If `false` types will be printed in the original order if `true` they
@@ -45,26 +48,15 @@ interface Settings {
     public function isNormalizeDescription(): bool;
 
     /**
-     * If `false` directive will be printed in the original order if `true` they
-     * will be sorted by name.
-     */
-    public function isNormalizeDirectives(): bool;
-
-    /**
      * If `false` directive definitions will be printed in the original order if
      * `true` they will be sorted by name.
      */
-    public function isNormalizeDirectivesDefinitions(): bool;
+    public function isNormalizeDirectiveDefinitions(): bool;
 
     /**
-     * @return Closure():bool|null
+     * Used to determine should the directive included in output or not.
      */
-    public function getTypesFilter(): ?Closure;
-
-    /**
-     * @return Closure():bool|null
-     */
-    public function getDirectivesFilter(): ?Closure;
+    public function getDirectiveFilter(): ?DirectiveFilter;
 
     /**
      * @return Closure():bool|null

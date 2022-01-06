@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use Closure;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 class DefaultSettings implements Settings {
@@ -30,7 +31,7 @@ class DefaultSettings implements Settings {
         return 80;
     }
 
-    public function isIncludeUnusedTypes(): bool {
+    public function isIncludeUnusedTypeDefinitions(): bool {
         return false;
     }
 
@@ -38,7 +39,11 @@ class DefaultSettings implements Settings {
         return true;
     }
 
-    public function isIncludeUnusedDirectivesDefinitions(): bool {
+    public function isIncludeDirectivesInDescription(): bool {
+        return false;
+    }
+
+    public function isIncludeUnusedDirectiveDefinitions(): bool {
         return false;
     }
 
@@ -58,19 +63,11 @@ class DefaultSettings implements Settings {
         return false;
     }
 
-    public function isNormalizeDirectives(): bool {
+    public function isNormalizeDirectiveDefinitions(): bool {
         return false;
     }
 
-    public function isNormalizeDirectivesDefinitions(): bool {
-        return false;
-    }
-
-    public function getTypesFilter(): ?Closure {
-        return null;
-    }
-
-    public function getDirectivesFilter(): ?Closure {
+    public function getDirectiveFilter(): ?DirectiveFilter {
         return null;
     }
 
