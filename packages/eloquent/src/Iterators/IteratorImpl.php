@@ -8,7 +8,7 @@ use Generator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
-use LastDragon_ru\LaraASP\Core\Observer\Subject;
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 
 use function min;
 
@@ -20,8 +20,8 @@ use function min;
  * @internal
  */
 abstract class IteratorImpl implements Iterator {
-    protected Subject         $beforeChunk;
-    protected Subject         $afterChunk;
+    protected Dispatcher      $beforeChunk;
+    protected Dispatcher      $afterChunk;
     protected int             $index  = 0;
     protected ?int            $limit  = null;
     protected int             $chunk  = 1000;
@@ -30,8 +30,8 @@ abstract class IteratorImpl implements Iterator {
     public function __construct(
         protected QueryBuilder|EloquentBuilder $builder,
     ) {
-        $this->beforeChunk = new Subject();
-        $this->afterChunk  = new Subject();
+        $this->beforeChunk = new Dispatcher();
+        $this->afterChunk  = new Dispatcher();
 
         $this->setLimit($this->getDefaultLimit());
         $this->setOffset($this->getDefaultOffset());

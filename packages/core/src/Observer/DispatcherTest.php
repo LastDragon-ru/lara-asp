@@ -9,9 +9,9 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Observer\Subject
+ * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Observer\Dispatcher
  */
-class SubjectTest extends TestCase {
+class DispatcherTest extends TestCase {
     /**
      * @covers ::attach
      * @covers ::detach
@@ -21,7 +21,7 @@ class SubjectTest extends TestCase {
         $spy      = Mockery::spy(static fn(stdClass $context) => null);
         $context  = new stdClass();
         $observer = Closure::fromCallable($spy);
-        $subject  = new Subject();
+        $subject  = new Dispatcher();
 
         $subject->attach($observer);
         $subject->attach($observer);
@@ -45,7 +45,7 @@ class SubjectTest extends TestCase {
         $spy      = Mockery::spy(static fn(stdClass $context) => null);
         $context  = new stdClass();
         $observer = Closure::fromCallable($spy);
-        $subject  = new Subject();
+        $subject  = new Dispatcher();
 
         $subject->attach($observer);
 
@@ -60,7 +60,7 @@ class SubjectTest extends TestCase {
      * @covers ::getObservers
      */
     public function testGetObservers(): void {
-        $subject  = new Subject();
+        $subject  = new Dispatcher();
         $observer = static function (): void {
             // empty
         };
