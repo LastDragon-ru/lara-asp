@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Stringable;
 
@@ -18,6 +19,7 @@ abstract class Block implements Stringable {
     private ?bool   $multiline = null;
 
     public function __construct(
+        private Dispatcher $dispatcher,
         private Settings $settings,
         private int $level = 0,
         private int $used = 0,
@@ -27,6 +29,10 @@ abstract class Block implements Stringable {
 
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
+    protected function getDispatcher(): Dispatcher {
+        return $this->dispatcher;
+    }
+
     protected function getSettings(): Settings {
         return $this->settings;
     }

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
@@ -19,13 +20,13 @@ class NamedBlockTest extends TestCase {
      * @covers ::getUsed
      */
     public function testToString(): void {
-        $name      = 'name';
-        $used      = 123;
-        $level     = 2;
-        $space     = '  ';
-        $separator = ':';
-        $content   = 'abc abcabc abcabc abcabc abc';
-        $settings  = new class($space) extends DefaultSettings {
+        $name       = 'name';
+        $used       = 123;
+        $level      = 2;
+        $space      = '  ';
+        $separator  = ':';
+        $content    = 'abc abcabc abcabc abcabc abc';
+        $settings   = new class($space) extends DefaultSettings {
             public function __construct(
                 protected string $space,
             ) {
@@ -36,21 +37,23 @@ class NamedBlockTest extends TestCase {
                 return $this->space;
             }
         };
-        $block     = new class($settings, $level, $used, $content) extends Block {
+        $dispatcher = new Dispatcher();
+        $block      = new class($dispatcher, $settings, $level, $used, $content) extends Block {
             public function __construct(
+                Dispatcher $dispatcher,
                 Settings $settings,
                 int $level,
                 int $used,
                 protected string $content,
             ) {
-                parent::__construct($settings, $level, $used);
+                parent::__construct($dispatcher, $settings, $level, $used);
             }
 
             protected function content(): string {
                 return $this->content;
             }
         };
-        $named     = new class($settings, $name, $block, $separator) extends NamedBlock {
+        $named      = new class($dispatcher, $settings, $name, $block, $separator) extends NamedBlock {
             public function getUsed(): int {
                 return parent::getUsed();
             }
@@ -59,7 +62,7 @@ class NamedBlockTest extends TestCase {
                 return parent::getLevel();
             }
         };
-        $expected  = "{$name}{$separator}{$space}{$content}";
+        $expected   = "{$name}{$separator}{$space}{$content}";
 
         self::assertEquals($used, $named->getUsed());
         self::assertEquals($level, $named->getLevel());

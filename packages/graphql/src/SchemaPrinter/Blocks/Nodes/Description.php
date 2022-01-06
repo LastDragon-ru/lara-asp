@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use function preg_replace;
@@ -14,12 +15,13 @@ use function trim;
  */
 class Description extends StringBlock {
     public function __construct(
+        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         string $string,
     ) {
-        parent::__construct($settings, $level, $used, $string, true);
+        parent::__construct($dispatcher, $settings, $level, $used, $string, true);
     }
 
     protected function isNormalized(): bool {

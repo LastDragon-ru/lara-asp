@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\AST\DirectiveNode;
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -13,22 +14,29 @@ use function mb_strlen;
  */
 class Directive extends Block {
     public function __construct(
+        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
-        private DirectiveNode $directive,
+        private DirectiveNode $node,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($dispatcher, $settings, $level, $used);
+    }
+
+    public function getNode(): DirectiveNode {
+        return $this->node;
     }
 
     protected function content(): string {
-        $name = "@{$this->directive->name->value}";
+        $node = $this->getNode();
+        $name = "@{$node->name->value}";
         $used = mb_strlen($name);
         $args = new Arguments(
+            $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed() + $used,
-            $this->directive->arguments,
+            $node->arguments,
         );
 
         return "{$name}{$args}";

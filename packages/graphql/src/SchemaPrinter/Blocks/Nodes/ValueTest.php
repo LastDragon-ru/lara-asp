@@ -14,6 +14,7 @@ use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\AST\VariableNode;
 use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +39,7 @@ class ValueTest extends TestCase {
         int $used,
         ValueNode $node,
     ): void {
-        $actual = (string) (new Value($settings, $level, $used, $node));
+        $actual = (string) (new Value(new Dispatcher(), $settings, $level, $used, $node));
         $parsed = Parser::valueLiteral($actual);
 
         self::assertEquals($expected, $actual);

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -34,7 +35,16 @@ class BlockListTest extends TestCase {
         string $suffix,
         array $blocks,
     ): void {
-        $list = new BlockListTest__BlockList($settings, $level, $used, $normalized, $wrapped, $prefix, $suffix);
+        $list = new BlockListTest__BlockList(
+            new Dispatcher(),
+            $settings,
+            $level,
+            $used,
+            $normalized,
+            $wrapped,
+            $prefix,
+            $suffix,
+        );
 
         foreach ($blocks as $name => $block) {
             $list[$name] = $block;
@@ -535,6 +545,7 @@ class BlockListTest extends TestCase {
  */
 class BlockListTest__BlockList extends BlockList {
     public function __construct(
+        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
@@ -544,7 +555,7 @@ class BlockListTest__BlockList extends BlockList {
         private string $suffix = '',
         private string $separator = ',',
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($dispatcher, $settings, $level, $used);
     }
 
     protected function isNormalized(): bool {
@@ -577,7 +588,7 @@ class BlockListTest__Block extends Block {
         protected bool $multiline,
         protected string $content,
     ) {
-        parent::__construct(new DefaultSettings());
+        parent::__construct(new Dispatcher(), new DefaultSettings());
     }
 
     protected function getContent(): string {

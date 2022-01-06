@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
@@ -9,12 +10,13 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
  */
 class NamedBlock extends Block {
     public function __construct(
+        Dispatcher $dispatcher,
         Settings $settings,
         private string $name,
         private Block $block,
         private string $separator = ':',
     ) {
-        parent::__construct($settings, $block->getLevel(), $block->getUsed());
+        parent::__construct($dispatcher, $settings, $block->getLevel(), $block->getUsed());
     }
 
     public function getName(): string {

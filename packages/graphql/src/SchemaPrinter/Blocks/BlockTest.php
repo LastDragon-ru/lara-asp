@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use Mockery;
@@ -20,7 +21,7 @@ class BlockTest extends TestCase {
      */
     public function testGetContent(): void {
         $content = 'content';
-        $block   = Mockery::mock(BlockTest__Block::class, [new DefaultSettings()]);
+        $block   = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new DefaultSettings()]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -38,7 +39,7 @@ class BlockTest extends TestCase {
     public function testGetLength(): void {
         $content = 'content';
         $length  = mb_strlen($content);
-        $block   = Mockery::mock(BlockTest__Block::class, [new DefaultSettings()]);
+        $block   = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new DefaultSettings()]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -56,7 +57,7 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsMultiline
      */
     public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
-        $block = Mockery::mock(BlockTest__Block::class, [$settings]);
+        $block = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), $settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block

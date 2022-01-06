@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,7 @@ class DirectiveTest extends TestCase {
         int $used,
         DirectiveNode $node,
     ): void {
-        $actual = (string) (new Directive($settings, $level, $used, $node));
+        $actual = (string) (new Directive(new Dispatcher(), $settings, $level, $used, $node));
         $parsed = Parser::directive($actual);
 
         self::assertEquals($expected, $actual);

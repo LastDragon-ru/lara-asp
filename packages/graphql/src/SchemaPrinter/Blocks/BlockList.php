@@ -14,11 +14,12 @@ use const SORT_NATURAL;
 
 /**
  * @internal
- * @implements ArrayAccess<string,Block>
+ * @template TBlock of Block
+ * @implements ArrayAccess<string,TBlock>
  */
 abstract class BlockList extends Block implements ArrayAccess {
     /**
-     * @var array<int|string,Block>
+     * @var array<int|string,TBlock>
      */
     private array $blocks = [];
 
@@ -57,7 +58,7 @@ abstract class BlockList extends Block implements ArrayAccess {
     }
 
     /**
-     * @return array<int|string,Block>
+     * @return array<int|string,TBlock>
      */
     protected function getBlocks(): array {
         $blocks = $this->blocks;
@@ -130,7 +131,7 @@ abstract class BlockList extends Block implements ArrayAccess {
     }
 
     /**
-     * @param array<int|string,Block> $blocks
+     * @param array<int|string,TBlock> $blocks
      */
     private function isMultilineContent(
         array $blocks,
@@ -165,6 +166,8 @@ abstract class BlockList extends Block implements ArrayAccess {
 
     /**
      * @param int|string $offset
+     *
+     * @return TBlock
      */
     public function offsetGet(mixed $offset): Block {
         return $this->blocks[$offset];
@@ -172,12 +175,12 @@ abstract class BlockList extends Block implements ArrayAccess {
 
     /**
      * @param int|string|null $offset
-     * @param Block           $value
+     * @param TBlock          $value
      */
     public function offsetSet(mixed $offset, mixed $value): void {
         if ($offset !== null) {
             if (!is_numeric($offset)) {
-                $value = new NamedBlock($this->getSettings(), $offset, $value);
+                $value = new NamedBlock($this->getDispatcher(), $this->getSettings(), $offset, $value);
             }
 
             $this->blocks[$offset] = $value;
