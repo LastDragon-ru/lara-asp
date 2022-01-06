@@ -4,14 +4,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
 use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\NodeList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ArgumentsBlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
  * @internal
  */
-class Arguments extends Block {
+class Arguments extends BlockList {
     /**
      * @param NodeList<ArgumentNode> $arguments
      */
@@ -19,23 +18,29 @@ class Arguments extends Block {
         Settings $settings,
         int $level,
         int $used,
-        protected NodeList $arguments,
+        NodeList $arguments,
     ) {
         parent::__construct($settings, $level, $used);
-    }
 
-    protected function content(): string {
-        $arguments = new ArgumentsBlockList($this->getSettings(), $this->getLevel(), $this->getUsed());
-
-        foreach ($this->arguments as $argument) {
-            $arguments[$argument->name->value] = new Value(
+        foreach ($arguments as $argument) {
+            $this[$argument->name->value] = new Value(
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $this->getUsed(),
                 $argument->value,
             );
         }
+    }
 
-        return (string) $arguments;
+    protected function getPrefix(): string {
+        return '(';
+    }
+
+    protected function getSuffix(): string {
+        return ')';
+    }
+
+    protected function isNormalized(): bool {
+        return $this->getSettings()->isNormalizeArguments();
     }
 }
