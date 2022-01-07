@@ -57,8 +57,11 @@ class DirectiveTest extends TestCase {
             ->shouldHaveBeenCalled()
             ->withArgs(static function (Event $event) use ($node): bool {
                 return $event instanceof DirectiveUsed
-                    && $event->directive === $node;
+                    && $event->name === $node->name->value;
             })
+            ->once();
+        $spy
+            ->shouldHaveBeenCalled()
             ->once();
     }
     // </editor-fold>

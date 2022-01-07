@@ -29,10 +29,13 @@ class BlockListTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
+        bool $block,
         bool $normalized,
         bool $wrapped,
         string $prefix,
         string $suffix,
+        string $separator,
+        string $multilineSeparator,
         array $blocks,
     ): void {
         $list = new BlockListTest__BlockList(
@@ -40,10 +43,13 @@ class BlockListTest extends TestCase {
             $settings,
             $level,
             $used,
+            $block,
             $normalized,
             $wrapped,
             $prefix,
             $suffix,
+            $separator,
+            $multilineSeparator,
         );
 
         foreach ($blocks as $name => $block) {
@@ -69,9 +75,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(false, 'block a'),
@@ -84,9 +93,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(true, 'block a'),
@@ -99,9 +111,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(false, 'block a'),
@@ -120,9 +135,12 @@ class BlockListTest extends TestCase {
                     },
                     0,
                     5,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(false, 'block b'),
@@ -138,9 +156,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(false, 'block a'),
@@ -164,9 +185,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(true, 'block a'),
@@ -187,9 +211,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     false,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(true, 'block c'),
@@ -206,7 +233,10 @@ class BlockListTest extends TestCase {
                     0,
                     true,
                     true,
+                    true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(false, 'block b'),
@@ -224,9 +254,12 @@ class BlockListTest extends TestCase {
                     },
                     2,
                     0,
+                    true,
                     false,
                     false,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__Block(true, 'block a'),
@@ -241,9 +274,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('a', false, 'block a'),
@@ -256,9 +292,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('a', true, 'block a'),
@@ -271,9 +310,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('a', false, 'block a'),
@@ -292,9 +334,12 @@ class BlockListTest extends TestCase {
                     },
                     0,
                     5,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('b', false, 'block b'),
@@ -310,9 +355,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('a', false, 'block a'),
@@ -336,9 +384,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('a', true, 'block a'),
@@ -359,9 +410,12 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     false,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('c', true, 'block c'),
@@ -378,7 +432,10 @@ class BlockListTest extends TestCase {
                     0,
                     true,
                     true,
+                    true,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('b', false, 'block b'),
@@ -396,9 +453,12 @@ class BlockListTest extends TestCase {
                     },
                     2,
                     0,
+                    true,
                     false,
                     false,
                     '',
+                    '',
+                    ', ',
                     '',
                     [
                         new BlockListTest__NamedBlock('a', true, 'block a'),
@@ -413,10 +473,13 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '[',
                     ']',
+                    ', ',
+                    '',
                     [
                         new BlockListTest__NamedBlock('a', false, 'block a'),
                     ],
@@ -434,10 +497,13 @@ class BlockListTest extends TestCase {
                     },
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '[',
                     ']',
+                    ', ',
+                    '',
                     [
                         new BlockListTest__NamedBlock('a', true, 'block a'),
                     ],
@@ -449,10 +515,13 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '[',
                     ']',
+                    ', ',
+                    '',
                     [
                         new BlockListTest__Block(false, 'block a'),
                         new BlockListTest__NamedBlock('b', false, 'block b'),
@@ -476,10 +545,13 @@ class BlockListTest extends TestCase {
                     },
                     0,
                     5,
+                    true,
                     false,
                     true,
                     '[',
                     ']',
+                    ', ',
+                    '',
                     [
                         new BlockListTest__NamedBlock('b', false, 'block b'),
                         new BlockListTest__NamedBlock('a', false, 'block a'),
@@ -500,10 +572,13 @@ class BlockListTest extends TestCase {
                     },
                     0,
                     0,
+                    true,
                     false,
                     true,
                     '[',
                     ']',
+                    ', ',
+                    '',
                     [
                         new BlockListTest__Block(false, 'block a'),
                         new BlockListTest__Block(true, 'block b'),
@@ -522,10 +597,13 @@ class BlockListTest extends TestCase {
                     },
                     2,
                     0,
+                    true,
                     false,
                     false,
                     '[',
                     ']',
+                    ', ',
+                    '',
                     [
                         new BlockListTest__Block(true, 'block a'),
                     ],
@@ -535,13 +613,107 @@ class BlockListTest extends TestCase {
                     new DefaultSettings(),
                     0,
                     0,
+                    true,
                     false,
                     false,
                     '[',
                     ']',
+                    ', ',
+                    '',
                     [],
                 ],
             ]),
+            'separators'      => new ArrayDataProvider([
+                'single-line' => [
+                    <<<'STRING'
+                    block a | block b
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    0,
+                    true,
+                    false,
+                    true,
+                    '',
+                    '',
+                    ' | ',
+                    '||',
+                    [
+                        new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__Block(false, 'block b'),
+                    ],
+                ],
+                'multiline'   => [
+                    <<<'STRING'
+                    block a
+                    || block b
+                    STRING,
+                    new DefaultSettings(),
+                    0,
+                    120,
+                    true,
+                    false,
+                    true,
+                    '',
+                    '',
+                    '|',
+                    '|| ',
+                    [
+                        new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__Block(false, 'block b'),
+                    ],
+                ],
+                'multiline and indent'   => [
+                    <<<'STRING'
+                        block a
+                        || block b
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getIndent(): string {
+                            return '    ';
+                        }
+                    },
+                    1,
+                    120,
+                    true,
+                    false,
+                    true,
+                    '',
+                    '',
+                    '|',
+                    '|| ',
+                    [
+                        new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__Block(false, 'block b'),
+                    ],
+                ],
+            ]),
+            'not a block'     => new ArrayDataProvider([
+                'long block list'                               => [
+                    <<<'STRING'
+                    block b
+                        block a
+                    STRING,
+                    new class() extends DefaultSettings {
+                        public function getLineLength(): int {
+                            return 20;
+                        }
+                    },
+                    1,
+                    5,
+                    false,
+                    false,
+                    true,
+                    '',
+                    '',
+                    ', ',
+                    '',
+                    [
+                        new BlockListTest__Block(false, 'block b'),
+                        new BlockListTest__Block(false, 'block a'),
+                    ],
+                ],
+            ])
         ]))->getData();
     }
     //</editor-fold>
@@ -560,21 +732,27 @@ class BlockListTest__BlockList extends BlockList {
         Settings $settings,
         int $level,
         int $used,
-        private bool $normalized = false,
-        private bool $wrapped = false,
-        private string $prefix = '',
-        private string $suffix = '',
-        private string $separator = ',',
+        private bool $block,
+        private bool $normalized,
+        private bool $wrapped,
+        private string $prefix,
+        private string $suffix,
+        private string $separator,
+        private string $multilineSeparator,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
 
-    protected function isNormalized(): bool {
-        return $this->normalized;
+    protected function isBlock(): bool {
+        return $this->block;
     }
 
     protected function isWrapped(): bool {
         return $this->wrapped;
+    }
+
+    protected function isNormalized(): bool {
+        return $this->normalized;
     }
 
     protected function getPrefix(): string {
@@ -587,6 +765,10 @@ class BlockListTest__BlockList extends BlockList {
 
     protected function getSeparator(): string {
         return $this->separator;
+    }
+
+    protected function getMultilineSeparator(): string {
+        return $this->multilineSeparator;
     }
 }
 

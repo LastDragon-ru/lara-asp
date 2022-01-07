@@ -27,6 +27,12 @@ abstract class BlockList extends Block implements ArrayAccess {
     private array $multiline = [];
     private int   $length    = 0;
 
+    // <editor-fold desc="Settings">
+    // =========================================================================
+    protected function isBlock(): bool {
+        return true;
+    }
+
     protected function isWrapped(): bool {
         return false;
     }
@@ -48,17 +54,27 @@ abstract class BlockList extends Block implements ArrayAccess {
     }
 
     protected function getSeparator(): string {
-        return ',';
+        return ",{$this->space()}";
+    }
+
+    protected function getMultilineSeparator(): string {
+        return '';
     }
 
     protected function getEmptyValue(): string {
         return '';
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Block">
+    // =========================================================================
     public function isMultiline(): bool {
         return count($this->multiline) > 0 || parent::isMultiline();
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Content">
+    // =========================================================================
     /**
      * @return array<int|string,TBlock>
      */
@@ -88,24 +104,26 @@ abstract class BlockList extends Block implements ArrayAccess {
         }
 
         // Join
-        $eol           = '';
-        $listPrefix    = $this->getPrefix();
-        $listSuffix    = $this->getSuffix();
-        $itemSeparator = "{$this->getSeparator()}{$this->space()}";
-        $isMultiline   = $this->isMultilineContent(
+        $eol         = '';
+        $listPrefix  = $this->getPrefix();
+        $listSuffix  = $this->getSuffix();
+        $separator   = $this->getSeparator();
+        $isMultiline = $this->isMultilineContent(
             $blocks,
             $listSuffix,
             $listPrefix,
-            $itemSeparator,
+            $separator,
         );
 
         if ($isMultiline) {
-            $eol      = $this->eol();
-            $last     = $count - 1;
-            $index    = 0;
-            $indent   = $this->indent($this->getLevel() + (int) ($listPrefix || $listSuffix));
-            $wrapped  = $this->isWrapped();
-            $previous = false;
+            $eol       = $this->eol();
+            $last      = $count - 1;
+            $index     = 0;
+            $indent    = $this->indent($this->getLevel() + (int) ($listPrefix || $listSuffix));
+            $wrapped   = $this->isWrapped();
+            $isBlock   = $this->isBlock();
+            $previous  = false;
+            $separator = $this->getMultilineSeparator();
 
             foreach ($blocks as $block) {
                 $multiline = $wrapped && $block->isMultiline();
@@ -114,7 +132,15 @@ abstract class BlockList extends Block implements ArrayAccess {
                     $content .= $eol;
                 }
 
-                $content .= "{$indent}{$block}";
+                if ($isBlock || $index > 0) {
+                    $content .= $indent;
+                }
+
+                if ($index > 0) {
+                    $content .= $separator;
+                }
+
+                $content .= "{$block}";
 
                 if ($index < $last) {
                     $content .= $eol;
@@ -124,7 +150,7 @@ abstract class BlockList extends Block implements ArrayAccess {
                 $index    = $index + 1;
             }
         } else {
-            $content = implode($itemSeparator, $blocks);
+            $content = implode($separator, $blocks);
         }
 
         // Prefix & Suffix
@@ -161,8 +187,9 @@ abstract class BlockList extends Block implements ArrayAccess {
 
         return $this->isLineTooLong($length);
     }
+    // </editor-fold>
 
-    // <editor-fold desc="\ArrayAccess">
+    // <editor-fold desc="ArrayAccess">
     // =========================================================================
     /**
      * @param int|string $offset

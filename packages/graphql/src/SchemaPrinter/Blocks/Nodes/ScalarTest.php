@@ -147,6 +147,34 @@ class ScalarTest extends TestCase {
                     ),
                 ]),
             ],
+            'indent + no description'         => [
+                <<<'STRING'
+                    scalar Test
+                    @a(
+                        value: "very very long value"
+                    )
+                    @b(value: "b")
+                STRING,
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+
+                    public function isIncludeDirectivesInDescription(): bool {
+                        return false;
+                    }
+                },
+                1,
+                60,
+                new CustomScalarType([
+                    'name'        => 'Test',
+                    'astNode'     => Parser::scalarTypeDefinition(
+                        <<<'STRING'
+                        scalar Test @a(value: "very very long value") @b(value: "b")
+                        STRING,
+                    ),
+                ]),
+            ],
         ];
     }
     // </editor-fold>

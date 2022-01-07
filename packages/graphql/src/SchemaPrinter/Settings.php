@@ -34,6 +34,12 @@ interface Settings {
     public function isNormalizeTypes(): bool;
 
     /**
+     * If `false` members will be printed in the original order if `true` they
+     * will be sorted by name.
+     */
+    public function isNormalizeUnions(): bool;
+
+    /**
      * If `false` fields will be printed in the original order if `true` they
      * will be sorted by name.
      */
