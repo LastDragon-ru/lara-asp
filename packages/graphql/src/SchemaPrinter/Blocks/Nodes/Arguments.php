@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 use GraphQL\Language\AST\ArgumentNode;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
 
@@ -26,12 +27,18 @@ class Arguments extends BlockList {
         parent::__construct($dispatcher, $settings, $level, $used);
 
         foreach ($arguments as $argument) {
-            $this[$argument->name->value] = new Value(
+            $name        = $argument->name->value;
+            $this[$name] = new Property(
                 $this->getDispatcher(),
                 $this->getSettings(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
-                $argument->value,
+                $name,
+                new Value(
+                    $this->getDispatcher(),
+                    $this->getSettings(),
+                    $this->getLevel() + 1,
+                    $this->getUsed(),
+                    $argument->value,
+                ),
             );
         }
     }

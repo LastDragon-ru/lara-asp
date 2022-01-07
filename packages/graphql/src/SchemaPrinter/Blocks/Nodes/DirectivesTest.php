@@ -49,7 +49,11 @@ class DirectivesTest extends TestCase {
         return [
             'null'                                      => [
                 '',
-                new DefaultSettings(),
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+                },
                 0,
                 0,
                 null,
@@ -57,10 +61,28 @@ class DirectivesTest extends TestCase {
             ],
             'empty'                                     => [
                 '',
-                new DefaultSettings(),
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+                },
                 0,
                 0,
                 [],
+                null,
+            ],
+            'disabled'                                  => [
+                '',
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return false;
+                    }
+                },
+                0,
+                0,
+                [
+                    Parser::directive('@a'),
+                ],
                 null,
             ],
             'directives'                                => [
@@ -68,7 +90,11 @@ class DirectivesTest extends TestCase {
                 @b(b: 123)
                 @a
                 STRING,
-                new DefaultSettings(),
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+                },
                 0,
                 0,
                 [
@@ -81,7 +107,11 @@ class DirectivesTest extends TestCase {
                 <<<'STRING'
                 @deprecated
                 STRING,
-                new DefaultSettings(),
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+                },
                 0,
                 0,
                 null,
@@ -91,7 +121,11 @@ class DirectivesTest extends TestCase {
                 <<<'STRING'
                 @deprecated(reason: "reason")
                 STRING,
-                new DefaultSettings(),
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+                },
                 0,
                 0,
                 null,
@@ -102,7 +136,11 @@ class DirectivesTest extends TestCase {
                 @deprecated(reason: "reason")
                 @b(b: 123)
                 STRING,
-                new DefaultSettings(),
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+                },
                 0,
                 0,
                 [
@@ -121,7 +159,11 @@ class DirectivesTest extends TestCase {
                     b: 1234567890
                 )
                 STRING,
-                new DefaultSettings(),
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+                },
                 0,
                 70,
                 [
@@ -140,7 +182,11 @@ class DirectivesTest extends TestCase {
                         b: 1234567890
                     )
                 STRING,
-                new DefaultSettings(),
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectives(): bool {
+                        return true;
+                    }
+                },
                 1,
                 70,
                 [

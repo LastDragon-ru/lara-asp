@@ -246,7 +246,7 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'a' => new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__NamedBlock('a', false, 'block a'),
                     ],
                 ],
                 'one multi-line block'                          => [
@@ -261,7 +261,7 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'a' => new BlockListTest__Block(true, 'block a'),
+                        new BlockListTest__NamedBlock('a', true, 'block a'),
                     ],
                 ],
                 'short block list'                              => [
@@ -276,8 +276,8 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'a' => new BlockListTest__Block(false, 'block a'),
-                        'b' => new BlockListTest__Block(false, 'block b'),
+                        new BlockListTest__NamedBlock('a', false, 'block a'),
+                        new BlockListTest__NamedBlock('b', false, 'block b'),
                     ],
                 ],
                 'long block list'                               => [
@@ -297,8 +297,8 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'b' => new BlockListTest__Block(false, 'block b'),
-                        'a' => new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__NamedBlock('b', false, 'block b'),
+                        new BlockListTest__NamedBlock('a', false, 'block a'),
                     ],
                 ],
                 'short block list with multiline block'         => [
@@ -315,8 +315,8 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'a' => new BlockListTest__Block(false, 'block a'),
-                        'b' => new BlockListTest__Block(true, 'block b'),
+                        new BlockListTest__NamedBlock('a', false, 'block a'),
+                        new BlockListTest__NamedBlock('b', true, 'block b'),
                     ],
                 ],
                 'block list with multiline blocks'              => [
@@ -341,13 +341,13 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'a' => new BlockListTest__Block(true, 'block a'),
-                        'b' => new BlockListTest__Block(false, 'block b'),
-                        'c' => new BlockListTest__Block(false, 'block c'),
-                        'd' => new BlockListTest__Block(true, 'block d'),
-                        'e' => new BlockListTest__Block(false, 'block e'),
-                        'f' => new BlockListTest__Block(false, 'block f'),
-                        'g' => new BlockListTest__Block(true, 'block g'),
+                        new BlockListTest__NamedBlock('a', true, 'block a'),
+                        new BlockListTest__NamedBlock('b', false, 'block b'),
+                        new BlockListTest__NamedBlock('c', false, 'block c'),
+                        new BlockListTest__NamedBlock('d', true, 'block d'),
+                        new BlockListTest__NamedBlock('e', false, 'block e'),
+                        new BlockListTest__NamedBlock('f', false, 'block f'),
+                        new BlockListTest__NamedBlock('g', true, 'block g'),
                     ],
                 ],
                 'block list with multiline blocks without wrap' => [
@@ -364,9 +364,9 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'c' => new BlockListTest__Block(true, 'block c'),
-                        'b' => new BlockListTest__Block(false, 'block b'),
-                        'a' => new BlockListTest__Block(true, 'block a'),
+                        new BlockListTest__NamedBlock('c', true, 'block c'),
+                        new BlockListTest__NamedBlock('b', false, 'block b'),
+                        new BlockListTest__NamedBlock('a', true, 'block a'),
                     ],
                 ],
                 'normalized block list'                         => [
@@ -381,8 +381,8 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'b' => new BlockListTest__Block(false, 'block b'),
-                        'a' => new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__NamedBlock('b', false, 'block b'),
+                        new BlockListTest__NamedBlock('a', false, 'block a'),
                     ],
                 ],
                 'multi-line with level'                         => [
@@ -401,7 +401,7 @@ class BlockListTest extends TestCase {
                     '',
                     '',
                     [
-                        'a' => new BlockListTest__Block(true, 'block a'),
+                        new BlockListTest__NamedBlock('a', true, 'block a'),
                     ],
                 ],
             ]),
@@ -418,7 +418,7 @@ class BlockListTest extends TestCase {
                     '[',
                     ']',
                     [
-                        'a' => new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__NamedBlock('a', false, 'block a'),
                     ],
                 ],
                 'one multi-line block'                  => [
@@ -439,7 +439,7 @@ class BlockListTest extends TestCase {
                     '[',
                     ']',
                     [
-                        'a' => new BlockListTest__Block(true, 'block a'),
+                        new BlockListTest__NamedBlock('a', true, 'block a'),
                     ],
                 ],
                 'short block list'                      => [
@@ -454,8 +454,8 @@ class BlockListTest extends TestCase {
                     '[',
                     ']',
                     [
-                        0   => new BlockListTest__Block(false, 'block a'),
-                        'b' => new BlockListTest__Block(false, 'block b'),
+                        new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__NamedBlock('b', false, 'block b'),
                     ],
                 ],
                 'long block list'                       => [
@@ -481,8 +481,8 @@ class BlockListTest extends TestCase {
                     '[',
                     ']',
                     [
-                        'b' => new BlockListTest__Block(false, 'block b'),
-                        'a' => new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__NamedBlock('b', false, 'block b'),
+                        new BlockListTest__NamedBlock('a', false, 'block a'),
                     ],
                 ],
                 'short block list with multiline block' => [
@@ -616,5 +616,28 @@ class BlockListTest__Block extends Block {
 
     protected function content(): string {
         return '';
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class BlockListTest__NamedBlock extends Property {
+    public function __construct(
+        protected string $name,
+        bool $multiline,
+        string $content,
+    ) {
+        parent::__construct(
+            new Dispatcher(),
+            new DefaultSettings(),
+            $name,
+            new BlockListTest__Block($multiline, $content),
+        );
+    }
+
+    public function getName(): string {
+        return $this->name;
     }
 }

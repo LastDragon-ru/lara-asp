@@ -6,6 +6,7 @@ use GraphQL\Language\AST\DirectiveNode;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use function mb_strlen;
@@ -13,7 +14,7 @@ use function mb_strlen;
 /**
  * @internal
  */
-class Directive extends Block {
+class Directive extends Block implements Named {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
@@ -24,14 +25,18 @@ class Directive extends Block {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
 
-    public function getNode(): DirectiveNode {
+    public function getName(): string {
+        return "@{$this->getNode()->name->value}";
+    }
+
+    protected function getNode(): DirectiveNode {
         return $this->node;
     }
 
     protected function content(): string {
         // Convert
         $node = $this->getNode();
-        $name = "@{$node->name->value}";
+        $name = $this->getName();
         $used = mb_strlen($name);
         $args = new Arguments(
             $this->getDispatcher(),

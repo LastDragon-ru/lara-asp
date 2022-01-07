@@ -10,9 +10,9 @@ use PHPUnit\Framework\TestCase;
 use function mb_strlen;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\NamedBlock
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property
  */
-class NamedBlockTest extends TestCase {
+class PropertyTest extends TestCase {
     /**
      * @covers ::__toString
      * @covers ::getLength
@@ -53,7 +53,17 @@ class NamedBlockTest extends TestCase {
                 return $this->content;
             }
         };
-        $named      = new class($dispatcher, $settings, $name, $block, $separator) extends NamedBlock {
+        $property   = new class($dispatcher, $settings, $name, $block, $separator) extends Property {
+            public function __construct(
+                Dispatcher $dispatcher,
+                Settings $settings,
+                string $name,
+                Block $block,
+                private string $separator,
+            ) {
+                parent::__construct($dispatcher, $settings, $name, $block);
+            }
+
             public function getUsed(): int {
                 return parent::getUsed();
             }
@@ -61,13 +71,17 @@ class NamedBlockTest extends TestCase {
             public function getLevel(): int {
                 return parent::getLevel();
             }
+
+            protected function getSeparator(): string {
+                return $this->separator;
+            }
         };
         $expected   = "{$name}{$separator}{$space}{$content}";
 
-        self::assertEquals($used, $named->getUsed());
-        self::assertEquals($level, $named->getLevel());
-        self::assertEquals($expected, (string) $named);
-        self::assertEquals(mb_strlen($expected), mb_strlen((string) $named));
-        self::assertEquals(mb_strlen($expected), $named->getLength());
+        self::assertEquals($used, $property->getUsed());
+        self::assertEquals($level, $property->getLevel());
+        self::assertEquals($expected, (string) $property);
+        self::assertEquals(mb_strlen($expected), mb_strlen((string) $property));
+        self::assertEquals(mb_strlen($expected), $property->getLength());
     }
 }

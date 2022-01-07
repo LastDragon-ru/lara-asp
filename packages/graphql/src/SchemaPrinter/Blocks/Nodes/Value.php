@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 class Value extends Block {
@@ -45,17 +46,23 @@ class Value extends Block {
             $content = new ObjectBlockList($dispatcher, $settings, $level, $used);
 
             foreach ($this->node->fields as $field) {
-                $content[$field->name->value] = new Value(
+                $name           = $field->name->value;
+                $content[$name] = new Property(
                     $dispatcher,
                     $settings,
-                    $level + 1 + (int) ($field->value instanceof StringValueNode),
-                    $used,
-                    $field->value,
+                    $name,
+                    new Value(
+                        $dispatcher,
+                        $settings,
+                        $level + 1 + (int) ($field->value instanceof StringValueNode),
+                        $used,
+                        $field->value,
+                    ),
                 );
             }
         } elseif ($this->node instanceof StringValueNode) {
             $content = $this->node->block
-                ? new StringBlock($dispatcher, $settings, $level, 0, $this->node->value, true)
+                ? new StringBlock($dispatcher, $settings, $level, 0, $this->node->value)
                 : Printer::doPrint($this->node);
         } else {
             $content = Printer::doPrint($this->node);

@@ -6,11 +6,9 @@ use ArrayAccess;
 
 use function count;
 use function implode;
-use function is_numeric;
-use function ksort;
 use function mb_strlen;
-
-use const SORT_NATURAL;
+use function strnatcmp;
+use function usort;
 
 /**
  * @internal
@@ -68,7 +66,12 @@ abstract class BlockList extends Block implements ArrayAccess {
         $blocks = $this->blocks;
 
         if ($this->isNormalized()) {
-            ksort($blocks, SORT_NATURAL);
+            usort($blocks, static function (Block $a, Block $b): int {
+                $aName = $a instanceof Named ? $a->getName() : '';
+                $bName = $b instanceof Named ? $b->getName() : '';
+
+                return strnatcmp($aName, $bName);
+            });
         }
 
         return $blocks;
@@ -183,10 +186,6 @@ abstract class BlockList extends Block implements ArrayAccess {
      */
     public function offsetSet(mixed $offset, mixed $value): void {
         if ($offset !== null) {
-            if (!is_numeric($offset)) {
-                $value = new NamedBlock($this->getDispatcher(), $this->getSettings(), $offset, $value);
-            }
-
             $this->blocks[$offset] = $value;
         } else {
             $this->blocks[] = $value;

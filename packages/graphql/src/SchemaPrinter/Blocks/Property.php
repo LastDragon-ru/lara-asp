@@ -8,13 +8,12 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 /**
  * @internal
  */
-class NamedBlock extends Block {
+class Property extends Block implements Named {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
         private string $name,
         private Block $block,
-        private string $separator = ':',
     ) {
         parent::__construct($dispatcher, $settings, $block->getLevel(), $block->getUsed());
     }
@@ -32,7 +31,7 @@ class NamedBlock extends Block {
     }
 
     protected function getSeparator(): string {
-        return $this->separator;
+        return ':';
     }
 
     protected function content(): string {
