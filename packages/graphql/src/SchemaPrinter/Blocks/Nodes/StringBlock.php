@@ -24,7 +24,6 @@ class StringBlock extends Block {
         int $level,
         int $used,
         protected string $string,
-        protected bool $block = false,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
@@ -34,7 +33,7 @@ class StringBlock extends Block {
     }
 
     protected function isBlock(): bool {
-        return $this->block;
+        return false;
     }
 
     protected function content(): string {

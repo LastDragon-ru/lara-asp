@@ -20,15 +20,25 @@ class Description extends StringBlock {
         int $level,
         int $used,
         string $string,
+        private ?Directives $directives = null,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $string, true);
+        parent::__construct($dispatcher, $settings, $level, $used, $string);
+    }
+
+    protected function getDirectives(): ?Directives {
+        return $this->directives;
     }
 
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeDescription();
     }
 
+    protected function isBlock(): bool {
+        return true;
+    }
+
     protected function getString(): string {
+        // Normalize
         $string = parent::getString();
 
         if ($this->isNormalized()) {
@@ -39,6 +49,17 @@ class Description extends StringBlock {
             $string = preg_replace('/^(.*?)\h+$/mu', '$1', $string);
         }
 
+        // Directives
+        if ($this->getSettings()->isIncludeDirectivesInDescription()) {
+            $directives = (string) $this->getDirectives();
+
+            if ($directives) {
+                $eol    = $this->eol();
+                $string = "{$string}{$eol}{$eol}{$directives}";
+            }
+        }
+
+        // Return
         return $string;
     }
 

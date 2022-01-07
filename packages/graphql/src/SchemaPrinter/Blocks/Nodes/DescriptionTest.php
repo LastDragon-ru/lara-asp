@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
+use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
@@ -20,6 +21,8 @@ class DescriptionTest extends TestCase {
      * @covers ::__toString
      *
      * @dataProvider dataProviderToString
+     *
+     * @param array<DirectiveNode> $directives
      */
     public function testToString(
         string $expected,
@@ -27,8 +30,11 @@ class DescriptionTest extends TestCase {
         int $level,
         int $used,
         string $description,
+        array $directives,
     ): void {
-        $actual = (string) (new Description(new Dispatcher(), $settings, $level, $used, $description));
+        $dispatcher = new Dispatcher();
+        $directives = new Directives($dispatcher, $settings, $level, $used, $directives);
+        $actual     = (string) (new Description($dispatcher, $settings, $level, $used, $description, $directives));
 
         self::assertEquals($expected, $actual);
 
@@ -55,6 +61,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 '',
+                [],
             ],
             'Prints an empty string (normalized)'                      => [
                 '',
@@ -66,6 +73,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 '',
+                [],
             ],
             'Prints an empty string with only whitespace'              => [
                 '" "',
@@ -77,6 +85,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 ' ',
+                [],
             ],
             'Prints an empty string with only whitespace (normalized)' => [
                 '',
@@ -88,6 +97,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 ' ',
+                [],
             ],
             'One-line prints a short string'                           => [
                 <<<'STRING'
@@ -99,6 +109,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'Short string',
+                [],
             ],
             'One-line prints a long string'                            => [
                 <<<'STRING'
@@ -114,6 +125,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'Long string',
+                [],
             ],
             'String is short (indent)'                                 => [
                 <<<'STRING'
@@ -133,6 +145,7 @@ class DescriptionTest extends TestCase {
                 2,
                 0,
                 'string',
+                [],
             ],
             'String is long (indent)'                                  => [
                 <<<'STRING'
@@ -152,6 +165,7 @@ class DescriptionTest extends TestCase {
                 2,
                 20,
                 'string',
+                [],
             ],
             'Multi-line string'                                        => [
                 <<<'STRING'
@@ -179,6 +193,7 @@ class DescriptionTest extends TestCase {
 
                 ccc
                 STRING,
+                [],
             ],
             'Multi-line string (normalized)'                           => [
                 <<<'STRING'
@@ -203,6 +218,7 @@ class DescriptionTest extends TestCase {
 
                 ccc
                 STRING,
+                [],
             ],
             'Leading space'                                            => [
                 <<<'STRING'
@@ -212,6 +228,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 '  Leading space',
+                [],
             ],
             'Leading tab'                                              => [
                 "\"\"\"\tLeading tab\"\"\"",
@@ -219,6 +236,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 "\tLeading tab",
+                [],
             ],
             'Trailing "'                                               => [
                 <<<'STRING'
@@ -230,6 +248,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'Trailing "',
+                [],
             ],
             'Leading whitespace and trailing "'                        => [
                 <<<'STRING'
@@ -245,6 +264,7 @@ class DescriptionTest extends TestCase {
                   Leading whitespace and trailing "
                 abc
                 STRING,
+                [],
             ],
             'Trailing backslash'                                       => [
                 <<<'STRING'
@@ -256,6 +276,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'Trailing \\\\',
+                [],
             ],
             'Escape wrapper'                                           => [
                 <<<'STRING'
@@ -267,6 +288,7 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'String with """ wrapper',
+                [],
             ],
             'Indent'                                                   => [
                 implode(
@@ -300,6 +322,7 @@ class DescriptionTest extends TestCase {
                         '  ddd  ',
                     ],
                 ),
+                [],
             ],
             'Indent (normalized)'                                      => [
                 implode(
@@ -337,6 +360,85 @@ class DescriptionTest extends TestCase {
                         '  ddd  ',
                     ],
                 ),
+                [],
+            ],
+            'directives (disabled)'                                    => [
+                <<<'STRING'
+                """
+                Description
+                """
+                STRING,
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectivesInDescription(): bool {
+                        return false;
+                    }
+                },
+                0,
+                0,
+                <<<'STRING'
+                Description
+                STRING,
+                [
+                    Parser::directive('@a'),
+                ],
+            ],
+            'directives (enabled)'                                     => [
+                <<<'STRING'
+                """
+                Description
+
+
+
+                @a
+                @b(test: "abc")
+                """
+                STRING,
+                new class() extends DefaultSettings {
+                    public function isIncludeDirectivesInDescription(): bool {
+                        return true;
+                    }
+                },
+                0,
+                0,
+                <<<'STRING'
+                Description
+
+
+                STRING,
+                [
+                    Parser::directive('@a'),
+                    Parser::directive('@b(test: "abc")'),
+                ],
+            ],
+            'directives (enabled) + normalized'                        => [
+                <<<'STRING'
+                """
+                Description
+
+                @a
+                @b(test: "abc")
+                """
+                STRING,
+                new class() extends DefaultSettings {
+                    public function isNormalizeDescription(): bool {
+                        return true;
+                    }
+
+                    public function isIncludeDirectivesInDescription(): bool {
+                        return true;
+                    }
+                },
+                0,
+                0,
+                <<<'STRING'
+                Description
+
+
+                STRING,
+                [
+                    Parser::directive('@a'),
+                    Parser::directive('@b(test: "abc")'),
+                ],
             ],
         ];
     }
