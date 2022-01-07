@@ -19,10 +19,10 @@ class Description extends StringBlock {
         Settings $settings,
         int $level,
         int $used,
-        string $string,
+        ?string $string,
         private ?Directives $directives = null,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $string);
+        parent::__construct($dispatcher, $settings, $level, $used, (string) $string);
     }
 
     protected function getDirectives(): ?Directives {

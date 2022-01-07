@@ -22,15 +22,15 @@ class DescriptionTest extends TestCase {
      *
      * @dataProvider dataProviderToString
      *
-     * @param array<DirectiveNode> $directives
+     * @param array<DirectiveNode>|null $directives
      */
     public function testToString(
         string $expected,
         Settings $settings,
         int $level,
         int $used,
-        string $description,
-        array $directives,
+        ?string $description,
+        ?array $directives,
     ): void {
         $dispatcher = new Dispatcher();
         $directives = new Directives($dispatcher, $settings, $level, $used, $directives);
@@ -51,6 +51,14 @@ class DescriptionTest extends TestCase {
      */
     public function dataProviderToString(): array {
         return [
+            'null'                                                     => [
+                '',
+                new DefaultSettings(),
+                0,
+                0,
+                null,
+                null,
+            ],
             'Prints an empty string'                                   => [
                 '',
                 new class() extends DefaultSettings {

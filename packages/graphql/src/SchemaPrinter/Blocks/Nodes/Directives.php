@@ -62,18 +62,13 @@ class Directives extends BlockList {
      * @inheritDoc
      */
     protected function getBlocks(): array {
-        $blocks  = [];
-        $enabled = $this->getSettings()->isIncludeDirectives();
+        $filter = $this->getSettings()->getDirectiveFilter();
+        $blocks = parent::getBlocks();
 
-        if ($enabled) {
-            $filter = $this->getSettings()->getDirectiveFilter();
-            $blocks = parent::getBlocks();
-
-            if ($filter !== null) {
-                $blocks = array_filter($blocks, static function (Directive $block) use ($filter): bool {
-                    return $filter->isAllowedDirective($block->getNode());
-                });
-            }
+        if ($filter !== null) {
+            $blocks = array_filter($blocks, static function (Directive $block) use ($filter): bool {
+                return $filter->isAllowedDirective($block->getNode());
+            });
         }
 
         return $blocks;

@@ -49,11 +49,7 @@ class DirectivesTest extends TestCase {
         return [
             'null'                                      => [
                 '',
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                new DefaultSettings(),
                 0,
                 0,
                 null,
@@ -61,28 +57,10 @@ class DirectivesTest extends TestCase {
             ],
             'empty'                                     => [
                 '',
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                new DefaultSettings(),
                 0,
                 0,
                 [],
-                null,
-            ],
-            'disabled'                                  => [
-                '',
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return false;
-                    }
-                },
-                0,
-                0,
-                [
-                    Parser::directive('@a'),
-                ],
                 null,
             ],
             'directives'                                => [
@@ -90,11 +68,7 @@ class DirectivesTest extends TestCase {
                 @b(b: 123)
                 @a
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                new DefaultSettings(),
                 0,
                 0,
                 [
@@ -107,11 +81,7 @@ class DirectivesTest extends TestCase {
                 <<<'STRING'
                 @deprecated
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                new DefaultSettings(),
                 0,
                 0,
                 null,
@@ -121,11 +91,7 @@ class DirectivesTest extends TestCase {
                 <<<'STRING'
                 @deprecated(reason: "reason")
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                new DefaultSettings(),
                 0,
                 0,
                 null,
@@ -136,11 +102,7 @@ class DirectivesTest extends TestCase {
                 @deprecated(reason: "reason")
                 @b(b: 123)
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                new DefaultSettings(),
                 0,
                 0,
                 [
@@ -159,11 +121,7 @@ class DirectivesTest extends TestCase {
                     b: 1234567890
                 )
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                new DefaultSettings(),
                 0,
                 70,
                 [
@@ -182,11 +140,7 @@ class DirectivesTest extends TestCase {
                         b: 1234567890
                     )
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                new DefaultSettings(),
                 1,
                 70,
                 [
