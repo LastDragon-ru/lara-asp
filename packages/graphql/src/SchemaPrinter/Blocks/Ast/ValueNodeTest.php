@@ -20,9 +20,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\Value
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\ValueNodeBlock
  */
-class ValueTest extends TestCase {
+class ValueNodeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -39,7 +39,7 @@ class ValueTest extends TestCase {
         int $used,
         ValueNode $node,
     ): void {
-        $actual = (string) (new Value(new Dispatcher(), $settings, $level, $used, $node));
+        $actual = (string) (new ValueNodeBlock(new Dispatcher(), $settings, $level, $used, $node));
         $parsed = Parser::valueLiteral($actual);
 
         self::assertEquals($expected, $actual);

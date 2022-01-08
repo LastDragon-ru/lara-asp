@@ -12,9 +12,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumValue
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumValueDefinitionBlock
  */
-class EnumValueTest extends TestCase {
+class EnumValueDefinitionBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -29,7 +29,7 @@ class EnumValueTest extends TestCase {
         int $used,
         EnumValueDefinition $type,
     ): void {
-        $actual = (string) (new EnumValue(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new EnumValueDefinitionBlock(new Dispatcher(), $settings, $level, $used, $type));
         $parsed = Parser::enumValueDefinition($actual);
 
         self::assertEquals($expected, $actual);

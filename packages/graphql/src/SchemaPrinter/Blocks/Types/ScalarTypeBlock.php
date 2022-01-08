@@ -2,30 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\ScalarType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
  * @internal
- * @extends TypeBlock<EnumValueDefinition>
+ *
+ * @extends TypeBlock<ScalarType>
  */
-class EnumValue extends TypeBlock {
+class ScalarTypeBlock extends TypeBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
-        EnumValueDefinition $value,
+        ScalarType $type,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $value);
-    }
-
-    protected function isBlock(): bool {
-        return false;
+        parent::__construct($dispatcher, $settings, $level, $used, $type);
     }
 
     protected function body(int $used): string {
-        return $this->getName();
+        return "scalar{$this->space()}{$this->getName()}";
     }
 }

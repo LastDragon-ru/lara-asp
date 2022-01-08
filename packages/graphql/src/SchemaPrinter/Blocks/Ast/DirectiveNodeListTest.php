@@ -16,9 +16,9 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\Directives
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList
  */
-class DirectivesTest extends TestCase {
+class DirectiveNodeListTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -36,7 +36,7 @@ class DirectivesTest extends TestCase {
         array|null $directives,
         string $reason = null,
     ): void {
-        $actual = (string) (new Directives(new Dispatcher(), $settings, $level, $used, $directives, $reason));
+        $actual = (string) (new DirectiveNodeList(new Dispatcher(), $settings, $level, $used, $directives, $reason));
         $parsed = Parser::directives($actual);
 
         self::assertEquals($expected, $actual);
@@ -60,7 +60,7 @@ class DirectivesTest extends TestCase {
         $dispatcher->attach(Closure::fromCallable($spy));
 
         self::assertNotNull(
-            (string) (new Directives($dispatcher, $settings, 0, 0, [$a, $b])),
+            (string) (new DirectiveNodeList($dispatcher, $settings, 0, 0, [$a, $b])),
         );
 
         $spy

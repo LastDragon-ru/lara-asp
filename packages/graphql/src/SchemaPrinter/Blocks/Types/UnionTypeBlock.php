@@ -13,7 +13,7 @@ use function mb_strlen;
  *
  * @extends TypeBlock<UnionType>
  */
-class Union extends TypeBlock {
+class UnionTypeBlock extends TypeBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
@@ -29,7 +29,7 @@ class Union extends TypeBlock {
         $space  = $this->space();
         $equal  = "{$space}={$space}";
         $body   = "union{$space}{$this->getName()}";
-        $types  = new UnionTypes(
+        $types  = new UnionTypeTypeList(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel() + 1,

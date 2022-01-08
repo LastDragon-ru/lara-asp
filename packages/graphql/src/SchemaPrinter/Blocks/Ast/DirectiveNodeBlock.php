@@ -14,7 +14,7 @@ use function mb_strlen;
 /**
  * @internal
  */
-class Directive extends Block implements Named {
+class DirectiveNodeBlock extends Block implements Named {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
@@ -39,7 +39,7 @@ class Directive extends Block implements Named {
         $node = $this->getNode();
         $name = $this->getName();
         $used = mb_strlen($name) + mb_strlen($at);
-        $args = new Arguments(
+        $args = new ArgumentNodeList(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),

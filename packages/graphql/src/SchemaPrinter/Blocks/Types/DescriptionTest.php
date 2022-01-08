@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\Directives;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -34,7 +34,7 @@ class DescriptionTest extends TestCase {
         ?array $directives,
     ): void {
         $dispatcher = new Dispatcher();
-        $directives = new Directives($dispatcher, $settings, $level, $used, $directives);
+        $directives = new DirectiveNodeList($dispatcher, $settings, $level, $used, $directives);
         $actual     = (string) (new Description($dispatcher, $settings, $level, $used, $description, $directives));
 
         self::assertEquals($expected, $actual);

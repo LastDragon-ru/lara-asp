@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\Directives;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use function preg_replace;
@@ -21,12 +21,12 @@ class Description extends StringBlock {
         int $level,
         int $used,
         ?string $string,
-        private ?Directives $directives = null,
+        private ?DirectiveNodeList $directives = null,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used, (string) $string);
     }
 
-    protected function getDirectives(): ?Directives {
+    protected function getDirectives(): ?DirectiveNodeList {
         return $this->directives;
     }
 

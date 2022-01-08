@@ -14,14 +14,14 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\Enum
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumTypeBlock
  */
-class EnumTest extends TestCase {
+class EnumTypeBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
      * @covers ::__toString
-     * @covers       \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumValues::__toString
+     * @covers       \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumValueDefinitionList::__toString
      *
      * @dataProvider dataProviderToString
      */
@@ -36,7 +36,7 @@ class EnumTest extends TestCase {
             $type = $type();
         }
 
-        $actual = (string) (new Enum(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new EnumTypeBlock(new Dispatcher(), $settings, $level, $used, $type));
         $parsed = Parser::enumTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);

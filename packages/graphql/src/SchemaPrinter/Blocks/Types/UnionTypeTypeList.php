@@ -2,49 +2,53 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
 
 /**
  * @internal
- * @extends ObjectBlockList<EnumValue>
+ * @extends BlockList<TypeName>
  */
-class EnumValues extends ObjectBlockList {
+class UnionTypeTypeList extends BlockList {
     /**
-     * @param Traversable<EnumValueDefinition>|array<EnumValueDefinition> $values
+     * @param Traversable<ObjectType>|array<ObjectType> $types
      */
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
-        Traversable|array $values,
+        Traversable|array $types,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
 
-        foreach ($values as $value) {
-            $this[$value->name] = new EnumValue(
+        foreach ($types as $type) {
+            $this[$type->name] = new TypeName(
                 $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $this->getUsed(),
-                $value,
+                $type,
             );
         }
     }
 
-    protected function isWrapped(): bool {
-        return true;
+    protected function getSeparator(): string {
+        return "{$this->space()}|{$this->space()}";
+    }
+
+    protected function getMultilineSeparator(): string {
+        return "|{$this->space()}";
     }
 
     protected function isNormalized(): bool {
-        return $this->getSettings()->isNormalizeEnums();
+        return $this->getSettings()->isNormalizeUnions();
     }
 
-    protected function isAlwaysMultiline(): bool {
-        return true;
+    protected function isBlock(): bool {
+        return false;
     }
 }

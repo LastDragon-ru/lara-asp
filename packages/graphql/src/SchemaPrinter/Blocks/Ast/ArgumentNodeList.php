@@ -11,9 +11,9 @@ use Traversable;
 
 /**
  * @internal
- * @extends BlockList<Value>
+ * @extends BlockList<ValueNodeBlock>
  */
-class Arguments extends BlockList {
+class ArgumentNodeList extends BlockList {
     /**
      * @param Traversable<ArgumentNode>|array<ArgumentNode> $arguments
      */
@@ -32,7 +32,7 @@ class Arguments extends BlockList {
                 $this->getDispatcher(),
                 $this->getSettings(),
                 $name,
-                new Value(
+                new ValueNodeBlock(
                     $this->getDispatcher(),
                     $this->getSettings(),
                     $this->getLevel() + 1,

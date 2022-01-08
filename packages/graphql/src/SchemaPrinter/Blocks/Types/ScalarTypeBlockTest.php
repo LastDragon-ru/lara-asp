@@ -13,9 +13,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\Scalar
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\ScalarTypeBlock
  */
-class ScalarTest extends TestCase {
+class ScalarTypeBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -30,7 +30,7 @@ class ScalarTest extends TestCase {
         int $used,
         ScalarType $type,
     ): void {
-        $actual = (string) (new Scalar(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new ScalarTypeBlock(new Dispatcher(), $settings, $level, $used, $type));
         $parsed = Parser::scalarTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);

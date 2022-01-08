@@ -13,7 +13,7 @@ use function mb_strlen;
  *
  * @extends TypeBlock<EnumType>
  */
-class Enum extends TypeBlock {
+class EnumTypeBlock extends TypeBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
@@ -27,7 +27,7 @@ class Enum extends TypeBlock {
     protected function body(int $used): string {
         $space  = $this->space();
         $body   = "enum{$space}{$this->getName()}{$space}";
-        $values = new EnumValues(
+        $values = new EnumValueDefinitionList(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),

@@ -17,14 +17,14 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\Union
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionTypeBlock
  */
-class UnionTest extends TestCase {
+class UnionTypeBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
      * @covers ::__toString
-     * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionTypes::__toString
+     * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionTypeTypeList::__toString
      *
      * @dataProvider dataProviderToString
      */
@@ -35,7 +35,7 @@ class UnionTest extends TestCase {
         int $used,
         UnionType $type,
     ): void {
-        $actual = (string) (new Union(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new UnionTypeBlock(new Dispatcher(), $settings, $level, $used, $type));
         $parsed = Parser::unionTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);
@@ -64,7 +64,7 @@ class UnionTest extends TestCase {
         $dispatcher->attach(Closure::fromCallable($spy));
 
         self::assertNotNull(
-            (string) (new Union($dispatcher, $settings, 0, 0, $union)),
+            (string) (new UnionTypeBlock($dispatcher, $settings, 0, 0, $union)),
         );
 
         $spy

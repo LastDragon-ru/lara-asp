@@ -11,12 +11,12 @@ use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
-class Value extends Block {
+class ValueNodeBlock extends Block {
     /**
      * @param ValueNode&Node $node
      */
@@ -41,7 +41,7 @@ class Value extends Block {
             $content = new ListBlockList($dispatcher, $settings, $level, $used);
 
             foreach ($this->node->values as $value) {
-                $content[] = new Value($dispatcher, $settings, $level + 1, $used, $value);
+                $content[] = new ValueNodeBlock($dispatcher, $settings, $level + 1, $used, $value);
             }
         } elseif ($this->node instanceof ObjectValueNode) {
             $content = new ObjectBlockList($dispatcher, $settings, $level, $used);
@@ -52,7 +52,7 @@ class Value extends Block {
                     $dispatcher,
                     $settings,
                     $name,
-                    new Value(
+                    new ValueNodeBlock(
                         $dispatcher,
                         $settings,
                         $level + 1 + (int) ($field->value instanceof StringValueNode),
