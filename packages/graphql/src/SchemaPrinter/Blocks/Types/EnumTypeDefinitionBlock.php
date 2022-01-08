@@ -19,9 +19,9 @@ class EnumTypeDefinitionBlock extends DefinitionBlock {
         Settings $settings,
         int $level,
         int $used,
-        EnumType $type,
+        EnumType $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $type);
+        parent::__construct($dispatcher, $settings, $level, $used, $definition);
     }
 
     protected function body(int $used): string {
@@ -32,7 +32,7 @@ class EnumTypeDefinitionBlock extends DefinitionBlock {
             $this->getSettings(),
             $this->getLevel(),
             $used + mb_strlen($body),
-            $this->getType()->getValues(),
+            $this->getDefinition()->getValues(),
         );
 
         return "{$body}{$values}";

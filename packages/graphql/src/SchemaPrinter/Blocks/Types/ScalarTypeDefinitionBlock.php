@@ -17,9 +17,9 @@ class ScalarTypeDefinitionBlock extends DefinitionBlock {
         Settings $settings,
         int $level,
         int $used,
-        ScalarType $type,
+        ScalarType $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $type);
+        parent::__construct($dispatcher, $settings, $level, $used, $definition);
     }
 
     protected function body(int $used): string {

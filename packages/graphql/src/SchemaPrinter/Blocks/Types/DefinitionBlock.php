@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
@@ -20,35 +21,35 @@ use function mb_strlen;
  */
 abstract class DefinitionBlock extends Block implements Named {
     /**
-     * @param TType $type
+     * @param TType $definition
      */
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
-        private Type|FieldDefinition|EnumValueDefinition $type,
+        private Type|FieldDefinition|EnumValueDefinition|FieldArgument $definition,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
 
     public function getName(): string {
-        return $this->getType()->name;
+        return $this->getDefinition()->name;
     }
 
     protected function isBlock(): bool {
-        return true;
+        return $this->getDefinition() instanceof Type;
     }
 
     /**
      * @return TType
      */
-    protected function getType(): Type|FieldDefinition|EnumValueDefinition {
-        return $this->type;
+    protected function getDefinition(): Type|FieldDefinition|EnumValueDefinition {
+        return $this->definition;
     }
 
     protected function content(): string {
-        $type        = $this->getType();
+        $type        = $this->getDefinition();
         $directives  = new DirectiveNodeList(
             $this->getDispatcher(),
             $this->getSettings(),

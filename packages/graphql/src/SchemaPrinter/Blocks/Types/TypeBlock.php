@@ -19,7 +19,7 @@ class TypeBlock extends Block implements Named {
         Settings $settings,
         int $level,
         int $used,
-        private Type $type,
+        private Type $definition,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
@@ -35,7 +35,7 @@ class TypeBlock extends Block implements Named {
     }
 
     protected function getType(): Type {
-        return $this->type;
+        return $this->definition;
     }
 
     protected function content(): string {

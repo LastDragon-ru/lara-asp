@@ -19,9 +19,9 @@ class UnionTypeDefinitionBlock extends DefinitionBlock {
         Settings $settings,
         int $level,
         int $used,
-        UnionType $type,
+        UnionType $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $type);
+        parent::__construct($dispatcher, $settings, $level, $used, $definition);
     }
 
     protected function body(int $used): string {
@@ -34,7 +34,7 @@ class UnionTypeDefinitionBlock extends DefinitionBlock {
             $this->getSettings(),
             $this->getLevel() + 1,
             $used + mb_strlen($body) + mb_strlen($equal),
-            $this->getType()->getTypes(),
+            $this->getDefinition()->getTypes(),
         );
 
         if ($types->isMultiline()) {

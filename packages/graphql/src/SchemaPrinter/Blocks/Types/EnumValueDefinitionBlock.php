@@ -21,10 +21,6 @@ class EnumValueDefinitionBlock extends DefinitionBlock {
         parent::__construct($dispatcher, $settings, $level, $used, $value);
     }
 
-    protected function isBlock(): bool {
-        return false;
-    }
-
     protected function body(int $used): string {
         return $this->getName();
     }
