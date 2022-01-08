@@ -14,9 +14,9 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\TypeName
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\TypeBlock
  */
-class TypeNameTest extends TestCase {
+class TypeBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -31,7 +31,7 @@ class TypeNameTest extends TestCase {
         int $used,
         ObjectType $type,
     ): void {
-        $actual = (string) (new TypeName(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new TypeBlock(new Dispatcher(), $settings, $level, $used, $type));
 
         self::assertEquals($expected, $actual);
     }
@@ -50,7 +50,7 @@ class TypeNameTest extends TestCase {
         $dispatcher->attach(Closure::fromCallable($spy));
 
         self::assertNotNull(
-            (string) (new TypeName($dispatcher, $settings, 0, 0, $node)),
+            (string) (new TypeBlock($dispatcher, $settings, 0, 0, $node)),
         );
 
         $spy

@@ -2,31 +2,23 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use GraphQL\Type\Definition\EnumValueDefinition;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
-use function mb_strlen;
-
 /**
  * @internal
- *
- * @template TType of Type|EnumValueDefinition
  */
-abstract class TypeBlock extends Block implements Named {
-    /**
-     * @param TType $type
-     */
+class TypeBlock extends Block implements Named {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
-        private Type|EnumValueDefinition $type,
+        private ObjectType $type,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
@@ -35,56 +27,15 @@ abstract class TypeBlock extends Block implements Named {
         return $this->getType()->name;
     }
 
-    protected function isBlock(): bool {
-        return true;
-    }
-
-    /**
-     * @return TType
-     */
-    protected function getType(): Type|EnumValueDefinition {
+    protected function getType(): ObjectType {
         return $this->type;
     }
 
     protected function content(): string {
-        $type        = $this->getType();
-        $directives  = new DirectiveNodeList(
-            $this->getDispatcher(),
-            $this->getSettings(),
-            $this->getLevel(),
-            $this->getUsed(),
-            $type->astNode->directives ?? null,
-            $type->deprecationReason ?? null,
-        );
-        $description = new Description(
-            $this->getDispatcher(),
-            $this->getSettings(),
-            $this->getLevel(),
-            $this->getUsed(),
-            $type->description,
-            $directives,
+        $this->getDispatcher()->notify(
+            new TypeUsed($this->getName()),
         );
 
-        $eol     = $this->eol();
-        $indent  = $this->indent();
-        $content = '';
-
-        if ($this->isBlock()) {
-            $content .= $indent;
-        }
-
-        $body = $this->body($this->getUsed() + mb_strlen($content));
-
-        if ($description->getLength()) {
-            $body = "{$description}{$eol}{$indent}{$body}";
-        }
-
-        if ($directives->getLength() && $this->getSettings()->isIncludeDirectives()) {
-            $body = "{$body}{$eol}{$directives}";
-        }
-
-        return "{$content}{$body}";
+        return $this->getName();
     }
-
-    abstract protected function body(int $used): string;
 }

@@ -11,9 +11,9 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends TypeBlock<EnumType>
+ * @extends TypeDefinitionBlock<EnumType>
  */
-class EnumTypeBlock extends TypeBlock {
+class EnumTypeBlock extends TypeDefinitionBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,

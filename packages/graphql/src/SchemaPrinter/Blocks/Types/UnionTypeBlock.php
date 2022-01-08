@@ -11,9 +11,9 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends TypeBlock<UnionType>
+ * @extends TypeDefinitionBlock<UnionType>
  */
-class UnionTypeBlock extends TypeBlock {
+class UnionTypeBlock extends TypeDefinitionBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,

@@ -8,9 +8,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
  * @internal
- * @extends TypeBlock<EnumValueDefinition>
+ * @extends TypeDefinitionBlock<EnumValueDefinition>
  */
-class EnumValueDefinitionBlock extends TypeBlock {
+class EnumValueDefinitionBlock extends TypeDefinitionBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,

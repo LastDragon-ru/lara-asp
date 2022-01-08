@@ -10,7 +10,7 @@ use Traversable;
 
 /**
  * @internal
- * @extends BlockList<TypeName>
+ * @extends BlockList<TypeBlock>
  */
 class UnionTypeTypeList extends BlockList {
     /**
@@ -26,7 +26,7 @@ class UnionTypeTypeList extends BlockList {
         parent::__construct($dispatcher, $settings, $level, $used);
 
         foreach ($types as $type) {
-            $this[$type->name] = new TypeName(
+            $this[$type->name] = new TypeBlock(
                 $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel() + 1,
