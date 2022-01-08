@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
 use GraphQL\Language\AST\ListValueNode;
 use GraphQL\Language\AST\Node;
@@ -11,6 +11,7 @@ use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;

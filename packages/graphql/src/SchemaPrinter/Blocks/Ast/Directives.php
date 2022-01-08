@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\Directive as DirectiveBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes\Directive as DirectiveBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
 
