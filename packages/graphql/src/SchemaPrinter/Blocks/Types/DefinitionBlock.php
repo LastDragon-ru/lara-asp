@@ -17,7 +17,7 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @template TType of Type|FieldDefinition|EnumValueDefinition
+ * @template TType of Type|FieldDefinition|EnumValueDefinition|FieldArgument
  */
 abstract class DefinitionBlock extends Block implements Named {
     /**
@@ -44,7 +44,7 @@ abstract class DefinitionBlock extends Block implements Named {
     /**
      * @return TType
      */
-    protected function getDefinition(): Type|FieldDefinition|EnumValueDefinition {
+    protected function getDefinition(): Type|FieldDefinition|EnumValueDefinition|FieldArgument {
         return $this->definition;
     }
 
