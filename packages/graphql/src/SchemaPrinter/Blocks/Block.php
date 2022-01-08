@@ -67,8 +67,7 @@ abstract class Block implements Stringable {
         if ($this->content === null) {
             $this->content   = $this->content();
             $this->length    = mb_strlen($this->content);
-            $this->multiline = $this->isLineTooLong($this->length + $this->getUsed())
-                || $this->isStringMultiline($this->content);
+            $this->multiline = $this->isStringMultiline($this->content);
         }
 
         return $this->content;

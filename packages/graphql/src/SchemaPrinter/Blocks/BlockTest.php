@@ -83,7 +83,7 @@ class BlockTest extends TestCase {
                 'short line',
             ],
             'single long line'  => [
-                true,
+                false,
                 new class() extends DefaultSettings {
                     public function getLineLength(): int {
                         return 5;
