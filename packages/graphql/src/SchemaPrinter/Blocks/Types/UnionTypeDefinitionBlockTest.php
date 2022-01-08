@@ -17,14 +17,14 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionTypeBlock
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionTypeDefinitionBlock
  */
-class UnionTypeBlockTest extends TestCase {
+class UnionTypeDefinitionBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
      * @covers ::__toString
-     * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionTypeTypeList::__toString
+     * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionMemberTypesList::__toString
      *
      * @dataProvider dataProviderToString
      */
@@ -35,7 +35,7 @@ class UnionTypeBlockTest extends TestCase {
         int $used,
         UnionType $type,
     ): void {
-        $actual = (string) (new UnionTypeBlock(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new UnionTypeDefinitionBlock(new Dispatcher(), $settings, $level, $used, $type));
         $parsed = Parser::unionTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);
@@ -64,7 +64,7 @@ class UnionTypeBlockTest extends TestCase {
         $dispatcher->attach(Closure::fromCallable($spy));
 
         self::assertNotNull(
-            (string) (new UnionTypeBlock($dispatcher, $settings, 0, 0, $union)),
+            (string) (new UnionTypeDefinitionBlock($dispatcher, $settings, 0, 0, $union)),
         );
 
         $spy

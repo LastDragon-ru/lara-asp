@@ -18,7 +18,7 @@ use function mb_strlen;
  *
  * @template TType of Type|FieldDefinition|EnumValueDefinition
  */
-abstract class TypeDefinitionBlock extends Block implements Named {
+abstract class DefinitionBlock extends Block implements Named {
     /**
      * @param TType $type
      */

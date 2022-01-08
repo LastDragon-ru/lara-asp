@@ -12,7 +12,7 @@ use Traversable;
  * @internal
  * @extends BlockList<TypeBlock>
  */
-class UnionTypeTypeList extends BlockList {
+class UnionMemberTypesList extends BlockList {
     /**
      * @param Traversable<ObjectType>|array<ObjectType> $types
      */

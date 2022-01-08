@@ -11,9 +11,9 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends TypeDefinitionBlock<EnumType>
+ * @extends DefinitionBlock<EnumType>
  */
-class EnumTypeBlock extends TypeDefinitionBlock {
+class EnumTypeDefinitionBlock extends DefinitionBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
@@ -27,7 +27,7 @@ class EnumTypeBlock extends TypeDefinitionBlock {
     protected function body(int $used): string {
         $space  = $this->space();
         $body   = "enum{$space}{$this->getName()}{$space}";
-        $values = new EnumValueDefinitionList(
+        $values = new EnumValuesDefinitionList(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),

@@ -12,7 +12,7 @@ use Traversable;
  * @internal
  * @extends ObjectBlockList<EnumValueDefinitionBlock>
  */
-class EnumValueDefinitionList extends ObjectBlockList {
+class EnumValuesDefinitionList extends ObjectBlockList {
     /**
      * @param Traversable<EnumValueDefinition>|array<EnumValueDefinition> $values
      */

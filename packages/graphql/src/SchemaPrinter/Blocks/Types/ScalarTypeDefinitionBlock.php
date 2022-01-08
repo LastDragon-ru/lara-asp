@@ -9,9 +9,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 /**
  * @internal
  *
- * @extends TypeDefinitionBlock<ScalarType>
+ * @extends DefinitionBlock<ScalarType>
  */
-class ScalarTypeBlock extends TypeDefinitionBlock {
+class ScalarTypeDefinitionBlock extends DefinitionBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
