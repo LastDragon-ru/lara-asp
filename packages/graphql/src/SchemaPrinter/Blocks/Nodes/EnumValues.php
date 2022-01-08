@@ -2,53 +2,49 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
-use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\EnumValueDefinition;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
 
 /**
  * @internal
- * @extends BlockList<TypeName>
+ * @extends ObjectBlockList<EnumValue>
  */
-class UnionMembers extends BlockList {
+class EnumValues extends ObjectBlockList {
     /**
-     * @param Traversable<ObjectType>|array<ObjectType> $types
+     * @param Traversable<EnumValueDefinition>|array<EnumValueDefinition> $values
      */
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
-        Traversable|array $types,
+        Traversable|array $values,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
 
-        foreach ($types as $type) {
-            $this[$type->name] = new TypeName(
+        foreach ($values as $value) {
+            $this[$value->name] = new EnumValue(
                 $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $this->getUsed(),
-                $type,
+                $value,
             );
         }
     }
 
-    protected function getSeparator(): string {
-        return "{$this->space()}|{$this->space()}";
-    }
-
-    protected function getMultilineSeparator(): string {
-        return "|{$this->space()}";
+    protected function isWrapped(): bool {
+        return true;
     }
 
     protected function isNormalized(): bool {
-        return $this->getSettings()->isNormalizeUnions();
+        return $this->getSettings()->isNormalizeEnums();
     }
 
-    protected function isBlock(): bool {
-        return false;
+    protected function isAlwaysMultiline(): bool {
+        return true;
     }
 }

@@ -40,6 +40,12 @@ interface Settings {
     public function isNormalizeUnions(): bool;
 
     /**
+     * If `false` values will be printed in the original order if `true` they
+     * will be sorted by name.
+     */
+    public function isNormalizeEnums(): bool;
+
+    /**
      * If `false` fields will be printed in the original order if `true` they
      * will be sorted by name.
      */

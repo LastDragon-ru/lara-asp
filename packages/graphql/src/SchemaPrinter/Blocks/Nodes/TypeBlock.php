@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes;
 
+use GraphQL\Type\Definition\EnumValueDefinition;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
@@ -13,7 +14,7 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @template TType of Type
+ * @template TType of Type|EnumValueDefinition
  */
 abstract class TypeBlock extends Block implements Named {
     /**
@@ -24,7 +25,7 @@ abstract class TypeBlock extends Block implements Named {
         Settings $settings,
         int $level,
         int $used,
-        private Type $type,
+        private Type|EnumValueDefinition $type,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
@@ -33,10 +34,14 @@ abstract class TypeBlock extends Block implements Named {
         return $this->getType()->name;
     }
 
+    protected function isBlock(): bool {
+        return true;
+    }
+
     /**
      * @return TType
      */
-    protected function getType(): Type {
+    protected function getType(): Type|EnumValueDefinition {
         return $this->type;
     }
 
@@ -47,7 +52,8 @@ abstract class TypeBlock extends Block implements Named {
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),
-            $type->astNode?->directives,
+            $type->astNode->directives ?? null,
+            $type->deprecationReason ?? null,
         );
         $description = new Description(
             $this->getDispatcher(),
@@ -60,17 +66,23 @@ abstract class TypeBlock extends Block implements Named {
 
         $eol     = $this->eol();
         $indent  = $this->indent();
-        $content = $this->body($this->getUsed() + mb_strlen($indent));
+        $content = '';
+
+        if ($this->isBlock()) {
+            $content .= $indent;
+        }
+
+        $body = $this->body($this->getUsed() + mb_strlen($content));
 
         if ($description->getLength()) {
-            $content = "{$description}{$eol}{$indent}{$content}";
+            $body = "{$description}{$eol}{$indent}{$body}";
         }
 
         if ($directives->getLength() && $this->getSettings()->isIncludeDirectives()) {
-            $content = "{$content}{$eol}{$directives}";
+            $body = "{$body}{$eol}{$directives}";
         }
 
-        return "{$indent}{$content}";
+        return "{$content}{$body}";
     }
 
     abstract protected function body(int $used): string;

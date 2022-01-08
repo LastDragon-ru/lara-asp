@@ -2,6 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+/**
+ * @internal
+ * @template TBlock of Block
+ * @extends BlockList<TBlock>
+ */
 class ListBlockList extends BlockList {
     protected function getPrefix(): string {
         return '[';
