@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
@@ -18,16 +19,22 @@ class TypeBlock extends Block implements Named {
         Settings $settings,
         int $level,
         int $used,
-        private ObjectType $type,
+        private Type $type,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
 
     public function getName(): string {
-        return $this->getType()->name;
+        $type = $this->getType();
+
+        if ($type instanceof WrappingType) {
+            $type = $type->getWrappedType(true);
+        }
+
+        return $type->name;
     }
 
-    protected function getType(): ObjectType {
+    protected function getType(): Type {
         return $this->type;
     }
 
@@ -36,6 +43,6 @@ class TypeBlock extends Block implements Named {
             new TypeUsed($this->getName()),
         );
 
-        return $this->getName();
+        return (string) $this->getType();
     }
 }

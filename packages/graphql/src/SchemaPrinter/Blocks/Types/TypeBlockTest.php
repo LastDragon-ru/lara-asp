@@ -4,7 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
 use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
@@ -29,7 +32,7 @@ class TypeBlockTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        ObjectType $type,
+        Type $type,
     ): void {
         $actual = (string) (new TypeBlock(new Dispatcher(), $settings, $level, $used, $type));
 
@@ -41,9 +44,11 @@ class TypeBlockTest extends TestCase {
      */
     public function testToStringEvent(): void {
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $node       = new ObjectType([
-            'name' => 'Test',
-        ]);
+        $node       = new NonNull(
+            new ObjectType([
+                'name' => 'Test',
+            ])
+        );
         $settings   = new DefaultSettings();
         $dispatcher = new Dispatcher();
 
@@ -57,7 +62,7 @@ class TypeBlockTest extends TestCase {
             ->shouldHaveBeenCalled()
             ->withArgs(static function (Event $event) use ($node): bool {
                 return $event instanceof TypeUsed
-                    && $event->name === $node->name;
+                    && $event->name === $node->getWrappedType(true)->name;
             })
             ->once();
         $spy
@@ -73,7 +78,7 @@ class TypeBlockTest extends TestCase {
      */
     public function dataProviderToString(): array {
         return [
-            'object' => [
+            'object'        => [
                 'Test',
                 new DefaultSettings(),
                 0,
@@ -81,6 +86,30 @@ class TypeBlockTest extends TestCase {
                 new ObjectType([
                     'name' => 'Test',
                 ]),
+            ],
+            'non null'      => [
+                'Test!',
+                new DefaultSettings(),
+                0,
+                0,
+                new NonNull(
+                    new ObjectType([
+                        'name' => 'Test',
+                    ]),
+                ),
+            ],
+            'non null list' => [
+                '[Test]!',
+                new DefaultSettings(),
+                0,
+                0,
+                new NonNull(
+                    new ListOfType(
+                        new ObjectType([
+                            'name' => 'Test',
+                        ]),
+                    ),
+                ),
             ],
         ];
     }
