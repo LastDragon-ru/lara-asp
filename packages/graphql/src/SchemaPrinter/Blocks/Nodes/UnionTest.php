@@ -24,6 +24,7 @@ class UnionTest extends TestCase {
     // =========================================================================
     /**
      * @covers ::__toString
+     * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Nodes\UnionTypes::__toString
      *
      * @dataProvider dataProviderToString
      */

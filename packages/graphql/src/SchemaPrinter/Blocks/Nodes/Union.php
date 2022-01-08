@@ -29,7 +29,7 @@ class Union extends TypeBlock {
         $space  = $this->space();
         $equal  = "{$space}={$space}";
         $body   = "union{$space}{$this->getName()}";
-        $types  = new UnionMembers(
+        $types  = new UnionTypes(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel() + 1,
