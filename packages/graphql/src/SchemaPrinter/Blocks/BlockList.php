@@ -151,7 +151,11 @@ abstract class BlockList extends Block implements ArrayAccess {
         if ($listPrefix || $listSuffix) {
             $eol     = $isMultiline ? $this->eol() : '';
             $indent  = $isMultiline ? $this->indent() : '';
-            $content = "{$listPrefix}{$eol}{$content}{$eol}{$indent}{$listSuffix}";
+            $content = "{$listPrefix}{$eol}{$content}";
+
+            if ($listSuffix) {
+                $content .= "{$eol}{$indent}{$listSuffix}";
+            }
         }
 
         // Return

@@ -43,12 +43,12 @@ class UnionTypeDefinitionBlock extends DefinitionBlock {
         if ($types->isMultiline()) {
             $eol    = $this->eol();
             $indent = $this->indent($this->getLevel() + 1);
-            $body   = "{$space}={$eol}{$indent}{$types}";
+            $types  = "{$space}={$eol}{$indent}{$types}";
         } else {
-            $body = "{$equal}{$types}";
+            $types = "{$equal}{$types}";
         }
 
-        return $body;
+        return $types;
     }
 
     protected function fields(int $used): Block|string|null {

@@ -59,6 +59,10 @@ class DefaultSettings implements Settings {
         return false;
     }
 
+    public function isNormalizeInterfaces(): bool {
+        return false;
+    }
+
     public function isNormalizeFields(): bool {
         return false;
     }

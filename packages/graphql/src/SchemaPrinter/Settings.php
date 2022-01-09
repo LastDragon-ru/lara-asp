@@ -46,6 +46,12 @@ interface Settings {
     public function isNormalizeEnums(): bool;
 
     /**
+     * If `false` implemented interface list will be printed in the original
+     * order if `true` they will be sorted by name.
+     */
+    public function isNormalizeInterfaces(): bool;
+
+    /**
      * If `false` fields will be printed in the original order if `true` they
      * will be sorted by name.
      */

@@ -54,14 +54,17 @@ abstract class DefinitionBlock extends Block implements Named {
 
     protected function content(): string {
         $eol         = $this->eol();
+        $space       = $this->space();
         $indent      = $this->indent();
         $name        = $this->getName();
-        $used        = $this->getUsed() + mb_strlen($name);
+        $used        = $this->getUsed() + mb_strlen($name) + mb_strlen($space);
         $body        = (string) $this->body($used);
         $fields      = (string) $this->fields($used + mb_strlen($body));
         $directives  = $this->directives();
         $description = (string) $this->description($directives);
-        $directives  = (string) $directives;
+        $directives  = $this->getSettings()->isIncludeDirectives()
+            ? (string) $directives
+            : '';
         $content     = '';
 
         if ($description) {
@@ -70,15 +73,17 @@ abstract class DefinitionBlock extends Block implements Named {
 
         $content .= "{$name}{$body}";
 
-        if ($directives && $this->getSettings()->isIncludeDirectives()) {
+        if ($directives) {
             $content .= "{$eol}{$indent}{$directives}";
-
-            if ($fields) {
-                $content .= "{$eol}{$indent}";
-            }
         }
 
-        $content .= $fields;
+        if ($fields) {
+            if ($directives || $this->isStringMultiline($content)) {
+                $content .= "{$eol}{$indent}{$fields}";
+            } else {
+                $content .= "{$space}{$fields}";
+            }
+        }
 
         return $content;
     }
