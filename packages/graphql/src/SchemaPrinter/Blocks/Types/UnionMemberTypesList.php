@@ -40,7 +40,7 @@ class UnionMemberTypesList extends BlockList {
         return "{$this->space()}|{$this->space()}";
     }
 
-    protected function getMultilineSeparator(): string {
+    protected function getMultilineItemPrefix(): string {
         return "|{$this->space()}";
     }
 

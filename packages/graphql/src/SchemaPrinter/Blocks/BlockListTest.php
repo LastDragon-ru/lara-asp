@@ -621,7 +621,7 @@ class BlockListTest extends TestCase {
                 ],
                 'multiline'            => [
                     <<<'STRING'
-                    block a
+                    || block a
                     || block b
                     STRING,
                     new DefaultSettings(),
@@ -640,7 +640,7 @@ class BlockListTest extends TestCase {
                 ],
                 'multiline and indent' => [
                     <<<'STRING'
-                    block a
+                    || block a
                         || block b
                     STRING,
                     new class() extends DefaultSettings {
@@ -710,7 +710,7 @@ class BlockListTest__BlockList extends BlockList {
         return $this->separator;
     }
 
-    protected function getMultilineSeparator(): string {
+    protected function getMultilineItemPrefix(): string {
         return $this->multilineSeparator;
     }
 }

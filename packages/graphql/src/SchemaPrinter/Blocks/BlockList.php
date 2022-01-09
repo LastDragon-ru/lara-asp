@@ -53,7 +53,7 @@ abstract class BlockList extends Block implements ArrayAccess {
         return ",{$this->space()}";
     }
 
-    protected function getMultilineSeparator(): string {
+    protected function getMultilineItemPrefix(): string {
         return '';
     }
 
@@ -104,7 +104,6 @@ abstract class BlockList extends Block implements ArrayAccess {
         }
 
         // Join
-        $eol         = '';
         $listPrefix  = $this->getPrefix();
         $listSuffix  = $this->getSuffix();
         $separator   = $this->getSeparator();
@@ -122,7 +121,7 @@ abstract class BlockList extends Block implements ArrayAccess {
             $indent    = $this->indent($this->getLevel() + (int) ($listPrefix || $listSuffix));
             $wrapped   = $this->isWrapped();
             $previous  = false;
-            $separator = $this->getMultilineSeparator();
+            $separator = $this->getMultilineItemPrefix();
 
             foreach ($blocks as $block) {
                 $multiline = $wrapped && $block->isMultiline();
@@ -135,11 +134,7 @@ abstract class BlockList extends Block implements ArrayAccess {
                     $content .= $indent;
                 }
 
-                if ($index > 0) {
-                    $content .= $separator;
-                }
-
-                $content .= "{$block}";
+                $content .= "{$separator}{$block}";
 
                 if ($index < $last) {
                     $content .= $eol;
@@ -154,6 +149,7 @@ abstract class BlockList extends Block implements ArrayAccess {
 
         // Prefix & Suffix
         if ($listPrefix || $listSuffix) {
+            $eol     = $isMultiline ? $this->eol() : '';
             $indent  = $isMultiline ? $this->indent() : '';
             $content = "{$listPrefix}{$eol}{$content}{$eol}{$indent}{$listSuffix}";
         }

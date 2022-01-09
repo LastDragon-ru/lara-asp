@@ -118,8 +118,8 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             ],
             'multiline'            => [
                 <<<'STRING'
-                union Test
-                    = C
+                union Test =
+                    | C
                     | B
                     | A
                 STRING,
@@ -173,8 +173,8 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             ],
             'indent multiline'     => [
                 <<<'STRING'
-                union Test
-                        = C
+                union Test =
+                        | C
                         | B
                         | A
                 STRING,

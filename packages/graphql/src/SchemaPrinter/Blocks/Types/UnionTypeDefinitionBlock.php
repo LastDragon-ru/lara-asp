@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -31,10 +30,9 @@ class UnionTypeDefinitionBlock extends DefinitionBlock {
     }
 
     protected function body(int $used): Block|string|null {
-        $indent = $this->indent();
-        $space  = $this->space();
-        $equal  = "{$space}={$space}";
-        $types  = new UnionMemberTypesList(
+        $space = $this->space();
+        $equal = "{$space}={$space}";
+        $types = new UnionMemberTypesList(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel() + 1,
@@ -43,8 +41,9 @@ class UnionTypeDefinitionBlock extends DefinitionBlock {
         );
 
         if ($types->isMultiline()) {
-            $eol  = $this->eol();
-            $body = "{$eol}{$indent}{$this->indent(1)}={$space}{$types}";
+            $eol    = $this->eol();
+            $indent = $this->indent($this->getLevel() + 1);
+            $body   = "{$space}={$eol}{$indent}{$types}";
         } else {
             $body = "{$equal}{$types}";
         }
