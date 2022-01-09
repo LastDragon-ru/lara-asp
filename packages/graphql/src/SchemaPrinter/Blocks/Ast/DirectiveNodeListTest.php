@@ -175,7 +175,7 @@ class DirectiveNodeListTest extends TestCase {
             ],
             'indent'                                    => [
                 <<<'STRING'
-                    @deprecated(
+                @deprecated(
                         reason: "very very very long reason"
                     )
                     @a(a: 123)

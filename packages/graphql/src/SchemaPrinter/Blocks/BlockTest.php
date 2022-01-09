@@ -68,6 +68,23 @@ class BlockTest extends TestCase {
         self::assertEquals($expected, $block->isMultiline());
         self::assertEquals($expected, $block->isMultiline());
     }
+
+    /**
+     * @covers ::isEmpty
+     *
+     * @dataProvider dataProviderIsEmpty
+     */
+    public function testIsEmpty(bool $expected, string $content): void {
+        $block = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new DefaultSettings()]);
+        $block->shouldAllowMockingProtectedMethods();
+        $block->makePartial();
+        $block
+            ->shouldReceive('content')
+            ->once()
+            ->andReturn($content);
+
+        self::assertEquals($expected, $block->isEmpty());
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -96,6 +113,16 @@ class BlockTest extends TestCase {
                 new DefaultSettings(),
                 "multi\nline",
             ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{bool, string}>
+     */
+    public function dataProviderIsEmpty(): array {
+        return [
+            'empty'     => [true, ''],
+            'non empty' => [false, 'content'],
         ];
     }
     // </editor-fold>

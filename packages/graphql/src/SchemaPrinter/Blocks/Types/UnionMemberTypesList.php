@@ -47,8 +47,4 @@ class UnionMemberTypesList extends BlockList {
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeUnions();
     }
-
-    protected function isBlock(): bool {
-        return false;
-    }
 }

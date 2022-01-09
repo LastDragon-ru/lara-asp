@@ -117,7 +117,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
             ],
             'indent'                          => [
                 <<<'STRING'
-                    """
+                """
                     Description
                     """
                     scalar Test
@@ -149,7 +149,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
             ],
             'indent + no description'         => [
                 <<<'STRING'
-                    scalar Test
+                scalar Test
                     @a(
                         value: "very very long value"
                     )

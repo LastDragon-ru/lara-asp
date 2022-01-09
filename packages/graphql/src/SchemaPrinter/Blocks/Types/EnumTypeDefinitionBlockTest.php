@@ -73,7 +73,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
             ],
             'indent'                     => [
                 <<<'STRING'
-                    enum Test {
+                enum Test {
                         C
                         B
                         A

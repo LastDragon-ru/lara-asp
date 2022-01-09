@@ -34,11 +34,15 @@ abstract class DefinitionBlock extends Block implements Named {
     }
 
     public function getName(): string {
-        return $this->getDefinition()->name;
-    }
+        $name = $this->getDefinition()->name;
+        $type = $this->type();
 
-    protected function isBlock(): bool {
-        return $this->getDefinition() instanceof Type;
+        if ($type) {
+            $space = $this->space();
+            $name  = "{$type}{$space}{$name}";
+        }
+
+        return $name;
     }
 
     /**
@@ -49,44 +53,66 @@ abstract class DefinitionBlock extends Block implements Named {
     }
 
     protected function content(): string {
-        $type        = $this->getDefinition();
-        $directives  = new DirectiveNodeList(
+        $eol         = $this->eol();
+        $indent      = $this->indent();
+        $name        = $this->getName();
+        $body        = (string) $this->body($this->getUsed() + mb_strlen($name));
+        $fields      = (string) $this->fields();
+        $directives  = $this->directives();
+        $description = (string) $this->description($directives);
+        $directives  = (string) $directives;
+        $content     = '';
+
+        if ($description) {
+            $content .= "{$description}{$eol}{$indent}";
+        }
+
+        $content .= "{$name}{$body}";
+
+        if ($directives && $this->getSettings()->isIncludeDirectives()) {
+            $content .= "{$eol}{$indent}{$directives}";
+
+            if ($fields) {
+                $content .= "{$eol}{$indent}";
+            }
+        }
+
+        $content .= $fields;
+
+        return $content;
+    }
+
+    abstract protected function type(): string|null;
+
+    abstract protected function body(int $used): Block|string|null;
+
+    abstract protected function fields(): Block|string|null;
+
+    protected function directives(): DirectiveNodeList {
+        $definition = $this->getDefinition();
+        $directives = new DirectiveNodeList(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),
-            $type->astNode->directives ?? null,
-            $type->deprecationReason ?? null,
+            $definition->astNode->directives ?? null,
+            $definition->deprecationReason ?? null,
         );
+
+        return $directives;
+    }
+
+    protected function description(DirectiveNodeList $directives): Description {
+        $definition  = $this->getDefinition();
         $description = new Description(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),
-            $type->description,
+            $definition->description,
             $directives,
         );
 
-        $eol     = $this->eol();
-        $indent  = $this->indent();
-        $content = '';
-
-        if ($this->isBlock()) {
-            $content .= $indent;
-        }
-
-        $body = $this->body($this->getUsed() + mb_strlen($content));
-
-        if ($description->getLength()) {
-            $body = "{$description}{$eol}{$indent}{$body}";
-        }
-
-        if ($directives->getLength() && $this->getSettings()->isIncludeDirectives()) {
-            $body = "{$body}{$eol}{$directives}";
-        }
-
-        return "{$content}{$body}";
+        return $description;
     }
-
-    abstract protected function body(int $used): string;
 }

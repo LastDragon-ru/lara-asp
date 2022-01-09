@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\EnumType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use function mb_strlen;
@@ -24,17 +25,24 @@ class EnumTypeDefinitionBlock extends DefinitionBlock {
         parent::__construct($dispatcher, $settings, $level, $used, $definition);
     }
 
-    protected function body(int $used): string {
+    protected function type(): string {
+        return 'enum';
+    }
+
+    protected function body(int $used): Block|string|null {
         $space  = $this->space();
-        $body   = "enum{$space}{$this->getName()}{$space}";
         $values = new EnumValuesDefinitionList(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
-            $used + mb_strlen($body),
+            $used + mb_strlen($space),
             $this->getDefinition()->getValues(),
         );
 
-        return "{$body}{$values}";
+        return "{$space}{$values}";
+    }
+
+    protected function fields(): Block|string|null {
+        return null;
     }
 }

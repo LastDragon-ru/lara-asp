@@ -29,10 +29,6 @@ abstract class BlockList extends Block implements ArrayAccess {
 
     // <editor-fold desc="Settings">
     // =========================================================================
-    protected function isBlock(): bool {
-        return true;
-    }
-
     protected function isWrapped(): bool {
         return false;
     }
@@ -68,6 +64,10 @@ abstract class BlockList extends Block implements ArrayAccess {
 
     // <editor-fold desc="Block">
     // =========================================================================
+    public function isEmpty(): bool {
+        return count($this->blocks) === 0 || parent::isEmpty();
+    }
+
     public function isMultiline(): bool {
         return count($this->multiline) > 0 || parent::isMultiline();
     }
@@ -121,7 +121,6 @@ abstract class BlockList extends Block implements ArrayAccess {
             $index     = 0;
             $indent    = $this->indent($this->getLevel() + (int) ($listPrefix || $listSuffix));
             $wrapped   = $this->isWrapped();
-            $isBlock   = $this->isBlock();
             $previous  = false;
             $separator = $this->getMultilineSeparator();
 
@@ -132,7 +131,7 @@ abstract class BlockList extends Block implements ArrayAccess {
                     $content .= $eol;
                 }
 
-                if ($isBlock || $index > 0) {
+                if ($index > 0 || ($listPrefix || $listSuffix)) {
                     $content .= $indent;
                 }
 

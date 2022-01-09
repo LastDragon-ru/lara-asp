@@ -48,6 +48,10 @@ abstract class Block implements Stringable {
 
     // <editor-fold desc="API">
     // =========================================================================
+    public function isEmpty(): bool {
+        return $this->getLength() <= 0;
+    }
+
     public function getLength(): int {
         return $this->length ?? mb_strlen($this->getContent());
     }

@@ -147,7 +147,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             ],
             'indent single-line'   => [
                 <<<'STRING'
-                    union Test = C | B | A
+                union Test = C | B | A
                 STRING,
                 new class() extends DefaultSettings {
                     public function getIndent(): string {
@@ -173,7 +173,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             ],
             'indent multiline'     => [
                 <<<'STRING'
-                    union Test
+                union Test
                         = C
                         | B
                         | A

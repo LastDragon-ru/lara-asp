@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\ScalarType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
@@ -22,7 +23,15 @@ class ScalarTypeDefinitionBlock extends DefinitionBlock {
         parent::__construct($dispatcher, $settings, $level, $used, $definition);
     }
 
-    protected function body(int $used): string {
-        return "scalar{$this->space()}{$this->getName()}";
+    protected function type(): string|null {
+        return 'scalar';
+    }
+
+    protected function body(int $used): Block|string|null {
+        return null;
+    }
+
+    protected function fields(): Block|string|null {
+        return null;
     }
 }
