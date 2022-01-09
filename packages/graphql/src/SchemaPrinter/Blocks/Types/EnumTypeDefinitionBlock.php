@@ -42,7 +42,7 @@ class EnumTypeDefinitionBlock extends DefinitionBlock {
         return "{$space}{$values}";
     }
 
-    protected function fields(): Block|string|null {
+    protected function fields(int $used): Block|string|null {
         return null;
     }
 }

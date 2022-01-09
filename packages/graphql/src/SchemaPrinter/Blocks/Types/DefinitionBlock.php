@@ -56,8 +56,9 @@ abstract class DefinitionBlock extends Block implements Named {
         $eol         = $this->eol();
         $indent      = $this->indent();
         $name        = $this->getName();
-        $body        = (string) $this->body($this->getUsed() + mb_strlen($name));
-        $fields      = (string) $this->fields();
+        $used        = $this->getUsed() + mb_strlen($name);
+        $body        = (string) $this->body($used);
+        $fields      = (string) $this->fields($used + mb_strlen($body));
         $directives  = $this->directives();
         $description = (string) $this->description($directives);
         $directives  = (string) $directives;
@@ -86,7 +87,7 @@ abstract class DefinitionBlock extends Block implements Named {
 
     abstract protected function body(int $used): Block|string|null;
 
-    abstract protected function fields(): Block|string|null;
+    abstract protected function fields(int $used): Block|string|null;
 
     protected function directives(): DirectiveNodeList {
         $definition = $this->getDefinition();

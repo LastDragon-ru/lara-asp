@@ -58,7 +58,7 @@ class InputValueDefinitionBlock extends DefinitionBlock {
         return $body;
     }
 
-    protected function fields(): Block|string|null {
+    protected function fields(int $used): Block|string|null {
         return null;
     }
 }

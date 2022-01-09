@@ -48,7 +48,7 @@ class FieldDefinitionBlock extends DefinitionBlock {
         return "{$args}:{$space}{$type}";
     }
 
-    protected function fields(): Block|string|null {
+    protected function fields(int $used): Block|string|null {
         return null;
     }
 }

@@ -31,7 +31,7 @@ class ScalarTypeDefinitionBlock extends DefinitionBlock {
         return null;
     }
 
-    protected function fields(): Block|string|null {
+    protected function fields(int $used): Block|string|null {
         return null;
     }
 }
