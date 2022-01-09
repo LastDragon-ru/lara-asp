@@ -75,7 +75,7 @@ class DefaultSettings implements Settings {
         return false;
     }
 
-    public function isNormalizeDirectiveDefinitions(): bool {
+    public function isNormalizeDirectiveLocations(): bool {
         return false;
     }
 

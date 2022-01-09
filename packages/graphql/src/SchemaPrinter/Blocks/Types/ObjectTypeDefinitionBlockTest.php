@@ -89,7 +89,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
             ->once();
         $spy
             ->shouldHaveBeenCalled()
-            ->twice(3);
+            ->twice();
     }
     // </editor-fold>
 

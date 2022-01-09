@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
+use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
@@ -17,7 +18,7 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @template TType of Type|FieldDefinition|EnumValueDefinition|FieldArgument
+ * @template TType of Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive
  */
 abstract class DefinitionBlock extends Block implements Named {
     /**
@@ -28,13 +29,13 @@ abstract class DefinitionBlock extends Block implements Named {
         Settings $settings,
         int $level,
         int $used,
-        private Type|FieldDefinition|EnumValueDefinition|FieldArgument $definition,
+        private Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive $definition,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
 
     public function getName(): string {
-        $name = $this->getDefinition()->name;
+        $name = $this->name();
         $type = $this->type();
 
         if ($type) {
@@ -48,7 +49,7 @@ abstract class DefinitionBlock extends Block implements Named {
     /**
      * @return TType
      */
-    protected function getDefinition(): Type|FieldDefinition|EnumValueDefinition|FieldArgument {
+    protected function getDefinition(): Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive {
         return $this->definition;
     }
 
@@ -78,7 +79,7 @@ abstract class DefinitionBlock extends Block implements Named {
         }
 
         if ($fields) {
-            if ($directives || $this->isStringMultiline($content)) {
+            if ($directives || $this->isStringMultiline($body)) {
                 $content .= "{$eol}{$indent}{$fields}";
             } else {
                 $content .= "{$space}{$fields}";
@@ -86,6 +87,10 @@ abstract class DefinitionBlock extends Block implements Named {
         }
 
         return $content;
+    }
+
+    protected function name(): string {
+        return $this->getDefinition()->name;
     }
 
     abstract protected function type(): string|null;

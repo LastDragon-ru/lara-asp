@@ -66,10 +66,10 @@ interface Settings {
     public function isNormalizeDescription(): bool;
 
     /**
-     * If `false` directive definitions will be printed in the original order if
+     * If `false` directive locations will be printed in the original order if
      * `true` they will be sorted by name.
      */
-    public function isNormalizeDirectiveDefinitions(): bool;
+    public function isNormalizeDirectiveLocations(): bool;
 
     /**
      * Used to determine should the directive included in output or not.
