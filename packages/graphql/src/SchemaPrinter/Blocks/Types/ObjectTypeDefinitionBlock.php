@@ -2,27 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use GraphQL\Type\Definition\InterfaceType;
+use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
  * @internal
  *
- * @extends DefinitionBlock<InterfaceType>
+ * @extends DefinitionBlock<ObjectType>
  */
-class InterfaceTypeDefinitionBlock extends TypeDefinitionBlock {
+class ObjectTypeDefinitionBlock extends TypeDefinitionBlock {
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
-        InterfaceType $definition,
+        ObjectType $definition,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used, $definition);
     }
 
     protected function type(): string|null {
-        return 'interface';
+        return 'type';
     }
 }
