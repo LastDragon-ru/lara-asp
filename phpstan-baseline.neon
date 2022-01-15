@@ -64,3 +64,10 @@ parameters:
                 - packages/**/*Test.php
                 - packages/testing/src/Package/TestCase.php
                 - packages/testing/src/TestCase.php
+
+        # Caused by invalid return type definition of GraphQL\Type\Definition\FieldArgument::getType()
+        # and probably will be fixed by upsteam.
+        -
+            message: "#^Parameter \\#2 \\$type of static method GraphQL\\\\Utils\\\\AST\\:\\:astFromValue\\(\\) expects GraphQL\\\\Type\\\\Definition\\\\InputType, GraphQL\\\\Type\\\\Definition\\\\Type given\\.$#"
+            paths:
+                - packages/graphql/src/SchemaPrinter/Blocks/Types/InputValueDefinitionBlock.php

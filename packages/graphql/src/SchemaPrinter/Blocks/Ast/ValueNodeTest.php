@@ -14,6 +14,7 @@ use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\AST\VariableNode;
 use GraphQL\Language\Parser;
+use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
@@ -43,7 +44,10 @@ class ValueNodeTest extends TestCase {
         $parsed = Parser::valueLiteral($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(ValueNode::class, $parsed);
+        self::assertEquals(
+            Printer::doPrint($node),
+            Printer::doPrint($parsed),
+        );
     }
     // </editor-fold>
 

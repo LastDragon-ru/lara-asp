@@ -11,7 +11,7 @@ use Traversable;
 
 /**
  * @internal
- * @extends BlockList<ValueNodeBlock>
+ * @extends BlockList<Property<ValueNodeBlock>>
  */
 class ArgumentNodeList extends BlockList {
     /**

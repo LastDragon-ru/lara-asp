@@ -3,9 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -36,10 +34,10 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
         InterfaceType $definition,
     ): void {
         $actual = (string) (new InterfaceTypeDefinitionBlock(new Dispatcher(), $settings, $level, $used, $definition));
-        $parsed = Parser::interfaceTypeDefinition($actual);
+
+        Parser::interfaceTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(InterfaceTypeDefinitionNode::class, $parsed);
     }
 
     /**
@@ -70,7 +68,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new InterfaceTypeDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
         );
 
@@ -97,7 +95,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, FieldArgument}>
+     * @return array<string,array{string, Settings, int, int, InterfaceType}>
      */
     public function dataProviderToString(): array {
         return [

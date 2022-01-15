@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\ListOfType;
@@ -37,10 +36,10 @@ class InputValueDefinitionBlockTest extends TestCase {
         FieldArgument $definition,
     ): void {
         $actual = (string) (new InputValueDefinitionBlock(new Dispatcher(), $settings, $level, $used, $definition));
-        $parsed = Parser::inputValueDefinition($actual);
+
+        Parser::inputValueDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(InputValueDefinitionNode::class, $parsed);
     }
 
     /**
@@ -61,7 +60,7 @@ class InputValueDefinitionBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new InputValueDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
         );
 

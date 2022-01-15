@@ -3,9 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\objectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
@@ -35,10 +33,10 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
         ObjectType $definition,
     ): void {
         $actual = (string) (new ObjectTypeDefinitionBlock(new Dispatcher(), $settings, $level, $used, $definition));
-        $parsed = Parser::objectTypeDefinition($actual);
+
+        Parser::objectTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(ObjectTypeDefinitionNode::class, $parsed);
     }
 
     /**
@@ -69,7 +67,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new ObjectTypeDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
         );
 
@@ -96,7 +94,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, FieldArgument}>
+     * @return array<string,array{string, Settings, int, int, ObjectType}>
      */
     public function dataProviderToString(): array {
         return [

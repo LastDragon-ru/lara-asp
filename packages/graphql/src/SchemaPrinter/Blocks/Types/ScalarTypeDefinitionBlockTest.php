@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ScalarType;
@@ -31,17 +30,17 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
         ScalarType $type,
     ): void {
         $actual = (string) (new ScalarTypeDefinitionBlock(new Dispatcher(), $settings, $level, $used, $type));
-        $parsed = Parser::scalarTypeDefinition($actual);
+
+        Parser::scalarTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(ScalarTypeDefinitionNode::class, $parsed);
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DirectiveNode}>
+     * @return array<string,array{string, Settings, int, int, ScalarType}>
      */
     public function dataProviderToString(): array {
         return [

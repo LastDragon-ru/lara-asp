@@ -3,8 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\UnionType;
@@ -36,10 +34,10 @@ class UnionTypeDefinitionBlockTest extends TestCase {
         UnionType $type,
     ): void {
         $actual = (string) (new UnionTypeDefinitionBlock(new Dispatcher(), $settings, $level, $used, $type));
-        $parsed = Parser::unionTypeDefinition($actual);
+
+        Parser::unionTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(UnionTypeDefinitionNode::class, $parsed);
     }
 
     /**
@@ -63,7 +61,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new UnionTypeDefinitionBlock($dispatcher, $settings, 0, 0, $union)),
         );
 
@@ -90,7 +88,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DirectiveNode}>
+     * @return array<string,array{string, Settings, int, int, UnionType}>
      */
     public function dataProviderToString(): array {
         return [

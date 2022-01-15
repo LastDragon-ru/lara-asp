@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumValueDefinition;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
@@ -30,17 +29,17 @@ class EnumValueDefinitionBlockTest extends TestCase {
         EnumValueDefinition $type,
     ): void {
         $actual = (string) (new EnumValueDefinitionBlock(new Dispatcher(), $settings, $level, $used, $type));
-        $parsed = Parser::enumValueDefinition($actual);
+
+        Parser::enumValueDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(EnumValueDefinitionNode::class, $parsed);
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DirectiveNode}>
+     * @return array<string,array{string, Settings, int, int, EnumValueDefinition}>
      */
     public function dataProviderToString(): array {
         return [

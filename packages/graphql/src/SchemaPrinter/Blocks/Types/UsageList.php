@@ -36,6 +36,8 @@ abstract class UsageList extends BlockList {
 
     /**
      * @param TType $item
+     *
+     * @return TBlock
      */
     abstract protected function block(mixed $item): Block;
 

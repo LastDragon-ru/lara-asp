@@ -7,8 +7,13 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
  * @internal
+ *
+ * @template TBlock of Block
  */
 class Property extends Block implements Named {
+    /**
+     * @param TBlock $block
+     */
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,
@@ -26,6 +31,9 @@ class Property extends Block implements Named {
         return $this->getBlock()->isMultiline() || parent::isMultiline();
     }
 
+    /**
+     * @return TBlock
+     */
     protected function getBlock(): Block {
         return $this->block;
     }

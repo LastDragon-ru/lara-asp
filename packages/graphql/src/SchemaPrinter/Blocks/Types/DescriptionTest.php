@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
@@ -40,7 +41,7 @@ class DescriptionTest extends TestCase {
         self::assertEquals($expected, $actual);
 
         if ($expected) {
-            self::assertNotNull(Parser::valueLiteral($actual));
+            Parser::valueLiteral($actual);
         }
     }
     // </editor-fold>
@@ -48,7 +49,7 @@ class DescriptionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, string}>
+     * @return array<string,array{string, Settings, int, int, ?string, array<DirectiveNode>|null}>
      */
     public function dataProviderToString(): array {
         return [

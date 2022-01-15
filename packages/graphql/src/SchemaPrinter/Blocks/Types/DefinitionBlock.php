@@ -80,7 +80,7 @@ abstract class DefinitionBlock extends Block implements Named {
         }
 
         if ($fields) {
-            if ($directives || $this->isStringMultiline($body)) {
+            if ((bool) $directives || $this->isStringMultiline($body)) {
                 $content .= "{$eol}{$indent}{$fields}";
             } else {
                 $content .= "{$space}{$fields}";
@@ -107,7 +107,7 @@ abstract class DefinitionBlock extends Block implements Named {
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),
-            $definition->astNode->directives ?? null,
+            $definition->astNode?->directives ?? null,
             $definition->deprecationReason ?? null,
         );
 

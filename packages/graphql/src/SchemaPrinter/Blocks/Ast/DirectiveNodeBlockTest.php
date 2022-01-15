@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 use Closure;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
+use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
@@ -35,7 +36,13 @@ class DirectiveNodeBlockTest extends TestCase {
         $parsed = Parser::directive($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(DirectiveNode::class, $parsed);
+
+        if (!$settings->isNormalizeArguments()) {
+            self::assertEquals(
+                Printer::doPrint($node),
+                Printer::doPrint($parsed),
+            );
+        }
     }
 
     /**
@@ -49,7 +56,7 @@ class DirectiveNodeBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new DirectiveNodeBlock($dispatcher, $settings, 0, 0, $node)),
         );
 

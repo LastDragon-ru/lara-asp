@@ -46,8 +46,8 @@ class Description extends StringBlock {
             $eol    = $this->eol();
             $string = str_replace(["\r\n", "\n\r", "\n", "\r"], $eol, $string);
             $string = rtrim(trim($string, $eol));
-            $string = preg_replace('/\R{2,}/u', "{$eol}{$eol}", $string);
-            $string = preg_replace('/^(.*?)\h+$/mu', '$1', $string);
+            $string = (string) preg_replace('/\R{2,}/u', "{$eol}{$eol}", $string);
+            $string = (string) preg_replace('/^(.*?)\h+$/mu', '$1', $string);
         }
 
         // Directives

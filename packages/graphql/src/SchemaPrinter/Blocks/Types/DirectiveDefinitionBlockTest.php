@@ -3,11 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Language\DirectiveLocation;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
@@ -37,10 +35,10 @@ class DirectiveDefinitionBlockTest extends TestCase {
         Directive $definition,
     ): void {
         $actual = (string) (new DirectiveDefinitionBlock(new Dispatcher(), $settings, $level, $used, $definition));
-        $parsed = Parser::directiveDefinition($actual);
+
+        Parser::directiveDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(DirectiveDefinitionNode::class, $parsed);
     }
 
     /**
@@ -64,7 +62,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new DirectiveDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
         );
 
@@ -84,7 +82,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, FieldArgument}>
+     * @return array<string,array{string, Settings, int, int, Directive}>
      */
     public function dataProviderToString(): array {
         return [

@@ -29,7 +29,7 @@ class DirectiveNodeBlock extends Block implements Named {
         return $this->getNode()->name->value;
     }
 
-    protected function getNode(): DirectiveNode {
+    public function getNode(): DirectiveNode {
         return $this->node;
     }
 

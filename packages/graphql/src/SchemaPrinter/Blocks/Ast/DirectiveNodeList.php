@@ -66,7 +66,7 @@ class DirectiveNodeList extends BlockList {
         $blocks = parent::getBlocks();
 
         if ($filter !== null) {
-            $blocks = array_filter($blocks, static function (Directive $block) use ($filter): bool {
+            $blocks = array_filter($blocks, static function (DirectiveNodeBlock $block) use ($filter): bool {
                 return $filter->isAllowedDirective($block->getNode());
             });
         }

@@ -3,11 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\EnumValueDefinition;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
@@ -37,17 +36,17 @@ class EnumTypeDefinitionBlockTest extends TestCase {
         }
 
         $actual = (string) (new EnumTypeDefinitionBlock(new Dispatcher(), $settings, $level, $used, $type));
-        $parsed = Parser::enumTypeDefinition($actual);
+
+        Parser::enumTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(EnumTypeDefinitionNode::class, $parsed);
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DirectiveNode}>
+     * @return array<string,array{string, Settings, int, int, Closure():EnumType|EnumType}>
      */
     public function dataProviderToString(): array {
         return [
@@ -144,12 +143,18 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                         'values' => ['C', 'B', 'A'],
                     ]);
 
-                    $a                    = $enum->getValue('A');
-                    $a->deprecationReason = Directive::DEFAULT_DEPRECATION_REASON;
+                    $a = $enum->getValue('A');
 
-                    $b              = $enum->getValue('B');
-                    $b->astNode     = Parser::enumValueDefinition('A @b @a');
-                    $b->description = 'Description';
+                    if ($a instanceof EnumValueDefinition) {
+                        $a->deprecationReason = Directive::DEFAULT_DEPRECATION_REASON;
+                    }
+
+                    $b = $enum->getValue('B');
+
+                    if ($b instanceof EnumValueDefinition) {
+                        $b->astNode     = Parser::enumValueDefinition('A @b @a');
+                        $b->description = 'Description';
+                    }
 
                     return $enum;
                 },

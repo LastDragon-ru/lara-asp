@@ -3,9 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
@@ -37,10 +35,10 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
         $actual = (string) (new InputObjectTypeDefinitionBlock(
             new Dispatcher(), $settings, $level, $used, $definition
         ));
-        $parsed = Parser::InputObjectTypeDefinition($actual);
+
+        Parser::inputObjectTypeDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(InputObjectTypeDefinitionNode::class, $parsed);
     }
 
     /**
@@ -64,7 +62,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new InputObjectTypeDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
         );
 
@@ -84,7 +82,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, FieldArgument}>
+     * @return array<string,array{string, Settings, int, int, InputObjectType}>
      */
     public function dataProviderToString(): array {
         return [

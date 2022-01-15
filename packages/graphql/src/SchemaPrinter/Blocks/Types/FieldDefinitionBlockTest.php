@@ -3,9 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
@@ -38,10 +36,10 @@ class FieldDefinitionBlockTest extends TestCase {
         FieldDefinition $definition,
     ): void {
         $actual = (string) (new FieldDefinitionBlock(new Dispatcher(), $settings, $level, $used, $definition));
-        $parsed = Parser::fieldDefinition($actual);
+
+        Parser::fieldDefinition($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(FieldDefinitionNode::class, $parsed);
     }
 
     /**
@@ -62,7 +60,7 @@ class FieldDefinitionBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new FieldDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
         );
 
@@ -82,7 +80,7 @@ class FieldDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, FieldArgument}>
+     * @return array<string,array{string, Settings, int, int, FieldDefinition}>
      */
     public function dataProviderToString(): array {
         return [

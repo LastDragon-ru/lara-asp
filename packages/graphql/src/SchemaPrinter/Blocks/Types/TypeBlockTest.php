@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
-use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
@@ -54,7 +53,7 @@ class TypeBlockTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new TypeBlock($dispatcher, $settings, 0, 0, $node)),
         );
 
@@ -74,7 +73,7 @@ class TypeBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DirectiveNode}>
+     * @return array<string,array{string, Settings, int, int, Type}>
      */
     public function dataProviderToString(): array {
         return [

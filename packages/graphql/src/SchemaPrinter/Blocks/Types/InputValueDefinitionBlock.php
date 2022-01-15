@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
+use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Utils\AST;
@@ -45,15 +46,15 @@ class InputValueDefinitionBlock extends DefinitionBlock {
         $body       = ":{$space}{$type}";
 
         if ($definition->defaultValueExists()) {
-            $prefix = "{$body}{$space}={$space}";
-            $value  = new ValueNodeBlock(
+            $prefix    = "{$body}{$space}={$space}";
+            $value     = new ValueNodeBlock(
                 $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed() + mb_strlen($prefix),
-                AST::astFromValue($definition->defaultValue, $definition->getType()),
+                AST::astFromValue($definition->defaultValue, $definition->getType()) ?? new NullValueNode([]),
             );
-            $body   = "{$prefix}{$value}";
+            $body      = "{$prefix}{$value}";
         }
 
         return $body;

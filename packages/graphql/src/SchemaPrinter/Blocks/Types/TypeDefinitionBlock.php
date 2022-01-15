@@ -13,9 +13,14 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends DefinitionBlock<InterfaceType|ObjectType>
+ * @template TType of InterfaceType|ObjectType
+ *
+ * @extends DefinitionBlock<TType>
  */
 abstract class TypeDefinitionBlock extends DefinitionBlock {
+    /**
+     * @param TType $definition
+     */
     public function __construct(
         Dispatcher $dispatcher,
         Settings $settings,

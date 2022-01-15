@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
 use Closure;
 use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use Mockery;
@@ -37,10 +37,10 @@ class DirectiveNodeListTest extends TestCase {
         string $reason = null,
     ): void {
         $actual = (string) (new DirectiveNodeList(new Dispatcher(), $settings, $level, $used, $directives, $reason));
-        $parsed = Parser::directives($actual);
+
+        Parser::directives($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertInstanceOf(NodeList::class, $parsed);
     }
 
     /**
@@ -59,7 +59,7 @@ class DirectiveNodeListTest extends TestCase {
 
         $dispatcher->attach(Closure::fromCallable($spy));
 
-        self::assertNotNull(
+        self::assertNotEmpty(
             (string) (new DirectiveNodeList($dispatcher, $settings, 0, 0, [$a, $b])),
         );
 
@@ -86,7 +86,7 @@ class DirectiveNodeListTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DirectiveNode}>
+     * @return array<string,array{string, Settings, int, int, ?array<DirectiveNode>, ?string}>
      */
     public function dataProviderToString(): array {
         return [
@@ -191,6 +191,28 @@ class DirectiveNodeListTest extends TestCase {
                     Parser::directive('@b(b: 1234567890)'),
                 ],
                 'very very very long reason',
+            ],
+            'filter'                                    => [
+                <<<'STRING'
+                @a(a: 123)
+                STRING,
+                new class() extends DefaultSettings {
+                    public function getDirectiveFilter(): ?DirectiveFilter {
+                        return new class() implements DirectiveFilter {
+                            public function isAllowedDirective(DirectiveNode $directive): bool {
+                                return $directive->name->value === 'a';
+                            }
+                        };
+                    }
+                },
+                0,
+                0,
+                [
+                    Parser::directive('@a(a: 123)'),
+                    Parser::directive('@b(b: 1234567890)'),
+                    Parser::directive('@c'),
+                ],
+                null,
             ],
         ];
     }

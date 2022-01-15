@@ -61,7 +61,7 @@ class BlockListTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, string}>
+     * @return array<string,array<mixed>>
      */
     public function dataProviderToString(): array {
         return (new MergeDataProvider([

@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 /**
  * @internal
  *
- * @extends DefinitionBlock<InterfaceType>
+ * @extends TypeDefinitionBlock<InterfaceType>
  */
 class InterfaceTypeDefinitionBlock extends TypeDefinitionBlock {
     public function __construct(
