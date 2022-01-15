@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
-use Closure;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 
 // TODO: Directive resolver
@@ -75,9 +74,4 @@ interface Settings {
      * Used to determine should the directive included in output or not.
      */
     public function getDirectiveFilter(): ?DirectiveFilter;
-
-    /**
-     * @return Closure():bool|null
-     */
-    public function getDirectivesDefinitionsFilter(): ?Closure;
 }

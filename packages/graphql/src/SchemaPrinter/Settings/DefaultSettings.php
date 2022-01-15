@@ -82,8 +82,4 @@ class DefaultSettings implements Settings {
     public function getDirectiveFilter(): ?DirectiveFilter {
         return null;
     }
-
-    public function getDirectivesDefinitionsFilter(): ?Closure {
-        return null;
-    }
 }
