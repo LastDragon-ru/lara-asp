@@ -6,6 +6,7 @@ use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
@@ -18,7 +19,7 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @template TType of Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive
+ * @template TType of Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField
  */
 abstract class DefinitionBlock extends Block implements Named {
     /**
@@ -29,7 +30,7 @@ abstract class DefinitionBlock extends Block implements Named {
         Settings $settings,
         int $level,
         int $used,
-        private Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive $definition,
+        private Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField $definition,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
@@ -49,7 +50,7 @@ abstract class DefinitionBlock extends Block implements Named {
     /**
      * @return TType
      */
-    protected function getDefinition(): Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive {
+    protected function getDefinition(): Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField {
         return $this->definition;
     }
 

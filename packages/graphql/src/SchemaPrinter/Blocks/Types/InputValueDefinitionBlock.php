@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\FieldArgument;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\ValueNodeBlock;
@@ -14,7 +15,7 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends DefinitionBlock<FieldArgument>
+ * @extends DefinitionBlock<FieldArgument|InputObjectField>
  */
 class InputValueDefinitionBlock extends DefinitionBlock {
     public function __construct(
@@ -22,7 +23,7 @@ class InputValueDefinitionBlock extends DefinitionBlock {
         Settings $settings,
         int $level,
         int $used,
-        FieldArgument $definition,
+        FieldArgument|InputObjectField $definition,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used, $definition);
     }
