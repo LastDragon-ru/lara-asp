@@ -17,7 +17,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -57,59 +57,61 @@ class ValueNodeTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ValueNode&Node}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             NullValueNode::class                                  => [
                 'null',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral('null'),
             ],
             IntValueNode::class                                   => [
                 '123',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral('123'),
             ],
             FloatValueNode::class                                 => [
                 '123.45',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral('123.45'),
             ],
             BooleanValueNode::class                               => [
                 'true',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral('true'),
             ],
             StringValueNode::class                                => [
                 '"true"',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral('"true"'),
             ],
             EnumValueNode::class                                  => [
                 'Value',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral('Value'),
             ],
             VariableNode::class                                   => [
                 '$variable',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral('$variable'),
             ],
             ListValueNode::class.' (short)'                       => [
                 '["a", "b", "c"]',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral('["a", "b", "c"]'),
@@ -124,11 +126,7 @@ class ValueNodeTest extends TestCase {
                     """
                 ]
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral(
@@ -153,11 +151,7 @@ class ValueNodeTest extends TestCase {
                         """
                     ]
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 1,
                 0,
                 Parser::valueLiteral(
@@ -176,7 +170,7 @@ class ValueNodeTest extends TestCase {
                 <<<'STRING'
                 []
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 1,
                 0,
                 Parser::valueLiteral('[]'),
@@ -190,11 +184,7 @@ class ValueNodeTest extends TestCase {
                     }
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral(
@@ -231,11 +221,7 @@ class ValueNodeTest extends TestCase {
                     }
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 Parser::valueLiteral(

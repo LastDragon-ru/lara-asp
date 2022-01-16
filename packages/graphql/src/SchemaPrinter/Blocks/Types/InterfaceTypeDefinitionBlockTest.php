@@ -11,7 +11,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -45,7 +45,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
      */
     public function testToStringEvent(): void {
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
         $definition = new InterfaceType([
             'name'   => 'A',
@@ -98,6 +98,8 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, InterfaceType}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'description + directives'                    => [
                 <<<'STRING'
@@ -107,7 +109,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                 interface Test
                 @a
                 STRING,
-                new DefaultSettings(),
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new InterfaceType([
@@ -134,11 +136,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a(a: Int): A
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new InterfaceType([
@@ -184,11 +182,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 new InterfaceType([
@@ -209,11 +203,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new InterfaceType([
@@ -241,11 +231,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 120,
                 new InterfaceType([
@@ -272,11 +258,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 120,
                 new InterfaceType([
@@ -299,11 +281,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 new InterfaceType([
@@ -329,15 +307,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeInterfaces(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeInterfaces(true),
                 0,
                 120,
                 new InterfaceType([
@@ -363,15 +333,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                         a: String
                     }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeInterfaces(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeInterfaces(true),
                 1,
                 120,
                 new InterfaceType([

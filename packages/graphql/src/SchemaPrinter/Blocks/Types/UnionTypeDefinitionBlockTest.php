@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
     // =========================================================================
     /**
      * @covers ::__toString
-     * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionMemberTypesList::__toString
+     * @covers       \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionMemberTypesList::__toString
      *
      * @dataProvider dataProviderToString
      */
@@ -56,7 +56,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                 ]),
             ],
         ]);
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
 
         $dispatcher->attach(Closure::fromCallable($spy));
@@ -91,12 +91,14 @@ class UnionTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, UnionType}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'single-line'          => [
                 <<<'STRING'
                 union Test = C | B | A
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new UnionType([
@@ -121,11 +123,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     | B
                     | A
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 120,
                 new UnionType([
@@ -147,11 +145,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 union Test = C | B | A
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 1,
                 0,
                 new UnionType([
@@ -176,11 +170,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                         | B
                         | A
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 1,
                 120,
                 new UnionType([
@@ -202,11 +192,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 union Test = A | B | C
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isNormalizeUnions(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeUnions(true),
                 0,
                 0,
                 new UnionType([

@@ -2,12 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumValueDefinition;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -42,12 +41,14 @@ class EnumValueDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, EnumValueDefinition}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'value'                      => [
                 <<<'STRING'
                 A
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new EnumValueDefinition([
@@ -59,11 +60,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 A
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 1,
                 0,
                 new EnumValueDefinition([
@@ -79,15 +76,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
                 A
                 @a
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new EnumValueDefinition([

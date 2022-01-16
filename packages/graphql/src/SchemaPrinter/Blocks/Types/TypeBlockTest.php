@@ -11,7 +11,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -48,7 +48,7 @@ class TypeBlockTest extends TestCase {
                 'name' => 'Test',
             ])
         );
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
 
         $dispatcher->attach(Closure::fromCallable($spy));
@@ -76,10 +76,12 @@ class TypeBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, Type}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'object'        => [
                 'Test',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new ObjectType([
@@ -88,7 +90,7 @@ class TypeBlockTest extends TestCase {
             ],
             'non null'      => [
                 'Test!',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new NonNull(
@@ -99,7 +101,7 @@ class TypeBlockTest extends TestCase {
             ],
             'non null list' => [
                 '[Test]!',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new NonNull(

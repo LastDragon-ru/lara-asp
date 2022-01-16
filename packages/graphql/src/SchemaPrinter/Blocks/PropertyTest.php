@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use PHPUnit\Framework\TestCase;
 
 use function mb_strlen;
@@ -26,17 +26,7 @@ class PropertyTest extends TestCase {
         $space      = '  ';
         $separator  = ':';
         $content    = 'abc abcabc abcabc abcabc abc';
-        $settings   = new class($space) extends DefaultSettings {
-            public function __construct(
-                protected string $space,
-            ) {
-                parent::__construct();
-            }
-
-            public function getSpace(): string {
-                return $this->space;
-            }
-        };
+        $settings   = (new TestSettings())->setSpace($space);
         $dispatcher = new Dispatcher();
         $block      = new class($dispatcher, $settings, $level, $used, $content) extends Block {
             public function __construct(

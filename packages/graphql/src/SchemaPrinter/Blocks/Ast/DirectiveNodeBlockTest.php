@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -51,7 +51,7 @@ class DirectiveNodeBlockTest extends TestCase {
     public function testToStringEvent(): void {
         $spy        = Mockery::spy(static fn(Event $event) => null);
         $node       = Parser::directive('@test');
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
 
         $dispatcher->attach(Closure::fromCallable($spy));
@@ -79,24 +79,26 @@ class DirectiveNodeBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, DirectiveNode}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'without arguments'           => [
                 '@directive',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::directive('@directive'),
             ],
             'without arguments (level)'   => [
                 '@directive',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::directive('@directive'),
             ],
             'with arguments (short)'      => [
                 '@directive(a: "a", b: "b")',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 Parser::directive('@directive(a: "a", b: "b")'),
@@ -108,18 +110,14 @@ class DirectiveNodeBlockTest extends TestCase {
                     a: "a"
                 )
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 120,
                 Parser::directive('@directive(b: "b", a: "a")'),
             ],
             'with arguments (normalized)' => [
                 '@directive(a: "a", b: "b")',
-                new class() extends DefaultSettings {
-                    public function isNormalizeArguments(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeArguments(true),
                 0,
                 0,
                 Parser::directive('@directive(b: "b", a: "a")'),
@@ -131,7 +129,7 @@ class DirectiveNodeBlockTest extends TestCase {
                         a: "a"
                     )
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 1,
                 120,
                 Parser::directive('@directive(b: "b", a: "a")'),

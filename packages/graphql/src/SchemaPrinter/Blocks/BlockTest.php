@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ class BlockTest extends TestCase {
      */
     public function testGetContent(): void {
         $content = 'content';
-        $block   = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new DefaultSettings()]);
+        $block   = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new TestSettings()]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -39,7 +39,7 @@ class BlockTest extends TestCase {
     public function testGetLength(): void {
         $content = 'content';
         $length  = mb_strlen($content);
-        $block   = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new DefaultSettings()]);
+        $block   = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new TestSettings()]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -75,7 +75,7 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsEmpty
      */
     public function testIsEmpty(bool $expected, string $content): void {
-        $block = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new DefaultSettings()]);
+        $block = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new TestSettings()]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -93,24 +93,22 @@ class BlockTest extends TestCase {
      * @return array<string, array{bool, Settings, string}>
      */
     public function dataProviderIsMultiline(): array {
+        $settings = new TestSettings();
+
         return [
             'single short line' => [
                 false,
-                new DefaultSettings(),
+                $settings,
                 'short line',
             ],
             'single long line'  => [
                 false,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 5;
-                    }
-                },
+                $settings->setLineLength(5),
                 'long line',
             ],
             'multi line'        => [
                 true,
-                new DefaultSettings(),
+                $settings,
                 "multi\nline",
             ],
         ];

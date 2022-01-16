@@ -9,9 +9,8 @@ use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -50,11 +49,7 @@ class DirectiveNodeListTest extends TestCase {
         $a          = Parser::directive('@a');
         $b          = Parser::directive('@b');
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = new class() extends DefaultSettings {
-            public function isIncludeDirectives(): bool {
-                return true;
-            }
-        };
+        $settings   = (new TestSettings())->setIncludeDirectives(true);
         $dispatcher = new Dispatcher();
 
         $dispatcher->attach(Closure::fromCallable($spy));
@@ -89,10 +84,12 @@ class DirectiveNodeListTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ?array<DirectiveNode>, ?string}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'null'                                      => [
                 '',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 null,
@@ -100,7 +97,7 @@ class DirectiveNodeListTest extends TestCase {
             ],
             'empty'                                     => [
                 '',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 [],
@@ -111,7 +108,7 @@ class DirectiveNodeListTest extends TestCase {
                 @b(b: 123)
                 @a
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 [
@@ -124,7 +121,7 @@ class DirectiveNodeListTest extends TestCase {
                 <<<'STRING'
                 @deprecated
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 null,
@@ -134,7 +131,7 @@ class DirectiveNodeListTest extends TestCase {
                 <<<'STRING'
                 @deprecated(reason: "reason")
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 null,
@@ -145,7 +142,7 @@ class DirectiveNodeListTest extends TestCase {
                 @deprecated(reason: "reason")
                 @b(b: 123)
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 [
@@ -164,7 +161,7 @@ class DirectiveNodeListTest extends TestCase {
                     b: 1234567890
                 )
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 70,
                 [
@@ -183,7 +180,7 @@ class DirectiveNodeListTest extends TestCase {
                         b: 1234567890
                     )
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 1,
                 70,
                 [
@@ -196,15 +193,9 @@ class DirectiveNodeListTest extends TestCase {
                 <<<'STRING'
                 @a(a: 123)
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getDirectiveFilter(): ?DirectiveFilter {
-                        return new class() implements DirectiveFilter {
-                            public function isAllowedDirective(DirectiveNode $directive): bool {
-                                return $directive->name->value === 'a';
-                            }
-                        };
-                    }
-                },
+                $settings->setDirectiveFilter(static function (DirectiveNode $directive): bool {
+                    return $directive->name->value === 'a';
+                }),
                 0,
                 0,
                 [

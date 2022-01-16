@@ -82,7 +82,7 @@ abstract class BlockList extends Block implements ArrayAccess {
     protected function getBlocks(): array {
         $blocks = $this->blocks;
 
-        if ($this->isNormalized()) {
+        if (count($blocks) > 0 && $this->isNormalized()) {
             usort($blocks, static function (Block $a, Block $b): int {
                 $aName = $a instanceof Named ? $a->getName() : '';
                 $bName = $b instanceof Named ? $b->getName() : '';

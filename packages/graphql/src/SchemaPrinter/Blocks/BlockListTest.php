@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use PHPUnit\Framework\TestCase;
@@ -64,13 +64,15 @@ class BlockListTest extends TestCase {
      * @return array<string,array<mixed>>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return (new MergeDataProvider([
             'index'           => new ArrayDataProvider([
                 'one single-line block'                         => [
                     <<<'STRING'
                     block a
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -87,7 +89,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     block a
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -104,7 +106,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     block a, block b
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -123,11 +125,7 @@ class BlockListTest extends TestCase {
                     block b
                     block a
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getLineLength(): int {
-                            return 20;
-                        }
-                    },
+                    $settings->setLineLength(20),
                     0,
                     5,
                     false,
@@ -147,7 +145,7 @@ class BlockListTest extends TestCase {
 
                     block b
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -175,7 +173,7 @@ class BlockListTest extends TestCase {
 
                     block g
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -200,7 +198,7 @@ class BlockListTest extends TestCase {
                     block b
                     block a
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -219,7 +217,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     block b, block a
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     true,
@@ -238,11 +236,7 @@ class BlockListTest extends TestCase {
                     block a
                         block b
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getIndent(): string {
-                            return '  ';
-                        }
-                    },
+                    $settings->setIndent('  '),
                     2,
                     0,
                     false,
@@ -262,7 +256,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     a: block a
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -279,7 +273,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     a: block a
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -296,7 +290,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     a: block a, b: block b
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -315,11 +309,7 @@ class BlockListTest extends TestCase {
                     b: block b
                     a: block a
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getLineLength(): int {
-                            return 20;
-                        }
-                    },
+                    $settings->setLineLength(20),
                     0,
                     5,
                     false,
@@ -339,7 +329,7 @@ class BlockListTest extends TestCase {
 
                     b: block b
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -367,7 +357,7 @@ class BlockListTest extends TestCase {
 
                     g: block g
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -392,7 +382,7 @@ class BlockListTest extends TestCase {
                     b: block b
                     a: block a
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -411,7 +401,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     a: block a, b: block b
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     true,
@@ -430,11 +420,7 @@ class BlockListTest extends TestCase {
                     a: block a
                         b: block b
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getIndent(): string {
-                            return '  ';
-                        }
-                    },
+                    $settings->setIndent('  '),
                     2,
                     0,
                     false,
@@ -454,7 +440,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     [a: block a]
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -473,11 +459,7 @@ class BlockListTest extends TestCase {
                         a: block a
                     ]
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getIndent(): string {
-                            return '    ';
-                        }
-                    },
+                    $settings,
                     0,
                     0,
                     false,
@@ -494,7 +476,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     [block a, b: block b]
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -515,15 +497,7 @@ class BlockListTest extends TestCase {
                         a: block a
                     ]
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getLineLength(): int {
-                            return 20;
-                        }
-
-                        public function getIndent(): string {
-                            return '    ';
-                        }
-                    },
+                    $settings->setLineLength(20),
                     0,
                     5,
                     false,
@@ -545,11 +519,7 @@ class BlockListTest extends TestCase {
                         block b
                     ]
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getIndent(): string {
-                            return '    ';
-                        }
-                    },
+                    $settings,
                     0,
                     0,
                     false,
@@ -569,11 +539,7 @@ class BlockListTest extends TestCase {
                                 block a
                             ]
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getIndent(): string {
-                            return '    ';
-                        }
-                    },
+                    $settings,
                     2,
                     0,
                     false,
@@ -588,7 +554,7 @@ class BlockListTest extends TestCase {
                 ],
                 'empty'                                 => [
                     '',
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -605,7 +571,7 @@ class BlockListTest extends TestCase {
                     <<<'STRING'
                     block a | block b
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     0,
                     false,
@@ -624,7 +590,7 @@ class BlockListTest extends TestCase {
                     || block a
                     || block b
                     STRING,
-                    new DefaultSettings(),
+                    $settings,
                     0,
                     120,
                     false,
@@ -643,11 +609,7 @@ class BlockListTest extends TestCase {
                     || block a
                         || block b
                     STRING,
-                    new class() extends DefaultSettings {
-                        public function getIndent(): string {
-                            return '    ';
-                        }
-                    },
+                    $settings,
                     1,
                     120,
                     false,
@@ -724,7 +686,7 @@ class BlockListTest__Block extends Block {
         protected bool $multiline,
         protected string $content,
     ) {
-        parent::__construct(new Dispatcher(), new DefaultSettings());
+        parent::__construct(new Dispatcher(), new TestSettings());
     }
 
     protected function getContent(): string {
@@ -756,7 +718,7 @@ class BlockListTest__NamedBlock extends Property {
     ) {
         parent::__construct(
             new Dispatcher(),
-            new DefaultSettings(),
+            new TestSettings(),
             $name,
             new BlockListTest__Block($multiline, $content),
         );

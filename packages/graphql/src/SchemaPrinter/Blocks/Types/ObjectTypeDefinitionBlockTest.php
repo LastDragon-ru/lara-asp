@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -44,7 +44,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
      */
     public function testToStringEvent(): void {
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
         $definition = new ObjectType([
             'name'   => 'A',
@@ -97,6 +97,8 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ObjectType}>
      */
     public function dataProviderToString(): array {
+        $settings   = new TestSettings();
+
         return [
             'description + directives'                    => [
                 <<<'STRING'
@@ -106,7 +108,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                 type Test
                 @a
                 STRING,
-                new DefaultSettings(),
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new ObjectType([
@@ -133,11 +135,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a(a: Int): A
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new ObjectType([
@@ -183,11 +181,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 new ObjectType([
@@ -208,11 +202,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new ObjectType([
@@ -240,11 +230,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 120,
                 new ObjectType([
@@ -271,11 +257,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 120,
                 new ObjectType([
@@ -298,11 +280,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 new ObjectType([
@@ -328,15 +306,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeInterfaces(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeInterfaces(true),
                 0,
                 120,
                 new ObjectType([
@@ -362,15 +332,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                         a: String
                     }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeInterfaces(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeInterfaces(true),
                 1,
                 120,
                 new ObjectType([

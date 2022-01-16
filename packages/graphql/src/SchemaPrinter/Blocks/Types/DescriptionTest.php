@@ -3,12 +3,11 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function implode;
@@ -52,10 +51,12 @@ class DescriptionTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ?string, array<DirectiveNode>|null}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'null'                                                     => [
                 '',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 null,
@@ -63,11 +64,7 @@ class DescriptionTest extends TestCase {
             ],
             'Prints an empty string'                                   => [
                 '',
-                new class() extends DefaultSettings {
-                    public function isNormalizeDescription(): bool {
-                        return false;
-                    }
-                },
+                $settings,
                 0,
                 0,
                 '',
@@ -75,11 +72,7 @@ class DescriptionTest extends TestCase {
             ],
             'Prints an empty string (normalized)'                      => [
                 '',
-                new class() extends DefaultSettings {
-                    public function isNormalizeDescription(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeDescription(true),
                 0,
                 0,
                 '',
@@ -87,11 +80,7 @@ class DescriptionTest extends TestCase {
             ],
             'Prints an empty string with only whitespace'              => [
                 '" "',
-                new class() extends DefaultSettings {
-                    public function isNormalizeDescription(): bool {
-                        return false;
-                    }
-                },
+                $settings,
                 0,
                 0,
                 ' ',
@@ -99,11 +88,7 @@ class DescriptionTest extends TestCase {
             ],
             'Prints an empty string with only whitespace (normalized)' => [
                 '',
-                new class() extends DefaultSettings {
-                    public function isNormalizeDescription(): bool {
-                        return true;
-                    }
-                },
+                 $settings->setNormalizeDescription(true),
                 0,
                 0,
                 ' ',
@@ -115,7 +100,7 @@ class DescriptionTest extends TestCase {
                 Short string
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 'Short string',
@@ -127,11 +112,7 @@ class DescriptionTest extends TestCase {
                 Long string
                 """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 4;
-                    }
-                },
+                $settings->setLineLength(4),
                 0,
                 0,
                 'Long string',
@@ -143,15 +124,9 @@ class DescriptionTest extends TestCase {
                     string
                     """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 2;
-                    }
-
-                    public function getIndent(): string {
-                        return '  ';
-                    }
-                },
+                $settings
+                    ->setIndent('  ')
+                    ->setLineLength(2),
                 2,
                 0,
                 'string',
@@ -163,15 +138,9 @@ class DescriptionTest extends TestCase {
                     string
                     """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 22;
-                    }
-
-                    public function getIndent(): string {
-                        return '  ';
-                    }
-                },
+                $settings
+                    ->setIndent('  ')
+                    ->setLineLength(22),
                 2,
                 20,
                 'string',
@@ -188,11 +157,7 @@ class DescriptionTest extends TestCase {
                 ccc
                 """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isNormalizeDescription(): bool {
-                        return false;
-                    }
-                },
+                $settings,
                 0,
                 0,
                 <<<'STRING'
@@ -214,11 +179,7 @@ class DescriptionTest extends TestCase {
                 ccc
                 """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isNormalizeDescription(): bool {
-                        return true;
-                    }
-                },
+                 $settings->setNormalizeDescription(true),
                 0,
                 0,
                 <<<'STRING'
@@ -234,7 +195,7 @@ class DescriptionTest extends TestCase {
                 <<<'STRING'
                 """  Leading space"""
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 '  Leading space',
@@ -242,7 +203,7 @@ class DescriptionTest extends TestCase {
             ],
             'Leading tab'                                              => [
                 "\"\"\"\tLeading tab\"\"\"",
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 "\tLeading tab",
@@ -254,7 +215,7 @@ class DescriptionTest extends TestCase {
                 Trailing "
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 'Trailing "',
@@ -267,7 +228,7 @@ class DescriptionTest extends TestCase {
                 abc
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 <<<'STRING'
@@ -282,7 +243,7 @@ class DescriptionTest extends TestCase {
                 Trailing \\
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 'Trailing \\\\',
@@ -294,7 +255,7 @@ class DescriptionTest extends TestCase {
                 String with \""" wrapper
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 'String with """ wrapper',
@@ -314,11 +275,7 @@ class DescriptionTest extends TestCase {
                         '    """',
                     ],
                 ),
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '  ';
-                    }
-                },
+                $settings->setIndent('  '),
                 2,
                 0,
                 implode(
@@ -348,15 +305,9 @@ class DescriptionTest extends TestCase {
                         '    """',
                     ],
                 ),
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '  ';
-                    }
-
-                    public function isNormalizeDescription(): bool {
-                        return true;
-                    }
-                },
+                $settings
+                    ->setIndent('  ')
+                    ->setNormalizeDescription(true),
                 2,
                 0,
                 implode(
@@ -378,11 +329,7 @@ class DescriptionTest extends TestCase {
                 Description
                 """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectivesInDescription(): bool {
-                        return false;
-                    }
-                },
+                $settings,
                 0,
                 0,
                 <<<'STRING'
@@ -403,11 +350,7 @@ class DescriptionTest extends TestCase {
                 @b(test: "abc")
                 """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectivesInDescription(): bool {
-                        return true;
-                    }
-                },
+                $settings->setIncludeDirectivesInDescription(true),
                 0,
                 0,
                 <<<'STRING'
@@ -429,15 +372,9 @@ class DescriptionTest extends TestCase {
                 @b(test: "abc")
                 """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isNormalizeDescription(): bool {
-                        return true;
-                    }
-
-                    public function isIncludeDirectivesInDescription(): bool {
-                        return true;
-                    }
-                },
+                $settings
+                    ->setNormalizeDescription(true)
+                    ->setIncludeDirectivesInDescription(true),
                 0,
                 0,
                 <<<'STRING'

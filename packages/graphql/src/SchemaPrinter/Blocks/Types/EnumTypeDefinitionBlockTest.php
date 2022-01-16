@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\EnumValueDefinition;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -49,6 +49,8 @@ class EnumTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, Closure():EnumType|EnumType}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'enum'                       => [
                 <<<'STRING'
@@ -58,11 +60,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     A
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 new EnumType([
@@ -78,11 +76,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                         A
                     }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 1,
                 0,
                 new EnumType([
@@ -98,15 +92,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     C
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeEnums(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeEnums(true),
                 0,
                 0,
                 new EnumType([
@@ -130,11 +116,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     @deprecated
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 static function (): EnumType {

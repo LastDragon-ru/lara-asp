@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -47,7 +47,7 @@ class FieldDefinitionBlockTest extends TestCase {
      */
     public function testToStringEvent(): void {
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
         $definition = FieldDefinition::create([
             'name' => 'A',
@@ -83,6 +83,8 @@ class FieldDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, FieldDefinition}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'without args'         => [
                 <<<'STRING'
@@ -92,7 +94,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 test: Test!
                 @a
                 STRING,
-                new DefaultSettings(),
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 FieldDefinition::create([
@@ -113,7 +115,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 """
                 test(a: [String!] = ["aaaaaaaaaaaaaaaaaaaaaaaaaa"], b: Int): Test!
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 FieldDefinition::create([
@@ -148,15 +150,7 @@ class FieldDefinitionBlockTest extends TestCase {
                     a: String! = "aaaaaaaaaaaaaaaaaaaaaaaaaa"
                 ): Test!
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeArguments(): bool {
-                        return false;
-                    }
-                },
+                $settings,
                 0,
                 0,
                 FieldDefinition::create([
@@ -182,15 +176,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 test(a: String, b: Int): Test!
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeArguments(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeArguments(true),
                 0,
                 0,
                 FieldDefinition::create([
@@ -217,15 +203,7 @@ class FieldDefinitionBlockTest extends TestCase {
                         b: Int
                     ): Test!
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeArguments(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeArguments(true),
                 1,
                 120,
                 FieldDefinition::create([

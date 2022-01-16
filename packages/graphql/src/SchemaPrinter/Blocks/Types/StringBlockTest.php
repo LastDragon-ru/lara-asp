@@ -6,7 +6,7 @@ use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function implode;
@@ -44,24 +44,26 @@ class StringBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, string}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'Prints an empty string'                => [
                 '""""""',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 '',
             ],
             'Prints an string with only whitespace' => [
                 '" "',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 ' ',
             ],
             'One-line prints a short string'        => [
                 '"""Short string"""',
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 'Short string',
@@ -72,11 +74,7 @@ class StringBlockTest extends TestCase {
                 Long string
                 """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 4;
-                    }
-                },
+                $settings->setLineLength(4),
                 0,
                 0,
                 'Long string',
@@ -85,15 +83,7 @@ class StringBlockTest extends TestCase {
                 <<<'STRING'
                 """string"""
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 21;
-                    }
-
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setLineLength(21),
                 2,
                 0,
                 'string',
@@ -104,15 +94,9 @@ class StringBlockTest extends TestCase {
                     string
                     """
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 22;
-                    }
-
-                    public function getIndent(): string {
-                        return '  ';
-                    }
-                },
+                $settings
+                    ->setIndent('  ')
+                    ->setLineLength(22),
                 2,
                 20,
                 'string',
@@ -126,7 +110,7 @@ class StringBlockTest extends TestCase {
                 ccc
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 <<<'STRING'
@@ -140,25 +124,21 @@ class StringBlockTest extends TestCase {
                 <<<'STRING'
                 """  Leading space"""
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 '  Leading space',
             ],
             'Leading tab'                           => [
                 "\"\"\"\tLeading tab\"\"\"",
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 "\tLeading tab",
             ],
             'Leading whitespace (single line)'      => [
                 "\"\"\"\tLeading tab\"\"\"",
-                new class() extends DefaultSettings {
-                    public function getLineLength(): int {
-                        return 1;
-                    }
-                },
+                $settings->setLineLength(1),
                 0,
                 0,
                 "\tLeading tab",
@@ -169,7 +149,7 @@ class StringBlockTest extends TestCase {
                 Trailing "
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 'Trailing "',
@@ -181,7 +161,7 @@ class StringBlockTest extends TestCase {
                 abc
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 <<<'STRING'
@@ -195,7 +175,7 @@ class StringBlockTest extends TestCase {
                 Trailing \\
                 """
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 'Trailing \\\\',
@@ -204,7 +184,7 @@ class StringBlockTest extends TestCase {
                 <<<'STRING'
                 """String with \""" wrapper"""
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 'String with """ wrapper',
@@ -223,11 +203,7 @@ class StringBlockTest extends TestCase {
                         '    """',
                     ],
                 ),
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '  ';
-                    }
-                },
+                $settings->setIndent('  '),
                 2,
                 0,
                 implode(

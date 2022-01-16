@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -46,7 +46,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
      */
     public function testToStringEvent(): void {
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
         $definition = new InputObjectType([
             'name'   => 'A',
@@ -85,6 +85,8 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, InputObjectType}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'description + directives'          => [
                 <<<'STRING'
@@ -94,7 +96,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
                 input Test
                 @a
                 STRING,
-                new DefaultSettings(),
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new InputObjectType([
@@ -121,11 +123,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
                     a: A
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new InputObjectType([
@@ -161,11 +159,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 0,
                 new InputObjectType([
@@ -184,15 +178,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
                         a: String
                     }
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeInterfaces(): bool {
-                        return true;
-                    }
-                },
+                $settings->setNormalizeInterfaces(true),
                 1,
                 120,
                 new InputObjectType([

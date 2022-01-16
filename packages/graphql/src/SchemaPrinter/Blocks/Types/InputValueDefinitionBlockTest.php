@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -47,7 +47,7 @@ class InputValueDefinitionBlockTest extends TestCase {
      */
     public function testToStringEvent(): void {
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
         $definition = new FieldArgument([
             'name' => 'A',
@@ -83,6 +83,8 @@ class InputValueDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, FieldArgument}>
      */
     public function dataProviderToString(): array {
+        $settings   = new TestSettings();
+
         return [
             'without value' => [
                 <<<'STRING'
@@ -92,7 +94,7 @@ class InputValueDefinitionBlockTest extends TestCase {
                 test: Test!
                 @a
                 STRING,
-                new DefaultSettings(),
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new FieldArgument([
@@ -113,7 +115,7 @@ class InputValueDefinitionBlockTest extends TestCase {
                 """
                 test: [String!] = ["aaaaaaaaaaaaaaaaaaaaaaaaaa"]
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new FieldArgument([
@@ -134,7 +136,7 @@ class InputValueDefinitionBlockTest extends TestCase {
                     "aaaaaaaaaaaaaaaaaaaaaaaaaa"
                 ]
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 120,
                 new FieldArgument([
@@ -155,11 +157,7 @@ class InputValueDefinitionBlockTest extends TestCase {
                         "aaaaaaaaaaaaaaaaaaaaaaaaaa"
                     ]
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 1,
                 70,
                 new FieldArgument([

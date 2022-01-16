@@ -2,13 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ScalarType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -43,12 +42,14 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ScalarType}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'scalar'                          => [
                 <<<'STRING'
                 scalar Test
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new CustomScalarType([
@@ -63,15 +64,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                 scalar Test
                 @a
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-
-                    public function isIncludeDirectivesInDescription(): bool {
-                        return false;
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 0,
                 0,
                 new CustomScalarType([
@@ -93,15 +86,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                 """
                 scalar Test
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return false;
-                    }
-
-                    public function isIncludeDirectivesInDescription(): bool {
-                        return true;
-                    }
-                },
+                $settings->setIncludeDirectivesInDescription(true),
                 0,
                 0,
                 new CustomScalarType([
@@ -125,15 +110,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                     )
                     @b(value: "b")
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-
-                    public function isIncludeDirectivesInDescription(): bool {
-                        return false;
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 1,
                 60,
                 new CustomScalarType([
@@ -154,20 +131,12 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                     )
                     @b(value: "b")
                 STRING,
-                new class() extends DefaultSettings {
-                    public function isIncludeDirectives(): bool {
-                        return true;
-                    }
-
-                    public function isIncludeDirectivesInDescription(): bool {
-                        return false;
-                    }
-                },
+                $settings->setIncludeDirectives(true),
                 1,
                 60,
                 new CustomScalarType([
-                    'name'        => 'Test',
-                    'astNode'     => Parser::scalarTypeDefinition(
+                    'name'    => 'Test',
+                    'astNode' => Parser::scalarTypeDefinition(
                         <<<'STRING'
                         scalar Test @a(value: "very very long value") @b(value: "b")
                         STRING,

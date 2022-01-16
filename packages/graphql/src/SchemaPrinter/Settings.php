@@ -4,9 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 
-// TODO: Directive resolver
-// TODO: Throw error if directive definition not found
-
 interface Settings {
     public function getSpace(): string;
 

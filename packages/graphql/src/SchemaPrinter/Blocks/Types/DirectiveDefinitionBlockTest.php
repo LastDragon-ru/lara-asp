@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -46,7 +46,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
      */
     public function testToStringEvent(): void {
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = new DefaultSettings();
+        $settings   = new TestSettings();
         $dispatcher = new Dispatcher();
         $definition = new Directive([
             'name'      => 'A',
@@ -85,6 +85,8 @@ class DirectiveDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, Directive}>
      */
     public function dataProviderToString(): array {
+        $settings = new TestSettings();
+
         return [
             'description'            => [
                 <<<'STRING'
@@ -93,7 +95,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                 """
                 directive @test on ARGUMENT_DEFINITION | ENUM
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new Directive([
@@ -109,7 +111,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 directive @test repeatable on ARGUMENT_DEFINITION | ENUM
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new Directive([
@@ -125,7 +127,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 directive @test(a: String) repeatable on ARGUMENT_DEFINITION | ENUM
                 STRING,
-                new DefaultSettings(),
+                $settings,
                 0,
                 0,
                 new Directive([
@@ -151,11 +153,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     | ARGUMENT_DEFINITION
                     | ENUM
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 120,
                 new Directive([
@@ -181,11 +179,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     | ARGUMENT_DEFINITION
                     | ENUM
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 120,
                 new Directive([
@@ -207,11 +201,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     | ARGUMENT_DEFINITION
                     | ENUM
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 0,
                 60,
                 new Directive([
@@ -231,11 +221,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                         | ARGUMENT_DEFINITION
                         | ENUM
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-                },
+                $settings,
                 1,
                 120,
                 new Directive([
@@ -255,15 +241,8 @@ class DirectiveDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 directive @test on ENUM | INPUT_FIELD_DEFINITION | OBJECT
                 STRING,
-                new class() extends DefaultSettings {
-                    public function getIndent(): string {
-                        return '    ';
-                    }
-
-                    public function isNormalizeDirectiveLocations(): bool {
-                        return true;
-                    }
-                },
+                $settings
+                    ->setNormalizeDirectiveLocations(true),
                 0,
                 0,
                 new Directive([
