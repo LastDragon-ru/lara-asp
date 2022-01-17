@@ -43,6 +43,7 @@ class FormatterTest extends TestCase {
         self::assertNotSame($this->formatter, $formatter);
         self::assertNotEquals($this->formatter->getLocale(), $formatter->getLocale());
         self::assertSame($formatter, $formatter->forLocale($locale));
+        self::assertEquals($locale, $formatter->forTimezone('Europe/Moscow')->getLocale());
     }
 
     /**
@@ -55,6 +56,7 @@ class FormatterTest extends TestCase {
         self::assertNotSame($this->formatter, $formatter);
         self::assertNotEquals($this->formatter->getTimezone(), $formatter->getTimezone());
         self::assertSame($formatter, $formatter->forTimezone($timezone));
+        self::assertEquals($timezone, $formatter->forLocale('ru_RU')->getTimezone());
     }
 
     /**

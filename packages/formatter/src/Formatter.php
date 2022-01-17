@@ -197,7 +197,7 @@ class Formatter {
         $formatter = $this;
 
         if ($this->locale !== $locale) {
-            $formatter         = $this->getApplication()->make(static::class);
+            $formatter         = $this->create();
             $formatter->locale = $locale;
         }
 
@@ -211,9 +211,17 @@ class Formatter {
         $formatter = $this;
 
         if ($this->timezone !== $timezone) {
-            $formatter           = $this->getApplication()->make(static::class);
+            $formatter           = $this->create();
             $formatter->timezone = $timezone;
         }
+
+        return $formatter;
+    }
+
+    protected function create(): static {
+        $formatter           = $this->getApplication()->make(static::class);
+        $formatter->locale   = $this->locale;
+        $formatter->timezone = $this->timezone;
 
         return $formatter;
     }
@@ -603,31 +611,37 @@ class Formatter {
 
             foreach ($attributes as $attribute => $value) {
                 if (!is_int($attribute) || !$formatter->setAttribute($attribute, $value)) {
-                    throw new OutOfBoundsException(sprintf(
-                        '%s::setAttribute() failed: `%s` is unknown/invalid.',
-                        NumberFormatter::class,
-                        $attribute,
-                    ));
+                    throw new OutOfBoundsException(
+                        sprintf(
+                            '%s::setAttribute() failed: `%s` is unknown/invalid.',
+                            NumberFormatter::class,
+                            $attribute,
+                        )
+                    );
                 }
             }
 
             foreach ($symbols as $symbol => $value) {
                 if (!is_int($symbol) || !$formatter->setSymbol($symbol, $value)) {
-                    throw new OutOfBoundsException(sprintf(
-                        '%s::setSymbol() failed: `%s` is unknown/invalid.',
-                        NumberFormatter::class,
-                        $symbol,
-                    ));
+                    throw new OutOfBoundsException(
+                        sprintf(
+                            '%s::setSymbol() failed: `%s` is unknown/invalid.',
+                            NumberFormatter::class,
+                            $symbol,
+                        )
+                    );
                 }
             }
 
             foreach ($texts as $text => $value) {
                 if (!is_int($text) || !$formatter->setTextAttribute($text, $value)) {
-                    throw new OutOfBoundsException(sprintf(
-                        '%s::setTextAttribute() failed: `%s` is unknown/invalid.',
-                        NumberFormatter::class,
-                        $text,
-                    ));
+                    throw new OutOfBoundsException(
+                        sprintf(
+                            '%s::setTextAttribute() failed: `%s` is unknown/invalid.',
+                            NumberFormatter::class,
+                            $text,
+                        )
+                    );
                 }
             }
         }
