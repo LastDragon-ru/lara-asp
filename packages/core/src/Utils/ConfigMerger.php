@@ -147,7 +147,7 @@ class ConfigMerger {
 
         // Recursive
         if ($recursive) {
-            foreach ($array as $key => &$value) {
+            foreach ($array as &$value) {
                 if (is_array($value)) {
                     $this->cleanup($value, $recursive);
                 }

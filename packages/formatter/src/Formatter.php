@@ -616,7 +616,7 @@ class Formatter {
                             '%s::setAttribute() failed: `%s` is unknown/invalid.',
                             NumberFormatter::class,
                             $attribute,
-                        )
+                        ),
                     );
                 }
             }
@@ -628,7 +628,7 @@ class Formatter {
                             '%s::setSymbol() failed: `%s` is unknown/invalid.',
                             NumberFormatter::class,
                             $symbol,
-                        )
+                        ),
                     );
                 }
             }
@@ -640,7 +640,7 @@ class Formatter {
                             '%s::setTextAttribute() failed: `%s` is unknown/invalid.',
                             NumberFormatter::class,
                             $text,
-                        )
+                        ),
                     );
                 }
             }
