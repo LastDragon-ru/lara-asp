@@ -23,11 +23,11 @@ use const SORT_REGULAR;
  */
 class Usage {
     /**
-     * @var array<string,array{types:array<string>,values:array<T>}>
+     * @var array<string,array{types:array<string>,values:array<class-string<T>>}>
      */
     protected array $types = [];
     /**
-     * @var array<array{id:int,type:string,types:array<string>,values:array<T>}>
+     * @var array<array{id:int,type:string,types:array<string>,values:array<class-string<T>>}>
      */
     protected array $stack = [];
 
@@ -36,7 +36,7 @@ class Usage {
     }
 
     /**
-     * @return array<T>
+     * @return array<class-string<T>>
      */
     public function get(string $type): array {
         return array_values(array_unique($this->values($type, []), SORT_REGULAR));
@@ -109,7 +109,7 @@ class Usage {
     /**
      * @param array<string> $stack
      *
-     * @return array<T>
+     * @return array<class-string<T>>
      */
     protected function values(string $type, array $stack): array {
         $types  = $this->types[$type]['types'] ?? [];
