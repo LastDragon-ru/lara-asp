@@ -8,24 +8,25 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
 
 class TestSettings extends ImmutableSettings {
-    protected string           $space                             = ' ';
-    protected string           $indent                            = '    ';
-    protected string           $fileEnd                           = "\n";
-    protected string           $lineEnd                           = "\n";
-    protected int  $lineLength                     = 80;
-    protected bool $printDirectives              = true;
-    protected bool $printDirectivesInDescription      = false;
-    protected bool $printUnusedTypeDefinitions      = false;
-    protected bool $printUnusedDirectiveDefinitions = false;
-    protected bool $normalizeSchema                 = true;
-    protected bool             $normalizeUnions                   = true;
-    protected bool             $normalizeEnums                    = true;
-    protected bool             $normalizeInterfaces               = true;
-    protected bool             $normalizeFields                   = true;
-    protected bool             $normalizeArguments                = true;
-    protected bool             $normalizeDescription              = true;
-    protected bool             $normalizeDirectiveLocations       = true;
-    protected ?DirectiveFilter $directiveFilter                   = null;
+    protected string           $space                           = ' ';
+    protected string           $indent                          = '    ';
+    protected string           $fileEnd                         = "\n";
+    protected string           $lineEnd                         = "\n";
+    protected int              $lineLength                      = 80;
+    protected bool             $printDirectives                 = true;
+    protected bool             $printDirectivesInDescription    = false;
+    protected bool             $printUnusedTypeDefinitions      = false;
+    protected bool             $printUnusedDirectiveDefinitions = false;
+    protected bool             $normalizeSchema                 = true;
+    protected bool             $normalizeUnions                 = true;
+    protected bool             $normalizeEnums                  = true;
+    protected bool             $normalizeInterfaces             = true;
+    protected bool             $normalizeFields                 = true;
+    protected bool             $normalizeArguments              = true;
+    protected bool             $normalizeDescription            = true;
+    protected bool             $normalizeDirectiveLocations     = true;
+    protected bool             $alwaysMultilineUnions           = true;
+    protected ?DirectiveFilter $directiveFilter                 = null;
 
     /**
      * @param DirectiveFilter|Closure(DirectiveNode):bool|null $value

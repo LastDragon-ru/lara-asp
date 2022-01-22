@@ -31,4 +31,8 @@ class UnionMemberTypesList extends UsageList {
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeUnions();
     }
+
+    protected function isAlwaysMultiline(): bool {
+        return $this->getSettings()->isAlwaysMultilineUnions();
+    }
 }

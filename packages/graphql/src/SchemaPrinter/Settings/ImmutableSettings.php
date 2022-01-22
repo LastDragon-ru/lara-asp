@@ -24,6 +24,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $normalizeArguments;
     protected bool             $normalizeDescription;
     protected bool             $normalizeDirectiveLocations;
+    protected bool             $alwaysMultilineUnions;
     protected ?DirectiveFilter $directiveFilter;
 
     public function __construct() {
@@ -197,6 +198,16 @@ abstract class ImmutableSettings implements Settings {
     public function setNormalizeDirectiveLocations(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
             $settings->normalizeDirectiveLocations = $value;
+        });
+    }
+
+    public function isAlwaysMultilineUnions(): bool {
+        return $this->alwaysMultilineUnions;
+    }
+
+    public function setAlwaysMultilineUnions(bool $value): static {
+        return $this->set(static function (self $settings) use ($value): void {
+            $settings->alwaysMultilineUnions = $value;
         });
     }
 

@@ -74,6 +74,11 @@ interface Settings {
     public function isNormalizeDirectiveLocations(): bool;
 
     /**
+     * If `true` members will always be printed multiline.
+     */
+    public function isAlwaysMultilineUnions(): bool;
+
+    /**
      * Used to determine should the directive included in output or not.
      */
     public function getDirectiveFilter(): ?DirectiveFilter;

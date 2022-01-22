@@ -92,7 +92,8 @@ class UnionTypeDefinitionBlockTest extends TestCase {
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
-            ->setNormalizeUnions(false);
+            ->setNormalizeUnions(false)
+            ->setAlwaysMultilineUnions(false);
 
         return [
             'single-line'          => [
@@ -194,6 +195,31 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                 union Test = A | B | C
                 STRING,
                 $settings->setNormalizeUnions(true),
+                0,
+                0,
+                new UnionType([
+                    'name'  => 'Test',
+                    'types' => [
+                        new ObjectType([
+                            'name' => 'C',
+                        ]),
+                        new ObjectType([
+                            'name' => 'B',
+                        ]),
+                        new ObjectType([
+                            'name' => 'A',
+                        ]),
+                    ],
+                ]),
+            ],
+            'multiline always'          => [
+                <<<'STRING'
+                union Test =
+                    | C
+                    | B
+                    | A
+                STRING,
+                $settings->setAlwaysMultilineUnions(true),
                 0,
                 0,
                 new UnionType([
