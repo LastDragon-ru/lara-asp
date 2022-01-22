@@ -17,6 +17,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\DirectiveDefinitionBlock
  */
 class DirectiveDefinitionBlockTest extends TestCase {

@@ -16,6 +16,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\InterfaceTypeDefinitionBlock
  */
 class InterfaceTypeDefinitionBlockTest extends TestCase {

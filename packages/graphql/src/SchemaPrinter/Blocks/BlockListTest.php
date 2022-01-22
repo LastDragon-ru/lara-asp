@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use function mb_strlen;
 
 /**
+ * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList
  */
 class BlockListTest extends TestCase {

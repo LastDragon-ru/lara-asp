@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use function mb_strlen;
 
 /**
+ * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block
  */
 class BlockTest extends TestCase {

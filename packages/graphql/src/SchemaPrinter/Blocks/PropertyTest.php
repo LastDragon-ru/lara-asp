@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use function mb_strlen;
 
 /**
+ * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property
  */
 class PropertyTest extends TestCase {

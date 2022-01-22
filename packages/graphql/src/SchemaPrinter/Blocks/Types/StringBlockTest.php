@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use function implode;
 
 /**
+ * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock
  */
 class StringBlockTest extends TestCase {
