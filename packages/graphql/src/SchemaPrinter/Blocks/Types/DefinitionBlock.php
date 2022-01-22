@@ -2,12 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
+use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\NodeList;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
@@ -19,7 +22,7 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @template TType of Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField
+ * @template TType of Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField|Schema
  */
 abstract class DefinitionBlock extends Block implements Named {
     /**
@@ -30,7 +33,7 @@ abstract class DefinitionBlock extends Block implements Named {
         Settings $settings,
         int $level,
         int $used,
-        private Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField $definition,
+        private Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField|Schema $definition,
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
     }
@@ -39,9 +42,13 @@ abstract class DefinitionBlock extends Block implements Named {
         $name = $this->name();
         $type = $this->type();
 
-        if ($type) {
+        if ($type && $name) {
             $space = $this->space();
             $name  = "{$type}{$space}{$name}";
+        } elseif ($type) {
+            $name = $type;
+        } else {
+            // empty
         }
 
         return $name;
@@ -50,7 +57,9 @@ abstract class DefinitionBlock extends Block implements Named {
     /**
      * @return TType
      */
-    protected function getDefinition(): Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField {
+    protected function getDefinition(
+        // empty
+    ): Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField|Schema {
         return $this->definition;
     }
 
@@ -91,7 +100,12 @@ abstract class DefinitionBlock extends Block implements Named {
     }
 
     protected function name(): string {
-        return $this->getDefinition()->name;
+        $definition = $this->getDefinition();
+        $name       = !($definition instanceof Schema)
+            ? $definition->name
+            : '';
+
+        return $name;
     }
 
     abstract protected function type(): string|null;
@@ -107,24 +121,51 @@ abstract class DefinitionBlock extends Block implements Named {
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),
-            $definition->astNode?->directives ?? null,
+            $this->getDefinitionDirectives(),
             $definition->deprecationReason ?? null,
         );
 
         return $directives;
     }
 
-    protected function description(DirectiveNodeList $directives): Description {
+    protected function description(DirectiveNodeList $directives): ?Description {
+        // Supported?
         $definition  = $this->getDefinition();
-        $description = new Description(
+        $description = null;
+
+        if ($definition instanceof Schema) {
+            // It is part of October2021 spec but not yet supported
+            // https://github.com/webonyx/graphql-php/issues/1027
+        } else {
+            $description = $definition->description;
+        }
+
+        return new Description(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),
-            $definition->description,
+            $description,
             $directives,
         );
+    }
 
-        return $description;
+    /**
+     * @return NodeList<DirectiveNode>
+     */
+    protected function getDefinitionDirectives(): NodeList {
+        $definition = $this->getDefinition();
+        $astNode    = $definition instanceof Schema
+            ? $definition->getAstNode()
+            : $definition->astNode;
+        $directives = $astNode?->directives ?? null;
+
+        if ($directives === null) {
+            /** @var NodeList<DirectiveNode> $empty */
+            $empty      = new NodeList([]);
+            $directives = $empty;
+        }
+
+        return $directives;
     }
 }

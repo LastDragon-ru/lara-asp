@@ -1,0 +1,104 @@
+<?php declare(strict_types = 1);
+
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
+
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Schema;
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+
+use function array_filter;
+use function count;
+
+/**
+ * @internal
+ *
+ * @extends DefinitionBlock<Schema>
+ */
+class SchemaDefinitionBlock extends DefinitionBlock {
+    public function __construct(
+        Dispatcher $dispatcher,
+        Settings $settings,
+        int $level,
+        int $used,
+        Schema $definition,
+    ) {
+        parent::__construct($dispatcher, $settings, $level, $used, $definition);
+    }
+
+    protected function type(): string|null {
+        return 'schema';
+    }
+
+    protected function content(): string {
+        $content = parent::content();
+
+        if ($this->isUseDefaultRootOperationTypeNames()) {
+            $content = '';
+        }
+
+        return $content;
+    }
+
+    protected function body(int $used): Block|string|null {
+        return null;
+    }
+
+    protected function fields(int $used): Block|string|null {
+        $definition = $this->getDefinition();
+        $space      = $this->space();
+        $fields     = new RootOperationTypesDefinitionList(
+            $this->getDispatcher(),
+            $this->getSettings(),
+            $this->getLevel(),
+            $used + mb_strlen($space),
+        );
+        $types      = [
+            [OperationType::query(), $definition->getQueryType()],
+            [OperationType::mutation(), $definition->getMutationType()],
+            [OperationType::subscription(), $definition->getSubscriptionType()],
+        ];
+
+        foreach ($types as $config) {
+            [$operation, $type] = $config;
+
+            if ($type) {
+                $fields[] = new RootOperationTypeDefinitionBlock(
+                    $this->getDispatcher(),
+                    $this->getSettings(),
+                    $this->getLevel() + 1,
+                    $this->getUsed(),
+                    $operation,
+                    $type,
+                );
+            }
+        }
+
+        return $fields;
+    }
+
+    public function isUseDefaultRootOperationTypeNames(): bool {
+        // Directives?
+        if (count($this->getDefinitionDirectives()) > 0) {
+            return false;
+        }
+
+        // Names?
+        $definition  = $this->getDefinition();
+        $rootTypes   = [
+            'Query'        => $definition->getQueryType(),
+            'Mutation'     => $definition->getMutationType(),
+            'Subscription' => $definition->getSubscriptionType(),
+        ];
+        $nonStandard = array_filter(
+            $rootTypes,
+            static function (?ObjectType $type, string $name): bool {
+                return $type !== null && $type->name !== $name;
+            },
+            ARRAY_FILTER_USE_BOTH,
+        );
+
+        return !$nonStandard;
+    }
+}
