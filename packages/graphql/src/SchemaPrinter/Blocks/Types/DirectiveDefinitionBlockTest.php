@@ -85,10 +85,11 @@ class DirectiveDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, Directive}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setAlwaysMultilineDirectiveLocations(false);
 
         return [
-            'description'            => [
+            'description'                => [
                 <<<'STRING'
                 """
                 Description
@@ -107,7 +108,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'repeatable'             => [
+            'repeatable'                 => [
                 <<<'STRING'
                 directive @test repeatable on ARGUMENT_DEFINITION | ENUM
                 STRING,
@@ -123,7 +124,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     'isRepeatable' => true,
                 ]),
             ],
-            'args'                   => [
+            'args'                       => [
                 <<<'STRING'
                 directive @test(a: String) repeatable on ARGUMENT_DEFINITION | ENUM
                 STRING,
@@ -144,7 +145,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     'isRepeatable' => true,
                 ]),
             ],
-            'multiline + repeatable' => [
+            'multiline + repeatable'     => [
                 <<<'STRING'
                 directive @test(
                     a: String
@@ -170,7 +171,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     'isRepeatable' => true,
                 ]),
             ],
-            'multiline'              => [
+            'multiline'                  => [
                 <<<'STRING'
                 directive @test(
                     a: String
@@ -195,7 +196,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'multiline (no args)'    => [
+            'multiline (no args)'        => [
                 <<<'STRING'
                 directive @test on
                     | ARGUMENT_DEFINITION
@@ -212,7 +213,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'indent'                 => [
+            'indent'                     => [
                 <<<'STRING'
                 directive @test(
                         a: String
@@ -237,7 +238,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'normalized'             => [
+            'normalized'                 => [
                 <<<'STRING'
                 directive @test on ENUM | INPUT_FIELD_DEFINITION | OBJECT
                 STRING,
@@ -251,6 +252,24 @@ class DirectiveDefinitionBlockTest extends TestCase {
                         DirectiveLocation::OBJECT,
                         DirectiveLocation::ENUM,
                         DirectiveLocation::INPUT_FIELD_DEFINITION,
+                    ],
+                ]),
+            ],
+            'locations always multiline' => [
+                <<<'STRING'
+                directive @test on
+                    | ARGUMENT_DEFINITION
+                    | ENUM
+                STRING,
+                $settings
+                    ->setAlwaysMultilineDirectiveLocations(true),
+                0,
+                0,
+                new Directive([
+                    'name'      => 'test',
+                    'locations' => [
+                        DirectiveLocation::ARGUMENT_DEFINITION,
+                        DirectiveLocation::ENUM,
                     ],
                 ]),
             ],

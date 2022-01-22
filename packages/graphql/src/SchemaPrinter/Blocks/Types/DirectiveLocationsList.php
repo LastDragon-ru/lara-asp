@@ -2,13 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
-use Traversable;
-
-use function mb_strlen;
 
 /**
  * @internal
@@ -35,5 +29,9 @@ class DirectiveLocationsList extends UsageList {
 
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeDirectiveLocations();
+    }
+
+    protected function isAlwaysMultiline(): bool {
+        return $this->getSettings()->isAlwaysMultilineDirectiveLocations();
     }
 }
