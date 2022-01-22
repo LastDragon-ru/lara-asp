@@ -13,7 +13,7 @@ class DefinitionList extends BlockList {
     public function __construct(
         Settings $settings,
         int $level,
-        protected bool $indented = false,
+        protected bool $schema = false,
     ) {
         parent::__construct(new Dispatcher(), $settings, $level);
     }
@@ -30,15 +30,16 @@ class DefinitionList extends BlockList {
         return true;
     }
 
-    protected function isIndented(): bool {
-        return $this->indented;
+    protected function isSchema(): bool {
+        return $this->schema;
     }
 
     protected function content(): string {
         $content = parent::content();
 
-        if ($content && $this->isIndented()) {
-            $content = "{$this->indent()}{$content}";
+        if ($content && $this->isSchema()) {
+            $eof     = $this->getSettings()->getFileEnd();
+            $content = "{$this->indent()}{$content}{$eof}";
         }
 
         return $content;
