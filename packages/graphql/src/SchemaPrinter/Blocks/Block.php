@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+use Closure;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Stringable;
@@ -53,15 +54,29 @@ abstract class Block implements Stringable {
     }
 
     public function getLength(): int {
-        return $this->length ?? mb_strlen($this->getContent());
+        return $this->resolve(fn(): int => (int) $this->length);
     }
 
     public function isMultiline(): bool {
-        return $this->getContent() && $this->multiline;
+        return $this->resolve(fn(): bool => (bool) $this->multiline);
     }
 
     public function __toString(): string {
         return $this->getContent();
+    }
+
+    /**
+     * @template T
+     *
+     * @param Closure(string $content): T $callback
+     *
+     * @return T
+     */
+    protected function resolve(Closure $callback): mixed {
+        $content = $this->getContent();
+        $result  = $callback($content);
+
+        return $result;
     }
     //</editor-fold>
 

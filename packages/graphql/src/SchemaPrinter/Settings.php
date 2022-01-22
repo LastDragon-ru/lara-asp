@@ -19,15 +19,21 @@ interface Settings {
 
     public function isIncludeDirectives(): bool;
 
+    /**
+     * Temporary workaround to show directives when they are not supported out
+     * of the box.
+     *
+     * @see https://github.com/graphql/graphql-playground/issues/1207
+     */
     public function isIncludeDirectivesInDescription(): bool;
 
     public function isIncludeUnusedDirectiveDefinitions(): bool;
 
     /**
-     * If `false` types will be printed in the original order if `true` they
-     * will be sorted by name.
+     * If `false` types and directives in the schema will be printed in the
+     * original order if `true` they will be sorted by name.
      */
-    public function isNormalizeTypes(): bool;
+    public function isNormalizeSchema(): bool;
 
     /**
      * If `false` members will be printed in the original order if `true` they

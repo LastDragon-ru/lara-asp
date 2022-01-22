@@ -104,12 +104,12 @@ class TestSettings implements SettingsContract {
         return $this->set('IncludeUnusedDirectiveDefinitions', $value);
     }
 
-    public function isNormalizeTypes(): bool {
-        return $this->get('NormalizeTypes');
+    public function isNormalizeSchema(): bool {
+        return $this->get('NormalizeSchema');
     }
 
-    public function setNormalizeTypes(bool $value): static {
-        return $this->set('NormalizeTypes', $value);
+    public function setNormalizeSchema(bool $value): static {
+        return $this->set('NormalizeSchema', $value);
     }
 
     public function isNormalizeUnions(): bool {

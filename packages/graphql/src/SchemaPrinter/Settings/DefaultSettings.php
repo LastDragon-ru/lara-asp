@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
-use Closure;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -16,7 +15,7 @@ class DefaultSettings implements Settings {
     }
 
     public function getIndent(): string {
-        return '    ';
+        return '  ';
     }
 
     public function getFileEnd(): string {
@@ -36,7 +35,7 @@ class DefaultSettings implements Settings {
     }
 
     public function isIncludeDirectives(): bool {
-        return true;
+        return false;
     }
 
     public function isIncludeDirectivesInDescription(): bool {
@@ -47,7 +46,7 @@ class DefaultSettings implements Settings {
         return false;
     }
 
-    public function isNormalizeTypes(): bool {
+    public function isNormalizeSchema(): bool {
         return false;
     }
 
