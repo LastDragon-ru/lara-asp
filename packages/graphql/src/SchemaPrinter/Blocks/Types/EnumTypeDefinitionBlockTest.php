@@ -117,7 +117,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     @deprecated
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 static function (): EnumType {

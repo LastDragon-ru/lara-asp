@@ -15,9 +15,9 @@ interface Settings {
 
     public function getLineLength(): int;
 
-    public function isIncludeUnusedTypeDefinitions(): bool;
+    public function isPrintUnusedTypeDefinitions(): bool;
 
-    public function isIncludeDirectives(): bool;
+    public function isPrintDirectives(): bool;
 
     /**
      * Temporary workaround to show directives when they are not supported out
@@ -25,9 +25,9 @@ interface Settings {
      *
      * @see https://github.com/graphql/graphql-playground/issues/1207
      */
-    public function isIncludeDirectivesInDescription(): bool;
+    public function isPrintDirectivesInDescription(): bool;
 
-    public function isIncludeUnusedDirectiveDefinitions(): bool;
+    public function isPrintUnusedDirectiveDefinitions(): bool;
 
     /**
      * If `false` types and directives in the schema will be printed in the

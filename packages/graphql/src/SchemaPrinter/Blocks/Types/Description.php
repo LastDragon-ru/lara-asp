@@ -51,7 +51,7 @@ class Description extends StringBlock {
         }
 
         // Directives
-        if ($this->getSettings()->isIncludeDirectivesInDescription()) {
+        if ($this->getSettings()->isPrintDirectivesInDescription()) {
             $directives = (string) $this->getDirectives();
 
             if ($directives) {

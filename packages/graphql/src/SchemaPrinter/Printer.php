@@ -58,12 +58,12 @@ class Printer {
         $content[] = $this->getDefinitionList(
             $typesBlocks,
             $usedTypes,
-            $settings->isIncludeUnusedTypeDefinitions(),
+            $settings->isPrintUnusedTypeDefinitions(),
         );
         $content[] = $this->getDefinitionList(
             $directivesBlocks,
             $usedDirectives,
-            $settings->isIncludeUnusedDirectiveDefinitions(),
+            $settings->isPrintUnusedDirectiveDefinitions(),
         );
 
         // todo(graphql): directives in description
@@ -116,7 +116,7 @@ class Printer {
         // Included?
         $blocks   = [];
         $settings = $this->getSettings();
-        $included = $settings->isIncludeDirectives() || $settings->isIncludeDirectivesInDescription();
+        $included = $settings->isPrintDirectives() || $settings->isPrintDirectivesInDescription();
 
         if (!$included) {
             return $blocks;

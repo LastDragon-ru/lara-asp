@@ -95,7 +95,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 test: Test!
                 @a
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 FieldDefinition::create([

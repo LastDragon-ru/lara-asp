@@ -111,7 +111,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                 interface Test
                 @a
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new InterfaceType([
@@ -138,7 +138,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a(a: Int): A
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new InterfaceType([
@@ -205,7 +205,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new InterfaceType([
@@ -233,7 +233,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 120,
                 new InterfaceType([

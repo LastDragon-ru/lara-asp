@@ -73,7 +73,7 @@ abstract class DefinitionBlock extends Block implements Named {
         $fields      = (string) $this->fields($used + mb_strlen($body));
         $directives  = $this->directives();
         $description = (string) $this->description($directives);
-        $directives  = $this->getSettings()->isIncludeDirectives()
+        $directives  = $this->getSettings()->isPrintDirectives()
             ? (string) $directives
             : '';
         $content     = '';

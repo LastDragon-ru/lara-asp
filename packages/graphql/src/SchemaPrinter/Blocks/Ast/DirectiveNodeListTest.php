@@ -49,7 +49,7 @@ class DirectiveNodeListTest extends TestCase {
         $a          = Parser::directive('@a');
         $b          = Parser::directive('@b');
         $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = (new TestSettings())->setIncludeDirectives(true);
+        $settings   = (new TestSettings())->setPrintDirectives(true);
         $dispatcher = new Dispatcher();
 
         $dispatcher->attach(Closure::fromCallable($spy));

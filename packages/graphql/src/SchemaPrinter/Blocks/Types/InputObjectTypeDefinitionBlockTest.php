@@ -97,7 +97,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
                 input Test
                 @a
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new InputObjectType([
@@ -124,7 +124,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
                     a: A
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new InputObjectType([

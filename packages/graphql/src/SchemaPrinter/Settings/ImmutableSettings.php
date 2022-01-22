@@ -12,10 +12,10 @@ abstract class ImmutableSettings implements Settings {
     protected string           $fileEnd;
     protected string           $lineEnd;
     protected int              $lineLength;
-    protected bool             $includeUnusedTypeDefinitions;
-    protected bool             $includeDirectives;
-    protected bool             $includeDirectivesInDescription;
-    protected bool             $includeUnusedDirectiveDefinitions;
+    protected bool             $printDirectives;
+    protected bool             $printDirectivesInDescription;
+    protected bool             $printUnusedTypeDefinitions;
+    protected bool             $printUnusedDirectiveDefinitions;
     protected bool             $normalizeSchema;
     protected bool             $normalizeUnions;
     protected bool             $normalizeEnums;
@@ -80,43 +80,43 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
-    public function isIncludeUnusedTypeDefinitions(): bool {
-        return $this->includeUnusedTypeDefinitions;
+    public function isPrintUnusedTypeDefinitions(): bool {
+        return $this->printUnusedTypeDefinitions;
     }
 
-    public function setIncludeUnusedTypeDefinitions(bool $value): static {
+    public function setPrintUnusedTypeDefinitions(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
-            $settings->includeUnusedTypeDefinitions = $value;
+            $settings->printUnusedTypeDefinitions = $value;
         });
     }
 
-    public function isIncludeDirectives(): bool {
-        return $this->includeDirectives;
+    public function isPrintDirectives(): bool {
+        return $this->printDirectives;
     }
 
-    public function setIncludeDirectives(bool $value): static {
+    public function setPrintDirectives(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
-            $settings->includeDirectives = $value;
+            $settings->printDirectives = $value;
         });
     }
 
-    public function isIncludeDirectivesInDescription(): bool {
-        return $this->includeDirectivesInDescription;
+    public function isPrintDirectivesInDescription(): bool {
+        return $this->printDirectivesInDescription;
     }
 
-    public function setIncludeDirectivesInDescription(bool $value): static {
+    public function setPrintDirectivesInDescription(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
-            $settings->includeDirectivesInDescription = $value;
+            $settings->printDirectivesInDescription = $value;
         });
     }
 
-    public function isIncludeUnusedDirectiveDefinitions(): bool {
-        return $this->includeUnusedDirectiveDefinitions;
+    public function isPrintUnusedDirectiveDefinitions(): bool {
+        return $this->printUnusedDirectiveDefinitions;
     }
 
-    public function setIncludeUnusedDirectiveDefinitions(bool $value): static {
+    public function setPrintUnusedDirectiveDefinitions(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
-            $settings->includeUnusedDirectiveDefinitions = $value;
+            $settings->printUnusedDirectiveDefinitions = $value;
         });
     }
 

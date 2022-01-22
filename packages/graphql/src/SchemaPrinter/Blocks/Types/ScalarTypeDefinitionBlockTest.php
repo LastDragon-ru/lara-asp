@@ -43,7 +43,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
-            ->setIncludeDirectives(false);
+            ->setPrintDirectives(false);
 
         return [
             'scalar'                          => [
@@ -65,7 +65,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                 scalar Test
                 @a
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new CustomScalarType([
@@ -87,7 +87,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                 """
                 scalar Test
                 STRING,
-                $settings->setIncludeDirectivesInDescription(true),
+                $settings->setPrintDirectivesInDescription(true),
                 0,
                 0,
                 new CustomScalarType([
@@ -111,7 +111,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                     )
                     @b(value: "b")
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 1,
                 60,
                 new CustomScalarType([
@@ -132,7 +132,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                     )
                     @b(value: "b")
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 1,
                 60,
                 new CustomScalarType([

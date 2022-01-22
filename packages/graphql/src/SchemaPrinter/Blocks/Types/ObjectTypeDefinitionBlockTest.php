@@ -110,7 +110,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                 type Test
                 @a
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new ObjectType([
@@ -137,7 +137,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a(a: Int): A
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new ObjectType([
@@ -204,7 +204,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new ObjectType([
@@ -232,7 +232,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     a: String
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 120,
                 new ObjectType([

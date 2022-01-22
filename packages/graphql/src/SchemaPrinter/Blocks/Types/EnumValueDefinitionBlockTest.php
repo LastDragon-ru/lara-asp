@@ -76,7 +76,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
                 A
                 @a
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new EnumValueDefinition([

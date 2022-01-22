@@ -49,7 +49,7 @@ class SchemaDefinitionBlockTest extends TestCase {
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
-            ->setIncludeDirectives(false)
+            ->setPrintDirectives(false)
             ->setNormalizeFields(false);
 
         return [
@@ -74,7 +74,7 @@ class SchemaDefinitionBlockTest extends TestCase {
                     subscription: Subscription
                 }
                 STRING,
-                $settings->setIncludeDirectives(true),
+                $settings->setPrintDirectives(true),
                 0,
                 0,
                 new Schema([
@@ -99,7 +99,7 @@ class SchemaDefinitionBlockTest extends TestCase {
                     subscription: Subscription
                 }
                 STRING,
-                $settings->setIncludeDirectivesInDescription(true),
+                $settings->setPrintDirectivesInDescription(true),
                 0,
                 0,
                 new Schema([

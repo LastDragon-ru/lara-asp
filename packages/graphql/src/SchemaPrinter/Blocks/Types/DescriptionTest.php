@@ -351,7 +351,7 @@ class DescriptionTest extends TestCase {
                 @b(test: "abc")
                 """
                 STRING,
-                $settings->setIncludeDirectivesInDescription(true),
+                $settings->setPrintDirectivesInDescription(true),
                 0,
                 0,
                 <<<'STRING'
@@ -375,7 +375,7 @@ class DescriptionTest extends TestCase {
                 STRING,
                 $settings
                     ->setNormalizeDescription(true)
-                    ->setIncludeDirectivesInDescription(true),
+                    ->setPrintDirectivesInDescription(true),
                 0,
                 0,
                 <<<'STRING'
@@ -397,7 +397,7 @@ class DescriptionTest extends TestCase {
                 STRING,
                 $settings
                     ->setNormalizeDescription(true)
-                    ->setIncludeDirectivesInDescription(true),
+                    ->setPrintDirectivesInDescription(true),
                 0,
                 0,
                 '',
