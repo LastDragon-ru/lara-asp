@@ -83,10 +83,10 @@ class InputValueDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, FieldArgument}>
      */
     public function dataProviderToString(): array {
-        $settings   = new TestSettings();
+        $settings = new TestSettings();
 
         return [
-            'without value' => [
+            'without value'      => [
                 <<<'STRING'
                 """
                 Description
@@ -108,7 +108,7 @@ class InputValueDefinitionBlockTest extends TestCase {
                     'description' => 'Description',
                 ]),
             ],
-            'with value (short)'    => [
+            'with value (short)' => [
                 <<<'STRING'
                 """
                 Description
@@ -122,12 +122,12 @@ class InputValueDefinitionBlockTest extends TestCase {
                     'name'         => 'test',
                     'type'         => new ListOfType(new NonNull(Type::string())),
                     'defaultValue' => [
-                        "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        'aaaaaaaaaaaaaaaaaaaaaaaaaa',
                     ],
                     'description'  => 'Description',
                 ]),
             ],
-            'with value (long)'    => [
+            'with value (long)'  => [
                 <<<'STRING'
                 """
                 Description
@@ -143,12 +143,12 @@ class InputValueDefinitionBlockTest extends TestCase {
                     'name'         => 'test',
                     'type'         => new ListOfType(new NonNull(Type::string())),
                     'defaultValue' => [
-                        "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        'aaaaaaaaaaaaaaaaaaaaaaaaaa',
                     ],
                     'description'  => 'Description',
                 ]),
             ],
-            'indent'        => [
+            'indent'             => [
                 <<<'STRING'
                 """
                     Description
@@ -164,7 +164,7 @@ class InputValueDefinitionBlockTest extends TestCase {
                     'name'         => 'test',
                     'type'         => new ListOfType(new NonNull(Type::string())),
                     'defaultValue' => [
-                        "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        'aaaaaaaaaaaaaaaaaaaaaaaaaa',
                     ],
                     'description'  => 'Description',
                 ]),

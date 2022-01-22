@@ -6,6 +6,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use function mb_strlen;
 
 /**
  * @internal

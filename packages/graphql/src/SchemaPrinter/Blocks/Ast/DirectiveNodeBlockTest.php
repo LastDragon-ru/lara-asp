@@ -123,7 +123,7 @@ class DirectiveNodeBlockTest extends TestCase {
                 0,
                 Parser::directive('@directive(b: "b", a: "a")'),
             ],
-            'with arguments (indent)'      => [
+            'with arguments (indent)'     => [
                 <<<'STRING'
                 @directive(
                         b: "b"

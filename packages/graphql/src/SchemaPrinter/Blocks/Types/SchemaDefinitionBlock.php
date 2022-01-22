@@ -10,6 +10,8 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use function array_filter;
 use function count;
+use function mb_strlen;
+use const ARRAY_FILTER_USE_BOTH;
 
 /**
  * @internal

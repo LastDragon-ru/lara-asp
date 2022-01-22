@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
-
 use function array_filter;
 use function json_encode;
 
@@ -31,7 +30,7 @@ class DirectiveNodeList extends BlockList {
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
 
-        $deprecated = Directive::DEPRECATED_NAME;
+        $deprecated   = Directive::DEPRECATED_NAME;
         $directives ??= [];
 
         if ($deprecationReason) {
@@ -73,9 +72,8 @@ class DirectiveNodeList extends BlockList {
         return $blocks;
     }
 
-    private function block(DirectiveNode $directive
-    ): \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeBlock {
-        return new \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeBlock(
+    private function block(DirectiveNode $directive,): DirectiveNodeBlock {
+        return new DirectiveNodeBlock(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),

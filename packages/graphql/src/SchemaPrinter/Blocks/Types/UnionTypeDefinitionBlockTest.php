@@ -212,7 +212,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'multiline always'          => [
+            'multiline always'     => [
                 <<<'STRING'
                 union Test =
                     | C

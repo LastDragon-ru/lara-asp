@@ -46,7 +46,7 @@ class TypeBlockTest extends TestCase {
         $node       = new NonNull(
             new ObjectType([
                 'name' => 'Test',
-            ])
+            ]),
         );
         $settings   = new TestSettings();
         $dispatcher = new Dispatcher();

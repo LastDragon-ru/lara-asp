@@ -33,7 +33,11 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
         InputObjectType $definition,
     ): void {
         $actual = (string) (new InputObjectTypeDefinitionBlock(
-            new Dispatcher(), $settings, $level, $used, $definition
+            new Dispatcher(),
+            $settings,
+            $level,
+            $used,
+            $definition,
         ));
 
         Parser::inputObjectTypeDefinition($actual);

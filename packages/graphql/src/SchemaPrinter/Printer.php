@@ -146,7 +146,7 @@ class Printer {
         array &$usedTypes = [],
         array &$usedDirectives = [],
     ): Block {
-        $block          = new DefinitionBlock($this->getSettings(), $this->getLevel(), $definition);
+        $block           = new DefinitionBlock($this->getSettings(), $this->getLevel(), $definition);
         $usedTypes      += $block->getUsedTypes();
         $usedDirectives += $block->getUsedDirectives();
 

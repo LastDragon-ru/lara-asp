@@ -130,7 +130,7 @@ class FieldDefinitionBlockTest extends TestCase {
                         'a' => [
                             'type'         => new ListOfType(new NonNull(Type::string())),
                             'defaultValue' => [
-                                "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+                                'aaaaaaaaaaaaaaaaaaaaaaaaaa',
                             ],
                         ],
                         'b' => [
@@ -168,7 +168,7 @@ class FieldDefinitionBlockTest extends TestCase {
                         'a' => [
                             'type'         => new NonNull(Type::string()),
                             'description'  => 'Description',
-                            'defaultValue' => "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+                            'defaultValue' => 'aaaaaaaaaaaaaaaaaaaaaaaaaa',
                         ],
                     ],
                 ]),

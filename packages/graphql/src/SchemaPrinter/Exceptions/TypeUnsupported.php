@@ -17,7 +17,7 @@ class TypeUnsupported extends Exception {
                 'Type `%s` is not (yet) supported.',
                 $this->type,
             ),
-            $previous
+            $previous,
         );
     }
 
