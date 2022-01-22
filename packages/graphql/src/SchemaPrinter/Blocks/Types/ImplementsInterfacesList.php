@@ -31,4 +31,8 @@ class ImplementsInterfacesList extends UsageList {
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeInterfaces();
     }
+
+    protected function isAlwaysMultiline(): bool {
+        return $this->getSettings()->isAlwaysMultilineInterfaces();
+    }
 }

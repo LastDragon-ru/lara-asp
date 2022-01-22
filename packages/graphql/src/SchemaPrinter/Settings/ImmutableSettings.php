@@ -25,6 +25,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $normalizeDescription;
     protected bool             $normalizeDirectiveLocations;
     protected bool             $alwaysMultilineUnions;
+    protected bool             $alwaysMultilineInterfaces;
     protected bool             $alwaysMultilineDirectiveLocations;
     protected ?DirectiveFilter $directiveFilter;
 
@@ -209,6 +210,16 @@ abstract class ImmutableSettings implements Settings {
     public function setAlwaysMultilineUnions(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
             $settings->alwaysMultilineUnions = $value;
+        });
+    }
+
+    public function isAlwaysMultilineInterfaces(): bool {
+        return $this->alwaysMultilineInterfaces;
+    }
+
+    public function setAlwaysMultilineInterfaces(bool $value): static {
+        return $this->set(static function (self $settings) use ($value): void {
+            $settings->alwaysMultilineInterfaces = $value;
         });
     }
 

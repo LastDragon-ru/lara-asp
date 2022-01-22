@@ -100,7 +100,8 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
             ->setNormalizeFields(false)
-            ->setNormalizeInterfaces(false);
+            ->setNormalizeInterfaces(false)
+            ->setAlwaysMultilineInterfaces(false);
 
         return [
             'description + directives'                    => [
@@ -348,6 +349,31 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                     ],
                     'interfaces' => [
                         new InterfaceType(['name' => 'B']),
+                        new InterfaceType(['name' => 'A']),
+                    ],
+                ]),
+            ],
+            'implements always multiline'                 => [
+                <<<'STRING'
+                interface Test implements
+                    & A
+                {
+                    a: String
+                }
+                STRING,
+                $settings
+                    ->setAlwaysMultilineInterfaces(true),
+                0,
+                0,
+                new InterfaceType([
+                    'name'       => 'Test',
+                    'fields'     => [
+                        [
+                            'name' => 'a',
+                            'type' => Type::string(),
+                        ],
+                    ],
+                    'interfaces' => [
                         new InterfaceType(['name' => 'A']),
                     ],
                 ]),

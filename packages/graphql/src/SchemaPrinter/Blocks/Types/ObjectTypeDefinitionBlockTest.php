@@ -99,7 +99,8 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
             ->setNormalizeFields(false)
-            ->setNormalizeInterfaces(false);
+            ->setNormalizeInterfaces(false)
+            ->setAlwaysMultilineInterfaces(false);
 
         return [
             'description + directives'                    => [
@@ -337,6 +338,33 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                 $settings->setNormalizeInterfaces(true),
                 1,
                 120,
+                new ObjectType([
+                    'name'       => 'Test',
+                    'fields'     => [
+                        [
+                            'name' => 'a',
+                            'type' => Type::string(),
+                        ],
+                    ],
+                    'interfaces' => [
+                        new ObjectType(['name' => 'B']),
+                        new ObjectType(['name' => 'A']),
+                    ],
+                ]),
+            ],
+            'implements always multiline'                 => [
+                <<<'STRING'
+                type Test implements
+                    & B
+                    & A
+                {
+                    a: String
+                }
+                STRING,
+                $settings
+                    ->setAlwaysMultilineInterfaces(true),
+                0,
+                0,
                 new ObjectType([
                     'name'       => 'Test',
                     'fields'     => [

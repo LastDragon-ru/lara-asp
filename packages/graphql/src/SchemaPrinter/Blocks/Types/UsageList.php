@@ -58,7 +58,7 @@ abstract class UsageList extends BlockList {
         $content = parent::content();
 
         if ($content) {
-            if ($this->isStringMultiline($content)) {
+            if ($this->isAlwaysMultiline() || $this->isStringMultiline($content)) {
                 $eol    = $this->eol();
                 $indent = $this->indent();
 
