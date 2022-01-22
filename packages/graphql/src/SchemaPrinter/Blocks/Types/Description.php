@@ -55,7 +55,7 @@ class Description extends StringBlock {
             $directives = (string) $this->getDirectives();
 
             if ($directives) {
-                $eol    = $this->eol();
+                $eol    = $string ? $this->eol() : '';
                 $string = "{$string}{$eol}{$eol}{$directives}";
             }
         }

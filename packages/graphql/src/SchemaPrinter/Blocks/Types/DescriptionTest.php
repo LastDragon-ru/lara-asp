@@ -88,7 +88,7 @@ class DescriptionTest extends TestCase {
             ],
             'Prints an empty string with only whitespace (normalized)' => [
                 '',
-                 $settings->setNormalizeDescription(true),
+                $settings->setNormalizeDescription(true),
                 0,
                 0,
                 ' ',
@@ -179,7 +179,7 @@ class DescriptionTest extends TestCase {
                 ccc
                 """
                 STRING,
-                 $settings->setNormalizeDescription(true),
+                $settings->setNormalizeDescription(true),
                 0,
                 0,
                 <<<'STRING'
@@ -382,6 +382,24 @@ class DescriptionTest extends TestCase {
 
 
                 STRING,
+                [
+                    Parser::directive('@a'),
+                    Parser::directive('@b(test: "abc")'),
+                ],
+            ],
+            'empty description + directives (enabled) + normalized'    => [
+                <<<'STRING'
+                """
+                @a
+                @b(test: "abc")
+                """
+                STRING,
+                $settings
+                    ->setNormalizeDescription(true)
+                    ->setIncludeDirectivesInDescription(true),
+                0,
+                0,
+                '',
                 [
                     Parser::directive('@a'),
                     Parser::directive('@b(test: "abc")'),
