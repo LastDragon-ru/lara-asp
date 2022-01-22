@@ -51,7 +51,8 @@ class DescriptionTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ?string, array<DirectiveNode>|null}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setNormalizeDescription(false);
 
         return [
             'null'                                                     => [

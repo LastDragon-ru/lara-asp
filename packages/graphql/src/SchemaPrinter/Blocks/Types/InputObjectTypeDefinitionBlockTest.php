@@ -85,7 +85,8 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, InputObjectType}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setNormalizeFields(false);
 
         return [
             'description + directives'          => [

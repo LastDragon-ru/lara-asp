@@ -91,7 +91,8 @@ class UnionTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, UnionType}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setNormalizeUnions(false);
 
         return [
             'single-line'          => [

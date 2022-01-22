@@ -6,7 +6,6 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeBlock as DirectiveBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
@@ -32,7 +31,7 @@ class DirectiveNodeList extends BlockList {
     ) {
         parent::__construct($dispatcher, $settings, $level, $used);
 
-        $deprecated   = Directive::DEPRECATED_NAME;
+        $deprecated = Directive::DEPRECATED_NAME;
         $directives ??= [];
 
         if ($deprecationReason) {
@@ -74,8 +73,9 @@ class DirectiveNodeList extends BlockList {
         return $blocks;
     }
 
-    private function block(DirectiveNode $directive): DirectiveBlock {
-        return new DirectiveBlock(
+    private function block(DirectiveNode $directive
+    ): \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeBlock {
+        return new \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeBlock(
             $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),

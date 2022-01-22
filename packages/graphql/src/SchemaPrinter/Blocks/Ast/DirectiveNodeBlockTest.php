@@ -79,7 +79,8 @@ class DirectiveNodeBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, DirectiveNode}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setNormalizeArguments(false);
 
         return [
             'without arguments'           => [

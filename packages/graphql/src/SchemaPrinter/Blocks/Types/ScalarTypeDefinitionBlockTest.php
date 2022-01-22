@@ -42,7 +42,8 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ScalarType}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setIncludeDirectives(false);
 
         return [
             'scalar'                          => [

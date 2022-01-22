@@ -49,7 +49,8 @@ class EnumTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, Closure():EnumType|EnumType}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setNormalizeEnums(false);
 
         return [
             'enum'                       => [

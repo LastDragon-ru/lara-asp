@@ -48,7 +48,9 @@ class SchemaDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, Schema}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setIncludeDirectives(false)
+            ->setNormalizeFields(false);
 
         return [
             'standard names'                                => [

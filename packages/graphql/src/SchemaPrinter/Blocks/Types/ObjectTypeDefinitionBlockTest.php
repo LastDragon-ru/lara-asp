@@ -97,7 +97,9 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ObjectType}>
      */
     public function dataProviderToString(): array {
-        $settings   = new TestSettings();
+        $settings = (new TestSettings())
+            ->setNormalizeFields(false)
+            ->setNormalizeInterfaces(false);
 
         return [
             'description + directives'                    => [

@@ -3,82 +3,24 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
-class DefaultSettings implements Settings {
-    public function __construct() {
-        // empty
-    }
-
-    public function getSpace(): string {
-        return ' ';
-    }
-
-    public function getIndent(): string {
-        return '  ';
-    }
-
-    public function getFileEnd(): string {
-        return "\n";
-    }
-
-    public function getLineEnd(): string {
-        return "\n";
-    }
-
-    public function getLineLength(): int {
-        return 80;
-    }
-
-    public function isIncludeUnusedTypeDefinitions(): bool {
-        return false;
-    }
-
-    public function isIncludeDirectives(): bool {
-        return false;
-    }
-
-    public function isIncludeDirectivesInDescription(): bool {
-        return false;
-    }
-
-    public function isIncludeUnusedDirectiveDefinitions(): bool {
-        return false;
-    }
-
-    public function isNormalizeSchema(): bool {
-        return false;
-    }
-
-    public function isNormalizeUnions(): bool {
-        return false;
-    }
-
-    public function isNormalizeEnums(): bool {
-        return false;
-    }
-
-    public function isNormalizeInterfaces(): bool {
-        return false;
-    }
-
-    public function isNormalizeFields(): bool {
-        return false;
-    }
-
-    public function isNormalizeArguments(): bool {
-        return false;
-    }
-
-    public function isNormalizeDescription(): bool {
-        return false;
-    }
-
-    public function isNormalizeDirectiveLocations(): bool {
-        return false;
-    }
-
-    public function getDirectiveFilter(): ?DirectiveFilter {
-        return null;
-    }
+class DefaultSettings extends ImmutableSettings {
+    protected string           $space                             = ' ';
+    protected string           $indent                            = '  ';
+    protected string           $fileEnd                           = "\n";
+    protected string           $lineEnd                           = "\n";
+    protected int              $lineLength                        = 80;
+    protected bool             $includeDirectives                 = false;
+    protected bool             $includeDirectivesInDescription    = false;
+    protected bool             $includeUnusedTypeDefinitions      = true;
+    protected bool             $includeUnusedDirectiveDefinitions = true;
+    protected bool             $normalizeSchema                   = true;
+    protected bool             $normalizeUnions                   = false;
+    protected bool             $normalizeEnums                    = false;
+    protected bool             $normalizeInterfaces               = false;
+    protected bool             $normalizeFields                   = false;
+    protected bool             $normalizeArguments                = false;
+    protected bool             $normalizeDescription              = false;
+    protected bool             $normalizeDirectiveLocations       = false;
+    protected ?DirectiveFilter $directiveFilter                   = null;
 }

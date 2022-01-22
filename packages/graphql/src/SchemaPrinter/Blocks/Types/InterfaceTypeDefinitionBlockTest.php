@@ -98,7 +98,9 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, InterfaceType}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setNormalizeFields(false)
+            ->setNormalizeInterfaces(false);
 
         return [
             'description + directives'                    => [
