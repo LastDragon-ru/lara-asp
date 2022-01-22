@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
 use LogicException;
 use OutOfBoundsException;
-use PHPUnit\Framework\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use stdClass;
 
 use function sprintf;

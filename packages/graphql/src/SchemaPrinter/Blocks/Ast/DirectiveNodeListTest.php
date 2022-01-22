@@ -11,8 +11,8 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal

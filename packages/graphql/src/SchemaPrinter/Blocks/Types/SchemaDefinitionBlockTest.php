@@ -8,7 +8,7 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
-use PHPUnit\Framework\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function str_starts_with;
 
