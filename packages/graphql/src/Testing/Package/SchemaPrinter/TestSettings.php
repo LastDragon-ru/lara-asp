@@ -14,6 +14,7 @@ class TestSettings extends ImmutableSettings {
     protected string           $lineEnd                           = "\n";
     protected int              $lineLength                        = 80;
     protected bool             $printDirectives                   = true;
+    protected bool             $printDirectiveDefinitions         = true;
     protected bool             $printDirectivesInDescription      = false;
     protected bool             $printUnusedTypeDefinitions        = false;
     protected bool             $printUnusedDirectiveDefinitions   = false;

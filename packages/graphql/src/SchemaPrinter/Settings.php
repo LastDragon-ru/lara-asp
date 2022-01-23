@@ -19,6 +19,8 @@ interface Settings {
 
     public function isPrintDirectives(): bool;
 
+    public function isPrintDirectiveDefinitions(): bool;
+
     /**
      * Temporary workaround to show directives when they are not supported out
      * of the box.

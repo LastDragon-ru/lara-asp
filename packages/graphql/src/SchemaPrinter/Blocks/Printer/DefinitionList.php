@@ -6,6 +6,8 @@ use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
+use function rtrim;
+
 /**
  * @internal
  */
@@ -39,6 +41,7 @@ class DefinitionList extends BlockList {
 
         if ($content && $this->isSchema()) {
             $eof     = $this->getSettings()->getFileEnd();
+            $content = rtrim($content);
             $content = "{$this->indent()}{$content}{$eof}";
         }
 

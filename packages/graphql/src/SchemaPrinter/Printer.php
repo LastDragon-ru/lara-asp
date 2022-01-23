@@ -95,7 +95,7 @@ class Printer {
 
         foreach ($schema->getTypeMap() as $type) {
             // Standard?
-            if (Type::isBuiltInType($type)) {
+            if (!$this->isSchemaType($type)) {
                 continue;
             }
 
@@ -104,6 +104,10 @@ class Printer {
         }
 
         return $blocks;
+    }
+
+    protected function isSchemaType(Type $type): bool {
+        return !Type::isBuiltInType($type);
     }
 
     /**
@@ -116,7 +120,7 @@ class Printer {
         // Included?
         $blocks   = [];
         $settings = $this->getSettings();
-        $included = $settings->isPrintDirectives() || $settings->isPrintDirectivesInDescription();
+        $included = $settings->isPrintDirectiveDefinitions();
 
         if (!$included) {
             return $blocks;
@@ -125,7 +129,7 @@ class Printer {
         // Add
         foreach ($schema->getDirectives() as $directive) {
             // Standard?
-            if (Directive::isSpecifiedDirective($directive)) {
+            if (!$this->isSchemaDirective($directive)) {
                 continue;
             }
 
@@ -135,6 +139,10 @@ class Printer {
 
         // Return
         return $blocks;
+    }
+
+    protected function isSchemaDirective(Directive $directive): bool {
+        return !Directive::isSpecifiedDirective($directive);
     }
 
     /**

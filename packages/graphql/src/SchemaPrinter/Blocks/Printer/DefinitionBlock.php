@@ -49,7 +49,6 @@ class DefinitionBlock extends Block implements Named {
         int $level,
         Schema|Type|Directive $definition,
     ) {
-        $this->block = $this->getDefinitionBlock($definition);
         $dispatcher  = new Dispatcher();
         $dispatcher->attach(function (Event $event): void {
             if ($event instanceof DirectiveUsed) {
@@ -62,6 +61,8 @@ class DefinitionBlock extends Block implements Named {
         });
 
         parent::__construct($dispatcher, $settings, $level);
+
+        $this->block = $this->getDefinitionBlock($definition);
     }
 
     public function getName(): string {

@@ -13,6 +13,7 @@ abstract class ImmutableSettings implements Settings {
     protected string           $lineEnd;
     protected int              $lineLength;
     protected bool             $printDirectives;
+    protected bool             $printDirectiveDefinitions;
     protected bool             $printDirectivesInDescription;
     protected bool             $printUnusedTypeDefinitions;
     protected bool             $printUnusedDirectiveDefinitions;
@@ -100,6 +101,16 @@ abstract class ImmutableSettings implements Settings {
     public function setPrintDirectives(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
             $settings->printDirectives = $value;
+        });
+    }
+
+    public function isPrintDirectiveDefinitions(): bool {
+        return $this->printDirectiveDefinitions;
+    }
+
+    public function setPrintDirectiveDefinitions(bool $value): static {
+        return $this->set(static function (self $settings) use ($value): void {
+            $settings->printDirectiveDefinitions = $value;
         });
     }
 

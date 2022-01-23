@@ -11,6 +11,7 @@ class DefaultSettings extends ImmutableSettings {
     protected string           $lineEnd                           = "\n";
     protected int              $lineLength                        = 80;
     protected bool             $printDirectives                   = false;
+    protected bool             $printDirectiveDefinitions         = true;
     protected bool             $printDirectivesInDescription      = false;
     protected bool             $printUnusedTypeDefinitions        = true;
     protected bool             $printUnusedDirectiveDefinitions   = true;
