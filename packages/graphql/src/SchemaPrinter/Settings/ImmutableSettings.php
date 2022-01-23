@@ -261,4 +261,32 @@ abstract class ImmutableSettings implements Settings {
 
         return $settings;
     }
+
+    public static function createFrom(Settings $settings): self {
+        return (new class() extends ImmutableSettings {
+            // empty
+        })
+            ->setSpace($settings->getSpace())
+            ->setIndent($settings->getIndent())
+            ->setFileEnd($settings->getFileEnd())
+            ->setLineEnd($settings->getLineEnd())
+            ->setLineLength($settings->getLineLength())
+            ->setPrintUnusedTypeDefinitions($settings->isPrintUnusedTypeDefinitions())
+            ->setPrintDirectives($settings->isPrintDirectives())
+            ->setPrintDirectiveDefinitions($settings->isPrintDirectiveDefinitions())
+            ->setPrintDirectivesInDescription($settings->isPrintDirectivesInDescription())
+            ->setPrintUnusedDirectiveDefinitions($settings->isPrintUnusedDirectiveDefinitions())
+            ->setNormalizeSchema($settings->isNormalizeSchema())
+            ->setNormalizeUnions($settings->isNormalizeUnions())
+            ->setNormalizeEnums($settings->isNormalizeEnums())
+            ->setNormalizeInterfaces($settings->isNormalizeInterfaces())
+            ->setNormalizeFields($settings->isNormalizeFields())
+            ->setNormalizeArguments($settings->isNormalizeArguments())
+            ->setNormalizeDescription($settings->isNormalizeDescription())
+            ->setNormalizeDirectiveLocations($settings->isNormalizeDirectiveLocations())
+            ->setAlwaysMultilineUnions($settings->isAlwaysMultilineUnions())
+            ->setAlwaysMultilineInterfaces($settings->isAlwaysMultilineInterfaces())
+            ->setAlwaysMultilineDirectiveLocations($settings->isAlwaysMultilineDirectiveLocations())
+            ->setDirectiveFilter($settings->getDirectiveFilter());
+    }
 }
