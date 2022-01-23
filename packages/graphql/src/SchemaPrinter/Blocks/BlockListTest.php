@@ -625,6 +625,30 @@ class BlockListTest extends TestCase {
                     ],
                 ],
             ]),
+            'empty blocks'    => new ArrayDataProvider([
+                'should be ignored' => [
+                    <<<'STRING'
+                    block a
+                    block b
+                    STRING,
+                    $settings,
+                    0,
+                    120,
+                    false,
+                    true,
+                    '',
+                    '',
+                    ', ',
+                    '',
+                    [
+                        new BlockListTest__Block(false, ''),
+                        new BlockListTest__Block(false, 'block a'),
+                        new BlockListTest__Block(true, ''),
+                        new BlockListTest__Block(false, 'block b'),
+                        new BlockListTest__Block(false, ''),
+                    ],
+                ],
+            ]),
         ]))->getData();
     }
     //</editor-fold>

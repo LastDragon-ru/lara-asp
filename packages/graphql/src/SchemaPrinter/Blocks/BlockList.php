@@ -213,6 +213,10 @@ abstract class BlockList extends Block implements ArrayAccess {
      * @param TBlock          $value
      */
     public function offsetSet(mixed $offset, mixed $value): void {
+        if ($value->isEmpty()) {
+            return;
+        }
+
         if ($offset !== null) {
             $this->blocks[$offset] = $value;
         } else {
