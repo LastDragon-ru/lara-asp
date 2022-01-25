@@ -55,4 +55,18 @@ class SubjectTest extends TestCase {
 
         $spy->shouldNotHaveBeenCalled();
     }
+
+    /**
+     * @covers ::getObservers
+     */
+    public function testGetObservers(): void {
+        $subject  = new Subject();
+        $observer = static function (): void {
+            // empty
+        };
+
+        $subject->attach($observer);
+
+        self::assertEquals([$observer], $subject->getObservers());
+    }
 }

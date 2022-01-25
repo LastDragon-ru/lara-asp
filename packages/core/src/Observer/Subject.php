@@ -5,6 +5,9 @@ namespace LastDragon_ru\LaraASP\Core\Observer;
 use Closure;
 use SplObjectStorage;
 
+use function array_values;
+use function iterator_to_array;
+
 /**
  * @template TContext
  */
@@ -44,5 +47,12 @@ class Subject {
             /** @var Closure $observer */
             $observer($context);
         }
+    }
+
+    /**
+     * @return array<Closure(TContext):void>
+     */
+    public function getObservers(): array {
+        return array_values(iterator_to_array($this->observers));
     }
 }
