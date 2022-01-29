@@ -39,8 +39,8 @@ interface SchemaInterfaceB implements SchemaInterfaceA & CodeInterface @schemaDi
 type Query {
   a: SchemaType @deprecated(reason: "deprecated reason") @codeDirective @mock
   b: SchemaEnum @deprecated(reason: "No longer supported") @mock
-  c (a: SchemaInput = {a: "aaa", b: "bbb", c: "ccc", d: "ddd", e: {a: "aaa", b: "bbb", c: "ccc", d: "ddd", e: ["aaa", "bbb", "ccc", "ddd"]}}): CodeScalar @mock
-  d: CodeType @mock
+  c (a: SchemaInput = {a: "aaa", b: A, c: "ccc", d: A, e: {a: "aaa", b: A, c: "ccc", d: A, f: ["aaa", "bbb", "ccc", "ddd"]}}): CodeScalar @mock
+  d (a: SchemaInput = {}): CodeType @mock
 }
 
 type SchemaType implements SchemaInterfaceB @schemaDirective {

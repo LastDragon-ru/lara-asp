@@ -101,6 +101,11 @@ interface SchemaInterfaceUnused {
   b: SchemaEnumUnused
 }
 
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
 scalar CodeScalar
 
 """
@@ -125,8 +130,24 @@ type CodeType {
 type Query {
   a: SchemaType
   b: SchemaEnum
-  c(a: SchemaInput = ): CodeScalar
-  d: CodeType
+
+  c(
+    a: SchemaInput = {
+      e: {
+        f: ["aaa", "bbb", "ccc", "ddd"]
+        d: A
+        c: "ccc"
+        b: A
+        a: "aaa"
+      }
+      d: A
+      c: "ccc"
+      b: A
+      a: "aaa"
+    }
+  ): CodeScalar
+
+  d(a: SchemaInput = {}): CodeType
 }
 
 type SchemaType implements SchemaInterfaceB {

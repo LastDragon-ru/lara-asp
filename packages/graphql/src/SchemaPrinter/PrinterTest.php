@@ -4,14 +4,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
 use Exception;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
-use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -41,7 +40,7 @@ class PrinterTest extends TestCase {
             }
         })::class;
 
-        $codeScalar    = new CustomScalarType([
+        $codeScalar    = new StringType([
             'name' => 'CodeScalar',
         ]);
         $codeEnum      = new EnumType([
@@ -107,9 +106,9 @@ class PrinterTest extends TestCase {
 
         // Test
         $expected = $this->getTestData()->content($expected);
-        $schema  = $this->getGraphQLSchema($this->getTestData()->file('~schema.graphql'));
-        $printer = (new Printer())->setSettings($settings)->setLevel($level);
-        $actual  = $printer->print($schema);
+        $schema   = $this->getGraphQLSchema($this->getTestData()->file('~schema.graphql'));
+        $printer  = (new Printer())->setSettings($settings)->setLevel($level);
+        $actual   = $printer->print($schema);
 
         self::assertEquals($expected, (string) $actual);
     }
@@ -127,7 +126,7 @@ class PrinterTest extends TestCase {
                 new DefaultSettings(),
                 0,
             ],
-            TestSettings::class => [
+            TestSettings::class    => [
                 '~test-settings.graphql',
                 new TestSettings(),
                 0,
