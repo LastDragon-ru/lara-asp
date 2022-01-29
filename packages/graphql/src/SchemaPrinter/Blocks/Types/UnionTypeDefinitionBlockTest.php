@@ -238,6 +238,67 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
+            'directives'           => [
+                <<<'STRING'
+                union Test
+                @a
+                = C | B | A
+                STRING,
+                $settings,
+                0,
+                0,
+                new UnionType([
+                    'name'  => 'Test',
+                    'types' => [
+                        new ObjectType([
+                            'name' => 'C',
+                        ]),
+                        new ObjectType([
+                            'name' => 'B',
+                        ]),
+                        new ObjectType([
+                            'name' => 'A',
+                        ]),
+                    ],
+                    'astNode'     => Parser::unionTypeDefinition(
+                        <<<'STRING'
+                        union Test @a = A | B | C
+                        STRING,
+                    ),
+                ]),
+            ],
+            'directives + multiline'           => [
+                <<<'STRING'
+                union Test
+                @a
+                =
+                    | C
+                    | B
+                    | A
+                STRING,
+                $settings,
+                0,
+                120,
+                new UnionType([
+                    'name'  => 'Test',
+                    'types' => [
+                        new ObjectType([
+                            'name' => 'C',
+                        ]),
+                        new ObjectType([
+                            'name' => 'B',
+                        ]),
+                        new ObjectType([
+                            'name' => 'A',
+                        ]),
+                    ],
+                    'astNode'     => Parser::unionTypeDefinition(
+                        <<<'STRING'
+                        union Test @a = A | B | C
+                        STRING,
+                    ),
+                ]),
+            ],
         ];
     }
     // </editor-fold>

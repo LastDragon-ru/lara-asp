@@ -30,8 +30,12 @@ class UnionTypeDefinitionBlock extends DefinitionBlock {
     }
 
     protected function body(int $used): Block|string|null {
+        return null;
+    }
+
+    protected function fields(int $used): Block|string|null {
         $space = $this->space();
-        $equal = "{$space}={$space}";
+        $equal = "={$space}";
         $types = new UnionMemberTypesList(
             $this->getDispatcher(),
             $this->getSettings(),
@@ -43,15 +47,11 @@ class UnionTypeDefinitionBlock extends DefinitionBlock {
         if ($types->isMultiline()) {
             $eol    = $this->eol();
             $indent = $this->indent($this->getLevel() + 1);
-            $types  = "{$space}={$eol}{$indent}{$types}";
+            $types  = "={$eol}{$indent}{$types}";
         } else {
             $types = "{$equal}{$types}";
         }
 
         return $types;
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
     }
 }

@@ -167,7 +167,8 @@ type SchemaTypeUnused
 
 union CodeUnion = | CodeType
 
-union SchemaUnion =
+union SchemaUnion
+@schemaDirective
+=
     | CodeType
     | SchemaType
-@schemaDirective
