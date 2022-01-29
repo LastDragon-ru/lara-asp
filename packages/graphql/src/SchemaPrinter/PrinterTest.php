@@ -106,8 +106,9 @@ class PrinterTest extends TestCase {
 
         // Test
         $expected = $this->getTestData()->content($expected);
+        $resolver = $this->app->make(DirectiveResolver::class);
+        $printer  = (new Printer($resolver))->setSettings($settings)->setLevel($level);
         $schema   = $this->getGraphQLSchema($this->getTestData()->file('~schema.graphql'));
-        $printer  = (new Printer())->setSettings($settings)->setLevel($level);
         $actual   = $printer->print($schema);
 
         self::assertEquals($expected, (string) $actual);

@@ -199,6 +199,30 @@ This is unused union.
 """
 union SchemaUnionUnused = SchemaTypeUnused
 
+directive @codeDirective repeatable on SCHEMA | SCALAR | INTERFACE
+
+"""
+Allows you to easily hook up a resolver for an endpoint.
+"""
+directive @mock(
+  """
+  Specify a unique key for the mock resolver.
+  """
+  key: String = "default"
+)
+on | FIELD_DEFINITION
+
+"""
+Reference a class implementing a scalar definition.
+"""
+directive @scalar(
+  """
+  Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
+  """
+  class: String!
+)
+on | SCALAR
+
 """
 Directive
 """

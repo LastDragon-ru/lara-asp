@@ -20,7 +20,10 @@ class Printer {
     protected Settings $settings;
     protected int      $level = 0;
 
-    public function __construct(Settings $settings = null) {
+    public function __construct(
+        protected DirectiveResolver $directives,
+        Settings $settings = null,
+    ) {
         $this->settings = $settings ?? new DefaultSettings();
     }
 
@@ -50,7 +53,7 @@ class Printer {
         $usedDirectives   = [];
         $schemaBlock      = $this->getSchema($schema, $usedTypes, $usedDirectives);
         $typesBlocks      = $this->getSchemaTypes($schema, $usedTypes, $usedDirectives);
-        $directivesBlocks = $this->getSchemaDirectives($schema, $usedTypes, $usedDirectives);
+        $directivesBlocks = $this->getSchemaDirectives($schema, $usedDirectives, $usedTypes);
 
         // Print
         $settings  = $this->getSettings();
@@ -82,7 +85,7 @@ class Printer {
         Schema $schema,
         array &$usedTypes = [],
         array &$usedDirectives = [],
-    ): Block {
+    ): DefinitionBlock {
         return $this->getDefinitionBlock($schema, $usedTypes, $usedDirectives);
     }
 
@@ -90,7 +93,7 @@ class Printer {
      * @param array<string,string> $usedTypes
      * @param array<string,string> $usedDirectives
      *
-     * @return array<Block>
+     * @return array<DefinitionBlock>
      */
     protected function getSchemaTypes(Schema $schema, array &$usedTypes = [], array &$usedDirectives = []): array {
         $blocks = [];
@@ -114,11 +117,11 @@ class Printer {
 
     /**
      * @param array<string,string> $usedTypes
-     * @param array<string,string> $usedDirectives
+     * @param array<string,string> $directives
      *
      * @return array<Block>
      */
-    protected function getSchemaDirectives(Schema $schema, array &$usedTypes = [], array &$usedDirectives = []): array {
+    protected function getSchemaDirectives(Schema $schema, array $directives, array &$usedTypes = []): array {
         // Included?
         $blocks   = [];
         $settings = $this->getSettings();
@@ -128,15 +131,34 @@ class Printer {
             return $blocks;
         }
 
-        // Add
+        // Add directives from Schema
+        $processed = [];
+
         foreach ($schema->getDirectives() as $directive) {
+            // Mark
+            $processed[$directive->name] = true;
+
             // Standard?
             if (!$this->isSchemaDirective($directive)) {
                 continue;
             }
 
             // Nope
-            $blocks[] = $this->getDefinitionBlock($directive, $usedTypes, $usedDirectives);
+            $blocks[] = $this->getDefinitionBlock($directive, $usedTypes);
+        }
+
+        // Add Lighthouse directives
+        foreach ($directives as $directive) {
+            // Processed?
+            if (isset($processed[$directive])) {
+                continue;
+            }
+
+            // Nope
+            $blocks[] = $this->getDefinitionBlock(
+                $this->directives->get($directive),
+                $usedTypes,
+            );
         }
 
         // Return
@@ -155,8 +177,8 @@ class Printer {
         Schema|Type|Directive $definition,
         array &$usedTypes = [],
         array &$usedDirectives = [],
-    ): Block {
-        $block           = new DefinitionBlock($this->getSettings(), $this->getLevel(), $definition);
+    ): DefinitionBlock {
+        $block          = new DefinitionBlock($this->getSettings(), $this->getLevel(), $definition);
         $usedTypes      += $block->getUsedTypes();
         $usedDirectives += $block->getUsedDirectives();
 
