@@ -34,6 +34,10 @@ abstract class UsageList extends BlockList {
         }
     }
 
+    public function isMultiline(): bool {
+        return parent::isMultiline() || $this->isAlwaysMultiline();
+    }
+
     /**
      * @param TType $item
      *

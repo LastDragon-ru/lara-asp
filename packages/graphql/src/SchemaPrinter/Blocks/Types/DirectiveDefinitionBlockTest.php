@@ -260,7 +260,6 @@ class DirectiveDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 directive @test on
                     | ARGUMENT_DEFINITION
-                    | ENUM
                 STRING,
                 $settings
                     ->setAlwaysMultilineDirectiveLocations(true),
@@ -270,7 +269,6 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     'name'      => 'test',
                     'locations' => [
                         DirectiveLocation::ARGUMENT_DEFINITION,
-                        DirectiveLocation::ENUM,
                     ],
                 ]),
             ],

@@ -165,7 +165,8 @@ type SchemaTypeUnused
     a: SchemaScalarUnused
 }
 
-union CodeUnion = | CodeType
+union CodeUnion =
+    | CodeType
 
 union SchemaUnion
 @schemaDirective

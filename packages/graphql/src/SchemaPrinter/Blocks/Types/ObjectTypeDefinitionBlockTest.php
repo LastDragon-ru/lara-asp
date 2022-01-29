@@ -357,7 +357,6 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 type Test implements
                     & B
-                    & A
                 {
                     a: String
                 }
@@ -376,7 +375,6 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     ],
                     'interfaces' => [
                         new ObjectType(['name' => 'B']),
-                        new ObjectType(['name' => 'A']),
                     ],
                 ]),
             ],

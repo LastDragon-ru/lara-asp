@@ -299,6 +299,23 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ),
                 ]),
             ],
+            "one member + always multiline" => [
+                <<<'STRING'
+                union Test =
+                    | A
+                STRING,
+                $settings->setAlwaysMultilineUnions(true),
+                0,
+                0,
+                new UnionType([
+                    'name'  => 'Test',
+                    'types' => [
+                        new ObjectType([
+                            'name' => 'A',
+                        ]),
+                    ],
+                ]),
+            ],
         ];
     }
     // </editor-fold>
