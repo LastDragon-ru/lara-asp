@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use ArrayAccess;
+use Countable;
 
 use function array_key_last;
 use function count;
@@ -16,7 +17,7 @@ use function usort;
  * @template TBlock of Block
  * @implements ArrayAccess<string,TBlock>
  */
-abstract class BlockList extends Block implements ArrayAccess {
+abstract class BlockList extends Block implements ArrayAccess, Countable {
     /**
      * @var array<int|string,TBlock>
      */
@@ -245,6 +246,13 @@ abstract class BlockList extends Block implements ArrayAccess {
         unset($this->multiline[$offset]);
 
         $this->reset();
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Countable">
+    // =========================================================================
+    public function count() {
+        return count($this->blocks);
     }
     // </editor-fold>
 }
