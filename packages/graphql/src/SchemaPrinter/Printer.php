@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 
 use function end;
 use function explode;
+use function ltrim;
 
 class Printer {
     protected Settings $settings;
@@ -66,7 +67,8 @@ class Printer {
             $settings->isPrintUnusedDirectiveDefinitions(),
         );
 
-        // todo(graphql): directives in description
+        // todo(graphql): directives in description for schema
+        //      https://github.com/webonyx/graphql-php/issues/1027
 
         // Return
         return new PrintedSchema((string) $content);
@@ -190,7 +192,7 @@ class Printer {
         // prefix before checking.
         $name = $block instanceof Named ? $block->getName() : '';
         $name = explode(' ', $name);
-        $name = end($name);
+        $name = ltrim((string) end($name), '@');
 
         return isset($used[$name]);
     }
