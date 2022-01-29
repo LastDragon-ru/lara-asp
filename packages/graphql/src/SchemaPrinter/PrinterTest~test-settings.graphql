@@ -137,7 +137,8 @@ type Query {
     @mock
 }
 
-type SchemaType implements
+type SchemaType
+implements
     & SchemaInterfaceB
 @schemaDirective
 {

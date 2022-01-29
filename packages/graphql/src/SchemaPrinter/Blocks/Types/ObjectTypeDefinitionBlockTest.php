@@ -226,7 +226,8 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
             ],
             'implements(multiline) + directives + fields' => [
                 <<<'STRING'
-                type Test implements
+                type Test
+                implements
                     & B
                     & A
                 @a
@@ -254,7 +255,8 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
             ],
             'implements(multiline) + fields'              => [
                 <<<'STRING'
-                type Test implements
+                type Test
+                implements
                     & B
                     & A
                 {
@@ -303,7 +305,8 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
             ],
             'implements(normalized) + fields'             => [
                 <<<'STRING'
-                type Test implements
+                type Test
+                implements
                     & A
                     & B
                 {
@@ -329,7 +332,8 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
             ],
             'indent'                                      => [
                 <<<'STRING'
-                type Test implements
+                type Test
+                    implements
                         & A
                         & B
                     {
@@ -355,7 +359,8 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
             ],
             'implements always multiline'                 => [
                 <<<'STRING'
-                type Test implements
+                type Test
+                implements
                     & B
                 {
                     a: String

@@ -43,7 +43,13 @@ abstract class TypeDefinitionBlock extends DefinitionBlock {
         );
 
         if (!$interfaces->isEmpty()) {
-            $interfaces = "{$space}{$interfaces}";
+            if ($interfaces->isMultiline()) {
+                $eol        = $this->eol();
+                $indent     = $this->indent($this->getLevel());
+                $interfaces = "{$eol}{$indent}{$interfaces}";
+            } else {
+                $interfaces = "{$space}{$interfaces}";
+            }
         }
 
         return $interfaces;

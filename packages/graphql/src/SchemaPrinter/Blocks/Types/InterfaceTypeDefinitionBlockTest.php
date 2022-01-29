@@ -227,7 +227,8 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
             ],
             'implements(multiline) + directives + fields' => [
                 <<<'STRING'
-                interface Test implements
+                interface Test
+                implements
                     & B
                     & A
                 @a
@@ -255,7 +256,8 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
             ],
             'implements(multiline) + fields'              => [
                 <<<'STRING'
-                interface Test implements
+                interface Test
+                implements
                     & B
                     & A
                 {
@@ -304,7 +306,8 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
             ],
             'implements(normalized) + fields'             => [
                 <<<'STRING'
-                interface Test implements
+                interface Test
+                implements
                     & A
                     & B
                 {
@@ -330,7 +333,8 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
             ],
             'indent'                                      => [
                 <<<'STRING'
-                interface Test implements
+                interface Test
+                    implements
                         & A
                         & B
                     {
@@ -356,7 +360,8 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
             ],
             'implements always multiline'                 => [
                 <<<'STRING'
-                interface Test implements
+                interface Test
+                implements
                     & A
                 {
                     a: String
