@@ -25,4 +25,8 @@ class ObjectValueList extends BlockList {
     protected function isAlwaysMultiline(): bool {
         return true;
     }
+
+    protected function isNormalized(): bool {
+        return $this->getSettings()->isNormalizeArguments();
+    }
 }

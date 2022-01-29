@@ -45,10 +45,13 @@ class ValueNodeTest extends TestCase {
         $parsed = Parser::valueLiteral($actual);
 
         self::assertEquals($expected, $actual);
-        self::assertEquals(
-            Printer::doPrint($node),
-            Printer::doPrint($parsed),
-        );
+
+        if (!$settings->isNormalizeArguments()) {
+            self::assertEquals(
+                Printer::doPrint($node),
+                Printer::doPrint($parsed),
+            );
+        }
     }
     // </editor-fold>
 
@@ -58,7 +61,8 @@ class ValueNodeTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ValueNode&Node}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setNormalizeArguments(false);
 
         return [
             NullValueNode::class                                  => [
@@ -207,6 +211,26 @@ class ValueNodeTest extends TestCase {
                 0,
                 0,
                 Parser::valueLiteral('{}'),
+            ],
+            ObjectValueNode::class.' (normalized)'                => [
+                <<<'STRING'
+                {
+                    a: "a"
+                    b: "b"
+                }
+                STRING,
+                $settings
+                    ->setNormalizeArguments(true),
+                0,
+                0,
+                Parser::valueLiteral(
+                    <<<'STRING'
+                    {
+                        b: "b"
+                        a: "a"
+                    }
+                    STRING,
+                ),
             ],
             'all'                                                 => [
                 <<<'STRING'
