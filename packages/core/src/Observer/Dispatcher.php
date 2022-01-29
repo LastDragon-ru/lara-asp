@@ -19,32 +19,36 @@ class Dispatcher implements Subject {
         $this->reset();
     }
 
-    /**
-     * @param Closure(TContext):void $observer
-     */
-    public function attach(Closure $observer): void {
+    public function attach(Closure $observer): static {
         $this->observers->attach($observer);
+
+        return $this;
     }
 
-    /**
-     * @param Closure(TContext):void $observer
-     */
-    public function detach(Closure $observer): void {
+    public function detach(Closure $observer): static {
         $this->observers->detach($observer);
+
+        return $this;
     }
 
-    public function reset(): void {
+    public function reset(): static {
         $this->observers = new SplObjectStorage();
+
+        return $this;
     }
 
     /**
      * @param TContext $context
+     *
+     * @return $this<TContext>
      */
-    public function notify(mixed $context = null): void {
+    public function notify(mixed $context = null): static {
         foreach ($this->observers as $observer) {
             /** @var Closure $observer */
             $observer($context);
         }
+
+        return $this;
     }
 
     /**
