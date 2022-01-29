@@ -10,7 +10,6 @@ use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock;
@@ -38,13 +37,13 @@ class ValueNodeBlock extends Block {
         $used       = $this->getUsed();
 
         if ($this->node instanceof ListValueNode) {
-            $content = new ListBlockList($dispatcher, $settings, $level, $used);
+            $content = new ListValueList($dispatcher, $settings, $level, $used);
 
             foreach ($this->node->values as $value) {
                 $content[] = new ValueNodeBlock($dispatcher, $settings, $level + 1, $used, $value);
             }
         } elseif ($this->node instanceof ObjectValueNode) {
-            $content = new ObjectBlockList($dispatcher, $settings, $level, $used);
+            $content = new ObjectValueList($dispatcher, $settings, $level, $used);
 
             foreach ($this->node->fields as $field) {
                 $name           = $field->name->value;

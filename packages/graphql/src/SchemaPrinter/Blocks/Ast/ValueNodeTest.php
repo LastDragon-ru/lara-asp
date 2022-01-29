@@ -199,6 +199,15 @@ class ValueNodeTest extends TestCase {
                 STRING,
                 ),
             ],
+            ObjectValueNode::class.' (empty)'                     => [
+                <<<'STRING'
+                {}
+                STRING,
+                $settings,
+                0,
+                0,
+                Parser::valueLiteral('{}'),
+            ],
             'all'                                                 => [
                 <<<'STRING'
                 {
