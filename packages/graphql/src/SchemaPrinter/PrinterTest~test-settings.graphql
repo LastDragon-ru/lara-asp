@@ -1,0 +1,173 @@
+enum CodeEnum {
+    A
+    B
+    C
+}
+
+enum SchemaEnum {
+    A
+    @deprecated
+
+    """
+    Description
+    """
+    B
+}
+
+"""
+This is unused enum.
+"""
+enum SchemaEnumUnused {
+    A
+}
+
+"""
+Description
+"""
+input CodeInput
+@schemaDirective
+{
+    a: Boolean
+}
+
+input SchemaInput
+@schemaDirective
+{
+    a: CodeScalar
+    b: CodeEnum
+    c: SchemaScalar
+    d: SchemaEnum
+
+    """
+    Recursion
+    """
+    e: SchemaInput
+
+    f: [String!]
+}
+
+interface SchemaInterfaceB
+@schemaDirective
+{
+    a: Boolean!
+
+    """
+    Deprecated field
+    """
+    b: [String]!
+    @deprecated
+
+    c(
+        """
+        aaa
+        """
+        a: String
+
+        """
+        bbb
+        """
+        b: [SchemaScalar!]!
+
+        c: SchemaEnum
+    ): CodeUnion
+
+    d: CodeScalar
+    e: CodeEnum
+}
+
+scalar CodeScalar
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar SchemaScalar
+@scalar(class: "GraphQL\\Type\\Definition\\StringType")
+@codeDirective
+
+"""
+This is unused scalar.
+"""
+scalar SchemaScalarUnused
+@scalar(class: "GraphQL\\Type\\Definition\\StringType")
+
+"""
+Description
+"""
+type CodeType
+@schemaDirective
+{
+    a: Boolean
+}
+
+type Query {
+    a: SchemaType
+    @deprecated(reason: "deprecated reason")
+    @codeDirective
+    @mock
+
+    b: SchemaEnum
+    @deprecated
+    @mock
+
+    c(a: SchemaInput = ): CodeScalar
+    @mock
+
+    d: CodeType
+    @mock
+}
+
+type SchemaType implements
+    & SchemaInterfaceB
+@schemaDirective
+{
+    a: Boolean!
+
+    """
+    Deprecated field
+    """
+    b: [String]!
+    @deprecated
+
+    c(
+        """
+        aaa
+        """
+        a: String
+
+        """
+        bbb
+        """
+        b: [SchemaScalar!]!
+
+        c: CodeInput
+    ): CodeUnion
+
+    d: CodeScalar
+    e: CodeEnum
+
+    f(
+        a: [String!] = [
+            "very very very long line of text"
+            "very very very long line of text"
+            "very very very long line of text"
+        ]
+    ): SchemaUnion
+}
+
+"""
+This is unused type.
+"""
+type SchemaTypeUnused
+@schemaDirectiveUnused
+{
+    a: SchemaScalarUnused
+}
+
+union CodeUnion = | CodeType
+
+union SchemaUnion =
+    | CodeType
+    | SchemaType
+@schemaDirective

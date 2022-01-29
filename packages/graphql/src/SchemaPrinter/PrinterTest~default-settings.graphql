@@ -1,0 +1,209 @@
+enum CodeEnum {
+  C
+  B
+  A
+}
+
+enum SchemaEnum {
+  A
+
+  """
+  Description
+  """
+  B
+}
+
+"""
+This is unused enum.
+"""
+enum SchemaEnumUnused {
+  A
+}
+
+"""
+Description
+"""
+input CodeInput {
+  a: Boolean
+}
+
+input SchemaInput {
+  f: [String!]
+
+  """
+  Recursion
+  """
+  e: SchemaInput
+
+  d: SchemaEnum
+  c: SchemaScalar
+  b: CodeEnum
+  a: CodeScalar
+}
+
+"""
+This is unused input.
+"""
+input SchemaInputUnused {
+  a: CodeScalar
+  b: CodeEnum
+  c: SchemaScalar
+  d: SchemaEnum
+
+  """
+  Recursion
+  """
+  e: SchemaInput
+}
+
+"""
+Description
+"""
+interface CodeInterface {
+  a: Boolean
+}
+
+interface SchemaInterfaceA {
+  a: Boolean!
+}
+
+interface SchemaInterfaceB {
+  a: Boolean!
+
+  """
+  Deprecated field
+  """
+  b: [String]!
+
+  c(
+    """
+    aaa
+    """
+    a: String
+
+    """
+    bbb
+    """
+    b: [SchemaScalar!]!
+
+    c: SchemaEnum
+  ): CodeUnion
+
+  d: CodeScalar
+  e: CodeEnum
+}
+
+"""
+This is unused interface.
+"""
+interface SchemaInterfaceUnused {
+  a: SchemaScalarUnused
+  b: SchemaEnumUnused
+}
+
+scalar CodeScalar
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar SchemaScalar
+
+"""
+This is unused scalar.
+"""
+scalar SchemaScalarUnused
+
+"""
+Description
+"""
+type CodeType {
+  a: Boolean
+}
+
+type Query {
+  a: SchemaType
+  b: SchemaEnum
+  c(a: SchemaInput = ): CodeScalar
+  d: CodeType
+}
+
+type SchemaType implements SchemaInterfaceB {
+  a: Boolean!
+
+  """
+  Deprecated field
+  """
+  b: [String]!
+
+  c(
+    """
+    aaa
+    """
+    a: String
+
+    """
+    bbb
+    """
+    b: [SchemaScalar!]!
+
+    c: CodeInput
+  ): CodeUnion
+
+  d: CodeScalar
+  e: CodeEnum
+
+  f(
+    a: [String!] = [
+      "very very very long line of text"
+      "very very very long line of text"
+      "very very very long line of text"
+    ]
+  ): SchemaUnion
+}
+
+"""
+This is unused type.
+"""
+type SchemaTypeUnused {
+  a: SchemaScalarUnused
+}
+
+union CodeUnion = CodeType
+union SchemaUnion = SchemaType | CodeType
+
+"""
+This is unused union.
+"""
+union SchemaUnionUnused = SchemaTypeUnused
+
+"""
+Directive
+"""
+directive @schemaDirective(
+  """
+  Directive argument
+  """
+  message: String
+)
+on
+  | SCHEMA
+  | FIELD
+  | ARGUMENT_DEFINITION
+  | INTERFACE
+  | OBJECT
+  | UNION
+  | INPUT_OBJECT
+  | SCALAR
+
+"""
+This is unused directives.
+"""
+directive @schemaDirectiveUnused(
+  a: SchemaScalarUnused
+  b: SchemaEnumUnused
+)
+repeatable on
+  | SCALAR
+  | OBJECT
