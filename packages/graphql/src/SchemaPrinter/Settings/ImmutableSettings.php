@@ -15,8 +15,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $printDirectives;
     protected bool             $printDirectiveDefinitions;
     protected bool             $printDirectivesInDescription;
-    protected bool             $printUnusedTypeDefinitions;
-    protected bool             $printUnusedDirectiveDefinitions;
+    protected bool             $printUnusedDefinitions;
     protected bool             $normalizeSchema;
     protected bool             $normalizeUnions;
     protected bool             $normalizeEnums;
@@ -84,13 +83,13 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
-    public function isPrintUnusedTypeDefinitions(): bool {
-        return $this->printUnusedTypeDefinitions;
+    public function isPrintUnusedDefinitions(): bool {
+        return $this->printUnusedDefinitions;
     }
 
-    public function setPrintUnusedTypeDefinitions(bool $value): static {
+    public function setPrintUnusedDefinitions(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
-            $settings->printUnusedTypeDefinitions = $value;
+            $settings->printUnusedDefinitions = $value;
         });
     }
 
@@ -121,16 +120,6 @@ abstract class ImmutableSettings implements Settings {
     public function setPrintDirectivesInDescription(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
             $settings->printDirectivesInDescription = $value;
-        });
-    }
-
-    public function isPrintUnusedDirectiveDefinitions(): bool {
-        return $this->printUnusedDirectiveDefinitions;
-    }
-
-    public function setPrintUnusedDirectiveDefinitions(bool $value): static {
-        return $this->set(static function (self $settings) use ($value): void {
-            $settings->printUnusedDirectiveDefinitions = $value;
         });
     }
 
@@ -271,11 +260,10 @@ abstract class ImmutableSettings implements Settings {
             ->setFileEnd($settings->getFileEnd())
             ->setLineEnd($settings->getLineEnd())
             ->setLineLength($settings->getLineLength())
-            ->setPrintUnusedTypeDefinitions($settings->isPrintUnusedTypeDefinitions())
             ->setPrintDirectives($settings->isPrintDirectives())
             ->setPrintDirectiveDefinitions($settings->isPrintDirectiveDefinitions())
             ->setPrintDirectivesInDescription($settings->isPrintDirectivesInDescription())
-            ->setPrintUnusedDirectiveDefinitions($settings->isPrintUnusedDirectiveDefinitions())
+            ->setPrintUnusedDefinitions($settings->isPrintUnusedDefinitions())
             ->setNormalizeSchema($settings->isNormalizeSchema())
             ->setNormalizeUnions($settings->isNormalizeUnions())
             ->setNormalizeEnums($settings->isNormalizeEnums())

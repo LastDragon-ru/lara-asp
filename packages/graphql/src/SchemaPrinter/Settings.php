@@ -15,8 +15,6 @@ interface Settings {
 
     public function getLineLength(): int;
 
-    public function isPrintUnusedTypeDefinitions(): bool;
-
     public function isPrintDirectives(): bool;
 
     public function isPrintDirectiveDefinitions(): bool;
@@ -29,7 +27,10 @@ interface Settings {
      */
     public function isPrintDirectivesInDescription(): bool;
 
-    public function isPrintUnusedDirectiveDefinitions(): bool;
+    /**
+     * If `false` unused Types and Directives definition will not be printed.
+     */
+    public function isPrintUnusedDefinitions(): bool;
 
     /**
      * If `false` types and directives in the schema will be printed in the

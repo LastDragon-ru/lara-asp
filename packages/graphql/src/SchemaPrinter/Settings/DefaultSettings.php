@@ -13,8 +13,7 @@ class DefaultSettings extends ImmutableSettings {
     protected bool             $printDirectives                   = false;
     protected bool             $printDirectiveDefinitions         = true;
     protected bool             $printDirectivesInDescription      = false;
-    protected bool             $printUnusedTypeDefinitions        = true;
-    protected bool             $printUnusedDirectiveDefinitions   = true;
+    protected bool             $printUnusedDefinitions            = true;
     protected bool             $normalizeSchema                   = true;
     protected bool             $normalizeUnions                   = false;
     protected bool             $normalizeEnums                    = false;

@@ -62,12 +62,12 @@ class Printer {
         $content[] = $this->getDefinitionList(
             $typesBlocks,
             $usedTypes,
-            $settings->isPrintUnusedTypeDefinitions(),
+            $settings->isPrintUnusedDefinitions(),
         );
         $content[] = $this->getDefinitionList(
             $directivesBlocks,
             $usedDirectives,
-            $settings->isPrintUnusedDirectiveDefinitions(),
+            $settings->isPrintUnusedDefinitions(),
         );
 
         // todo(graphql): directives in description for schema
