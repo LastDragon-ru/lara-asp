@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
@@ -37,9 +37,9 @@ class IntrospectionPrinterTest extends TestCase {
      */
     public function dataProviderPrint(): array {
         return [
-            DefaultSettings::class         => [
-                '~default-settings.graphql',
-                new DefaultSettings(),
+            GraphQLSettings::class => [
+                '~graphql-settings.graphql',
+                new GraphQLSettings(),
                 0,
             ],
             TestSettings::class            => [

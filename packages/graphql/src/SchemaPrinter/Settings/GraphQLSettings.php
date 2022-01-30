@@ -4,7 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 
-class DefaultSettings extends ImmutableSettings {
+/**
+ * These settings close as possible to {@see \GraphQL\Utils\SchemaPrinter}.
+ */
+class GraphQLSettings extends ImmutableSettings {
     protected string           $space                             = ' ';
     protected string           $indent                            = '  ';
     protected string           $fileEnd                           = "\n";

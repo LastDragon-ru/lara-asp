@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\GraphQLSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
 
@@ -29,7 +29,7 @@ class Printer {
         protected ExecutableTypeNodeConverter $converter,
         Settings $settings = null,
     ) {
-        $this->settings = $settings ?? new DefaultSettings();
+        $this->settings = $settings ?? new GraphQLSettings();
     }
 
     public function getLevel(): int {

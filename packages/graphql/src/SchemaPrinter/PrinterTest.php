@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -126,9 +126,9 @@ class PrinterTest extends TestCase {
      */
     public function dataProviderPrint(): array {
         return [
-            DefaultSettings::class => [
+            GraphQLSettings::class => [
                 [
-                    'schema'     => '~default-settings.graphql',
+                    'schema'     => '~graphql-settings.graphql',
                     'types'      => [
                         'String',
                         'Boolean',
@@ -151,7 +151,7 @@ class PrinterTest extends TestCase {
                         // empty
                     ],
                 ],
-                new DefaultSettings(),
+                new GraphQLSettings(),
                 0,
             ],
             TestSettings::class    => [
