@@ -21,8 +21,7 @@ class IntrospectionPrinterTest extends TestCase {
      */
     public function testPrint(string $expected, Settings $settings, int $level): void {
         $expected = $this->getTestData()->content($expected);
-        $resolver = $this->app->make(DirectiveResolver::class);
-        $printer  = (new IntrospectionPrinter($resolver))->setSettings($settings)->setLevel($level);
+        $printer  = $this->app->make(IntrospectionPrinter::class)->setSettings($settings)->setLevel($level);
         $schema   = new Schema([]);
         $actual   = $printer->print($schema);
 

@@ -3,8 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
 use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
+use GraphQL\Type\Schema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
 
 /**
@@ -23,11 +25,26 @@ class IntrospectionPrinter extends Printer {
         );
     }
 
-    protected function isSchemaType(Type $type): bool {
-        return Introspection::isIntrospectionType($type);
+    protected function getSchemaTypes(PrinterSettings $settings, Schema $schema): DefinitionList {
+        $blocks = $this->getDefinitionList($settings);
+
+        foreach (Introspection::getTypes() as $type) {
+            $blocks[] = $this->getDefinitionBlock($settings, $type);
+        }
+
+        return $blocks;
     }
 
-    protected function isSchemaDirective(Directive $directive): bool {
-        return Directive::isSpecifiedDirective($directive);
+    protected function getSchemaDirectives(PrinterSettings $settings, Schema $schema): DefinitionList {
+        $blocks     = $this->getDefinitionList($settings);
+        $directives = $schema->getDirectives();
+
+        foreach ($directives as $directive) {
+            if (Directive::isSpecifiedDirective($directive)) {
+                $blocks[] = $this->getDefinitionBlock($settings, $directive);
+            }
+        }
+
+        return $blocks;
     }
 }
