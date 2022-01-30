@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use ArrayAccess;
 use Countable;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Statistics;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
 
 use function array_key_last;
 use function count;

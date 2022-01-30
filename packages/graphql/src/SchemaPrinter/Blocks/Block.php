@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use Closure;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Statistics;
 use Stringable;
 
 use function mb_strlen;
