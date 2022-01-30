@@ -106,8 +106,7 @@ class PrinterTest extends TestCase {
 
         // Test
         $expected = $this->getTestData()->content($expected);
-        $resolver = $this->app->make(DirectiveResolver::class);
-        $printer  = (new Printer($resolver))->setSettings($settings)->setLevel($level);
+        $printer  = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
         $schema   = $this->getGraphQLSchema($this->getTestData()->file('~schema.graphql'));
         $actual   = $printer->print($schema);
 
@@ -127,11 +126,11 @@ class PrinterTest extends TestCase {
                 new DefaultSettings(),
                 0,
             ],
-            TestSettings::class    => [
-                '~test-settings.graphql',
-                new TestSettings(),
-                0,
-            ],
+//            TestSettings::class    => [
+//                '~test-settings.graphql',
+//                new TestSettings(),
+//                0,
+//            ],
         ];
     }
     // </editor-fold>
