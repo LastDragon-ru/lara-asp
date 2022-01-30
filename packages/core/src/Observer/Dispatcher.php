@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Core\Observer;
 
 use Closure;
 use SplObjectStorage;
+use function array_values;
+use function iterator_to_array;
 
 /**
  * @template TContext
