@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\GraphQLSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
 
@@ -139,10 +138,11 @@ class Printer {
      * @return array<BlockList>
      */
     protected function getUsedDefinitions(PrinterSettings $settings, Schema $schema, Block $root): array {
-        $resolver   = $settings->getResolver();
-        $directives = $this->getDefinitionList($settings);
-        $types      = $this->getDefinitionList($settings);
-        $stack      = $root->getUsedDirectives() + $root->getUsedTypes();
+        $directivesDefinitions = $settings->isPrintDirectiveDefinitions();
+        $directivesResolver    = $settings->getResolver();
+        $directives            = $this->getDefinitionList($settings);
+        $types                 = $this->getDefinitionList($settings);
+        $stack                 = $root->getUsedDirectives() + $root->getUsedTypes();
 
         while ($stack) {
             // Added?
@@ -156,11 +156,13 @@ class Printer {
             $block = null;
 
             if (str_starts_with($name, '@')) {
-                $directive = $resolver->getDefinition(substr($name, 1));
+                if ($directivesDefinitions) {
+                    $directive = $directivesResolver->getDefinition(substr($name, 1));
 
-                if ($this->isDirective($directive)) {
-                    $block             = $this->getDefinitionBlock($settings, $directive);
-                    $directives[$name] = $block;
+                    if ($this->isDirective($directive)) {
+                        $block             = $this->getDefinitionBlock($settings, $directive);
+                        $directives[$name] = $block;
+                    }
                 }
             } else {
                 $type = $schema->getType($name);

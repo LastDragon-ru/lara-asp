@@ -127,7 +127,7 @@ class PrinterTest extends TestCase {
      */
     public function dataProviderPrint(): array {
         return [
-            'null'                 => [
+            'null'                                             => [
                 [
                     'schema'     => '~default-settings.graphql',
                     'types'      => [
@@ -152,7 +152,7 @@ class PrinterTest extends TestCase {
                 null,
                 0,
             ],
-            DefaultSettings::class => [
+            DefaultSettings::class                             => [
                 [
                     'schema'     => '~default-settings.graphql',
                     'types'      => [
@@ -177,7 +177,7 @@ class PrinterTest extends TestCase {
                 new DefaultSettings(),
                 0,
             ],
-            GraphQLSettings::class => [
+            GraphQLSettings::class                             => [
                 [
                     'schema'     => '~graphql-settings.graphql',
                     'types'      => [
@@ -205,7 +205,7 @@ class PrinterTest extends TestCase {
                 new GraphQLSettings(),
                 0,
             ],
-            TestSettings::class    => [
+            TestSettings::class                                => [
                 [
                     'schema'     => '~test-settings.graphql',
                     'types'      => [
@@ -232,6 +232,36 @@ class PrinterTest extends TestCase {
                     ],
                 ],
                 new TestSettings(),
+                0,
+            ],
+            TestSettings::class.' (no directives definitions)' => [
+                [
+                    'schema'     => '~test-settings-no-directives-definitions.graphql',
+                    'types'      => [
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                    ],
+                    'directives' => [
+                        '@schemaDirective',
+                        '@codeDirective',
+                        '@deprecated',
+                        '@scalar',
+                        '@mock',
+                    ],
+                ],
+                (new TestSettings())
+                    ->setPrintDirectiveDefinitions(false),
                 0,
             ],
         ];
