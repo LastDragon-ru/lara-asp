@@ -5,11 +5,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
 
-use function array_filter;
 use function json_encode;
 
 /**
@@ -55,20 +55,18 @@ class DirectiveNodeList extends BlockList {
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getBlocks(): array {
-        $filter = $this->getSettings()->getDirectiveFilter();
-        $blocks = parent::getBlocks();
-
-        if ($filter !== null) {
-            $blocks = array_filter($blocks, static function (DirectiveNodeBlock $block) use ($filter): bool {
-                return $filter->isAllowedDirective($block->getNode());
-            });
+    protected function isValidBlock(Block $value): bool {
+        // Parent?
+        if (!parent::isValidBlock($value)) {
+            return false;
         }
 
-        return $blocks;
+        // Allowed?
+        $filter = $this->getSettings()->getDirectiveFilter();
+        $valid  = $filter === null
+            || $filter->isAllowedDirective($value->getNode());
+
+        return $valid;
     }
 
     private function block(DirectiveNode $directive,): DirectiveNodeBlock {

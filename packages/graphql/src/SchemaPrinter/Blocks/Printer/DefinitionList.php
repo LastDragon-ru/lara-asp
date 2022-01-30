@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer;
 
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -9,6 +10,7 @@ use function rtrim;
 
 /**
  * @internal
+ * @extends BlockList<Block>
  */
 class DefinitionList extends BlockList {
     public function __construct(

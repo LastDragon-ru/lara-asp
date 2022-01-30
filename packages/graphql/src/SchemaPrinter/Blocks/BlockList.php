@@ -15,7 +15,7 @@ use function usort;
 /**
  * @internal
  * @template TBlock of Block
- * @implements ArrayAccess<string,TBlock>
+ * @implements ArrayAccess<string|int,TBlock>
  */
 abstract class BlockList extends Block implements Statistics, ArrayAccess, Countable {
     /**
@@ -205,6 +205,15 @@ abstract class BlockList extends Block implements Statistics, ArrayAccess, Count
     protected function analyze(Block $block): Block {
         return $this->addUsed($block);
     }
+
+    /**
+     * @param TBlock $value
+     *
+     * @return mixed
+     */
+    protected function isValidBlock(Block $value): bool {
+        return !$value->isEmpty();
+    }
     // </editor-fold>
 
     // <editor-fold desc="ArrayAccess">
@@ -230,7 +239,7 @@ abstract class BlockList extends Block implements Statistics, ArrayAccess, Count
      * @param TBlock          $value
      */
     public function offsetSet(mixed $offset, mixed $value): void {
-        if ($value->isEmpty()) {
+        if (!$this->isValidBlock($value)) {
             return;
         }
 
