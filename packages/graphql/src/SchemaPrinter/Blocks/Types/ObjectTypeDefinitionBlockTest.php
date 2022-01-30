@@ -75,7 +75,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
-        self::assertEquals(['a' => 'a', 'b' => 'b', 'c' => 'c'], $block->getUsedDirectives());
+        self::assertEquals(['@a' => '@a', '@b' => '@b', '@c' => '@c'], $block->getUsedDirectives());
     }
     // </editor-fold>
 

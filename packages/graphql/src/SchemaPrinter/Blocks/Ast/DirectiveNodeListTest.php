@@ -69,7 +69,7 @@ class DirectiveNodeListTest extends TestCase {
 
         self::assertNotEmpty((string) $block);
         self::assertEquals([], $block->getUsedTypes());
-        self::assertEquals(['a' => 'a', 'b' => 'b'], $block->getUsedDirectives());
+        self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
     }
     // </editor-fold>
 

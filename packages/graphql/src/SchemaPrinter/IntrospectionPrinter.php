@@ -25,7 +25,7 @@ class IntrospectionPrinter extends Printer {
         );
     }
 
-    protected function getSchemaTypes(PrinterSettings $settings, Schema $schema): DefinitionList {
+    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): DefinitionList {
         $blocks = $this->getDefinitionList($settings);
 
         foreach (Introspection::getTypes() as $type) {
@@ -35,7 +35,7 @@ class IntrospectionPrinter extends Printer {
         return $blocks;
     }
 
-    protected function getSchemaDirectives(PrinterSettings $settings, Schema $schema): DefinitionList {
+    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): DefinitionList {
         $blocks     = $this->getDefinitionList($settings);
         $directives = $schema->getDirectives();
 

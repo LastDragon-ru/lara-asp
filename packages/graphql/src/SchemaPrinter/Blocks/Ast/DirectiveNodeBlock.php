@@ -23,7 +23,7 @@ class DirectiveNodeBlock extends Block implements Named {
     }
 
     public function getName(): string {
-        return $this->getNode()->name->value;
+        return "@{$this->getNode()->name->value}";
     }
 
     public function getNode(): DirectiveNode {
@@ -32,10 +32,9 @@ class DirectiveNodeBlock extends Block implements Named {
 
     protected function content(): string {
         // Convert
-        $at   = '@';
         $node = $this->getNode();
         $name = $this->getName();
-        $used = mb_strlen($name) + mb_strlen($at);
+        $used = mb_strlen($name);
         $args = $this->addUsed(
             new ArgumentNodeList(
                 $this->getSettings(),
@@ -49,6 +48,6 @@ class DirectiveNodeBlock extends Block implements Named {
         $this->addUsedDirective($name);
 
         // Return
-        return "{$at}{$name}{$args}";
+        return "{$name}{$args}";
     }
 }

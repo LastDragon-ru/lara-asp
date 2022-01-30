@@ -66,7 +66,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());
-        self::assertEquals(['a' => 'a', 'b' => 'b'], $block->getUsedDirectives());
+        self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
     }
     // </editor-fold>
 

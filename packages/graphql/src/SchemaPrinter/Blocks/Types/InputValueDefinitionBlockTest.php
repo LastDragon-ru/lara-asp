@@ -60,7 +60,7 @@ class InputValueDefinitionBlockTest extends TestCase {
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
-        self::assertEquals(['a' => 'a'], $block->getUsedDirectives());
+        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
     }
     // </editor-fold>
 
