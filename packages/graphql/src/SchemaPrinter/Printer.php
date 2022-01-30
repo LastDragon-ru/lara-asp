@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
@@ -12,6 +14,10 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
+
+use function array_pop;
+use function str_starts_with;
+use function substr;
 
 class Printer {
     protected Settings $settings;
@@ -46,41 +52,44 @@ class Printer {
     }
 
     public function print(Schema $schema): PrintedSchema {
-        // Collect
-        $resolver         = new DirectiveResolver($this->locator, $this->converter, $schema->getDirectives());
-        $settings         = new PrinterSettings($resolver, $this->getSettings());
-        $schemaBlock      = $this->getSchema($settings, $schema);
-        $typesBlocks      = $this->getSchemaTypes($settings, $schema);
-        $directivesBlocks = $this->getSchemaDirectives($settings, $schema);
-
-        // Print
-        $content   = new DefinitionList($settings, $this->getLevel(), true);
-        $content[] = $schemaBlock;
-        $content[] = $typesBlocks;
-        $content[] = $directivesBlocks;
-
         // todo(graphql): directives in description for schema
         //      https://github.com/webonyx/graphql-php/issues/1027
+
+        // Print
+        $resolver  = new DirectiveResolver($this->locator, $this->converter, $schema->getDirectives());
+        $settings  = new PrinterSettings($resolver, $this->getSettings());
+        $block     = $this->getSchemaDefinition($settings, $schema);
+        $content   = $this->getDefinitionList($settings, true);
+        $content[] = $block;
+
+        if ($settings->isPrintUnusedDefinitions()) {
+            $content[] = $this->getTypeDefinitions($settings, $schema);
+            $content[] = $this->getDirectiveDefinitions($settings, $schema);
+        } else {
+            foreach ($this->getUsedDefinitions($settings, $schema, $block) as $definition) {
+                $content[] = $definition;
+            }
+        }
 
         // Return
         return new PrintedSchema((string) $content);
     }
 
-    protected function getSchema(PrinterSettings $settings, Schema $schema): DefinitionBlock {
+    protected function getSchemaDefinition(PrinterSettings $settings, Schema $schema): Block {
         return $this->getDefinitionBlock($settings, $schema);
     }
 
     /**
      * Returns all types defined in the schema.
      *
-     * @return DefinitionList<DefinitionBlock>
+     * @return BlockList<Block>
      */
-    protected function getSchemaTypes(PrinterSettings $settings, Schema $schema): DefinitionList {
+    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
         $blocks = $this->getDefinitionList($settings);
 
         foreach ($schema->getTypeMap() as $type) {
             // Standard?
-            if (Type::isBuiltInType($type)) {
+            if (!$this->isType($type)) {
                 continue;
             }
 
@@ -94,9 +103,9 @@ class Printer {
     /**
      * Returns all directives defined in the schema.
      *
-     * @return DefinitionList<DefinitionBlock>
+     * @return BlockList<Block>
      */
-    protected function getSchemaDirectives(PrinterSettings $settings, Schema $schema): DefinitionList {
+    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
         // Included?
         $blocks = $this->getDefinitionList($settings);
 
@@ -106,7 +115,7 @@ class Printer {
 
             foreach ($directives as $directive) {
                 // Introspection?
-                if (Directive::isSpecifiedDirective($directive)) {
+                if (!$this->isDirective($directive)) {
                     continue;
                 }
 
@@ -124,14 +133,72 @@ class Printer {
         return $blocks;
     }
 
-    protected function getDefinitionList(PrinterSettings $settings): DefinitionList {
-        return new DefinitionList($settings, $this->getLevel());
+    /**
+     * @return array<BlockList>
+     */
+    protected function getUsedDefinitions(PrinterSettings $settings, Schema $schema, Block $root): array {
+        $resolver   = $settings->getResolver();
+        $directives = $this->getDefinitionList($settings);
+        $types      = $this->getDefinitionList($settings);
+        $stack      = $root->getUsedDirectives() + $root->getUsedTypes();
+
+        while ($stack) {
+            // Added?
+            $name = array_pop($stack);
+
+            if (isset($types[$name]) || isset($directives[$name])) {
+                continue;
+            }
+
+            // Add
+            $block = null;
+
+            if (str_starts_with($name, '@')) {
+                $directive = $resolver->getDefinition(substr($name, 1));
+
+                if ($this->isDirective($directive)) {
+                    $block             = $this->getDefinitionBlock($settings, $directive);
+                    $directives[$name] = $block;
+                }
+            } else {
+                $type = $schema->getType($name);
+
+                if ($this->isType($type)) {
+                    $block        = $this->getDefinitionBlock($settings, $type);
+                    $types[$name] = $block;
+                }
+            }
+
+            // Stack
+            if ($block) {
+                $stack = $stack
+                    + $block->getUsedDirectives()
+                    + $block->getUsedTypes();
+            }
+        }
+
+        return [
+            $types,
+            $directives,
+        ];
+    }
+
+    protected function getDefinitionList(PrinterSettings $settings, bool $schema = false): BlockList {
+        return new DefinitionList($settings, $this->getLevel(), $schema);
     }
 
     protected function getDefinitionBlock(
         PrinterSettings $settings,
         Schema|Type|Directive $definition
-    ): DefinitionBlock {
+    ): Block {
         return new DefinitionBlock($settings, $this->getLevel(), $definition);
+    }
+
+    private function isType(Type $type): bool {
+        return !Type::isBuiltInType($type);
+    }
+
+    private function isDirective(Directive $directive): bool {
+        return !Directive::isSpecifiedDirective($directive);
     }
 }

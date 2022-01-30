@@ -15,13 +15,6 @@ enum SchemaEnum {
 }
 
 """
-This is unused enum.
-"""
-enum SchemaEnumUnused {
-    A
-}
-
-"""
 Description
 """
 input CodeInput
@@ -90,12 +83,6 @@ represent free-form human-readable text.
 scalar SchemaScalar
 @scalar(class: "GraphQL\\Type\\Definition\\StringType")
 @codeDirective
-
-"""
-This is unused scalar.
-"""
-scalar SchemaScalarUnused
-@scalar(class: "GraphQL\\Type\\Definition\\StringType")
 
 """
 Description
@@ -176,15 +163,6 @@ implements
     ): SchemaUnion
 }
 
-"""
-This is unused type.
-"""
-type SchemaTypeUnused
-@schemaDirectiveUnused
-{
-    a: SchemaScalarUnused
-}
-
 union CodeUnion =
     | CodeType
 
@@ -241,14 +219,3 @@ on
     | SCALAR
     | SCHEMA
     | UNION
-
-"""
-This is unused directives.
-"""
-directive @schemaDirectiveUnused(
-    a: SchemaScalarUnused
-    b: SchemaEnumUnused
-)
-repeatable on
-    | OBJECT
-    | SCALAR

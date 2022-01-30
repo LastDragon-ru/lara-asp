@@ -126,11 +126,11 @@ class PrinterTest extends TestCase {
                 new DefaultSettings(),
                 0,
             ],
-//            TestSettings::class    => [
-//                '~test-settings.graphql',
-//                new TestSettings(),
-//                0,
-//            ],
+            TestSettings::class    => [
+                '~test-settings.graphql',
+                new TestSettings(),
+                0,
+            ],
         ];
     }
     // </editor-fold>
