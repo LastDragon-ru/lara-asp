@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\InputObjectField;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use Traversable;
 
 /**
@@ -16,7 +16,7 @@ class InputFieldsDefinitionList extends BlockList {
      * @param Traversable<InputObjectField>|array<InputObjectField> $fields
      */
     public function __construct(
-        BlockSettings $settings,
+        PrinterSettings $settings,
         int $level,
         int $used,
         Traversable|array $fields,

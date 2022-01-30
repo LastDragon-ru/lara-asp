@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -30,7 +30,7 @@ class DirectiveNodeBlockTest extends TestCase {
         int $used,
         DirectiveNode $node,
     ): void {
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $actual   = (string) (new DirectiveNodeBlock($settings, $level, $used, $node));
         $parsed   = Parser::directive($actual);
 
@@ -49,7 +49,7 @@ class DirectiveNodeBlockTest extends TestCase {
      */
     public function testStatistics(): void {
         $settings = new TestSettings();
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $node     = Parser::directive('@test');
         $block    = new DirectiveNodeBlock($settings, 0, 0, $node);
 

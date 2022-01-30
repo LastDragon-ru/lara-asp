@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\EnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 /**
  * @internal
@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
  */
 class EnumValueDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        BlockSettings $settings,
+        PrinterSettings $settings,
         int $level,
         int $used,
         EnumValueDefinition $value,

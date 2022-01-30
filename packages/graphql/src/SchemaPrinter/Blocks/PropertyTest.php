@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
@@ -27,10 +28,10 @@ class PropertyTest extends TestCase {
         $separator = ':';
         $content   = 'abc abcabc abcabc abcabc abc';
         $settings  = (new TestSettings())->setSpace($space);
-        $settings  = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings  = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $block     = new class($settings, $level, $used, $content) extends Block {
             public function __construct(
-                BlockSettings $settings,
+                PrinterSettings $settings,
                 int $level,
                 int $used,
                 protected string $content,
@@ -44,7 +45,7 @@ class PropertyTest extends TestCase {
         };
         $property  = new class($settings, $name, $block, $separator) extends Property {
             public function __construct(
-                BlockSettings $settings,
+                PrinterSettings $settings,
                 string $name,
                 Block $block,
                 private string $separator,

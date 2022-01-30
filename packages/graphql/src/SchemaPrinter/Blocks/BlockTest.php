@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -22,7 +23,7 @@ class BlockTest extends TestCase {
      */
     public function testGetContent(): void {
         $settings = new TestSettings();
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $content  = 'content';
         $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
@@ -41,7 +42,7 @@ class BlockTest extends TestCase {
      */
     public function testGetLength(): void {
         $settings = new TestSettings();
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $content  = 'content';
         $length   = mb_strlen($content);
         $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
@@ -62,7 +63,7 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsMultiline
      */
     public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
@@ -82,7 +83,7 @@ class BlockTest extends TestCase {
      */
     public function testIsEmpty(bool $expected, string $content): void {
         $settings = new TestSettings();
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
@@ -98,7 +99,7 @@ class BlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{bool, BlockSettings, string}>
+     * @return array<string, array{bool, PrinterSettings, string}>
      */
     public function dataProviderIsMultiline(): array {
         $settings = new TestSettings();

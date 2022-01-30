@@ -6,8 +6,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -31,7 +31,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
         int $used,
         InterfaceType $definition,
     ): void {
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $actual   = (string) (new InterfaceTypeDefinitionBlock($settings, $level, $used, $definition));
 
         Parser::interfaceTypeDefinition($actual);
@@ -44,7 +44,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
      */
     public function testStatistics(): void {
         $settings   = new TestSettings();
-        $settings   = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings   = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $definition = new InterfaceType([
             'name'       => 'A',
             'fields'     => [

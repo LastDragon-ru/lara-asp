@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
 use GraphQL\Language\AST\ArgumentNode;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use Traversable;
 
 /**
@@ -17,7 +17,7 @@ class ArgumentNodeList extends BlockList {
      * @param Traversable<ArgumentNode>|array<ArgumentNode> $arguments
      */
     public function __construct(
-        BlockSettings $settings,
+        PrinterSettings $settings,
         int $level,
         int $used,
         Traversable|array $arguments,

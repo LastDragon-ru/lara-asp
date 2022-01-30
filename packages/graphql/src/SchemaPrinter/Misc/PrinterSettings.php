@@ -1,21 +1,27 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
-class BlockSettings implements Settings {
+class PrinterSettings implements Settings {
     public function __construct(
         protected DirectiveResolver $resolver,
         protected Settings $settings,
     ) {
         // empty
     }
+
+    // <editor-fold desc="Getters / Settings">
+    // =========================================================================
+    public function getResolver(): DirectiveResolver {
+        return $this->resolver;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Directives">
     // =========================================================================

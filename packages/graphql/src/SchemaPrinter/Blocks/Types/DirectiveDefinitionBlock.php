@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 use function mb_strlen;
 
@@ -15,7 +15,7 @@ use function mb_strlen;
  */
 class DirectiveDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        BlockSettings $settings,
+        PrinterSettings $settings,
         int $level,
         int $used,
         Directive $definition,

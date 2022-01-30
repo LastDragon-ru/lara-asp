@@ -8,8 +8,8 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -33,7 +33,7 @@ class FieldDefinitionBlockTest extends TestCase {
         int $used,
         FieldDefinition $definition,
     ): void {
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $actual   = (string) (new FieldDefinitionBlock($settings, $level, $used, $definition));
 
         Parser::fieldDefinition($actual);
@@ -46,7 +46,7 @@ class FieldDefinitionBlockTest extends TestCase {
      */
     public function testStatistics(): void {
         $settings   = new TestSettings();
-        $settings   = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings   = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $definition = FieldDefinition::create([
             'name'    => 'A',
             'type'    => new NonNull(

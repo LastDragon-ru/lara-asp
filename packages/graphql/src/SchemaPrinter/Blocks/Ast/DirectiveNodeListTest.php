@@ -6,8 +6,8 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\DirectiveLocation;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -49,7 +49,7 @@ class DirectiveNodeListTest extends TestCase {
         }
 
         $resolver = new DirectiveResolver($locator, $convertor, $instances);
-        $settings = new BlockSettings($resolver, $settings);
+        $settings = new PrinterSettings($resolver, $settings);
         $actual   = (string) (new DirectiveNodeList($settings, $level, $used, $directives, $reason));
 
         Parser::directives($actual);
@@ -64,7 +64,7 @@ class DirectiveNodeListTest extends TestCase {
         $a        = Parser::directive('@a');
         $b        = Parser::directive('@b');
         $settings = (new TestSettings())->setPrintDirectives(true);
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = new DirectiveNodeList($settings, 0, 0, [$a, $b]);
 
         self::assertNotEmpty((string) $block);

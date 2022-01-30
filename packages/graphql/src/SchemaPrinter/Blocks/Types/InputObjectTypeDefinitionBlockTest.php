@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -30,7 +30,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
         int $used,
         InputObjectType $definition,
     ): void {
-        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $actual   = (string) (new InputObjectTypeDefinitionBlock(
             $settings,
             $level,
@@ -48,7 +48,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
      */
     public function testStatistics(): void {
         $settings   = new TestSettings();
-        $settings   = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $settings   = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $definition = new InputObjectType([
             'name'    => 'A',
             'fields'  => [

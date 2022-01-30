@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
+namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc;
 
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -59,5 +59,19 @@ class DirectiveResolver {
 
     public function getInstance(string $name): GraphQLDirective|LighthouseDirective {
         return $this->directives[$name] ?? $this->locator->create($name);
+    }
+
+    /**
+     * @return array<GraphQLDirective>
+     */
+    public function getDefinitions(): array {
+        $directives = $this->directives;
+
+        foreach ($this->locator->definitions() as $definition) {
+            $directive                     = $this->factory->handle($definition);
+            $directives[$directives->name] = $directive;
+        }
+
+        return $directives;
     }
 }

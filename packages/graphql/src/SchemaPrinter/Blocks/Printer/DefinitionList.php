@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 use function rtrim;
 
@@ -14,7 +14,7 @@ use function rtrim;
  */
 class DefinitionList extends BlockList {
     public function __construct(
-        BlockSettings $settings,
+        PrinterSettings $settings,
         int $level,
         protected bool $schema = false,
     ) {

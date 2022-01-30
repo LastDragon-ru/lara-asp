@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use Closure;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Statistics;
 use Stringable;
 
@@ -29,7 +30,7 @@ abstract class Block implements Statistics, Stringable {
     private array $usedDirectives = [];
 
     public function __construct(
-        private BlockSettings $settings,
+        private PrinterSettings $settings,
         private int $level = 0,
         private int $used = 0,
     ) {
@@ -38,7 +39,7 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
-    protected function getSettings(): BlockSettings {
+    protected function getSettings(): PrinterSettings {
         return $this->settings;
     }
 

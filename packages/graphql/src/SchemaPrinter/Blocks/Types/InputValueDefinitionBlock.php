@@ -8,7 +8,7 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\ValueNodeBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 use function mb_strlen;
 
@@ -19,7 +19,7 @@ use function mb_strlen;
  */
 class InputValueDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        BlockSettings $settings,
+        PrinterSettings $settings,
         int $level,
         int $used,
         FieldArgument|InputObjectField $definition,
