@@ -264,6 +264,76 @@ class PrinterTest extends TestCase {
                     ->setPrintDirectiveDefinitions(false),
                 0,
             ],
+            TestSettings::class.' (directives in description)' => [
+                [
+                    'schema'     => '~test-settings-directives-in-description.graphql',
+                    'types'      => [
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                    ],
+                    'directives' => [
+                        // empty
+                    ],
+                ],
+                (new TestSettings())
+                    ->setPrintDirectives(false)
+                    ->setPrintDirectiveDefinitions(false)
+                    ->setPrintDirectivesInDescription(true),
+                0,
+            ],
+            TestSettings::class.' (no normalization)'          => [
+                [
+                    'schema'     => '~test-settings-no-normalization.graphql',
+                    'types'      => [
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                    ],
+                    'directives' => [
+                        '@schemaDirective',
+                        '@codeDirective',
+                        '@deprecated',
+                        '@scalar',
+                        '@mock',
+                    ],
+                ],
+                (new TestSettings())
+                    ->setNormalizeSchema(false)
+                    ->setNormalizeUnions(false)
+                    ->setNormalizeEnums(false)
+                    ->setNormalizeInterfaces(false)
+                    ->setNormalizeFields(false)
+                    ->setNormalizeArguments(false)
+                    ->setNormalizeDescription(false)
+                    ->setNormalizeDirectiveLocations(false)
+                    ->setAlwaysMultilineUnions(false)
+                    ->setAlwaysMultilineInterfaces(false)
+                    ->setAlwaysMultilineDirectiveLocations(false),
+                0,
+            ],
+
+            // Settings
         ];
     }
     // </editor-fold>
