@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 class DirectiveLocationsList extends UsageList {
     protected function block(mixed $item): Block {
         return new DirectiveLocationBlock(
-            $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel() + 1,
             $this->getUsed(),

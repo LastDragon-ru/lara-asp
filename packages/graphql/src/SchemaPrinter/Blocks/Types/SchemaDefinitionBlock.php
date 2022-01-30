@@ -4,13 +4,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use function array_filter;
 use function count;
 use function mb_strlen;
+
 use const ARRAY_FILTER_USE_BOTH;
 
 /**
@@ -20,13 +20,12 @@ use const ARRAY_FILTER_USE_BOTH;
  */
 class SchemaDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         Schema $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $definition);
+        parent::__construct($settings, $level, $used, $definition);
     }
 
     protected function type(): string|null {
@@ -51,7 +50,6 @@ class SchemaDefinitionBlock extends DefinitionBlock {
         $definition = $this->getDefinition();
         $space      = $this->space();
         $fields     = new RootOperationTypesDefinitionList(
-            $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
             $used + mb_strlen($space),
@@ -67,7 +65,6 @@ class SchemaDefinitionBlock extends DefinitionBlock {
 
             if ($type) {
                 $fields[] = new RootOperationTypeDefinitionBlock(
-                    $this->getDispatcher(),
                     $this->getSettings(),
                     $this->getLevel() + 1,
                     $this->getUsed(),
@@ -77,7 +74,7 @@ class SchemaDefinitionBlock extends DefinitionBlock {
             }
         }
 
-        return $fields;
+        return $this->addUsed($fields);
     }
 
     public function isUseDefaultRootOperationTypeNames(): bool {

@@ -2,18 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use Closure;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 
 /**
  * @internal
@@ -34,7 +29,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
         int $used,
         InterfaceType $definition,
     ): void {
-        $actual = (string) (new InterfaceTypeDefinitionBlock(new Dispatcher(), $settings, $level, $used, $definition));
+        $actual = (string) (new InterfaceTypeDefinitionBlock($settings, $level, $used, $definition));
 
         Parser::interfaceTypeDefinition($actual);
 
@@ -44,52 +39,39 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
     /**
      * @covers ::__toString
      */
-    public function testToStringEvent(): void {
-        $spy        = Mockery::spy(static fn (Event $event) => null);
+    public function testStatistics(): void {
         $settings   = new TestSettings();
-        $dispatcher = new Dispatcher();
         $definition = new InterfaceType([
-            'name'   => 'A',
-            'fields' => [
+            'name'       => 'A',
+            'fields'     => [
                 'b' => [
-                    'name' => 'b',
-                    'type' => new ObjectType([
+                    'name'    => 'b',
+                    'type'    => new ObjectType([
                         'name' => 'B',
                     ]),
-                    'args' => [
+                    'args'    => [
                         'c' => [
-                            'type' => new ObjectType([
+                            'type'    => new ObjectType([
                                 'name' => 'C',
                             ]),
+                            'astNode' => Parser::inputValueDefinition('c: C @c'),
                         ],
                     ],
+                    'astNode' => Parser::fieldDefinition('b: B @b'),
                 ],
             ],
+            'interfaces' => [
+                new InterfaceType([
+                    'name' => 'D',
+                ]),
+            ],
+            'astNode'    => Parser::interfaceTypeDefinition('interface A @a'),
         ]);
+        $block      = new InterfaceTypeDefinitionBlock($settings, 0, 0, $definition);
 
-        $dispatcher->attach(Closure::fromCallable($spy));
-
-        self::assertNotEmpty(
-            (string) (new InterfaceTypeDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
-        );
-
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event): bool {
-                return $event instanceof TypeUsed
-                    && $event->name === 'B';
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event): bool {
-                return $event instanceof TypeUsed
-                    && $event->name === 'C';
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->twice();
+        self::assertNotEmpty((string) $block);
+        self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
+        self::assertEquals(['a' => 'a', 'b' => 'b', 'c' => 'c'], $block->getUsedDirectives());
     }
     // </editor-fold>
 

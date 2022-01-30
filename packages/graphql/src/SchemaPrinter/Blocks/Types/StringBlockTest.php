@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -30,7 +29,7 @@ class StringBlockTest extends TestCase {
         int $used,
         string $string,
     ): void {
-        $actual = (string) new StringBlock(new Dispatcher(), $settings, $level, $used, $string);
+        $actual = (string) new StringBlock($settings, $level, $used, $string);
         $parsed = Parser::valueLiteral($actual);
 
         self::assertInstanceOf(StringValueNode::class, $parsed);

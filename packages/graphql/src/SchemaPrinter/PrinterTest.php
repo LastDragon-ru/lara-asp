@@ -36,7 +36,7 @@ class PrinterTest extends TestCase {
         $registry   = $this->app->make(TypeRegistry::class);
         $directive  = (new class() extends BaseDirective {
             public static function definition(): string {
-                throw new Exception("Should not be called.");
+                throw new Exception('Should not be called.');
             }
         })::class;
 
@@ -93,9 +93,9 @@ class PrinterTest extends TestCase {
             'codeDirective',
             (new class() extends BaseDirective {
                 public static function definition(): string {
-                    return "directive @codeDirective repeatable on SCHEMA | SCALAR | INTERFACE";
+                    return 'directive @codeDirective repeatable on SCHEMA | SCALAR | INTERFACE';
                 }
-            })::class
+            })::class,
         );
         $registry->register($codeScalar);
         $registry->register($codeEnum);

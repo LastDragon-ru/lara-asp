@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\ObjectType;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
@@ -13,13 +12,12 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
  */
 class ObjectTypeDefinitionBlock extends TypeDefinitionBlock {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         ObjectType $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $definition);
+        parent::__construct($settings, $level, $used, $definition);
     }
 
     protected function type(): string|null {

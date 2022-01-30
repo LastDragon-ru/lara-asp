@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -22,7 +21,7 @@ class BlockTest extends TestCase {
      */
     public function testGetContent(): void {
         $content = 'content';
-        $block   = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new TestSettings()]);
+        $block   = Mockery::mock(BlockTest__Block::class, [new TestSettings()]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -40,7 +39,7 @@ class BlockTest extends TestCase {
     public function testGetLength(): void {
         $content = 'content';
         $length  = mb_strlen($content);
-        $block   = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new TestSettings()]);
+        $block   = Mockery::mock(BlockTest__Block::class, [new TestSettings()]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -58,7 +57,7 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsMultiline
      */
     public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
-        $block = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), $settings]);
+        $block = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -76,7 +75,7 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsEmpty
      */
     public function testIsEmpty(bool $expected, string $content): void {
-        $block = Mockery::mock(BlockTest__Block::class, [new Dispatcher(), new TestSettings()]);
+        $block = Mockery::mock(BlockTest__Block::class, [new TestSettings()]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block

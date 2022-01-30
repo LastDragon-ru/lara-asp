@@ -2,17 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
-use Closure;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 
 /**
  * @internal
@@ -36,7 +31,7 @@ class DirectiveNodeListTest extends TestCase {
         array|null $directives,
         string $reason = null,
     ): void {
-        $actual = (string) (new DirectiveNodeList(new Dispatcher(), $settings, $level, $used, $directives, $reason));
+        $actual = (string) (new DirectiveNodeList($settings, $level, $used, $directives, $reason));
 
         Parser::directives($actual);
 
@@ -46,36 +41,15 @@ class DirectiveNodeListTest extends TestCase {
     /**
      * @covers ::__toString
      */
-    public function testToStringEvent(): void {
-        $a          = Parser::directive('@a');
-        $b          = Parser::directive('@b');
-        $spy        = Mockery::spy(static fn (Event $event) => null);
-        $settings   = (new TestSettings())->setPrintDirectives(true);
-        $dispatcher = new Dispatcher();
+    public function testStatistics(): void {
+        $a        = Parser::directive('@a');
+        $b        = Parser::directive('@b');
+        $settings = (new TestSettings())->setPrintDirectives(true);
+        $block    = new DirectiveNodeList($settings, 0, 0, [$a, $b]);
 
-        $dispatcher->attach(Closure::fromCallable($spy));
-
-        self::assertNotEmpty(
-            (string) (new DirectiveNodeList($dispatcher, $settings, 0, 0, [$a, $b])),
-        );
-
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event) use ($a): bool {
-                return $event instanceof DirectiveUsed
-                    && $event->name === $a->name->value;
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event) use ($b): bool {
-                return $event instanceof DirectiveUsed
-                    && $event->name === $b->name->value;
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->twice();
+        self::assertNotEmpty((string) $block);
+        self::assertEquals([], $block->getUsedTypes());
+        self::assertEquals(['a' => 'a', 'b' => 'b'], $block->getUsedDirectives());
     }
     // </editor-fold>
 

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
@@ -12,13 +11,12 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
  */
 class DirectiveLocationBlock extends Block implements Named {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         private string $location,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used);
+        parent::__construct($settings, $level, $used);
     }
 
     public function getName(): string {

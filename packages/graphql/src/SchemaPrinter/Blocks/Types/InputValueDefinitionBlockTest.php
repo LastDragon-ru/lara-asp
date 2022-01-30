@@ -2,20 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use Closure;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 
 /**
  * @internal
@@ -36,7 +31,7 @@ class InputValueDefinitionBlockTest extends TestCase {
         int $used,
         FieldArgument $definition,
     ): void {
-        $actual = (string) (new InputValueDefinitionBlock(new Dispatcher(), $settings, $level, $used, $definition));
+        $actual = (string) (new InputValueDefinitionBlock($settings, $level, $used, $definition));
 
         Parser::inputValueDefinition($actual);
 
@@ -46,35 +41,23 @@ class InputValueDefinitionBlockTest extends TestCase {
     /**
      * @covers ::__toString
      */
-    public function testToStringEvent(): void {
-        $spy        = Mockery::spy(static fn (Event $event) => null);
+    public function testStatistics(): void {
         $settings   = new TestSettings();
-        $dispatcher = new Dispatcher();
         $definition = new FieldArgument([
-            'name' => 'A',
-            'type' => new NonNull(
+            'name'    => 'a',
+            'type'    => new NonNull(
                 new ObjectType([
                     'name' => 'A',
                 ]),
             ),
+            'astNode' => Parser::inputValueDefinition('test: Test! @a'),
         ]);
 
-        $dispatcher->attach(Closure::fromCallable($spy));
+        $block = new InputValueDefinitionBlock($settings, 0, 0, $definition);
 
-        self::assertNotEmpty(
-            (string) (new InputValueDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
-        );
-
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event): bool {
-                return $event instanceof TypeUsed
-                    && $event->name === 'A';
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->once();
+        self::assertNotEmpty((string) $block);
+        self::assertEquals(['A' => 'A'], $block->getUsedTypes());
+        self::assertEquals(['a' => 'a'], $block->getUsedDirectives());
     }
     // </editor-fold>
 

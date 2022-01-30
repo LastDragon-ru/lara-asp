@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -40,7 +39,6 @@ class BlockListTest extends TestCase {
         int $count,
     ): void {
         $list = new BlockListTest__BlockList(
-            new Dispatcher(),
             $settings,
             $level,
             $used,
@@ -58,6 +56,21 @@ class BlockListTest extends TestCase {
 
         self::assertEquals($expected, (string) $list);
         self::assertCount($count, $list);
+    }
+
+    /**
+     * @covers ::content
+     * @covers ::analyze
+     */
+    public function testStatistics(): void {
+        $list   = new class(new TestSettings()) extends BlockList {
+            // empty
+        };
+        $list[] = new BlockListTest__StatisticsBlock(['ta'], ['da']);
+        $list[] = new BlockListTest__StatisticsBlock(['tb'], ['db']);
+
+        self::assertEquals(['ta' => 'ta', 'tb' => 'tb'], $list->getUsedTypes());
+        self::assertEquals(['da' => 'da', 'db' => 'db'], $list->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -694,7 +707,6 @@ class BlockListTest extends TestCase {
  */
 class BlockListTest__BlockList extends BlockList {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
@@ -705,7 +717,7 @@ class BlockListTest__BlockList extends BlockList {
         private string $separator,
         private string $multilineSeparator,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used);
+        parent::__construct($settings, $level, $used);
     }
 
     protected function isWrapped(): bool {
@@ -742,7 +754,7 @@ class BlockListTest__Block extends Block {
         protected bool $multiline,
         protected string $content,
     ) {
-        parent::__construct(new Dispatcher(), new TestSettings());
+        parent::__construct(new TestSettings());
     }
 
     protected function getContent(): string {
@@ -773,7 +785,6 @@ class BlockListTest__NamedBlock extends Property {
         string $content,
     ) {
         parent::__construct(
-            new Dispatcher(),
             new TestSettings(),
             $name,
             new BlockListTest__Block($multiline, $content),
@@ -782,5 +793,35 @@ class BlockListTest__NamedBlock extends Property {
 
     public function getName(): string {
         return $this->name;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class BlockListTest__StatisticsBlock extends Block {
+    /**
+     * @param array<string,string> $types
+     * @param array<string,string> $directives
+     */
+    public function __construct(array $types, array $directives) {
+        parent::__construct(new TestSettings());
+
+        foreach ($types as $type) {
+            $this->addUsedType($type);
+        }
+
+        foreach ($directives as $directive) {
+            $this->addUsedDirective($directive);
+        }
+    }
+
+    public function isEmpty(): bool {
+        return false;
+    }
+
+    protected function content(): string {
+        return '';
     }
 }

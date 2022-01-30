@@ -12,7 +12,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 class ImplementsInterfacesList extends UsageList {
     protected function block(mixed $item): Block {
         return new TypeBlock(
-            $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel() + 1,
             $this->getUsed(),

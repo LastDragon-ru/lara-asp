@@ -5,10 +5,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
+
 use function array_filter;
 use function json_encode;
 
@@ -21,14 +21,13 @@ class DirectiveNodeList extends BlockList {
      * @param Traversable<DirectiveNode>|array<DirectiveNode> $directives
      */
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         Traversable|array|null $directives,
         string|null $deprecationReason = null,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used);
+        parent::__construct($settings, $level, $used);
 
         $deprecated   = Directive::DEPRECATED_NAME;
         $directives ??= [];
@@ -74,7 +73,6 @@ class DirectiveNodeList extends BlockList {
 
     private function block(DirectiveNode $directive,): DirectiveNodeBlock {
         return new DirectiveNodeBlock(
-            $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),

@@ -2,17 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
-use Closure;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 
 /**
  * @internal
@@ -33,7 +28,7 @@ class DirectiveNodeBlockTest extends TestCase {
         int $used,
         DirectiveNode $node,
     ): void {
-        $actual = (string) (new DirectiveNodeBlock(new Dispatcher(), $settings, $level, $used, $node));
+        $actual = (string) (new DirectiveNodeBlock($settings, $level, $used, $node));
         $parsed = Parser::directive($actual);
 
         self::assertEquals($expected, $actual);
@@ -49,28 +44,14 @@ class DirectiveNodeBlockTest extends TestCase {
     /**
      * @covers ::__toString
      */
-    public function testToStringEvent(): void {
-        $spy        = Mockery::spy(static fn (Event $event) => null);
-        $node       = Parser::directive('@test');
-        $settings   = new TestSettings();
-        $dispatcher = new Dispatcher();
+    public function testStatistics(): void {
+        $settings = new TestSettings();
+        $node     = Parser::directive('@test');
+        $block    = new DirectiveNodeBlock($settings, 0, 0, $node);
 
-        $dispatcher->attach(Closure::fromCallable($spy));
-
-        self::assertNotEmpty(
-            (string) (new DirectiveNodeBlock($dispatcher, $settings, 0, 0, $node)),
-        );
-
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event) use ($node): bool {
-                return $event instanceof DirectiveUsed
-                    && $event->name === $node->name->value;
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->once();
+        self::assertNotEmpty((string) $block);
+        self::assertEquals([], $block->getUsedTypes());
+        self::assertEquals(['test' => 'test'], $block->getUsedDirectives());
     }
     // </editor-fold>
 

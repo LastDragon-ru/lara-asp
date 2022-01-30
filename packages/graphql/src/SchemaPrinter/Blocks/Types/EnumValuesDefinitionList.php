@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\EnumValueDefinition;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
@@ -17,17 +16,15 @@ class EnumValuesDefinitionList extends ObjectBlockList {
      * @param Traversable<EnumValueDefinition>|array<EnumValueDefinition> $values
      */
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         Traversable|array $values,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used);
+        parent::__construct($settings, $level, $used);
 
         foreach ($values as $value) {
             $this[$value->name] = new EnumValueDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $this->getUsed(),

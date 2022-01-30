@@ -11,11 +11,7 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\DirectiveUsed;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\DirectiveDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumTypeDefinitionBlock;
@@ -34,33 +30,12 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 class DefinitionBlock extends Block implements Named {
     private Block $block;
 
-    /**
-     * @var array<string, string>
-     */
-    private array $usedTypes = [];
-
-    /**
-     * @var array<string, string>
-     */
-    private array $usedDirectives = [];
-
     public function __construct(
         Settings $settings,
         int $level,
         Schema|Type|Directive $definition,
     ) {
-        $dispatcher  = new Dispatcher();
-        $dispatcher->attach(function (Event $event): void {
-            if ($event instanceof DirectiveUsed) {
-                $this->usedDirectives[$event->name] = $event->name;
-            }
-
-            if ($event instanceof TypeUsed) {
-                $this->usedTypes[$event->name] = $event->name;
-            }
-        });
-
-        parent::__construct($dispatcher, $settings, $level);
+        parent::__construct($settings, $level);
 
         $this->block = $this->getDefinitionBlock($definition);
     }
@@ -76,33 +51,12 @@ class DefinitionBlock extends Block implements Named {
         return $name;
     }
 
-    /**
-     * @return array<string,string>
-     */
-    public function getUsedTypes(): array {
-        return $this->resolve(fn (): array => $this->usedTypes);
-    }
-
-    /**
-     * @return array<string,string>
-     */
-    public function getUsedDirectives(): array {
-        return $this->resolve(fn (): array => $this->usedDirectives);
-    }
-
     protected function getBlock(): Block {
         return $this->block;
     }
 
-    protected function reset(): void {
-        $this->usedTypes      = [];
-        $this->usedDirectives = [];
-
-        parent::reset();
-    }
-
     protected function content(): string {
-        return (string) $this->getBlock();
+        return (string) $this->addUsed($this->getBlock());
     }
 
     protected function getDefinitionBlock(Schema|Type|Directive $definition): Block {
@@ -110,7 +64,6 @@ class DefinitionBlock extends Block implements Named {
 
         if ($definition instanceof ObjectType) {
             $block = new ObjectTypeDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -118,7 +71,6 @@ class DefinitionBlock extends Block implements Named {
             );
         } elseif ($definition instanceof InputObjectType) {
             $block = new InputObjectTypeDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -126,7 +78,6 @@ class DefinitionBlock extends Block implements Named {
             );
         } elseif ($definition instanceof ScalarType) {
             $block = new ScalarTypeDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -134,7 +85,6 @@ class DefinitionBlock extends Block implements Named {
             );
         } elseif ($definition instanceof InterfaceType) {
             $block = new InterfaceTypeDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -142,7 +92,6 @@ class DefinitionBlock extends Block implements Named {
             );
         } elseif ($definition instanceof UnionType) {
             $block = new UnionTypeDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -150,7 +99,6 @@ class DefinitionBlock extends Block implements Named {
             );
         } elseif ($definition instanceof EnumType) {
             $block = new EnumTypeDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -158,7 +106,6 @@ class DefinitionBlock extends Block implements Named {
             );
         } elseif ($definition instanceof Directive) {
             $block = new DirectiveDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -166,7 +113,6 @@ class DefinitionBlock extends Block implements Named {
             );
         } elseif ($definition instanceof Schema) {
             $block = new SchemaDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),

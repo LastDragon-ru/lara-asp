@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\Directive;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -16,13 +15,12 @@ use function mb_strlen;
  */
 class DirectiveDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         Directive $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $definition);
+        parent::__construct($settings, $level, $used, $definition);
     }
 
     protected function type(): string|null {
@@ -40,19 +38,21 @@ class DirectiveDefinitionBlock extends DefinitionBlock {
         $indent     = $this->indent();
         $repeatable = 'repeatable';
         $used       = $used + mb_strlen($repeatable) + 2 * mb_strlen($space);
-        $args       = new ArgumentsDefinitionList(
-            $this->getDispatcher(),
-            $this->getSettings(),
-            $this->getLevel(),
-            $used,
-            $definition->args,
+        $args       = $this->addUsed(
+            new ArgumentsDefinitionList(
+                $this->getSettings(),
+                $this->getLevel(),
+                $used,
+                $definition->args,
+            ),
         );
-        $locations  = new DirectiveLocationsList(
-            $this->getDispatcher(),
-            $this->getSettings(),
-            $this->getLevel() + 1,
-            $used + $args->getLength(),
-            $definition->locations,
+        $locations  = $this->addUsed(
+            new DirectiveLocationsList(
+                $this->getSettings(),
+                $this->getLevel() + 1,
+                $used + $args->getLength(),
+                $definition->locations,
+            ),
         );
         $content    = "{$args}";
 

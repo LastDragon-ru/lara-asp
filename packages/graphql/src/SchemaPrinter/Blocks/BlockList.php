@@ -4,10 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use ArrayAccess;
 use Countable;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Statistics;
 
 use function array_key_last;
 use function count;
-use function implode;
 use function mb_strlen;
 use function strnatcmp;
 use function usort;
@@ -17,7 +17,7 @@ use function usort;
  * @template TBlock of Block
  * @implements ArrayAccess<string,TBlock>
  */
-abstract class BlockList extends Block implements ArrayAccess, Countable {
+abstract class BlockList extends Block implements Statistics, ArrayAccess, Countable {
     /**
      * @var array<int|string,TBlock>
      */
@@ -127,6 +127,7 @@ abstract class BlockList extends Block implements ArrayAccess, Countable {
             $separator = $this->getMultilineItemPrefix();
 
             foreach ($blocks as $block) {
+                $block     = $this->analyze($block);
                 $multiline = $wrapped && $block->isMultiline();
 
                 if (($multiline && $index > 0) || $previous) {
@@ -147,7 +148,13 @@ abstract class BlockList extends Block implements ArrayAccess, Countable {
                 $index    = $index + 1;
             }
         } else {
-            $content = implode($separator, $blocks);
+            $last  = $count - 1;
+            $index = 0;
+
+            foreach ($blocks as $block) {
+                $content .= "{$this->analyze($block)}".($index !== $last ? $separator : '');
+                $index    = $index + 1;
+            }
         }
 
         // Prefix & Suffix
@@ -188,6 +195,15 @@ abstract class BlockList extends Block implements ArrayAccess, Countable {
             + mb_strlen($separator) * ($count - 1);
 
         return $this->isLineTooLong($length);
+    }
+
+    /**
+     * @param TBlock $block
+     *
+     * @return TBlock
+     */
+    protected function analyze(Block $block): Block {
+        return $this->addUsed($block);
     }
     // </editor-fold>
 
@@ -251,7 +267,7 @@ abstract class BlockList extends Block implements ArrayAccess, Countable {
 
     // <editor-fold desc="Countable">
     // =========================================================================
-    public function count() {
+    public function count(): int {
         return count($this->blocks);
     }
     // </editor-fold>

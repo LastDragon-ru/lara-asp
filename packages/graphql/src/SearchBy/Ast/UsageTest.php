@@ -2,11 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LogicException;
 use OutOfBoundsException;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use stdClass;
-
 use function sprintf;
 
 /**

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer;
 
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -17,7 +16,7 @@ class DefinitionList extends BlockList {
         int $level,
         protected bool $schema = false,
     ) {
-        parent::__construct(new Dispatcher(), $settings, $level);
+        parent::__construct($settings, $level);
     }
 
     protected function isWrapped(): bool {

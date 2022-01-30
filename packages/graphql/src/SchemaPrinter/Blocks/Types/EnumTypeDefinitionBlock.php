@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\EnumType;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -16,13 +15,12 @@ use function mb_strlen;
  */
 class EnumTypeDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         EnumType $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $definition);
+        parent::__construct($settings, $level, $used, $definition);
     }
 
     protected function type(): string {
@@ -31,12 +29,13 @@ class EnumTypeDefinitionBlock extends DefinitionBlock {
 
     protected function body(int $used): Block|string|null {
         $space  = $this->space();
-        $values = new EnumValuesDefinitionList(
-            $this->getDispatcher(),
-            $this->getSettings(),
-            $this->getLevel(),
-            $used + mb_strlen($space),
-            $this->getDefinition()->getValues(),
+        $values = $this->addUsed(
+            new EnumValuesDefinitionList(
+                $this->getSettings(),
+                $this->getLevel(),
+                $used + mb_strlen($space),
+                $this->getDefinition()->getValues(),
+            ),
         );
 
         return "{$space}{$values}";

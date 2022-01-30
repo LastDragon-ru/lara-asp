@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -21,38 +20,35 @@ class PropertyTest extends TestCase {
      * @covers ::getUsed
      */
     public function testToString(): void {
-        $name       = 'name';
-        $used       = 123;
-        $level      = 2;
-        $space      = '  ';
-        $separator  = ':';
-        $content    = 'abc abcabc abcabc abcabc abc';
-        $settings   = (new TestSettings())->setSpace($space);
-        $dispatcher = new Dispatcher();
-        $block      = new class($dispatcher, $settings, $level, $used, $content) extends Block {
+        $name      = 'name';
+        $used      = 123;
+        $level     = 2;
+        $space     = '  ';
+        $separator = ':';
+        $content   = 'abc abcabc abcabc abcabc abc';
+        $settings  = (new TestSettings())->setSpace($space);
+        $block     = new class($settings, $level, $used, $content) extends Block {
             public function __construct(
-                Dispatcher $dispatcher,
                 Settings $settings,
                 int $level,
                 int $used,
                 protected string $content,
             ) {
-                parent::__construct($dispatcher, $settings, $level, $used);
+                parent::__construct($settings, $level, $used);
             }
 
             protected function content(): string {
                 return $this->content;
             }
         };
-        $property   = new class($dispatcher, $settings, $name, $block, $separator) extends Property {
+        $property  = new class($settings, $name, $block, $separator) extends Property {
             public function __construct(
-                Dispatcher $dispatcher,
                 Settings $settings,
                 string $name,
                 Block $block,
                 private string $separator,
             ) {
-                parent::__construct($dispatcher, $settings, $name, $block);
+                parent::__construct($settings, $name, $block);
             }
 
             public function getUsed(): int {
@@ -67,7 +63,7 @@ class PropertyTest extends TestCase {
                 return $this->separator;
             }
         };
-        $expected   = "{$name}{$separator}{$space}{$content}";
+        $expected  = "{$name}{$separator}{$space}{$content}";
 
         self::assertEquals($used, $property->getUsed());
         self::assertEquals($level, $property->getLevel());

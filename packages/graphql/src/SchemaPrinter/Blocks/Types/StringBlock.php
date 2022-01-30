@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Printer;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -19,13 +18,12 @@ use function str_replace;
  */
 class StringBlock extends Block {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         protected string $string,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used);
+        parent::__construct($settings, $level, $used);
     }
 
     protected function getString(): string {

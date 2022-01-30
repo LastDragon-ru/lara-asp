@@ -2,17 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use Closure;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 
 /**
  * @internal
@@ -34,7 +29,6 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
         InputObjectType $definition,
     ): void {
         $actual = (string) (new InputObjectTypeDefinitionBlock(
-            new Dispatcher(),
             $settings,
             $level,
             $used,
@@ -49,38 +43,26 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
     /**
      * @covers ::__toString
      */
-    public function testToStringEvent(): void {
-        $spy        = Mockery::spy(static fn (Event $event) => null);
+    public function testStatistics(): void {
         $settings   = new TestSettings();
-        $dispatcher = new Dispatcher();
         $definition = new InputObjectType([
-            'name'   => 'A',
-            'fields' => [
+            'name'    => 'A',
+            'fields'  => [
                 'b' => [
-                    'name' => 'b',
-                    'type' => new InputObjectType([
+                    'name'    => 'b',
+                    'type'    => new InputObjectType([
                         'name' => 'B',
                     ]),
+                    'astNode' => Parser::fieldDefinition('b: B @a'),
                 ],
             ],
+            'astNode' => Parser::inputObjectTypeDefinition('input A @b'),
         ]);
+        $block      = new InputObjectTypeDefinitionBlock($settings, 0, 0, $definition);
 
-        $dispatcher->attach(Closure::fromCallable($spy));
-
-        self::assertNotEmpty(
-            (string) (new InputObjectTypeDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
-        );
-
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event): bool {
-                return $event instanceof TypeUsed
-                    && $event->name === 'B';
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->once();
+        self::assertNotEmpty((string) $block);
+        self::assertEquals(['B' => 'B'], $block->getUsedTypes());
+        self::assertEquals(['a' => 'a', 'b' => 'b'], $block->getUsedDirectives());
     }
     // </editor-fold>
 

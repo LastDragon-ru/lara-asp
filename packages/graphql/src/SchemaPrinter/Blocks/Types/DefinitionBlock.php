@@ -11,7 +11,6 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
@@ -29,13 +28,12 @@ abstract class DefinitionBlock extends Block implements Named {
      * @param TType $definition
      */
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         private Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField|Schema $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used);
+        parent::__construct($settings, $level, $used);
     }
 
     public function getName(): string {
@@ -69,12 +67,12 @@ abstract class DefinitionBlock extends Block implements Named {
         $indent      = $this->indent();
         $name        = $this->getName();
         $used        = $this->getUsed() + mb_strlen($name) + mb_strlen($space);
-        $body        = (string) $this->body($used);
-        $fields      = (string) $this->fields($used + mb_strlen($body));
+        $body        = (string) $this->addUsed($this->body($used));
+        $fields      = (string) $this->addUsed($this->fields($used + mb_strlen($body)));
         $directives  = $this->directives();
-        $description = (string) $this->description($directives);
+        $description = (string) $this->addUsed($this->description($directives));
         $directives  = $this->getSettings()->isPrintDirectives()
-            ? (string) $directives
+            ? (string) $this->addUsed($directives)
             : '';
         $content     = '';
 
@@ -117,7 +115,6 @@ abstract class DefinitionBlock extends Block implements Named {
     protected function directives(): DirectiveNodeList {
         $definition = $this->getDefinition();
         $directives = new DirectiveNodeList(
-            $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),
@@ -141,7 +138,6 @@ abstract class DefinitionBlock extends Block implements Named {
         }
 
         return new Description(
-            $this->getDispatcher(),
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),

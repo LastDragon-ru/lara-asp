@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\FieldArgument;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Traversable;
@@ -17,17 +16,15 @@ class ArgumentsDefinitionList extends BlockList {
      * @param Traversable<FieldArgument>|array<FieldArgument> $arguments
      */
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         Traversable|array $arguments,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used);
+        parent::__construct($settings, $level, $used);
 
         foreach ($arguments as $argument) {
             $this[$argument->name] = new InputValueDefinitionBlock(
-                $this->getDispatcher(),
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $this->getUsed(),

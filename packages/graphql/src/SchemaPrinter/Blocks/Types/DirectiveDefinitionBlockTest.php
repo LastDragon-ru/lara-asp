@@ -2,19 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use Closure;
 use GraphQL\Language\DirectiveLocation;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 
 /**
  * @internal
@@ -35,7 +30,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
         int $used,
         Directive $definition,
     ): void {
-        $actual = (string) (new DirectiveDefinitionBlock(new Dispatcher(), $settings, $level, $used, $definition));
+        $actual = (string) (new DirectiveDefinitionBlock($settings, $level, $used, $definition));
 
         Parser::directiveDefinition($actual);
 
@@ -45,10 +40,8 @@ class DirectiveDefinitionBlockTest extends TestCase {
     /**
      * @covers ::__toString
      */
-    public function testToStringEvent(): void {
-        $spy        = Mockery::spy(static fn (Event $event) => null);
+    public function testStatistics(): void {
         $settings   = new TestSettings();
-        $dispatcher = new Dispatcher();
         $definition = new Directive([
             'name'      => 'A',
             'args'      => [
@@ -60,23 +53,11 @@ class DirectiveDefinitionBlockTest extends TestCase {
                 DirectiveLocation::FIELD,
             ],
         ]);
+        $block      = new DirectiveDefinitionBlock($settings, 0, 0, $definition);
 
-        $dispatcher->attach(Closure::fromCallable($spy));
-
-        self::assertNotEmpty(
-            (string) (new DirectiveDefinitionBlock($dispatcher, $settings, 0, 0, $definition)),
-        );
-
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event): bool {
-                return $event instanceof TypeUsed
-                    && $event->name === 'B';
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->once();
+        self::assertNotEmpty((string) $block);
+        self::assertEquals(['B' => 'B'], $block->getUsedTypes());
+        self::assertEquals([], $block->getUsedDirectives());
     }
     // </editor-fold>
 

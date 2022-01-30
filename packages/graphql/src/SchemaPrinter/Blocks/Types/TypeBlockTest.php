@@ -2,18 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use Closure;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 
 /**
  * @internal
@@ -34,7 +29,7 @@ class TypeBlockTest extends TestCase {
         int $used,
         Type $type,
     ): void {
-        $actual = (string) (new TypeBlock(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new TypeBlock($settings, $level, $used, $type));
 
         self::assertEquals($expected, $actual);
     }
@@ -42,32 +37,19 @@ class TypeBlockTest extends TestCase {
     /**
      * @covers ::__toString
      */
-    public function testToStringEvent(): void {
-        $spy        = Mockery::spy(static fn (Event $event) => null);
-        $node       = new NonNull(
+    public function testStatistics(): void {
+        $node     = new NonNull(
             new ObjectType([
                 'name' => 'Test',
             ]),
         );
-        $settings   = new TestSettings();
-        $dispatcher = new Dispatcher();
+        $settings = new TestSettings();
+        $block    = new TypeBlock($settings, 0, 0, $node);
+        $type     = $node->getWrappedType(true)->name;
 
-        $dispatcher->attach(Closure::fromCallable($spy));
-
-        self::assertNotEmpty(
-            (string) (new TypeBlock($dispatcher, $settings, 0, 0, $node)),
-        );
-
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event) use ($node): bool {
-                return $event instanceof TypeUsed
-                    && $event->name === $node->getWrappedType(true)->name;
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->once();
+        self::assertNotEmpty((string) $block);
+        self::assertEquals([$type => $type], $block->getUsedTypes());
+        self::assertEquals([], $block->getUsedDirectives());
     }
     // </editor-fold>
 

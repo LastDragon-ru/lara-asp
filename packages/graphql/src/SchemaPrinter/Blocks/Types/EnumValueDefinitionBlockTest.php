@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumValueDefinition;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -28,7 +27,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
         int $used,
         EnumValueDefinition $type,
     ): void {
-        $actual = (string) (new EnumValueDefinitionBlock(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new EnumValueDefinitionBlock($settings, $level, $used, $type));
 
         Parser::enumValueDefinition($actual);
 

@@ -2,17 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use Closure;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\UnionType;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\Event;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Events\TypeUsed;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 
 /**
  * @internal
@@ -34,7 +29,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
         int $used,
         UnionType $type,
     ): void {
-        $actual = (string) (new UnionTypeDefinitionBlock(new Dispatcher(), $settings, $level, $used, $type));
+        $actual = (string) (new UnionTypeDefinitionBlock($settings, $level, $used, $type));
 
         Parser::unionTypeDefinition($actual);
 
@@ -44,11 +39,10 @@ class UnionTypeDefinitionBlockTest extends TestCase {
     /**
      * @covers ::__toString
      */
-    public function testToStringEvent(): void {
-        $spy        = Mockery::spy(static fn (Event $event) => null);
-        $union      = new UnionType([
-            'name'  => 'Test',
-            'types' => [
+    public function testStatistics(): void {
+        $union    = new UnionType([
+            'name'    => 'Test',
+            'types'   => [
                 new ObjectType([
                     'name' => 'A',
                 ]),
@@ -56,33 +50,14 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     'name' => 'B',
                 ]),
             ],
+            'astNode' => Parser::unionTypeDefinition('union Test @a = A | B'),
         ]);
-        $settings   = new TestSettings();
-        $dispatcher = new Dispatcher();
+        $settings = new TestSettings();
+        $block    = new UnionTypeDefinitionBlock($settings, 0, 0, $union);
 
-        $dispatcher->attach(Closure::fromCallable($spy));
-
-        self::assertNotEmpty(
-            (string) (new UnionTypeDefinitionBlock($dispatcher, $settings, 0, 0, $union)),
-        );
-
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event): bool {
-                return $event instanceof TypeUsed
-                    && $event->name === 'A';
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->withArgs(static function (Event $event): bool {
-                return $event instanceof TypeUsed
-                    && $event->name === 'B';
-            })
-            ->once();
-        $spy
-            ->shouldHaveBeenCalled()
-            ->twice();
+        self::assertNotEmpty((string) $block);
+        self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
+        self::assertEquals(['a' => 'a'], $block->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -97,7 +72,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             ->setAlwaysMultilineUnions(false);
 
         return [
-            'single-line'          => [
+            'single-line'                   => [
                 <<<'STRING'
                 union Test = C | B | A
                 STRING,
@@ -119,7 +94,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'multiline'            => [
+            'multiline'                     => [
                 <<<'STRING'
                 union Test =
                     | C
@@ -144,7 +119,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'indent single-line'   => [
+            'indent single-line'            => [
                 <<<'STRING'
                 union Test = C | B | A
                 STRING,
@@ -166,7 +141,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'indent multiline'     => [
+            'indent multiline'              => [
                 <<<'STRING'
                 union Test =
                         | C
@@ -191,7 +166,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'multiline normalized' => [
+            'multiline normalized'          => [
                 <<<'STRING'
                 union Test = A | B | C
                 STRING,
@@ -213,7 +188,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'multiline always'     => [
+            'multiline always'              => [
                 <<<'STRING'
                 union Test =
                     | C
@@ -238,7 +213,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'directives'           => [
+            'directives'                    => [
                 <<<'STRING'
                 union Test
                 @a
@@ -248,8 +223,8 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                 0,
                 0,
                 new UnionType([
-                    'name'  => 'Test',
-                    'types' => [
+                    'name'    => 'Test',
+                    'types'   => [
                         new ObjectType([
                             'name' => 'C',
                         ]),
@@ -260,14 +235,14 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                             'name' => 'A',
                         ]),
                     ],
-                    'astNode'     => Parser::unionTypeDefinition(
+                    'astNode' => Parser::unionTypeDefinition(
                         <<<'STRING'
                         union Test @a = A | B | C
                         STRING,
                     ),
                 ]),
             ],
-            'directives + multiline'           => [
+            'directives + multiline'        => [
                 <<<'STRING'
                 union Test
                 @a
@@ -280,8 +255,8 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                 0,
                 120,
                 new UnionType([
-                    'name'  => 'Test',
-                    'types' => [
+                    'name'    => 'Test',
+                    'types'   => [
                         new ObjectType([
                             'name' => 'C',
                         ]),
@@ -292,14 +267,14 @@ class UnionTypeDefinitionBlockTest extends TestCase {
                             'name' => 'A',
                         ]),
                     ],
-                    'astNode'     => Parser::unionTypeDefinition(
+                    'astNode' => Parser::unionTypeDefinition(
                         <<<'STRING'
                         union Test @a = A | B | C
                         STRING,
                     ),
                 ]),
             ],
-            "one member + always multiline" => [
+            'one member + always multiline' => [
                 <<<'STRING'
                 union Test =
                     | A

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
@@ -16,14 +15,13 @@ use function trim;
  */
 class Description extends StringBlock {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         ?string $string,
         private ?DirectiveNodeList $directives = null,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, (string) $string);
+        parent::__construct($settings, $level, $used, (string) $string);
     }
 
     protected function getDirectives(): ?DirectiveNodeList {

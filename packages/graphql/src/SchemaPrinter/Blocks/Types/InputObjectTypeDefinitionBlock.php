@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\InputObjectType;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+
 use function mb_strlen;
 
 /**
@@ -15,13 +15,12 @@ use function mb_strlen;
  */
 class InputObjectTypeDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        Dispatcher $dispatcher,
         Settings $settings,
         int $level,
         int $used,
         InputObjectType $definition,
     ) {
-        parent::__construct($dispatcher, $settings, $level, $used, $definition);
+        parent::__construct($settings, $level, $used, $definition);
     }
 
     protected function type(): string|null {
@@ -35,12 +34,13 @@ class InputObjectTypeDefinitionBlock extends DefinitionBlock {
     protected function fields(int $used): Block|string|null {
         $definition = $this->getDefinition();
         $space      = $this->space();
-        $fields     = new InputFieldsDefinitionList(
-            $this->getDispatcher(),
-            $this->getSettings(),
-            $this->getLevel(),
-            $used + mb_strlen($space),
-            $definition->getFields(),
+        $fields     = $this->addUsed(
+            new InputFieldsDefinitionList(
+                $this->getSettings(),
+                $this->getLevel(),
+                $used + mb_strlen($space),
+                $definition->getFields(),
+            ),
         );
 
         return $fields;

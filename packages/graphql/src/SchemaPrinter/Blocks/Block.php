@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
 use Closure;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Statistics;
 use Stringable;
 
 use function mb_strlen;
@@ -14,13 +14,22 @@ use function str_repeat;
 /**
  * @internal
  */
-abstract class Block implements Stringable {
+abstract class Block implements Statistics, Stringable {
     private ?string $content   = null;
     private ?int    $length    = null;
     private ?bool   $multiline = null;
 
+    /**
+     * @var array<string, string>
+     */
+    private array $usedTypes = [];
+
+    /**
+     * @var array<string, string>
+     */
+    private array $usedDirectives = [];
+
     public function __construct(
-        private Dispatcher $dispatcher,
         private Settings $settings,
         private int $level = 0,
         private int $used = 0,
@@ -30,10 +39,6 @@ abstract class Block implements Stringable {
 
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
-    protected function getDispatcher(): Dispatcher {
-        return $this->dispatcher;
-    }
-
     protected function getSettings(): Settings {
         return $this->settings;
     }
@@ -54,11 +59,11 @@ abstract class Block implements Stringable {
     }
 
     public function getLength(): int {
-        return $this->resolve(fn(): int => (int) $this->length);
+        return $this->resolve(fn (): int => (int) $this->length);
     }
 
     public function isMultiline(): bool {
-        return $this->resolve(fn(): bool => (bool) $this->multiline);
+        return $this->resolve(fn (): bool => (bool) $this->multiline);
     }
 
     public function __toString(): string {
@@ -93,9 +98,11 @@ abstract class Block implements Stringable {
     }
 
     protected function reset(): void {
-        $this->multiline = null;
-        $this->content   = null;
-        $this->length    = null;
+        $this->usedDirectives = [];
+        $this->usedTypes      = [];
+        $this->multiline      = null;
+        $this->content        = null;
+        $this->length         = null;
     }
 
     abstract protected function content(): string;
@@ -122,6 +129,51 @@ abstract class Block implements Stringable {
     protected function isStringMultiline(string $string): bool {
         return mb_strpos($string, "\n") !== false
             || mb_strpos($string, "\r") !== false;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Statistics">
+    // =========================================================================
+    /**
+     * @return array<string,string>
+     */
+    public function getUsedTypes(): array {
+        return $this->resolve(fn (): array => $this->usedTypes);
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    public function getUsedDirectives(): array {
+        return $this->resolve(fn (): array => $this->usedDirectives);
+    }
+
+    /**
+     * @template T
+     *
+     * @param T $block
+     *
+     * @return T
+     */
+    protected function addUsed(mixed $block): mixed {
+        if ($block instanceof Statistics) {
+            $this->usedTypes      += $block->getUsedTypes();
+            $this->usedDirectives += $block->getUsedDirectives();
+        }
+
+        return $block;
+    }
+
+    protected function addUsedType(string $type): static {
+        $this->usedTypes[$type] = $type;
+
+        return $this;
+    }
+
+    protected function addUsedDirective(string $directive): static {
+        $this->usedDirectives[$directive] = $directive;
+
+        return $this;
     }
     // </editor-fold>
 }
