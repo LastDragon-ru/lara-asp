@@ -50,7 +50,7 @@ class DescriptionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings, int, int, ?string, array<DirectiveNode>|null}>
+     * @return array<string,array{string, Settings, int, int, ?string, array<DirectiveNode>|null}>
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())

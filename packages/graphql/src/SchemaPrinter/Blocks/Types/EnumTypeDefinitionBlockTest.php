@@ -49,7 +49,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings, int, int, Closure():EnumType|EnumType}>
+     * @return array<string,array{string, Settings, int, int, Closure():EnumType|EnumType}>
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())

@@ -99,7 +99,7 @@ class BlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{bool, PrinterSettings, string}>
+     * @return array<string, array{bool, Settings, string}>
      */
     public function dataProviderIsMultiline(): array {
         $settings = new TestSettings();

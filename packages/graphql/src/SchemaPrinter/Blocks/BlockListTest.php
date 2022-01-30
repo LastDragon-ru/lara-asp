@@ -712,7 +712,7 @@ class BlockListTest extends TestCase {
  */
 class BlockListTest__BlockList extends BlockList {
     public function __construct(
-        Settings $settings,
+        PrinterSettings $settings,
         int $level,
         int $used,
         private bool $normalized,
@@ -813,8 +813,8 @@ class BlockListTest__NamedBlock extends Property {
  */
 class BlockListTest__StatisticsBlock extends Block {
     /**
-     * @param array<string,string> $types
-     * @param array<string,string> $directives
+     * @param array<string> $types
+     * @param array<string> $directives
      *
      * @noinspection PhpMissingParentConstructorInspection
      */

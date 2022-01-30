@@ -208,8 +208,6 @@ abstract class BlockList extends Block implements Statistics, ArrayAccess, Count
 
     /**
      * @param TBlock $value
-     *
-     * @return mixed
      */
     protected function isValidBlock(Block $value): bool {
         return !$value->isEmpty();

@@ -82,7 +82,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings, int, int, InterfaceType}>
+     * @return array<string,array{string, Settings, int, int, InterfaceType}>
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())

@@ -47,7 +47,7 @@ class SchemaDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings, int, int, Schema}>
+     * @return array<string,array{string, Settings, int, int, Schema}>
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())

@@ -67,7 +67,7 @@ class FieldDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings, int, int, FieldDefinition}>
+     * @return array<string,array{string, Settings, int, int, FieldDefinition}>
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())

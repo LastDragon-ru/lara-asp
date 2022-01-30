@@ -67,7 +67,7 @@ class InputValueDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings, int, int, FieldArgument}>
+     * @return array<string,array{string, Settings, int, int, FieldArgument}>
      */
     public function dataProviderToString(): array {
         $settings = new TestSettings();

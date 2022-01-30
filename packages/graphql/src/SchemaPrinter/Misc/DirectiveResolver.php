@@ -30,7 +30,7 @@ class DirectiveResolver {
     protected array $directives;
 
     /**
-     * @param array<string,GraphQLDirective> $directives
+     * @param array<GraphQLDirective> $directives
      */
     public function __construct(
         protected DirectiveLocator $locator,
@@ -68,8 +68,8 @@ class DirectiveResolver {
         $directives = $this->directives;
 
         foreach ($this->locator->definitions() as $definition) {
-            $directive                     = $this->factory->handle($definition);
-            $directives[$directives->name] = $directive;
+            $directive                    = $this->factory->handle($definition);
+            $directives[$directive->name] = $directive;
         }
 
         return $directives;

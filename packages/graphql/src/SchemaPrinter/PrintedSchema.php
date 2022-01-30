@@ -6,8 +6,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
 use Stringable;
 
-use function array_values;
-
 class PrintedSchema implements Statistics, Stringable {
     public function __construct(
         protected Block $schema,
@@ -20,16 +18,16 @@ class PrintedSchema implements Statistics, Stringable {
     }
 
     /**
-     * @return array<string>
+     * @inheritDoc
      */
     public function getUsedTypes(): array {
-        return array_values($this->schema->getUsedTypes());
+        return $this->schema->getUsedTypes();
     }
 
     /**
-     * @return array<string>
+     * @inheritDoc
      */
     public function getUsedDirectives(): array {
-        return array_values($this->schema->getUsedDirectives());
+        return $this->schema->getUsedDirectives();
     }
 }

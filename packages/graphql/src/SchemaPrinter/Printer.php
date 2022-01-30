@@ -167,7 +167,7 @@ class Printer {
             } else {
                 $type = $schema->getType($name);
 
-                if ($this->isType($type)) {
+                if ($type && $this->isType($type)) {
                     $block        = $this->getDefinitionBlock($settings, $type);
                     $types[$name] = $block;
                 }
@@ -198,11 +198,11 @@ class Printer {
         return new DefinitionBlock($settings, $this->getLevel(), $definition);
     }
 
-    private function isType(Type $type): bool {
-        return !Type::isBuiltInType($type);
+    private function isType(?Type $type): bool {
+        return $type && !Type::isBuiltInType($type);
     }
 
-    private function isDirective(Directive $directive): bool {
-        return !Directive::isSpecifiedDirective($directive);
+    private function isDirective(?Directive $directive): bool {
+        return $directive && !Directive::isSpecifiedDirective($directive);
     }
 }

@@ -20,6 +20,8 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
+use function array_values;
+
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Printer
@@ -32,7 +34,7 @@ class PrinterTest extends TestCase {
      *
      * @dataProvider dataProviderPrint
      *
-     * @param array{schema: string, types: array<string>, directives: array<string>}
+     * @param array{schema: string, types: array<string>, directives: array<string>} $expected
      */
     public function testPrint(array $expected, ?Settings $settings, int $level): void {
         // Types
@@ -115,15 +117,15 @@ class PrinterTest extends TestCase {
         $actual  = $printer->print($schema);
 
         self::assertEquals($output, (string) $actual);
-        self::assertEqualsCanonicalizing($expected['types'], $actual->getUsedTypes());
-        self::assertEqualsCanonicalizing($expected['directives'], $actual->getUsedDirectives());
+        self::assertEqualsCanonicalizing($expected['types'], array_values($actual->getUsedTypes()));
+        self::assertEqualsCanonicalizing($expected['directives'], array_values($actual->getUsedDirectives()));
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{string, Settings, int}>
+     * @return array<string, array<mixed>>
      */
     public function dataProviderPrint(): array {
         return [

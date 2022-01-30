@@ -44,7 +44,7 @@ class StringBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings, int, int, string}>
+     * @return array<string,array{string, Settings, int, int, string}>
      */
     public function dataProviderToString(): array {
         $settings = new TestSettings();
