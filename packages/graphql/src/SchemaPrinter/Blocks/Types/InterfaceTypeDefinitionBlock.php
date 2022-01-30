@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\InterfaceType;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
 
 /**
  * @internal
@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
  */
 class InterfaceTypeDefinitionBlock extends TypeDefinitionBlock {
     public function __construct(
-        Settings $settings,
+        BlockSettings $settings,
         int $level,
         int $used,
         InterfaceType $definition,

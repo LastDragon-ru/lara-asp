@@ -3,11 +3,17 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
 use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\DirectiveLocation;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
+use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 /**
  * @internal
@@ -31,7 +37,20 @@ class DirectiveNodeListTest extends TestCase {
         array|null $directives,
         string $reason = null,
     ): void {
-        $actual = (string) (new DirectiveNodeList($settings, $level, $used, $directives, $reason));
+        $locator   = $this->app->make(DirectiveLocator::class);
+        $convertor = $this->app->make(ExecutableTypeNodeConverter::class);
+        $instances = [];
+
+        foreach ((array) $directives as $directive) {
+            $instances[] = new GraphQLDirective([
+                'name'      => $directive->name->value,
+                'locations' => [DirectiveLocation::OBJECT],
+            ]);
+        }
+
+        $resolver = new DirectiveResolver($locator, $convertor, $instances);
+        $settings = new BlockSettings($resolver, $settings);
+        $actual   = (string) (new DirectiveNodeList($settings, $level, $used, $directives, $reason));
 
         Parser::directives($actual);
 
@@ -45,6 +64,7 @@ class DirectiveNodeListTest extends TestCase {
         $a        = Parser::directive('@a');
         $b        = Parser::directive('@b');
         $settings = (new TestSettings())->setPrintDirectives(true);
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = new DirectiveNodeList($settings, 0, 0, [$a, $b]);
 
         self::assertNotEmpty((string) $block);
@@ -100,7 +120,7 @@ class DirectiveNodeListTest extends TestCase {
                 0,
                 0,
                 null,
-                Directive::DEFAULT_DEPRECATION_REASON,
+                GraphQLDirective::DEFAULT_DEPRECATION_REASON,
             ],
             'deprecated (custom reason)'                => [
                 <<<'STRING'
@@ -168,8 +188,9 @@ class DirectiveNodeListTest extends TestCase {
                 <<<'STRING'
                 @a(a: 123)
                 STRING,
-                $settings->setDirectiveFilter(static function (DirectiveNode $directive): bool {
-                    return $directive->name->value === 'a';
+                $settings->setDirectiveFilter(static function (GraphQLDirective|LighthouseDirective $directive): bool {
+                    return $directive instanceof GraphQLDirective
+                        && $directive->name === 'a';
                 }),
                 0,
                 0,

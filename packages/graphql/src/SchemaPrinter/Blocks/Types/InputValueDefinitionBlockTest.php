@@ -8,6 +8,8 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -31,7 +33,8 @@ class InputValueDefinitionBlockTest extends TestCase {
         int $used,
         FieldArgument $definition,
     ): void {
-        $actual = (string) (new InputValueDefinitionBlock($settings, $level, $used, $definition));
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $actual   = (string) (new InputValueDefinitionBlock($settings, $level, $used, $definition));
 
         Parser::inputValueDefinition($actual);
 
@@ -42,7 +45,7 @@ class InputValueDefinitionBlockTest extends TestCase {
      * @covers ::__toString
      */
     public function testStatistics(): void {
-        $settings   = new TestSettings();
+        $settings   = new BlockSettings($this->app->make(DirectiveResolver::class), new TestSettings());
         $definition = new FieldArgument([
             'name'    => 'a',
             'type'    => new NonNull(

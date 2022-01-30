@@ -12,6 +12,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\DirectiveDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumTypeDefinitionBlock;
@@ -22,7 +23,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\ScalarTypeDefinitio
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\SchemaDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Exceptions\TypeUnsupported;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
  * @internal
@@ -31,7 +31,7 @@ class DefinitionBlock extends Block implements Named {
     private Block $block;
 
     public function __construct(
-        Settings $settings,
+        BlockSettings $settings,
         int $level,
         Schema|Type|Directive $definition,
     ) {

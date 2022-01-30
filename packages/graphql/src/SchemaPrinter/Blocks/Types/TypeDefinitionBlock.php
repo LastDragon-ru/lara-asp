@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
 
 use function mb_strlen;
 
@@ -21,7 +21,7 @@ abstract class TypeDefinitionBlock extends DefinitionBlock {
      * @param TType $definition
      */
     public function __construct(
-        Settings $settings,
+        BlockSettings $settings,
         int $level,
         int $used,
         InterfaceType|ObjectType $definition,

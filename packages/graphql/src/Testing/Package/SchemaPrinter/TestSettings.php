@@ -3,9 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter;
 
 use Closure;
-use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
+use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 class TestSettings extends ImmutableSettings {
     protected string           $space                             = ' ';
@@ -31,7 +32,7 @@ class TestSettings extends ImmutableSettings {
     protected ?DirectiveFilter $directiveFilter                   = null;
 
     /**
-     * @param DirectiveFilter|Closure(DirectiveNode):bool|null $value
+     * @param DirectiveFilter|Closure(GraphQLDirective|LighthouseDirective):bool|null $value
      */
     public function setDirectiveFilter(DirectiveFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
@@ -42,7 +43,7 @@ class TestSettings extends ImmutableSettings {
                     // empty
                 }
 
-                public function isAllowedDirective(DirectiveNode $directive): bool {
+                public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive): bool {
                     return ($this->filter)($directive);
                 }
             };

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 /**
  * @internal
@@ -14,7 +13,7 @@ class Property extends Block implements Named {
      * @param TBlock $block
      */
     public function __construct(
-        Settings $settings,
+        BlockSettings $settings,
         private string $name,
         private Block $block,
     ) {

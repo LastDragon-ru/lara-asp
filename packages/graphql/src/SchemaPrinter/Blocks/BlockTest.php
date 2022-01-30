@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -20,8 +21,10 @@ class BlockTest extends TestCase {
      * @covers ::getContent
      */
     public function testGetContent(): void {
-        $content = 'content';
-        $block   = Mockery::mock(BlockTest__Block::class, [new TestSettings()]);
+        $settings = new TestSettings();
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $content  = 'content';
+        $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -37,9 +40,11 @@ class BlockTest extends TestCase {
      * @covers ::getLength
      */
     public function testGetLength(): void {
-        $content = 'content';
-        $length  = mb_strlen($content);
-        $block   = Mockery::mock(BlockTest__Block::class, [new TestSettings()]);
+        $settings = new TestSettings();
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $content  = 'content';
+        $length   = mb_strlen($content);
+        $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -57,7 +62,8 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsMultiline
      */
     public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
-        $block = Mockery::mock(BlockTest__Block::class, [$settings]);
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -75,7 +81,9 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsEmpty
      */
     public function testIsEmpty(bool $expected, string $content): void {
-        $block = Mockery::mock(BlockTest__Block::class, [new TestSettings()]);
+        $settings = new TestSettings();
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -90,7 +98,7 @@ class BlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{bool, Settings, string}>
+     * @return array<string, array{bool, BlockSettings, string}>
      */
     public function dataProviderIsMultiline(): array {
         $settings = new TestSettings();

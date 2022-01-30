@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\UnionType;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -18,7 +20,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
     // =========================================================================
     /**
      * @covers ::__toString
-     * @covers       \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionMemberTypesList::__toString
+     * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\UnionMemberTypesList::__toString
      *
      * @dataProvider dataProviderToString
      */
@@ -29,7 +31,8 @@ class UnionTypeDefinitionBlockTest extends TestCase {
         int $used,
         UnionType $type,
     ): void {
-        $actual = (string) (new UnionTypeDefinitionBlock($settings, $level, $used, $type));
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $actual   = (string) (new UnionTypeDefinitionBlock($settings, $level, $used, $type));
 
         Parser::unionTypeDefinition($actual);
 
@@ -53,6 +56,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             'astNode' => Parser::unionTypeDefinition('union Test @a = A | B'),
         ]);
         $settings = new TestSettings();
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = new UnionTypeDefinitionBlock($settings, 0, 0, $union);
 
         self::assertNotEmpty((string) $block);

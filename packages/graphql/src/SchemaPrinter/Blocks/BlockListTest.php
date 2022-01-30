@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -38,7 +39,8 @@ class BlockListTest extends TestCase {
         array $blocks,
         int $count,
     ): void {
-        $list = new BlockListTest__BlockList(
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $list     = new BlockListTest__BlockList(
             $settings,
             $level,
             $used,
@@ -63,11 +65,13 @@ class BlockListTest extends TestCase {
      * @covers ::analyze
      */
     public function testStatistics(): void {
-        $list   = new class(new TestSettings()) extends BlockList {
+        $settings = new TestSettings();
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $list     = new class($settings) extends BlockList {
             // empty
         };
-        $list[] = new BlockListTest__StatisticsBlock(['ta'], ['da']);
-        $list[] = new BlockListTest__StatisticsBlock(['tb'], ['db']);
+        $list[]   = new BlockListTest__StatisticsBlock(['ta'], ['da']);
+        $list[]   = new BlockListTest__StatisticsBlock(['tb'], ['db']);
 
         self::assertEquals(['ta' => 'ta', 'tb' => 'tb'], $list->getUsedTypes());
         self::assertEquals(['da' => 'da', 'db' => 'db'], $list->getUsedDirectives());
@@ -750,11 +754,12 @@ class BlockListTest__BlockList extends BlockList {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockListTest__Block extends Block {
+    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(
         protected bool $multiline,
         protected string $content,
     ) {
-        parent::__construct(new TestSettings());
+        // empty
     }
 
     protected function getContent(): string {
@@ -779,20 +784,25 @@ class BlockListTest__Block extends Block {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockListTest__NamedBlock extends Property {
+    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(
         protected string $name,
-        bool $multiline,
-        string $content,
+        protected bool $multiline,
+        protected string $content,
     ) {
-        parent::__construct(
-            new TestSettings(),
-            $name,
-            new BlockListTest__Block($multiline, $content),
-        );
+        // empty
     }
 
     public function getName(): string {
         return $this->name;
+    }
+
+    protected function getBlock(): Block {
+        return new BlockListTest__Block($this->multiline, $this->content);
+    }
+
+    protected function space(): string {
+        return ' ';
     }
 }
 
@@ -804,10 +814,10 @@ class BlockListTest__StatisticsBlock extends Block {
     /**
      * @param array<string,string> $types
      * @param array<string,string> $directives
+     *
+     * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct(array $types, array $directives) {
-        parent::__construct(new TestSettings());
-
         foreach ($types as $type) {
             $this->addUsedType($type);
         }

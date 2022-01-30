@@ -9,16 +9,16 @@ use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 class ValueNodeBlock extends Block {
     /**
      * @param ValueNode&Node $node
      */
     public function __construct(
-        Settings $settings,
+        BlockSettings $settings,
         int $level,
         int $used,
         protected ValueNode $node,

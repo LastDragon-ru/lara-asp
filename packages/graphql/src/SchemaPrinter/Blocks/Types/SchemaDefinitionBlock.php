@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
 
 use function array_filter;
 use function count;
@@ -20,7 +20,7 @@ use const ARRAY_FILTER_USE_BOTH;
  */
 class SchemaDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        Settings $settings,
+        BlockSettings $settings,
         int $level,
         int $used,
         Schema $definition,

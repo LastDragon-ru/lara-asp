@@ -6,6 +6,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -29,7 +31,8 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
         int $used,
         ObjectType $definition,
     ): void {
-        $actual = (string) (new ObjectTypeDefinitionBlock($settings, $level, $used, $definition));
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $actual   = (string) (new ObjectTypeDefinitionBlock($settings, $level, $used, $definition));
 
         Parser::objectTypeDefinition($actual);
 
@@ -41,6 +44,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
      */
     public function testStatistics(): void {
         $settings   = new TestSettings();
+        $settings   = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
         $definition = new ObjectType([
             'name'       => 'A',
             'fields'     => [

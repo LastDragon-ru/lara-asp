@@ -7,7 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
 use Traversable;
 
 use function json_encode;
@@ -21,7 +21,7 @@ class DirectiveNodeList extends BlockList {
      * @param Traversable<DirectiveNode>|array<DirectiveNode> $directives
      */
     public function __construct(
-        Settings $settings,
+        BlockSettings $settings,
         int $level,
         int $used,
         Traversable|array|null $directives,
@@ -62,9 +62,10 @@ class DirectiveNodeList extends BlockList {
         }
 
         // Allowed?
-        $filter = $this->getSettings()->getDirectiveFilter();
-        $valid  = $filter === null
-            || $filter->isAllowedDirective($value->getNode());
+        $settings = $this->getSettings();
+        $filter   = $settings->getDirectiveFilter();
+        $valid    = $filter === null
+            || $filter->isAllowedDirective($settings->getDirective($value->getNode()));
 
         return $valid;
     }

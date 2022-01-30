@@ -2,8 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts;
 
-use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 interface DirectiveFilter {
-    public function isAllowedDirective(DirectiveNode $directive): bool;
+    public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive): bool;
 }

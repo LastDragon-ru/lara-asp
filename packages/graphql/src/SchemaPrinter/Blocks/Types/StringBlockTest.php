@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -29,8 +31,9 @@ class StringBlockTest extends TestCase {
         int $used,
         string $string,
     ): void {
-        $actual = (string) new StringBlock($settings, $level, $used, $string);
-        $parsed = Parser::valueLiteral($actual);
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $actual   = (string) new StringBlock($settings, $level, $used, $string);
+        $parsed   = Parser::valueLiteral($actual);
 
         self::assertInstanceOf(StringValueNode::class, $parsed);
         self::assertEquals($expected, $actual);

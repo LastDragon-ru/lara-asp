@@ -6,6 +6,8 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -29,7 +31,8 @@ class TypeBlockTest extends TestCase {
         int $used,
         Type $type,
     ): void {
-        $actual = (string) (new TypeBlock($settings, $level, $used, $type));
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
+        $actual   = (string) (new TypeBlock($settings, $level, $used, $type));
 
         self::assertEquals($expected, $actual);
     }
@@ -44,6 +47,7 @@ class TypeBlockTest extends TestCase {
             ]),
         );
         $settings = new TestSettings();
+        $settings = new BlockSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = new TypeBlock($settings, 0, 0, $node);
         $type     = $node->getWrappedType(true)->name;
 
