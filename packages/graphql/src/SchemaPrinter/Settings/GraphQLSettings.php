@@ -13,7 +13,7 @@ class GraphQLSettings extends ImmutableSettings {
     protected string           $fileEnd                           = "\n";
     protected string           $lineEnd                           = "\n";
     protected int              $lineLength                        = 80;
-    protected bool             $printDirectives                   = false;
+    protected bool             $printDirectives                   = true;
     protected bool             $printDirectiveDefinitions         = false;
     protected bool             $printDirectivesInDescription      = false;
     protected bool             $printUnusedDefinitions            = true;
@@ -29,4 +29,10 @@ class GraphQLSettings extends ImmutableSettings {
     protected bool             $alwaysMultilineInterfaces         = false;
     protected bool             $alwaysMultilineDirectiveLocations = false;
     protected ?DirectiveFilter $directiveFilter                   = null;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->directiveFilter = new GraphQLDirectiveFilter();
+    }
 }

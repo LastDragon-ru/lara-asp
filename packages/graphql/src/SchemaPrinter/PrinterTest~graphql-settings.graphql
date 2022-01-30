@@ -6,6 +6,7 @@ enum CodeEnum {
 
 enum SchemaEnum {
   A
+  @deprecated
 
   """
   Description
@@ -79,6 +80,7 @@ interface SchemaInterfaceB {
   Deprecated field
   """
   b: [String]!
+  @deprecated
 
   c(
     """
@@ -134,7 +136,10 @@ type CodeType {
 
 type Query {
   a: SchemaType
+  @deprecated(reason: "deprecated reason")
+
   b: SchemaEnum
+  @deprecated
 
   c(
     a: SchemaInput = {
@@ -162,6 +167,7 @@ type SchemaType implements SchemaInterfaceB {
   Deprecated field
   """
   b: [String]!
+  @deprecated
 
   c(
     """

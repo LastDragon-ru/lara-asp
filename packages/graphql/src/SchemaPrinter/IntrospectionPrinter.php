@@ -5,9 +5,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
 
 /**
@@ -18,15 +19,15 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
  * - {@see Settings::isPrintDirectiveDefinitions()}
  */
 class IntrospectionPrinter extends Printer {
-    public function setSettings(Settings $settings): static {
+    public function setSettings(?Settings $settings): static {
         return parent::setSettings(
-            ImmutableSettings::createFrom($settings)
+            ImmutableSettings::createFrom($settings ?? new DefaultSettings())
                 ->setPrintUnusedDefinitions(true)
                 ->setPrintDirectiveDefinitions(true),
         );
     }
 
-    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): DefinitionList {
+    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
         $blocks = $this->getDefinitionList($settings);
 
         foreach (Introspection::getTypes() as $type) {
@@ -36,7 +37,7 @@ class IntrospectionPrinter extends Printer {
         return $blocks;
     }
 
-    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): DefinitionList {
+    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
         $blocks     = $this->getDefinitionList($settings);
         $directives = $schema->getDirectives();
 

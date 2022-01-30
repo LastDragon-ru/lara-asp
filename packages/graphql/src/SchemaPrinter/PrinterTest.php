@@ -12,6 +12,7 @@ use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -33,7 +34,7 @@ class PrinterTest extends TestCase {
      *
      * @param array{schema: string, types: array<string>, directives: array<string>}
      */
-    public function testPrint(array $expected, Settings $settings, int $level): void {
+    public function testPrint(array $expected, ?Settings $settings, int $level): void {
         // Types
         $directives = $this->app->make(DirectiveLocator::class);
         $registry   = $this->app->make(TypeRegistry::class);
@@ -126,6 +127,56 @@ class PrinterTest extends TestCase {
      */
     public function dataProviderPrint(): array {
         return [
+            'null'                 => [
+                [
+                    'schema'     => '~default-settings.graphql',
+                    'types'      => [
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                    ],
+                    'directives' => [
+                        '@deprecated',
+                    ],
+                ],
+                null,
+                0,
+            ],
+            DefaultSettings::class => [
+                [
+                    'schema'     => '~default-settings.graphql',
+                    'types'      => [
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                    ],
+                    'directives' => [
+                        '@deprecated',
+                    ],
+                ],
+                new DefaultSettings(),
+                0,
+            ],
             GraphQLSettings::class => [
                 [
                     'schema'     => '~graphql-settings.graphql',
@@ -148,7 +199,7 @@ class PrinterTest extends TestCase {
                         'SchemaScalarUnused',
                     ],
                     'directives' => [
-                        // empty
+                        '@deprecated',
                     ],
                 ],
                 new GraphQLSettings(),
