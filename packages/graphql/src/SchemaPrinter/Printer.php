@@ -73,7 +73,7 @@ class Printer {
         }
 
         // Return
-        return new PrintedSchema((string) $content);
+        return new PrintedSchema($content);
     }
 
     protected function getSchemaDefinition(PrinterSettings $settings, Schema $schema): Block {

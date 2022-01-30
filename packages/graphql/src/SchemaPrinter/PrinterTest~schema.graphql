@@ -21,6 +21,11 @@ interface SchemaInterfaceA {
   a: Boolean!
 }
 
+"""
+Lighthouse not yet support "implements" for interface...
+
+@see https://github.com/webonyx/graphql-php/issues/728
+"""
 interface SchemaInterfaceB implements SchemaInterfaceA & CodeInterface @schemaDirective {
   a: Boolean!
   "Deprecated field"

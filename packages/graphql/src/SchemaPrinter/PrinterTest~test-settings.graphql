@@ -39,6 +39,11 @@ input SchemaInput
     f: [String!]
 }
 
+"""
+Lighthouse not yet support "implements" for interface...
+
+@see https://github.com/webonyx/graphql-php/issues/728
+"""
 interface SchemaInterfaceB
 @schemaDirective
 {

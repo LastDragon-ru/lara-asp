@@ -60,13 +60,18 @@ input SchemaInputUnused {
 Description
 """
 interface CodeInterface {
-  a: Boolean
+  a: Boolean!
 }
 
 interface SchemaInterfaceA {
   a: Boolean!
 }
 
+"""
+Lighthouse not yet support "implements" for interface...
+
+@see https://github.com/webonyx/graphql-php/issues/728
+"""
 interface SchemaInterfaceB {
   a: Boolean!
 

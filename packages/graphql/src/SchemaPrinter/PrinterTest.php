@@ -30,8 +30,10 @@ class PrinterTest extends TestCase {
      * @covers ::print
      *
      * @dataProvider dataProviderPrint
+     *
+     * @param array{schema: string, types: array<string>, directives: array<string>}
      */
-    public function testPrint(string $expected, Settings $settings, int $level): void {
+    public function testPrint(array $expected, Settings $settings, int $level): void {
         // Types
         $directives = $this->app->make(DirectiveLocator::class);
         $registry   = $this->app->make(TypeRegistry::class);
@@ -55,7 +57,7 @@ class PrinterTest extends TestCase {
             'fields'      => [
                 [
                     'name' => 'a',
-                    'type' => Type::boolean(),
+                    'type' => Type::nonNull(Type::boolean()),
                 ],
             ],
         ]);
@@ -106,12 +108,14 @@ class PrinterTest extends TestCase {
         $registry->register($codeInput);
 
         // Test
-        $expected = $this->getTestData()->content($expected);
-        $printer  = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
-        $schema   = $this->getGraphQLSchema($this->getTestData()->file('~schema.graphql'));
-        $actual   = $printer->print($schema);
+        $output  = $this->getTestData()->content($expected['schema']);
+        $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
+        $schema  = $this->getGraphQLSchema($this->getTestData()->file('~schema.graphql'));
+        $actual  = $printer->print($schema);
 
-        self::assertEquals($expected, (string) $actual);
+        self::assertEquals($output, (string) $actual);
+        self::assertEqualsCanonicalizing($expected['types'], $actual->getUsedTypes());
+        self::assertEqualsCanonicalizing($expected['directives'], $actual->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -123,12 +127,59 @@ class PrinterTest extends TestCase {
     public function dataProviderPrint(): array {
         return [
             DefaultSettings::class => [
-                '~default-settings.graphql',
+                [
+                    'schema'     => '~default-settings.graphql',
+                    'types'      => [
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                        'SchemaTypeUnused',
+                        'SchemaEnumUnused',
+                        'SchemaScalarUnused',
+                    ],
+                    'directives' => [
+                        // empty
+                    ],
+                ],
                 new DefaultSettings(),
                 0,
             ],
             TestSettings::class    => [
-                '~test-settings.graphql',
+                [
+                    'schema'     => '~test-settings.graphql',
+                    'types'      => [
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                    ],
+                    'directives' => [
+                        '@schemaDirective',
+                        '@codeDirective',
+                        '@deprecated',
+                        '@scalar',
+                        '@mock',
+                    ],
+                ],
                 new TestSettings(),
                 0,
             ],
