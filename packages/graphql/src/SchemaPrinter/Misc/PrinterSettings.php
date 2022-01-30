@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 class PrinterSettings implements Settings {
