@@ -20,6 +20,8 @@ use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
  * directives with classes.
  *
  * @see https://webonyx.github.io/graphql-php/type-definitions/directives/
+ *
+ * @internal
  */
 class DirectiveResolver {
     protected DirectiveFactory $factory;

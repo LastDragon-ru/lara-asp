@@ -8,6 +8,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
+/**
+ * @internal
+ */
 class PrinterSettings implements Settings {
     public function __construct(
         protected DirectiveResolver $resolver,

@@ -13,6 +13,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
+/**
+ * @internal
+ */
 class ValueNodeBlock extends Block {
     /**
      * @param ValueNode&Node $node
