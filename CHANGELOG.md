@@ -1,3 +1,31 @@
+## [0.11.0](https://github.com/LastDragon-ru/lara-asp/compare/0.10.0...0.11.0) (2022-02-05)
+
+| ☣    | Breaking changes |
+|:-----:|:-----------------|
+| 🔥    | Something cool   |
+
+### Features
+
+* **core:** Added `Subject::getObservers()`. ([eb59a63](https://github.com/LastDragon-ru/lara-asp/commit/eb59a6345102c128f5e6a337e2301c4879d86519))
+* **eloquent:** Added `ModelHelper::isSoftDeletable()` helper. ([b254288](https://github.com/LastDragon-ru/lara-asp/commit/b25428851d28f665a954018c3faa8530ad07c5d1))
+* **eloquent:** Result of `ModelHelper::isRelation()` will be cached (cache can be reset by `ModelHelper::resetRelationsCache()`) ([a63f272](https://github.com/LastDragon-ru/lara-asp/commit/a63f2720a5151d047015ca9d6da210dfe1befecf))
+* **graphql:** Added `GraphQLExpectedSchema` that can be used with `assertGraphQLSchemaEquals()` to check used/unused types and directives. ([72fd9a9](https://github.com/LastDragon-ru/lara-asp/commit/72fd9a9b821af77f924f18240e626a525098c30d))
+* **graphql:** 🔥 Awesome `SchemaPrinter` with directives, filtering, advanced formatting, and more. The `assertGraphQLSchemaEquals()` also updated to use it. ([f9e0b35](https://github.com/LastDragon-ru/lara-asp/commit/f9e0b35e6da765fe315fc3c7109aa6e6fa75bcdc))  ☣
+* **graphql:** Minimal version of "nuwave/lighthouse" set to "^5.6.1" (required to print repeatable directives). ([e694b7d](https://github.com/LastDragon-ru/lara-asp/commit/e694b7d2693933e8a072628a3e2ea04b11175d7d)) ☣
+
+
+### Bug Fixes
+
+* **formatter:** `Formatter::forLocale()`/`Formatter::forTimezone()` will not lose `timezone`/`locale`. ([940ed7b](https://github.com/LastDragon-ru/lara-asp/commit/940ed7babfa6a9c598fbfd1c7eef3e22e66492ab))
+* **testing:** `Override` will check usages in `assertPostConditions()` instead of `beforeApplicationDestroyed()` ("Lock wait timeout exceeded" fix). ([95649d9](https://github.com/LastDragon-ru/lara-asp/commit/95649d9af0a8ee01314db3127a6bb478a265deab))
+
+
+### Code Refactoring
+
+* **core:** `Subject` methods will return `self` instead of `void`. ([7d80539](https://github.com/LastDragon-ru/lara-asp/commit/7d80539387818c838bc28c579bd2a79cc2731bdb)) ☣
+* **core:** Class `Subject` converted into interface, all methods moved into new class `Dispatcher`. ([e7bef00](https://github.com/LastDragon-ru/lara-asp/commit/e7bef003e1fb32b30dc0213849cde94e148dd37a)) ☣
+
+
 ## [0.10.0](https://github.com/LastDragon-ru/lara-asp/compare/0.9.0...0.10.0) (2021-12-25)
 
 | ☣    | Breaking changes |
