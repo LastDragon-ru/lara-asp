@@ -30,6 +30,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
+use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -51,10 +52,12 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      *
      * @dataProvider dataProviderManipulateArgDefinition
+     *
+     * @param Closure(self): GraphQLExpectedSchema $expected
      */
-    public function testManipulateArgDefinition(string $expected, string $graphql): void {
+    public function testManipulateArgDefinition(Closure $expected, string $graphql): void {
         self::assertGraphQLSchemaEquals(
-            $this->getTestData()->file($expected),
+            $expected($this),
             $this->getTestData()->file($graphql),
         );
     }
@@ -274,12 +277,36 @@ class DirectiveTest extends TestCase {
     // <editor-fold desc="DataProvider">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<string,array{Closure(self): GraphQLExpectedSchema, string}>
      */
     public function dataProviderManipulateArgDefinition(): array {
         return [
-            'full'                           => ['~full-expected.graphql', '~full.graphql'],
-            'only used type should be added' => ['~usedonly-expected.graphql', '~usedonly.graphql'],
+            'full'                           => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~full-expected.graphql'),
+                    ))
+                        ->setUnusedTypes([
+                            'InputA'  => 'InputA',
+                            'NestedA' => 'NestedA',
+                            'NestedB' => 'NestedB',
+                            'NestedC' => 'NestedC',
+                            'InputB'  => 'InputB',
+                        ]);
+                },
+                '~full.graphql',
+            ],
+            'only used type should be added' => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~usedonly-expected.graphql'),
+                    ))
+                        ->setUnusedTypes([
+                            'Properties' => 'Properties',
+                        ]);
+                },
+                '~usedonly.graphql',
+            ],
         ];
     }
 

@@ -16,6 +16,8 @@ use Nuwave\Lighthouse\Testing\TestSchemaProvider;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
+use function array_combine;
+
 /**
  * @mixin TestCase
  */
@@ -28,22 +30,60 @@ trait GraphQLAssertions {
      * Compares two GraphQL schemas.
      */
     public function assertGraphQLSchemaEquals(
-        SplFileInfo|string $expected,
+        GraphQLExpectedSchema|SplFileInfo|string $expected,
         PrintedSchema|Schema|SplFileInfo|string $schema,
         string $message = '',
     ): void {
+        // Prepare
+        if (!($expected instanceof GraphQLExpectedSchema)) {
+            $expected = new GraphQLExpectedSchema($expected);
+        }
+
+        // GraphQL
+        $actual = $this->printGraphQLSchema($schema);
+
         self::assertEquals(
-            Args::content($expected),
-            (string) $this->printGraphQLSchema($schema),
+            Args::content($expected->getSchema()),
+            (string) $actual,
             $message,
         );
+
+        // Used types
+        $usedTypes = $expected->getUsedTypes();
+
+        if ($usedTypes !== null) {
+            self::assertEquals(
+                array_combine($usedTypes, $usedTypes),
+                $actual->getUsedTypes(),
+            );
+        }
+
+        // Unused types
+        $unusedTypes = $expected->getUnusedTypes();
+
+        if ($unusedTypes !== null) {
+            self::assertEquals(
+                array_combine($unusedTypes, $unusedTypes),
+                $actual->getUnusedTypes(),
+            );
+        }
+
+        // Used directives
+        $usedDirectives = $expected->getUsedDirectives();
+
+        if ($usedDirectives !== null) {
+            self::assertEquals(
+                array_combine($usedDirectives, $usedDirectives),
+                $actual->getUsedDirectives(),
+            );
+        }
     }
 
     /**
      * Compares GraphQL schema with default (application) schema.
      */
     public function assertDefaultGraphQLSchemaEquals(
-        SplFileInfo|string $expected,
+        GraphQLExpectedSchema|SplFileInfo|string $expected,
         string $message = '',
     ): void {
         self::assertGraphQLSchemaEquals(

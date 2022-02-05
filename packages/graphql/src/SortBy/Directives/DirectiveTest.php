@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
+use Closure;
 use Exception;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
@@ -16,6 +17,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder as SortByScoutBu
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
+use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Mockery\MockInterface;
@@ -32,10 +34,12 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      *
      * @dataProvider dataProviderManipulateArgDefinition
+     *
+     * @param Closure(self): GraphQLExpectedSchema $expected
      */
-    public function testManipulateArgDefinition(string $expected, string $graphql): void {
+    public function testManipulateArgDefinition(Closure $expected, string $graphql): void {
         self::assertGraphQLSchemaEquals(
-            $this->getTestData()->file($expected),
+            $expected($this),
             $this->getTestData()->file($graphql),
         );
     }
@@ -129,7 +133,7 @@ class DirectiveTest extends TestCase {
         $registry->register($type);
 
         $this->getGraphQLSchema(
-            /** @lang GraphQL */
+        /** @lang GraphQL */
             <<<'GRAPHQL'
             type Query {
               test(order: _ @sortBy): TestType! @all
@@ -250,12 +254,34 @@ class DirectiveTest extends TestCase {
     // <editor-fold desc="DataProvider">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<string,array{Closure(self): GraphQLExpectedSchema, string}>
      */
     public function dataProviderManipulateArgDefinition(): array {
         return [
-            'full'        => ['~full-expected.graphql', '~full.graphql'],
-            'placeholder' => ['~placeholder-expected.graphql', '~placeholder.graphql'],
+            'full'        => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~full-expected.graphql'),
+                    ))
+                        ->setUnusedTypes([
+                            'Properties' => 'Properties',
+                            'Nested'     => 'Nested',
+                            'Value'      => 'Value',
+                        ]);
+                },
+                '~full.graphql',
+            ],
+            'placeholder' => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~placeholder-expected.graphql'),
+                    ))
+                        ->setUnusedTypes([
+                            // empty
+                        ]);
+                },
+                '~placeholder.graphql',
+            ],
         ];
     }
 
