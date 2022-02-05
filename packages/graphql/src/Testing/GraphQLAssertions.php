@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 use GraphQL\Type\Schema;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
@@ -28,12 +29,12 @@ trait GraphQLAssertions {
      */
     public function assertGraphQLSchemaEquals(
         SplFileInfo|string $expected,
-        Schema|SplFileInfo|string $schema,
+        PrintedSchema|Schema|SplFileInfo|string $schema,
         string $message = '',
     ): void {
         self::assertEquals(
             Args::content($expected),
-            $this->printGraphQLSchema($schema),
+            (string) $this->printGraphQLSchema($schema),
             $message,
         );
     }
@@ -87,15 +88,19 @@ trait GraphQLAssertions {
         return $schema;
     }
 
-    protected function printGraphQLSchema(Schema|SplFileInfo|string $schema): string {
+    protected function printGraphQLSchema(PrintedSchema|Schema|SplFileInfo|string $schema): PrintedSchema {
+        if ($schema instanceof PrintedSchema) {
+            return $schema;
+        }
+
         if (!($schema instanceof Schema)) {
             $schema = $this->getGraphQLSchema($schema);
         }
 
-        return (string) $this->getGraphQLSchemaPrinter()->print($schema);
+        return $this->getGraphQLSchemaPrinter()->print($schema);
     }
 
-    protected function printDefaultGraphQLSchema(): string {
+    protected function printDefaultGraphQLSchema(): PrintedSchema {
         return $this->printGraphQLSchema($this->getDefaultGraphQLSchema());
     }
 

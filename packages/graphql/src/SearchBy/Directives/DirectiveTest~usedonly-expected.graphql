@@ -93,32 +93,7 @@ type Query {
             ]
         )
     ): ID!
-    @all
 }
-
-"""
-Fetch all Eloquent models and return the collection as the result.
-"""
-directive @all(
-    """
-    Point to a function that provides a Query Builder instance.
-    This replaces the use of a model.
-    """
-    builder: String
-
-    """
-    Specify the class name of the model to use.
-    This is only needed when the default model detection does not work.
-    """
-    model: String
-
-    """
-    Apply scopes to the underlying query.
-    """
-    scopes: [String!]
-)
-on
-    | FIELD_DEFINITION
 
 """
 Convert Input into Search Conditions.
