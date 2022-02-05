@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -56,6 +57,19 @@ class ModelHelperTest extends TestCase {
 
         self::assertEquals($expected, $actual);
     }
+
+    /**
+     * @covers ::isSoftDeletable
+     *
+     * @dataProvider dataProviderIsSoftDeletable
+     *
+     * @param Closure(): (Model|Builder|class-string<Model>) $model
+     */
+    public function testIsSoftDeletable(bool $expected, Closure $model): void {
+        $actual = (new ModelHelper($model()))->isSoftDeletable();
+
+        self::assertEquals($expected, $actual);
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -99,6 +113,50 @@ class ModelHelperTest extends TestCase {
             ]),
         ))->getData();
     }
+
+    /**
+     * @return array<string, array{bool, Closure(): (Model|Builder|string)}>
+     */
+    public function dataProviderIsSoftDeletable(): array {
+        return [
+            'model'                 => [
+                false,
+                static function (): Model {
+                    return new ModelHelperTest__Model();
+                },
+            ],
+            'model (SoftDeletes)'   => [
+                true,
+                static function (): Model {
+                    return new ModelHelperTest__ModelSoftDeletes();
+                },
+            ],
+            'builder'               => [
+                false,
+                static function (): Builder {
+                    return ModelHelperTest__Model::query();
+                },
+            ],
+            'builder (SoftDeletes)' => [
+                true,
+                static function (): Builder {
+                    return ModelHelperTest__ModelSoftDeletes::query();
+                },
+            ],
+            'class'                 => [
+                false,
+                static function (): string {
+                    return ModelHelperTest__Model::class;
+                },
+            ],
+            'class (SoftDeletes)'   => [
+                true,
+                static function (): string {
+                    return ModelHelperTest__ModelSoftDeletes::class;
+                },
+            ],
+        ];
+    }
     // </editor-fold>
 }
 
@@ -130,4 +188,12 @@ class ModelHelperTest__Model extends Model {
     public function ok(): BelongsTo {
         return $this->belongsTo(self::class);
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ModelHelperTest__ModelSoftDeletes extends Model {
+    use SoftDeletes;
 }

@@ -5,11 +5,14 @@ namespace LastDragon_ru\LaraASP\Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 
+use function class_uses_recursive;
+use function in_array;
 use function is_a;
 use function is_string;
 
@@ -18,6 +21,11 @@ class ModelHelper {
      * @var array<class-string<Model>, array<string, bool>>
      */
     private static array $relations = [];
+
+    /**
+     * @var array<class-string<Model>, bool>
+     */
+    private static array $softDeletable = [];
 
     private bool  $builder;
     private Model $model;
@@ -51,8 +59,8 @@ class ModelHelper {
             self::$relations[$model][$name] = false;
 
             try {
-                $class                         = new ReflectionClass($model);
-                $type                          = $class->getMethod($name)->getReturnType();
+                $class                          = new ReflectionClass($model);
+                $type                           = $class->getMethod($name)->getReturnType();
                 self::$relations[$model][$name] = $type instanceof ReflectionNamedType
                     && is_a($type->getName(), Relation::class, true);
             } catch (ReflectionException) {
@@ -84,7 +92,18 @@ class ModelHelper {
         return $relation;
     }
 
-    public static function resetRelationsCache(): void {
-        self::$relations = [];
+    public function isSoftDeletable(): bool {
+        $model = $this->getModel()::class;
+
+        if (!isset(self::$softDeletable[$model])) {
+            self::$softDeletable[$model] = in_array(SoftDeletes::class, class_uses_recursive($model), true);
+        }
+
+        return self::$softDeletable[$model];
+    }
+
+    public static function resetCache(): void {
+        self::$relations     = [];
+        self::$softDeletable = [];
     }
 }
