@@ -34,7 +34,7 @@ class PrinterTest extends TestCase {
      *
      * @dataProvider dataProviderPrint
      *
-     * @param array{schema: string, types: array<string>, directives: array<string>} $expected
+     * @param array{schema:string,usedTypes:array<string>,unusedTypes:array<string>,directives:array<string>} $expected
      */
     public function testPrint(array $expected, ?Settings $settings, int $level): void {
         // Types
@@ -117,7 +117,8 @@ class PrinterTest extends TestCase {
         $actual  = $printer->print($schema);
 
         self::assertEquals($output, (string) $actual);
-        self::assertEqualsCanonicalizing($expected['types'], array_values($actual->getUsedTypes()));
+        self::assertEqualsCanonicalizing($expected['usedTypes'], array_values($actual->getUsedTypes()));
+        self::assertEqualsCanonicalizing($expected['unusedTypes'], array_values($actual->getUnusedTypes()));
         self::assertEqualsCanonicalizing($expected['directives'], array_values($actual->getUsedDirectives()));
     }
     // </editor-fold>
@@ -131,8 +132,9 @@ class PrinterTest extends TestCase {
         return [
             'null'                                             => [
                 [
-                    'schema'     => '~default-settings.graphql',
-                    'types'      => [
+                    'schema'      => '~default-settings.graphql',
+                    'usedTypes'   => [
+                        'Query',
                         'String',
                         'Boolean',
                         'SchemaType',
@@ -147,7 +149,17 @@ class PrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                     ],
-                    'directives' => [
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
                         '@deprecated',
                     ],
                 ],
@@ -156,8 +168,9 @@ class PrinterTest extends TestCase {
             ],
             DefaultSettings::class                             => [
                 [
-                    'schema'     => '~default-settings.graphql',
-                    'types'      => [
+                    'schema'      => '~default-settings.graphql',
+                    'usedTypes'   => [
+                        'Query',
                         'String',
                         'Boolean',
                         'SchemaType',
@@ -172,7 +185,17 @@ class PrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                     ],
-                    'directives' => [
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
                         '@deprecated',
                     ],
                 ],
@@ -181,8 +204,9 @@ class PrinterTest extends TestCase {
             ],
             GraphQLSettings::class                             => [
                 [
-                    'schema'     => '~graphql-settings.graphql',
-                    'types'      => [
+                    'schema'      => '~graphql-settings.graphql',
+                    'usedTypes'   => [
+                        'Query',
                         'String',
                         'Boolean',
                         'SchemaType',
@@ -199,8 +223,16 @@ class PrinterTest extends TestCase {
                         'SchemaTypeUnused',
                         'SchemaEnumUnused',
                         'SchemaScalarUnused',
+                        'CodeInterface',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaUnionUnused',
                     ],
-                    'directives' => [
+                    'unusedTypes' => [
+                        // empty
+                    ],
+                    'directives'  => [
                         '@deprecated',
                     ],
                 ],
@@ -209,8 +241,9 @@ class PrinterTest extends TestCase {
             ],
             TestSettings::class                                => [
                 [
-                    'schema'     => '~test-settings.graphql',
-                    'types'      => [
+                    'schema'      => '~test-settings.graphql',
+                    'usedTypes'   => [
+                        'Query',
                         'String',
                         'Boolean',
                         'SchemaType',
@@ -225,7 +258,17 @@ class PrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                     ],
-                    'directives' => [
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',
@@ -238,8 +281,9 @@ class PrinterTest extends TestCase {
             ],
             TestSettings::class.' (no directives definitions)' => [
                 [
-                    'schema'     => '~test-settings-no-directives-definitions.graphql',
-                    'types'      => [
+                    'schema'      => '~test-settings-no-directives-definitions.graphql',
+                    'usedTypes'   => [
+                        'Query',
                         'String',
                         'Boolean',
                         'SchemaType',
@@ -254,7 +298,17 @@ class PrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                     ],
-                    'directives' => [
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',
@@ -268,8 +322,9 @@ class PrinterTest extends TestCase {
             ],
             TestSettings::class.' (directives in description)' => [
                 [
-                    'schema'     => '~test-settings-directives-in-description.graphql',
-                    'types'      => [
+                    'schema'      => '~test-settings-directives-in-description.graphql',
+                    'usedTypes'   => [
+                        'Query',
                         'String',
                         'Boolean',
                         'SchemaType',
@@ -284,7 +339,17 @@ class PrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                     ],
-                    'directives' => [
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
                         // empty
                     ],
                 ],
@@ -296,8 +361,9 @@ class PrinterTest extends TestCase {
             ],
             TestSettings::class.' (no normalization)'          => [
                 [
-                    'schema'     => '~test-settings-no-normalization.graphql',
-                    'types'      => [
+                    'schema'      => '~test-settings-no-normalization.graphql',
+                    'usedTypes'   => [
+                        'Query',
                         'String',
                         'Boolean',
                         'SchemaType',
@@ -312,7 +378,17 @@ class PrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                     ],
-                    'directives' => [
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',

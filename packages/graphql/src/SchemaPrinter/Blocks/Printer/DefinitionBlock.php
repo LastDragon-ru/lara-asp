@@ -33,7 +33,7 @@ class DefinitionBlock extends Block implements Named {
     public function __construct(
         PrinterSettings $settings,
         int $level,
-        Schema|Type|Directive $definition,
+        private Schema|Type|Directive $definition,
     ) {
         parent::__construct($settings, $level);
 
@@ -51,12 +51,31 @@ class DefinitionBlock extends Block implements Named {
         return $name;
     }
 
+    protected function getDefinition(): Type|Schema|Directive {
+        return $this->definition;
+    }
+
     protected function getBlock(): Block {
         return $this->block;
     }
 
     protected function content(): string {
-        return (string) $this->addUsed($this->getBlock());
+        // Convert
+        $block = $this->addUsed($this->getBlock());
+
+        // Statistics
+        $definition = $this->getDefinition();
+
+        if ($definition instanceof Type) {
+            $this->addUsedType($definition->name);
+        } elseif ($definition instanceof Directive) {
+            $this->addUsedDirective("@{$definition->name}");
+        } else {
+            // empty
+        }
+
+        // Return
+        return (string) $block;
     }
 
     protected function getDefinitionBlock(Schema|Type|Directive $definition): Block {

@@ -57,6 +57,7 @@ class Printer {
         //      https://github.com/webonyx/graphql-php/issues/1027
 
         // Print
+        $schema    = clone $schema;
         $resolver  = new DirectiveResolver($this->locator, $this->converter, $schema->getDirectives());
         $settings  = new PrinterSettings($resolver, $this->getSettings());
         $block     = $this->getSchemaDefinition($settings, $schema);
@@ -73,7 +74,7 @@ class Printer {
         }
 
         // Return
-        return new PrintedSchema($content);
+        return new PrintedSchema($schema, $content);
     }
 
     protected function getSchemaDefinition(PrinterSettings $settings, Schema $schema): Block {
