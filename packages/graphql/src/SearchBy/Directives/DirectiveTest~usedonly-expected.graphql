@@ -1,56 +1,127 @@
-input Properties {
-  value: String!
-}
-
-type Query {
-  test(where: SearchByConditionProperties): ID!
-}
-
 """
 Available conditions for input Properties (only one property allowed at a time).
 """
 input SearchByConditionProperties {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionProperties!]
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionProperties!]
 
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionProperties!]
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionProperties!]
 
-  """Not."""
-  not: SearchByConditionProperties
+    """
+    Not.
+    """
+    not: SearchByConditionProperties
 
-  """Property condition."""
-  value: SearchByScalarString
+    """
+    Property condition.
+    """
+    value: SearchByScalarString
 }
 
 """
 Available operators for scalar String! (only one operator allowed at a time).
 """
 input SearchByScalarString {
-  """Equal (`=`)."""
-  equal: String
+    """
+    Contains.
+    """
+    contains: String
 
-  """Not Equal (`!=`)."""
-  notEqual: String
+    """
+    Ends with a string.
+    """
+    endsWith: String
 
-  """Like."""
-  like: String
+    """
+    Equal (`=`).
+    """
+    equal: String
 
-  """Not like."""
-  notLike: String
+    """
+    Within a set of values.
+    """
+    in: [String!]
 
-  """Within a set of values."""
-  in: [String!]
+    """
+    Like.
+    """
+    like: String
 
-  """Outside a set of values."""
-  notIn: [String!]
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: String
 
-  """Contains."""
-  contains: String
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
 
-  """Starts with a string."""
-  startsWith: String
+    """
+    Not like.
+    """
+    notLike: String
 
-  """Ends with a string."""
-  endsWith: String
+    """
+    Starts with a string.
+    """
+    startsWith: String
 }
+
+type Query {
+    test(
+        where: SearchByConditionProperties
+        @searchBy(
+            operators: [
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AllOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AnyOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\Not"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Equal"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Like"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotLike"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\In"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotIn"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Contains"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\StartsWith"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\EndsWith"
+            ]
+        )
+    ): ID!
+    @all
+}
+
+"""
+Fetch all Eloquent models and return the collection as the result.
+"""
+directive @all(
+    """
+    Point to a function that provides a Query Builder instance.
+    This replaces the use of a model.
+    """
+    builder: String
+
+    """
+    Specify the class name of the model to use.
+    This is only needed when the default model detection does not work.
+    """
+    model: String
+
+    """
+    Apply scopes to the underlying query.
+    """
+    scopes: [String!]
+)
+on
+    | FIELD_DEFINITION
+
+"""
+Convert Input into Search Conditions.
+"""
+directive @searchBy on
+    | ARGUMENT_DEFINITION

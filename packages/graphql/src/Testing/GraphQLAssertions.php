@@ -3,8 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Schema;
-use GraphQL\Utils\SchemaPrinter;
 use Illuminate\Contracts\Config\Repository;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider;
@@ -91,11 +92,15 @@ trait GraphQLAssertions {
             $schema = $this->getGraphQLSchema($schema);
         }
 
-        return SchemaPrinter::doPrint($schema);
+        return (string) $this->getGraphQLSchemaPrinter()->print($schema);
     }
 
     protected function printDefaultGraphQLSchema(): string {
         return $this->printGraphQLSchema($this->getDefaultGraphQLSchema());
+    }
+
+    protected function getGraphQLSchemaPrinter(): Printer {
+        return $this->app->make(Printer::class)->setSettings(new TestSettings());
     }
     // </editor-fold>
 }

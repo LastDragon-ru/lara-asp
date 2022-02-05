@@ -9,6 +9,10 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer as PrinterContract;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings as SettingsContract;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Printer;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Repository as MetadataRepository;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Usage;
@@ -37,6 +41,7 @@ class Provider extends ServiceProvider {
         parent::register();
 
         $this->registerEnums();
+        $this->registerSchemaPrinter();
         $this->registerSearchByDirective();
     }
 
@@ -85,6 +90,11 @@ class Provider extends ServiceProvider {
                 }
             },
         );
+    }
+
+    protected function registerSchemaPrinter(): void {
+        $this->app->bind(SettingsContract::class, DefaultSettings::class);
+        $this->app->bind(PrinterContract::class, Printer::class);
     }
 
     protected function getName(): string {

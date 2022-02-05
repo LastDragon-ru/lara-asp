@@ -1,63 +1,157 @@
-type Nested {
-  value: String
-  nested: Nested
-}
-
-type Query {
-  test(order: [SortByClauseTest!]): Test!
-  testList(order: [SortByClauseTest!]): [Test!]!
-}
-
-"""Sort clause for type Nested (only one property allowed at a time)."""
-input SortByClauseNested {
-  """Property clause."""
-  value: SortByDirection
-
-  """Property clause."""
-  nested: SortByClauseNested
-}
-
-"""Sort clause for type Test (only one property allowed at a time)."""
-input SortByClauseTest {
-  """Property clause."""
-  scalar: SortByDirection
-
-  """Property clause."""
-  scalarNotNull: SortByDirection
-
-  """Property clause."""
-  nested: SortByClauseNested
-
-  """Property clause."""
-  nestedNotNull: SortByClauseNested
-
-  """Property clause."""
-  enum: SortByDirection
-
-  """Property clause."""
-  enumNotNull: SortByDirection
-}
-
-"""Sort direction."""
+"""
+Sort direction.
+"""
 enum SortByDirection {
-  asc
-  desc
-}
-
-type Test {
-  scalar: ID
-  scalarNotNull: ID!
-  nested: Nested
-  nestedNotNull: Nested!
-  enum: Value
-  enumNotNull: Value!
-  list: [ID!]
-  listNotNull: [ID!]!
-  resolver: String
-  unsortable: ID!
+    asc
+    desc
 }
 
 enum Value {
-  one
-  two
+    one
+    two
 }
+
+"""
+Sort clause for type Nested (only one property allowed at a time).
+"""
+input SortByClauseNested {
+    """
+    Property clause.
+    """
+    nested: SortByClauseNested
+
+    """
+    Property clause.
+    """
+    value: SortByDirection
+}
+
+"""
+Sort clause for type Test (only one property allowed at a time).
+"""
+input SortByClauseTest {
+    """
+    Property clause.
+    """
+    enum: SortByDirection
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByDirection
+
+    """
+    Property clause.
+    """
+    nested: SortByClauseNested
+
+    """
+    Property clause.
+    """
+    nestedNotNull: SortByClauseNested
+
+    """
+    Property clause.
+    """
+    scalar: SortByDirection
+
+    """
+    Property clause.
+    """
+    scalarNotNull: SortByDirection
+}
+
+type Nested {
+    nested: Nested
+    value: String
+}
+
+type Query {
+    test(
+        order: [SortByClauseTest!]
+        @sortBy
+    ): Test!
+    @all
+
+    testList(
+        order: [SortByClauseTest!]
+        @sortBy
+    ): [Test!]!
+    @all
+}
+
+type Test {
+    enum: Value
+    enumNotNull: Value!
+    list: [ID!]
+    listNotNull: [ID!]!
+    nested: Nested
+    nestedNotNull: Nested!
+
+    resolver: String
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\NullResolver"
+    )
+
+    scalar: ID
+    scalarNotNull: ID!
+
+    unsortable: ID!
+    @sortByUnsortable
+}
+
+"""
+Fetch all Eloquent models and return the collection as the result.
+"""
+directive @all(
+    """
+    Point to a function that provides a Query Builder instance.
+    This replaces the use of a model.
+    """
+    builder: String
+
+    """
+    Specify the class name of the model to use.
+    This is only needed when the default model detection does not work.
+    """
+    model: String
+
+    """
+    Apply scopes to the underlying query.
+    """
+    scopes: [String!]
+)
+on
+    | FIELD_DEFINITION
+
+"""
+Assign a resolver function to a field.
+"""
+directive @field(
+    """
+    Supply additional data to the resolver.
+    """
+    args: [String!]
+
+    """
+    A reference to the resolver function to be used.
+    Consists of two parts: a class name and a method name, seperated by an `@` symbol.
+    If you pass only a class name, the method name defaults to `__invoke`.
+    """
+    resolver: String!
+)
+on
+    | FIELD_DEFINITION
+
+"""
+Convert Input into Sort Clause.
+"""
+directive @sortBy on
+    | ARGUMENT_DEFINITION
+
+"""
+Marks that field should be excluded from sort.
+"""
+directive @sortByUnsortable on
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION

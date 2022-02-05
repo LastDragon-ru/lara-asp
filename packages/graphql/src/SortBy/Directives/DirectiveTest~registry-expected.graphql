@@ -1,64 +1,122 @@
-input A {
-  name: String
-  flag: Boolean!
+"""
+Sort direction.
+"""
+enum SortByDirection {
+    asc
+    desc
 }
 
-input B {
-  name: String
-  child: A
+"""
+Sort clause for input A (only one property allowed at a time).
+"""
+input SortByClauseA {
+    """
+    Property clause.
+    """
+    flag: SortByDirection
+
+    """
+    Property clause.
+    """
+    name: SortByDirection
+}
+
+"""
+Sort clause for input B (only one property allowed at a time).
+"""
+input SortByClauseB {
+    """
+    Property clause.
+    """
+    child: SortByClauseA
+
+    """
+    Property clause.
+    """
+    name: SortByDirection
+}
+
+"""
+Sort clause for type C (only one property allowed at a time).
+"""
+input SortByClauseC {
+    """
+    Property clause.
+    """
+    flag: SortByDirection
+
+    """
+    Property clause.
+    """
+    name: SortByDirection
+}
+
+"""
+Sort clause for type D (only one property allowed at a time).
+"""
+input SortByClauseD {
+    """
+    Property clause.
+    """
+    child: SortByClauseC
 }
 
 type C {
-  name: String
-  flag: Boolean!
-  list: [Boolean!]!
+    flag: Boolean!
+    list: [Boolean!]!
+    name: String
 }
 
 type D {
-  child: C!
+    child: C!
 }
 
 type Query {
-  a(order: [SortByClauseA!]): ID!
-  b(order: [SortByClauseB!]): ID!
-  c(order: [SortByClauseD!]): D!
+    a(
+        order: [SortByClauseA!]
+        @sortBy
+    ): ID!
+    @all
+
+    b(
+        order: [SortByClauseB!]
+        @sortBy
+    ): ID!
+    @all
+
+    c(
+        order: [SortByClauseD!]
+        @sortBy
+    ): D!
+    @all
 }
 
-"""Sort clause for input A (only one property allowed at a time)."""
-input SortByClauseA {
-  """Property clause."""
-  name: SortByDirection
+"""
+Fetch all Eloquent models and return the collection as the result.
+"""
+directive @all(
+    """
+    Point to a function that provides a Query Builder instance.
+    This replaces the use of a model.
+    """
+    builder: String
 
-  """Property clause."""
-  flag: SortByDirection
-}
+    """
+    Specify the class name of the model to use.
+    This is only needed when the default model detection does not work.
+    """
+    model: String
 
-"""Sort clause for input B (only one property allowed at a time)."""
-input SortByClauseB {
-  """Property clause."""
-  name: SortByDirection
+    """
+    Apply scopes to the underlying query.
+    """
+    scopes: [String!]
+)
+on
+    | FIELD_DEFINITION
 
-  """Property clause."""
-  child: SortByClauseA
-}
-
-"""Sort clause for type C (only one property allowed at a time)."""
-input SortByClauseC {
-  """Property clause."""
-  name: SortByDirection
-
-  """Property clause."""
-  flag: SortByDirection
-}
-
-"""Sort clause for type D (only one property allowed at a time)."""
-input SortByClauseD {
-  """Property clause."""
-  child: SortByClauseC
-}
-
-"""Sort direction."""
-enum SortByDirection {
-  asc
-  desc
-}
+"""
+Convert Input into Sort Clause.
+"""
+directive @sortBy on
+    | ARGUMENT_DEFINITION

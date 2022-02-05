@@ -1,61 +1,95 @@
-input Nested {
-  value: String
-  nested: Nested
+"""
+Sort direction.
+"""
+enum SortByDirection {
+    asc
+    desc
 }
 
-input Properties {
-  idScalar: ID
-  idScalarNotNull: ID!
-  nested: Nested
-  nestedNotNull: Nested!
-  enum: Value
-  enumNotNull: Value!
-  unsortable: ID!
-}
-
-type Query {
-  test(order: [SortByClauseProperties!]): ID!
-}
-
-"""Sort clause for input Nested (only one property allowed at a time)."""
+"""
+Sort clause for input Nested (only one property allowed at a time).
+"""
 input SortByClauseNested {
-  """Property clause."""
-  value: SortByDirection
+    """
+    Property clause.
+    """
+    nested: SortByClauseNested
 
-  """Property clause."""
-  nested: SortByClauseNested
+    """
+    Property clause.
+    """
+    value: SortByDirection
 }
 
 """
 Sort clause for input Properties (only one property allowed at a time).
 """
 input SortByClauseProperties {
-  """Property clause."""
-  idScalar: SortByDirection
+    """
+    Property clause.
+    """
+    enum: SortByDirection
 
-  """Property clause."""
-  idScalarNotNull: SortByDirection
+    """
+    Property clause.
+    """
+    enumNotNull: SortByDirection
 
-  """Property clause."""
-  nested: SortByClauseNested
+    """
+    Property clause.
+    """
+    idScalar: SortByDirection
 
-  """Property clause."""
-  nestedNotNull: SortByClauseNested
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByDirection
 
-  """Property clause."""
-  enum: SortByDirection
+    """
+    Property clause.
+    """
+    nested: SortByClauseNested
 
-  """Property clause."""
-  enumNotNull: SortByDirection
+    """
+    Property clause.
+    """
+    nestedNotNull: SortByClauseNested
 }
 
-"""Sort direction."""
-enum SortByDirection {
-  asc
-  desc
+type Query {
+    test(
+        order: [SortByClauseProperties!]
+        @sortBy
+    ): ID!
+    @all
 }
 
-enum Value {
-  one
-  two
-}
+"""
+Fetch all Eloquent models and return the collection as the result.
+"""
+directive @all(
+    """
+    Point to a function that provides a Query Builder instance.
+    This replaces the use of a model.
+    """
+    builder: String
+
+    """
+    Specify the class name of the model to use.
+    This is only needed when the default model detection does not work.
+    """
+    model: String
+
+    """
+    Apply scopes to the underlying query.
+    """
+    scopes: [String!]
+)
+on
+    | FIELD_DEFINITION
+
+"""
+Convert Input into Sort Clause.
+"""
+directive @sortBy on
+    | ARGUMENT_DEFINITION

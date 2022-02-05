@@ -1,47 +1,10 @@
 enum EnumA {
-  one
-  two
+    one
+    two
 }
 
-input InputA {
-  idScalar: ID
-  idScalarNotNull: ID!
-  intScalar: Int
-  inScalarNotNull: Int!
-  floatScalar: Float
-  floatScalarNotNull: Float!
-  stringScalar: String
-  stringScalarNotNull: String!
-  booleanScalar: Boolean
-  booleanScalarNotNull: Boolean!
-  nested: NestedA
-  nestedNotNull: NestedA!
-  enum: EnumA
-  enumNotNull: EnumA!
-}
-
-input InputB {
-  id: ID
-}
-
-input NestedA {
-  value: String
-  nested: NestedA
-}
-
-input NestedB {
-  nested: NestedC
-}
-
-input NestedC {
-  nested: NestedB
-}
-
-type Query {
-  a(where: SearchByConditionInputA): ID!
-  b(where: SearchByConditionNestedA): ID!
-  c(where: SearchByConditionInputB): ID!
-  d(where: SearchByConditionNestedB): ID!
+enum SearchByTypeFlag {
+    yes
 }
 
 """
@@ -52,24 +15,30 @@ See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNestedA {
-  """Additional conditions."""
-  where: SearchByConditionNestedA
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
 
-  """Count conditions."""
-  count: SearchByScalarInt
+    """
+    Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+    """
+    exists: Boolean
 
-  """
-  Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
-  """
-  exists: Boolean
+    """
+    Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
 
-  """
-  Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
-  """
-  notExists: Boolean! = false
+    """
+    Complex operator marker.
+    """
+    relation: SearchByTypeFlag! = yes
 
-  """Complex operator marker."""
-  relation: SearchByTypeFlag! = yes
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionNestedA
 }
 
 """
@@ -80,24 +49,30 @@ See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNestedB {
-  """Additional conditions."""
-  where: SearchByConditionNestedB
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
 
-  """Count conditions."""
-  count: SearchByScalarInt
+    """
+    Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+    """
+    exists: Boolean
 
-  """
-  Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
-  """
-  exists: Boolean
+    """
+    Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
 
-  """
-  Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
-  """
-  notExists: Boolean! = false
+    """
+    Complex operator marker.
+    """
+    relation: SearchByTypeFlag! = yes
 
-  """Complex operator marker."""
-  relation: SearchByTypeFlag! = yes
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionNestedB
 }
 
 """
@@ -108,487 +83,866 @@ See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNestedC {
-  """Additional conditions."""
-  where: SearchByConditionNestedC
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
 
-  """Count conditions."""
-  count: SearchByScalarInt
+    """
+    Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+    """
+    exists: Boolean
 
-  """
-  Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
-  """
-  exists: Boolean
+    """
+    Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
 
-  """
-  Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
-  """
-  notExists: Boolean! = false
+    """
+    Complex operator marker.
+    """
+    relation: SearchByTypeFlag! = yes
 
-  """Complex operator marker."""
-  relation: SearchByTypeFlag! = yes
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionNestedC
 }
 
 """
 Available conditions for input InputA (only one property allowed at a time).
 """
 input SearchByConditionInputA {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionInputA!]
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionInputA!]
 
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionInputA!]
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionInputA!]
 
-  """Not."""
-  not: SearchByConditionInputA
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScalarBooleanOrNull
 
-  """Property condition."""
-  idScalar: SearchByScalarIDOrNull
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScalarBoolean
 
-  """Property condition."""
-  idScalarNotNull: SearchByScalarID
+    """
+    Property condition.
+    """
+    enum: SearchByEnumEnumAOrNull
 
-  """Property condition."""
-  intScalar: SearchByScalarIntOrNull
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByEnumEnumA
 
-  """Property condition."""
-  inScalarNotNull: SearchByScalarInt
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScalarFloatOrNull
 
-  """Property condition."""
-  floatScalar: SearchByScalarFloatOrNull
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScalarFloat
 
-  """Property condition."""
-  floatScalarNotNull: SearchByScalarFloat
+    """
+    Property condition.
+    """
+    idScalar: SearchByScalarIDOrNull
 
-  """Property condition."""
-  stringScalar: SearchByScalarStringOrNull
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScalarID
 
-  """Property condition."""
-  stringScalarNotNull: SearchByScalarString
+    """
+    Property condition.
+    """
+    inScalarNotNull: SearchByScalarInt
 
-  """Property condition."""
-  booleanScalar: SearchByScalarBooleanOrNull
+    """
+    Property condition.
+    """
+    intScalar: SearchByScalarIntOrNull
 
-  """Property condition."""
-  booleanScalarNotNull: SearchByScalarBoolean
+    """
+    Property condition.
+    """
+    nested: SearchByComplexRelationNestedA
 
-  """Property condition."""
-  nested: SearchByComplexRelationNestedA
+    """
+    Property condition.
+    """
+    nestedNotNull: SearchByComplexRelationNestedA
 
-  """Property condition."""
-  nestedNotNull: SearchByComplexRelationNestedA
+    """
+    Not.
+    """
+    not: SearchByConditionInputA
 
-  """Property condition."""
-  enum: SearchByEnumEnumAOrNull
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScalarStringOrNull
 
-  """Property condition."""
-  enumNotNull: SearchByEnumEnumA
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScalarString
 }
 
 """
 Available conditions for input InputB (only one property allowed at a time).
 """
 input SearchByConditionInputB {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionInputB!]
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionInputB!]
 
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionInputB!]
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionInputB!]
 
-  """Not."""
-  not: SearchByConditionInputB
+    """
+    Property condition.
+    """
+    id: SearchByScalarIDOrNull
 
-  """Property condition."""
-  id: SearchByScalarIDOrNull
+    """
+    Not.
+    """
+    not: SearchByConditionInputB
 }
 
 """
 Available conditions for input NestedA (only one property allowed at a time).
 """
 input SearchByConditionNestedA {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionNestedA!]
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionNestedA!]
 
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionNestedA!]
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionNestedA!]
 
-  """Not."""
-  not: SearchByConditionNestedA
+    """
+    Property condition.
+    """
+    nested: SearchByComplexRelationNestedA
 
-  """Property condition."""
-  value: SearchByScalarStringOrNull
+    """
+    Not.
+    """
+    not: SearchByConditionNestedA
 
-  """Property condition."""
-  nested: SearchByComplexRelationNestedA
+    """
+    Property condition.
+    """
+    value: SearchByScalarStringOrNull
 }
 
 """
 Available conditions for input NestedB (only one property allowed at a time).
 """
 input SearchByConditionNestedB {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionNestedB!]
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionNestedB!]
 
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionNestedB!]
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionNestedB!]
 
-  """Not."""
-  not: SearchByConditionNestedB
+    """
+    Property condition.
+    """
+    nested: SearchByComplexRelationNestedC
 
-  """Property condition."""
-  nested: SearchByComplexRelationNestedC
+    """
+    Not.
+    """
+    not: SearchByConditionNestedB
 }
 
 """
 Available conditions for input NestedC (only one property allowed at a time).
 """
 input SearchByConditionNestedC {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionNestedC!]
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionNestedC!]
 
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionNestedC!]
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionNestedC!]
 
-  """Not."""
-  not: SearchByConditionNestedC
+    """
+    Property condition.
+    """
+    nested: SearchByComplexRelationNestedB
 
-  """Property condition."""
-  nested: SearchByComplexRelationNestedB
+    """
+    Not.
+    """
+    not: SearchByConditionNestedC
 }
 
 """
 Available operators for enum EnumA (only one operator allowed at a time).
 """
 input SearchByEnumEnumA {
-  """Equal (`=`)."""
-  equal: EnumA
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
 
-  """Not Equal (`!=`)."""
-  notEqual: EnumA
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
 
-  """Within a set of values."""
-  in: [EnumA!]
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: EnumA
 
-  """Outside a set of values."""
-  notIn: [EnumA!]
+    """
+    Outside a set of values.
+    """
+    notIn: [EnumA!]
 }
 
 """
 Available operators for enum EnumA (only one operator allowed at a time).
 """
 input SearchByEnumEnumAOrNull {
-  """Equal (`=`)."""
-  equal: EnumA
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
 
-  """Not Equal (`!=`)."""
-  notEqual: EnumA
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
 
-  """Within a set of values."""
-  in: [EnumA!]
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
 
-  """Outside a set of values."""
-  notIn: [EnumA!]
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
 
-  """Is NULL?"""
-  isNull: SearchByTypeFlag
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: EnumA
 
-  """Is NOT NULL?"""
-  isNotNull: SearchByTypeFlag
+    """
+    Outside a set of values.
+    """
+    notIn: [EnumA!]
 }
 
 """
 Available operators for scalar Boolean! (only one operator allowed at a time).
 """
 input SearchByScalarBoolean {
-  """Equal (`=`)."""
-  equal: Boolean
+    """
+    Equal (`=`).
+    """
+    equal: Boolean
 }
 
 """
 Available operators for scalar Boolean (only one operator allowed at a time).
 """
 input SearchByScalarBooleanOrNull {
-  """Equal (`=`)."""
-  equal: Boolean
+    """
+    Equal (`=`).
+    """
+    equal: Boolean
 
-  """Is NULL?"""
-  isNull: SearchByTypeFlag
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
 
-  """Is NOT NULL?"""
-  isNotNull: SearchByTypeFlag
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
 }
 
 """
 Available operators for scalar Float! (only one operator allowed at a time).
 """
 input SearchByScalarFloat {
-  """Equal (`=`)."""
-  equal: Float
+    """
+    Within a range.
+    """
+    between: SearchByTypeRangeFloat
 
-  """Not Equal (`!=`)."""
-  notEqual: Float
+    """
+    Equal (`=`).
+    """
+    equal: Float
 
-  """Less than (`<`)."""
-  lessThan: Float
+    """
+    Greater than (`>`).
+    """
+    greaterThan: Float
 
-  """Less than or equal to (`<=`)."""
-  lessThanOrEqual: Float
+    """
+    Greater than or equal to (`>=`).
+    """
+    greaterThanOrEqual: Float
 
-  """Greater than (`>`)."""
-  greaterThan: Float
+    """
+    Within a set of values.
+    """
+    in: [Float!]
 
-  """Greater than or equal to (`>=`)."""
-  greaterThanOrEqual: Float
+    """
+    Less than (`<`).
+    """
+    lessThan: Float
 
-  """Within a set of values."""
-  in: [Float!]
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: Float
 
-  """Outside a set of values."""
-  notIn: [Float!]
+    """
+    Outside a range.
+    """
+    notBetween: SearchByTypeRangeFloat
 
-  """Within a range."""
-  between: SearchByTypeRangeFloat
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Float
 
-  """Outside a range."""
-  notBetween: SearchByTypeRangeFloat
+    """
+    Outside a set of values.
+    """
+    notIn: [Float!]
 }
 
 """
 Available operators for scalar Float (only one operator allowed at a time).
 """
 input SearchByScalarFloatOrNull {
-  """Equal (`=`)."""
-  equal: Float
+    """
+    Within a range.
+    """
+    between: SearchByTypeRangeFloat
 
-  """Not Equal (`!=`)."""
-  notEqual: Float
+    """
+    Equal (`=`).
+    """
+    equal: Float
 
-  """Less than (`<`)."""
-  lessThan: Float
+    """
+    Greater than (`>`).
+    """
+    greaterThan: Float
 
-  """Less than or equal to (`<=`)."""
-  lessThanOrEqual: Float
+    """
+    Greater than or equal to (`>=`).
+    """
+    greaterThanOrEqual: Float
 
-  """Greater than (`>`)."""
-  greaterThan: Float
+    """
+    Within a set of values.
+    """
+    in: [Float!]
 
-  """Greater than or equal to (`>=`)."""
-  greaterThanOrEqual: Float
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
 
-  """Within a set of values."""
-  in: [Float!]
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
 
-  """Outside a set of values."""
-  notIn: [Float!]
+    """
+    Less than (`<`).
+    """
+    lessThan: Float
 
-  """Within a range."""
-  between: SearchByTypeRangeFloat
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: Float
 
-  """Outside a range."""
-  notBetween: SearchByTypeRangeFloat
+    """
+    Outside a range.
+    """
+    notBetween: SearchByTypeRangeFloat
 
-  """Is NULL?"""
-  isNull: SearchByTypeFlag
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Float
 
-  """Is NOT NULL?"""
-  isNotNull: SearchByTypeFlag
+    """
+    Outside a set of values.
+    """
+    notIn: [Float!]
 }
 
 """
 Available operators for scalar ID! (only one operator allowed at a time).
 """
 input SearchByScalarID {
-  """Equal (`=`)."""
-  equal: ID
+    """
+    Equal (`=`).
+    """
+    equal: ID
 
-  """Not Equal (`!=`)."""
-  notEqual: ID
+    """
+    Within a set of values.
+    """
+    in: [ID!]
 
-  """Within a set of values."""
-  in: [ID!]
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ID
 
-  """Outside a set of values."""
-  notIn: [ID!]
+    """
+    Outside a set of values.
+    """
+    notIn: [ID!]
 }
 
 """
 Available operators for scalar ID (only one operator allowed at a time).
 """
 input SearchByScalarIDOrNull {
-  """Equal (`=`)."""
-  equal: ID
+    """
+    Equal (`=`).
+    """
+    equal: ID
 
-  """Not Equal (`!=`)."""
-  notEqual: ID
+    """
+    Within a set of values.
+    """
+    in: [ID!]
 
-  """Within a set of values."""
-  in: [ID!]
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
 
-  """Outside a set of values."""
-  notIn: [ID!]
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
 
-  """Is NULL?"""
-  isNull: SearchByTypeFlag
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ID
 
-  """Is NOT NULL?"""
-  isNotNull: SearchByTypeFlag
+    """
+    Outside a set of values.
+    """
+    notIn: [ID!]
 }
 
 """
 Available operators for scalar Int! (only one operator allowed at a time).
 """
 input SearchByScalarInt {
-  """Equal (`=`)."""
-  equal: Int
+    """
+    Within a range.
+    """
+    between: SearchByTypeRangeInt
 
-  """Not Equal (`!=`)."""
-  notEqual: Int
+    """
+    Equal (`=`).
+    """
+    equal: Int
 
-  """Less than (`<`)."""
-  lessThan: Int
+    """
+    Greater than (`>`).
+    """
+    greaterThan: Int
 
-  """Less than or equal to (`<=`)."""
-  lessThanOrEqual: Int
+    """
+    Greater than or equal to (`>=`).
+    """
+    greaterThanOrEqual: Int
 
-  """Greater than (`>`)."""
-  greaterThan: Int
+    """
+    Within a set of values.
+    """
+    in: [Int!]
 
-  """Greater than or equal to (`>=`)."""
-  greaterThanOrEqual: Int
+    """
+    Less than (`<`).
+    """
+    lessThan: Int
 
-  """Within a set of values."""
-  in: [Int!]
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: Int
 
-  """Outside a set of values."""
-  notIn: [Int!]
+    """
+    Outside a range.
+    """
+    notBetween: SearchByTypeRangeInt
 
-  """Within a range."""
-  between: SearchByTypeRangeInt
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Int
 
-  """Outside a range."""
-  notBetween: SearchByTypeRangeInt
+    """
+    Outside a set of values.
+    """
+    notIn: [Int!]
 }
 
 """
 Available operators for scalar Int (only one operator allowed at a time).
 """
 input SearchByScalarIntOrNull {
-  """Equal (`=`)."""
-  equal: Int
+    """
+    Within a range.
+    """
+    between: SearchByTypeRangeInt
 
-  """Not Equal (`!=`)."""
-  notEqual: Int
+    """
+    Equal (`=`).
+    """
+    equal: Int
 
-  """Less than (`<`)."""
-  lessThan: Int
+    """
+    Greater than (`>`).
+    """
+    greaterThan: Int
 
-  """Less than or equal to (`<=`)."""
-  lessThanOrEqual: Int
+    """
+    Greater than or equal to (`>=`).
+    """
+    greaterThanOrEqual: Int
 
-  """Greater than (`>`)."""
-  greaterThan: Int
+    """
+    Within a set of values.
+    """
+    in: [Int!]
 
-  """Greater than or equal to (`>=`)."""
-  greaterThanOrEqual: Int
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
 
-  """Within a set of values."""
-  in: [Int!]
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
 
-  """Outside a set of values."""
-  notIn: [Int!]
+    """
+    Less than (`<`).
+    """
+    lessThan: Int
 
-  """Within a range."""
-  between: SearchByTypeRangeInt
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: Int
 
-  """Outside a range."""
-  notBetween: SearchByTypeRangeInt
+    """
+    Outside a range.
+    """
+    notBetween: SearchByTypeRangeInt
 
-  """Is NULL?"""
-  isNull: SearchByTypeFlag
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Int
 
-  """Is NOT NULL?"""
-  isNotNull: SearchByTypeFlag
+    """
+    Outside a set of values.
+    """
+    notIn: [Int!]
 }
 
 """
 Available operators for scalar String! (only one operator allowed at a time).
 """
 input SearchByScalarString {
-  """Equal (`=`)."""
-  equal: String
+    """
+    Contains.
+    """
+    contains: String
 
-  """Not Equal (`!=`)."""
-  notEqual: String
+    """
+    Ends with a string.
+    """
+    endsWith: String
 
-  """Like."""
-  like: String
+    """
+    Equal (`=`).
+    """
+    equal: String
 
-  """Not like."""
-  notLike: String
+    """
+    Within a set of values.
+    """
+    in: [String!]
 
-  """Within a set of values."""
-  in: [String!]
+    """
+    Like.
+    """
+    like: String
 
-  """Outside a set of values."""
-  notIn: [String!]
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: String
 
-  """Contains."""
-  contains: String
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
 
-  """Starts with a string."""
-  startsWith: String
+    """
+    Not like.
+    """
+    notLike: String
 
-  """Ends with a string."""
-  endsWith: String
+    """
+    Starts with a string.
+    """
+    startsWith: String
 }
 
 """
 Available operators for scalar String (only one operator allowed at a time).
 """
 input SearchByScalarStringOrNull {
-  """Equal (`=`)."""
-  equal: String
+    """
+    Contains.
+    """
+    contains: String
 
-  """Not Equal (`!=`)."""
-  notEqual: String
+    """
+    Ends with a string.
+    """
+    endsWith: String
 
-  """Like."""
-  like: String
+    """
+    Equal (`=`).
+    """
+    equal: String
 
-  """Not like."""
-  notLike: String
+    """
+    Within a set of values.
+    """
+    in: [String!]
 
-  """Within a set of values."""
-  in: [String!]
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
 
-  """Outside a set of values."""
-  notIn: [String!]
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
 
-  """Contains."""
-  contains: String
+    """
+    Like.
+    """
+    like: String
 
-  """Starts with a string."""
-  startsWith: String
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: String
 
-  """Ends with a string."""
-  endsWith: String
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
 
-  """Is NULL?"""
-  isNull: SearchByTypeFlag
+    """
+    Not like.
+    """
+    notLike: String
 
-  """Is NOT NULL?"""
-  isNotNull: SearchByTypeFlag
-}
-
-enum SearchByTypeFlag {
-  yes
+    """
+    Starts with a string.
+    """
+    startsWith: String
 }
 
 input SearchByTypeRangeFloat {
-  min: Float!
-  max: Float!
+    max: Float!
+    min: Float!
 }
 
 input SearchByTypeRangeInt {
-  min: Int!
-  max: Int!
+    max: Int!
+    min: Int!
 }
+
+type Query {
+    a(
+        where: SearchByConditionInputA
+        @searchBy(
+            operators: [
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AllOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AnyOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\Not"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Complex\\Relation"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Equal"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\In"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotIn"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\IsNull"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\IsNotNull"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\LessThan"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\LessThanOrEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\GreaterThan"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\GreaterThanOrEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Between"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotBetween"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Like"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotLike"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Contains"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\StartsWith"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\EndsWith"
+            ]
+        )
+    ): ID!
+    @all
+
+    b(
+        where: SearchByConditionNestedA
+        @searchBy(
+            operators: [
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AllOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AnyOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\Not"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Complex\\Relation"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Equal"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Like"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotLike"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\In"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotIn"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Contains"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\StartsWith"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\EndsWith"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\IsNull"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\IsNotNull"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\LessThan"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\LessThanOrEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\GreaterThan"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\GreaterThanOrEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Between"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotBetween"
+            ]
+        )
+    ): ID!
+    @all
+
+    c(
+        where: SearchByConditionInputB
+        @searchBy(
+            operators: [
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AllOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AnyOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\Not"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Equal"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\In"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotIn"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\IsNull"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\IsNotNull"
+            ]
+        )
+    ): ID!
+    @all
+
+    d(
+        where: SearchByConditionNestedB
+        @searchBy(
+            operators: [
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AllOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\AnyOf"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Logical\\Not"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Complex\\Relation"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Equal"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\LessThan"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\LessThanOrEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\GreaterThan"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\GreaterThanOrEqual"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\In"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotIn"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\Between"
+                "LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Operators\\Comparison\\NotBetween"
+            ]
+        )
+    ): ID!
+    @all
+}
+
+"""
+Fetch all Eloquent models and return the collection as the result.
+"""
+directive @all(
+    """
+    Point to a function that provides a Query Builder instance.
+    This replaces the use of a model.
+    """
+    builder: String
+
+    """
+    Specify the class name of the model to use.
+    This is only needed when the default model detection does not work.
+    """
+    model: String
+
+    """
+    Apply scopes to the underlying query.
+    """
+    scopes: [String!]
+)
+on
+    | FIELD_DEFINITION
+
+"""
+Convert Input into Search Conditions.
+"""
+directive @searchBy on
+    | ARGUMENT_DEFINITION
