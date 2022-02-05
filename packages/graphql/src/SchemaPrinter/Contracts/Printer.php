@@ -7,4 +7,8 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\PrintedSchema;
 
 interface Printer {
     public function print(Schema $schema): PrintedSchema;
+
+    public function getSettings(): Settings;
+
+    public function setSettings(?Settings $settings): static;
 }
