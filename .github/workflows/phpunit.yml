@@ -85,9 +85,10 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ needs.settings.outputs.extensions }}
-      - name: Set Laravel version
+      - name: Install Laravel
         run: |
-          echo "$(jq '.require."laravel/framework" = "${{ matrix.laravel }}"' composer.json)" > composer.json
+          composer remove --no-interaction --no-progress --ansi --no-update laravel/framework
+          composer require --no-interaction --no-progress --ansi --no-update "laravel/framework:${{ matrix.laravel }}"
       - name: Install dependencies
         uses: "ramsey/composer-install@v2"
         with:
