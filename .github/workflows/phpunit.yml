@@ -76,8 +76,11 @@ jobs:
             php: ${{ fromJson(needs.settings.outputs.php-versions)[3] }}
 
     steps:
+      # Required to avoid converting LF into CRLF on Windows or some tests will
+      # fail.
       - name: Disable core.autocrlf
         run: git config --global core.autocrlf false
+
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install PHP
@@ -85,14 +88,18 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ needs.settings.outputs.extensions }}
+
+      # On Windows, the caret ^ is the escape character, so the version string
+      # that contains ^ will be handled incorrectly
       - name: Install Laravel
+        shell: bash
         run: |
           composer remove --no-interaction --no-progress --ansi --no-update laravel/framework
           composer require --no-interaction --no-progress --ansi --no-update "laravel/framework:${{ matrix.laravel }}"
+
       - name: Install dependencies
         uses: "ramsey/composer-install@v2"
         with:
-          composer-options: "--no-cache"
           dependency-versions: ${{ matrix.dependencies }}
       - name: Setup problem matchers for PHP
         run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
