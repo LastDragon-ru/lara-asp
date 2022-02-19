@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
-use Composer\Util\Platform;
 use Exception;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
 use OutOfBoundsException;
@@ -17,6 +16,8 @@ use function json_decode;
 use function ltrim;
 use function rawurlencode;
 use function str_replace;
+
+use const PHP_OS_FAMILY;
 
 /**
  * @internal
@@ -53,7 +54,7 @@ class ProtocolTest extends TestCase {
      */
     public function testGetUri(): void {
         $file   = new SplFileInfo(__FILE__);
-        $host   = Platform::isWindows() ? 'windows.path' : 'unix.path';
+        $host   = PHP_OS_FAMILY === 'Windows' ? 'windows.path' : 'unix.path';
         $path   = str_replace('\\', '/', $file->getPathname());
         $path   = implode('/', array_map(static function (string $segment): string {
             return rawurlencode($segment);

@@ -26,7 +26,6 @@
     "ext-dom": "*",
     "ext-xmlreader": "*",
     "ext-mbstring": "*",
-    "composer/composer": "^2.0.0",
     "doctrine/dbal": "^2.12.0|^3.1.4",
     "doctrine/sql-formatter": "^1.1",
     "http-interop/http-factory-guzzle": "^1.0.0",

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
-use Composer\Util\Platform;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\Package;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
@@ -22,6 +21,7 @@ use function rawurlencode;
 use function sprintf;
 use function str_replace;
 
+use const PHP_OS_FAMILY;
 use const PHP_QUERY_RFC3986;
 
 class Protocol {
@@ -40,7 +40,7 @@ class Protocol {
         $host = self::HostUnix;
         $path = $file->getPathname();
 
-        if (Platform::isWindows()) {
+        if (PHP_OS_FAMILY === 'Windows') {
             $host = self::HostWindows;
             $path = str_replace('\\', '/', $path);
         }
