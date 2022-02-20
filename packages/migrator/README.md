@@ -42,8 +42,6 @@ Another useful class is [`RawDataMigration`](./src/Migrations/RawDataMigration.p
 
 The Migrator uses a bit different approach compared to standard and provides a few different types of seeders:
 
-- [`RootSeeder`](./src/Seeders/RootSeeder.php) - similar to `DirectorySeeder`, but also includes paths which was added by packages through `loadSeedsFrom()`;
-- [`DirectorySeeder`](./src/Seeders/DirectorySeeder.php) - loads seeders from specified paths (recursive);
 - [`SmartSeeder`](./src/Seeders/SmartSeeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
 - [`RawSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
 

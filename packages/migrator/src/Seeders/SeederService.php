@@ -58,17 +58,6 @@ class SeederService {
     public function isTableSeeded(string $table): bool {
         return $this->getConnection()->table($table)->count() > 0;
     }
-
-    public function loadSeedsFrom(string $path): void {
-        $this->seedersPaths[] = $path;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getSeedersPaths(): array {
-        return $this->seedersPaths;
-    }
     // </editor-fold>
 
     // <editor-fold desc="Functions">
