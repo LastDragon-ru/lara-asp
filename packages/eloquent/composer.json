@@ -18,13 +18,13 @@
   },
   "require": {
     "php": "^8.0.0",
-    "laravel/framework": "^8.22.1",
+    "laravel/framework": "^8.22.1|^9.0.0",
     "lastdragon-ru/lara-asp-core": "self.version"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
     "lastdragon-ru/lara-asp-testing": "self.version",
-    "orchestra/testbench": "^6.9.0",
+    "orchestra/testbench": "^6.9.0|^7.0.0",
     "phpunit/phpunit": "^9.5.0"
   },
   "suggest": {
