@@ -21,22 +21,26 @@ class RequestTest extends TestCase {
     public function testValidated(): void {
         $router        = $this->app->make(Router::class);
         $translator    = $this->app->make(Translator::class);
-        $resolverRuleA = new ResolverRule($translator, new class($router) extends Resolver {
-            /**
-             * @inheritdoc
-             */
-            protected function resolve(mixed $value, array $parameters): mixed {
-                return ['a' => $value];
+        $resolverRuleA = new ResolverRule(
+            $translator, new class($router) extends Resolver {
+                /**
+                 * @inheritdoc
+                 */
+                protected function resolve(mixed $value, array $parameters): mixed {
+                    return ['a' => $value];
+                }
             }
-        });
-        $resolverRuleB = new ResolverRule($translator, new class($router) extends Resolver {
-            /**
-             * @inheritdoc
-             */
-            protected function resolve(mixed $value, array $parameters): mixed {
-                return ['b' => $value];
+        );
+        $resolverRuleB = new ResolverRule(
+            $translator, new class($router) extends Resolver {
+                /**
+                 * @inheritdoc
+                 */
+                protected function resolve(mixed $value, array $parameters): mixed {
+                    return ['b' => $value];
+                }
             }
-        });
+        );
         $rule          = new class() implements Rule {
             /**
              * @inheritdoc
@@ -118,5 +122,22 @@ class RequestTest extends TestCase {
             'resolver_nullable' => null,
             'resolver_chained'  => ['b' => 2],
         ], $request->validated());
+
+        self::assertEquals(null, $request->validated('rule_nullable'));
+        self::assertEquals(['a' => 1], $request->validated('resolver'));
+        self::assertEquals(['a' => 4], $request->validated('array.1.resolver'));
+        self::assertEquals(
+            [
+                [
+                    'rule'     => true,
+                    'resolver' => ['a' => 3],
+                ],
+                [
+                    'rule'     => true,
+                    'resolver' => ['a' => 4],
+                ],
+            ],
+            $request->validated('array'),
+        );
     }
 }
