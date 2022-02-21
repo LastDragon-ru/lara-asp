@@ -7,7 +7,6 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
-use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use PHPUnit\Framework\Assert;
@@ -33,11 +32,6 @@ trait CronableAssertions {
      * @param class-string<Cronable> $cronable
      */
     protected function assertCronableRegistered(string $cronable, string $message = ''): void {
-        $this->setQueueableConfig($cronable, [
-            CronableConfig::Enabled => true,
-            CronableConfig::Cron    => '* * * * *',
-        ]);
-
         $message  = $message ?: sprintf('The `%s` is not registered as scheduled job.', $cronable);
         $expected = $this->isCronableRegistered($cronable);
 

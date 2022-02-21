@@ -2,12 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
-use Cron\CronExpression;
-use Exception;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Bus\PendingDispatch;
-use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
 use LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
@@ -44,42 +41,54 @@ class CronableRegistrator {
         $job      = $this->application->make($cronable);
         $config   = $this->configurator->config($job);
         $cron     = $config->get(CronableConfig::Cron);
-        $enabled  = $config->get(CronableConfig::Enabled);
         $timezone = $config->get(CronableConfig::Timezone);
 
-        // Enabled?
-        if (!$enabled || $cron === null) {
-            if ($this->isDue($cron)) {
-                $this->jobDisabled($cronable, $job, $config);
-            }
-
+        // Cron?
+        if ($cron === null) {
             return;
         }
 
         // Register
         $this
             ->schedule
-            ->call(static function () use ($job): bool {
-                return (bool) new PendingDispatch($job);
+            ->call(function () use ($cronable, $job, $config): bool {
+                $this->dispatch($cronable, $job, $config);
+
+                return true;
             })
             ->cron($cron)
             ->timezone($timezone)
-            ->description($this->getJobName($cronable, $job, $config))
+            ->description($this->getJobDescription($cronable, $job, $config))
             ->after(function () use ($cronable, $job, $config): void {
                 $this->jobDispatched($cronable, $job, $config);
             });
+    }
+
+    protected function dispatch(string $cronable, Cronable $job, QueueableConfig $config): bool {
+        // Disabled?
+        if (!$config->get(CronableConfig::Enabled)) {
+            $this->jobDisabled($cronable, $job, $config);
+
+            return false;
+        }
+
+        // Dispatch
+        return (bool) new PendingDispatch($job);
     }
 
     protected function getJobName(string $cronable, Cronable $job, QueueableConfig $config): string {
         return method_exists($job, 'displayName') ? $job->displayName() : $cronable;
     }
 
-    protected function isDue(?string $cron): bool {
-        try {
-            return $cron && (new CronExpression($cron))->isDue(Date::now());
-        } catch (Exception) {
-            return false;
+    protected function getJobDescription(string $cronable, Cronable $job, QueueableConfig $config): string {
+        $description = $this->getJobName($cronable, $job, $config);
+        $enabled     = $config->get(CronableConfig::Enabled);
+
+        if (!$enabled) {
+            $description = "{$description} (disabled)";
         }
+
+        return $description;
     }
 
     protected function jobDisabled(string $cronable, Cronable $job, QueueableConfig $config): void {
