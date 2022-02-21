@@ -18,12 +18,10 @@ trait ConsoleKernelWithSchedule {
             throw new LogicException('Class does not have $schedule property, please add it.');
         }
 
-        $registrator = $this->app->make(CronableRegistrator::class, [
-            'schedule' => $schedule,
-        ]);
+        $registrator = $this->app->make(CronableRegistrator::class);
 
         foreach ((array) $this->schedule as $job) {
-            $registrator->register($job);
+            $registrator->register($schedule, $job);
         }
     }
 }

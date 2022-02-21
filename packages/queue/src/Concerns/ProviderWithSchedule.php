@@ -2,7 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
+use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LastDragon_ru\LaraASP\Queue\CronableRegistrator;
 
 /**
@@ -12,19 +15,22 @@ trait ProviderWithSchedule {
     /**
      * Define the command schedule.
      *
-     * @param array<string> $schedule {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} classes
+     * @param class-string<Cronable> ...$jobs
      */
-    protected function bootSchedule(array $schedule): void {
+    protected function bootSchedule(string ...$jobs): void {
         if (!$this->app->runningInConsole()) {
             return;
         }
 
-        $this->app->booted(function () use ($schedule): void {
-            $registrator = $this->app->make(CronableRegistrator::class);
+        $this->app->afterResolving(
+            Schedule::class,
+            static function (Schedule $schedule, Container $container) use ($jobs): void {
+                $registrator = $container->make(CronableRegistrator::class);
 
-            foreach ($schedule as $job) {
-                $registrator->register($job);
-            }
-        });
+                foreach ($jobs as $job) {
+                    $registrator->register($schedule, $job);
+                }
+            },
+        );
     }
 }

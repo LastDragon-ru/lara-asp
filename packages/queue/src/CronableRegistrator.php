@@ -17,7 +17,6 @@ use function sprintf;
 class CronableRegistrator {
     public function __construct(
         protected Application $application,
-        protected Schedule $schedule,
         protected QueueableConfigurator $configurator,
         protected LoggerInterface $logger,
     ) {
@@ -30,7 +29,7 @@ class CronableRegistrator {
      *
      * @param class-string<Cronable> $cronable
      */
-    public function register(string $cronable): void {
+    public function register(Schedule $schedule, string $cronable): void {
         // Registration only makes sense when the app running in console.
         if (!$this->application->runningInConsole()) {
             throw new LogicException('The application is not running in console.');
@@ -49,8 +48,7 @@ class CronableRegistrator {
         }
 
         // Register
-        $this
-            ->schedule
+        $schedule
             ->call(function () use ($cronable, $job, $config): bool {
                 $this->dispatch($cronable, $job, $config);
 
