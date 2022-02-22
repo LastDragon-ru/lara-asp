@@ -97,11 +97,10 @@ trait GraphQLAssertions {
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function useGraphQLSchema(SplFileInfo|string $schema): static {
-        $schema = Args::content($schema);
+        $schema   = Args::content($schema);
+        $provider = new TestSchemaProvider($schema);
 
-        $this->override(SchemaSourceProvider::class, static function () use ($schema): SchemaSourceProvider {
-            return new TestSchemaProvider($schema);
-        });
+        $this->instance(SchemaSourceProvider::class, $provider);
 
         return $this;
     }
@@ -116,11 +115,12 @@ trait GraphQLAssertions {
     }
 
     protected function getDefaultGraphQLSchema(): Schema {
-        $this->override(SchemaSourceProvider::class, function (): SchemaSourceProvider {
-            return new SchemaStitcher(
+        $this->instance(
+            SchemaSourceProvider::class,
+            new SchemaStitcher(
                 $this->app->make(Repository::class)->get('lighthouse.schema.register', ''),
-            );
-        });
+            ),
+        );
 
         $graphql = $this->app->make(SchemaBuilder::class);
         $schema  = $graphql->schema();
