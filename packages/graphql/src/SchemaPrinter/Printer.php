@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
+use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_pop;
 use function str_starts_with;
@@ -26,6 +27,7 @@ class Printer implements PrinterContract {
     protected int      $level = 0;
 
     public function __construct(
+        protected TypeRegistry $registry,
         protected DirectiveLocator $locator,
         protected ExecutableTypeNodeConverter $converter,
         Settings $settings = null,
@@ -59,7 +61,7 @@ class Printer implements PrinterContract {
 
         // Print
         $schema    = clone $schema;
-        $resolver  = new DirectiveResolver($this->locator, $this->converter, $schema->getDirectives());
+        $resolver  = new DirectiveResolver($this->registry, $this->locator, $this->converter, $schema->getDirectives());
         $settings  = new PrinterSettings($resolver, $this->getSettings());
         $block     = $this->getSchemaDefinition($settings, $schema);
         $content   = $this->getDefinitionList($settings, true);

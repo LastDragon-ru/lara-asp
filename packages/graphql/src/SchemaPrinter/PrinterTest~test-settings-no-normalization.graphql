@@ -172,6 +172,21 @@ interface SchemaInterfaceB
     e: CodeEnum
 }
 
+scalar CodeDirectiveScalarCustomClass
+@scalar(class: "GraphQL\\Type\\Definition\\StringType")
+
+scalar CodeDirectiveScalar
+
+input CodeDirectiveInput {
+    a: Int!
+}
+
+enum CodeDirectiveEnum {
+    A
+    B
+    C
+}
+
 """
 Directive
 """
@@ -213,4 +228,13 @@ directive @mock(
 )
 on | FIELD_DEFINITION
 
-directive @codeDirective repeatable on SCHEMA | SCALAR | INTERFACE
+directive @codeDirective(
+    enum: CodeDirectiveEnum
+    input: CodeDirectiveInput
+    scalar: CodeDirectiveScalar!
+    custom: [CodeDirectiveScalarCustomClass]
+)
+repeatable on
+    | INTERFACE
+    | SCALAR
+    | SCHEMA

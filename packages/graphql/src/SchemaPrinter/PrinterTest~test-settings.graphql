@@ -1,3 +1,9 @@
+enum CodeDirectiveEnum {
+    A
+    B
+    C
+}
+
 enum CodeEnum {
     A
     B
@@ -12,6 +18,10 @@ enum SchemaEnum {
     Description
     """
     B
+}
+
+input CodeDirectiveInput {
+    a: Int!
 }
 
 """
@@ -72,6 +82,11 @@ interface SchemaInterfaceB
     d: CodeScalar
     e: CodeEnum
 }
+
+scalar CodeDirectiveScalar
+
+scalar CodeDirectiveScalarCustomClass
+@scalar(class: "GraphQL\\Type\\Definition\\StringType")
 
 """
 The `String` scalar type represents textual data, represented as UTF-8
@@ -177,7 +192,13 @@ union SchemaUnion
     | CodeType
     | SchemaType
 
-directive @codeDirective repeatable on
+directive @codeDirective(
+    custom: [CodeDirectiveScalarCustomClass]
+    enum: CodeDirectiveEnum
+    input: CodeDirectiveInput
+    scalar: CodeDirectiveScalar!
+)
+repeatable on
     | INTERFACE
     | SCALAR
     | SCHEMA

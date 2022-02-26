@@ -99,7 +99,33 @@ class PrinterTest extends TestCase {
             'codeDirective',
             (new class() extends BaseDirective {
                 public static function definition(): string {
-                    return 'directive @codeDirective repeatable on SCHEMA | SCALAR | INTERFACE';
+                    return <<<'GRAPHQL'
+                    directive @codeDirective(
+                        enum: CodeDirectiveEnum
+                        input: CodeDirectiveInput
+                        scalar: CodeDirectiveScalar!
+                        custom: [CodeDirectiveScalarCustomClass]
+                    )
+                    repeatable on
+                        | INTERFACE
+                        | SCALAR
+                        | SCHEMA
+
+                    enum CodeDirectiveEnum {
+                        A
+                        B
+                        C
+                    }
+
+                    input CodeDirectiveInput {
+                        a: Int!
+                    }
+
+                    scalar CodeDirectiveScalar
+
+                    scalar CodeDirectiveScalarCustomClass
+                    @scalar(class: "GraphQL\\Type\\Definition\\StringType")
+                    GRAPHQL;
                 }
             })::class,
         );
@@ -243,6 +269,7 @@ class PrinterTest extends TestCase {
                 [
                     'schema'      => '~test-settings.graphql',
                     'usedTypes'   => [
+                        'Int',
                         'Query',
                         'String',
                         'Boolean',
@@ -257,6 +284,10 @@ class PrinterTest extends TestCase {
                         'CodeUnion',
                         'CodeEnum',
                         'CodeType',
+                        'CodeDirectiveEnum',
+                        'CodeDirectiveInput',
+                        'CodeDirectiveScalar',
+                        'CodeDirectiveScalarCustomClass',
                     ],
                     'unusedTypes' => [
                         'CodeInterface',
@@ -363,6 +394,7 @@ class PrinterTest extends TestCase {
                 [
                     'schema'      => '~test-settings-no-normalization.graphql',
                     'usedTypes'   => [
+                        'Int',
                         'Query',
                         'String',
                         'Boolean',
@@ -377,6 +409,10 @@ class PrinterTest extends TestCase {
                         'CodeUnion',
                         'CodeEnum',
                         'CodeType',
+                        'CodeDirectiveEnum',
+                        'CodeDirectiveInput',
+                        'CodeDirectiveScalar',
+                        'CodeDirectiveScalarCustomClass',
                     ],
                     'unusedTypes' => [
                         'CodeInterface',

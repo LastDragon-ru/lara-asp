@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
+use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 /**
@@ -38,6 +39,7 @@ class DirectiveNodeListTest extends TestCase {
         string $reason = null,
     ): void {
         $locator   = $this->app->make(DirectiveLocator::class);
+        $registry  = $this->app->make(TypeRegistry::class);
         $convertor = $this->app->make(ExecutableTypeNodeConverter::class);
         $instances = [];
 
@@ -48,7 +50,7 @@ class DirectiveNodeListTest extends TestCase {
             ]);
         }
 
-        $resolver = new DirectiveResolver($locator, $convertor, $instances);
+        $resolver = new DirectiveResolver($registry, $locator, $convertor, $instances);
         $settings = new PrinterSettings($resolver, $settings);
         $actual   = (string) (new DirectiveNodeList($settings, $level, $used, $directives, $reason));
 
