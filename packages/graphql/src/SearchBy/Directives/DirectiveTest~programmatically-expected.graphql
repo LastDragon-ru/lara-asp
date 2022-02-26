@@ -367,5 +367,6 @@ type Query {
 """
 Convert Input into Search Conditions.
 """
-directive @searchBy on
+directive @searchBy
+on
     | ARGUMENT_DEFINITION

@@ -184,7 +184,8 @@ class DirectiveDefinitionBlockTest extends TestCase {
             ],
             'multiline (no args)'        => [
                 <<<'STRING'
-                directive @test on
+                directive @test
+                on
                     | ARGUMENT_DEFINITION
                     | ENUM
                 STRING,
@@ -243,7 +244,8 @@ class DirectiveDefinitionBlockTest extends TestCase {
             ],
             'locations always multiline' => [
                 <<<'STRING'
-                directive @test on
+                directive @test
+                on
                     | ARGUMENT_DEFINITION
                 STRING,
                 $settings
@@ -252,6 +254,33 @@ class DirectiveDefinitionBlockTest extends TestCase {
                 0,
                 new Directive([
                     'name'      => 'test',
+                    'locations' => [
+                        DirectiveLocation::ARGUMENT_DEFINITION,
+                    ],
+                ]),
+            ],
+            'args + one location'        => [
+                <<<'STRING'
+                directive @test(
+                    """
+                    Description
+                    """
+                    a: String
+                )
+                on
+                    | ARGUMENT_DEFINITION
+                STRING,
+                $settings,
+                0,
+                0,
+                new Directive([
+                    'name'      => 'test',
+                    'args'      => [
+                        'a' => [
+                            'type'        => Type::string(),
+                            'description' => 'Description',
+                        ],
+                    ],
                     'locations' => [
                         DirectiveLocation::ARGUMENT_DEFINITION,
                     ],

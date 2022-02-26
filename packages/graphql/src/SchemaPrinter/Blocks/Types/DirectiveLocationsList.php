@@ -31,6 +31,7 @@ class DirectiveLocationsList extends UsageList {
     }
 
     protected function isAlwaysMultiline(): bool {
-        return $this->getSettings()->isAlwaysMultilineDirectiveLocations();
+        return parent::isAlwaysMultiline()
+            || $this->getSettings()->isAlwaysMultilineDirectiveLocations();
     }
 }

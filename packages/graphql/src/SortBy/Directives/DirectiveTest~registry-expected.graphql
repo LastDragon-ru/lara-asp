@@ -91,5 +91,6 @@ type Query {
 """
 Convert Input into Sort Clause.
 """
-directive @sortBy on
+directive @sortBy
+on
     | ARGUMENT_DEFINITION

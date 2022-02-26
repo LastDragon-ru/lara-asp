@@ -32,13 +32,13 @@ class DirectiveDefinitionBlock extends DefinitionBlock {
     }
 
     protected function body(int $used): Block|string|null {
-        $definition = $this->getDefinition();
-        $eol        = $this->eol();
-        $space      = $this->space();
-        $indent     = $this->indent();
-        $repeatable = 'repeatable';
-        $used       = $used + mb_strlen($repeatable) + 2 * mb_strlen($space);
-        $args       = $this->addUsed(
+        $definition  = $this->getDefinition();
+        $eol         = $this->eol();
+        $space       = $this->space();
+        $indent      = $this->indent();
+        $repeatable  = 'repeatable';
+        $used        = $used + mb_strlen($repeatable) + 2 * mb_strlen($space);
+        $args        = $this->addUsed(
             new ArgumentsDefinitionList(
                 $this->getSettings(),
                 $this->getLevel(),
@@ -46,33 +46,29 @@ class DirectiveDefinitionBlock extends DefinitionBlock {
                 $definition->args,
             ),
         );
-        $locations  = $this->addUsed(
+        $locations   = $this->addUsed(
             new DirectiveLocationsList(
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $used + $args->getLength(),
                 $definition->locations,
+                $args->isMultiline(),
             ),
         );
-        $content    = "{$args}";
+        $isMultiline = $args->isMultiline() || $locations->isMultiline();
+        $content     = "{$args}";
 
-        if ($args->isMultiline()) {
+        if ($isMultiline) {
             $content .= "{$eol}{$indent}";
+        } else {
+            $content .= "{$space}";
         }
 
         if ($definition->isRepeatable) {
-            if (!$args->isMultiline()) {
-                $content .= "{$space}";
-            }
-
-            $content .= "{$repeatable}{$space}{$locations}";
-        } else {
-            if (!$args->isMultiline()) {
-                $content .= "{$space}";
-            }
-
-            $content .= "{$locations}";
+            $content .= "{$repeatable}{$space}";
         }
+
+        $content .= "{$locations}";
 
         return $content;
     }

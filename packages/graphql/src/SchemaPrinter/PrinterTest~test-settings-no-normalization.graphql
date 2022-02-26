@@ -215,7 +215,8 @@ directive @scalar(
     """
     class: String!
 )
-on | SCALAR
+on
+    | SCALAR
 
 """
 Allows you to easily hook up a resolver for an endpoint.
@@ -226,7 +227,8 @@ directive @mock(
     """
     key: String = "default"
 )
-on | FIELD_DEFINITION
+on
+    | FIELD_DEFINITION
 
 directive @codeDirective(
     enum: CodeDirectiveEnum

@@ -24,6 +24,7 @@ abstract class UsageList extends BlockList {
         int $level,
         int $used,
         Traversable|array $items,
+        protected bool $isAlwaysMultiline = false,
     ) {
         parent::__construct($settings, $level, $used);
 
@@ -34,6 +35,10 @@ abstract class UsageList extends BlockList {
 
     public function isMultiline(): bool {
         return parent::isMultiline() || $this->isAlwaysMultiline();
+    }
+
+    protected function isAlwaysMultiline(): bool {
+        return $this->isAlwaysMultiline;
     }
 
     /**

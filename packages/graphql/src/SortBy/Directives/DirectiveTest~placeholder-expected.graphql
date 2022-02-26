@@ -96,12 +96,14 @@ type Test {
 """
 Convert Input into Sort Clause.
 """
-directive @sortBy on
+directive @sortBy
+on
     | ARGUMENT_DEFINITION
 
 """
 Marks that field should be excluded from sort.
 """
-directive @sortByUnsortable on
+directive @sortByUnsortable
+on
     | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
