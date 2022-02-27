@@ -4,10 +4,10 @@ The set provides best practices to make development more fun and classes/service
 
 # Requirements
 
-| Package | Version   |
-|---------|-----------|
-| PHP     | `>=8.0.0` |
-| Laravel | `^8.22.1` |
+| Package | Version             |
+|---------|---------------------|
+| PHP     | `^8.0.0`            |
+| Laravel | `^8.22.1`, `^9.0.0` |
 
 # Installation
 
