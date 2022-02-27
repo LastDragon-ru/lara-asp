@@ -7,6 +7,7 @@ use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
@@ -18,9 +19,13 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Unsortable;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClauseForField;
+use Nuwave\Lighthouse\Pagination\PaginateDirective;
+use Nuwave\Lighthouse\Pagination\PaginationType;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 
 use function count;
+use function mb_strlen;
+use function mb_substr;
 use function str_starts_with;
 
 class Manipulator extends AstManipulator {
@@ -32,7 +37,9 @@ class Manipulator extends AstManipulator {
         $isPlaceholder = $this->isPlaceholder($node);
 
         if ($isPlaceholder || !$this->isTypeName($node)) {
-            $definition  = $this->getTypeDefinitionNode($isPlaceholder ? $query : $node);
+            $definition  = $isPlaceholder
+                ? $this->getPlaceholderTypeDefinitionNode($query)
+                : $this->getTypeDefinitionNode($node);
             $isSupported = $definition instanceof InputObjectTypeDefinitionNode
                 || $definition instanceof ObjectTypeDefinitionNode
                 || $definition instanceof InputObjectType
@@ -182,6 +189,41 @@ class Manipulator extends AstManipulator {
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
     ): string {
         return Directive::Name."Clause{$this->getNodeName($node)}";
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="AST Helpers">
+    // =========================================================================
+    protected function getPlaceholderTypeDefinitionNode(FieldDefinitionNode $field): TypeDefinitionNode|Type|null {
+        $node     = null;
+        $paginate = $this->getNodeDirective($field, PaginateDirective::class);
+
+        if ($paginate) {
+            $type       = $this->getNodeTypeName($this->getTypeDefinitionNode($field));
+            $pagination = (new class() extends PaginateDirective {
+                public function getPaginationType(PaginateDirective $directive): PaginationType {
+                    return $directive->paginationType();
+                }
+            })->getPaginationType($paginate);
+
+            if ($pagination->isPaginator()) {
+                $type = mb_substr($type, 0, - mb_strlen('Paginator'));
+            } elseif ($pagination->isSimple()) {
+                $type = mb_substr($type, 0, - mb_strlen('SimplePaginator'));
+            } elseif ($pagination->isConnection()) {
+                $type = mb_substr($type, 0, - mb_strlen('Connection'));
+            } else {
+                // empty
+            }
+
+            if ($type) {
+                $node = $this->getTypeDefinitionNode($type);
+            }
+        } else {
+            $node = $this->getTypeDefinitionNode($field);
+        }
+
+        return $node;
     }
     // </editor-fold>
 }

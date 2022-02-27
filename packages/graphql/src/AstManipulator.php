@@ -159,7 +159,7 @@ abstract class AstManipulator {
     }
 
     protected function getNodeTypeName(
-        Node|Type|InputObjectField|FieldDefinition|string $node,
+        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode|string $node,
     ): string {
         $name = null;
 

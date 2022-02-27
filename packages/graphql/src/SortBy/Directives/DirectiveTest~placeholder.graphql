@@ -1,29 +1,47 @@
 type Query {
-  test(order: _ @sortBy): Test! @all
-  testList(order: _ @sortBy): [Test!]! @all
+    test(order: _ @sortBy): Test! @all
+    testList(order: _ @sortBy): [Test!]! @all
+
+    testPaginatePaginator(order: _ @sortBy): [Test!]!
+    @paginate(
+        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+        type: PAGINATOR
+    )
+
+    testPaginateSimple(order: _ @sortBy): [Test!]!
+    @paginate(
+        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+        type: SIMPLE
+    )
+
+    testPaginateConnection(order: _ @sortBy): [Test!]!
+    @paginate(
+        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+        type: CONNECTION
+    )
 }
 
 type Test {
-  scalar: ID
-  scalarNotNull: ID!
-  nested: Nested
-  nestedNotNull: Nested!
-  enum: Value
-  enumNotNull: Value!
-  list: [ID!]
-  listNotNull: [ID!]!
-  resolver: String @field(
-    resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\NullResolver"
-  )
-  unsortable: ID! @sortByUnsortable
+    scalar: ID
+    scalarNotNull: ID!
+    nested: Nested
+    nestedNotNull: Nested!
+    enum: Value
+    enumNotNull: Value!
+    list: [ID!]
+    listNotNull: [ID!]!
+    resolver: String @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\NullResolver"
+    )
+    unsortable: ID! @sortByUnsortable
 }
 
 type Nested {
-  value: String
-  nested: Nested
+    value: String
+    nested: Nested
 }
 
 enum Value {
-  one
-  two
+    one
+    two
 }

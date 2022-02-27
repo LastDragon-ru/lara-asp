@@ -4,13 +4,17 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter;
 
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
+use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\FieldDirective;
+use Nuwave\Lighthouse\Schema\Directives\ModelDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 class LighthouseDirectiveFilter implements DirectiveFilter {
     public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive): bool {
         return !($directive instanceof AllDirective)
-            && !($directive instanceof FieldDirective);
+            && !($directive instanceof FieldDirective)
+            && !($directive instanceof PaginateDirective)
+            && !($directive instanceof ModelDirective);
     }
 }
