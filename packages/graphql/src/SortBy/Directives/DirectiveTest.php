@@ -279,12 +279,12 @@ class DirectiveTest extends TestCase {
                         $test->getTestData()->file('~full-expected.graphql'),
                     ))
                         ->setUnusedTypes([
-                            'Properties'          => 'Properties',
-                            'Nested'              => 'Nested',
-                            'Value'               => 'Value',
-                            'PaginatorInfo'       => 'PaginatorInfo',
-                            'SimplePaginatorInfo' => 'SimplePaginatorInfo',
-                            'PageInfo'            => 'PageInfo',
+                            'Properties',
+                            'Nested',
+                            'Value',
+                            'PaginatorInfo',
+                            'SimplePaginatorInfo',
+                            'PageInfo',
                         ]);
                 },
                 '~full.graphql',

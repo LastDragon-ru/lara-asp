@@ -287,11 +287,11 @@ class DirectiveTest extends TestCase {
                         $test->getTestData()->file('~full-expected.graphql'),
                     ))
                         ->setUnusedTypes([
-                            'InputA'  => 'InputA',
-                            'NestedA' => 'NestedA',
-                            'NestedB' => 'NestedB',
-                            'NestedC' => 'NestedC',
-                            'InputB'  => 'InputB',
+                            'InputA',
+                            'NestedA',
+                            'NestedB',
+                            'NestedC',
+                            'InputB',
                         ]);
                 },
                 '~full.graphql',
@@ -302,7 +302,7 @@ class DirectiveTest extends TestCase {
                         $test->getTestData()->file('~usedonly-expected.graphql'),
                     ))
                         ->setUnusedTypes([
-                            'Properties' => 'Properties',
+                            'Properties',
                         ]);
                 },
                 '~usedonly.graphql',
