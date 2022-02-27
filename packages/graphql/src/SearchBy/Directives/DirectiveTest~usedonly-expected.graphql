@@ -93,6 +93,7 @@ type Query {
             ]
         )
     ): ID!
+    @all
 }
 
 """

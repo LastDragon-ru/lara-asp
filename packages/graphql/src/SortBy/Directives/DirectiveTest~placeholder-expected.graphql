@@ -161,11 +161,13 @@ type Query {
         order: [SortByClauseTest!]
         @sortBy
     ): Test!
+    @all
 
     testList(
         order: [SortByClauseTest!]
         @sortBy
     ): [Test!]!
+    @all
 
     testPaginateConnection(
         """
@@ -181,6 +183,10 @@ type Query {
         order: [SortByClauseTest!]
         @sortBy
     ): TestConnection
+    @paginate(
+        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+        type: CONNECTION
+    )
 
     testPaginatePaginator(
         """
@@ -196,6 +202,10 @@ type Query {
         """
         page: Int
     ): TestPaginator
+    @paginate(
+        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+        type: PAGINATOR
+    )
 
     testPaginateSimple(
         """
@@ -211,6 +221,10 @@ type Query {
         """
         page: Int
     ): TestSimplePaginator
+    @paginate(
+        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+        type: SIMPLE
+    )
 }
 
 """
@@ -255,7 +269,12 @@ type Test {
     listNotNull: [ID!]!
     nested: Nested
     nestedNotNull: Nested!
+
     resolver: String
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\NullResolver"
+    )
+
     scalar: ID
     scalarNotNull: ID!
 
@@ -266,16 +285,24 @@ type Test {
 """
 A paginated list of Test edges.
 """
-type TestConnection {
+type TestConnection
+@model(class: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model")
+{
     """
     A list of Test edges.
     """
     edges: [TestEdge!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\ConnectionField@edgeResolver"
+    )
 
     """
     Pagination information about the list of edges.
     """
     pageInfo: PageInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\ConnectionField@pageInfoResolver"
+    )
 }
 
 """
@@ -296,31 +323,47 @@ type TestEdge {
 """
 A paginated list of Test items.
 """
-type TestPaginator {
+type TestPaginator
+@model(class: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model")
+{
     """
     A list of Test items.
     """
     data: [Test!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
+    )
 
     """
     Pagination information about the list of items.
     """
     paginatorInfo: PaginatorInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
+    )
 }
 
 """
 A paginated list of Test items.
 """
-type TestSimplePaginator {
+type TestSimplePaginator
+@model(class: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model")
+{
     """
     A list of Test items.
     """
     data: [Test!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\SimplePaginatorField@dataResolver"
+    )
 
     """
     Pagination information about the list of items.
     """
     paginatorInfo: SimplePaginatorInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\SimplePaginatorField@paginatorInfoResolver"
+    )
 }
 
 """

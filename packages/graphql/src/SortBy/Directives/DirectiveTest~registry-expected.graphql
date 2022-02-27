@@ -76,16 +76,19 @@ type Query {
         order: [SortByClauseA!]
         @sortBy
     ): ID!
+    @all
 
     b(
         order: [SortByClauseB!]
         @sortBy
     ): ID!
+    @all
 
     c(
         order: [SortByClauseD!]
         @sortBy
     ): D!
+    @all
 }
 
 """

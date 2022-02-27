@@ -61,6 +61,7 @@ type Query {
         order: [SortByClauseProperties!]
         @sortBy
     ): ID!
+    @all
 }
 
 """

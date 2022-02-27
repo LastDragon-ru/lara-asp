@@ -295,7 +295,7 @@ class DirectiveTest extends TestCase {
                         $test->getTestData()->file('~placeholder-expected.graphql'),
                     ))
                         ->setUnusedTypes([
-                            // empty
+                            'PaginateType',
                         ]);
                 },
                 '~placeholder.graphql',

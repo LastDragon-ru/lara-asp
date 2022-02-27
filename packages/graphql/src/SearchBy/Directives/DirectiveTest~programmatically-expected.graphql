@@ -362,6 +362,7 @@ type Query {
             ]
         )
     ): ID!
+    @all
 }
 
 """

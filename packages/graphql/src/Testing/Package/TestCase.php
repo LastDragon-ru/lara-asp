@@ -30,7 +30,7 @@ class TestCase extends PackageTestCase {
 
     protected function getGraphQLSchemaPrinter(): Printer {
         return $this->app->make(Printer::class)->setSettings(
-            (new TestSettings())->setDirectiveFilter(new LighthouseDirectiveFilter()),
+            (new TestSettings())->setDirectiveDefinitionFilter(new LighthouseDirectiveFilter()),
         );
     }
 }

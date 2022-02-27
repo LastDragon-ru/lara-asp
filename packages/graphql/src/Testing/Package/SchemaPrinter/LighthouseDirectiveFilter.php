@@ -4,17 +4,15 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter;
 
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
-use Nuwave\Lighthouse\Pagination\PaginateDirective;
-use Nuwave\Lighthouse\Schema\Directives\AllDirective;
-use Nuwave\Lighthouse\Schema\Directives\FieldDirective;
-use Nuwave\Lighthouse\Schema\Directives\ModelDirective;
+use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
+
+use function explode;
+use function str_starts_with;
 
 class LighthouseDirectiveFilter implements DirectiveFilter {
     public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive): bool {
-        return !($directive instanceof AllDirective)
-            && !($directive instanceof FieldDirective)
-            && !($directive instanceof PaginateDirective)
-            && !($directive instanceof ModelDirective);
+        return $directive instanceof GraphQLDirective
+            || !str_starts_with($directive::class, explode('\\', BaseDirective::class)[0]);
     }
 }

@@ -843,6 +843,7 @@ type Query {
             ]
         )
     ): ID!
+    @all
 
     b(
         where: SearchByConditionNestedA
@@ -872,6 +873,7 @@ type Query {
             ]
         )
     ): ID!
+    @all
 
     c(
         where: SearchByConditionInputB
@@ -889,6 +891,7 @@ type Query {
             ]
         )
     ): ID!
+    @all
 
     d(
         where: SearchByConditionNestedB
@@ -911,6 +914,7 @@ type Query {
             ]
         )
     ): ID!
+    @all
 }
 
 """
