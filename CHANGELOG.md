@@ -1,3 +1,26 @@
+## [0.12.0](https://github.com/LastDragon-ru/lara-asp/compare/0.11.0...0.12.0) (2022-02-27)
+
+| ☣    | Breaking changes |
+|:-----:|:-----------------|
+
+
+### Features
+
+* Laravel 9 support. (#10; [c12b021](https://github.com/LastDragon-ru/lara-asp/commit/c12b0214483bac52ea44e43bc9193e3904ee253e))
+* **migrator:** Removed `DirectorySeeder` and `RootSeeder`. ([1be3a4e](https://github.com/LastDragon-ru/lara-asp/commit/1be3a4e3f20fbc4af53a8665ea9677a9f4e2b9c8)) ☣
+* **queue, testing:** `CronableRegistrator` will add disabled `Cronable` into `Schedule` it is needed to be able to test registration. ([cf050e2](https://github.com/LastDragon-ru/lara-asp/commit/cf050e26e093451b2aa41388aa14cfb2270e8817)) ☣
+* **spa:** `Request::validated()` updated to be compatible with Laravel 9 and support `$key` and `$default`. ([3eb876f](https://github.com/LastDragon-ru/lara-asp/commit/3eb876f2f70808e3a0561e023c3acff8a15dcefb))
+
+
+### Bug Fixes
+
+* **graphql:** "LogicException : Override for `Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider` already defined." while testing schemas. ([0623c36](https://github.com/LastDragon-ru/lara-asp/commit/0623c361791f588bc974f3a6c3e1f577fe8abdcf))
+* **graphql/SchemaPrinter:** Fixed missing LF in directive locations when the definition is multiline. ([e4d69bf](https://github.com/LastDragon-ru/lara-asp/commit/e4d69bf1b28f58c4a46a46063a1524fcc26c884e))
+* **graphql/SchemaPrinter:** Printer will parse all definitions from `Directive:definition()` to avoid "DefinitionException : Lighthouse failed while trying to load a type XXX" error. ([5c20332](https://github.com/LastDragon-ru/lara-asp/commit/5c20332d05223a8611c3cb0e5e9647d693b02453))
+* **queue:** `ConsoleKernelWithSchedule` will not use `booted()` because there are no reasons to use it here (also, in some cases the previous approach may lead to `Cronable` was registered twice). ([64482a6](https://github.com/LastDragon-ru/lara-asp/commit/64482a6713b1bfba3e530d43a6ca8e8cccf40469))
+* **queue:** `ProviderWithSchedule` will use `afterResolving()` callback to register `Cronable`. ([bf84e0d](https://github.com/LastDragon-ru/lara-asp/commit/bf84e0db8af4b0a66ec786d6311cd459613102b5)) ☣
+
+
 ## [0.11.0](https://github.com/LastDragon-ru/lara-asp/compare/0.10.0...0.11.0) (2022-02-05)
 
 | ☣    | Breaking changes |
