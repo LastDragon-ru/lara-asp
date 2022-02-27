@@ -6,13 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Validator;
 
+use function data_get;
 use function is_null;
 
 abstract class Request extends FormRequest {
     /**
-     * @return array<mixed>
+     * @param string|array<mixed>|null $default
      */
-    public function validated(): array {
+    public function validated(mixed $key = null, mixed $default = null): mixed {
         // We need `\Illuminate\Validation\Validator::getRules()` but it doesn't
         // exists in `\Illuminate\Contracts\Validation\Validator`.
         $validator = $this->getValidatorInstance();
@@ -37,6 +38,11 @@ abstract class Request extends FormRequest {
                     Arr::set($validated, $attribute, $provider->getValue($value));
                 }
             }
+        }
+
+        // Key?
+        if ($key !== null) {
+            $validated = data_get($validated, $key, $default);
         }
 
         // Return
