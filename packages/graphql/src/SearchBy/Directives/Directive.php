@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -59,8 +62,8 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @inheritdoc
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
-        $operators = $this->directiveArgValue(self::ArgOperators);
-        $operators = (new Collection($operators))
+        /** @var array<ComparisonOperator|LogicalOperator|ComplexOperator> $operators */
+        $operators = (new Collection($this->directiveArgValue(self::ArgOperators)))
             ->map(function (string $operator): object {
                 return $this->container->make($operator);
             })
