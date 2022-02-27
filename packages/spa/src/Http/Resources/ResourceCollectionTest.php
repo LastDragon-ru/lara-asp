@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use stdClass;
@@ -87,7 +88,7 @@ class ResourceCollectionTest extends TestCase {
             ],
             'SafeResource' => [
                 true,
-                get_class(new class() implements SafeResource {
+                get_class(new class(new stdClass()) extends JsonResource implements SafeResource {
                     // empty
                 }),
             ],
