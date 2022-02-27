@@ -13,7 +13,7 @@ use function iterator_to_array;
  */
 class Dispatcher implements Subject {
     /**
-     * @var SplObjectStorage<Closure(TContext):void>
+     * @var SplObjectStorage<Closure(TContext):void, null>
      */
     private SplObjectStorage $observers;
 
