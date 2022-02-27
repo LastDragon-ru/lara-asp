@@ -118,5 +118,9 @@ class PrinterSettings implements Settings {
     public function getDirectiveFilter(): ?DirectiveFilter {
         return $this->settings->getDirectiveFilter();
     }
+
+    public function getDirectiveDefinitionFilter(): ?DirectiveFilter {
+        return $this->settings->getDirectiveDefinitionFilter();
+    }
     // </editor-fold>
 }

@@ -115,8 +115,9 @@ class Printer implements PrinterContract {
         $blocks = $this->getDefinitionList($settings);
 
         if ($settings->isPrintDirectiveDefinitions()) {
-            $filter     = $settings->getDirectiveFilter();
-            $directives = $settings->getResolver()->getDefinitions();
+            $definitionFilter = $settings->getDirectiveDefinitionFilter();
+            $directiveFilter  = $settings->getDirectiveFilter();
+            $directives       = $settings->getResolver()->getDefinitions();
 
             foreach ($directives as $directive) {
                 // Introspection?
@@ -125,7 +126,11 @@ class Printer implements PrinterContract {
                 }
 
                 // Not allowed?
-                if ($filter !== null && !$filter->isAllowedDirective($directive)) {
+                if ($directiveFilter !== null && !$directiveFilter->isAllowedDirective($directive)) {
+                    continue;
+                }
+
+                if ($definitionFilter !== null && !$definitionFilter->isAllowedDirective($directive)) {
                     continue;
                 }
 
@@ -144,6 +149,7 @@ class Printer implements PrinterContract {
     protected function getUsedDefinitions(PrinterSettings $settings, Schema $schema, Block $root): array {
         $directivesDefinitions = $settings->isPrintDirectiveDefinitions();
         $directivesResolver    = $settings->getResolver();
+        $directivesFilter      = $settings->getDirectiveDefinitionFilter();
         $directives            = $this->getDefinitionList($settings);
         $types                 = $this->getDefinitionList($settings);
         $stack                 = $root->getUsedDirectives() + $root->getUsedTypes();
@@ -161,9 +167,17 @@ class Printer implements PrinterContract {
 
             if (str_starts_with($name, '@')) {
                 if ($directivesDefinitions) {
-                    $directive = $directivesResolver->getDefinition(substr($name, 1));
+                    $directiveName = substr($name, 1);
+                    $directive     = $directivesResolver->getDefinition($directiveName);
+                    $print         = $this->isDirective($directive);
 
-                    if ($this->isDirective($directive)) {
+                    if ($print && $directivesFilter !== null) {
+                        $print = $directivesFilter->isAllowedDirective(
+                            $directivesResolver->getInstance($directiveName),
+                        );
+                    }
+
+                    if ($print) {
                         $block             = $this->getDefinitionBlock($settings, $directive);
                         $directives[$name] = $block;
                     }

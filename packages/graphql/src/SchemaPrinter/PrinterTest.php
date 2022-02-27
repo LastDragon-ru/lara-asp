@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
 use Exception;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
@@ -19,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 use function array_values;
 
@@ -446,8 +448,56 @@ class PrinterTest extends TestCase {
                     ->setAlwaysMultilineDirectiveLocations(false),
                 0,
             ],
-
-            // Settings
+            TestSettings::class.' (DirectiveDefinitionFilter)' => [
+                [
+                    'schema'      => '~test-settings-directive-definition-filter.graphql',
+                    'usedTypes'   => [
+                        'Query',
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                    ],
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'CodeDirectiveEnum',
+                        'CodeDirectiveInput',
+                        'CodeDirectiveScalar',
+                        'CodeDirectiveScalarCustomClass',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
+                        '@schemaDirective',
+                        '@codeDirective',
+                        '@deprecated',
+                        '@scalar',
+                        '@mock',
+                    ],
+                ],
+                (new TestSettings())
+                    ->setDirectiveDefinitionFilter(
+                        static function (GraphQLDirective|LighthouseDirective $directive): bool {
+                            return $directive instanceof GraphQLDirective
+                                && $directive->name !== 'codeDirective';
+                        },
+                    ),
+                0,
+            ],
         ];
     }
     // </editor-fold>

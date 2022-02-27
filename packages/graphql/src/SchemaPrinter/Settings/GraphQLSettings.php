@@ -29,6 +29,7 @@ class GraphQLSettings extends ImmutableSettings {
     protected bool             $alwaysMultilineInterfaces         = false;
     protected bool             $alwaysMultilineDirectiveLocations = false;
     protected ?DirectiveFilter $directiveFilter                   = null;
+    protected ?DirectiveFilter $directiveDefinitionFilter         = null;
 
     public function __construct() {
         parent::__construct();

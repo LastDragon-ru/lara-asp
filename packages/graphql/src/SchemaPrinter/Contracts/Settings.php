@@ -93,4 +93,9 @@ interface Settings {
      * Used to determine should the directive included in output or not.
      */
     public function getDirectiveFilter(): ?DirectiveFilter;
+
+    /**
+     * Used to determine should the directive definition included in output or not.
+     */
+    public function getDirectiveDefinitionFilter(): ?DirectiveFilter;
 }

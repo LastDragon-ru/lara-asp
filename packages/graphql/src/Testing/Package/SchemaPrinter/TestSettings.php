@@ -30,25 +30,44 @@ class TestSettings extends ImmutableSettings {
     protected bool             $alwaysMultilineInterfaces         = true;
     protected bool             $alwaysMultilineDirectiveLocations = true;
     protected ?DirectiveFilter $directiveFilter                   = null;
+    protected ?DirectiveFilter $directiveDefinitionFilter         = null;
 
     /**
      * @param DirectiveFilter|Closure(GraphQLDirective|LighthouseDirective):bool|null $value
      */
     public function setDirectiveFilter(DirectiveFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
-            $value = new class($value) implements DirectiveFilter {
-                public function __construct(
-                    protected Closure $filter,
-                ) {
-                    // empty
-                }
-
-                public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive): bool {
-                    return ($this->filter)($directive);
-                }
-            };
+            $value = $this->makeDirectiveFilter($value);
         }
 
         return parent::setDirectiveFilter($value);
+    }
+
+    /**
+     * @param DirectiveFilter|Closure(GraphQLDirective|LighthouseDirective):bool|null $value
+     */
+    public function setDirectiveDefinitionFilter(DirectiveFilter|Closure|null $value): static {
+        if ($value instanceof Closure) {
+            $value = $this->makeDirectiveFilter($value);
+        }
+
+        return parent::setDirectiveDefinitionFilter($value);
+    }
+
+    /**
+     * @param Closure(GraphQLDirective|LighthouseDirective):bool $closure
+     */
+    protected function makeDirectiveFilter(Closure $closure): DirectiveFilter {
+        return new class($closure) implements DirectiveFilter {
+            public function __construct(
+                protected Closure $filter,
+            ) {
+                // empty
+            }
+
+            public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive): bool {
+                return ($this->filter)($directive);
+            }
+        };
     }
 }

@@ -28,6 +28,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $alwaysMultilineInterfaces;
     protected bool             $alwaysMultilineDirectiveLocations;
     protected ?DirectiveFilter $directiveFilter;
+    protected ?DirectiveFilter $directiveDefinitionFilter;
 
     public function __construct() {
         // empty
@@ -243,6 +244,16 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    public function getDirectiveDefinitionFilter(): ?DirectiveFilter {
+        return $this->directiveDefinitionFilter;
+    }
+
+    public function setDirectiveDefinitionFilter(?DirectiveFilter $value): static {
+        return $this->set(static function (self $settings) use ($value): void {
+            $settings->directiveDefinitionFilter = $value;
+        });
+    }
+
     protected function set(Closure $callback): static {
         $settings = clone $this;
 
@@ -275,6 +286,7 @@ abstract class ImmutableSettings implements Settings {
             ->setAlwaysMultilineUnions($settings->isAlwaysMultilineUnions())
             ->setAlwaysMultilineInterfaces($settings->isAlwaysMultilineInterfaces())
             ->setAlwaysMultilineDirectiveLocations($settings->isAlwaysMultilineDirectiveLocations())
+            ->setDirectiveDefinitionFilter($settings->getDirectiveDefinitionFilter())
             ->setDirectiveFilter($settings->getDirectiveFilter());
     }
 }
