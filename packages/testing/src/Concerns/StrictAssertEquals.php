@@ -12,7 +12,7 @@ use PHPUnit\Framework\Test;
  */
 trait StrictAssertEquals {
     /**
-     * @after
+     * @before
      * @internal
      */
     public function initStrictAssertEquals(): void {
