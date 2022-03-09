@@ -52,7 +52,7 @@ trait GraphQLAssertions {
         // Used types
         $usedTypes = $expected->getUsedTypes();
 
-        if ($usedTypes !== null) {
+        if ($usedTypes) {
             self::assertEquals(
                 array_combine($usedTypes, $usedTypes),
                 $actual->getUsedTypes(),
@@ -62,7 +62,7 @@ trait GraphQLAssertions {
         // Unused types
         $unusedTypes = $expected->getUnusedTypes();
 
-        if ($unusedTypes !== null) {
+        if ($unusedTypes) {
             self::assertEquals(
                 array_combine($unusedTypes, $unusedTypes),
                 $actual->getUnusedTypes(),
@@ -72,7 +72,7 @@ trait GraphQLAssertions {
         // Used directives
         $usedDirectives = $expected->getUsedDirectives();
 
-        if ($usedDirectives !== null) {
+        if ($usedDirectives) {
             self::assertEquals(
                 array_combine($usedDirectives, $usedDirectives),
                 $actual->getUsedDirectives(),

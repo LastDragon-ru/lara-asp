@@ -10,9 +10,6 @@ use function data_get;
 use function is_null;
 
 abstract class Request extends FormRequest {
-    /**
-     * @param string|array<mixed>|null $default
-     */
     public function validated(mixed $key = null, mixed $default = null): mixed {
         // We need `\Illuminate\Validation\Validator::getRules()` but it doesn't
         // exists in `\Illuminate\Contracts\Validation\Validator`.
