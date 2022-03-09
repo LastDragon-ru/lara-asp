@@ -30,7 +30,7 @@ trait GraphQLAssertions {
      * Compares two GraphQL schemas.
      */
     public function assertGraphQLSchemaEquals(
-        GraphQLExpectedSchema|SplFileInfo|string $expected,
+        GraphQLExpectedSchema|PrintedSchema|Schema|SplFileInfo|string $expected,
         PrintedSchema|Schema|SplFileInfo|string $schema,
         string $message = '',
     ): void {
@@ -40,10 +40,11 @@ trait GraphQLAssertions {
         }
 
         // GraphQL
-        $actual = $this->printGraphQLSchema($schema);
+        $actual   = $this->printGraphQLSchema($schema);
+        $expected = $this->printGraphQLSchema($expected->getSchema());
 
         self::assertEquals(
-            Args::content($expected->getSchema()),
+            (string) $expected,
             (string) $actual,
             $message,
         );

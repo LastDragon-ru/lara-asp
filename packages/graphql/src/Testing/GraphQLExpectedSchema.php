@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
+use GraphQL\Type\Schema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\PrintedSchema;
 use SplFileInfo;
 
 class GraphQLExpectedSchema {
@@ -11,7 +13,7 @@ class GraphQLExpectedSchema {
      * @param array<string>|null $usedDirectives
      */
     public function __construct(
-        protected SplFileInfo|string $schema,
+        protected PrintedSchema|Schema|SplFileInfo|string $schema,
         protected ?array $usedTypes = null,
         protected ?array $unusedTypes = null,
         protected ?array $usedDirectives = null,
@@ -19,7 +21,7 @@ class GraphQLExpectedSchema {
         // empty
     }
 
-    public function getSchema(): SplFileInfo|string {
+    public function getSchema(): PrintedSchema|Schema|SplFileInfo|string {
         return $this->schema;
     }
 
