@@ -303,6 +303,9 @@ class DirectiveTest extends TestCase {
                     ))
                         ->setUnusedTypes([
                             'Properties',
+                            'Float',
+                            'Int',
+                            'Boolean',
                         ]);
                 },
                 '~usedonly.graphql',

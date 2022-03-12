@@ -34,20 +34,26 @@ trait GraphQLAssertions {
         PrintedSchema|Schema|SplFileInfo|string $schema,
         string $message = '',
     ): void {
+        // GraphQL
+        $actual = $this->printGraphQLSchema($schema);
+        $output = $expected;
+
+        if ($output instanceof GraphQLExpectedSchema) {
+            $output = $output->getSchema();
+        }
+
+        if ($output instanceof PrintedSchema || $output instanceof Schema) {
+            $output = (string) $this->printGraphQLSchema($output);
+        } else {
+            $output = Args::content($output);
+        }
+
+        self::assertEquals($output, (string) $actual, $message);
+
         // Prepare
         if (!($expected instanceof GraphQLExpectedSchema)) {
             $expected = new GraphQLExpectedSchema($expected);
         }
-
-        // GraphQL
-        $actual   = $this->printGraphQLSchema($schema);
-        $expected = $this->printGraphQLSchema($expected->getSchema());
-
-        self::assertEquals(
-            (string) $expected,
-            (string) $actual,
-            $message,
-        );
 
         // Used types
         $usedTypes = $expected->getUsedTypes();
@@ -56,6 +62,7 @@ trait GraphQLAssertions {
             self::assertEquals(
                 array_combine($usedTypes, $usedTypes),
                 $actual->getUsedTypes(),
+                'Used Types not match.',
             );
         }
 
@@ -66,6 +73,7 @@ trait GraphQLAssertions {
             self::assertEquals(
                 array_combine($unusedTypes, $unusedTypes),
                 $actual->getUnusedTypes(),
+                'Unused Types not match.',
             );
         }
 
@@ -76,6 +84,7 @@ trait GraphQLAssertions {
             self::assertEquals(
                 array_combine($usedDirectives, $usedDirectives),
                 $actual->getUsedDirectives(),
+                'Used Directives not match.',
             );
         }
 
@@ -86,6 +95,7 @@ trait GraphQLAssertions {
             self::assertEquals(
                 array_combine($unusedDirectives, $unusedDirectives),
                 $actual->getUnusedDirectives(),
+                'Unused Directives not match.',
             );
         }
     }

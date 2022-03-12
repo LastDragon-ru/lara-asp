@@ -285,6 +285,10 @@ class DirectiveTest extends TestCase {
                             'PaginatorInfo',
                             'SimplePaginatorInfo',
                             'PageInfo',
+                            'String',
+                            'Float',
+                            'Int',
+                            'Boolean',
                         ]);
                 },
                 '~full.graphql',
@@ -296,6 +300,7 @@ class DirectiveTest extends TestCase {
                     ))
                         ->setUnusedTypes([
                             'PaginateType',
+                            'Float',
                         ]);
                 },
                 '~placeholder.graphql',
