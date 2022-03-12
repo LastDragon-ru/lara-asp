@@ -9,4 +9,9 @@ interface PrintedSchema extends Statistics, Stringable {
      * @return array<string, string>
      */
     public function getUnusedTypes(): array;
+
+    /**
+     * @return array<string, string>
+     */
+    public function getUnusedDirectives(): array;
 }

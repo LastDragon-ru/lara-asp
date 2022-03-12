@@ -78,7 +78,7 @@ class Printer implements PrinterContract {
         }
 
         // Return
-        return new PrintedSchema($schema, $content);
+        return new PrintedSchema($resolver, $schema, $content);
     }
 
     protected function getSchemaDefinition(PrinterSettings $settings, Schema $schema): Block {

@@ -11,12 +11,14 @@ class GraphQLExpectedSchema {
      * @param array<string>|null $usedTypes
      * @param array<string>|null $unusedTypes
      * @param array<string>|null $usedDirectives
+     * @param array<string>|null $unusedDirectives
      */
     public function __construct(
         protected PrintedSchema|Schema|SplFileInfo|string $schema,
         protected ?array $usedTypes = null,
         protected ?array $unusedTypes = null,
         protected ?array $usedDirectives = null,
+        protected ?array $unusedDirectives = null,
     ) {
         // empty
     }
@@ -69,6 +71,22 @@ class GraphQLExpectedSchema {
      */
     public function setUsedDirectives(?array $usedDirectives): static {
         $this->usedDirectives = $usedDirectives;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string>|null
+     */
+    public function getUnusedDirectives(): ?array {
+        return $this->unusedDirectives;
+    }
+
+    /**
+     * @param array<string>|null $unusedDirectives
+     */
+    public function setUnusedDirectives(?array $unusedDirectives): static {
+        $this->unusedDirectives = $unusedDirectives;
 
         return $this;
     }

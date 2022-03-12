@@ -78,6 +78,16 @@ trait GraphQLAssertions {
                 $actual->getUsedDirectives(),
             );
         }
+
+        // Unused directives
+        $unusedDirectives = $expected->getUnusedDirectives();
+
+        if ($unusedDirectives) {
+            self::assertEquals(
+                array_combine($unusedDirectives, $unusedDirectives),
+                $actual->getUnusedDirectives(),
+            );
+        }
     }
 
     /**

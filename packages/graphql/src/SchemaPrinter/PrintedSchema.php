@@ -6,6 +6,7 @@ use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema as PrintedSchemaContract;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 
 use function array_diff_key;
 
@@ -14,6 +15,7 @@ use function array_diff_key;
  */
 class PrintedSchema implements PrintedSchemaContract {
     public function __construct(
+        protected DirectiveResolver $resolver,
         protected Schema $schema,
         protected Block $block,
     ) {
@@ -46,6 +48,13 @@ class PrintedSchema implements PrintedSchemaContract {
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getUnusedDirectives(): array {
+        return array_diff_key($this->getDirectives(), $this->getUsedDirectives());
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function getTypes(): array {
@@ -66,5 +75,18 @@ class PrintedSchema implements PrintedSchemaContract {
 
         // Return
         return $types;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function getDirectives(): array {
+        $directives = [];
+
+        foreach ($this->resolver->getDefinitions() as $directive) {
+            $directives[$directive->name] = $directive->name;
+        }
+
+        return $directives;
     }
 }
