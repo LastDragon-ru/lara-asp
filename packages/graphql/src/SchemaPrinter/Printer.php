@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema as PrintedSchemaContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
@@ -55,7 +56,7 @@ class Printer implements PrinterContract {
         return $this;
     }
 
-    public function print(Schema $schema): PrintedSchema {
+    public function print(Schema $schema): PrintedSchemaContract {
         // todo(graphql): directives in description for schema
         //      https://github.com/webonyx/graphql-php/issues/1027
 

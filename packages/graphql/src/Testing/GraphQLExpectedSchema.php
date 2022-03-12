@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\PrintedSchema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use SplFileInfo;
 
 class GraphQLExpectedSchema {

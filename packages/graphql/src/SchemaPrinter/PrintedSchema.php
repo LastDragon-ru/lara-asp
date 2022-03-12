@@ -5,12 +5,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
-use Stringable;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema as PrintedSchemaContract;
 
 use function array_diff_key;
 
-class PrintedSchema implements Statistics, Stringable {
+class PrintedSchema implements PrintedSchemaContract {
     public function __construct(
         protected Schema $schema,
         protected Block $block,
