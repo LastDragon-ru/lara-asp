@@ -52,6 +52,7 @@ class DirectiveResolver {
         array $directives = [],
     ) {
         $this->factory     = new DirectiveFactory($this->converter);
+        $this->instances   = [];
         $this->definitions = [];
 
         foreach ($directives as $directive) {
@@ -140,6 +141,10 @@ class DirectiveResolver {
 
         foreach ($this->instances as $name => $instance) {
             $directives[$name] ??= $this->getDefinition($name);
+        }
+
+        foreach (GraphQLDirective::getInternalDirectives() as $directive) {
+            $directives[$directive->name] ??= $directive;
         }
 
         return $directives;

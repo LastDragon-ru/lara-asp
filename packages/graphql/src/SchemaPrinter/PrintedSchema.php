@@ -89,7 +89,8 @@ class PrintedSchema implements PrintedSchemaContract {
         $directives = [];
 
         foreach ($this->resolver->getDefinitions() as $directive) {
-            $directives[$directive->name] = $directive->name;
+            $directive              = "@{$directive->name}";
+            $directives[$directive] = $directive;
         }
 
         return $directives;
