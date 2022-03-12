@@ -31,6 +31,38 @@ class PrinterSettings implements Settings {
     public function getDirective(DirectiveNode $node): GraphQLDirective|LighthouseDirective {
         return $this->resolver->getInstance($node->name->value);
     }
+
+    public function isDirectiveAllowed(string $directive): bool {
+        $filter    = $this->getDirectiveFilter();
+        $resolver  = $this->getResolver();
+        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+        $isAllowed = $filter === null
+            || $filter->isAllowedDirective($resolver->getInstance($directive), $isBuiltIn);
+
+        return $isAllowed;
+    }
+
+    public function isDirectiveDefinitionAllowed(string $directive): bool {
+        // Allowed?
+        if (!$this->isDirectiveAllowed($directive)) {
+            return false;
+        }
+
+        // Definition?
+        $filter    = $this->getDirectiveDefinitionFilter();
+        $resolver  = $this->getResolver();
+        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+        $isAllowed = $isBuiltIn
+            ? ($filter !== null && $filter->isAllowedDirective($resolver->getInstance($directive), $isBuiltIn))
+            : ($filter === null || $filter->isAllowedDirective($resolver->getInstance($directive), $isBuiltIn));
+
+        // Return
+        return $isAllowed;
+    }
+
+    protected function isDirectiveBuiltIn(string $directive): bool {
+        return isset(GraphQLDirective::getInternalDirectives()[$directive]);
+    }
     // </editor-fold>
 
     // <editor-fold desc="Settings">

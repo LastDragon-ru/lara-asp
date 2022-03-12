@@ -491,11 +491,59 @@ class PrinterTest extends TestCase {
                 ],
                 (new TestSettings())
                     ->setDirectiveDefinitionFilter(
-                        static function (GraphQLDirective|LighthouseDirective $directive): bool {
-                            return $directive instanceof GraphQLDirective
+                        static function (GraphQLDirective|LighthouseDirective $directive, bool $isStandard): bool {
+                            return $isStandard === false
+                                && $directive instanceof GraphQLDirective
                                 && $directive->name !== 'codeDirective';
                         },
                     ),
+                0,
+            ],
+            TestSettings::class.' (everything)'                => [
+                [
+                    'schema'      => '~test-settings-everything.graphql',
+                    'usedTypes'   => [
+                        'Int',
+                        'Query',
+                        'String',
+                        'Boolean',
+                        'SchemaType',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaUnion',
+                        'SchemaScalar',
+                        'SchemaInterfaceB',
+                        'CodeScalar',
+                        'CodeInput',
+                        'CodeUnion',
+                        'CodeEnum',
+                        'CodeType',
+                        'CodeDirectiveEnum',
+                        'CodeDirectiveInput',
+                        'CodeDirectiveScalar',
+                        'CodeDirectiveScalarCustomClass',
+                    ],
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
+                        '@schemaDirective',
+                        '@codeDirective',
+                        '@deprecated',
+                        '@scalar',
+                        '@mock',
+                    ],
+                ],
+                (new TestSettings())
+                    ->setDirectiveFilter(static fn (): bool => true)
+                    ->setDirectiveDefinitionFilter(static fn (): bool => true),
                 0,
             ],
         ];

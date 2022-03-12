@@ -1,0 +1,260 @@
+enum CodeDirectiveEnum {
+    A
+    B
+    C
+}
+
+enum CodeEnum {
+    A
+    B
+    C
+}
+
+enum SchemaEnum {
+    A
+    @deprecated
+
+    """
+    Description
+    """
+    B
+}
+
+input CodeDirectiveInput {
+    a: Int!
+}
+
+"""
+Description
+"""
+input CodeInput
+@schemaDirective
+{
+    a: Boolean
+}
+
+input SchemaInput
+@schemaDirective
+{
+    a: CodeScalar
+    b: CodeEnum
+    c: SchemaScalar
+    d: SchemaEnum
+
+    """
+    Recursion
+    """
+    e: SchemaInput
+
+    f: [String!]
+}
+
+"""
+Lighthouse not yet support "implements" for interface...
+
+@see https://github.com/webonyx/graphql-php/issues/728
+"""
+interface SchemaInterfaceB
+@schemaDirective
+{
+    a: Boolean!
+
+    """
+    Deprecated field
+    """
+    b: [String]!
+    @deprecated
+
+    c(
+        """
+        aaa
+        """
+        a: String
+
+        """
+        bbb
+        """
+        b: [SchemaScalar!]!
+
+        c: SchemaEnum
+    ): CodeUnion
+
+    d: CodeScalar
+    e: CodeEnum
+}
+
+scalar CodeDirectiveScalar
+
+scalar CodeDirectiveScalarCustomClass
+@scalar(class: "GraphQL\\Type\\Definition\\StringType")
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar CodeScalar
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar SchemaScalar
+@scalar(class: "GraphQL\\Type\\Definition\\StringType")
+@codeDirective
+
+"""
+Description
+"""
+type CodeType
+@schemaDirective
+{
+    a: Boolean
+}
+
+type Query {
+    a: SchemaType
+    @deprecated(reason: "deprecated reason")
+    @codeDirective
+    @mock
+
+    b: SchemaEnum
+    @deprecated
+    @mock
+
+    c(
+        a: SchemaInput = {
+            a: "aaa"
+            b: A
+            c: "ccc"
+            d: A
+            e: {
+                a: "aaa"
+                b: A
+                c: "ccc"
+                d: A
+                f: ["aaa", "bbb", "ccc", "ddd"]
+            }
+        }
+    ): CodeScalar
+    @mock
+
+    d(a: SchemaInput = {}): CodeType
+    @mock
+}
+
+type SchemaType
+implements
+    & SchemaInterfaceB
+@schemaDirective
+{
+    a: Boolean!
+
+    """
+    Deprecated field
+    """
+    b: [String]!
+    @deprecated
+
+    c(
+        """
+        aaa
+        """
+        a: String
+
+        """
+        bbb
+        """
+        b: [SchemaScalar!]!
+
+        c: CodeInput
+    ): CodeUnion
+
+    d: CodeScalar
+    e: CodeEnum
+
+    f(
+        a: [String!] = [
+            "very very very long line of text"
+            "very very very long line of text"
+            "very very very long line of text"
+        ]
+    ): SchemaUnion
+}
+
+union CodeUnion =
+    | CodeType
+
+union SchemaUnion
+@schemaDirective
+=
+    | CodeType
+    | SchemaType
+
+directive @codeDirective(
+    custom: [CodeDirectiveScalarCustomClass]
+    enum: CodeDirectiveEnum
+    input: CodeDirectiveInput
+    scalar: CodeDirectiveScalar!
+)
+repeatable on
+    | INTERFACE
+    | SCALAR
+    | SCHEMA
+
+"""
+Marks an element of a GraphQL schema as no longer supported.
+"""
+directive @deprecated(
+    """
+    Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax (as specified by [CommonMark](https://commonmark.org/).
+    """
+    reason: String = "No longer supported"
+)
+on
+    | ENUM_VALUE
+    | FIELD_DEFINITION
+
+"""
+Allows you to easily hook up a resolver for an endpoint.
+"""
+directive @mock(
+    """
+    Specify a unique key for the mock resolver.
+    """
+    key: String = "default"
+)
+on
+    | FIELD_DEFINITION
+
+"""
+Reference a class implementing a scalar definition.
+"""
+directive @scalar(
+    """
+    Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
+    """
+    class: String!
+)
+on
+    | SCALAR
+
+"""
+Directive
+"""
+directive @schemaDirective(
+    """
+    Directive argument
+    """
+    message: String
+)
+on
+    | ARGUMENT_DEFINITION
+    | FIELD
+    | INPUT_OBJECT
+    | INTERFACE
+    | OBJECT
+    | SCALAR
+    | SCHEMA
+    | UNION

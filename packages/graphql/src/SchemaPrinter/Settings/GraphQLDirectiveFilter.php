@@ -11,7 +11,7 @@ class GraphQLDirectiveFilter implements DirectiveFilter {
         // empty
     }
 
-    public function isAllowedDirective(Directive|LighthouseDirective $directive): bool {
+    public function isAllowedDirective(Directive|LighthouseDirective $directive, bool $isStandard): bool {
         return $directive instanceof Directive
             && $directive->name === Directive::DEPRECATED_NAME;
     }

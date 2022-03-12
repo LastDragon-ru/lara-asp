@@ -56,18 +56,8 @@ class DirectiveNodeList extends BlockList {
     }
 
     protected function isValidBlock(Block $value): bool {
-        // Parent?
-        if (!parent::isValidBlock($value)) {
-            return false;
-        }
-
-        // Allowed?
-        $settings = $this->getSettings();
-        $filter   = $settings->getDirectiveFilter();
-        $valid    = $filter === null
-            || $filter->isAllowedDirective($settings->getDirective($value->getNode()));
-
-        return $valid;
+        return parent::isValidBlock($value)
+            && $this->getSettings()->isDirectiveAllowed($value->getNode()->name->value);
     }
 
     private function block(DirectiveNode $directive,): DirectiveNodeBlock {

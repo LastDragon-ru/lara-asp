@@ -11,8 +11,9 @@ use function explode;
 use function str_starts_with;
 
 class LighthouseDirectiveFilter implements DirectiveFilter {
-    public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive): bool {
-        return $directive instanceof GraphQLDirective
+    public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive, bool $isStandard): bool {
+        return $isStandard
+            || $directive instanceof GraphQLDirective
             || !str_starts_with($directive::class, explode('\\', BaseDirective::class)[0]);
     }
 }
