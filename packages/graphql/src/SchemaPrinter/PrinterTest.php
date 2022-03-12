@@ -179,6 +179,9 @@ class PrinterTest extends TestCase {
                         'CodeType',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Int',
+                        'Float',
                         'CodeInterface',
                         'SchemaEnumUnused',
                         'SchemaInputUnused',
@@ -215,6 +218,9 @@ class PrinterTest extends TestCase {
                         'CodeType',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Int',
+                        'Float',
                         'CodeInterface',
                         'SchemaEnumUnused',
                         'SchemaInputUnused',
@@ -259,7 +265,9 @@ class PrinterTest extends TestCase {
                         'SchemaUnionUnused',
                     ],
                     'unusedTypes' => [
-                        // empty
+                        'ID',
+                        'Int',
+                        'Float',
                     ],
                     'directives'  => [
                         '@deprecated',
@@ -293,6 +301,8 @@ class PrinterTest extends TestCase {
                         'CodeDirectiveScalarCustomClass',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Float',
                         'CodeInterface',
                         'SchemaEnumUnused',
                         'SchemaInputUnused',
@@ -333,6 +343,9 @@ class PrinterTest extends TestCase {
                         'CodeType',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Int',
+                        'Float',
                         'CodeInterface',
                         'SchemaEnumUnused',
                         'SchemaInputUnused',
@@ -374,6 +387,9 @@ class PrinterTest extends TestCase {
                         'CodeType',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Int',
+                        'Float',
                         'CodeInterface',
                         'SchemaEnumUnused',
                         'SchemaInputUnused',
@@ -418,6 +434,8 @@ class PrinterTest extends TestCase {
                         'CodeDirectiveScalarCustomClass',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Float',
                         'CodeInterface',
                         'SchemaEnumUnused',
                         'SchemaInputUnused',
@@ -469,6 +487,9 @@ class PrinterTest extends TestCase {
                         'CodeType',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Int',
+                        'Float',
                         'CodeInterface',
                         'CodeDirectiveEnum',
                         'CodeDirectiveInput',
@@ -524,6 +545,9 @@ class PrinterTest extends TestCase {
                         'String',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Int',
+                        'Float',
                         'CodeInterface',
                         'SchemaEnumUnused',
                         'SchemaInputUnused',
@@ -575,6 +599,8 @@ class PrinterTest extends TestCase {
                         'CodeDirectiveScalarCustomClass',
                     ],
                     'unusedTypes' => [
+                        'ID',
+                        'Float',
                         'CodeInterface',
                         'SchemaEnumUnused',
                         'SchemaInputUnused',

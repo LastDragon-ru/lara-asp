@@ -2,13 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema as PrintedSchemaContract;
 
 use function array_diff_key;
 
+/**
+ * @internal
+ */
 class PrintedSchema implements PrintedSchemaContract {
     public function __construct(
         protected Schema $schema,
@@ -51,7 +54,7 @@ class PrintedSchema implements PrintedSchemaContract {
         $map   = $this->schema->getTypeMap();
 
         foreach ($map as $type) {
-            if (!Type::isBuiltInType($type)) {
+            if (!Introspection::isIntrospectionType($type)) {
                 $types[$type->name] = $type->name;
             }
         }
