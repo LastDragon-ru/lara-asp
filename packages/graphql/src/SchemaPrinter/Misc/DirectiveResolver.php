@@ -33,9 +33,14 @@ class DirectiveResolver {
     protected DirectiveFactory $factory;
 
     /**
+     * @var array<string,LighthouseDirective>
+     */
+    protected array $instances;
+
+    /**
      * @var array<string,GraphQLDirective>
      */
-    protected array $directives;
+    protected array $definitions;
 
     /**
      * @param array<GraphQLDirective> $directives
@@ -46,26 +51,29 @@ class DirectiveResolver {
         protected ExecutableTypeNodeConverter $converter,
         array $directives = [],
     ) {
-        $this->factory    = new DirectiveFactory($this->converter);
-        $this->directives = [];
+        $this->factory     = new DirectiveFactory($this->converter);
+        $this->definitions = [];
 
         foreach ($directives as $directive) {
-            $this->directives[$directive->name] = $directive;
+            $this->definitions[$directive->name] = $directive;
         }
     }
 
     public function getDefinition(string $name): GraphQLDirective {
-        $directive = $this->directives[$name] ?? null;
+        $directive = $this->definitions[$name] ?? null;
 
         if (!$directive) {
             // Definition can also contain types but seems these types are not
             // added to the Schema. So we need to add them (or we will get
             // "DefinitionException : Lighthouse failed while trying to load
             // a type XXX" error)
-            $document = Parser::parse($this->locator->resolve($name)::definition());
             $node     = null;
+            $instance = $this->getInstance($name);
+            $document = $instance instanceof LighthouseDirective
+                ? Parser::parse($instance::definition())
+                : null;
 
-            foreach ($document->definitions as $definition) {
+            foreach ($document?->definitions ?? [] as $definition) {
                 if ($definition instanceof DirectiveDefinitionNode) {
                     $node = $definition;
                 } elseif ($definition instanceof TypeDefinitionNode) {
@@ -103,7 +111,8 @@ class DirectiveResolver {
             }
 
             if ($node) {
-                $directive = $this->factory->handle($node);
+                $directive                = $this->factory->handle($node);
+                $this->definitions[$name] = $directive;
             } else {
                 throw new DirectiveDefinitionNotFound($name);
             }
@@ -113,18 +122,24 @@ class DirectiveResolver {
     }
 
     public function getInstance(string $name): GraphQLDirective|LighthouseDirective {
-        return $this->directives[$name] ?? $this->locator->create($name);
+        $directive = $this->instances[$name] ?? $this->definitions[$name] ?? null;
+
+        if (!$directive) {
+            $directive              = $this->locator->create($name);
+            $this->instances[$name] = $directive;
+        }
+
+        return $directive;
     }
 
     /**
      * @return array<GraphQLDirective>
      */
     public function getDefinitions(): array {
-        $directives = $this->directives;
+        $directives = $this->definitions;
 
-        foreach ($this->locator->definitions() as $definition) {
-            $directive                    = $this->factory->handle($definition);
-            $directives[$directive->name] = $directive;
+        foreach ($this->instances as $name => $instance) {
+            $directives[$name] ??= $this->getDefinition($name);
         }
 
         return $directives;
