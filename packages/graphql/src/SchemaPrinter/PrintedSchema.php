@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
+use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
@@ -63,7 +64,7 @@ class PrintedSchema implements PrintedSchemaContract {
         $map   = $this->schema->getTypeMap();
 
         foreach ($map as $type) {
-            if (!Introspection::isIntrospectionType($type)) {
+            if ($this->isType($type)) {
                 $types[$type->name] = $type->name;
             }
         }
@@ -75,6 +76,10 @@ class PrintedSchema implements PrintedSchemaContract {
 
         // Return
         return $types;
+    }
+
+    protected function isType(Type $type): bool {
+        return !Introspection::isIntrospectionType($type);
     }
 
     /**

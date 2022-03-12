@@ -78,6 +78,10 @@ class Printer implements PrinterContract {
         }
 
         // Return
+        return $this->getPrintedSchema($resolver, $schema, $content);
+    }
+
+    protected function getPrintedSchema(DirectiveResolver $resolver, Schema $schema, Block $content): PrintedSchema {
         return new PrintedSchema($resolver, $schema, $content);
     }
 
