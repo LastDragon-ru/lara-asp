@@ -76,7 +76,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerEnums(): void {
-        $this->app->afterResolving(
+        $this->callAfterResolving(
             TypeRegistry::class,
             function (TypeRegistry $registry, Container $container): void {
                 $enums = (array) $container->make(Repository::class)->get("{$this->getName()}.enums");

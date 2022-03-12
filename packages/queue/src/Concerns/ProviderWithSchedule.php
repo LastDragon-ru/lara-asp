@@ -22,7 +22,7 @@ trait ProviderWithSchedule {
             return;
         }
 
-        $this->app->afterResolving(
+        $this->callAfterResolving(
             Schedule::class,
             static function (Schedule $schedule, Container $container) use ($jobs): void {
                 $registrator = $container->make(CronableRegistrator::class);

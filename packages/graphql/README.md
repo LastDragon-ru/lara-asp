@@ -635,7 +635,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 class Provider extends ServiceProvider {
     public function register(): void {
-        $this->app->afterResolving(
+        $this->callAfterResolving(
             TypeRegistry::class,
             static function (TypeRegistry $registry): void {
                 $registry->register(new EnumType(MyEnum::class));

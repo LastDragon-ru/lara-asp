@@ -14,7 +14,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerConfigurator(): void {
-        $this->app->afterResolving(
+        $this->callAfterResolving(
             ConfigurableQueueable::class,
             static function (ConfigurableQueueable $queueable, Container $container): void {
                 $container->make(QueueableConfigurator::class)->configure($queueable);
