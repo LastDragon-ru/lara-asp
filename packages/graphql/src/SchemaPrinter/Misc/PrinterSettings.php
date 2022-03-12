@@ -4,8 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypeFilter;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 /**
@@ -23,6 +25,25 @@ class PrinterSettings implements Settings {
     // =========================================================================
     public function getResolver(): DirectiveResolver {
         return $this->resolver;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Types">
+    // =========================================================================
+    public function isTypeDefinitionAllowed(Type $type): bool {
+        // Allowed?
+        $filter    = $this->getTypeDefinitionFilter();
+        $isBuiltIn = $this->isTypeBuiltIn($type);
+        $isAllowed = $isBuiltIn
+            ? ($filter !== null && $filter->isAllowedType($type, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedType($type, $isBuiltIn));
+
+        // Return
+        return $isAllowed;
+    }
+
+    protected function isTypeBuiltIn(Type $type): bool {
+        return Type::isBuiltInType($type);
     }
     // </editor-fold>
 
@@ -153,6 +174,10 @@ class PrinterSettings implements Settings {
 
     public function getDirectiveDefinitionFilter(): ?DirectiveFilter {
         return $this->settings->getDirectiveDefinitionFilter();
+    }
+
+    public function getTypeDefinitionFilter(): ?TypeFilter {
+        return $this->settings->getTypeDefinitionFilter();
     }
     // </editor-fold>
 }

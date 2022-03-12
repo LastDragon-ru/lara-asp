@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypeFilter;
 
 class DefaultSettings extends GraphQLSettings {
     protected string           $space                             = ' ';
@@ -25,6 +26,7 @@ class DefaultSettings extends GraphQLSettings {
     protected bool             $alwaysMultilineUnions             = true;
     protected bool             $alwaysMultilineInterfaces         = true;
     protected bool             $alwaysMultilineDirectiveLocations = true;
+    protected ?TypeFilter      $typeDefinitionFilter              = null;
     protected ?DirectiveFilter $directiveFilter                   = null;
     protected ?DirectiveFilter $directiveDefinitionFilter         = null;
 }

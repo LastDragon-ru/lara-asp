@@ -94,13 +94,9 @@ class Printer implements PrinterContract {
         $blocks = $this->getDefinitionList($settings);
 
         foreach ($schema->getTypeMap() as $type) {
-            // Standard?
-            if (!$this->isType($type)) {
-                continue;
+            if ($settings->isTypeDefinitionAllowed($type)) {
+                $blocks[] = $this->getDefinitionBlock($settings, $type);
             }
-
-            // Nope
-            $blocks[] = $this->getDefinitionBlock($settings, $type);
         }
 
         return $blocks;
@@ -163,7 +159,7 @@ class Printer implements PrinterContract {
             } else {
                 $type = $schema->getType($name);
 
-                if ($type && $this->isType($type)) {
+                if ($type && $settings->isTypeDefinitionAllowed($type)) {
                     $block        = $this->getDefinitionBlock($settings, $type);
                     $types[$name] = $block;
                 }
@@ -192,9 +188,5 @@ class Printer implements PrinterContract {
         Schema|Type|GraphQLDirective $definition,
     ): Block {
         return new DefinitionBlock($settings, $this->getLevel(), $definition);
-    }
-
-    private function isType(?Type $type): bool {
-        return $type && !Type::isBuiltInType($type);
     }
 }

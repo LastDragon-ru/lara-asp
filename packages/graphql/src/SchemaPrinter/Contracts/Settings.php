@@ -90,6 +90,11 @@ interface Settings {
     public function isAlwaysMultilineDirectiveLocations(): bool;
 
     /**
+     * Used to determine should the type definition included in output or not.
+     */
+    public function getTypeDefinitionFilter(): ?TypeFilter;
+
+    /**
      * Used to determine should the directive included in output or not.
      */
     public function getDirectiveFilter(): ?DirectiveFilter;

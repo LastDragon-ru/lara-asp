@@ -4,7 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter;
 
 use Closure;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypeFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
@@ -29,8 +31,20 @@ class TestSettings extends ImmutableSettings {
     protected bool             $alwaysMultilineUnions             = true;
     protected bool             $alwaysMultilineInterfaces         = true;
     protected bool             $alwaysMultilineDirectiveLocations = true;
+    protected ?TypeFilter      $typeDefinitionFilter              = null;
     protected ?DirectiveFilter $directiveFilter                   = null;
     protected ?DirectiveFilter $directiveDefinitionFilter         = null;
+
+    /**
+     * @param TypeFilter|Closure(Type,bool):bool|null $value
+     */
+    public function setTypeDefinitionFilter(TypeFilter|Closure|null $value): static {
+        if ($value instanceof Closure) {
+            $value = $this->makeTypeFilter($value);
+        }
+
+        return parent::setTypeDefinitionFilter($value);
+    }
 
     /**
      * @param DirectiveFilter|Closure(GraphQLDirective|LighthouseDirective,bool):bool|null $value
@@ -52,6 +66,23 @@ class TestSettings extends ImmutableSettings {
         }
 
         return parent::setDirectiveDefinitionFilter($value);
+    }
+
+    /**
+     * @param Closure(Type,bool):bool $closure
+     */
+    protected function makeTypeFilter(Closure $closure): TypeFilter {
+        return new class($closure) implements TypeFilter {
+            public function __construct(
+                protected Closure $filter,
+            ) {
+                // empty
+            }
+
+            public function isAllowedType(Type $type, bool $isStandard): bool {
+                return ($this->filter)($type, $isStandard);
+            }
+        };
     }
 
     /**

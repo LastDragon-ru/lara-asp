@@ -23,6 +23,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 use function array_values;
+use function str_starts_with;
 
 /**
  * @internal
@@ -499,6 +500,56 @@ class PrinterTest extends TestCase {
                     ),
                 0,
             ],
+            TestSettings::class.' (TypeDefinitionFilter)'      => [
+                [
+                    'schema'      => '~test-settings-type-definition-filter.graphql',
+                    'usedTypes'   => [
+                        'Boolean',
+                        'CodeDirectiveEnum',
+                        'CodeDirectiveInput',
+                        'CodeDirectiveScalar',
+                        'CodeDirectiveScalarCustomClass',
+                        'CodeEnum',
+                        'CodeInput',
+                        'CodeScalar',
+                        'CodeType',
+                        'CodeUnion',
+                        'Query',
+                        'SchemaEnum',
+                        'SchemaInput',
+                        'SchemaInterfaceB',
+                        'SchemaScalar',
+                        'SchemaType',
+                        'SchemaUnion',
+                        'String',
+                    ],
+                    'unusedTypes' => [
+                        'CodeInterface',
+                        'SchemaEnumUnused',
+                        'SchemaInputUnused',
+                        'SchemaInterfaceA',
+                        'SchemaInterfaceUnused',
+                        'SchemaScalarUnused',
+                        'SchemaTypeUnused',
+                        'SchemaUnionUnused',
+                    ],
+                    'directives'  => [
+                        '@schemaDirective',
+                        '@codeDirective',
+                        '@deprecated',
+                        '@scalar',
+                        '@mock',
+                    ],
+                ],
+                (new TestSettings())
+                    ->setTypeDefinitionFilter(
+                        static function (Type $type, bool $isStandard): bool {
+                            return $isStandard === false
+                                && !str_starts_with($type->name, 'Code');
+                        },
+                    ),
+                0,
+            ],
             TestSettings::class.' (everything)'                => [
                 [
                     'schema'      => '~test-settings-everything.graphql',
@@ -542,6 +593,7 @@ class PrinterTest extends TestCase {
                     ],
                 ],
                 (new TestSettings())
+                    ->setTypeDefinitionFilter(static fn (): bool => true)
                     ->setDirectiveFilter(static fn (): bool => true)
                     ->setDirectiveDefinitionFilter(static fn (): bool => true),
                 0,

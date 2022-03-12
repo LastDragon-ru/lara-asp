@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 use Closure;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypeFilter;
 
 abstract class ImmutableSettings implements Settings {
     protected string           $space;
@@ -27,6 +28,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $alwaysMultilineUnions;
     protected bool             $alwaysMultilineInterfaces;
     protected bool             $alwaysMultilineDirectiveLocations;
+    protected ?TypeFilter      $typeDefinitionFilter;
     protected ?DirectiveFilter $directiveFilter;
     protected ?DirectiveFilter $directiveDefinitionFilter;
 
@@ -244,6 +246,16 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    public function getTypeDefinitionFilter(): ?TypeFilter {
+        return $this->typeDefinitionFilter;
+    }
+
+    public function setTypeDefinitionFilter(?TypeFilter $value): static {
+        return $this->set(static function (self $settings) use ($value): void {
+            $settings->typeDefinitionFilter = $value;
+        });
+    }
+
     public function getDirectiveDefinitionFilter(): ?DirectiveFilter {
         return $this->directiveDefinitionFilter;
     }
@@ -286,6 +298,7 @@ abstract class ImmutableSettings implements Settings {
             ->setAlwaysMultilineUnions($settings->isAlwaysMultilineUnions())
             ->setAlwaysMultilineInterfaces($settings->isAlwaysMultilineInterfaces())
             ->setAlwaysMultilineDirectiveLocations($settings->isAlwaysMultilineDirectiveLocations())
+            ->setTypeDefinitionFilter($settings->getTypeDefinitionFilter())
             ->setDirectiveDefinitionFilter($settings->getDirectiveDefinitionFilter())
             ->setDirectiveFilter($settings->getDirectiveFilter());
     }

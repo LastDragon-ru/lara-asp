@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypeFilter;
 
 /**
  * These settings close as possible to {@see \GraphQL\Utils\SchemaPrinter}.
@@ -28,6 +29,7 @@ class GraphQLSettings extends ImmutableSettings {
     protected bool             $alwaysMultilineUnions             = false;
     protected bool             $alwaysMultilineInterfaces         = false;
     protected bool             $alwaysMultilineDirectiveLocations = false;
+    protected ?TypeFilter      $typeDefinitionFilter              = null;
     protected ?DirectiveFilter $directiveFilter                   = null;
     protected ?DirectiveFilter $directiveDefinitionFilter         = null;
 
