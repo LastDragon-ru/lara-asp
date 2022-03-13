@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\LighthouseDirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
@@ -28,9 +29,9 @@ class TestCase extends PackageTestCase {
         return parent::getContainer();
     }
 
-    protected function getGraphQLSchemaPrinter(): Printer {
+    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
         return $this->app->make(Printer::class)->setSettings(
-            (new TestSettings())->setDirectiveDefinitionFilter(new LighthouseDirectiveFilter()),
+            $settings ?? (new TestSettings())->setDirectiveDefinitionFilter(new LighthouseDirectiveFilter()),
         );
     }
 }

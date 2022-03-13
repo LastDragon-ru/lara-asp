@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use SplFileInfo;
 
 class GraphQLExpectedSchema {
@@ -19,6 +20,7 @@ class GraphQLExpectedSchema {
         protected ?array $unusedTypes = null,
         protected ?array $usedDirectives = null,
         protected ?array $unusedDirectives = null,
+        protected ?Settings $settings = null,
     ) {
         // empty
     }
@@ -87,6 +89,16 @@ class GraphQLExpectedSchema {
      */
     public function setUnusedDirectives(?array $unusedDirectives): static {
         $this->unusedDirectives = $unusedDirectives;
+
+        return $this;
+    }
+
+    public function getSettings(): ?Settings {
+        return $this->settings;
+    }
+
+    public function setSettings(?Settings $settings): static {
+        $this->settings = $settings;
 
         return $this;
     }

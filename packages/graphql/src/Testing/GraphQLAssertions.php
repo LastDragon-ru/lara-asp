@@ -6,6 +6,7 @@ use GraphQL\Type\Schema;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
@@ -35,18 +36,21 @@ trait GraphQLAssertions {
         string $message = '',
     ): void {
         // GraphQL
-        $actual = $this->printGraphQLSchema($schema);
-        $output = $expected;
+        $output   = $expected;
+        $settings = null;
 
         if ($output instanceof GraphQLExpectedSchema) {
-            $output = $output->getSchema();
+            $settings = $output->getSettings();
+            $output   = $output->getSchema();
         }
 
         if ($output instanceof PrintedSchema || $output instanceof Schema) {
-            $output = (string) $this->printGraphQLSchema($output);
+            $output = (string) $this->printGraphQLSchema($output, $settings);
         } else {
             $output = Args::content($output);
         }
+
+        $actual = $this->printGraphQLSchema($schema, $settings);
 
         self::assertEquals($output, (string) $actual, $message);
 
@@ -149,7 +153,10 @@ trait GraphQLAssertions {
         return $schema;
     }
 
-    protected function printGraphQLSchema(PrintedSchema|Schema|SplFileInfo|string $schema): PrintedSchema {
+    protected function printGraphQLSchema(
+        PrintedSchema|Schema|SplFileInfo|string $schema,
+        Settings $settings = null,
+    ): PrintedSchema {
         if ($schema instanceof PrintedSchema) {
             return $schema;
         }
@@ -158,15 +165,15 @@ trait GraphQLAssertions {
             $schema = $this->getGraphQLSchema($schema);
         }
 
-        return $this->getGraphQLSchemaPrinter()->print($schema);
+        return $this->getGraphQLSchemaPrinter($settings)->print($schema);
     }
 
-    protected function printDefaultGraphQLSchema(): PrintedSchema {
-        return $this->printGraphQLSchema($this->getDefaultGraphQLSchema());
+    protected function printDefaultGraphQLSchema(Settings $settings = null): PrintedSchema {
+        return $this->printGraphQLSchema($this->getDefaultGraphQLSchema(), $settings);
     }
 
-    protected function getGraphQLSchemaPrinter(): Printer {
-        return $this->app->make(Printer::class)->setSettings(new TestSettings());
+    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
+        return $this->app->make(Printer::class)->setSettings($settings ?? new TestSettings());
     }
     // </editor-fold>
 }
