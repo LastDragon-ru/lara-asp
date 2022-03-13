@@ -21,28 +21,13 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Mockery\MockInterface;
-use Nuwave\Lighthouse\Pagination\PaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
-
-use function array_merge;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive
  */
 class DirectiveTest extends TestCase {
-    // <editor-fold desc="Prepare">
-    // =========================================================================
-    /**
-     * @inheritDoc
-     */
-    protected function getPackageProviders(mixed $app): array {
-        return array_merge(parent::getPackageProviders($app), [
-            PaginationServiceProvider::class,
-        ]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -273,7 +258,7 @@ class DirectiveTest extends TestCase {
      */
     public function dataProviderManipulateArgDefinition(): array {
         return [
-            'full'        => [
+            'full' => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
                         $test->getTestData()->file('~full-expected.graphql'),
@@ -282,9 +267,6 @@ class DirectiveTest extends TestCase {
                             'Properties',
                             'Nested',
                             'Value',
-                            'PaginatorInfo',
-                            'SimplePaginatorInfo',
-                            'PageInfo',
                             'String',
                             'Float',
                             'Int',
@@ -292,18 +274,6 @@ class DirectiveTest extends TestCase {
                         ]);
                 },
                 '~full.graphql',
-            ],
-            'placeholder' => [
-                static function (self $test): GraphQLExpectedSchema {
-                    return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~placeholder-expected.graphql'),
-                    ))
-                        ->setUnusedTypes([
-                            'PaginateType',
-                            'Float',
-                        ]);
-                },
-                '~placeholder.graphql',
             ],
         ];
     }
