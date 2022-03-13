@@ -1,3 +1,40 @@
+## [0.13.0](https://github.com/LastDragon-ru/lara-asp/compare/0.12.0...0.13.0) (2022-03-13)
+
+| ☣    | Breaking changes |
+|:-----:|:-----------------|
+
+### Features
+
+* **graphql/SchemaPrinter:** `DirectiveResolver::getDefinitions()` will also return standard directives (to be consistent with types). ([633571b](https://github.com/LastDragon-ru/lara-asp/commit/633571be3c932e6f2392ae9d45cbeecf835eac88)) ☣
+* **graphql/SchemaPrinter:** `GraphQLExpectedSchema` can define own `Settings`. ([d6bae80](https://github.com/LastDragon-ru/lara-asp/commit/d6bae80fae05a17cb6a2b3c0d359af097ac87065))
+* **graphql/SchemaPrinter:** `IntrospectionPrinter` will return only introspection types as unused. ([0601bb8](https://github.com/LastDragon-ru/lara-asp/commit/0601bb8c5dfd867eeb7726343afcd8694608a644))
+* **graphql/SchemaPrinter:** `PrintedSchema::getUnusedTypes()` will also return standard types. ([3402e22](https://github.com/LastDragon-ru/lara-asp/commit/3402e229018ee0ee69df47d342ebb4358f8673f4))
+* **graphql/SchemaPrinter:** `SchemaPrinter` will use `DirectiveFilter` for standard directives too. ([e33f957](https://github.com/LastDragon-ru/lara-asp/commit/e33f9572b92406b2790eb4061d677dfc3aac408f)) ☣
+* **graphql/SchemaPrinter:** Added `PrintedSchema` contract. ([2604f35](https://github.com/LastDragon-ru/lara-asp/commit/2604f35087dde8f6abb2841455a2e04f27898ff0))
+* **graphql/SchemaPrinter:** Added `PrintedSchema::getUnusedDirectives()` that will return all unused directives. ([d1a8130](https://github.com/LastDragon-ru/lara-asp/commit/d1a8130e442f9e5c5ffba98ece4dde6d20378753))
+* **graphql/SchemaPrinter:** Added `Settings::getDirectiveDefinitionFilter()` that allow exclude Directive Definitions. ([6583742](https://github.com/LastDragon-ru/lara-asp/commit/6583742e17d1554c3a640ef705fd042c1e9b92c8)) ☣
+* **graphql/SchemaPrinter:** Added `Settings::getTypeDefinitionFilter()` that allows filter out type definitions. ([504a252](https://github.com/LastDragon-ru/lara-asp/commit/504a252c7f5ba7913151eae1323f169fd1ed6295)) ☣
+* **graphql:** `GraphQLAssertions::assertGraphQLSchemaEquals()` update to allow `PrintedSchema` and `Schema` as `$expected`. ([bbff36b](https://github.com/LastDragon-ru/lara-asp/commit/bbff36b24ef9b63b76211d5a3e5bfd0e0811a82e)) ☣
+
+
+### Bug Fixes
+
+* **graphql/`@sortBy`:** `_` will work with [`@paginate`](https://lighthouse-php.com/5/api-reference/directives.html#paginate). ([ca43d21](https://github.com/LastDragon-ru/lara-asp/commit/ca43d211bf51df0b31f828486e7243d6479c286c)), closes [#12](https://github.com/LastDragon-ru/lara-asp/issues/12) ☣
+* **graphql/SchemaPrinter:** `GraphQLAssertions::assertGraphQLSchemaEquals()` will not interpret empty used/unused types/directives lists as "skip assert" (assertion will be skipped only if `null`). ([b722c1c](https://github.com/LastDragon-ru/lara-asp/commit/b722c1cafb7d731f67293ebed0723b83634c0031)) ☣
+* **graphql/SchemaPrinter:** `GraphQLAssertions::assertGraphQLSchemaEquals()` will not print expected schema when not necessary. ([1cffe6a](https://github.com/LastDragon-ru/lara-asp/commit/1cffe6ad88bce7ef7c5b19b1fd699f61c92a7e4a))
+* **testing:** registration of `StrictAssertEquals`. ([d6e7b50](https://github.com/LastDragon-ru/lara-asp/commit/d6e7b50cab9a50dc77ecbcd5a7124fa70a782133))
+
+
+### Performance Improvements
+
+* **graphql/SchemaPrinter:** `DirectiveResolver` will not load all lighthouse's directives (because they are not needed + it is very slow) and will cache definitions/instances. ([b61a248](https://github.com/LastDragon-ru/lara-asp/commit/b61a248a4f9890d3a818fccee1313caddf0073d3)) ☣
+
+
+### Code Refactoring
+
+* **graphql:** Minimal version of "nuwave/lighthouse" set to `^5.8.0`. ([25816cc](https://github.com/LastDragon-ru/lara-asp/commit/25816ccf2bd7972f9bd254a30e1d839c04a16985)) ☣
+
+
 ## [0.12.0](https://github.com/LastDragon-ru/lara-asp/compare/0.11.0...0.12.0) (2022-02-27)
 
 | ☣    | Breaking changes |
