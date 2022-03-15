@@ -14,11 +14,11 @@ trait ProviderWithTranslations {
 
     protected function bootTranslations(): void {
         $package = $this->getName();
-        $path    = $this->getPath('../resources/lang');
+        $path    = $this->getPath('../lang');
 
         $this->loadTranslationsFrom($path, $package);
         $this->publishes([
-            $path => $this->app->resourcePath("lang/vendor/{$package}"),
+            $path => $this->app->langPath("vendor/{$package}"),
         ], 'translations');
     }
 }
