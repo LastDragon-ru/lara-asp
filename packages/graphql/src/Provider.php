@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Repository as MetadataRepository;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Usage;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
