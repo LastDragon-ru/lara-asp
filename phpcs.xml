@@ -27,6 +27,7 @@
     <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
     <rule ref="Generic.Classes.OpeningBraceSameLine"/>
     <rule ref="Generic.Formatting.MultipleStatementAlignment"/>
+    <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
     <rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
     <rule ref="Squiz.Strings.ConcatenationSpacing">
         <properties>
@@ -130,4 +131,5 @@
             <property name="allowDocCommentAboveReturn" value="true"/>
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.Commenting.DeprecatedAnnotationDeclaration"/>
 </ruleset>
