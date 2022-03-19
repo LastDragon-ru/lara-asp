@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -27,6 +28,7 @@ class Builder {
     protected array $relations = [
         BelongsTo::class,
         HasOne::class,
+        HasMany::class,
         MorphOne::class,
         HasOneThrough::class,
     ];
@@ -159,7 +161,7 @@ class Builder {
                     ? "{$parentAlias}.{$relation->getForeignKeyName()}"
                     : $relation->getQualifiedForeignKeyName(),
             );
-        } elseif ($relation instanceof HasOne) {
+        } elseif ($relation instanceof HasOne || $relation instanceof HasMany) {
             $builder = $builder->joinSub(
                 $relation->getQuery(),
                 $currentAlias,

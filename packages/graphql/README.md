@@ -453,10 +453,11 @@ There are three types of operators:
 
 The main feature - the ability to sort results by relation properties, at the moment supported the following relation types:
 
-- `HasOne` (https://laravel.com/docs/8.x/eloquent-relationships#one-to-one)
-- `BelongsTo` (https://laravel.com/docs/8.x/eloquent-relationships#one-to-many-inverse)
-- `MorphOne` (https://laravel.com/docs/8.x/eloquent-relationships#one-to-one-polymorphic-relations)
-- `HasOneThrough` (https://laravel.com/docs/8.x/eloquent-relationships#has-one-through)
+- `HasOne` (https://laravel.com/docs/eloquent-relationships#one-to-one)
+- `HasMany` (https://laravel.com/docs/eloquent-relationships#one-to-many)
+- `BelongsTo` (https://laravel.com/docs/eloquent-relationships#one-to-many-inverse)
+- `MorphOne` (https://laravel.com/docs/eloquent-relationships#one-to-one-polymorphic-relations)
+- `HasOneThrough` (https://laravel.com/docs/eloquent-relationships#has-one-through)
 
 
 How to use:
@@ -565,7 +566,7 @@ input UsersSort {
 
 ## Scout
 
-[Scout](https://laravel.com/docs/8.x/scout) is also supported 🤩 (tested on v9). By default `@sortBy` will convert nested/related properties into dot string: `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`ScoutColumnResolver`](./src/SortBy/Contracts/ScoutColumnResolver.php):
+[Scout](https://laravel.com/docs/scout) is also supported 🤩 (tested on v9). By default `@sortBy` will convert nested/related properties into dot string: `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`ScoutColumnResolver`](./src/SortBy/Contracts/ScoutColumnResolver.php):
 
 ```php
 // AppProvider

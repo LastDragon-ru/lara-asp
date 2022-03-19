@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
@@ -85,10 +86,11 @@ class BuilderTest extends TestCase {
                 'unsupported'        => [
                     new RelationUnsupported(
                         'unsupported',
-                        HasMany::class,
+                        MorphToMany::class,
                         [
                             BelongsTo::class,
                             HasOne::class,
+                            HasMany::class,
                             MorphOne::class,
                             HasOneThrough::class,
                         ],
@@ -308,6 +310,99 @@ class BuilderTest extends TestCase {
                         new Clause(['hasOneB', 'created_at'], 'desc'),
                         new Clause(['hasOneB', 'hasOneC', 'name'], 'desc'),
                         new Clause(['hasOneB', 'hasOneC', 'created_at'], 'desc'),
+                        new Clause(['name'], 'asc'),
+                    ],
+                ],
+                HasMany::class       => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "table_a"
+                            order by
+                                (
+                                    select
+                                        "table_b"."name"
+                                    from
+                                        "table_b"
+                                    where
+                                        "table_a"."id" = "table_b"."model_a_id"
+                                        and "ModelA_hasManyB" = ?
+                                    order by
+                                        "table_b"."name" asc
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "table_b"."created_at"
+                                    from
+                                        "table_b"
+                                    where
+                                        "table_a"."id" = "table_b"."model_a_id"
+                                        and "ModelA_hasManyB" = ?
+                                    order by
+                                        "table_b"."created_at" desc
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "sort_by_hasManyC"."name"
+                                    from
+                                        "table_b"
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_c"
+                                    ) as "sort_by_hasManyC" on "sort_by_hasManyC"."model_b_id" = "table_b"."id"
+                                    where
+                                        "table_a"."id" = "table_b"."model_a_id"
+                                        and "ModelA_hasManyB" = ?
+                                    order by
+                                        "sort_by_hasManyC"."name" desc
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "sort_by_hasManyC"."created_at"
+                                    from
+                                        "table_b"
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_c"
+                                    ) as "sort_by_hasManyC" on "sort_by_hasManyC"."model_b_id" = "table_b"."id"
+                                    where
+                                        "table_a"."id" = "table_b"."model_a_id"
+                                        and "ModelA_hasManyB" = ?
+                                    order by
+                                        "sort_by_hasManyC"."created_at" desc
+                                    limit
+                                        1
+                                ) desc,
+                                "name" asc
+                            SQL
+                        ,
+                        'bindings' => [
+                            'ModelA_hasManyB_value',
+                            'ModelA_hasManyB_value',
+                            'ModelA_hasManyB_value',
+                            'ModelA_hasManyB_value',
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return SortBuilderTest__ModelA::query();
+                    },
+                    [
+                        new Clause(['hasManyB', 'name'], 'asc'),
+                        new Clause(['hasManyB', 'created_at'], 'desc'),
+                        new Clause(['hasManyB', 'hasManyC', 'name'], 'desc'),
+                        new Clause(['hasManyB', 'hasManyC', 'created_at'], 'desc'),
                         new Clause(['name'], 'asc'),
                     ],
                 ],
@@ -557,6 +652,12 @@ class SortBuilderTest__ModelA extends Model {
             ->where('ModelA_hasOneB', '=', 'ModelA_hasOneB_value');
     }
 
+    public function hasManyB(): HasMany {
+        return $this
+            ->hasMany(SortBuilderTest__ModelB::class, 'model_a_id')
+            ->where('ModelA_hasManyB', '=', 'ModelA_hasManyB_value');
+    }
+
     public function morphOneB(): MorphOne {
         return $this
             ->morphOne(SortBuilderTest__ModelB::class, 'morphable_a')
@@ -574,8 +675,8 @@ class SortBuilderTest__ModelA extends Model {
         );
     }
 
-    public function unsupported(): HasMany {
-        return $this->hasMany(SortBuilderTest__ModelB::class);
+    public function unsupported(): MorphToMany {
+        return $this->morphedByMany(SortBuilderTest__ModelB::class, 'test');
     }
 }
 
@@ -605,6 +706,10 @@ class SortBuilderTest__ModelB extends Model {
 
     public function hasOneC(): HasOne {
         return $this->hasOne(SortBuilderTest__ModelC::class, 'model_b_id');
+    }
+
+    public function hasManyC(): HasMany {
+        return $this->hasMany(SortBuilderTest__ModelC::class, 'model_b_id');
     }
 
     public function morphOneC(): MorphOne {
