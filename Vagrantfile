@@ -115,6 +115,24 @@ EOT
     sudo hostnamectl set-hostname #{config.vm.hostname}
   SHELL
 
+  config.vm.provision "os:multipath-fix", type: "shell", privileged: false, inline: <<-SHELL
+    # Fix for
+    # sdb: failed to get udev uid: Invalid argument
+    # sdb: failed to get unknown uid: Invalid argument
+    # sdb: failed to get path uid
+
+    sudo tee -a /etc/multipath.conf > /dev/null <<"EOT"
+blacklist {
+    device {
+        vendor "VBOX"
+        product "HARDDISK"
+    }
+}
+EOT
+
+    sudo systemctl restart multipathd
+  SHELL
+
   config.vm.provision "user:profile", type: "shell", privileged: false, inline: <<-SHELL
     if ! grep -q "cd /project" ~/.profile; then
       echo "cd /project >& /dev/null" >> ~/.profile
