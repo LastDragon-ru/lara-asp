@@ -129,6 +129,8 @@ class BuilderTest extends TestCase {
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
                                         and "ModelA_belongsToB" = ?
+                                    order by
+                                        "table_b"."name" asc
                                     limit
                                         1
                                 ) asc,
@@ -140,6 +142,8 @@ class BuilderTest extends TestCase {
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
                                         and "ModelA_belongsToB" = ?
+                                    order by
+                                        "table_b"."created_at" desc
                                     limit
                                         1
                                 ) desc,
@@ -148,16 +152,18 @@ class BuilderTest extends TestCase {
                                         "sort_by_belongsToC"."name"
                                     from
                                         "table_b"
-                                        inner join (
-                                            select
-                                                *
-                                            from
-                                                "table_c"
-                                        ) as "sort_by_belongsToC"
-                                            on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_c"
+                                    ) as "sort_by_belongsToC"
+                                        on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
                                         and "ModelA_belongsToB" = ?
+                                    order by
+                                        "sort_by_belongsToC"."name" desc
                                     limit
                                         1
                                 ) desc,
@@ -166,26 +172,27 @@ class BuilderTest extends TestCase {
                                         "sort_by_belongsToC_belongsToA"."created_at"
                                     from
                                         "table_b"
-                                        inner join (
-                                            select
-                                                *
-                                            from
-                                                "table_c"
-                                        ) as "sort_by_belongsToC"
-                                            on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
-                                        inner join (
-                                            select
-                                                *
-                                            from
-                                                "table_a"
-                                            where
-                                                "ModelC_belongsToA" = ?
-                                        ) as "sort_by_belongsToC_belongsToA"
-                                            on "sort_by_belongsToC_belongsToA"."id"
-                                                = "sort_by_belongsToC"."belongs_to_a_id"
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_c"
+                                    ) as "sort_by_belongsToC"
+                                        on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_a"
+                                        where
+                                            "ModelC_belongsToA" = ?
+                                    ) as "sort_by_belongsToC_belongsToA"
+                                        on "sort_by_belongsToC_belongsToA"."id" = "sort_by_belongsToC"."belongs_to_a_id"
                                     where
                                         "table_a"."belongs_to_b_id" = "table_b"."id"
                                         and "ModelA_belongsToB" = ?
+                                    order by
+                                        "sort_by_belongsToC_belongsToA"."created_at" desc
                                     limit
                                         1
                                 ) desc,
@@ -227,6 +234,8 @@ class BuilderTest extends TestCase {
                                     where
                                         "table_a"."id" = "table_b"."model_a_id"
                                         and "ModelA_hasOneB" = ?
+                                    order by
+                                        "table_b"."name" asc
                                     limit
                                         1
                                 ) asc,
@@ -238,6 +247,8 @@ class BuilderTest extends TestCase {
                                     where
                                         "table_a"."id" = "table_b"."model_a_id"
                                         and "ModelA_hasOneB" = ?
+                                    order by
+                                        "table_b"."created_at" desc
                                     limit
                                         1
                                 ) desc,
@@ -246,15 +257,17 @@ class BuilderTest extends TestCase {
                                         "sort_by_hasOneC"."name"
                                     from
                                         "table_b"
-                                        inner join (
-                                            select
-                                                *
-                                            from
-                                                "table_c"
-                                        ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_c"
+                                    ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
                                     where
                                         "table_a"."id" = "table_b"."model_a_id"
                                         and "ModelA_hasOneB" = ?
+                                    order by
+                                        "sort_by_hasOneC"."name" desc
                                     limit
                                         1
                                 ) desc,
@@ -263,15 +276,17 @@ class BuilderTest extends TestCase {
                                         "sort_by_hasOneC"."created_at"
                                     from
                                         "table_b"
-                                        inner join (
-                                            select
-                                                *
-                                            from
-                                                "table_c"
-                                        ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_c"
+                                    ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
                                     where
                                         "table_a"."id" = "table_b"."model_a_id"
                                         and "ModelA_hasOneB" = ?
+                                    order by
+                                        "sort_by_hasOneC"."created_at" desc
                                     limit
                                         1
                                 ) desc,
@@ -313,6 +328,8 @@ class BuilderTest extends TestCase {
                                         "table_a"."id" = "table_b"."morphable_a_id"
                                         and "table_b"."morphable_a_type" = ?
                                         and "ModelA_morphOneB" = ?
+                                    order by
+                                        "table_b"."name" asc
                                     limit
                                         1
                                 ) asc,
@@ -325,6 +342,8 @@ class BuilderTest extends TestCase {
                                         "table_a"."id" = "table_b"."morphable_a_id"
                                         and "table_b"."morphable_a_type" = ?
                                         and "ModelA_morphOneB" = ?
+                                    order by
+                                        "table_b"."created_at" desc
                                     limit
                                         1
                                 ) desc,
@@ -333,18 +352,20 @@ class BuilderTest extends TestCase {
                                         "sort_by_morphOneC"."name"
                                     from
                                         "table_b"
-                                        inner join (
-                                            select
-                                                *
-                                            from
-                                                "table_c"
-                                        ) as "sort_by_morphOneC"
-                                            on "sort_by_morphOneC"."morphable_b_id" = "table_b"."id"
-                                        and "sort_by_morphOneC"."morphable_b_type" = ?
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_c"
+                                    ) as "sort_by_morphOneC"
+                                        on "sort_by_morphOneC"."morphable_b_id" = "table_b"."id"
+                                            and "sort_by_morphOneC"."morphable_b_type" = ?
                                     where
                                         "table_a"."id" = "table_b"."morphable_a_id"
                                         and "table_b"."morphable_a_type" = ?
                                         and "ModelA_morphOneB" = ?
+                                    order by
+                                        "sort_by_morphOneC"."name" desc
                                     limit
                                         1
                                 ) desc,
@@ -353,18 +374,20 @@ class BuilderTest extends TestCase {
                                         "sort_by_morphOneC"."created_at"
                                     from
                                         "table_b"
-                                        inner join (
-                                            select
-                                                *
-                                            from
-                                                "table_c"
-                                        ) as "sort_by_morphOneC"
-                                            on "sort_by_morphOneC"."morphable_b_id" = "table_b"."id"
-                                        and "sort_by_morphOneC"."morphable_b_type" = ?
+                                    inner join (
+                                        select
+                                            *
+                                        from
+                                            "table_c"
+                                    ) as "sort_by_morphOneC"
+                                        on "sort_by_morphOneC"."morphable_b_id" = "table_b"."id"
+                                            and "sort_by_morphOneC"."morphable_b_type" = ?
                                     where
                                         "table_a"."id" = "table_b"."morphable_a_id"
                                         and "table_b"."morphable_a_type" = ?
                                         and "ModelA_morphOneB" = ?
+                                    order by
+                                        "sort_by_morphOneC"."created_at" desc
                                     limit
                                         1
                                 ) desc,
@@ -411,6 +434,8 @@ class BuilderTest extends TestCase {
                                         inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
                                     where
                                         "table_a"."local_key" = "table_b"."first_key"
+                                    order by
+                                        "table_c"."name" asc
                                     limit
                                         1
                                 ) asc,
@@ -422,6 +447,8 @@ class BuilderTest extends TestCase {
                                         inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
                                     where
                                         "table_a"."local_key" = "table_b"."first_key"
+                                    order by
+                                        "table_c"."created_at" desc
                                     limit
                                         1
                                 ) desc,
@@ -430,20 +457,21 @@ class BuilderTest extends TestCase {
                                         "sort_by_hasOneThroughA"."name"
                                     from
                                         "table_c"
-                                        inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
-                                        inner join (
-                                            select
-                                                "table_b"."id" as "sort_by_hasOneThroughA_key",
-                                                "table_a".*
-                                            from
-                                                "table_a"
-                                                inner join "table_b"
-                                                    on "table_b"."second_local_key" = "table_a"."second_key"
-                                        ) as "sort_by_hasOneThroughA"
-                                            on "sort_by_hasOneThroughA"."sort_by_hasOneThroughA_key"
-                                                   = "table_c"."local_key"
+                                    inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
+                                    inner join (
+                                        select
+                                            "table_b"."id" as "sort_by_hasOneThroughA_key",
+                                            "table_a".*
+                                        from
+                                            "table_a"
+                                            inner join "table_b"
+                                                on "table_b"."second_local_key" = "table_a"."second_key"
+                                    ) as "sort_by_hasOneThroughA"
+                                        on "sort_by_hasOneThroughA"."sort_by_hasOneThroughA_key" = "table_c"."local_key"
                                     where
                                         "table_a"."local_key" = "table_b"."first_key"
+                                    order by
+                                        "sort_by_hasOneThroughA"."name" desc
                                     limit
                                         1
                                 ) desc,
@@ -452,20 +480,21 @@ class BuilderTest extends TestCase {
                                         "sort_by_hasOneThroughA"."created_at"
                                     from
                                         "table_c"
-                                        inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
-                                        inner join (
-                                            select
-                                                "table_b"."id" as "sort_by_hasOneThroughA_key",
-                                                "table_a".*
-                                            from
-                                                "table_a"
-                                                inner join "table_b"
-                                                    on "table_b"."second_local_key" = "table_a"."second_key"
-                                        ) as "sort_by_hasOneThroughA"
-                                            on "sort_by_hasOneThroughA"."sort_by_hasOneThroughA_key"
-                                                   = "table_c"."local_key"
+                                    inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
+                                    inner join (
+                                        select
+                                            "table_b"."id" as "sort_by_hasOneThroughA_key",
+                                            "table_a".*
+                                        from
+                                            "table_a"
+                                            inner join "table_b"
+                                                on "table_b"."second_local_key" = "table_a"."second_key"
+                                    ) as "sort_by_hasOneThroughA"
+                                        on "sort_by_hasOneThroughA"."sort_by_hasOneThroughA_key" = "table_c"."local_key"
                                     where
                                         "table_a"."local_key" = "table_b"."first_key"
+                                    order by
+                                        "sort_by_hasOneThroughA"."created_at" desc
                                     limit
                                         1
                                 ) desc,

@@ -49,7 +49,7 @@ class Builder {
             $direction = $clause->getDirection();
 
             if ($relation) {
-                $column = $this->processRelation($builder, $relation, $column);
+                $column = $this->processRelation($builder, $relation, $column, $direction);
             }
 
             // Order
@@ -69,7 +69,12 @@ class Builder {
     /**
      * @param non-empty-array<string> $relations
      */
-    protected function processRelation(EloquentBuilder $builder, array $relations, string $column): EloquentBuilder {
+    protected function processRelation(
+        EloquentBuilder $builder,
+        array $relations,
+        string $column,
+        ?string $direction,
+    ): EloquentBuilder {
         // Unfortunately `Builder::withAggregate()` doesn't supported nested
         // relations...
         $root     = array_shift($relations);
@@ -91,9 +96,19 @@ class Builder {
         }
 
         // We need only one row
-        $query = $query
-            ->select("{$alias}.{$column}")
+        $qualified = "{$alias}.{$column}";
+        $query     = $query
+            ->select($qualified)
             ->reorder()
+            ->when(
+                $direction,
+                static function (EloquentBuilder $builder, string $direction) use ($qualified): EloquentBuilder {
+                    return $builder->orderBy($qualified, $direction);
+                },
+                static function (EloquentBuilder $builder) use ($qualified): EloquentBuilder {
+                    return $builder->orderBy($qualified);
+                },
+            )
             ->limit(1);
 
         // Return
