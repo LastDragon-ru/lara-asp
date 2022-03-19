@@ -19,22 +19,6 @@ class EloquentBuilderMixinTest extends TestCase {
     use WithTestObject;
 
     /**
-     * @covers ::getDefaultKeyName
-     */
-    public function testGetDefaultKeyName(): void {
-        $model = new class() extends Model {
-            /**
-             * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-             * @var string
-             */
-            protected $primaryKey = 'idddd';
-        };
-
-        self::assertTrue(Builder::hasGlobalMacro('getDefaultKeyName'));
-        self::assertEquals('idddd', $model->query()->getDefaultKeyName());
-    }
-
-    /**
      * @covers ::getChunkedIterator
      */
     public function testIterator(): void {

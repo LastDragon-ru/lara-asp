@@ -6,17 +6,11 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use LastDragon_ru\LaraASP\Eloquent\Mixins\EloquentBuilderMixin;
-use LastDragon_ru\LaraASP\Eloquent\Mixins\QueryBuilderMixin;
 
 use function class_exists;
 
-if (class_exists(QueryBuilder::class)) {
-    QueryBuilder::mixin(new QueryBuilderMixin());
-}
-
-if (class_exists(EloquentBuilder::class)) {
-    EloquentBuilder::mixin(new EloquentBuilderMixin());
+if (class_exists(Builder::class)) {
+    Builder::mixin(new EloquentBuilderMixin());
 }
