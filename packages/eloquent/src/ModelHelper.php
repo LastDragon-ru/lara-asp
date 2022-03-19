@@ -16,22 +16,29 @@ use function in_array;
 use function is_a;
 use function is_string;
 
+/**
+ * @template TModel of Model
+ */
 class ModelHelper {
     /**
-     * @var array<class-string<Model>, array<string, bool>>
+     * @var array<class-string<TModel>, array<string, bool>>
      */
     private static array $relations = [];
 
     /**
-     * @var array<class-string<Model>, bool>
+     * @var array<class-string<TModel>, bool>
      */
     private static array $softDeletable = [];
 
     private bool  $builder;
+
+    /**
+     * @var TModel
+     */
     private Model $model;
 
     /**
-     * @param Builder|Model|class-string<Model> $model
+     * @param Builder<TModel>|TModel|class-string<TModel> $model
      */
     public function __construct(Builder|Model|string $model) {
         if (is_string($model)) {
@@ -48,6 +55,9 @@ class ModelHelper {
         return $this->builder;
     }
 
+    /**
+     * @return TModel
+     */
     public function getModel(): Model {
         return $this->model;
     }
@@ -71,6 +81,9 @@ class ModelHelper {
         return self::$relations[$model][$name];
     }
 
+    /**
+     * @return Relation<TModel>
+     */
     public function getRelation(string $name): Relation {
         $relation = null;
         $model    = $this->getModel();

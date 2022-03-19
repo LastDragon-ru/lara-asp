@@ -130,7 +130,7 @@ class Printer implements PrinterContract {
     }
 
     /**
-     * @return array<BlockList>
+     * @return array<BlockList<Block>>
      */
     protected function getUsedDefinitions(PrinterSettings $settings, Schema $schema, Block $root): array {
         $directivesDefinitions = $settings->isPrintDirectiveDefinitions();
@@ -183,6 +183,9 @@ class Printer implements PrinterContract {
         ];
     }
 
+    /**
+     * @return BlockList<Block>
+     */
     protected function getDefinitionList(PrinterSettings $settings, bool $schema = false): BlockList {
         return new DefinitionList($settings, $this->getLevel(), $schema);
     }

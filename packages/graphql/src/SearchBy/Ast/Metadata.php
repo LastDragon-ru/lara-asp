@@ -135,11 +135,15 @@ class Metadata {
      */
     protected array $types = [];
 
+    /**
+     * @var Usage<Operator|ComplexOperator>
+     */
+    protected Usage $usage;
+
     public function __construct(
         protected Container $container,
-        protected Usage $usage,
     ) {
-        // empty
+        $this->usage = new Usage();
     }
 
     public function isScalar(string $scalar): bool {

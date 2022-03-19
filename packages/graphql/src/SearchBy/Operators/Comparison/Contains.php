@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Grammars\SqlServerGrammar;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
@@ -40,6 +41,9 @@ class Contains extends BaseOperator implements ComparisonOperator {
         return "%{$value}%";
     }
 
+    /**
+     * @param EloquentBuilder<Model>|QueryBuilder $builder
+     */
     protected function escape(EloquentBuilder|QueryBuilder $builder, string $string): string {
         // See:
         // - MySQL      https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html#operator_like

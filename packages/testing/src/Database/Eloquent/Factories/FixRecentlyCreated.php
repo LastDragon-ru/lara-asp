@@ -14,12 +14,17 @@ use Illuminate\Support\Collection;
 trait FixRecentlyCreated {
     /**
      * @inheritdoc
+     *
+     * @param Collection<array-key,Model> $instances
      */
     protected function callAfterCreating(Collection $instances, ?Model $parent = null) {
         $this->fixRecentlyCreated($instances);
         parent::callAfterCreating($instances, $parent);
     }
 
+    /**
+     * @param Collection<array-key,Model> $instances
+     */
     private function fixRecentlyCreated(Collection $instances): void {
         foreach ($instances as $instance) {
             $instance->wasRecentlyCreated = false;

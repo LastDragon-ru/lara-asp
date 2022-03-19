@@ -4,6 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Resolver;
 
 use Illuminate\Contracts\Support\Arrayable;
 
+/**
+ * @implements Arrayable<string,mixed>
+ */
 class Args implements Arrayable {
     /**
      * @param array<string,mixed> $args

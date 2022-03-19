@@ -8,7 +8,7 @@ use WeakMap;
 
 class Repository {
     /**
-     * @var WeakMap<Metadata>
+     * @var WeakMap<DocumentAST, Metadata>
      */
     protected WeakMap $map;
 
@@ -19,10 +19,13 @@ class Repository {
     }
 
     public function get(DocumentAST $document): Metadata {
-        if (!isset($this->map[$document])) {
-            $this->map[$document] = $this->container->make(Metadata::class);
+        $metadata = $this->map[$document] ?? null;
+
+        if ($metadata === null) {
+            $metadata             = $this->container->make(Metadata::class);
+            $this->map[$document] = $metadata;
         }
 
-        return $this->map[$document];
+        return $metadata;
     }
 }

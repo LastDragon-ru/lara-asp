@@ -2,10 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ObjectBlockList;
 
 /**
  * @internal
+ * @template TBlock of Block
+ * @extends ObjectBlockList<TBlock>
  */
 class RootOperationTypesDefinitionList extends ObjectBlockList {
     protected function isWrapped(): bool {

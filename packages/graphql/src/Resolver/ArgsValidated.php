@@ -9,6 +9,9 @@ use Illuminate\Contracts\Validation\ValidatesWhenResolved;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @implements Arrayable<string,mixed>
+ */
 abstract class ArgsValidated implements Arrayable, ValidatesWhenResolved {
     protected Validator|null $validator = null;
 

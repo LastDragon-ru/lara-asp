@@ -33,7 +33,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritdoc
      *
-     * @return array<mixed>|Arrayable|JsonSerializable
+     * @return array<mixed>|Arrayable<array-key,mixed>|JsonSerializable
      */
     public function toArray($request): mixed {
         if ($this->resource instanceof Model) {

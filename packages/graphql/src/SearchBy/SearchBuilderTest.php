@@ -47,8 +47,9 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcess
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param array<mixed>                                           $conditions
+     * @param array{query: string, bindings: array<mixed>}|Exception                               $expected
+     * @param Closure(static): (EloquentBuilder<\Illuminate\Database\Eloquent\Model>|QueryBuilder) $builder
+     * @param array<mixed>                                                                         $conditions
      */
     public function testProcess(
         array|Exception $expected,
@@ -83,8 +84,9 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcessComparison
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param array<mixed>                                           $conditions
+     * @param array{query: string, bindings: array<mixed>}|Exception                               $expected
+     * @param Closure(static): (EloquentBuilder<\Illuminate\Database\Eloquent\Model>|QueryBuilder) $builder
+     * @param array<mixed>                                                                         $conditions
      */
     public function testProcessComparison(
         array|Exception $expected,
@@ -117,7 +119,8 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcessLogicalOperator
      *
-     * @param array{query: string, bindings: array<mixed>} $expected
+     * @param array{query: string, bindings: array<mixed>}                                         $expected
+     * @param Closure(static): (EloquentBuilder<\Illuminate\Database\Eloquent\Model>|QueryBuilder) $builder
      */
     public function testProcessLogicalOperator(array $expected, Closure $builder): void {
         $conditions = [1, 2];
@@ -155,7 +158,8 @@ class SearchBuilderTest extends TestCase {
      *
      * @dataProvider dataProviderProcessComplexOperator
      *
-     * @param array{query: string, bindings: array<mixed>} $expected
+     * @param array{query: string, bindings: array<mixed>}                                         $expected
+     * @param Closure(static): (EloquentBuilder<\Illuminate\Database\Eloquent\Model>|QueryBuilder) $builder
      */
     public function testProcessComplexOperator(array $expected, Closure $builder): void {
         $conditions = [1, 2, 4];
@@ -221,9 +225,12 @@ class SearchBuilderTest extends TestCase {
         };
         $search  = new SearchBuilder([$complex]);
 
-        self::assertSame($complex, $search->getComplexOperator([
-            $complex->getName() => 'yes',
-        ]));
+        self::assertSame(
+            $complex,
+            $search->getComplexOperator([
+                $complex->getName() => 'yes',
+            ]),
+        );
 
         self::assertNull($search->getComplexOperator([]));
     }

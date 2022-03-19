@@ -65,7 +65,7 @@ class Provider extends ServiceProvider {
         $this->app->bind(Metadata::class, function (Application $app): Metadata {
             /** @var array<string,array<class-string<Operator>>|string> $scalars */
             $scalars  = (array) $app->make(Repository::class)->get("{$this->getName()}.search_by.scalars");
-            $metadata = new Metadata($app, $app->make(Usage::class));
+            $metadata = new Metadata($app);
 
             foreach ($scalars as $scalar => $operators) {
                 $metadata->addScalar($scalar, $operators);

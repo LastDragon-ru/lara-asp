@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Throwable;
 
@@ -10,8 +11,8 @@ use function sprintf;
 
 class RelationUnsupported extends SortByException {
     /**
-     * @param class-string<Relation>        $relationClass
-     * @param array<class-string<Relation>> $supported
+     * @param class-string<Relation<Model>>        $relationClass
+     * @param array<class-string<Relation<Model>>> $supported
      */
     public function __construct(
         protected string $relationName,
@@ -32,14 +33,14 @@ class RelationUnsupported extends SortByException {
     }
 
     /**
-     * @return class-string<Relation>
+     * @return class-string<Relation<Model>>
      */
     public function getRelationClass(): string {
         return $this->relationClass;
     }
 
     /**
-     * @return array<class-string<Relation>>
+     * @return array<class-string<Relation<Model>>>
      */
     public function getSupported(): array {
         return $this->supported;

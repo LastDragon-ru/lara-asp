@@ -39,6 +39,9 @@ class Factory extends Enum {
         return $definition;
     }
 
+    /**
+     * @param ReflectionClass<object>|ReflectionMethod $object
+     */
     protected static function description(ReflectionClass|ReflectionMethod $object): ?string {
         $desc = null;
 

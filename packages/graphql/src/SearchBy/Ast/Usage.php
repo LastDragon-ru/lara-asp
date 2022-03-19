@@ -19,7 +19,7 @@ use function sprintf;
 use const SORT_REGULAR;
 
 /**
- * @template T
+ * @template T of object
  */
 class Usage {
     /**

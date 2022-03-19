@@ -6,7 +6,9 @@ use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
@@ -59,7 +61,8 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     * @return EloquentBuilder<Model>|QueryBuilder
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         /** @var array<ComparisonOperator|LogicalOperator|ComplexOperator> $operators */

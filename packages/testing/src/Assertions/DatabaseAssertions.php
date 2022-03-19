@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query as DatabaseQuery;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
@@ -15,8 +16,8 @@ trait DatabaseAssertions {
     /**
      * Asserts that SQL Query equals SQL Query.
      *
-     * @param DatabaseQuery|QueryBuilder|EloquentBuilder|array{query: string, bindings: array<mixed>}|string $expected
-     * @param DatabaseQuery|QueryBuilder|EloquentBuilder|array{query: string, bindings: array<mixed>}|string $actual
+     * @param DatabaseQuery|QueryBuilder|EloquentBuilder<Model>|array{query: string, bindings: array<mixed>}|string $expected
+     * @param DatabaseQuery|QueryBuilder|EloquentBuilder<Model>|array{query: string, bindings: array<mixed>}|string $actual
      */
     public static function assertDatabaseQueryEquals(
         DatabaseQuery|QueryBuilder|EloquentBuilder|array|string $expected,

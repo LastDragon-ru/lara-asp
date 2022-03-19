@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Eloquent\Mixins;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Eloquent builder mixin. We use `extends` here because if macro return value
@@ -13,14 +14,14 @@ use Illuminate\Database\Eloquent\Builder;
 class EloquentBuilderMixin extends QueryBuilderMixin {
     public function orderByKey(): Closure {
         return function (string $direction = 'asc'): Builder {
-            /** @var Builder $this */
+            /** @var Builder<Model> $this */
             return $this->orderBy($this->qualifyColumn($this->getDefaultKeyName()), $direction);
         };
     }
 
     public function orderByKeyDesc(): Closure {
         return function (): Builder {
-            /** @var Builder $this */
+            /** @var Builder<Model> $this */
             return $this->orderByKey('desc');
         };
     }
