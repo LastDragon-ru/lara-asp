@@ -45,7 +45,7 @@ foreach ($query->getChunkedIterator()->setOffset(0) as $user) {
 }
 ```
 
-When you use the default [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) you should not modify/delete the items while iteration or you will get unexpected results (eg missing items). If you need to modify/delete items while iteration you can use [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) that specially created for this case and unlike standard `chunkById()` is always safe (please see https://github.com/laravel/framework/issues/35400 for more details). But there are few limitations:
+When you use the default [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) you should not modify/delete the items while iteration or you will get unexpected results (eg missing items). If you need to modify/delete items while iteration you can use [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) that specially created for this case and unlike standard `chunkById()` it is always safe (please see https://github.com/laravel/framework/issues/35400 for more details). But there are few limitations:
 
 - it is not possible to sort rows, they always will be sorted by `column asc`;
 - the `column` should not be changed while iteration or this may lead to repeating row in results;
@@ -65,18 +65,11 @@ foreach ($query->getChangeSafeIterator() as $user) {
 
 # Mixins
 
-## `\Illuminate\Database\Query\Builder`
-
-Name                             | Description
--------------------------------- | ----
-`getChunkedIterator()`           | Return [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) instance.
-`getChangeSafeIteratorIterator()`| Return [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) instance.
-
 ## `\Illuminate\Database\Eloquent\Builder`
 
-Same as `\Illuminate\Database\Query\Builder` and
-
-Name                                    | Description
---------------------------------------- | ----
-`orderByKey(string $direction = 'asc')` | Add an `ORDER BY primary_key` clause to the query.
-`orderByKeyDesc()`                      | Alias of `orderByKey('desc')`
+| Name                                    | Description                                                                                   |
+|-----------------------------------------|-----------------------------------------------------------------------------------------------|
+| `orderByKey(string $direction = 'asc')` | Add an `ORDER BY primary_key` clause to the query.                                            |
+| `orderByKeyDesc()`                      | Alias of `orderByKey('desc')`                                                                 |
+| `getChunkedIterator()`                  | Return [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) instance.                     |
+| `getChangeSafeIteratorIterator()`       | Return [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) instance. |

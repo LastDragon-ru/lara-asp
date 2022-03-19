@@ -33,8 +33,7 @@ class ChunkedIteratorTest extends TestCase {
         $spyAfter  = Mockery::spy(static fn() => null);
         $db        = $this->app->make('db');
         $log       = $this->getQueryLog($db);
-        $table     = (new TestObject())->getTable();
-        $query     = $db->table($table)->select()->orderByDesc('value');
+        $query     = TestObject::query()->orderByDesc('value');
         $expected  = (clone $query)->get()->all();
         $count     = count($log);
         $iterator  = (new ChunkedIterator($query))
@@ -65,14 +64,12 @@ class ChunkedIteratorTest extends TestCase {
      * @covers ::getDefaultLimit
      * @covers ::getDefaultOffset
      */
-    public function testGetIteratorQueryDefaults(): void {
+    public function testGetIteratorDefaults(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
-        $db       = $this->app->make('db');
-        $table    = (new TestObject())->getTable();
-        $query    = $db->table($table)->limit(2)->offset(1)->orderByDesc('value');
+        $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
         $iterator = (new ChunkedIterator($query))->setChunkSize(1);
         $actual   = iterator_to_array($iterator);
         $count    = (clone $query)->offset(0)->count();

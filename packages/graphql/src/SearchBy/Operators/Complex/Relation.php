@@ -9,6 +9,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
@@ -77,14 +78,14 @@ class Relation implements ComplexOperator {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function apply(
         SearchBuilder $search,
         EloquentBuilder|QueryBuilder $builder,
         string $property,
         array $conditions,
-    ): EloquentBuilder {
+    ): EloquentBuilder|QueryBuilder {
         // QueryBuilder?
         if ($builder instanceof QueryBuilder) {
             throw new BuilderUnsupported($builder::class);
@@ -144,6 +145,12 @@ class Relation implements ComplexOperator {
         );
     }
 
+    /**
+     * @param EloquentBuilder<Model>                                                 $builder
+     * @param Closure(EloquentBuilder<Model>): (EloquentBuilder<Model>|QueryBuilder) $closure
+     *
+     * @return EloquentBuilder<Model>
+     */
     protected function build(
         EloquentBuilder $builder,
         string $property,

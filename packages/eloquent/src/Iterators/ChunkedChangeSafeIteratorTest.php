@@ -3,14 +3,15 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
+
 use function count;
 use function iterator_to_array;
 
@@ -34,8 +35,8 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
-        $spyBefore = Mockery::spy(static fn() => null);
-        $spyAfter  = Mockery::spy(static fn() => null);
+        $spyBefore = Mockery::spy(static fn () => null);
+        $spyAfter  = Mockery::spy(static fn () => null);
         $db        = $this->app->make('db');
         $log       = $this->getQueryLog($db);
         $query     = TestObject::query()->orderByDesc('value');
@@ -89,14 +90,12 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      *
      * @dataProvider dataProviderGetIteratorColumn
      */
-    public function testGetIteratorQueryDefaults(string $column): void {
+    public function testGetIteratorDefaults(string $column): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
         TestObject::factory()->create(['value' => '3']);
 
-        $db       = $this->app->make('db');
-        $table    = (new TestObject())->getTable();
-        $query    = $db->table($table)->select()->limit(2)->offset(1)->orderByDesc('value');
+        $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
         $iterator = (new ChunkedChangeSafeIterator($query, $column))->setChunkSize(1);
         $actual   = iterator_to_array($iterator);
         $count    = (clone $query)->offset(0)->count();
@@ -144,7 +143,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      *
      * @dataProvider dataProviderGetDefaultColumn
      *
-     * @param Closure(): (EloquentBuilder|QueryBuilder) $factory
+     * @param Closure(): Builder<Model> $factory
      */
     public function testGetDefaultColumn(string $expected, Closure $factory): void {
         $iterator = new class() extends ChunkedChangeSafeIterator {
@@ -153,7 +152,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
                 // empty
             }
 
-            public function getDefaultColumn(EloquentBuilder|QueryBuilder $builder): string {
+            public function getDefaultColumn(Builder $builder): string {
                 return parent::getDefaultColumn($builder);
             }
         };
@@ -175,19 +174,13 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     }
 
     /**
-     * @return array<string,array{string,Closure(): (EloquentBuilder|QueryBuilder)}>
+     * @return array<string,array{string, Closure(): Builder<TestObject>}>
      */
     public function dataProviderGetDefaultColumn(): array {
         return [
-            QueryBuilder::class    => [
+            Builder::class => [
                 'test_objects.id',
-                static function (): QueryBuilder {
-                    return TestObject::query()->toBase();
-                },
-            ],
-            EloquentBuilder::class => [
-                'test_objects.id',
-                static function (): EloquentBuilder {
+                static function (): Builder {
                     return TestObject::query();
                 },
             ],

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -23,7 +24,7 @@ use function is_a;
 
 class Builder {
     /**
-     * @var array<class-string<Relation>>
+     * @var array<class-string<Relation<Model>>>
      */
     protected array $relations = [
         BelongsTo::class,
@@ -40,7 +41,10 @@ class Builder {
     // <editor-fold desc="API">
     // =========================================================================
     /**
-     * @param array<Clause> $clauses
+     * @param EloquentBuilder<Model> $builder
+     * @param array<Clause>          $clauses
+     *
+     * @return EloquentBuilder<Model>
      */
     public function handle(EloquentBuilder $builder, array $clauses): EloquentBuilder {
         foreach ($clauses as $clause) {
@@ -69,7 +73,10 @@ class Builder {
     // <editor-fold desc="Process">
     // =========================================================================
     /**
+     * @param EloquentBuilder<Model>  $builder
      * @param non-empty-array<string> $relations
+     *
+     * @return EloquentBuilder<Model>
      */
     protected function processRelation(
         EloquentBuilder $builder,
@@ -121,7 +128,12 @@ class Builder {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * @param array<string> $stack
+     * @template T of Model
+     *
+     * @param EloquentBuilder<T> $builder
+     * @param array<string>      $stack
+     *
+     * @return Relation<T>
      */
     protected function getRelation(EloquentBuilder $builder, string $name, array $stack = []): Relation {
         $relation  = (new ModelHelper($builder))->getRelation($name);
@@ -145,6 +157,14 @@ class Builder {
         return $relation;
     }
 
+    /**
+     * @template T of Model
+     *
+     * @param EloquentBuilder<T> $builder
+     * @param Relation<T>        $relation
+     *
+     * @return EloquentBuilder<T>
+     */
     protected function joinRelation(
         EloquentBuilder $builder,
         Relation $relation,

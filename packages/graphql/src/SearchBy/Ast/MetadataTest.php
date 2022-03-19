@@ -44,7 +44,7 @@ class MetadataTest extends TestCase {
      * @covers ::isScalar
      */
     public function testIsScalar(): void {
-        $metadata = new Metadata($this->app, new Usage());
+        $metadata = new Metadata($this->app);
 
         self::assertTrue($metadata->isScalar(Directive::ScalarInt));
         self::assertFalse($metadata->isScalar('unknown'));
@@ -60,7 +60,7 @@ class MetadataTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $metadata = new Metadata($this->app, new Usage());
+        $metadata = new Metadata($this->app);
 
         $metadata->addScalar($scalar, $operators);
 
@@ -73,7 +73,7 @@ class MetadataTest extends TestCase {
     public function testGetScalarOperators(): void {
         $scalar   = __FUNCTION__;
         $alias    = 'alias';
-        $metadata = new Metadata($this->app, new Usage());
+        $metadata = new Metadata($this->app);
 
         $metadata->addScalar($scalar, [Equal::class, Equal::class]);
         $metadata->addScalar($alias, $scalar);
@@ -102,7 +102,7 @@ class MetadataTest extends TestCase {
     public function testGetScalarOperatorsUnknownScalar(): void {
         self::expectExceptionObject(new ScalarUnknown('unknown'));
 
-        (new Metadata($this->app, new Usage()))->getScalarOperators('unknown', false);
+        (new Metadata($this->app))->getScalarOperators('unknown', false);
     }
 
     /**
@@ -111,7 +111,7 @@ class MetadataTest extends TestCase {
     public function testGetEnumOperators(): void {
         $enum     = __FUNCTION__;
         $alias    = 'alias';
-        $metadata = new Metadata($this->app, new Usage());
+        $metadata = new Metadata($this->app);
 
         $metadata->addScalar($enum, [Equal::class, Equal::class]);
         $metadata->addScalar($alias, $enum);
@@ -163,7 +163,7 @@ class MetadataTest extends TestCase {
                 return [];
             }
         };
-        $metadata = Mockery::mock(Metadata::class, [$this->app, new Usage()]);
+        $metadata = Mockery::mock(Metadata::class, [$this->app]);
         $metadata->makePartial();
         $metadata
             ->shouldReceive('addDefinitions')
@@ -186,7 +186,7 @@ class MetadataTest extends TestCase {
         self::expectExceptionObject(new ClassIsNotOperator(stdClass::class));
 
         /** @phpstan-ignore-next-line Required for test */
-        (new Metadata($this->app, new Usage()))->getOperatorInstance(stdClass::class);
+        (new Metadata($this->app))->getOperatorInstance(stdClass::class);
     }
 
     /**
@@ -227,7 +227,7 @@ class MetadataTest extends TestCase {
                 return $builder;
             }
         };
-        $metadata = Mockery::mock(Metadata::class, [$this->app, new Usage()]);
+        $metadata = Mockery::mock(Metadata::class, [$this->app]);
         $metadata->makePartial();
         $metadata
             ->shouldReceive('addDefinitions')
@@ -250,7 +250,7 @@ class MetadataTest extends TestCase {
         self::expectExceptionObject(new ClassIsNotComplexOperator(stdClass::class));
 
         /** @phpstan-ignore-next-line Required for test */
-        (new Metadata($this->app, new Usage()))->getComplexOperatorInstance(stdClass::class);
+        (new Metadata($this->app))->getComplexOperatorInstance(stdClass::class);
     }
 
     /**
@@ -278,7 +278,7 @@ class MetadataTest extends TestCase {
      * @covers ::addDefinition
      */
     public function testAddDefinition(): void {
-        $metadata   = new Metadata($this->app, new Usage());
+        $metadata   = new Metadata($this->app);
         $definition = new class() implements TypeDefinition {
             public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
                 return null;
@@ -308,14 +308,14 @@ class MetadataTest extends TestCase {
         self::expectExceptionObject(new ClassIsNotDefinition(stdClass::class));
 
         /** @phpstan-ignore-next-line Required for test */
-        (new Metadata($this->app, new Usage()))->addDefinition('type', stdClass::class);
+        (new Metadata($this->app))->addDefinition('type', stdClass::class);
     }
 
     /**
      * @covers ::addDefinition
      */
     public function testAddDefinitionOverride(): void {
-        $metadata = new Metadata($this->app, new Usage());
+        $metadata = new Metadata($this->app);
         $a        = new class() implements TypeDefinition {
             public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
                 return null;
@@ -337,7 +337,7 @@ class MetadataTest extends TestCase {
      * @covers ::getDefinition
      */
     public function testGetDefinition(): void {
-        $metadata   = new Metadata($this->app, new Usage());
+        $metadata   = new Metadata($this->app);
         $definition = new class() implements TypeDefinition {
             public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
                 return null;
@@ -363,7 +363,7 @@ class MetadataTest extends TestCase {
     public function testGetDefinitionUnknownDefinition(): void {
         self::expectExceptionObject(new DefinitionUnknown('unknown'));
 
-        (new Metadata($this->app, new Usage()))->getDefinition('unknown');
+        (new Metadata($this->app))->getDefinition('unknown');
     }
 
     /**
@@ -371,7 +371,7 @@ class MetadataTest extends TestCase {
      * @covers ::getType
      */
     public function testGetType(): void {
-        $metadata = new Metadata($this->app, new Usage());
+        $metadata = new Metadata($this->app);
 
         self::assertNull($metadata->getType('test'));
 

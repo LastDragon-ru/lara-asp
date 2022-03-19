@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
@@ -51,7 +52,10 @@ class SearchBuilder {
     // <editor-fold desc="API">
     // =========================================================================
     /**
-     * @param array<string,mixed> $conditions
+     * @param EloquentBuilder<Model>|QueryBuilder $builder
+     * @param array<string,mixed>                 $conditions
+     *
+     * @return EloquentBuilder<Model>|QueryBuilder
      */
     public function build(EloquentBuilder|QueryBuilder $builder, array $conditions): EloquentBuilder|QueryBuilder {
         return $this->process($builder, $conditions);
@@ -61,7 +65,10 @@ class SearchBuilder {
     // <editor-fold desc="Process">
     // =========================================================================
     /**
-     * @param array<string,mixed> $input
+     * @param EloquentBuilder<Model>|QueryBuilder $builder
+     * @param array<string,mixed>                 $input
+     *
+     * @return EloquentBuilder<Model>|QueryBuilder
      */
     public function process(
         EloquentBuilder|QueryBuilder $builder,
@@ -104,7 +111,10 @@ class SearchBuilder {
     }
 
     /**
-     * @param array<mixed> $conditions
+     * @param EloquentBuilder<Model>|QueryBuilder $builder
+     * @param array<mixed>                        $conditions
+     *
+     * @return EloquentBuilder<Model>|QueryBuilder
      */
     public function processComplexOperator(
         EloquentBuilder|QueryBuilder $builder,
@@ -126,7 +136,10 @@ class SearchBuilder {
     }
 
     /**
-     * @param array<mixed> $conditions
+     * @param EloquentBuilder<Model>|QueryBuilder $builder
+     * @param array<mixed>                        $conditions
+     *
+     * @return EloquentBuilder<Model>|QueryBuilder
      */
     public function processLogicalOperator(
         EloquentBuilder|QueryBuilder $builder,
@@ -146,7 +159,10 @@ class SearchBuilder {
     }
 
     /**
-     * @param array<mixed> $conditions
+     * @param EloquentBuilder<Model>|QueryBuilder $builder
+     * @param array<mixed>                        $conditions
+     *
+     * @return EloquentBuilder<Model>|QueryBuilder
      */
     public function processComparison(
         EloquentBuilder|QueryBuilder $builder,

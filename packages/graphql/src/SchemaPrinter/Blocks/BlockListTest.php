@@ -709,6 +709,8 @@ class BlockListTest extends TestCase {
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @extends BlockList<Block>
  */
 class BlockListTest__BlockList extends BlockList {
     public function __construct(
@@ -783,6 +785,8 @@ class BlockListTest__Block extends Block {
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @extends Property<Block>
  */
 class BlockListTest__NamedBlock extends Property {
     /** @noinspection PhpMissingParentConstructorInspection */

@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Repository as MetadataRepository;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Usage;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
@@ -65,7 +64,7 @@ class Provider extends ServiceProvider {
         $this->app->bind(Metadata::class, function (Application $app): Metadata {
             /** @var array<string,array<class-string<Operator>>|string> $scalars */
             $scalars  = (array) $app->make(Repository::class)->get("{$this->getName()}.search_by.scalars");
-            $metadata = new Metadata($app, $app->make(Usage::class));
+            $metadata = new Metadata($app);
 
             foreach ($scalars as $scalar => $operators) {
                 $metadata->addScalar($scalar, $operators);

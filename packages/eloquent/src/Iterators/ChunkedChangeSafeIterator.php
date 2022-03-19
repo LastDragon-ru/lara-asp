@@ -2,17 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use stdClass;
 
 use function end;
 use function explode;
-use function is_array;
-use function is_object;
 use function trim;
 
 /**
@@ -30,16 +26,16 @@ use function trim;
  *   the value that lover than the internal pointer;
  * - queries with UNION is not supported.
  *
- * @see https://github.com/laravel/framework/issues/35400
+ * @see      https://github.com/laravel/framework/issues/35400
  *
- * @template T
+ * @template TItem of \Illuminate\Database\Eloquent\Model
  *
- * @extends IteratorImpl<T>
+ * @extends IteratorImpl<TItem>
  */
 class ChunkedChangeSafeIterator extends IteratorImpl {
     private string $column;
 
-    public function __construct(QueryBuilder|EloquentBuilder $builder, string $column = null) {
+    public function __construct(Builder $builder, string $column = null) {
         parent::__construct($builder);
 
         $this->column = $column ?? $this->getDefaultColumn($builder);
@@ -56,7 +52,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         return $this->column;
     }
 
-    protected function getChunk(EloquentBuilder|QueryBuilder $builder, int $chunk): Collection {
+    protected function getChunk(Builder $builder, int $chunk): Collection {
         $column  = $this->getColumn();
         $builder = $builder->reorder()->orderBy($column)->limit($chunk);
 
@@ -79,26 +75,22 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     }
 
     /**
-     * @param Model|stdClass|array<mixed>|null $item
+     * @param TItem|null $item
      */
-    protected function column(Model|stdClass|array|null $item): mixed {
+    protected function column(Model|null $item): mixed {
         $value  = null;
         $column = explode('.', $this->getColumn());
         $column = trim(end($column), '`"[]');
 
-        if (is_object($item)) {
-            $value = $item->{$column};
-        } elseif (is_array($item)) {
-            $value = $item[$column];
-        } else {
-            // empty
+        if ($item) {
+            $value = $item->getAttribute($column);
         }
 
         return $value;
     }
 
     protected function hasUnions(): bool {
-        return (bool) $this->getQueryBuilder()->unions;
+        return (bool) $this->getBuilder()->toBase()->unions;
     }
 
     protected function getDefaultOffset(): ?int {
@@ -106,14 +98,12 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         return null;
     }
 
-    protected function getDefaultColumn(QueryBuilder|EloquentBuilder $builder): string {
-        $column = $builder->getDefaultKeyName();
-
-        if ($builder instanceof EloquentBuilder) {
-            $column = $builder->qualifyColumn($column);
-        } else {
-            $column = "{$builder->from}.{$column}";
-        }
+    /**
+     * @param Builder<TItem> $builder
+     */
+    protected function getDefaultColumn(Builder $builder): string {
+        $column = $builder->getModel()->getKeyName();
+        $column = $builder->qualifyColumn($column);
 
         return $column;
     }

@@ -53,8 +53,10 @@ parameters:
 
         # False positive
         # https://github.com/nunomaduro/larastan/pull/913
-        - "#^Parameter \\#1 \\$query of method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:(joinSub|leftJoinSub)\\(\\) expects Closure\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|string, Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)? given\\.$#"
         - "#^Parameter \\#1 \\$column of method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:orderBy\\(\\) expects Closure\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|Illuminate\\\\Database\\\\Query\\\\Expression\\|string, Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\|string given\\.$#"
+        - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::joinSub\\(\\)\\.$#"
+        - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::reorder\\(\\)\\.$#"
+        - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::offset\\(\\)\\.$#"
 
         # False positive
         # https://github.com/phpstan/phpstan-mockery/issues/34
@@ -65,9 +67,28 @@ parameters:
                 - packages/testing/src/Package/TestCase.php
                 - packages/testing/src/TestCase.php
 
+        # False positive
+        # https://github.com/phpstan/phpstan/issues/6864
+        -
+            message: "#^Static property LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\ModelHelper<TModel of Illuminate\\\\Database\\\\Eloquent\\\\Model>::\\$relations \\(array<class-string<TModel of Illuminate\\\\Database\\\\Eloquent\\\\Model>, array<string, bool>>\\) does not accept array<class-string<Illuminate\\\\Database\\\\Eloquent\\\\Model>, array<string, bool>>\\.$#"
+            paths:
+                - packages/eloquent/src/ModelHelper.php
+        -
+            message: "#^Static property LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\ModelHelper<TModel of Illuminate\\\\Database\\\\Eloquent\\\\Model>::\\$softDeletable \\(array<class-string<TModel of Illuminate\\\\Database\\\\Eloquent\\\\Model>, bool>\\) does not accept array<class-string<Illuminate\\\\Database\\\\Eloquent\\\\Model>, bool>\\.$#"
+            paths:
+                - packages/eloquent/src/ModelHelper.php
+
         # Caused by invalid return type definition of GraphQL\Type\Definition\FieldArgument::getType()
         # and probably will be fixed by upsteam.
         -
             message: "#^Parameter \\#2 \\$type of static method GraphQL\\\\Utils\\\\AST\\:\\:astFromValue\\(\\) expects GraphQL\\\\Type\\\\Definition\\\\InputType, GraphQL\\\\Type\\\\Definition\\\\Type given\\.$#"
             paths:
                 - packages/graphql/src/SchemaPrinter/Blocks/Types/InputValueDefinitionBlock.php
+        -
+            message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Directives\\\\Directive\\:\\:handleBuilder\\(\\) has parameter \\$builder with generic class Illuminate\\\\Database\\\\Eloquent\\\\Builder but does not specify its types: TModelClass$#"
+            paths:
+                - packages/graphql/src/SortBy/Directives/Directive.php
+        -
+            message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Directives\\\\Directive\\:\\:handleBuilder\\(\\) has parameter \\$builder with generic class Illuminate\\\\Database\\\\Eloquent\\\\Builder but does not specify its types: TModelClass$#"
+            paths:
+                - packages/graphql/src/SearchBy/Directives/Directive.php

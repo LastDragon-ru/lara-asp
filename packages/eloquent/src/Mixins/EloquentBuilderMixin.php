@@ -4,24 +4,51 @@ namespace LastDragon_ru\LaraASP\Eloquent\Mixins;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator;
+use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator;
 
 /**
- * Eloquent builder mixin. We use `extends` here because if macro return value
- * we should register it in {@link \Illuminate\Database\Query\Builder} and
- * {@link \Illuminate\Database\Eloquent\Builder}.
+ * Eloquent builder mixin.
  */
-class EloquentBuilderMixin extends QueryBuilderMixin {
+class EloquentBuilderMixin {
     public function orderByKey(): Closure {
         return function (string $direction = 'asc'): Builder {
-            /** @var Builder $this */
-            return $this->orderBy($this->qualifyColumn($this->getDefaultKeyName()), $direction);
+            /** @var Builder<Model> $this */
+            return $this->orderBy($this->qualifyColumn($this->getModel()->getKeyName()), $direction);
         };
     }
 
     public function orderByKeyDesc(): Closure {
         return function (): Builder {
-            /** @var Builder $this */
+            /** @var Builder<Model> $this */
             return $this->orderByKey('desc');
+        };
+    }
+
+    public function getChunkedIterator(): Closure {
+        return function (int $chunk = null): ChunkedIterator {
+            /** @var Builder<Model> $this */
+            $iterator = new ChunkedIterator($this);
+
+            if ($chunk) {
+                $iterator->setChunkSize($chunk);
+            }
+
+            return $iterator;
+        };
+    }
+
+    public function getChangeSafeIterator(): Closure {
+        return function (int $chunk = null, string $column = null): ChunkedChangeSafeIterator {
+            /** @var Builder<Model> $this */
+            $iterator = new ChunkedChangeSafeIterator($this, $column);
+
+            if ($chunk) {
+                $iterator->setChunkSize($chunk);
+            }
+
+            return $iterator;
         };
     }
 }

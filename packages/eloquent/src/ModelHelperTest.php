@@ -63,7 +63,7 @@ class ModelHelperTest extends TestCase {
      *
      * @dataProvider dataProviderIsSoftDeletable
      *
-     * @param Closure(): (Model|Builder|class-string<Model>) $model
+     * @param Closure(): (Model|Builder<Model>|class-string<Model>) $model
      */
     public function testIsSoftDeletable(bool $expected, Closure $model): void {
         $actual = (new ModelHelper($model()))->isSoftDeletable();
@@ -115,7 +115,7 @@ class ModelHelperTest extends TestCase {
     }
 
     /**
-     * @return array<string, array{bool, Closure(): (Model|Builder|string)}>
+     * @return array<string, array{bool, Closure(): mixed}>
      */
     public function dataProviderIsSoftDeletable(): array {
         return [
@@ -181,10 +181,16 @@ class ModelHelperTest__Model extends Model {
         return new stdClass();
     }
 
+    /**
+     * @return BelongsTo<self,self>|HasOne<self>
+     */
     public function union(): BelongsTo|HasOne {
         return $this->belongsTo(self::class);
     }
 
+    /**
+     * @return BelongsTo<self,self>
+     */
     public function ok(): BelongsTo {
         return $this->belongsTo(self::class);
     }

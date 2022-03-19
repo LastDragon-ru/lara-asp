@@ -5,30 +5,39 @@ namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 use Closure;
 use EmptyIterator;
 use Generator;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 
 use function min;
 
 /**
- * @template T
+ * @template TItem of \Illuminate\Database\Eloquent\Model
  *
- * @implements Iterator<T>
+ * @implements Iterator<TItem>
  *
  * @internal
  */
 abstract class IteratorImpl implements Iterator {
-    protected Dispatcher      $beforeChunk;
-    protected Dispatcher      $afterChunk;
+    /**
+     * @var Dispatcher<Collection<array-key,TItem>>
+     */
+    protected Dispatcher $beforeChunk;
+    /**
+     * @var Dispatcher<Collection<array-key,TItem>>
+     */
+    protected Dispatcher $afterChunk;
+
     protected int             $index  = 0;
     protected ?int            $limit  = null;
     protected int             $chunk  = 1000;
     protected string|int|null $offset = null;
 
+    /**
+     * @param Builder<TItem> $builder
+     */
     public function __construct(
-        protected QueryBuilder|EloquentBuilder $builder,
+        protected Builder $builder,
     ) {
         $this->beforeChunk = new Dispatcher();
         $this->afterChunk  = new Dispatcher();
@@ -98,7 +107,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     /**
-     * @return Generator<T>
+     * @return Generator<int,TItem>
      */
     public function getIterator(): Generator {
         // Prepare
@@ -113,8 +122,9 @@ abstract class IteratorImpl implements Iterator {
 
         // Iterate
         do {
-            $chunk = $limit ? min($chunk, $limit - $index) : $chunk;
-            $items = $this->getChunk((clone $this->getBuilder())->offset(0), $chunk);
+            $builder = (clone $this->getBuilder())->offset(0);
+            $chunk   = $limit ? min($chunk, $limit - $index) : $chunk;
+            $items   = $this->getChunk($builder, $chunk);
 
             $this->chunkLoaded($items);
 
@@ -131,12 +141,14 @@ abstract class IteratorImpl implements Iterator {
     }
 
     /**
-     * @return Collection<T>
+     * @param Builder<TItem> $builder
+     *
+     * @return Collection<array-key,TItem>
      */
-    abstract protected function getChunk(QueryBuilder|EloquentBuilder $builder, int $chunk): Collection;
+    abstract protected function getChunk(Builder $builder, int $chunk): Collection;
 
     /**
-     * @param Collection<T> $items
+     * @param Collection<array-key,TItem> $items
      */
     protected function chunkLoaded(Collection $items): void {
         if (!$items->isEmpty()) {
@@ -145,7 +157,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     /**
-     * @param Collection<T> $items
+     * @param Collection<array-key,TItem> $items
      */
     protected function chunkProcessed(Collection $items): bool {
         if (!$items->isEmpty()) {
@@ -156,7 +168,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     protected function getDefaultLimit(): ?int {
-        $builder = $this->getQueryBuilder();
+        $builder = $this->getBuilder()->toBase();
         $limit   = $builder->unions
             ? $builder->unionLimit
             : $builder->limit;
@@ -165,7 +177,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     protected function getDefaultOffset(): ?int {
-        $builder = $this->getQueryBuilder();
+        $builder = $this->getBuilder()->toBase();
         $offset  = $builder->unions
             ? $builder->unionOffset
             : $builder->offset;
@@ -173,17 +185,10 @@ abstract class IteratorImpl implements Iterator {
         return $offset;
     }
 
-    protected function getBuilder(): EloquentBuilder|QueryBuilder {
+    /**
+     * @return Builder<TItem>
+     */
+    protected function getBuilder(): Builder {
         return $this->builder;
-    }
-
-    protected function getQueryBuilder(): QueryBuilder {
-        $builder = $this->getBuilder();
-
-        if ($builder instanceof EloquentBuilder) {
-            $builder = $builder->toBase();
-        }
-
-        return $builder;
     }
 }

@@ -20,6 +20,9 @@ class TestObject extends Model {
      */
     protected $table = 'test_objects';
 
+    /**
+     * @return Factory<self>
+     */
     protected static function newFactory(): Factory {
         return TestObjectFactory::new();
     }

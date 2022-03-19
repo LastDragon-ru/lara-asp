@@ -228,10 +228,16 @@ class RelationTest__ModelA extends Model {
      */
     public $table = 'table_a';
 
+    /**
+     * @return HasOne<RelationTest__ModelB>
+     */
     public function test(): HasOne {
         return $this->hasOne(RelationTest__ModelB::class, 'table_a_id');
     }
 
+    /**
+     * @return HasOne<static>
+     */
     public function a(): HasOne {
         return $this->hasOne(static::class);
     }

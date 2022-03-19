@@ -640,30 +640,45 @@ class SortBuilderTest__ModelA extends Model {
         ]);
     }
 
+    /**
+     * @return BelongsTo<SortBuilderTest__ModelB, SortBuilderTest__ModelA>
+     */
     public function belongsToB(): BelongsTo {
         return $this
             ->belongsTo(SortBuilderTest__ModelB::class)
             ->where('ModelA_belongsToB', '=', 'ModelA_belongsToB_value');
     }
 
+    /**
+     * @return HasOne<SortBuilderTest__ModelB>
+     */
     public function hasOneB(): HasOne {
         return $this
             ->hasOne(SortBuilderTest__ModelB::class, 'model_a_id')
             ->where('ModelA_hasOneB', '=', 'ModelA_hasOneB_value');
     }
 
+    /**
+     * @return HasMany<SortBuilderTest__ModelB>
+     */
     public function hasManyB(): HasMany {
         return $this
             ->hasMany(SortBuilderTest__ModelB::class, 'model_a_id')
             ->where('ModelA_hasManyB', '=', 'ModelA_hasManyB_value');
     }
 
+    /**
+     * @return MorphOne<SortBuilderTest__ModelB>
+     */
     public function morphOneB(): MorphOne {
         return $this
             ->morphOne(SortBuilderTest__ModelB::class, 'morphable_a')
             ->where('ModelA_morphOneB', '=', 'ModelA_morphOneB_value');
     }
 
+    /**
+     * @return HasOneThrough<SortBuilderTest__ModelC>
+     */
     public function hasOneThroughC(): HasOneThrough {
         return $this->hasOneThrough(
             SortBuilderTest__ModelC::class,
@@ -675,6 +690,9 @@ class SortBuilderTest__ModelA extends Model {
         );
     }
 
+    /**
+     * @return MorphToMany<SortBuilderTest__ModelB>
+     */
     public function unsupported(): MorphToMany {
         return $this->morphedByMany(SortBuilderTest__ModelB::class, 'test');
     }
@@ -700,18 +718,30 @@ class SortBuilderTest__ModelB extends Model {
         ]);
     }
 
+    /**
+     * @return BelongsTo<SortBuilderTest__ModelC, SortBuilderTest__ModelB>
+     */
     public function belongsToC(): BelongsTo {
         return $this->belongsTo(SortBuilderTest__ModelC::class);
     }
 
+    /**
+     * @return HasOne<SortBuilderTest__ModelC>
+     */
     public function hasOneC(): HasOne {
         return $this->hasOne(SortBuilderTest__ModelC::class, 'model_b_id');
     }
 
+    /**
+     * @return HasMany<SortBuilderTest__ModelC>
+     */
     public function hasManyC(): HasMany {
         return $this->hasMany(SortBuilderTest__ModelC::class, 'model_b_id');
     }
 
+    /**
+     * @return MorphOne<SortBuilderTest__ModelC>
+     */
     public function morphOneC(): MorphOne {
         return $this->morphOne(SortBuilderTest__ModelC::class, 'morphable_b');
     }
@@ -736,6 +766,9 @@ class SortBuilderTest__ModelC extends Model {
         ]);
     }
 
+    /**
+     * @return HasOneThrough<SortBuilderTest__ModelA>
+     */
     public function hasOneThroughA(): HasOneThrough {
         return $this->hasOneThrough(
             SortBuilderTest__ModelA::class,
@@ -747,6 +780,9 @@ class SortBuilderTest__ModelC extends Model {
         );
     }
 
+    /**
+     * @return BelongsTo<SortBuilderTest__ModelA, SortBuilderTest__ModelC>
+     */
     public function belongsToA(): BelongsTo {
         return $this
             ->belongsTo(SortBuilderTest__ModelA::class)

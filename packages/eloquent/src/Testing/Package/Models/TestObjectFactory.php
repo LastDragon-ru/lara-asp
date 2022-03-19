@@ -2,15 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories\Factory;
 
 /**
  * @internal
+ *
+ * @extends Factory<TestObject>
  */
 class TestObjectFactory extends Factory {
     /**
-     * @var class-string<Model>
+     * @var class-string<TestObject>
      */
     protected $model = TestObject::class;
 

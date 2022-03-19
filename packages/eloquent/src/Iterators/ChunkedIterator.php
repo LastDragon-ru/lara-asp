@@ -2,8 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 use function count;
@@ -17,14 +16,14 @@ use function count;
  * items). If you need to modify/delete items while iteration you can use
  * {@link \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator}.
  *
- * @see \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
+ * @see      \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  *
- * @template T
+ * @template TItem of \Illuminate\Database\Eloquent\Model
  *
- * @extends IteratorImpl<T>
+ * @extends IteratorImpl<TItem>
  */
 class ChunkedIterator extends IteratorImpl {
-    protected function getChunk(EloquentBuilder|QueryBuilder $builder, int $chunk): Collection {
+    protected function getChunk(Builder $builder, int $chunk): Collection {
         return $builder->offset($this->getOffset())->limit($chunk)->get();
     }
 
