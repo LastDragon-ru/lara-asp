@@ -15,7 +15,7 @@ trait WithInitialization {
         return $this->isInitialized;
     }
 
-    protected function initialized(): self {
+    protected function initialized(): static {
         $this->isInitialized = true;
 
         return $this;
