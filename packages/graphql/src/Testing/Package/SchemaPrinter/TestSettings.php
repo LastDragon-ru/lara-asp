@@ -73,6 +73,9 @@ class TestSettings extends ImmutableSettings {
      */
     protected function makeTypeFilter(Closure $closure): TypeFilter {
         return new class($closure) implements TypeFilter {
+            /**
+             * @param Closure(Type,bool):bool $filter
+             */
             public function __construct(
                 protected Closure $filter,
             ) {
@@ -90,6 +93,9 @@ class TestSettings extends ImmutableSettings {
      */
     protected function makeDirectiveFilter(Closure $closure): DirectiveFilter {
         return new class($closure) implements DirectiveFilter {
+            /**
+             * @param Closure(GraphQLDirective|LighthouseDirective,bool):bool $filter
+             */
             public function __construct(
                 protected Closure $filter,
             ) {

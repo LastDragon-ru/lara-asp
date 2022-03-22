@@ -30,7 +30,8 @@ class ModelHelperTest extends TestCase {
      *
      * @dataProvider dataProviderGetRelation
      *
-     * @param Exception|class-string $expected
+     * @param Exception|class-string                                $expected
+     * @param Closure(): (Builder<Model>|Model|class-string<Model>) $model
      */
     public function testGetRelation(Exception|string $expected, Closure $model, string $name): void {
         if ($expected instanceof Exception) {
@@ -49,7 +50,8 @@ class ModelHelperTest extends TestCase {
      *
      * @dataProvider dataProviderGetRelation
      *
-     * @param Exception|class-string $expected
+     * @param Exception|class-string                                $expected
+     * @param Closure(): (Builder<Model>|Model|class-string<Model>) $model
      */
     public function testIsRelation(Exception|string $expected, Closure $model, string $name): void {
         $actual   = (new ModelHelper($model()))->isRelation($name);
@@ -63,7 +65,7 @@ class ModelHelperTest extends TestCase {
      *
      * @dataProvider dataProviderIsSoftDeletable
      *
-     * @param Closure(): (Model|Builder<Model>|class-string<Model>) $model
+     * @param Closure(): (Builder<Model>|Model|class-string<Model>) $model
      */
     public function testIsSoftDeletable(bool $expected, Closure $model): void {
         $actual = (new ModelHelper($model()))->isSoftDeletable();

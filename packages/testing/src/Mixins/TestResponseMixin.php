@@ -14,6 +14,9 @@ use SplFileInfo;
  * @internal
  */
 class TestResponseMixin {
+    /**
+     * @return Closure(Constraint, string): TestResponse
+     */
     public function assertThat(): Closure {
         return function (Constraint $constraint, string $message = ''): TestResponse {
             /** @var TestResponse $this */
@@ -23,6 +26,9 @@ class TestResponseMixin {
         };
     }
 
+    /**
+     * @return Closure(JsonSchema, string): TestResponse
+     */
     public function assertJsonMatchesSchema(): Closure {
         return function (JsonSchema $schema, string $message = ''): TestResponse {
             /** @var TestResponse $this */
@@ -32,6 +38,9 @@ class TestResponseMixin {
         };
     }
 
+    /**
+     * @return Closure(string, string): TestResponse
+     */
     public function assertContentType(): Closure {
         return function (string $contentType, string $message = ''): TestResponse {
             /** @var TestResponse $this */
@@ -41,6 +50,9 @@ class TestResponseMixin {
         };
     }
 
+    /**
+     * @return Closure(int, string): TestResponse
+     */
     public function assertStatusCode(): Closure {
         return function (int $statusCode, string $message = ''): TestResponse {
             /** @var TestResponse $this */
@@ -50,6 +62,9 @@ class TestResponseMixin {
         };
     }
 
+    /**
+     * @return Closure(SplFileInfo, string): TestResponse
+     */
     public function assertXmlMatchesSchema(): Closure {
         return function (SplFileInfo $schema, string $message = ''): TestResponse {
             /** @var TestResponse $this */

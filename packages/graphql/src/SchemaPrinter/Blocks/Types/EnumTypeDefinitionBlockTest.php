@@ -25,6 +25,8 @@ class EnumTypeDefinitionBlockTest extends TestCase {
      * @covers       \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumValuesDefinitionList::__toString
      *
      * @dataProvider dataProviderToString
+     *
+     * @param EnumType|Closure(): EnumType $type
      */
     public function testToString(
         string $expected,

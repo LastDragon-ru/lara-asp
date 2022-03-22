@@ -528,6 +528,9 @@ class Formatter {
         return $formatter;
     }
 
+    /**
+     * @param Closure(string, ?int):?int|null $closure
+     */
     private function getIntlNumberFormatter(
         string $type,
         int $decimals = null,
@@ -545,6 +548,9 @@ class Formatter {
         return $formatter;
     }
 
+    /**
+     * @param Closure(string, ?int):?int|null $closure
+     */
     private function createIntlNumberFormatter(
         string $type,
         int $decimals = null,

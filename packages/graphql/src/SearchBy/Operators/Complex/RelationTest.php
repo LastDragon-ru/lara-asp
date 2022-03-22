@@ -21,6 +21,8 @@ use function is_array;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation
+ *
+ * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class RelationTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -31,6 +33,7 @@ class RelationTest extends TestCase {
      * @dataProvider dataProviderApply
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param BuilderFactory                                         $builder
      * @param array<mixed>                                           $conditions
      */
     public function testApply(

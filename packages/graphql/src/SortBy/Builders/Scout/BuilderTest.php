@@ -26,8 +26,9 @@ class BuilderTest extends TestCase {
      *
      * @dataProvider dataProviderHandle
      *
-     * @param array<mixed>|Exception $expected
-     * @param array<Clause>          $clauses
+     * @param array<mixed>|Exception   $expected
+     * @param array<Clause>            $clauses
+     * @param Closure():ColumnResolver $resolver
      */
     public function testHandle(array|Exception $expected, array $clauses, Closure $resolver = null): void {
         if ($expected instanceof Exception) {

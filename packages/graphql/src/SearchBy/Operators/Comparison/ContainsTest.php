@@ -17,6 +17,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains
+ *
+ * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class ContainsTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -26,8 +28,8 @@ class ContainsTest extends TestCase {
      * @covers ::escape
      *
      * @dataProvider dataProviderApply
-     *
      * @param array{query: string, bindings: array<mixed>} $expected
+     * @param BuilderFactory                               $builder
      * @param class-string<Grammar>                        $grammar
      */
     public function testApply(

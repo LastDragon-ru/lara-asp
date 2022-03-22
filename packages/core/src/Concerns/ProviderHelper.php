@@ -29,6 +29,10 @@ trait ProviderHelper {
         return $path;
     }
 
+    /**
+     * @param Closure(mixed...): mixed $callback
+     *
+     */
     protected function callAfterBoot(Closure $callback): void {
         if ($this->app instanceof Application && $this->app->isBooted()) {
             $this->app->call($callback);

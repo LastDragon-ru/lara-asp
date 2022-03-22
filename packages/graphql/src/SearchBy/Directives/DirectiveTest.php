@@ -44,6 +44,8 @@ use function sort;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
+ *
+ * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -244,7 +246,8 @@ class DirectiveTest extends TestCase {
      *
      * @dataProvider dataProviderHandleBuilder
      *
-     * @param array<mixed> $input
+     * @param BuilderFactory $builder
+     * @param array<mixed>   $input
      */
     public function testHandleBuilder(bool|Exception $expected, Closure $builder, array $input): void {
         if ($expected instanceof Exception) {

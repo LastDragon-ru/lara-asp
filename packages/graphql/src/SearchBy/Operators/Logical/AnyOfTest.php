@@ -17,6 +17,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf
+ *
+ * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class AnyOfTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -27,6 +29,7 @@ class AnyOfTest extends TestCase {
      * @dataProvider dataProviderApply
      *
      * @param array{query: string, bindings: array<mixed>} $expected
+     * @param BuilderFactory                               $builder
      * @param array<mixed>                                 $conditions
      */
     public function testApply(array $expected, Closure $builder, array $conditions, ?string $tableAlias): void {

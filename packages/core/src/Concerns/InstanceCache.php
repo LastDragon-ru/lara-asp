@@ -20,6 +20,9 @@ trait InstanceCache {
      */
     private array $instanceCache = [];
 
+    /**
+     * @param Closure():mixed|null $closure
+     */
     protected function instanceCacheGet(mixed $keys, Closure $closure = null): mixed {
         $key   = $this->instanceCacheKey($keys);
         $value = null;

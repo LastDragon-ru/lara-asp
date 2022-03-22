@@ -11,6 +11,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between
+ *
+ * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class BetweenTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -19,8 +21,8 @@ class BetweenTest extends TestCase {
      * @covers ::apply
      *
      * @dataProvider dataProviderApply
-     *
      * @param array{query: string, bindings: array<mixed>} $expected
+     * @param BuilderFactory                               $builder
      */
     public function testApply(
         array $expected,

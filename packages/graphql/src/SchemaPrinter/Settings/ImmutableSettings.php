@@ -266,6 +266,9 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    /**
+     * @param Closure(static): void $callback
+     */
     protected function set(Closure $callback): static {
         $settings = clone $this;
 

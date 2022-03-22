@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Core;
 
-use Closure;
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Core\Translator as PackageTranslator;
@@ -10,6 +9,8 @@ use LastDragon_ru\LaraASP\Core\Translator as PackageTranslator;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Translator
+ *
+ * @phpstan-import-type TranslationsFactory from \LastDragon_ru\LaraASP\Testing\Utils\WithTranslations
  */
 class TranslatorTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -19,13 +20,14 @@ class TranslatorTest extends TestCase {
      * @covers ::translate
      *
      * @param array<string>|string $key
+     * @param TranslationsFactory  $translations
      * @param array<mixed>         $replace
      *
      * @dataProvider dataProviderChoice
      */
     public function testChoice(
         string $expected,
-        ?Closure $translations,
+        mixed $translations,
         array|string $key,
         int $number,
         array $replace,
@@ -46,13 +48,14 @@ class TranslatorTest extends TestCase {
      * @covers ::translate
      *
      * @param array<string>|string $key
+     * @param TranslationsFactory  $translations
      * @param array<mixed>         $replace
      *
      * @dataProvider dataProviderGet
      */
     public function testGet(
         string $expected,
-        ?Closure $translations,
+        mixed $translations,
         array|string $key,
         array $replace,
         ?string $locale,
@@ -71,7 +74,7 @@ class TranslatorTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, ?Closure, array<string>|string, array<string,string>, ?string}>
+     * @return array<string,array{string, TranslationsFactory, array<string>|string, array<string,string>, ?string}>
      */
     public function dataProviderGet(): array {
         return [
@@ -133,7 +136,7 @@ class TranslatorTest extends TestCase {
     }
 
     /**
-     * @return array<string,array{string, ?Closure, array<string>|string, int, array<string,string>, ?string}>
+     * @return array<string,array{string,TranslationsFactory,array<string>|string,int,array<string,string>,?string}>
      */
     public function dataProviderChoice(): array {
         return [

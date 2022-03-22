@@ -5,6 +5,9 @@ parameters:
     # The level 9 is the highest level
     level: 8
 
+    # Settings
+    checkMissingCallableSignature: true
+
 includes:
     - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
     - ./vendor/phpstan/phpstan-mockery/extension.neon

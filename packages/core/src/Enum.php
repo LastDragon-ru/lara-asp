@@ -80,6 +80,9 @@ abstract class Enum implements JsonSerializable {
         return self::$instances[static::class][$value];
     }
 
+    /**
+     * @param Closure(ReflectionMethod): void $callback
+     */
     protected static function lookup(Closure $callback): void {
         $methods = (new ReflectionClass(static::class))->getMethods();
         $methods = array_filter($methods, static function (ReflectionMethod $method): bool {

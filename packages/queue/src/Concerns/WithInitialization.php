@@ -21,6 +21,13 @@ trait WithInitialization {
         return $this;
     }
 
+    /**
+     * @template T
+     *
+     * @param Closure(): T $closure
+     *
+     * @return T
+     */
     protected function ifInitialized(Closure $closure): mixed {
         if ($this instanceof Initializable && !$this->isInitialized()) {
             throw new RuntimeException(sprintf('The `%s` is not initialized.', static::class));

@@ -29,6 +29,13 @@ trait WithoutModelEvents {
         });
     }
 
+    /**
+     * @template T
+     *
+     * @param Closure(): T $closure
+     *
+     * @return T
+     */
     private function callWithoutModelEvents(Closure $closure): mixed {
         return $this->modelName()::withoutEvents($closure);
     }

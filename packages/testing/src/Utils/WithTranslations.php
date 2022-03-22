@@ -13,11 +13,14 @@ use function is_callable;
 /**
  * @mixin IlluminateTestCase
  * @mixin TestbenchTestCase
+ *
+ * @phpstan-type Translations         array<string,array<string,string>>
+ * @phpstan-type TranslationsCallback callable(static, string $currentLocale, string $fallbackLocale): Translations
+ * @phpstan-type TranslationsFactory  TranslationsCallback|Translations|null
  */
 trait WithTranslations {
     /**
-     * @phpcs:ignore Generic.Files.LineLength.TooLong
-     * @param callable(IlluminateTestCase|TestbenchTestCase, string $currentLocale, string $fallbackLocale): array<string,array<string,string>>|array<string,array<string,string>>|null $translations
+     * @param TranslationsFactory $translations
      */
     public function setTranslations(callable|array|null $translations): void {
         // Translator

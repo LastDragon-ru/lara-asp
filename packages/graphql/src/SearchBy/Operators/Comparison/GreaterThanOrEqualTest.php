@@ -11,6 +11,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual
+ *
+ * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class GreaterThanOrEqualTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -21,6 +23,7 @@ class GreaterThanOrEqualTest extends TestCase {
      * @dataProvider dataProviderApply
      *
      * @param array{query: string, bindings: array<mixed>} $expected
+     * @param BuilderFactory                               $builder
      */
     public function testApply(
         array $expected,

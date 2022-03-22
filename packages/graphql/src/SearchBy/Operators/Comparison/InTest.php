@@ -11,6 +11,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In
+ *
+ * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class InTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -21,6 +23,7 @@ class InTest extends TestCase {
      * @dataProvider dataProviderApply
      *
      * @param array{query: string, bindings: array<mixed>} $expected
+     * @param BuilderFactory                               $builder
      */
     public function testApply(
         array $expected,

@@ -78,6 +78,25 @@ parameters:
             paths:
                 - packages/eloquent/src/ModelHelper.php
 
+        # False positive
+        # https://github.com/phpstan/phpstan/issues/5091
+        -
+            message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase::setTranslations\\(\\) has parameter \\$translations with no signature specified for callable\\.$#"
+            paths:
+                - packages/testing/src/Utils/WithTranslations.php
+        -
+            message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase::setTranslations\\(\\) has parameter \\$translations with no value type specified in iterable type array\\.$#"
+            paths:
+                - packages/testing/src/Utils/WithTranslations.php
+        -
+            message: "#^PHPDoc tag @param for parameter \\$translations with type LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\TranslationsFactory is not subtype of native type array\\|\\(callable\\)\\|null\\.$#"
+            paths:
+                - packages/testing/src/Utils/WithTranslations.php
+        -
+            message: "#^Parameter \\$translations of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase::setTranslations\\(\\) has invalid type LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\TranslationsFactory\\.$#"
+            paths:
+                - packages/testing/src/Utils/WithTranslations.php
+
         # Caused by invalid return type definition of GraphQL\Type\Definition\FieldArgument::getType()
         # and probably will be fixed by upsteam.
         -
