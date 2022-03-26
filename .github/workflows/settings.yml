@@ -46,6 +46,7 @@ jobs:
         with:
           php-version: ${{ env.PHP_VERSION }}
           ini-values: opcache.enable_cli=1
+          coverage: none
       - name: Install easy-ci
         run: |
           mkdir "$RUNNER_TEMP/easy-ci"

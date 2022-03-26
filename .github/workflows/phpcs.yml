@@ -26,6 +26,7 @@ jobs:
           php-version: ${{ inputs.php-version }}
           extensions: ${{ inputs.php-extensions }}
           ini-values: opcache.enable_cli=1
+          coverage: none
           tools: cs2pr
       - name: Install dependencies
         uses: ramsey/composer-install@v2
