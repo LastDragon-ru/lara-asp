@@ -63,6 +63,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ inputs.extensions }}
+          ini-values: opcache.enable_cli=1
 
       # On Windows, the caret ^ is the escape character, so the version string
       # that contains ^ will be handled incorrectly

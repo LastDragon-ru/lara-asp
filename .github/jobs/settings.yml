@@ -44,6 +44,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ PHP_VERSION }}
+          ini-values: opcache.enable_cli=1
       - name: Install easy-ci
         run: |
           mkdir "$RUNNER_TEMP/easy-ci"
