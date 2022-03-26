@@ -16,7 +16,7 @@ jobs:
       json: ${{ steps.list.outputs.value }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - id: list
         name: Detect packages
         working-directory: ${{ env.PACKAGES_DIRECTORY }}
@@ -44,14 +44,14 @@ jobs:
 
       # Checkout source repo
       - name: Checkout src
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: master
           path: src
           fetch-depth: 0
 
       # Checkout package repo
-      # Unfortunately actions/checkout@v2 cannot checkout empty repo
+      # Unfortunately actions/checkout cannot checkout empty repo
       - name: Checkout package
         run: |
           git clone "git@github.com:${{ github.repository }}-${{ matrix.package }}.git" package
