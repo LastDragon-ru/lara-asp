@@ -11,10 +11,10 @@ on:
 
 jobs:
   settings:
-    uses: LastDragon-ru/lara-asp/.github/jobs/settings.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
 
   phpcs:
-    uses: LastDragon-ru/lara-asp/.github/jobs/phpcs.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpcs.yml@master
     needs:
       - settings
     with:
@@ -22,7 +22,7 @@ jobs:
       php-extensions: ${{ needs.settings.outputs.php-extensions }}
 
   phpstan:
-    uses: LastDragon-ru/lara-asp/.github/jobs/phpstan.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpstan.yml@master
     needs:
       - settings
     with:
@@ -30,7 +30,7 @@ jobs:
       php-extensions: ${{ needs.settings.outputs.php-extensions }}
 
   phpunit:
-    uses: LastDragon-ru/lara-asp/.github/jobs/phpunit.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@master
     needs:
       - settings
     with:
