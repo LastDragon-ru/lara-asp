@@ -62,7 +62,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: ${{ inputs.extensions }}
+          extensions: ${{ inputs.php-extensions }}
           ini-values: opcache.enable_cli=1
           coverage: none
 
