@@ -1,0 +1,32 @@
+name: PHP Stan
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        required: true
+        type: string
+      php-extensions:
+        description: "The comma separated list of required php extensions."
+        required: true
+        type: string
+
+jobs:
+  phpstan:
+    name: "phpstan analyse"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Disable core.autocrlf
+        run: git config --global core.autocrlf false
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
+          extensions: ${{ inputs.php-extensions }}
+      - name: Install dependencies
+        uses: "ramsey/composer-install@v1"
+      - name: Execute
+        run: |
+          vendor/bin/phpstan analyse --error-format=github
