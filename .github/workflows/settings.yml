@@ -26,7 +26,8 @@ env:
   PHP_VERSION: 8.0
 
 jobs:
-  collect:
+  settings:
+    name: collect
     runs-on: ubuntu-latest
     outputs:
       php-versions: ${{ steps.php-versions.outputs.supported }}
