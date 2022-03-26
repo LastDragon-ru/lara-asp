@@ -43,7 +43,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ PHP_VERSION }}
+          php-version: ${{ env.PHP_VERSION }}
           ini-values: opcache.enable_cli=1
       - name: Install easy-ci
         run: |

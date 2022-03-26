@@ -12,8 +12,8 @@ on:
         type: string
 
 jobs:
-  phpstan:
-    name: "phpstan analyse"
+  run:
+    name: analyse
     runs-on: ubuntu-latest
     steps:
       - name: Disable core.autocrlf

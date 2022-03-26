@@ -12,7 +12,8 @@ on:
         type: string
 
 jobs:
-  phpcs:
+  run:
+    name: check
     runs-on: ubuntu-latest
     steps:
       - name: Disable core.autocrlf

@@ -27,7 +27,7 @@ on:
         default: '["ubuntu-latest"]'
 
 jobs:
-  phpunit:
+  run:
     name: Laravel ${{ matrix.laravel }} / PHP ${{ matrix.php }} (${{ matrix.dependencies }} / ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
 
