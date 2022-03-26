@@ -1,0 +1,85 @@
+# Determines application's requirements based on `composer.json`.
+
+name: Settings
+
+on:
+  workflow_call:
+    outputs:
+      php-versions:
+        value: ${{ jobs.settings.outputs.php-versions }}
+      php-latest:
+        value: ${{ jobs.settings.outputs.php-latest }}
+      php-lowest:
+        value: ${{ jobs.settings.outputs.php-lowest }}
+      php-extensions:
+        value: ${{ jobs.settings.outputs.php-extensions }}
+      laravel-versions:
+        value: ${{ jobs.settings.outputs.laravel-versions }}
+      laravel-latest:
+        value: ${{ jobs.settings.outputs.laravel-latest }}
+      laravel-lowest:
+        value: ${{ jobs.settings.outputs.laravel-lowest }}
+      dependencies:
+        value: ${{ jobs.settings.outputs.dependencies }}
+
+env:
+  PHP_VERSION: 8.0
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    outputs:
+      php-versions: ${{ steps.php-versions.outputs.supported }}
+      php-latest: ${{ steps.php-versions.outputs.latest }}
+      php-lowest: ${{ steps.php-versions.outputs.lowest }}
+      php-extensions: ${{ steps.php-extensions.outputs.value }}
+      laravel-versions: ${{ steps.laravel-versions.outputs.supported }}
+      laravel-latest: ${{ steps.laravel-versions.outputs.latest }}
+      laravel-lowest: ${{ steps.laravel-versions.outputs.lowest }}
+      dependencies: ${{ steps.dependencies.outputs.value }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ PHP_VERSION }}
+      - name: Install easy-ci
+        run: |
+          mkdir "$RUNNER_TEMP/easy-ci"
+          composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev symplify/easy-ci
+      - name: Detect Supported PHP versions
+        id: php-versions
+        run: |
+          PHP_VERSIONS="$("$RUNNER_TEMP/easy-ci/vendor/bin/easy-ci" php-versions-json)"
+          echo "::set-output name=supported::$(echo "$PHP_VERSIONS")"
+          echo "::set-output name=latest::$(echo "$PHP_VERSIONS" | jq "max" -r)"
+          echo "::set-output name=lowest::$(echo "$PHP_VERSIONS" | jq "min" -r)"
+      - name: Detect PHP extensions
+        id: php-extensions
+        run: |
+          echo "::set-output name=value::$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort | join(", ")' -r -c composer.json)"
+      - name: Detect Laravel versions
+        id: laravel-versions
+        run: |
+          LARAVEL_VERSIONS="$(jq '.require."laravel/framework" | split("|") | sort' -c composer.json)"
+          echo "::set-output name=supported::$(echo "$LARAVEL_VERSIONS")"
+          echo "::set-output name=latest::$(echo "$LARAVEL_VERSIONS" | jq "max" -r)"
+          echo "::set-output name=lowest::$(echo "$LARAVEL_VERSIONS" | jq "min" -r)"
+      - name: Detect dependencies
+        id: dependencies
+        run: |
+          DEPS_HIGHEST="highest"
+          DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked"; fi)"
+          DEPS_LOWEST="$(if [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "lowest"; fi)"
+          echo "::set-output name=value::$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)"
+      - name: Collected
+        run: |
+          echo "php-versions: ${{ steps.php-versions.outputs.supported }}"
+          echo "php-latest: ${{ steps.php-versions.outputs.latest }}"
+          echo "php-lowest: ${{ steps.php-versions.outputs.lowest }}"
+          echo "php-extensions: ${{ steps.php-extensions.outputs.value }}"
+          echo "laravel-versions: ${{ steps.laravel-versions.outputs.supported }}"
+          echo "laravel-latest: ${{ steps.laravel-versions.outputs.latest }}"
+          echo "laravel-lowest: ${{ steps.laravel-versions.outputs.lowest }}"
+          echo "dependencies: ${{ steps.dependencies.outputs.value }}"
