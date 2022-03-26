@@ -44,6 +44,8 @@ class EloquentModelComparator extends ObjectComparator {
         // If classes different we just call parent to fail
         if (!($actual instanceof Model) || !($expected instanceof Model) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
+
+            return;
         }
 
         // Normalize properties and compare

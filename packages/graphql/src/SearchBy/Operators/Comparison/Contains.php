@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Grammars\SqlServerGrammar;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 
@@ -25,7 +26,7 @@ class Contains extends BaseOperator implements ComparisonOperator {
         string $property,
         mixed $value,
     ): EloquentBuilder|QueryBuilder {
-        $value     = (string) $value;
+        $value     = Cast::toString($value);
         $property  = $builder->getGrammar()->wrap($property);
         $character = $this->getEscapeCharacter();
 

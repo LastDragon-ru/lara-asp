@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Angular;
 
 use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 
 use function array_diff_key;
 use function array_fill_keys;
@@ -15,6 +16,7 @@ use function implode;
 use function is_array;
 use function is_bool;
 use function is_float;
+use function is_int;
 use function mb_substr;
 use function parse_url;
 use function preg_replace;
@@ -67,7 +69,9 @@ class Url {
         $parameters = (array) $this->serialize($parameters);
 
         foreach ($params as $param) {
-            $url = $url->withPath(str_replace(":{$param}", $parameters[$param], $url->getPath()));
+            if (isset($parameters[$param])) {
+                $url = $url->withPath(str_replace(":{$param}", $parameters[$param], $url->getPath()));
+            }
 
             unset($parameters[$param]);
         }
@@ -105,19 +109,31 @@ class Url {
     }
 
     /**
-     * @return string|array<mixed>
+     * @return string|array<string|array<mixed>>
      */
     private function serialize(mixed $value): string|array {
-        if (is_float($value)) {
-            $value = str_replace(',', '.', (string) $value);
-        } elseif (is_bool($value)) {
-            $value = (string) ((int) $value);
-        } elseif (is_array($value)) {
+        if (is_array($value)) {
             $value = array_map(function ($value) {
                 return $this->serialize($value);
             }, $value);
         } else {
+            $value = $this->value($value);
+        }
+
+        return $value;
+    }
+
+    private function value(mixed $value): string {
+        if ($value === null) {
+            $value = '';
+        } elseif (is_float($value)) {
+            $value = str_replace(',', '.', (string) $value);
+        } elseif (is_bool($value)) {
+            $value = (string) ((int) $value);
+        } elseif (is_int($value)) {
             $value = (string) $value;
+        } else {
+            $value = (string) Cast::toStringable($value);
         }
 
         return $value;

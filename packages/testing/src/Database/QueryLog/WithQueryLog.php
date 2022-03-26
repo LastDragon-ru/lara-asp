@@ -52,10 +52,12 @@ trait WithQueryLog {
 
         if ($connection instanceof Model) {
             $connection = $connection->getConnection();
+        } elseif ($connection instanceof Connection) {
+            // empty
         } elseif ($connection instanceof ConnectionResolverInterface) {
             $connection = $connection->connection();
         } else {
-            $connection = $this->app->make('db')->connection($connection);
+            $connection = $this->app->make(ConnectionResolverInterface::class)->connection($connection);
         }
 
         // Valid?

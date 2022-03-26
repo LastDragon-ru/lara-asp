@@ -53,7 +53,7 @@ class SearchBuilder {
     // =========================================================================
     /**
      * @param EloquentBuilder<Model>|QueryBuilder $builder
-     * @param array<string,mixed>                 $conditions
+     * @param array<string,array<mixed>>          $conditions
      *
      * @return EloquentBuilder<Model>|QueryBuilder
      */
@@ -66,7 +66,7 @@ class SearchBuilder {
     // =========================================================================
     /**
      * @param EloquentBuilder<Model>|QueryBuilder $builder
-     * @param array<string,mixed>                 $input
+     * @param array<string,array<mixed>>          $input
      *
      * @return EloquentBuilder<Model>|QueryBuilder
      */

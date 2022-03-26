@@ -3,16 +3,23 @@ parameters:
         - packages
 
     # The level 9 is the highest level
-    level: 8
+    level: max
 
     # Settings
     checkMissingCallableSignature: true
 
 includes:
+    # Vendor
     - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
     - ./vendor/phpstan/phpstan-mockery/extension.neon
     - ./vendor/phpstan/phpstan-phpunit/extension.neon
     - ./vendor/phpstan/phpstan-phpunit/rules.neon
     - ./vendor/phpstan/phpstan-strict-rules/rules.neon
     - ./vendor/nunomaduro/larastan/extension.neon
+
+    # Package
+    - .phpstan/Extensions/Container/extension.neon
+
+    # Baseline
     - phpstan-baseline-well-known.neon
+    - phpstan-baseline.neon

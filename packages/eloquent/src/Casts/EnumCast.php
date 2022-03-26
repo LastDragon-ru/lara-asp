@@ -6,7 +6,6 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Eloquent\Enum;
 
-use function call_user_func;
 use function gettype;
 use function is_int;
 use function is_null;
@@ -32,7 +31,7 @@ class EnumCast implements CastsAttributes {
         if (is_null($value) || $value instanceof $this->enum) {
             // no action required
         } elseif (is_string($value) || is_int($value)) {
-            $value = call_user_func([$this->enum, 'get'], $value);
+            $value = $this->enum::get($value);
         } else {
             throw new InvalidArgumentException(sprintf(
                 'Type `%s` cannot be converted into `%s` enum.',

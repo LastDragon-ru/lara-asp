@@ -59,7 +59,7 @@ trait CronableAssertions {
         $expected = method_exists($cronable, 'displayName')
             ? $this->app->make($cronable)->displayName()
             : $cronable;
-        $events   = array_filter((array) $schedule->events(), static function (Event $event) use ($expected): bool {
+        $events   = array_filter($schedule->events(), static function (Event $event) use ($expected): bool {
             return str_contains($event->description, $expected);
         });
 

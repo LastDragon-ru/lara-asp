@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Core;
 use Closure;
 use Countable;
 use Illuminate\Contracts\Translation\Translator as TranslatorContract;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 
 use function array_splice;
 use function array_values;
@@ -28,9 +29,9 @@ abstract class Translator implements TranslatorContract {
      * @param array<string>|string $key
      * @param array<mixed>         $replace
      */
-    public function get($key, array $replace = [], $locale = null) {
+    public function get($key, array $replace = [], $locale = null): string {
         return $this->translate($key, function (string $key) use ($replace, $locale): string {
-            return $this->translator->get($this->key($key), $replace, $locale);
+            return Cast::toString($this->translator->get($this->key($key), $replace, $locale));
         });
     }
 

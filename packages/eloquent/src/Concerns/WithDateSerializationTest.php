@@ -42,5 +42,14 @@ class WithDateSerializationTest extends TestCase {
             ->andReturn('json');
 
         self::assertEquals('json', $trait->serializeDate($date));
+
+        // Carbon/JsonSerializable but not a string
+        $date = new class() extends DateTime implements JsonSerializable {
+            public function jsonSerialize(): mixed {
+                return ['json'];
+            }
+        };
+
+        self::assertEquals(Date::make($date)?->toJSON(), $trait->serializeDate($date));
     }
 }

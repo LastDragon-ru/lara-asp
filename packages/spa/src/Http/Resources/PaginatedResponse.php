@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use Illuminate\Http\Resources\Json\PaginatedResourceResponse;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 
 /**
  * @internal
@@ -28,16 +29,16 @@ class PaginatedResponse extends PaginatedResourceResponse {
      */
     protected function meta($paginated): array {
         return [
-            'current_page' => (int) $paginated['current_page'],
+            'current_page' => Cast::toInt($paginated['current_page']),
             'last_page'    => isset($paginated['last_page'])
-                ? (int) $paginated['last_page']
+                ? Cast::toInt($paginated['last_page'])
                 : null,
-            'per_page'     => (int) $paginated['per_page'],
+            'per_page'     => Cast::toInt($paginated['per_page']),
             'total'        => isset($paginated['total'])
-                ? (int) $paginated['total']
+                ? Cast::toInt($paginated['total'])
                 : null,
-            'from'         => (int) $paginated['from'],
-            'to'           => (int) $paginated['to'],
+            'from'         => Cast::toInt($paginated['from']),
+            'to'           => Cast::toInt($paginated['to']),
         ];
     }
 

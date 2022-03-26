@@ -10,6 +10,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
 use IntlTimeZone;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateNumberFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatDate;
@@ -268,7 +269,7 @@ class Formatter {
 
         return $this
             ->getIntlNumberFormatter($type, $decimals, function () use ($type, $decimals): int {
-                return $decimals ?: $this->getOptions($type, 2);
+                return $decimals ?: Cast::toInt($this->getOptions($type, 2));
             })
             ->format($value);
     }
@@ -276,7 +277,7 @@ class Formatter {
     public function currency(?float $value, string $currency = null): string {
         $type     = static::Currency;
         $value    = (float) $value;
-        $currency = $currency ?: $this->getOptions($type, 'USD');
+        $currency = $currency ?: Cast::toString($this->getOptions($type, 'USD'));
 
         return $this
             ->getIntlNumberFormatter($type)
@@ -292,7 +293,7 @@ class Formatter {
 
         return $this
             ->getIntlNumberFormatter($type, $decimals, function () use ($type, $decimals): int {
-                return $decimals ?: $this->getOptions($type, 0);
+                return $decimals ?: Cast::toInt($this->getOptions($type, 0));
             })
             ->format($value);
     }
@@ -360,7 +361,7 @@ class Formatter {
             $this->getTranslation(['filesize.ZiB', 'ZiB']),
             $this->getTranslation(['filesize.YiB', 'YiB']),
         ];
-        $decimals = $decimals ?: $this->getOptions(static::Filesize, 2);
+        $decimals = $decimals ?: Cast::toInt($this->getOptions(static::Filesize, 2));
 
         while ($bytes >= 1024) {
             $bytes /= 1024;
@@ -378,9 +379,9 @@ class Formatter {
             return '';
         }
 
-        $show   = $show ?: $this->getOptions(static::Secret, 5);
+        $show   = $show ?: Cast::toInt($this->getOptions(static::Secret, 5));
         $length = mb_strlen($value);
-        $hidden = (int) ($length - $show);
+        $hidden = $length - $show;
 
         if ($length <= $show) {
             $value = str_pad('*', $length, '*');
@@ -481,12 +482,17 @@ class Formatter {
     ): ?IntlDateFormatter {
         $formatter = null;
         $pattern   = '';
-        $format    = $format ?: $this->getOptions($type, IntlDateFormatter::SHORT);
+        $default   = IntlDateFormatter::SHORT;
+        $format    = $format ?: $this->getOptions($type, $default);
         $tz        = $this->getTimezone();
 
         if (is_string($format)) {
-            $pattern = (string) $this->getLocaleOptions($type, $format);
+            $pattern = Cast::toString($this->getLocaleOptions($type, $format));
             $format  = IntlDateFormatter::FULL;
+        }
+
+        if (!is_int($format)) {
+            $format = $default;
         }
 
         switch ($type) {
@@ -616,7 +622,7 @@ class Formatter {
                 + (array) $this->getOptions('intl_text_attributes');
 
             foreach ($attributes as $attribute => $value) {
-                if (!is_int($attribute) || !$formatter->setAttribute($attribute, $value)) {
+                if (!is_int($attribute) || !$formatter->setAttribute($attribute, Cast::toNumber($value))) {
                     throw new OutOfBoundsException(
                         sprintf(
                             '%s::setAttribute() failed: `%s` is unknown/invalid.',
@@ -628,7 +634,7 @@ class Formatter {
             }
 
             foreach ($symbols as $symbol => $value) {
-                if (!is_int($symbol) || !$formatter->setSymbol($symbol, $value)) {
+                if (!is_int($symbol) || !$formatter->setSymbol($symbol, Cast::toString($value))) {
                     throw new OutOfBoundsException(
                         sprintf(
                             '%s::setSymbol() failed: `%s` is unknown/invalid.',
@@ -640,7 +646,7 @@ class Formatter {
             }
 
             foreach ($texts as $text => $value) {
-                if (!is_int($text) || !$formatter->setTextAttribute($text, $value)) {
+                if (!is_int($text) || !$formatter->setTextAttribute($text, Cast::toString($value))) {
                     throw new OutOfBoundsException(
                         sprintf(
                             '%s::setTextAttribute() failed: `%s` is unknown/invalid.',

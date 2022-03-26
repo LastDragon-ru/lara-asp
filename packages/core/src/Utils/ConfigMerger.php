@@ -82,7 +82,7 @@ class ConfigMerger {
         $isStrict = $this->isStrict();
 
         if ($isStrict) {
-            $this->setStrict($target[static::Strict] ?? true);
+            $this->setStrict((bool) ($target[static::Strict] ?? true));
         }
 
         // Remove marks

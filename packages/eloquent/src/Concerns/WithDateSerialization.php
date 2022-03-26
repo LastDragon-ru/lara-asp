@@ -7,6 +7,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use JsonSerializable;
 
+use function is_string;
 
 /**
  * Serializes dates that implements {@see JsonSerializable} by
@@ -20,8 +21,16 @@ use JsonSerializable;
  */
 trait WithDateSerialization {
     protected function serializeDate(DateTimeInterface $date): string {
-        return $date instanceof JsonSerializable
-            ? (string) $date->jsonSerialize()
-            : parent::serializeDate($date);
+        $serialized = null;
+
+        if ($date instanceof JsonSerializable) {
+            $serialized = $date->jsonSerialize();
+        }
+
+        if (!is_string($serialized)) {
+            $serialized = parent::serializeDate($date);
+        }
+
+        return $serialized;
     }
 }

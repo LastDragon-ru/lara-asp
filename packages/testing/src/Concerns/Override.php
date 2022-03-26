@@ -10,6 +10,7 @@ use Mockery;
 use Mockery\Exception\InvalidCountException;
 use Mockery\MockInterface;
 use OutOfBoundsException;
+
 use function sprintf;
 
 /**
@@ -51,10 +52,10 @@ trait Override {
     /**
      * @template T
      *
-     * @param class-string<T>                                            $class
-     * @param Closure(MockInterface,static=):(T|MockInterface|null)|null $factory
+     * @param class-string<T>                                                               $class
+     * @param Closure(T&MockInterface,static=):void|Closure(T&MockInterface,static=):T|null $factory
      *
-     * @return MockInterface
+     * @return T
      */
     protected function override(string $class, Closure $factory = null): mixed {
         // Overridden?
@@ -68,10 +69,11 @@ trait Override {
         }
 
         // Mock
+        /** @var T&MockInterface $mock */
         $mock = Mockery::mock($class);
 
         if ($factory) {
-            $mock = $factory($mock, $this) ?: $mock;
+            $mock = $factory($mock, $this) ?: $mock; /** @phpstan-ignore-line (void) is fine here */
         }
 
         // Override

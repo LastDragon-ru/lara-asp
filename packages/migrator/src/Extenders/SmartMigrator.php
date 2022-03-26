@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Illuminate\Database\Migrations\Migrator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use Symfony\Component\Finder\Finder;
 
 use function is_string;
@@ -32,7 +33,7 @@ class SmartMigrator extends Migrator {
         }
 
         foreach ($paths as $path) {
-            foreach (Finder::create()->in((string) $path)->directories() as $dir) {
+            foreach (Finder::create()->in(Cast::toString($path))->directories() as $dir) {
                 $paths[] = $dir->getPathname();
             }
         }

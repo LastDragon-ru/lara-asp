@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
@@ -24,11 +25,12 @@ trait ProviderWithConfig {
 
     protected function loadConfigFrom(string $path, string $key): void {
         if (!($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
-            $config = $this->app->make('config');
+            $config = $this->app->make(Repository::class);
+            $target = require $path;
 
             $config->set($key, (new ConfigMerger())->merge(
-                require $path,
-                $config->get($key, []),
+                (array) $target,
+                (array) $config->get($key, []),
             ));
         }
     }

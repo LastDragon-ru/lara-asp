@@ -1,0 +1,237 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Cannot call method once\\(\\) on mixed\\.$#"
+			count: 1
+			path: packages/core/src/Observer/DispatcherTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$offset of method LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Iterators\\\\IteratorImpl\\<TItem of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:setOffset\\(\\) expects int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIterator.php
+
+		-
+			message: "#^Cannot call method times\\(\\) on mixed\\.$#"
+			count: 2
+			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIteratorTest.php
+
+		-
+			message: "#^Cannot call method once\\(\\) on mixed\\.$#"
+			count: 2
+			path: packages/eloquent/src/Iterators/ChunkedIteratorTest.php
+
+		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Formatter\\\\Formatter\\:\\:getDefaultTimezone\\(\\) should return DateTimeZone\\|IntlTimeZone\\|string\\|null but returns mixed\\.$#"
+			count: 1
+			path: packages/formatter/src/Formatter.php
+
+		-
+			message: "#^Parameter \\#1 \\$enum of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\Enum\\\\EnumType constructor expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\Core\\\\Enum\\>, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/Provider.php
+
+		-
+			message: "#^Instanceof between \\*NEVER\\* and LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\TypeDefinitionProvider will always evaluate to false\\.$#"
+			count: 2
+			path: packages/graphql/src/SearchBy/Ast/Metadata.php
+
+		-
+			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Ast\\\\Metadata\\:\\:addScalar\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Ast/MetadataTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$items of class Illuminate\\\\Support\\\\Collection constructor expects Illuminate\\\\Contracts\\\\Support\\\\Arrayable\\<TKey of \\(int\\|string\\), TValue\\>\\|iterable\\<TKey of \\(int\\|string\\), TValue\\>\\|null, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/Directive.php
+
+		-
+			message: "#^Parameter \\#2 \\$conditions of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\SearchBuilder\\:\\:build\\(\\) expects array\\<string, array\\>, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/Directive.php
+
+		-
+			message: "#^Parameter \\#1 \\$array of function sort expects array, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method Nuwave\\\\Lighthouse\\\\Schema\\\\DirectiveLocator\\:\\:associatedOfType\\(\\) expects GraphQL\\\\Language\\\\AST\\\\Node, GraphQL\\\\Language\\\\AST\\\\InputValueDefinitionNode\\|null given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
+
+		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Directives\\\\OperatorDirective\\:\\:getClass\\(\\) should return class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\ComplexOperator\\> but returns mixed\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/OperatorDirective.php
+
+		-
+			message: "#^Parameter \\#2 \\$values of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:whereBetween\\(\\) expects iterable\\<int\\|string, mixed\\>, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Operators/Comparison/Between.php
+
+		-
+			message: "#^Parameter \\#2 \\$values of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:whereNotBetween\\(\\) expects iterable\\<int\\|string, mixed\\>, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Operators/Comparison/NotBetween.php
+
+		-
+			message: "#^Parameter \\#3 \\$conditions of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\SearchBuilder\\:\\:processComparison\\(\\) expects array, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Operators/Complex/Relation.php
+
+		-
+			message: "#^Parameter \\#2 \\$input of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\SearchBuilder\\:\\:process\\(\\) expects array\\<string, array\\>, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Operators/Logical/AllOf.php
+
+		-
+			message: "#^Parameter \\#2 \\$input of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\SearchBuilder\\:\\:process\\(\\) expects array\\<string, array\\>, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Operators/Logical/AnyOf.php
+
+		-
+			message: "#^Parameter \\#2 \\$input of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\SearchBuilder\\:\\:process\\(\\) expects array\\<string, array\\>, array given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Operators/Logical/Not.php
+
+		-
+			message: "#^Parameter \\#2 \\$input of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\SearchBuilder\\:\\:process\\(\\) expects array\\<string, array\\>, array given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/SearchBuilderTest.php
+
+		-
+			message: "#^Cannot call method limit\\(\\) on mixed\\.$#"
+			count: 1
+			path: packages/graphql/src/SortBy/Builders/Eloquent/Builder.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:when\\(\\) expects \\(callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, mixed\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|void\\)\\|null, Closure\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder, string\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"
+			count: 1
+			path: packages/graphql/src/SortBy/Builders/Eloquent/Builder.php
+
+		-
+			message: "#^Parameter \\#1 \\$builder of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Eloquent\\\\Builder\\:\\:handle\\(\\) expects Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder given\\.$#"
+			count: 1
+			path: packages/graphql/src/SortBy/Builders/Eloquent/BuilderTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$builder of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Query\\\\Builder\\:\\:handle\\(\\) expects Illuminate\\\\Database\\\\Query\\\\Builder, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder given\\.$#"
+			count: 1
+			path: packages/graphql/src/SortBy/Builders/Query/BuilderTest.php
+
+		-
+			message: "#^Binary operation \"\\+\" between mixed and array\\{model\\: array\\{\\}, query\\: '', callback\\: null, queryCallback\\: null, index\\: null, wheres\\: array\\{\\}, whereIns\\: array\\{\\}, limit\\: null, \\.\\.\\.\\} results in an error\\.$#"
+			count: 1
+			path: packages/graphql/src/SortBy/Builders/Scout/BuilderTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$clauses of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Directives\\\\Directive\\:\\:getClauses\\(\\) expects array\\<array\\<string, array\\<string, array\\<string, string\\|null\\>\\|string\\>\\|string\\>\\>, mixed given\\.$#"
+			count: 3
+			path: packages/graphql/src/SortBy/Directives/Directive.php
+
+		-
+			message: "#^Parameter \\#1 \\$clauses of method class@anonymous/graphql/src/SortBy/Directives/DirectiveTest\\.php\\:158\\:\\:getClauses\\(\\) expects array\\<array\\<string, array\\<string, array\\<string, string\\|null\\>\\|string\\>\\|string\\>\\>, array given\\.$#"
+			count: 1
+			path: packages/graphql/src/SortBy/Directives/DirectiveTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$expression of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:cron\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: packages/queue/src/CronableRegistrator.php
+
+		-
+			message: "#^Parameter \\#1 \\$timezone of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:timezone\\(\\) expects DateTimeZone\\|string, mixed given\\.$#"
+			count: 1
+			path: packages/queue/src/CronableRegistrator.php
+
+		-
+			message: "#^Access to an undefined property LastDragon_ru\\\\LaraASP\\\\Queue\\\\ProviderTest_ConfigurableQueueable\\:\\:\\$queue\\.$#"
+			count: 1
+			path: packages/queue/src/ProviderTest.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$configs of method LastDragon_ru\\\\LaraASP\\\\Core\\\\Utils\\\\ConfigMerger\\:\\:merge\\(\\) expects array, mixed given\\.$#"
+			count: 1
+			path: packages/spa/src/Http/Controllers/SpaController.php
+
+		-
+			message: "#^Parameter \\#1 \\$array of static method Illuminate\\\\Support\\\\Arr\\:\\:get\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
+			count: 1
+			path: packages/spa/src/Http/Request.php
+
+		-
+			message: "#^Parameter \\#1 \\$array of static method Illuminate\\\\Support\\\\Arr\\:\\:has\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
+			count: 1
+			path: packages/spa/src/Http/Request.php
+
+		-
+			message: "#^Parameter \\#3 \\$path of method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\:\\:mapResourceValue\\(\\) expects array\\<string\\>, array given\\.$#"
+			count: 1
+			path: packages/spa/src/Http/Resources/Resource.php
+
+		-
+			message: "#^Cannot access property \\$id on mixed\\.$#"
+			count: 1
+			path: packages/spa/src/Routing/ResolverTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$timezone of method DateTime\\:\\:setTimezone\\(\\) expects DateTimeZone, mixed given\\.$#"
+			count: 1
+			path: packages/spa/src/Validation/Rules/DateTimeRule.php
+
+		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Validation\\\\Rules\\\\Rule\\:\\:message\\(\\) should return array\\|string but returns mixed\\.$#"
+			count: 1
+			path: packages/spa/src/Validation/Rules/Rule.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<string,mixed\\>\\:\\:first\\(\\) expects \\(callable\\(mixed, string\\)\\: bool\\)\\|null, Closure\\(string, string\\)\\: bool given\\.$#"
+			count: 1
+			path: packages/spa/src/Validation/Rules/Rule.php
+
+		-
+			message: "#^Parameter \\#1 \\$query of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Comparators\\\\DatabaseQueryComparator\\:\\:normalize\\(\\) expects LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\QueryLog\\\\Query, mixed given\\.$#"
+			count: 2
+			path: packages/testing/src/Comparators/DatabaseQueryComparator.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) expects array\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: packages/testing/src/Constraints/Json/JsonFragmentMatchesSchema.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) expects array\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"
+			count: 2
+			path: packages/testing/src/Constraints/Json/JsonMatchesFragment.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) expects array\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: packages/testing/src/Constraints/Json/JsonMatchesSchema.php
+
+		-
+			message: "#^Cannot call method hasHeader\\(\\) on mixed\\.$#"
+			count: 1
+			path: packages/testing/src/Constraints/Response/Header.php
+
+		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\Eloquent\\\\Factories\\\\Factory\\:\\:callWithoutModelEvents\\(\\) should return T but returns mixed\\.$#"
+			count: 1
+			path: packages/testing/src/Database/Eloquent/Factories/Factory.php
+
+		-
+			message: "#^Parameter \\#2 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\Assert\\:\\:assertJsonMatchesSchema\\(\\) expects array\\<string\\>\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: packages/testing/src/Mixins/TestResponseMixin.php
+
+		-
+			message: "#^Parameter \\#1 \\$items of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Providers\\\\BaseDataProvider\\:\\:replaceExpectedValues\\(\\) expects array\\<int\\|string, array\\>, array\\<T\\> given\\.$#"
+			count: 1
+			path: packages/testing/src/Providers/TraversableDataProvider.php
+
+		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) should return array\\|bool\\|float\\|int\\|stdClass\\|string\\|null but returns mixed\\.$#"
+			count: 1
+			path: packages/testing/src/Utils/Args.php
+

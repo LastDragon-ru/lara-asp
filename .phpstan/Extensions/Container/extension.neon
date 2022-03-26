@@ -1,0 +1,9 @@
+# The extension provides proper return types for Container::make()
+#
+# @see https://github.com/nunomaduro/larastan/pull/945
+# @ses https://github.com/nunomaduro/larastan/issues/941
+services:
+    -
+        class: LastDragon_ru\LaraASP\PhpStan\Extensions\Container\ContainerExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension

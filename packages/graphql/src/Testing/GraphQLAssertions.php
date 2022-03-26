@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Schema;
 use Illuminate\Contracts\Config\Repository;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
@@ -143,7 +144,7 @@ trait GraphQLAssertions {
         $this->instance(
             SchemaSourceProvider::class,
             new SchemaStitcher(
-                $this->app->make(Repository::class)->get('lighthouse.schema.register', ''),
+                Cast::toString($this->app->make(Repository::class)->get('lighthouse.schema.register', '')),
             ),
         );
 
