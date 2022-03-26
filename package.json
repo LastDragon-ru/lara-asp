@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@release-it/bumper": "^3.0.0",
-    "@release-it/conventional-changelog": "^3.0.1",
+    "@release-it/conventional-changelog": "^4.0.0",
     "release-it": "*"
   }
 }
