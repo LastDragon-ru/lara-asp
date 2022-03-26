@@ -26,6 +26,11 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\|null but returns mixed\\.$#"
+			count: 1
+			path: packages/graphql/src/AstManipulator.php
+
+		-
 			message: "#^Parameter \\#1 \\$enum of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\Enum\\\\EnumType constructor expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\Core\\\\Enum\\>, mixed given\\.$#"
 			count: 1
 			path: packages/graphql/src/Provider.php
@@ -39,6 +44,11 @@ parameters:
 			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Ast\\\\Metadata\\:\\:addScalar\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
 			count: 1
 			path: packages/graphql/src/SearchBy/Ast/MetadataTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:map\\(\\) expects callable\\(mixed, \\(int\\|string\\)\\)\\: object, Closure\\(string\\)\\: object given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/Directive.php
 
 		-
 			message: "#^Parameter \\#1 \\$items of class Illuminate\\\\Support\\\\Collection constructor expects Illuminate\\\\Contracts\\\\Support\\\\Arrayable\\<TKey of \\(int\\|string\\), TValue\\>\\|iterable\\<TKey of \\(int\\|string\\), TValue\\>\\|null, mixed given\\.$#"
@@ -57,6 +67,11 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$node of method Nuwave\\\\Lighthouse\\\\Schema\\\\DirectiveLocator\\:\\:associatedOfType\\(\\) expects GraphQL\\\\Language\\\\AST\\\\Node, GraphQL\\\\Language\\\\AST\\\\InputValueDefinitionNode\\|null given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$object of method ReflectionMethod\\:\\:invoke\\(\\) expects object\\|null, mixed given\\.$#"
 			count: 1
 			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
 
@@ -214,11 +229,6 @@ parameters:
 			message: "#^Cannot call method hasHeader\\(\\) on mixed\\.$#"
 			count: 1
 			path: packages/testing/src/Constraints/Response/Header.php
-
-		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\Eloquent\\\\Factories\\\\Factory\\:\\:callWithoutModelEvents\\(\\) should return T but returns mixed\\.$#"
-			count: 1
-			path: packages/testing/src/Database/Eloquent/Factories/Factory.php
 
 		-
 			message: "#^Parameter \\#2 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\Assert\\:\\:assertJsonMatchesSchema\\(\\) expects array\\<string\\>\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"

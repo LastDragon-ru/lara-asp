@@ -63,9 +63,7 @@ class EnumTest_Enum extends Enum {
  */
 class EnumTest_Model extends TestObject {
     /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     *
-     * @var array<mixed>
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingAnyTypeHint
      */
     protected $casts = [
         'value' => EnumTest_Enum::class,
