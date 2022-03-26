@@ -1,0 +1,86 @@
+name: PHP Unit
+
+on:
+  workflow_call:
+    inputs:
+      php-versions:
+        description: "The JSON with required PHP versions."
+        required: true
+        type: string
+      php-extensions:
+        description: "The comma separated list of required PHP extensions."
+        required: true
+        type: string
+      laravel-versions:
+        description: "The JSON with required Laravel versions."
+        required: true
+        type: string
+      dependencies:
+        description: "The JSON with required dependencies versions."
+        required: false
+        type: string
+        default: '["locked"]'
+      runs-on:
+        description: "The JSON with required OSs."
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+
+jobs:
+  phpunit:
+    name: Laravel ${{ matrix.laravel }} / PHP ${{ matrix.php }} (${{ matrix.dependencies }} / ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    # `continue-on-error: true` will add a red mark in commit/pr, this is
+    # definitely not what I want :( So we exclude some items instead.
+    #
+    # https://github.com/actions/toolkit/issues/399
+    strategy:
+      fail-fast: false
+      matrix:
+        laravel: ${{ fromJson(inputs.laravel-versions) }}
+        php: ${{ fromJson(inputs.php-versions) }}
+        dependencies: ${{ fromJson(inputs.dependencies) }}
+        os: ${{ fromJson(inputs.runs-on) }}
+        exclude:
+          - dependencies: 'lowest'
+            php: ${{ fromJson(inputs.php-versions)[1] }}
+          - dependencies: 'lowest'
+            php: ${{ fromJson(inputs.php-versions)[2] }}
+          - dependencies: 'lowest'
+            php: ${{ fromJson(inputs.php-versions)[3] }}
+
+    steps:
+      # Required to avoid converting LF into CRLF on Windows or some tests will
+      # fail.
+      - name: Disable core.autocrlf
+        run: git config --global core.autocrlf false
+
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ inputs.extensions }}
+          ini-values: opcache.enable_cli=1
+
+      # On Windows, the caret ^ is the escape character, so the version string
+      # that contains ^ will be handled incorrectly
+      - name: Install Laravel
+        shell: bash
+        run: |
+          composer remove --no-interaction --no-progress --ansi --no-update laravel/framework
+          composer require --no-interaction --no-progress --ansi --no-update "laravel/framework:${{ matrix.laravel }}"
+
+      - name: Install dependencies
+        uses: "ramsey/composer-install@v2"
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+      - name: Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+      - name: Setup problem matchers for PHPUnit
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Execute
+        run: |
+          vendor/bin/phpunit
