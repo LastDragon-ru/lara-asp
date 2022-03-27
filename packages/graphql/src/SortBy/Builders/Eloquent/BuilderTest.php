@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,6 +15,8 @@ use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -78,17 +79,17 @@ class BuilderTest extends TestCase {
             )),
             'Eloquent' => (new ArrayDataProvider([
                 'not a relation'     => [
-                    new PropertyIsNotRelation(new SortBuilderTest__ModelA(), 'delete'),
+                    new PropertyIsNotRelation(new User(), 'unknown'),
                     static function (): EloquentBuilder {
-                        return SortBuilderTest__ModelA::query();
+                        return User::query();
                     },
                     [
-                        new Clause(['delete', 'name'], 'asc'),
+                        new Clause(['unknown', 'name'], 'asc'),
                     ],
                 ],
                 'unsupported'        => [
                     new RelationUnsupported(
-                        'unsupported',
+                        'images',
                         MorphToMany::class,
                         [
                             BelongsTo::class,
@@ -99,23 +100,23 @@ class BuilderTest extends TestCase {
                         ],
                     ),
                     static function (): EloquentBuilder {
-                        return SortBuilderTest__ModelA::query();
+                        return User::query();
                     },
                     [
-                        new Clause(['unsupported', 'name'], 'asc'),
+                        new Clause(['images', 'id'], 'asc'),
                     ],
                 ],
                 'simple condition'   => [
                     [
-                        'query'    => 'select * from "table_a" order by "a" asc, "b" desc',
+                        'query'    => 'select * from "users" order by "name" desc, "id" asc',
                         'bindings' => [],
                     ],
                     static function (): EloquentBuilder {
-                        return SortBuilderTest__ModelA::query();
+                        return User::query();
                     },
                     [
-                        new Clause(['a'], 'asc'),
-                        new Clause(['b'], 'desc'),
+                        new Clause(['name'], 'desc'),
+                        new Clause(['id'], 'asc'),
                     ],
                 ],
                 BelongsTo::class     => [
@@ -124,475 +125,38 @@ class BuilderTest extends TestCase {
                             select
                                 *
                             from
-                                "table_a"
+                                "cars"
                             order by
                                 (
                                     select
-                                        "table_b"."name"
+                                        "users"."name"
                                     from
-                                        "table_b"
+                                        "users"
                                     where
-                                        "table_a"."belongs_to_b_id" = "table_b"."id"
-                                        and "ModelA_belongsToB" = ?
+                                        "cars"."foreignKey" = "users"."ownerKey"
+                                        and "deleted_at" is null
                                     order by
-                                        "table_b"."name" asc
+                                        "users"."name" asc
                                     limit
                                         1
                                 ) asc,
                                 (
                                     select
-                                        "table_b"."created_at"
+                                        "sort_by_organization"."name"
                                     from
-                                        "table_b"
+                                        "users"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "organizations"
+                                        ) as "sort_by_organization"
+                                            on "sort_by_organization"."ownerKey" = "users"."foreignKey"
                                     where
-                                        "table_a"."belongs_to_b_id" = "table_b"."id"
-                                        and "ModelA_belongsToB" = ?
+                                        "cars"."foreignKey" = "users"."ownerKey"
+                                        and "deleted_at" is null
                                     order by
-                                        "table_b"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_belongsToC"."name"
-                                    from
-                                        "table_b"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_c"
-                                    ) as "sort_by_belongsToC"
-                                        on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
-                                    where
-                                        "table_a"."belongs_to_b_id" = "table_b"."id"
-                                        and "ModelA_belongsToB" = ?
-                                    order by
-                                        "sort_by_belongsToC"."name" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_belongsToC_belongsToA"."created_at"
-                                    from
-                                        "table_b"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_c"
-                                    ) as "sort_by_belongsToC"
-                                        on "sort_by_belongsToC"."id" = "table_b"."belongs_to_c_id"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_a"
-                                        where
-                                            "ModelC_belongsToA" = ?
-                                    ) as "sort_by_belongsToC_belongsToA"
-                                        on "sort_by_belongsToC_belongsToA"."id" = "sort_by_belongsToC"."belongs_to_a_id"
-                                    where
-                                        "table_a"."belongs_to_b_id" = "table_b"."id"
-                                        and "ModelA_belongsToB" = ?
-                                    order by
-                                        "sort_by_belongsToC_belongsToA"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                "name" asc
-                            SQL
-                        ,
-                        'bindings' => [
-                            'ModelA_belongsToB_value',
-                            'ModelA_belongsToB_value',
-                            'ModelA_belongsToB_value',
-                            'ModelC_belongsToA_value',
-                            'ModelA_belongsToB_value',
-                        ],
-                    ],
-                    static function (): EloquentBuilder {
-                        return SortBuilderTest__ModelA::query();
-                    },
-                    [
-                        new Clause(['belongsToB', 'name'], 'asc'),
-                        new Clause(['belongsToB', 'created_at'], 'desc'),
-                        new Clause(['belongsToB', 'belongsToC', 'name'], 'desc'),
-                        new Clause(['belongsToB', 'belongsToC', 'belongsToA', 'created_at'], 'desc'),
-                        new Clause(['name'], 'asc'),
-                    ],
-                ],
-                HasOne::class        => [
-                    [
-                        'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "table_a"
-                            order by
-                                (
-                                    select
-                                        "table_b"."name"
-                                    from
-                                        "table_b"
-                                    where
-                                        "table_a"."id" = "table_b"."model_a_id"
-                                        and "ModelA_hasOneB" = ?
-                                    order by
-                                        "table_b"."name" asc
-                                    limit
-                                        1
-                                ) asc,
-                                (
-                                    select
-                                        "table_b"."created_at"
-                                    from
-                                        "table_b"
-                                    where
-                                        "table_a"."id" = "table_b"."model_a_id"
-                                        and "ModelA_hasOneB" = ?
-                                    order by
-                                        "table_b"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_hasOneC"."name"
-                                    from
-                                        "table_b"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_c"
-                                    ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
-                                    where
-                                        "table_a"."id" = "table_b"."model_a_id"
-                                        and "ModelA_hasOneB" = ?
-                                    order by
-                                        "sort_by_hasOneC"."name" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_hasOneC"."created_at"
-                                    from
-                                        "table_b"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_c"
-                                    ) as "sort_by_hasOneC" on "sort_by_hasOneC"."model_b_id" = "table_b"."id"
-                                    where
-                                        "table_a"."id" = "table_b"."model_a_id"
-                                        and "ModelA_hasOneB" = ?
-                                    order by
-                                        "sort_by_hasOneC"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                "name" asc
-                            SQL
-                        ,
-                        'bindings' => [
-                            'ModelA_hasOneB_value',
-                            'ModelA_hasOneB_value',
-                            'ModelA_hasOneB_value',
-                            'ModelA_hasOneB_value',
-                        ],
-                    ],
-                    static function (): EloquentBuilder {
-                        return SortBuilderTest__ModelA::query();
-                    },
-                    [
-                        new Clause(['hasOneB', 'name'], 'asc'),
-                        new Clause(['hasOneB', 'created_at'], 'desc'),
-                        new Clause(['hasOneB', 'hasOneC', 'name'], 'desc'),
-                        new Clause(['hasOneB', 'hasOneC', 'created_at'], 'desc'),
-                        new Clause(['name'], 'asc'),
-                    ],
-                ],
-                HasMany::class       => [
-                    [
-                        'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "table_a"
-                            order by
-                                (
-                                    select
-                                        "table_b"."name"
-                                    from
-                                        "table_b"
-                                    where
-                                        "table_a"."id" = "table_b"."model_a_id"
-                                        and "ModelA_hasManyB" = ?
-                                    order by
-                                        "table_b"."name" asc
-                                    limit
-                                        1
-                                ) asc,
-                                (
-                                    select
-                                        "table_b"."created_at"
-                                    from
-                                        "table_b"
-                                    where
-                                        "table_a"."id" = "table_b"."model_a_id"
-                                        and "ModelA_hasManyB" = ?
-                                    order by
-                                        "table_b"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_hasManyC"."name"
-                                    from
-                                        "table_b"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_c"
-                                    ) as "sort_by_hasManyC" on "sort_by_hasManyC"."model_b_id" = "table_b"."id"
-                                    where
-                                        "table_a"."id" = "table_b"."model_a_id"
-                                        and "ModelA_hasManyB" = ?
-                                    order by
-                                        "sort_by_hasManyC"."name" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_hasManyC"."created_at"
-                                    from
-                                        "table_b"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_c"
-                                    ) as "sort_by_hasManyC" on "sort_by_hasManyC"."model_b_id" = "table_b"."id"
-                                    where
-                                        "table_a"."id" = "table_b"."model_a_id"
-                                        and "ModelA_hasManyB" = ?
-                                    order by
-                                        "sort_by_hasManyC"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                "name" asc
-                            SQL
-                        ,
-                        'bindings' => [
-                            'ModelA_hasManyB_value',
-                            'ModelA_hasManyB_value',
-                            'ModelA_hasManyB_value',
-                            'ModelA_hasManyB_value',
-                        ],
-                    ],
-                    static function (): EloquentBuilder {
-                        return SortBuilderTest__ModelA::query();
-                    },
-                    [
-                        new Clause(['hasManyB', 'name'], 'asc'),
-                        new Clause(['hasManyB', 'created_at'], 'desc'),
-                        new Clause(['hasManyB', 'hasManyC', 'name'], 'desc'),
-                        new Clause(['hasManyB', 'hasManyC', 'created_at'], 'desc'),
-                        new Clause(['name'], 'asc'),
-                    ],
-                ],
-                MorphOne::class      => [
-                    [
-                        'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "table_a"
-                            order by
-                                (
-                                    select
-                                        "table_b"."name"
-                                    from
-                                        "table_b"
-                                    where
-                                        "table_a"."id" = "table_b"."morphable_a_id"
-                                        and "table_b"."morphable_a_type" = ?
-                                        and "ModelA_morphOneB" = ?
-                                    order by
-                                        "table_b"."name" asc
-                                    limit
-                                        1
-                                ) asc,
-                                (
-                                    select
-                                        "table_b"."created_at"
-                                    from
-                                        "table_b"
-                                    where
-                                        "table_a"."id" = "table_b"."morphable_a_id"
-                                        and "table_b"."morphable_a_type" = ?
-                                        and "ModelA_morphOneB" = ?
-                                    order by
-                                        "table_b"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_morphOneC"."name"
-                                    from
-                                        "table_b"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_c"
-                                    ) as "sort_by_morphOneC"
-                                        on "sort_by_morphOneC"."morphable_b_id" = "table_b"."id"
-                                            and "sort_by_morphOneC"."morphable_b_type" = ?
-                                    where
-                                        "table_a"."id" = "table_b"."morphable_a_id"
-                                        and "table_b"."morphable_a_type" = ?
-                                        and "ModelA_morphOneB" = ?
-                                    order by
-                                        "sort_by_morphOneC"."name" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_morphOneC"."created_at"
-                                    from
-                                        "table_b"
-                                    inner join (
-                                        select
-                                            *
-                                        from
-                                            "table_c"
-                                    ) as "sort_by_morphOneC"
-                                        on "sort_by_morphOneC"."morphable_b_id" = "table_b"."id"
-                                            and "sort_by_morphOneC"."morphable_b_type" = ?
-                                    where
-                                        "table_a"."id" = "table_b"."morphable_a_id"
-                                        and "table_b"."morphable_a_type" = ?
-                                        and "ModelA_morphOneB" = ?
-                                    order by
-                                        "sort_by_morphOneC"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                "name" asc
-                            SQL
-                        ,
-                        'bindings' => [
-                            SortBuilderTest__ModelA::class,
-                            'ModelA_morphOneB_value',
-                            SortBuilderTest__ModelA::class,
-                            'ModelA_morphOneB_value',
-                            SortBuilderTest__ModelB::class,
-                            SortBuilderTest__ModelA::class,
-                            'ModelA_morphOneB_value',
-                            SortBuilderTest__ModelB::class,
-                            SortBuilderTest__ModelA::class,
-                            'ModelA_morphOneB_value',
-                        ],
-                    ],
-                    static function (): EloquentBuilder {
-                        return SortBuilderTest__ModelA::query();
-                    },
-                    [
-                        new Clause(['morphOneB', 'name'], 'asc'),
-                        new Clause(['morphOneB', 'created_at'], 'desc'),
-                        new Clause(['morphOneB', 'morphOneC', 'name'], 'desc'),
-                        new Clause(['morphOneB', 'morphOneC', 'created_at'], 'desc'),
-                        new Clause(['name'], 'asc'),
-                    ],
-                ],
-                HasOneThrough::class => [
-                    [
-                        'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "table_a"
-                            order by
-                                (
-                                    select
-                                        "table_c"."name"
-                                    from
-                                        "table_c"
-                                        inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
-                                    where
-                                        "table_a"."local_key" = "table_b"."first_key"
-                                    order by
-                                        "table_c"."name" asc
-                                    limit
-                                        1
-                                ) asc,
-                                (
-                                    select
-                                        "table_c"."created_at"
-                                    from
-                                        "table_c"
-                                        inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
-                                    where
-                                        "table_a"."local_key" = "table_b"."first_key"
-                                    order by
-                                        "table_c"."created_at" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_hasOneThroughA"."name"
-                                    from
-                                        "table_c"
-                                    inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
-                                    inner join (
-                                        select
-                                            "table_b"."id" as "sort_by_hasOneThroughA_key",
-                                            "table_a".*
-                                        from
-                                            "table_a"
-                                            inner join "table_b"
-                                                on "table_b"."second_local_key" = "table_a"."second_key"
-                                    ) as "sort_by_hasOneThroughA"
-                                        on "sort_by_hasOneThroughA"."sort_by_hasOneThroughA_key" = "table_c"."local_key"
-                                    where
-                                        "table_a"."local_key" = "table_b"."first_key"
-                                    order by
-                                        "sort_by_hasOneThroughA"."name" desc
-                                    limit
-                                        1
-                                ) desc,
-                                (
-                                    select
-                                        "sort_by_hasOneThroughA"."created_at"
-                                    from
-                                        "table_c"
-                                    inner join "table_b" on "table_b"."second_local_key" = "table_c"."second_key"
-                                    inner join (
-                                        select
-                                            "table_b"."id" as "sort_by_hasOneThroughA_key",
-                                            "table_a".*
-                                        from
-                                            "table_a"
-                                            inner join "table_b"
-                                                on "table_b"."second_local_key" = "table_a"."second_key"
-                                    ) as "sort_by_hasOneThroughA"
-                                        on "sort_by_hasOneThroughA"."sort_by_hasOneThroughA_key" = "table_c"."local_key"
-                                    where
-                                        "table_a"."local_key" = "table_b"."first_key"
-                                    order by
-                                        "sort_by_hasOneThroughA"."created_at" desc
+                                        "sort_by_organization"."name" desc
                                     limit
                                         1
                                 ) desc,
@@ -604,191 +168,224 @@ class BuilderTest extends TestCase {
                         ],
                     ],
                     static function (): EloquentBuilder {
-                        return SortBuilderTest__ModelA::query();
+                        return Car::query();
                     },
                     [
-                        new Clause(['hasOneThroughC', 'name'], 'asc'),
-                        new Clause(['hasOneThroughC', 'created_at'], 'desc'),
-                        new Clause(['hasOneThroughC', 'hasOneThroughA', 'name'], 'desc'),
-                        new Clause(['hasOneThroughC', 'hasOneThroughA', 'created_at'], 'desc'),
+                        new Clause(['user', 'name'], 'asc'),
+                        new Clause(['user', 'organization', 'name'], 'desc'),
                         new Clause(['name'], 'asc'),
+                    ],
+                ],
+                HasOne::class        => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                (
+                                    select
+                                        "cars"."name"
+                                    from
+                                        "cars"
+                                    where
+                                        "users"."localKey" = "cars"."foreignKey"
+                                        and "favorite" = ?
+                                    order by
+                                        "cars"."name" desc
+                                    limit
+                                        1
+                                ) desc,
+                                (
+                                    select
+                                        "sort_by_engine"."id"
+                                    from
+                                        "cars"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "car_engines"
+                                            where
+                                                "installed" = ?
+                                        ) as "sort_by_engine" on "sort_by_engine"."foreignKey" = "cars"."localKey"
+                                    where
+                                        "users"."localKey" = "cars"."foreignKey"
+                                        and "favorite" = ?
+                                    order by
+                                        "sort_by_engine"."id" asc
+                                    limit
+                                        1
+                                ) asc,
+                                "name" asc
+                            SQL
+                        ,
+                        'bindings' => [
+                            1,
+                            1,
+                            1,
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    [
+                        new Clause(['car', 'name'], 'desc'),
+                        new Clause(['car', 'engine', 'id'], 'asc'),
+                        new Clause(['name'], 'asc'),
+                    ],
+                ],
+                HasMany::class       => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                (
+                                    select
+                                        "cars"."name"
+                                    from
+                                        "cars"
+                                    where
+                                        "users"."localKey" = "cars"."foreignKey"
+                                        and "deleted_at" is null
+                                    order by
+                                        "cars"."name" asc
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "cars"."engines"
+                                    from
+                                        "cars"
+                                    where
+                                        "users"."localKey" = "cars"."foreignKey"
+                                        and "deleted_at" is null
+                                    order by
+                                        "cars"."engines" desc
+                                    limit
+                                        1
+                                ) desc,
+                                "name" asc
+                            SQL
+                        ,
+                        'bindings' => [
+                            // empty
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    [
+                        new Clause(['cars', 'name'], 'asc'),
+                        new Clause(['cars', 'engines'], 'desc'),
+                        new Clause(['name'], 'asc'),
+                    ],
+                ],
+                MorphOne::class      => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                (
+                                    select
+                                        "images"."id"
+                                    from
+                                        "images"
+                                    where
+                                        "users"."localKey" = "images"."imageable_id"
+                                        and "images"."imageable_type" = ?
+                                        and "deleted_at" is null
+                                    order by
+                                        "images"."id" asc
+                                    limit
+                                        1
+                                ) asc,
+                                "name" asc
+                            SQL
+                        ,
+                        'bindings' => [
+                            User::class,
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    [
+                        new Clause(['avatar', 'id'], 'asc'),
+                        new Clause(['name'], 'asc'),
+                    ],
+                ],
+                HasOneThrough::class => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                (
+                                    select
+                                        "roles"."name"
+                                    from
+                                        "roles"
+                                        inner join "user_roles" on "user_roles"."secondLocalKey" = "roles"."secondKey"
+                                    where
+                                        "users"."localKey" = "user_roles"."firstKey"
+                                        and "deleted_at" is null
+                                    order by
+                                        "roles"."name" asc
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "sort_by_user"."name"
+                                    from
+                                        "roles"
+                                        inner join "user_roles" on "user_roles"."secondLocalKey" = "roles"."secondKey"
+                                        inner join (
+                                            select
+                                                "user_roles"."id" as "sort_by_user_key",
+                                                "users".*
+                                            from
+                                                "users"
+                                                inner join "user_roles"
+                                                    on "user_roles"."secondLocalKey" = "users"."secondKey"
+                                        ) as "sort_by_user" on "sort_by_user"."sort_by_user_key" = "roles"."localKey"
+                                    where
+                                        "users"."localKey" = "user_roles"."firstKey"
+                                        and "deleted_at" is null
+                                    order by
+                                        "sort_by_user"."name" desc
+                                    limit
+                                        1
+                                ) desc,
+                                "name" desc
+                            SQL
+                        ,
+                        'bindings' => [
+                            // empty
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    [
+                        new Clause(['role', 'name'], 'asc'),
+                        new Clause(['role', 'user', 'name'], 'desc'),
+                        new Clause(['name'], 'desc'),
                     ],
                 ],
             ])),
         ]))->getData();
     }
     // </editor-fold>
-}
-
-// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class SortBuilderTest__ModelA extends Model {
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     *
-     * @var string
-     */
-    public $table = 'table_a';
-
-    public function __construct() {
-        self::unguard(true);
-        parent::__construct([
-            $this->getKeyName() => 12,
-            'belongs_to_b_id'   => 34,
-        ]);
-    }
-
-    /**
-     * @return BelongsTo<SortBuilderTest__ModelB, SortBuilderTest__ModelA>
-     */
-    public function belongsToB(): BelongsTo {
-        return $this
-            ->belongsTo(SortBuilderTest__ModelB::class)
-            ->where('ModelA_belongsToB', '=', 'ModelA_belongsToB_value');
-    }
-
-    /**
-     * @return HasOne<SortBuilderTest__ModelB>
-     */
-    public function hasOneB(): HasOne {
-        return $this
-            ->hasOne(SortBuilderTest__ModelB::class, 'model_a_id')
-            ->where('ModelA_hasOneB', '=', 'ModelA_hasOneB_value');
-    }
-
-    /**
-     * @return HasMany<SortBuilderTest__ModelB>
-     */
-    public function hasManyB(): HasMany {
-        return $this
-            ->hasMany(SortBuilderTest__ModelB::class, 'model_a_id')
-            ->where('ModelA_hasManyB', '=', 'ModelA_hasManyB_value');
-    }
-
-    /**
-     * @return MorphOne<SortBuilderTest__ModelB>
-     */
-    public function morphOneB(): MorphOne {
-        return $this
-            ->morphOne(SortBuilderTest__ModelB::class, 'morphable_a')
-            ->where('ModelA_morphOneB', '=', 'ModelA_morphOneB_value');
-    }
-
-    /**
-     * @return HasOneThrough<SortBuilderTest__ModelC>
-     */
-    public function hasOneThroughC(): HasOneThrough {
-        return $this->hasOneThrough(
-            SortBuilderTest__ModelC::class,
-            SortBuilderTest__ModelB::class,
-            'first_key',
-            'second_key',
-            'local_key',
-            'second_local_key',
-        );
-    }
-
-    /**
-     * @return MorphToMany<SortBuilderTest__ModelB>
-     */
-    public function unsupported(): MorphToMany {
-        return $this->morphedByMany(SortBuilderTest__ModelB::class, 'test');
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class SortBuilderTest__ModelB extends Model {
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     *
-     * @var string
-     */
-    public $table = 'table_b';
-
-    public function __construct() {
-        self::unguard(true);
-        parent::__construct([
-            $this->getKeyName() => 56,
-            'belongs_to_c_id'   => 78,
-        ]);
-    }
-
-    /**
-     * @return BelongsTo<SortBuilderTest__ModelC, SortBuilderTest__ModelB>
-     */
-    public function belongsToC(): BelongsTo {
-        return $this->belongsTo(SortBuilderTest__ModelC::class);
-    }
-
-    /**
-     * @return HasOne<SortBuilderTest__ModelC>
-     */
-    public function hasOneC(): HasOne {
-        return $this->hasOne(SortBuilderTest__ModelC::class, 'model_b_id');
-    }
-
-    /**
-     * @return HasMany<SortBuilderTest__ModelC>
-     */
-    public function hasManyC(): HasMany {
-        return $this->hasMany(SortBuilderTest__ModelC::class, 'model_b_id');
-    }
-
-    /**
-     * @return MorphOne<SortBuilderTest__ModelC>
-     */
-    public function morphOneC(): MorphOne {
-        return $this->morphOne(SortBuilderTest__ModelC::class, 'morphable_b');
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class SortBuilderTest__ModelC extends Model {
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     *
-     * @var string
-     */
-    public $table = 'table_c';
-
-    public function __construct() {
-        self::unguard(true);
-        parent::__construct([
-            $this->getKeyName() => 90,
-        ]);
-    }
-
-    /**
-     * @return HasOneThrough<SortBuilderTest__ModelA>
-     */
-    public function hasOneThroughA(): HasOneThrough {
-        return $this->hasOneThrough(
-            SortBuilderTest__ModelA::class,
-            SortBuilderTest__ModelB::class,
-            'first_key',
-            'second_key',
-            'local_key',
-            'second_local_key',
-        );
-    }
-
-    /**
-     * @return BelongsTo<SortBuilderTest__ModelA, SortBuilderTest__ModelC>
-     */
-    public function belongsToA(): BelongsTo {
-        return $this
-            ->belongsTo(SortBuilderTest__ModelA::class)
-            ->where('ModelC_belongsToA', '=', 'ModelC_belongsToA_value');
-    }
 }
