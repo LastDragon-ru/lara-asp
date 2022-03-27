@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -17,6 +18,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\CarEngine;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Relations\Unsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -80,7 +82,7 @@ class BuilderTest extends TestCase {
                 ]),
             )),
             'Eloquent' => (new ArrayDataProvider([
-                'not a relation'     => [
+                'not a relation'      => [
                     new PropertyIsNotRelation(new User(), 'unknown'),
                     static function (): EloquentBuilder {
                         return User::query();
@@ -89,7 +91,7 @@ class BuilderTest extends TestCase {
                         new Clause(['unknown', 'name'], 'asc'),
                     ],
                 ],
-                'unsupported'        => [
+                'unsupported'         => [
                     new RelationUnsupported(
                         'unsupported',
                         Unsupported::class,
@@ -99,7 +101,9 @@ class BuilderTest extends TestCase {
                             HasOne::class,
                             HasMany::class,
                             MorphOne::class,
+                            MorphToMany::class,
                             HasOneThrough::class,
+                            HasManyThrough::class,
                         ],
                     ),
                     static function (): EloquentBuilder {
@@ -109,7 +113,7 @@ class BuilderTest extends TestCase {
                         new Clause(['unsupported', 'id'], 'asc'),
                     ],
                 ],
-                'simple condition'   => [
+                'simple condition'    => [
                     [
                         'query'    => 'select * from "users" order by "name" desc, "id" asc',
                         'bindings' => [],
@@ -122,7 +126,7 @@ class BuilderTest extends TestCase {
                         new Clause(['id'], 'asc'),
                     ],
                 ],
-                BelongsTo::class     => [
+                BelongsTo::class      => [
                     [
                         'query'    => <<<'SQL'
                             select
@@ -179,7 +183,7 @@ class BuilderTest extends TestCase {
                         new Clause(['name'], 'asc'),
                     ],
                 ],
-                HasOne::class        => [
+                HasOne::class         => [
                     [
                         'query'    => <<<'SQL'
                             select
@@ -239,7 +243,7 @@ class BuilderTest extends TestCase {
                         new Clause(['name'], 'asc'),
                     ],
                 ],
-                HasMany::class       => [
+                HasMany::class        => [
                     [
                         'query'    => <<<'SQL'
                             select
@@ -289,7 +293,7 @@ class BuilderTest extends TestCase {
                         new Clause(['name'], 'asc'),
                     ],
                 ],
-                MorphOne::class      => [
+                MorphOne::class       => [
                     [
                         'query'    => <<<'SQL'
                             select
@@ -326,7 +330,7 @@ class BuilderTest extends TestCase {
                         new Clause(['name'], 'asc'),
                     ],
                 ],
-                HasOneThrough::class => [
+                HasOneThrough::class  => [
                     [
                         'query'    => <<<'SQL'
                             select
@@ -387,7 +391,7 @@ class BuilderTest extends TestCase {
                         new Clause(['name'], 'desc'),
                     ],
                 ],
-                BelongsToMany::class => [
+                BelongsToMany::class  => [
                     [
                         'query'    => <<<'SQL'
                             select
@@ -449,7 +453,7 @@ class BuilderTest extends TestCase {
                         new Clause(['name'], 'desc'),
                     ],
                 ],
-                MorphToMany::class   => [
+                MorphToMany::class    => [
                     [
                         'query'    => <<<'SQL'
                             select
@@ -508,6 +512,43 @@ class BuilderTest extends TestCase {
                         new Clause(['tags', 'id'], 'asc'),
                         new Clause(['tags', 'users', 'name'], 'asc'),
                         new Clause(['name'], 'desc'),
+                    ],
+                ],
+                HasManyThrough::class => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "car_engines"
+                            order by
+                                (
+                                    select
+                                        "users"."name"
+                                    from
+                                        "users"
+                                        inner join "cars" on "cars"."secondLocalKey" = "users"."secondKey"
+                                    where
+                                        "car_engines"."localKey" = "cars"."firstKey"
+                                        and "deleted_at" is null
+                                    order by
+                                        "users"."name" asc
+                                    limit
+                                        1
+                                ) asc,
+                                "id" desc
+                            SQL
+                        ,
+                        'bindings' => [
+                            // empty
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return CarEngine::query();
+                    },
+                    [
+                        new Clause(['users', 'name'], 'asc'),
+                        new Clause(['id'], 'desc'),
                     ],
                 ],
             ])),

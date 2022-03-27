@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
 
 /**
@@ -19,5 +20,21 @@ class CarEngine extends Model {
      */
     public function __construct(array $attributes = []) {
         parent::__construct('car_engines', self::Id, $attributes);
+    }
+
+    /**
+     * @return HasManyThrough<User>
+     */
+    public function users(): HasManyThrough {
+        return $this
+            ->hasManyThrough(
+                User::class,
+                Car::class,
+                'firstKey',
+                'secondKey',
+                'localKey',
+                'secondLocalKey',
+            )
+            ->whereNull('deleted_at');
     }
 }
