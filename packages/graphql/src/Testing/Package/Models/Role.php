@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models;
 
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
@@ -45,5 +46,21 @@ class Role extends Model {
                 'localKey',
                 'secondLocalKey',
             );
+    }
+
+    /**
+     * @return BelongsToMany<User>
+     */
+    public function users(): BelongsToMany {
+        return $this
+            ->belongsToMany(
+                User::class,
+                (new UserRole())->getTable(),
+                'foreignPivotKey',
+                'relatedPivotKey',
+                'parentKey',
+                'relatedKey',
+            )
+            ->whereNull('deleted_at');
     }
 }

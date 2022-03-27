@@ -4,13 +4,14 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Relations\Unsupported;
 
 /**
  * @internal
@@ -73,17 +74,17 @@ class User extends Model {
     }
 
     /**
-     * @return HasManyThrough<Role>
+     * @return BelongsToMany<Role>
      */
-    public function roles(): HasManyThrough {
+    public function roles(): BelongsToMany {
         return $this
-            ->hasManyThrough(
+            ->belongsToMany(
                 Role::class,
-                UserRole::class,
-                'firstKey',
-                'secondKey',
-                'localKey',
-                'secondLocalKey',
+                (new UserRole())->getTable(),
+                'foreignPivotKey',
+                'relatedPivotKey',
+                'parentKey',
+                'relatedKey',
             )
             ->whereNull('deleted_at');
     }
@@ -98,17 +99,24 @@ class User extends Model {
     }
 
     /**
-     * @return MorphToMany<Image>
+     * @return MorphToMany<Tag>
      */
-    public function images(): MorphToMany {
+    public function tags(): MorphToMany {
         return $this->morphToMany(
-            Image::class,
-            'imageable',
+            Tag::class,
+            'taggable',
             null,
             'foreignPivotKey',
             'relatedPivotKey',
             'parentKey',
             'relatedKey',
         );
+    }
+
+    /**
+     * @return Unsupported<Model>
+     */
+    public function unsupported(): Unsupported {
+        return new Unsupported();
     }
 }

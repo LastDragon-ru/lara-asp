@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -28,6 +29,7 @@ class Builder {
      */
     protected array $relations = [
         BelongsTo::class,
+        BelongsToMany::class,
         HasOne::class,
         HasMany::class,
         MorphOne::class,
@@ -222,6 +224,16 @@ class Builder {
                 $parentAlias
                     ? "{$parentAlias}.{$relation->getLocalKeyName()}"
                     : $relation->getQualifiedLocalKeyName(),
+            );
+        } elseif ($relation instanceof BelongsToMany) {
+            $builder = $builder->joinSub(
+                $relation->getQuery(),
+                $currentAlias,
+                "{$currentAlias}.{$relation->getParentKeyName()}",
+                '=',
+                $parentAlias
+                    ? "{$parentAlias}.{$relation->getRelatedKeyName()}"
+                    : $relation->getQualifiedRelatedKeyName(),
             );
         } else {
             throw new LogicException('O_o => Please contact to developer.');

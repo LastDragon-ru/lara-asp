@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
 
 /**
@@ -30,35 +29,5 @@ class Image extends Model {
      */
     public function imageable(): MorphTo {
         return $this->morphTo();
-    }
-
-    /**
-     * @return MorphToMany<User>
-     */
-    public function users(): MorphToMany {
-        return $this->morphedByMany(
-            User::class,
-            'imageable',
-            null,
-            'foreignPivotKey',
-            'relatedPivotKey',
-            'parentKey',
-            'relatedKey',
-        );
-    }
-
-    /**
-     * @return MorphToMany<Role>
-     */
-    public function roles(): MorphToMany {
-        return $this->morphedByMany(
-            Role::class,
-            'imageable',
-            null,
-            'foreignPivotKey',
-            'relatedPivotKey',
-            'parentKey',
-            'relatedKey',
-        );
     }
 }

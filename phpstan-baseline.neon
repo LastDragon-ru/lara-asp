@@ -156,6 +156,11 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Models/Image.php
 
 		-
+			message: "#^Parameter \\#2 \\$results \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Concerns\\\\Model\\>\\) of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Relations\\\\Unsupported\\:\\:match\\(\\) should be contravariant with parameter \\$results \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection\\) of method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<TModel of LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Concerns\\\\Model\\>\\:\\:match\\(\\)$#"
+			count: 1
+			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
+
+		-
 			message: "#^Parameter \\#1 \\$expression of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:cron\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: packages/queue/src/CronableRegistrator.php

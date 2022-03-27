@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -16,6 +17,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Relations\Unsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -89,10 +91,11 @@ class BuilderTest extends TestCase {
                 ],
                 'unsupported'        => [
                     new RelationUnsupported(
-                        'images',
-                        MorphToMany::class,
+                        'unsupported',
+                        Unsupported::class,
                         [
                             BelongsTo::class,
+                            BelongsToMany::class,
                             HasOne::class,
                             HasMany::class,
                             MorphOne::class,
@@ -103,7 +106,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     [
-                        new Clause(['images', 'id'], 'asc'),
+                        new Clause(['unsupported', 'id'], 'asc'),
                     ],
                 ],
                 'simple condition'   => [
@@ -381,6 +384,129 @@ class BuilderTest extends TestCase {
                     [
                         new Clause(['role', 'name'], 'asc'),
                         new Clause(['role', 'user', 'name'], 'desc'),
+                        new Clause(['name'], 'desc'),
+                    ],
+                ],
+                BelongsToMany::class => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                (
+                                    select
+                                        "roles"."name"
+                                    from
+                                        "roles"
+                                        inner join "user_roles" on "roles"."relatedKey" = "user_roles"."relatedPivotKey"
+                                    where
+                                        "users"."parentKey" = "user_roles"."foreignPivotKey"
+                                        and "deleted_at" is null
+                                    order by
+                                        "roles"."name" asc
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "sort_by_users"."name"
+                                    from
+                                        "roles"
+                                        inner join "user_roles" on "roles"."relatedKey" = "user_roles"."relatedPivotKey"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "users"
+                                                inner join "user_roles"
+                                                    on "users"."relatedKey" = "user_roles"."relatedPivotKey"
+                                            where
+                                                "deleted_at" is null
+                                        ) as "sort_by_users" on "sort_by_users"."parentKey" = "roles"."relatedKey"
+                                    where
+                                        "users"."parentKey" = "user_roles"."foreignPivotKey"
+                                        and "deleted_at" is null
+                                    order by
+                                        "sort_by_users"."name" desc
+                                    limit
+                                        1
+                                ) desc,
+                                "name" desc
+                            SQL
+                        ,
+                        'bindings' => [
+                            // empty
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    [
+                        new Clause(['roles', 'name'], 'asc'),
+                        new Clause(['roles', 'users', 'name'], 'desc'),
+                        new Clause(['name'], 'desc'),
+                    ],
+                ],
+                MorphToMany::class   => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                (
+                                    select
+                                        "tags"."id"
+                                    from
+                                        "tags"
+                                        inner join "taggables" on "tags"."relatedKey" = "taggables"."relatedPivotKey"
+                                    where
+                                        "users"."parentKey" = "taggables"."foreignPivotKey"
+                                        and "taggables"."taggable_type" = ?
+                                    order by
+                                        "tags"."id" asc
+                                    limit
+                                        1
+                                ) asc,
+                                (
+                                    select
+                                        "sort_by_users"."name"
+                                    from
+                                        "tags"
+                                        inner join "taggables" on "tags"."relatedKey" = "taggables"."relatedPivotKey"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "users"
+                                                inner join "taggables"
+                                                    on "users"."relatedKey" = "taggables"."relatedPivotKey"
+                                        ) as "sort_by_users" on "sort_by_users"."parentKey" = "tags"."relatedKey"
+                                    where
+                                        "users"."parentKey" = "taggables"."foreignPivotKey"
+                                        and "taggables"."taggable_type" = ?
+                                    order by
+                                        "sort_by_users"."name" asc
+                                    limit
+                                        1
+                                ) asc,
+                                "name" desc
+                            SQL
+                        ,
+                        'bindings' => [
+                            User::class,
+                            User::class,
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    [
+                        new Clause(['tags', 'id'], 'asc'),
+                        new Clause(['tags', 'users', 'name'], 'asc'),
                         new Clause(['name'], 'desc'),
                     ],
                 ],
