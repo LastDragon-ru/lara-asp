@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\JoinClause;
@@ -35,6 +37,7 @@ class Builder {
         HasOne::class,
         HasMany::class,
         MorphOne::class,
+        MorphMany::class,
         MorphToMany::class,
         HasOneThrough::class,
         HasManyThrough::class,
@@ -197,7 +200,7 @@ class Builder {
                     ? "{$parentAlias}.{$relation->getLocalKeyName()}"
                     : $relation->getQualifiedParentKeyName(),
             );
-        } elseif ($relation instanceof MorphOne) {
+        } elseif ($relation instanceof MorphOneOrMany) {
             $builder = $builder->joinSub(
                 $relation->getQuery(),
                 $currentAlias,

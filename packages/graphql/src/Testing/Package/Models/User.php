@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
@@ -95,6 +96,15 @@ class User extends Model {
     public function avatar(): MorphOne {
         return $this
             ->morphOne(Image::class, 'imageable', null, null, 'localKey')
+            ->whereNull('deleted_at');
+    }
+
+    /**
+     * @return MorphMany<Image>
+     */
+    public function images(): MorphMany {
+        return $this
+            ->morphMany(Image::class, 'imageable', null, null, 'localKey')
             ->whereNull('deleted_at');
     }
 

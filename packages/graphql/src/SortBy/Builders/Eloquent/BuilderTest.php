@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
@@ -101,6 +102,7 @@ class BuilderTest extends TestCase {
                             HasOne::class,
                             HasMany::class,
                             MorphOne::class,
+                            MorphMany::class,
                             MorphToMany::class,
                             HasOneThrough::class,
                             HasManyThrough::class,
@@ -549,6 +551,43 @@ class BuilderTest extends TestCase {
                     [
                         new Clause(['users', 'name'], 'asc'),
                         new Clause(['id'], 'desc'),
+                    ],
+                ],
+                MorphMany::class      => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                (
+                                    select
+                                        "images"."id"
+                                    from
+                                        "images"
+                                    where
+                                        "users"."localKey" = "images"."imageable_id"
+                                        and "images"."imageable_type" = ?
+                                        and "deleted_at" is null
+                                    order by
+                                        "images"."id" asc
+                                    limit
+                                        1
+                                ) asc,
+                                "name" desc
+                            SQL
+                        ,
+                        'bindings' => [
+                            User::class,
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    [
+                        new Clause(['images', 'id'], 'asc'),
+                        new Clause(['name'], 'desc'),
                     ],
                 ],
             ])),
