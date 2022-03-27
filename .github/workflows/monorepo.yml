@@ -1,0 +1,32 @@
+name: Monorepo
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        required: true
+        type: string
+      php-extensions:
+        description: "The comma separated list of required php extensions."
+        required: true
+        type: string
+
+jobs:
+  run:
+    name: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
+          extensions: ${{ inputs.php-extensions }}
+          ini-values: opcache.enable_cli=1
+          coverage: none
+      - name: Install dependencies
+        uses: ramsey/composer-install@v2
+      - name: Execute
+        run: |
+          vendor/bin/monorepo-builder validate

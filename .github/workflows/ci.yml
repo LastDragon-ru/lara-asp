@@ -13,6 +13,14 @@ jobs:
   settings:
     uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
 
+  monorepo:
+    uses: LastDragon-ru/lara-asp/.github/workflows/monorepo.yml@master
+    needs:
+      - settings
+    with:
+      php-version: ${{ needs.settings.outputs.php-latest }}
+      php-extensions: ${{ needs.settings.outputs.php-extensions }}
+
   phpcs:
     uses: LastDragon-ru/lara-asp/.github/workflows/phpcs.yml@master
     needs:
