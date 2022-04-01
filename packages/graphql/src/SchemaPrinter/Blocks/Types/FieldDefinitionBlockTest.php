@@ -71,10 +71,11 @@ class FieldDefinitionBlockTest extends TestCase {
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
-            ->setNormalizeArguments(false);
+            ->setNormalizeArguments(false)
+            ->setAlwaysMultilineArguments(false);
 
         return [
-            'without args'         => [
+            'without args'               => [
                 <<<'STRING'
                 """
                 Description
@@ -96,7 +97,7 @@ class FieldDefinitionBlockTest extends TestCase {
                     'description' => 'Description',
                 ]),
             ],
-            'with args (short)'    => [
+            'with args (short)'          => [
                 <<<'STRING'
                 """
                 Description
@@ -127,7 +128,7 @@ class FieldDefinitionBlockTest extends TestCase {
                     'description' => 'Description',
                 ]),
             ],
-            'with args (long)'     => [
+            'with args (long)'           => [
                 <<<'STRING'
                 test(
                     b: Int
@@ -160,7 +161,7 @@ class FieldDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'with args normalized' => [
+            'with args normalized'       => [
                 <<<'STRING'
                 test(a: String, b: Int): Test!
                 STRING,
@@ -184,7 +185,34 @@ class FieldDefinitionBlockTest extends TestCase {
                     ],
                 ]),
             ],
-            'indent'               => [
+            'with args always multiline' => [
+                <<<'STRING'
+                test(
+                    b: Int
+                    a: String
+                ): Test!
+                STRING,
+                $settings->setAlwaysMultilineArguments(true),
+                0,
+                0,
+                FieldDefinition::create([
+                    'name' => 'test',
+                    'type' => new NonNull(
+                        new ObjectType([
+                            'name' => 'Test',
+                        ]),
+                    ),
+                    'args' => [
+                        'b' => [
+                            'type' => Type::int(),
+                        ],
+                        'a' => [
+                            'type' => Type::string(),
+                        ],
+                    ],
+                ]),
+            ],
+            'indent'                     => [
                 <<<'STRING'
                 test(
                         a: String

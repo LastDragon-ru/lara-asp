@@ -80,6 +80,11 @@ interface Settings {
     public function isAlwaysMultilineUnions(): bool;
 
     /**
+     * If `true` arguments will always be printed multiline.
+     */
+    public function isAlwaysMultilineArguments(): bool;
+
+    /**
      * If `true` implemented interfaces will always be printed multiline.
      */
     public function isAlwaysMultilineInterfaces(): bool;

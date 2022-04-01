@@ -111,7 +111,9 @@ type Query {
         }
     ): CodeScalar
 
-    d(a: SchemaInput = {}): CodeType
+    d(
+        a: SchemaInput = {}
+    ): CodeType
 }
 
 type SchemaType

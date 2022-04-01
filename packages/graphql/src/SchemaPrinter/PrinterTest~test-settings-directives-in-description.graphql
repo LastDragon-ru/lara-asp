@@ -139,7 +139,9 @@ type Query {
     """
     @mock
     """
-    d(a: SchemaInput = {}): CodeType
+    d(
+        a: SchemaInput = {}
+    ): CodeType
 }
 
 """

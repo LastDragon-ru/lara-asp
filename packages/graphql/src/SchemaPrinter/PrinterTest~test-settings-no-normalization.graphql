@@ -25,7 +25,9 @@ type Query {
     ): CodeScalar
     @mock
 
-    d(a: SchemaInput = {}): CodeType
+    d(
+        a: SchemaInput = {}
+    ): CodeType
     @mock
 }
 

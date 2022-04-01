@@ -72,6 +72,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
+            ->setAlwaysMultilineArguments(false)
             ->setAlwaysMultilineDirectiveLocations(false);
 
         return [
@@ -256,6 +257,30 @@ class DirectiveDefinitionBlockTest extends TestCase {
                     'name'      => 'test',
                     'locations' => [
                         DirectiveLocation::ARGUMENT_DEFINITION,
+                    ],
+                ]),
+            ],
+            'args always multiline'      => [
+                <<<'STRING'
+                directive @test(
+                    a: String
+                )
+                on
+                    | ENUM
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(true),
+                0,
+                0,
+                new Directive([
+                    'name'      => 'test',
+                    'args'      => [
+                        'a' => [
+                            'type' => Type::string(),
+                        ],
+                    ],
+                    'locations' => [
+                        DirectiveLocation::ENUM,
                     ],
                 ]),
             ],

@@ -160,6 +160,10 @@ class PrinterSettings implements Settings {
         return $this->settings->isAlwaysMultilineUnions();
     }
 
+    public function isAlwaysMultilineArguments(): bool {
+        return $this->settings->isAlwaysMultilineArguments();
+    }
+
     public function isAlwaysMultilineInterfaces(): bool {
         return $this->settings->isAlwaysMultilineInterfaces();
     }

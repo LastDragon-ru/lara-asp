@@ -48,4 +48,9 @@ class ArgumentsDefinitionList extends BlockList {
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeArguments();
     }
+
+    protected function isAlwaysMultiline(): bool {
+        return parent::isAlwaysMultiline()
+            || $this->getSettings()->isAlwaysMultilineArguments();
+    }
 }

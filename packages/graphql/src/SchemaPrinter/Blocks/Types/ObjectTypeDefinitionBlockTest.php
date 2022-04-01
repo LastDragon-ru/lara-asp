@@ -88,6 +88,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
         $settings = (new TestSettings())
             ->setNormalizeFields(false)
             ->setNormalizeInterfaces(false)
+            ->setAlwaysMultilineArguments(false)
             ->setAlwaysMultilineInterfaces(false);
 
         return [
@@ -367,6 +368,53 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                     ],
                     'interfaces' => [
                         new ObjectType(['name' => 'B']),
+                    ],
+                ]),
+            ],
+            'args always multiline'                       => [
+                <<<'STRING'
+                type Test {
+                    """
+                    Description
+                    """
+                    b(
+                        b: Int
+                    ): B
+
+                    a(
+                        a: Int
+                    ): A
+                }
+                STRING,
+                $settings->setAlwaysMultilineArguments(true),
+                0,
+                0,
+                new ObjectType([
+                    'name'   => 'Test',
+                    'fields' => [
+                        [
+                            'name'        => 'b',
+                            'type'        => new ObjectType([
+                                'name' => 'B',
+                            ]),
+                            'args'        => [
+                                'b' => [
+                                    'type' => Type::int(),
+                                ],
+                            ],
+                            'description' => 'Description',
+                        ],
+                        [
+                            'name' => 'a',
+                            'type' => new ObjectType([
+                                'name' => 'A',
+                            ]),
+                            'args' => [
+                                'a' => [
+                                    'type' => Type::int(),
+                                ],
+                            ],
+                        ],
                     ],
                 ]),
             ],
