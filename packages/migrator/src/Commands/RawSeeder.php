@@ -11,12 +11,16 @@ use function dirname;
 use function trim;
 
 class RawSeeder extends SeederMakeCommand {
-    public const Name = Package::Name.':raw-seeder';
+    protected const Name = Package::Name.':raw-seeder';
 
     public function __construct(Filesystem $filesystem) {
-        $this->name = static::Name;
+        $this->name = self::Name;
 
         parent::__construct($filesystem);
+    }
+
+    public static function getDefaultName(): ?string {
+        return self::Name;
     }
 
     /**
