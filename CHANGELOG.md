@@ -1,3 +1,27 @@
+## [0.14.0](https://github.com/LastDragon-ru/lara-asp/compare/0.13.0...0.14.0) (2022-04-02)
+
+| ☣    | Breaking changes |
+|:-----:|:-----------------|
+
+### Features
+
+* **core:** `ProviderWithTranslations` will use `Application::langPath()` instead of hard-coded `resources/` and also expects that package's translations will be places in `lang` directory instead of `resources/lang` (the same as in Laravel v9). ([bc5891d](https://github.com/LastDragon-ru/lara-asp/commit/bc5891d146d5f3bfc2618800f0265e0b7d7347c8)) ☣
+* **eloquent:** `Iterator` will support only Eloquent Builder (because is impossible to satisfy phpstan...) ([a871876](https://github.com/LastDragon-ru/lara-asp/commit/a871876c98b7a662c429de4c1c74a96ec4c5a31c)) ☣
+* **graphql/`@sortBy`:** `BelongsToMany` and `MorphToMany` support. ([650daf7](https://github.com/LastDragon-ru/lara-asp/commit/650daf73d87d919a36a2f16e303d4c354accd1e7))
+* **graphql/`@sortBy`:** `HasMany` support. ([30694ee](https://github.com/LastDragon-ru/lara-asp/commit/30694ee7aad611cf5795410c9459676347bd3cf7))
+* **graphql/`@sortBy`:** `HasManyThrough` support. ([745a76c](https://github.com/LastDragon-ru/lara-asp/commit/745a76c900705cf11fe42a215fef3c0092e507a4))
+* **graphql/`@sortBy`:** `MorphMany` support. ([5a10f3f](https://github.com/LastDragon-ru/lara-asp/commit/5a10f3fa767de337adb50b252214bf60ed8a6d1a))
+* **graphql/`@sortBy`:** Eloquent Builder will sort sub queries to be more consistent. ([915335a](https://github.com/LastDragon-ru/lara-asp/commit/915335a74fce944d093a962af04ba820104e0c7c)) ☣
+* **graphql/SchemaPrinter:** Added `Settings::isAlwaysMultilineArguments()` that allow print arguments multi-line always. ([30ffc5f](https://github.com/LastDragon-ru/lara-asp/commit/30ffc5f03db22e59dc4ebcc2ea03d3fc8d345901)) ☣
+* **graphql:** Removed code related to `Resolver` concept because it was never (and will not be) used in real life. ([3564e4c](https://github.com/LastDragon-ru/lara-asp/commit/3564e4c0a0acf5c4f65358446ee9834043b4e02a)) ☣
+
+
+### Bug Fixes
+
+* **migrator:** Commands will be compatible with Laravel ^9.6 ([bf759bd](https://github.com/LastDragon-ru/lara-asp/commit/bf759bd0f5270a29cab68d1a792d287f4af8e4b5))
+* **queue:** Return type of `WithInitialization::initialized()` will be `static` instead of `self`. ([f0a952f](https://github.com/LastDragon-ru/lara-asp/commit/f0a952fa1263cf1cb78527db6bbd3062559d0035)) ☣
+
+
 ## [0.13.0](https://github.com/LastDragon-ru/lara-asp/compare/0.12.0...0.13.0) (2022-03-13)
 
 | ☣    | Breaking changes |
