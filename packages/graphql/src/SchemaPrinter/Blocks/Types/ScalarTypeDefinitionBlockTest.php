@@ -46,6 +46,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
+            ->setAlwaysMultilineArguments(false)
             ->setPrintDirectives(false);
 
         return [

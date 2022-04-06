@@ -66,31 +66,32 @@ class DirectiveNodeBlockTest extends TestCase {
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
-            ->setNormalizeArguments(false);
+            ->setNormalizeArguments(false)
+            ->setAlwaysMultilineArguments(false);
 
         return [
-            'without arguments'           => [
+            'without arguments'                 => [
                 '@directive',
                 $settings,
                 0,
                 0,
                 Parser::directive('@directive'),
             ],
-            'without arguments (level)'   => [
+            'without arguments (level)'         => [
                 '@directive',
                 $settings,
                 0,
                 0,
                 Parser::directive('@directive'),
             ],
-            'with arguments (short)'      => [
+            'with arguments (short)'            => [
                 '@directive(a: "a", b: "b")',
                 $settings,
                 0,
                 0,
                 Parser::directive('@directive(a: "a", b: "b")'),
             ],
-            'with arguments (long)'       => [
+            'with arguments (long)'             => [
                 <<<'STRING'
                 @directive(
                     b: "b"
@@ -102,14 +103,14 @@ class DirectiveNodeBlockTest extends TestCase {
                 120,
                 Parser::directive('@directive(b: "b", a: "a")'),
             ],
-            'with arguments (normalized)' => [
+            'with arguments (normalized)'       => [
                 '@directive(a: "a", b: "b")',
                 $settings->setNormalizeArguments(true),
                 0,
                 0,
                 Parser::directive('@directive(b: "b", a: "a")'),
             ],
-            'with arguments (indent)'     => [
+            'with arguments (indent)'           => [
                 <<<'STRING'
                 @directive(
                         b: "b"
@@ -120,6 +121,18 @@ class DirectiveNodeBlockTest extends TestCase {
                 1,
                 120,
                 Parser::directive('@directive(b: "b", a: "a")'),
+            ],
+            'with arguments (always multiline)' => [
+                <<<'STRING'
+                @directive(
+                    a: "a"
+                )
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(true),
+                0,
+                0,
+                Parser::directive('@directive(a: "a")'),
             ],
         ];
     }

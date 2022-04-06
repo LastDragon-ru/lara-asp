@@ -1,6 +1,8 @@
 type Query {
     a: SchemaType
-    @deprecated(reason: "deprecated reason")
+    @deprecated(
+        reason: "deprecated reason"
+    )
     @codeDirective
     @mock
 
@@ -68,7 +70,9 @@ character sequences. The String type is most often used by GraphQL to
 represent free-form human-readable text.
 """
 scalar SchemaScalar
-@scalar(class: "GraphQL\\Type\\Definition\\StringType")
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
 @codeDirective
 
 """
@@ -175,7 +179,9 @@ interface SchemaInterfaceB
 }
 
 scalar CodeDirectiveScalarCustomClass
-@scalar(class: "GraphQL\\Type\\Definition\\StringType")
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
 
 scalar CodeDirectiveScalar
 

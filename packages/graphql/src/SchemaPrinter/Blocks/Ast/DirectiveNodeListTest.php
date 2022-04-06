@@ -81,7 +81,8 @@ class DirectiveNodeListTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ?array<DirectiveNode>, ?string}>
      */
     public function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setAlwaysMultilineArguments(false);
 
         return [
             'null'                                      => [
@@ -200,6 +201,21 @@ class DirectiveNodeListTest extends TestCase {
                     Parser::directive('@a(a: 123)'),
                     Parser::directive('@b(b: 1234567890)'),
                     Parser::directive('@c'),
+                ],
+                null,
+            ],
+            'args always multiline'                     => [
+                <<<'STRING'
+                @a(
+                    a: 123
+                )
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(true),
+                0,
+                0,
+                [
+                    Parser::directive('@a(a: 123)'),
                 ],
                 null,
             ],

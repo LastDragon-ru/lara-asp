@@ -90,7 +90,9 @@ type CodeType {
 
 type Query {
     a: SchemaType
-    @deprecated(reason: "deprecated reason")
+    @deprecated(
+        reason: "deprecated reason"
+    )
 
     b: SchemaEnum
     @deprecated

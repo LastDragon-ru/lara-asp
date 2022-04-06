@@ -54,6 +54,7 @@ class DescriptionTest extends TestCase {
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
+            ->setAlwaysMultilineArguments(false)
             ->setNormalizeDescription(false);
 
         return [
@@ -394,11 +395,14 @@ class DescriptionTest extends TestCase {
                 <<<'STRING'
                 """
                 @a
-                @b(test: "abc")
+                @b(
+                    test: "abc"
+                )
                 """
                 STRING,
                 $settings
                     ->setNormalizeDescription(true)
+                    ->setAlwaysMultilineArguments(true)
                     ->setPrintDirectivesInDescription(true),
                 0,
                 0,
