@@ -14,6 +14,9 @@ abstract class WithTranslationsHelper extends Translator {
      * @param array<string,string> $lines
      */
     public static function replaceLines(Translator $translator, string $locale, array $lines): void {
+        // We need to load the locale first
+        $translator->load('*', '*', $locale);
+
         // Laravel may use translations from JSON files, they have a bigger
         // priority than normal translations. This is why we override them
         // and not normal translations.
