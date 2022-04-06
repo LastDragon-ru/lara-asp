@@ -1,3 +1,11 @@
+### [0.14.1](https://github.com/LastDragon-ru/lara-asp/compare/0.14.0...0.14.1) (2022-04-06)
+
+### Bug Fixes
+
+* **graphql/SchemaPrinter:** `Settings::isAlwaysMultilineArguments()` will print directive arguments multi-line as it should. ([6d01de5](https://github.com/LastDragon-ru/lara-asp/commit/6d01de59c62d2bbdfaa221f253f892583fa4ff0e))
+* **testing:** `WithTranslations` will load locale before change. ([5fc28d2](https://github.com/LastDragon-ru/lara-asp/commit/5fc28d25a3e6acfd22415fa55b5d8d08141f5c07))
+
+
 ## [0.14.0](https://github.com/LastDragon-ru/lara-asp/compare/0.13.0...0.14.0) (2022-04-02)
 
 | ☣    | Breaking changes |
