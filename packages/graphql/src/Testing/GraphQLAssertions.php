@@ -2,12 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
+use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypePrinter;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
@@ -118,9 +121,64 @@ trait GraphQLAssertions {
             $message,
         );
     }
+
+    /**
+     * Compares two GraphQL types.
+     */
+    public function assertGraphQLTypeEquals(
+        GraphQLExpectedType|PrintedType|Type|SplFileInfo|string $expected,
+        PrintedType|Type $type,
+        string $message = '',
+    ): void {
+        // GraphQL
+        $output   = $expected;
+        $settings = null;
+
+        if ($output instanceof GraphQLExpectedType) {
+            $settings = $output->getSettings();
+            $output   = $output->getType();
+        }
+
+        if ($output instanceof PrintedType || $output instanceof Type) {
+            $output = (string) $this->printGraphQLType($output, $settings);
+        } else {
+            $output = Args::content($output);
+        }
+
+        $actual = $this->printGraphQLType($type, $settings);
+
+        self::assertEquals($output, (string) $actual, $message);
+
+        // Prepare
+        if (!($expected instanceof GraphQLExpectedType)) {
+            $expected = new GraphQLExpectedType($expected);
+        }
+
+        // Used types
+        $usedTypes = $expected->getUsedTypes();
+
+        if ($usedTypes !== null) {
+            self::assertEquals(
+                array_combine($usedTypes, $usedTypes),
+                $actual->getUsedTypes(),
+                'Used Types not match.',
+            );
+        }
+
+        // Used directives
+        $usedDirectives = $expected->getUsedDirectives();
+
+        if ($usedDirectives !== null) {
+            self::assertEquals(
+                array_combine($usedDirectives, $usedDirectives),
+                $actual->getUsedDirectives(),
+                'Used Directives not match.',
+            );
+        }
+    }
     // </editor-fold>
 
-    // <editor-fold desc="Helpers">
+    // <editor-fold desc="Schema Helpers">
     // =========================================================================
     protected function useGraphQLSchema(SplFileInfo|string $schema): static {
         $schema   = Args::content($schema);
@@ -175,6 +233,19 @@ trait GraphQLAssertions {
 
     protected function getGraphQLSchemaPrinter(Settings $settings = null): SchemaPrinter {
         return $this->app->make(SchemaPrinter::class)->setSettings($settings ?? new TestSettings());
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Type Helpers">
+    // =========================================================================
+    protected function printGraphQLType(PrintedType|Type $type, Settings $settings = null): PrintedType {
+        return $type instanceof Type
+            ? $this->getGraphQLTypePrinter($settings)->print($type)
+            : $type;
+    }
+
+    protected function getGraphQLTypePrinter(Settings $settings = null): TypePrinter {
+        return $this->app->make(TypePrinter::class)->setSettings($settings ?? new TestSettings());
     }
     // </editor-fold>
 }

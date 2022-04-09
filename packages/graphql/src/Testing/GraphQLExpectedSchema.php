@@ -7,42 +7,26 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use SplFileInfo;
 
-class GraphQLExpectedSchema {
+class GraphQLExpectedSchema extends GraphQLExpected {
     /**
-     * @param array<string>|null $usedTypes
+     * @inheritDoc
+     *
      * @param array<string>|null $unusedTypes
-     * @param array<string>|null $usedDirectives
      * @param array<string>|null $unusedDirectives
      */
     public function __construct(
         protected PrintedSchema|Schema|SplFileInfo|string $schema,
-        protected ?array $usedTypes = null,
+        ?array $usedTypes = null,
         protected ?array $unusedTypes = null,
-        protected ?array $usedDirectives = null,
+        ?array $usedDirectives = null,
         protected ?array $unusedDirectives = null,
-        protected ?Settings $settings = null,
+        ?Settings $settings = null,
     ) {
-        // empty
+        parent::__construct($usedTypes, $usedDirectives, $settings);
     }
 
     public function getSchema(): PrintedSchema|Schema|SplFileInfo|string {
         return $this->schema;
-    }
-
-    /**
-     * @return array<string>|null
-     */
-    public function getUsedTypes(): ?array {
-        return $this->usedTypes;
-    }
-
-    /**
-     * @param array<string>|null $usedTypes
-     */
-    public function setUsedTypes(?array $usedTypes): static {
-        $this->usedTypes = $usedTypes;
-
-        return $this;
     }
 
     /**
@@ -64,22 +48,6 @@ class GraphQLExpectedSchema {
     /**
      * @return array<string>|null
      */
-    public function getUsedDirectives(): ?array {
-        return $this->usedDirectives;
-    }
-
-    /**
-     * @param array<string>|null $usedDirectives
-     */
-    public function setUsedDirectives(?array $usedDirectives): static {
-        $this->usedDirectives = $usedDirectives;
-
-        return $this;
-    }
-
-    /**
-     * @return array<string>|null
-     */
     public function getUnusedDirectives(): ?array {
         return $this->unusedDirectives;
     }
@@ -89,16 +57,6 @@ class GraphQLExpectedSchema {
      */
     public function setUnusedDirectives(?array $unusedDirectives): static {
         $this->unusedDirectives = $unusedDirectives;
-
-        return $this;
-    }
-
-    public function getSettings(): ?Settings {
-        return $this->settings;
-    }
-
-    public function setSettings(?Settings $settings): static {
-        $this->settings = $settings;
 
         return $this;
     }

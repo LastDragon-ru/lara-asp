@@ -8,62 +8,22 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter as SchemaPrinterContract;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
-use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
-use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_pop;
 use function str_starts_with;
 use function substr;
 
-class SchemaPrinter implements SchemaPrinterContract {
-    protected Settings $settings;
-    protected int      $level = 0;
-
-    public function __construct(
-        protected TypeRegistry $registry,
-        protected DirectiveLocator $locator,
-        protected ExecutableTypeNodeConverter $converter,
-        Settings $settings = null,
-    ) {
-        $this->setSettings($settings);
-    }
-
-    public function getLevel(): int {
-        return $this->level;
-    }
-
-    public function setLevel(int $level): static {
-        $this->level = $level;
-
-        return $this;
-    }
-
-    public function getSettings(): Settings {
-        return $this->settings;
-    }
-
-    public function setSettings(?Settings $settings): static {
-        $this->settings = $settings ?? new DefaultSettings();
-
-        return $this;
-    }
-
+class SchemaPrinter extends Printer implements SchemaPrinterContract {
     public function print(Schema $schema): PrintedSchema {
         // todo(graphql): directives in description for schema
         //      https://github.com/webonyx/graphql-php/issues/1027
 
         // Print
         $schema    = clone $schema;
-        $resolver  = new DirectiveResolver($this->registry, $this->locator, $this->converter, $schema->getDirectives());
-        $settings  = new PrinterSettings($resolver, $this->getSettings());
+        $settings  = $this->getPrinterSettings($schema->getDirectives());
         $block     = $this->getSchemaDefinition($settings, $schema);
         $content   = $this->getDefinitionList($settings, true);
         $content[] = $block;
@@ -78,11 +38,11 @@ class SchemaPrinter implements SchemaPrinterContract {
         }
 
         // Return
-        return $this->getPrintedSchema($resolver, $schema, $content);
+        return $this->getPrintedSchema($settings, $schema, $content);
     }
 
-    protected function getPrintedSchema(DirectiveResolver $resolver, Schema $schema, Block $content): PrintedSchema {
-        return new SchemaPrinted($resolver, $schema, $content);
+    protected function getPrintedSchema(PrinterSettings $settings, Schema $schema, Block $content): PrintedSchema {
+        return new SchemaPrinted($settings->getResolver(), $schema, $content);
     }
 
     protected function getSchemaDefinition(PrinterSettings $settings, Schema $schema): Block {
@@ -181,13 +141,6 @@ class SchemaPrinter implements SchemaPrinterContract {
             $types,
             $directives,
         ];
-    }
-
-    /**
-     * @return BlockList<Block>
-     */
-    protected function getDefinitionList(PrinterSettings $settings, bool $schema = false): BlockList {
-        return new DefinitionList($settings, $this->getLevel(), $schema);
     }
 
     protected function getDefinitionBlock(

@@ -16,7 +16,7 @@ class DefinitionList extends BlockList {
     public function __construct(
         PrinterSettings $settings,
         int $level,
-        protected bool $schema = false,
+        protected bool $root = false,
     ) {
         parent::__construct($settings, $level);
     }
@@ -33,14 +33,14 @@ class DefinitionList extends BlockList {
         return true;
     }
 
-    protected function isSchema(): bool {
-        return $this->schema;
+    protected function isRoot(): bool {
+        return $this->root;
     }
 
     protected function content(): string {
         $content = parent::content();
 
-        if ($content && $this->isSchema()) {
+        if ($content && $this->isRoot()) {
             $eof     = $this->getSettings()->getFileEnd();
             $content = rtrim($content);
             $content = "{$this->indent()}{$content}{$eof}";
