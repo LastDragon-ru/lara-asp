@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema as PrintedSchemaContract;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 
 use function array_diff_key;
@@ -14,7 +14,7 @@ use function array_diff_key;
 /**
  * @internal
  */
-class PrintedSchema implements PrintedSchemaContract {
+class SchemaPrinted implements PrintedSchema {
     public function __construct(
         protected DirectiveResolver $resolver,
         protected Schema $schema,

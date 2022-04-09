@@ -6,7 +6,7 @@ use GraphQL\Type\Schema;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
@@ -173,8 +173,8 @@ trait GraphQLAssertions {
         return $this->printGraphQLSchema($this->getDefaultGraphQLSchema(), $settings);
     }
 
-    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
-        return $this->app->make(Printer::class)->setSettings($settings ?? new TestSettings());
+    protected function getGraphQLSchemaPrinter(Settings $settings = null): SchemaPrinter {
+        return $this->app->make(SchemaPrinter::class)->setSettings($settings ?? new TestSettings());
     }
     // </editor-fold>
 }

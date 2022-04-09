@@ -9,8 +9,8 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema as PrintedSchemaContract;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Printer as PrinterContract;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
@@ -23,7 +23,7 @@ use function array_pop;
 use function str_starts_with;
 use function substr;
 
-class Printer implements PrinterContract {
+class SchemaPrinter implements SchemaPrinterContract {
     protected Settings $settings;
     protected int      $level = 0;
 
@@ -56,7 +56,7 @@ class Printer implements PrinterContract {
         return $this;
     }
 
-    public function print(Schema $schema): PrintedSchemaContract {
+    public function print(Schema $schema): PrintedSchema {
         // todo(graphql): directives in description for schema
         //      https://github.com/webonyx/graphql-php/issues/1027
 
@@ -82,7 +82,7 @@ class Printer implements PrinterContract {
     }
 
     protected function getPrintedSchema(DirectiveResolver $resolver, Schema $schema, Block $content): PrintedSchema {
-        return new PrintedSchema($resolver, $schema, $content);
+        return new SchemaPrinted($resolver, $schema, $content);
     }
 
     protected function getSchemaDefinition(PrinterSettings $settings, Schema $schema): Block {

@@ -10,9 +10,9 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\IntrospectionPrinter
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\IntrospectionSchemaPrinter
  */
-class IntrospectionPrinterTest extends TestCase {
+class IntrospectionSchemaPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -22,7 +22,7 @@ class IntrospectionPrinterTest extends TestCase {
      */
     public function testPrint(string $expected, Settings $settings, int $level): void {
         $expected = $this->getTestData()->content($expected);
-        $printer  = $this->app->make(IntrospectionPrinter::class)->setSettings($settings)->setLevel($level);
+        $printer  = $this->app->make(IntrospectionSchemaPrinter::class)->setSettings($settings)->setLevel($level);
         $schema   = new Schema([]);
         $actual   = $printer->print($schema);
 

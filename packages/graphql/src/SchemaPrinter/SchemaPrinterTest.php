@@ -27,9 +27,9 @@ use function str_starts_with;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Printer
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter
  */
-class PrinterTest extends TestCase {
+class SchemaPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -138,7 +138,7 @@ class PrinterTest extends TestCase {
         $registry->register($codeInput);
 
         // Test
-        $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
+        $printer = $this->app->make(SchemaPrinter::class)->setSettings($settings)->setLevel($level);
         $schema  = $this->getGraphQLSchema($this->getTestData()->file('~schema.graphql'));
         $actual  = $printer->print($schema);
 

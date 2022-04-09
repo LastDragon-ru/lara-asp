@@ -7,6 +7,7 @@ use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
@@ -23,7 +24,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
  * - {@see Settings::isPrintUnusedDefinitions()}
  * - {@see Settings::isPrintDirectiveDefinitions()}
  */
-class IntrospectionPrinter extends Printer {
+class IntrospectionSchemaPrinter extends SchemaPrinter {
     public function setSettings(?Settings $settings): static {
         return parent::setSettings(
             ImmutableSettings::createFrom($settings ?? new DefaultSettings())
@@ -36,7 +37,7 @@ class IntrospectionPrinter extends Printer {
     }
 
     protected function getPrintedSchema(DirectiveResolver $resolver, Schema $schema, Block $content): PrintedSchema {
-        return new IntrospectionPrintedSchema($resolver, $schema, $content);
+        return new IntrospectionSchemaPrinted($resolver, $schema, $content);
     }
 
     protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
