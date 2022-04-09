@@ -69,10 +69,9 @@ abstract class DefinitionBlock extends Block implements Named {
         $used        = $this->getUsed() + mb_strlen($name) + mb_strlen($space);
         $body        = (string) $this->addUsed($this->body($used));
         $fields      = (string) $this->addUsed($this->fields($used + mb_strlen($body)));
-        $directives  = $this->directives();
-        $description = (string) $this->addUsed($this->description($directives));
+        $description = (string) $this->addUsed($this->description());
         $directives  = $this->getSettings()->isPrintDirectives()
-            ? (string) $this->addUsed($directives)
+            ? (string) $this->addUsed($this->directives())
             : '';
         $content     = '';
 
@@ -112,12 +111,12 @@ abstract class DefinitionBlock extends Block implements Named {
 
     abstract protected function fields(int $used): Block|string|null;
 
-    protected function directives(): DirectiveNodeList {
+    protected function directives(int $level = null, int $used = null): DirectiveNodeList {
         $definition = $this->getDefinition();
         $directives = new DirectiveNodeList(
             $this->getSettings(),
-            $this->getLevel(),
-            $this->getUsed(),
+            $level ?? $this->getLevel(),
+            $used ?? $this->getUsed(),
             $this->getDefinitionDirectives(),
             $definition->deprecationReason ?? null,
         );
@@ -125,8 +124,8 @@ abstract class DefinitionBlock extends Block implements Named {
         return $directives;
     }
 
-    protected function description(DirectiveNodeList $directives): ?Description {
-        // Supported?
+    protected function description(): ?Description {
+        // Description
         $definition  = $this->getDefinition();
         $description = null;
 
@@ -137,12 +136,22 @@ abstract class DefinitionBlock extends Block implements Named {
             $description = $definition->description;
         }
 
+        // Directives
+        if ($this->getSettings()->isPrintDirectivesInDescription()) {
+            $directives = (string) $this->addUsed($this->directives(0, mb_strlen($this->indent())));
+
+            if ($directives) {
+                $eol         = $description ? $this->eol() : '';
+                $description = "{$description}{$eol}{$eol}{$directives}";
+            }
+        }
+
+        // Return
         return new Description(
             $this->getSettings(),
             $this->getLevel(),
             $this->getUsed(),
             $description,
-            $directives,
         );
     }
 

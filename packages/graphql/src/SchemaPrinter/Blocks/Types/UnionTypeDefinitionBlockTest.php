@@ -219,11 +219,15 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             ],
             'directives'                    => [
                 <<<'STRING'
+                """
+                @a
+                """
                 union Test
                 @a
                 = C | B | A
                 STRING,
-                $settings,
+                $settings
+                    ->setPrintDirectivesInDescription(true),
                 0,
                 0,
                 new UnionType([

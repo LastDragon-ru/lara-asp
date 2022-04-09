@@ -75,11 +75,15 @@ class EnumValueDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 """
                 Description
+
+                @a
                 """
                 A
                 @a
                 STRING,
-                $settings->setPrintDirectives(true),
+                $settings
+                    ->setPrintDirectivesInDescription(true)
+                    ->setPrintDirectives(true),
                 0,
                 0,
                 new EnumValueDefinition([

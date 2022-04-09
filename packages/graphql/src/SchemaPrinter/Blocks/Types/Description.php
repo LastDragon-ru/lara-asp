@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 use function preg_replace;
@@ -19,13 +18,8 @@ class Description extends StringBlock {
         int $level,
         int $used,
         ?string $string,
-        private ?DirectiveNodeList $directives = null,
     ) {
         parent::__construct($settings, $level, $used, (string) $string);
-    }
-
-    protected function getDirectives(): ?DirectiveNodeList {
-        return $this->directives;
     }
 
     protected function isNormalized(): bool {
@@ -46,16 +40,6 @@ class Description extends StringBlock {
             $string = rtrim(trim($string, $eol));
             $string = (string) preg_replace('/\R{2,}/u', "{$eol}{$eol}", $string);
             $string = (string) preg_replace('/^(.*?)\h+$/mu', '$1', $string);
-        }
-
-        // Directives
-        if ($this->getSettings()->isPrintDirectivesInDescription()) {
-            $directives = (string) $this->getDirectives();
-
-            if ($directives) {
-                $eol    = $string ? $this->eol() : '';
-                $string = "{$string}{$eol}{$eol}{$directives}";
-            }
         }
 
         // Return

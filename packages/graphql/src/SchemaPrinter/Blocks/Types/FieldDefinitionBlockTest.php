@@ -79,11 +79,15 @@ class FieldDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 """
                 Description
+
+                @a
                 """
                 test: Test!
                 @a
                 STRING,
-                $settings->setPrintDirectives(true),
+                $settings
+                    ->setPrintDirectivesInDescription(true)
+                    ->setPrintDirectives(true),
                 0,
                 0,
                 FieldDefinition::create([

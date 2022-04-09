@@ -432,13 +432,15 @@ class PrinterTest extends TestCase {
                         'SchemaUnionUnused',
                     ])
                     ->setUsedDirectives([
-                        // empty
+                        '@deprecated',
+                        '@schemaDirective',
+                        '@scalar',
+                        '@codeDirective',
+                        '@mock',
                     ])
                     ->setUnusedDirectives([
                         '@include',
                         '@skip',
-                        '@deprecated',
-                        '@schemaDirective',
                         '@schemaDirectiveUnused',
                     ]),
                 (new TestSettings())

@@ -113,16 +113,24 @@ class EnumTypeDefinitionBlockTest extends TestCase {
 
                     """
                     Description
+
+                    @b
+                    @a
                     """
                     B
                     @b
                     @a
 
+                    """
+                    @deprecated
+                    """
                     A
                     @deprecated
                 }
                 STRING,
-                $settings->setPrintDirectives(true),
+                $settings
+                    ->setPrintDirectivesInDescription(true)
+                    ->setPrintDirectives(true),
                 0,
                 0,
                 static function (): EnumType {

@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
-use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
@@ -24,8 +22,6 @@ class DescriptionTest extends TestCase {
      * @covers ::__toString
      *
      * @dataProvider dataProviderToString
-     *
-     * @param array<DirectiveNode>|null $directives
      */
     public function testToString(
         string $expected,
@@ -33,11 +29,9 @@ class DescriptionTest extends TestCase {
         int $level,
         int $used,
         ?string $description,
-        ?array $directives,
     ): void {
-        $settings   = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $directives = new DirectiveNodeList($settings, $level, $used, $directives);
-        $actual     = (string) (new Description($settings, $level, $used, $description, $directives));
+        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
+        $actual   = (string) (new Description($settings, $level, $used, $description));
 
         self::assertEquals($expected, $actual);
 
@@ -50,7 +44,7 @@ class DescriptionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, ?string, array<DirectiveNode>|null}>
+     * @return array<string,array{string, Settings, int, int, ?string}>
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -64,7 +58,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 null,
-                null,
             ],
             'Prints an empty string'                                   => [
                 '',
@@ -72,7 +65,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 '',
-                [],
             ],
             'Prints an empty string (normalized)'                      => [
                 '',
@@ -80,7 +72,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 '',
-                [],
             ],
             'Prints an empty string with only whitespace'              => [
                 '" "',
@@ -88,7 +79,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 ' ',
-                [],
             ],
             'Prints an empty string with only whitespace (normalized)' => [
                 '',
@@ -96,7 +86,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 ' ',
-                [],
             ],
             'One-line prints a short string'                           => [
                 <<<'STRING'
@@ -108,7 +97,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'Short string',
-                [],
             ],
             'One-line prints a long string'                            => [
                 <<<'STRING'
@@ -120,7 +108,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'Long string',
-                [],
             ],
             'String is short (indent)'                                 => [
                 <<<'STRING'
@@ -134,7 +121,6 @@ class DescriptionTest extends TestCase {
                 2,
                 0,
                 'string',
-                [],
             ],
             'String is long (indent)'                                  => [
                 <<<'STRING'
@@ -148,7 +134,6 @@ class DescriptionTest extends TestCase {
                 2,
                 20,
                 'string',
-                [],
             ],
             'Multi-line string'                                        => [
                 <<<'STRING'
@@ -172,7 +157,6 @@ class DescriptionTest extends TestCase {
 
                 ccc
                 STRING,
-                [],
             ],
             'Multi-line string (normalized)'                           => [
                 <<<'STRING'
@@ -193,7 +177,6 @@ class DescriptionTest extends TestCase {
 
                 ccc
                 STRING,
-                [],
             ],
             'Leading space'                                            => [
                 <<<'STRING'
@@ -203,7 +186,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 '  Leading space',
-                [],
             ],
             'Leading tab'                                              => [
                 "\"\"\"\tLeading tab\"\"\"",
@@ -211,7 +193,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 "\tLeading tab",
-                [],
             ],
             'Trailing "'                                               => [
                 <<<'STRING'
@@ -223,7 +204,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'Trailing "',
-                [],
             ],
             'Leading whitespace and trailing "'                        => [
                 <<<'STRING'
@@ -239,7 +219,6 @@ class DescriptionTest extends TestCase {
                   Leading whitespace and trailing "
                 abc
                 STRING,
-                [],
             ],
             'Trailing backslash'                                       => [
                 <<<'STRING'
@@ -251,7 +230,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'Trailing \\\\',
-                [],
             ],
             'Escape wrapper'                                           => [
                 <<<'STRING'
@@ -263,7 +241,6 @@ class DescriptionTest extends TestCase {
                 0,
                 0,
                 'String with """ wrapper',
-                [],
             ],
             'Indent'                                                   => [
                 implode(
@@ -293,7 +270,6 @@ class DescriptionTest extends TestCase {
                         '  ddd  ',
                     ],
                 ),
-                [],
             ],
             'Indent (normalized)'                                      => [
                 implode(
@@ -325,92 +301,6 @@ class DescriptionTest extends TestCase {
                         '  ddd  ',
                     ],
                 ),
-                [],
-            ],
-            'directives (disabled)'                                    => [
-                <<<'STRING'
-                """
-                Description
-                """
-                STRING,
-                $settings,
-                0,
-                0,
-                <<<'STRING'
-                Description
-                STRING,
-                [
-                    Parser::directive('@a'),
-                ],
-            ],
-            'directives (enabled)'                                     => [
-                <<<'STRING'
-                """
-                Description
-
-
-
-                @a
-                @b(test: "abc")
-                """
-                STRING,
-                $settings->setPrintDirectivesInDescription(true),
-                0,
-                0,
-                <<<'STRING'
-                Description
-
-
-                STRING,
-                [
-                    Parser::directive('@a'),
-                    Parser::directive('@b(test: "abc")'),
-                ],
-            ],
-            'directives (enabled) + normalized'                        => [
-                <<<'STRING'
-                """
-                Description
-
-                @a
-                @b(test: "abc")
-                """
-                STRING,
-                $settings
-                    ->setNormalizeDescription(true)
-                    ->setPrintDirectivesInDescription(true),
-                0,
-                0,
-                <<<'STRING'
-                Description
-
-
-                STRING,
-                [
-                    Parser::directive('@a'),
-                    Parser::directive('@b(test: "abc")'),
-                ],
-            ],
-            'empty description + directives (enabled) + normalized'    => [
-                <<<'STRING'
-                """
-                @a
-                @b(
-                    test: "abc"
-                )
-                """
-                STRING,
-                $settings
-                    ->setNormalizeDescription(true)
-                    ->setAlwaysMultilineArguments(true)
-                    ->setPrintDirectivesInDescription(true),
-                0,
-                0,
-                '',
-                [
-                    Parser::directive('@a'),
-                    Parser::directive('@b(test: "abc")'),
-                ],
             ],
         ];
     }

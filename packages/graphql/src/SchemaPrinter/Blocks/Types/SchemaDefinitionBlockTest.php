@@ -68,6 +68,9 @@ class SchemaDefinitionBlockTest extends TestCase {
             ],
             'standard names with directives'                => [
                 <<<'STRING'
+                """
+                @a
+                """
                 schema
                 @a
                 {
@@ -76,7 +79,9 @@ class SchemaDefinitionBlockTest extends TestCase {
                     subscription: Subscription
                 }
                 STRING,
-                $settings->setPrintDirectives(true),
+                $settings
+                    ->setPrintDirectivesInDescription(true)
+                    ->setPrintDirectives(true),
                 0,
                 0,
                 new Schema([

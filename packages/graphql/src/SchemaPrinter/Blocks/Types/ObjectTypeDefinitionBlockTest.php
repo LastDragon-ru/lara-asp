@@ -96,11 +96,15 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 """
                 Description
+
+                @a
                 """
                 type Test
                 @a
                 STRING,
-                $settings->setPrintDirectives(true),
+                $settings
+                    ->setPrintDirectivesInDescription(true)
+                    ->setPrintDirectives(true),
                 0,
                 0,
                 new ObjectType([

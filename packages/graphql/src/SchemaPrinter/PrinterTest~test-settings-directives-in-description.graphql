@@ -108,16 +108,16 @@ type CodeType {
 type Query {
     """
     @deprecated(
-            reason: "deprecated reason"
-        )
-        @codeDirective
-        @mock
+        reason: "deprecated reason"
+    )
+    @codeDirective
+    @mock
     """
     a: SchemaType
 
     """
     @deprecated
-        @mock
+    @mock
     """
     b: SchemaEnum
 

@@ -65,11 +65,15 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 """
                 Description
+
+                @a
                 """
                 scalar Test
                 @a
                 STRING,
-                $settings->setPrintDirectives(true),
+                $settings
+                    ->setPrintDirectivesInDescription(true)
+                    ->setPrintDirectives(true),
                 0,
                 0,
                 new CustomScalarType([
