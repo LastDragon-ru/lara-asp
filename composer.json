@@ -43,7 +43,7 @@
     "composer/semver": "^3.2",
     "doctrine/dbal": "^2.12.0|^3.1.4",
     "doctrine/sql-formatter": "^1.1",
-    "guzzlehttp/psr7": "^1.7.0|^2.0",
+    "guzzlehttp/psr7": "^1.7.0|^2.1.1",
     "http-interop/http-factory-guzzle": "^1.0.0",
     "laravel/framework": "^8.22.1|^9.0.0",
     "nuwave/lighthouse": "^5.8.0",
