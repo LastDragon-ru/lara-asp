@@ -10,9 +10,11 @@ use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter as SchemaPrinterContract;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaTypePrinter as SchemaTypePrinterContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings as SettingsContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypePrinter as TypePrinterContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaTypePrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\TypePrinter;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata;
@@ -97,6 +99,7 @@ class Provider extends ServiceProvider {
         $this->app->bind(SettingsContract::class, DefaultSettings::class);
         $this->app->bind(TypePrinterContract::class, TypePrinter::class);
         $this->app->bind(SchemaPrinterContract::class, SchemaPrinter::class);
+        $this->app->bind(SchemaTypePrinterContract::class, SchemaTypePrinter::class);
     }
 
     protected function getName(): string {

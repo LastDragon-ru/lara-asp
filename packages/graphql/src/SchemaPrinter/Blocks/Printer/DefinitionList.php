@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer;
 
+use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
@@ -47,5 +49,23 @@ class DefinitionList extends BlockList {
         }
 
         return $content;
+    }
+
+    protected function analyze(Block $block): Block {
+        $block = $this->addUsed($block);
+
+        if ($block instanceof DefinitionBlock) {
+            $definition = $block->getDefinition();
+
+            if ($definition instanceof Type) {
+                $this->addUsedType($definition->name);
+            } elseif ($definition instanceof Directive) {
+                $this->addUsedDirective("@{$definition->name}");
+            } else {
+                // empty
+            }
+        }
+
+        return $block;
     }
 }

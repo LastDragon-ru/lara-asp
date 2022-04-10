@@ -16,6 +16,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use function array_pop;
+use function str_starts_with;
+use function substr;
 
 abstract class Printer {
     protected Settings $settings;
@@ -72,5 +75,59 @@ abstract class Printer {
      */
     protected function getDefinitionList(PrinterSettings $settings, bool $root = false): BlockList {
         return new DefinitionList($settings, $this->getLevel(), $root);
+    }
+
+    /**
+     * @return array<BlockList<Block>>
+     */
+    protected function getUsedDefinitions(PrinterSettings $settings, Schema $schema, Block $root): array {
+        $directivesDefinitions = $settings->isPrintDirectiveDefinitions();
+        $directivesResolver    = $settings->getResolver();
+        $directives            = $this->getDefinitionList($settings);
+        $types                 = $this->getDefinitionList($settings);
+        $stack                 = $root->getUsedDirectives() + $root->getUsedTypes();
+
+        while ($stack) {
+            // Added?
+            $name = array_pop($stack);
+
+            if (isset($types[$name]) || isset($directives[$name])) {
+                continue;
+            }
+
+            // Add
+            $block = null;
+
+            if (str_starts_with($name, '@')) {
+                if ($directivesDefinitions) {
+                    $directive = $directivesResolver->getDefinition(substr($name, 1));
+                    $printable = $settings->isDirectiveDefinitionAllowed($directive->name);
+
+                    if ($printable) {
+                        $block             = $this->getDefinitionBlock($settings, $directive);
+                        $directives[$name] = $block;
+                    }
+                }
+            } else {
+                $type = $schema->getType($name);
+
+                if ($type && $settings->isTypeDefinitionAllowed($type)) {
+                    $block        = $this->getDefinitionBlock($settings, $type);
+                    $types[$name] = $block;
+                }
+            }
+
+            // Stack
+            if ($block) {
+                $stack = $stack
+                    + $block->getUsedDirectives()
+                    + $block->getUsedTypes();
+            }
+        }
+
+        return [
+            $types,
+            $directives,
+        ];
     }
 }

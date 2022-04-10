@@ -2,19 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
-use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
-
-use function array_pop;
-use function str_starts_with;
-use function substr;
 
 class SchemaPrinter extends Printer implements SchemaPrinterContract {
     public function print(Schema $schema): PrintedSchema {
@@ -87,66 +80,5 @@ class SchemaPrinter extends Printer implements SchemaPrinterContract {
 
         // Return
         return $blocks;
-    }
-
-    /**
-     * @return array<BlockList<Block>>
-     */
-    protected function getUsedDefinitions(PrinterSettings $settings, Schema $schema, Block $root): array {
-        $directivesDefinitions = $settings->isPrintDirectiveDefinitions();
-        $directivesResolver    = $settings->getResolver();
-        $directives            = $this->getDefinitionList($settings);
-        $types                 = $this->getDefinitionList($settings);
-        $stack                 = $root->getUsedDirectives() + $root->getUsedTypes();
-
-        while ($stack) {
-            // Added?
-            $name = array_pop($stack);
-
-            if (isset($types[$name]) || isset($directives[$name])) {
-                continue;
-            }
-
-            // Add
-            $block = null;
-
-            if (str_starts_with($name, '@')) {
-                if ($directivesDefinitions) {
-                    $directive = $directivesResolver->getDefinition(substr($name, 1));
-                    $printable = $settings->isDirectiveDefinitionAllowed($directive->name);
-
-                    if ($printable) {
-                        $block             = $this->getDefinitionBlock($settings, $directive);
-                        $directives[$name] = $block;
-                    }
-                }
-            } else {
-                $type = $schema->getType($name);
-
-                if ($type && $settings->isTypeDefinitionAllowed($type)) {
-                    $block        = $this->getDefinitionBlock($settings, $type);
-                    $types[$name] = $block;
-                }
-            }
-
-            // Stack
-            if ($block) {
-                $stack = $stack
-                    + $block->getUsedDirectives()
-                    + $block->getUsedTypes();
-            }
-        }
-
-        return [
-            $types,
-            $directives,
-        ];
-    }
-
-    protected function getDefinitionBlock(
-        PrinterSettings $settings,
-        Schema|Type|GraphQLDirective $definition,
-    ): Block {
-        return new DefinitionBlock($settings, $this->getLevel(), $definition);
     }
 }

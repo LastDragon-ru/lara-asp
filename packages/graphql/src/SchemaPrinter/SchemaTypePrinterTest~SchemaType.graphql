@@ -1,0 +1,244 @@
+"""
+@schemaDirective
+"""
+type SchemaType
+implements
+    & SchemaInterfaceB
+{
+    a: Boolean!
+
+    """
+    Deprecated field
+
+    @deprecated
+    """
+    b: [String]!
+
+    c(
+        """
+        aaa
+        """
+        a: String
+
+        """
+        bbb
+        """
+        b: [SchemaScalar!]!
+
+        c: CodeInput
+    ): CodeUnion
+
+    d: CodeScalar
+    e: CodeEnum
+
+    f(
+        a: [String!] = [
+            "very very very long line of text"
+            "very very very long line of text"
+            "very very very long line of text"
+        ]
+    ): SchemaUnion
+}
+
+enum CodeDirectiveEnum {
+    A
+    B
+    C
+}
+
+enum CodeEnum {
+    A
+    B
+    C
+}
+
+enum SchemaEnum {
+    """
+    @deprecated
+    """
+    A
+
+    """
+    Description
+    """
+    B
+}
+
+input CodeDirectiveInput {
+    a: Int!
+}
+
+"""
+Description
+
+@schemaDirective
+"""
+input CodeInput {
+    a: Boolean
+}
+
+"""
+Lighthouse not yet support "implements" for interface...
+
+@see https://github.com/webonyx/graphql-php/issues/728
+
+@schemaDirective
+"""
+interface SchemaInterfaceB {
+    a: Boolean!
+
+    """
+    Deprecated field
+
+    @deprecated
+    """
+    b: [String]!
+
+    c(
+        """
+        aaa
+        """
+        a: String
+
+        """
+        bbb
+        """
+        b: [SchemaScalar!]!
+
+        c: SchemaEnum
+    ): CodeUnion
+
+    d: CodeScalar
+    e: CodeEnum
+}
+
+scalar CodeDirectiveScalar
+
+"""
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
+"""
+scalar CodeDirectiveScalarCustomClass
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar CodeScalar
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
+@codeDirective
+"""
+scalar SchemaScalar
+
+"""
+Description
+
+@schemaDirective
+"""
+type CodeType {
+    a: Boolean
+}
+
+"""
+@schemaDirective
+"""
+type SchemaType
+implements
+    & SchemaInterfaceB
+{
+    a: Boolean!
+
+    """
+    Deprecated field
+
+    @deprecated
+    """
+    b: [String]!
+
+    c(
+        """
+        aaa
+        """
+        a: String
+
+        """
+        bbb
+        """
+        b: [SchemaScalar!]!
+
+        c: CodeInput
+    ): CodeUnion
+
+    d: CodeScalar
+    e: CodeEnum
+
+    f(
+        a: [String!] = [
+            "very very very long line of text"
+            "very very very long line of text"
+            "very very very long line of text"
+        ]
+    ): SchemaUnion
+}
+
+union CodeUnion =
+    | CodeType
+
+"""
+@schemaDirective
+"""
+union SchemaUnion =
+    | CodeType
+    | SchemaType
+
+directive @codeDirective(
+    custom: [CodeDirectiveScalarCustomClass]
+    enum: CodeDirectiveEnum
+    input: CodeDirectiveInput
+    scalar: CodeDirectiveScalar!
+)
+repeatable on
+    | INTERFACE
+    | SCALAR
+    | SCHEMA
+
+"""
+Reference a class implementing a scalar definition.
+"""
+directive @scalar(
+    """
+    Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
+    """
+    class: String!
+)
+on
+    | SCALAR
+
+"""
+Directive
+"""
+directive @schemaDirective(
+    """
+    Directive argument
+    """
+    message: String
+)
+on
+    | ARGUMENT_DEFINITION
+    | FIELD
+    | INPUT_OBJECT
+    | INTERFACE
+    | OBJECT
+    | SCALAR
+    | SCHEMA
+    | UNION

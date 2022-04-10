@@ -51,7 +51,7 @@ class DefinitionBlock extends Block implements Named {
         return $name;
     }
 
-    protected function getDefinition(): Type|Schema|Directive {
+    public function getDefinition(): Type|Schema|Directive {
         return $this->definition;
     }
 
@@ -60,22 +60,7 @@ class DefinitionBlock extends Block implements Named {
     }
 
     protected function content(): string {
-        // Convert
-        $block = $this->addUsed($this->getBlock());
-
-        // Statistics
-        $definition = $this->getDefinition();
-
-        if ($definition instanceof Type) {
-            $this->addUsedType($definition->name);
-        } elseif ($definition instanceof Directive) {
-            $this->addUsedDirective("@{$definition->name}");
-        } else {
-            // empty
-        }
-
-        // Return
-        return (string) $block;
+        return (string) $this->addUsed($this->getBlock());
     }
 
     protected function getDefinitionBlock(Schema|Type|Directive $definition): Block {

@@ -14,24 +14,13 @@ use function array_diff_key;
 /**
  * @internal
  */
-class SchemaPrinted implements PrintedSchema {
+class SchemaPrinted extends Printed implements PrintedSchema {
     public function __construct(
         protected DirectiveResolver $resolver,
         protected Schema $schema,
-        protected Block $block,
+        Block $block,
     ) {
-        // empty
-    }
-
-    public function __toString(): string {
-        return (string) $this->block;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getUsedTypes(): array {
-        return $this->block->getUsedTypes();
+        parent::__construct($block);
     }
 
     /**
@@ -39,13 +28,6 @@ class SchemaPrinted implements PrintedSchema {
      */
     public function getUnusedTypes(): array {
         return array_diff_key($this->getTypes(), $this->getUsedTypes());
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getUsedDirectives(): array {
-        return $this->block->getUsedDirectives();
     }
 
     /**

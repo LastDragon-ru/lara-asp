@@ -10,7 +10,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypePrinter;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaTypePrinter;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
@@ -22,6 +24,7 @@ use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 use function array_combine;
+use function is_string;
 
 /**
  * @mixin TestCase
@@ -63,16 +66,8 @@ trait GraphQLAssertions {
             $expected = new GraphQLExpectedSchema($expected);
         }
 
-        // Used types
-        $usedTypes = $expected->getUsedTypes();
-
-        if ($usedTypes !== null) {
-            self::assertEquals(
-                array_combine($usedTypes, $usedTypes),
-                $actual->getUsedTypes(),
-                'Used Types not match.',
-            );
-        }
+        // Expectation
+        $this->assertGraphQLExpectation($expected, $actual);
 
         // Unused types
         $unusedTypes = $expected->getUnusedTypes();
@@ -82,17 +77,6 @@ trait GraphQLAssertions {
                 array_combine($unusedTypes, $unusedTypes),
                 $actual->getUnusedTypes(),
                 'Unused Types not match.',
-            );
-        }
-
-        // Used directives
-        $usedDirectives = $expected->getUsedDirectives();
-
-        if ($usedDirectives !== null) {
-            self::assertEquals(
-                array_combine($usedDirectives, $usedDirectives),
-                $actual->getUsedDirectives(),
-                'Used Directives not match.',
             );
         }
 
@@ -123,6 +107,51 @@ trait GraphQLAssertions {
     }
 
     /**
+     * Compares two GraphQL types (full).
+     */
+    public function assertGraphQLSchemaTypeEquals(
+        GraphQLExpectedType|PrintedType|Type|SplFileInfo|string $expected,
+        PrintedType|Type|string $type,
+        Schema|SplFileInfo|string $schema = null,
+        string $message = '',
+    ): void {
+        // Schema
+        if ($schema instanceof SplFileInfo || is_string($schema)) {
+            $schema = $this->getGraphQLSchema($schema);
+        } elseif ($schema === null) {
+            $schema = $this->getDefaultGraphQLSchema();
+        } else {
+            // empty
+        }
+
+        // GraphQL
+        $output   = $expected;
+        $settings = null;
+
+        if ($output instanceof GraphQLExpectedType) {
+            $settings = $output->getSettings();
+            $output   = $output->getType();
+        }
+
+        if ($output instanceof PrintedType || $output instanceof Type) {
+            $output = (string) $this->printGraphQLSchemaType($schema, $output, $settings);
+        } else {
+            $output = Args::content($output);
+        }
+
+        $actual = $this->printGraphQLSchemaType($schema, $type, $settings);
+
+        self::assertEquals($output, (string) $actual, $message);
+
+        // Expectation
+        if (!($expected instanceof GraphQLExpectedType)) {
+            $expected = new GraphQLExpectedType($expected);
+        }
+
+        $this->assertGraphQLExpectation($expected, $actual);
+    }
+
+    /**
      * Compares two GraphQL types.
      */
     public function assertGraphQLTypeEquals(
@@ -149,11 +178,18 @@ trait GraphQLAssertions {
 
         self::assertEquals($output, (string) $actual, $message);
 
-        // Prepare
+        // Expectation
         if (!($expected instanceof GraphQLExpectedType)) {
             $expected = new GraphQLExpectedType($expected);
         }
 
+        $this->assertGraphQLExpectation($expected, $actual);
+    }
+
+    private function assertGraphQLExpectation(
+        GraphQLExpected $expected,
+        Statistics $actual,
+    ): void {
         // Used types
         $usedTypes = $expected->getUsedTypes();
 
@@ -178,7 +214,7 @@ trait GraphQLAssertions {
     }
     // </editor-fold>
 
-    // <editor-fold desc="Schema Helpers">
+    // <editor-fold desc="Helpers">
     // =========================================================================
     protected function useGraphQLSchema(SplFileInfo|string $schema): static {
         $schema   = Args::content($schema);
@@ -227,21 +263,32 @@ trait GraphQLAssertions {
         return $this->getGraphQLSchemaPrinter($settings)->print($schema);
     }
 
+    protected function printGraphQLSchemaType(
+        Schema $schema,
+        PrintedType|Type|string $type,
+        Settings $settings = null,
+    ): PrintedType {
+        return $type instanceof Type || is_string($type)
+            ? $this->getGraphQLSchemaTypePrinter($settings)->print($schema, $type)
+            : $type;
+    }
+
     protected function printDefaultGraphQLSchema(Settings $settings = null): PrintedSchema {
         return $this->printGraphQLSchema($this->getDefaultGraphQLSchema(), $settings);
+    }
+
+    protected function printGraphQLType(PrintedType|Type $type, Settings $settings = null): PrintedType {
+        return $type instanceof Type
+            ? $this->getGraphQLTypePrinter($settings)->print($type)
+            : $type;
     }
 
     protected function getGraphQLSchemaPrinter(Settings $settings = null): SchemaPrinter {
         return $this->app->make(SchemaPrinter::class)->setSettings($settings ?? new TestSettings());
     }
-    // </editor-fold>
 
-    // <editor-fold desc="Type Helpers">
-    // =========================================================================
-    protected function printGraphQLType(PrintedType|Type $type, Settings $settings = null): PrintedType {
-        return $type instanceof Type
-            ? $this->getGraphQLTypePrinter($settings)->print($type)
-            : $type;
+    protected function getGraphQLSchemaTypePrinter(Settings $settings = null): SchemaTypePrinter {
+        return $this->app->make(SchemaTypePrinter::class)->setSettings($settings ?? new TestSettings());
     }
 
     protected function getGraphQLTypePrinter(Settings $settings = null): TypePrinter {
