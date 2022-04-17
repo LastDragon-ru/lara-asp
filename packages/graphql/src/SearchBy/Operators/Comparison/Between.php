@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 
 class Between extends BaseOperator implements ComparisonOperator {
-    public function getName(): string {
+    public static function getName(): string {
         return 'between';
     }
 

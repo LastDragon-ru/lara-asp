@@ -6,16 +6,19 @@ input SearchByConditionProperties {
     All of the conditions must be true.
     """
     allOf: [SearchByConditionProperties!]
+    @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
     anyOf: [SearchByConditionProperties!]
+    @searchByOperatorAnyOf
 
     """
     Not.
     """
     not: SearchByConditionProperties
+    @searchByOperatorNot
 
     """
     Property condition.
@@ -31,46 +34,55 @@ input SearchByScalarString {
     Contains.
     """
     contains: String
+    @searchByOperatorContains
 
     """
     Ends with a string.
     """
     endsWith: String
+    @searchByOperatorEndsWith
 
     """
     Equal (`=`).
     """
     equal: String
+    @searchByOperatorEqual
 
     """
     Within a set of values.
     """
     in: [String!]
+    @searchByOperatorIn
 
     """
     Like.
     """
     like: String
+    @searchByOperatorLike
 
     """
     Not Equal (`!=`).
     """
     notEqual: String
+    @searchByOperatorNotEqual
 
     """
     Outside a set of values.
     """
     notIn: [String!]
+    @searchByOperatorNotIn
 
     """
     Not like.
     """
     notLike: String
+    @searchByOperatorNotLike
 
     """
     Starts with a string.
     """
     startsWith: String
+    @searchByOperatorStartsWith
 }
 
 type Query {
@@ -102,3 +114,51 @@ Convert Input into Search Conditions.
 directive @searchBy
 on
     | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorAnyOf
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorContains
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorEndsWith
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorIn
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorLike
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNot
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotIn
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotLike
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorStartsWith
+on
+    | INPUT_FIELD_DEFINITION

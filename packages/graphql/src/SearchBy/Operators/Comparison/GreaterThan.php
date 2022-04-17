@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 
 class GreaterThan extends BaseOperator implements ComparisonOperator {
-    public function getName(): string {
+    public static function getName(): string {
         return 'greaterThan';
     }
 

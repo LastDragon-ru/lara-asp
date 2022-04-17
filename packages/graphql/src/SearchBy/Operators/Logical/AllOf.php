@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
  * @internal Must not be used directly.
  */
 class AllOf extends BaseOperator implements LogicalOperator {
-    public function getName(): string {
+    public static function getName(): string {
         return 'allOf';
     }
 

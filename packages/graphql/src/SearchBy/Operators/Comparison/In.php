@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 
 class In extends BaseOperator implements ComparisonOperator {
-    public function getName(): string {
+    public static function getName(): string {
         return 'in';
     }
 

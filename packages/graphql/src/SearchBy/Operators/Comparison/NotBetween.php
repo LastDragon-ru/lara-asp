@@ -7,7 +7,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 
 class NotBetween extends Between implements ComparisonOperator {
-    public function getName(): string {
+    public static function getName(): string {
         return 'notBetween';
     }
 

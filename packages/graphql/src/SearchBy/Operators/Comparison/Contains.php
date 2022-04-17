@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use function strtr;
 
 class Contains extends BaseOperator implements ComparisonOperator {
-    public function getName(): string {
+    public static function getName(): string {
         return 'contains';
     }
 

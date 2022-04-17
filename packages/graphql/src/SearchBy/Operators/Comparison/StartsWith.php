@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 class StartsWith extends Contains {
-    public function getName(): string {
+    public static function getName(): string {
         return 'startsWith';
     }
 

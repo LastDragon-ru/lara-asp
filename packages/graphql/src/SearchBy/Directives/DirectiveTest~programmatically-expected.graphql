@@ -51,11 +51,13 @@ input SearchByConditionTestTypeA {
     All of the conditions must be true.
     """
     allOf: [SearchByConditionTestTypeA!]
+    @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
     anyOf: [SearchByConditionTestTypeA!]
+    @searchByOperatorAnyOf
 
     """
     Property condition.
@@ -71,6 +73,7 @@ input SearchByConditionTestTypeA {
     Not.
     """
     not: SearchByConditionTestTypeA
+    @searchByOperatorNot
 
     """
     Property condition.
@@ -86,11 +89,13 @@ input SearchByConditionTestTypeB {
     All of the conditions must be true.
     """
     allOf: [SearchByConditionTestTypeB!]
+    @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
     anyOf: [SearchByConditionTestTypeB!]
+    @searchByOperatorAnyOf
 
     """
     Property condition.
@@ -106,6 +111,7 @@ input SearchByConditionTestTypeB {
     Not.
     """
     not: SearchByConditionTestTypeB
+    @searchByOperatorNot
 }
 
 """
@@ -116,31 +122,37 @@ input SearchByEnumTestEnumOrNull {
     Equal (`=`).
     """
     equal: TestEnum
+    @searchByOperatorEqual
 
     """
     Within a set of values.
     """
     in: [TestEnum!]
+    @searchByOperatorIn
 
     """
     Is NOT NULL?
     """
     isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
 
     """
     Is NULL?
     """
     isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
 
     """
     Not Equal (`!=`).
     """
     notEqual: TestEnum
+    @searchByOperatorNotEqual
 
     """
     Outside a set of values.
     """
     notIn: [TestEnum!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -151,16 +163,19 @@ input SearchByScalarBooleanOrNull {
     Equal (`=`).
     """
     equal: Boolean
+    @searchByOperatorEqual
 
     """
     Is NOT NULL?
     """
     isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
 
     """
     Is NULL?
     """
     isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
 }
 
 """
@@ -171,51 +186,61 @@ input SearchByScalarInt {
     Within a range.
     """
     between: SearchByTypeRangeInt
+    @searchByOperatorBetween
 
     """
     Equal (`=`).
     """
     equal: Int
+    @searchByOperatorEqual
 
     """
     Greater than (`>`).
     """
     greaterThan: Int
+    @searchByOperatorGreaterThan
 
     """
     Greater than or equal to (`>=`).
     """
     greaterThanOrEqual: Int
+    @searchByOperatorGreaterThanOrEqual
 
     """
     Within a set of values.
     """
     in: [Int!]
+    @searchByOperatorIn
 
     """
     Less than (`<`).
     """
     lessThan: Int
+    @searchByOperatorLessThan
 
     """
     Less than or equal to (`<=`).
     """
     lessThanOrEqual: Int
+    @searchByOperatorLessThanOrEqual
 
     """
     Outside a range.
     """
     notBetween: SearchByTypeRangeInt
+    @searchByOperatorNotBetween
 
     """
     Not Equal (`!=`).
     """
     notEqual: Int
+    @searchByOperatorNotEqual
 
     """
     Outside a set of values.
     """
     notIn: [Int!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -226,46 +251,55 @@ input SearchByScalarString {
     Contains.
     """
     contains: String
+    @searchByOperatorContains
 
     """
     Ends with a string.
     """
     endsWith: String
+    @searchByOperatorEndsWith
 
     """
     Equal (`=`).
     """
     equal: String
+    @searchByOperatorEqual
 
     """
     Within a set of values.
     """
     in: [String!]
+    @searchByOperatorIn
 
     """
     Like.
     """
     like: String
+    @searchByOperatorLike
 
     """
     Not Equal (`!=`).
     """
     notEqual: String
+    @searchByOperatorNotEqual
 
     """
     Outside a set of values.
     """
     notIn: [String!]
+    @searchByOperatorNotIn
 
     """
     Not like.
     """
     notLike: String
+    @searchByOperatorNotLike
 
     """
     Starts with a string.
     """
     startsWith: String
+    @searchByOperatorStartsWith
 }
 
 """
@@ -276,56 +310,67 @@ input SearchByScalarStringOrNull {
     Contains.
     """
     contains: String
+    @searchByOperatorContains
 
     """
     Ends with a string.
     """
     endsWith: String
+    @searchByOperatorEndsWith
 
     """
     Equal (`=`).
     """
     equal: String
+    @searchByOperatorEqual
 
     """
     Within a set of values.
     """
     in: [String!]
+    @searchByOperatorIn
 
     """
     Is NOT NULL?
     """
     isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
 
     """
     Is NULL?
     """
     isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
 
     """
     Like.
     """
     like: String
+    @searchByOperatorLike
 
     """
     Not Equal (`!=`).
     """
     notEqual: String
+    @searchByOperatorNotEqual
 
     """
     Outside a set of values.
     """
     notIn: [String!]
+    @searchByOperatorNotIn
 
     """
     Not like.
     """
     notLike: String
+    @searchByOperatorNotLike
 
     """
     Starts with a string.
     """
     startsWith: String
+    @searchByOperatorStartsWith
 }
 
 input SearchByTypeRangeInt {
@@ -371,3 +416,83 @@ Convert Input into Search Conditions.
 directive @searchBy
 on
     | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorAnyOf
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorBetween
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorContains
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorEndsWith
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorGreaterThan
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorGreaterThanOrEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorIn
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorIsNotNull
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorIsNull
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorLessThan
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorLessThanOrEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorLike
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNot
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotBetween
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotIn
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotLike
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorStartsWith
+on
+    | INPUT_FIELD_DEFINITION

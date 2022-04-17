@@ -148,7 +148,11 @@ class MetadataTest extends TestCase {
      */
     public function testGetOperatorInstance(): void {
         $operator = new class() implements Operator, TypeDefinitionProvider {
-            public function getName(): string {
+            public static function getName(): string {
+                return '';
+            }
+
+            public static function getDirectiveName(): string {
                 return '';
             }
 

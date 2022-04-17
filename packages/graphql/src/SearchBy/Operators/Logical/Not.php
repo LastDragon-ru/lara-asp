@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 
 class Not extends BaseOperator implements LogicalOperator {
-    public function getName(): string {
+    public static function getName(): string {
         return 'not';
     }
 

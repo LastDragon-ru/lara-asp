@@ -3,12 +3,14 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
 /**
- * Simple (comparison/logical) operator.
+ * Operator.
  *
  * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider
  */
 interface Operator {
-    public function getName(): string;
+    public static function getName(): string;
+
+    public static function getDirectiveName(): string;
 
     public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string;
 }

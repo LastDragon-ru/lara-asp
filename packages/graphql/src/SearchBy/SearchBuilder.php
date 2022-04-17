@@ -40,9 +40,9 @@ class SearchBuilder {
     public function __construct(array $operators) {
         foreach ($operators as $operator) {
             if ($operator instanceof ComparisonOperator) {
-                $this->comparison[$operator->getName()] = $operator;
+                $this->comparison[$operator::getName()] = $operator;
             } elseif ($operator instanceof LogicalOperator) {
-                $this->logical[$operator->getName()] = $operator;
+                $this->logical[$operator::getName()] = $operator;
             } else {
                 $this->complex[$operator->getName()] = $operator;
             }

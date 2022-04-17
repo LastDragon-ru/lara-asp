@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
  * @internal Must not be used directly.
  */
 class IsNull extends BaseOperator implements ComparisonOperator {
-    public function getName(): string {
+    public static function getName(): string {
         return 'isNull';
     }
 

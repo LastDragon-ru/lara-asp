@@ -152,7 +152,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             return $this->getOperatorType($operator, $scalar, false);
         }, $operators));
         $type      = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
+                <<<DEF
             """
             Available conditions for input {$this->getNodeName($node)} (only one property allowed at a time).
             """
@@ -247,11 +247,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Add type
         $content = implode("\n", array_map(function (Operator $operator) use ($type, $nullable): string {
-            return $this->getOperatorType($operator, $type, $nullable);
+                return $this->getOperatorType($operator, $type, $nullable);
         }, $operators));
 
         $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
+                <<<DEF
             """
             Available operators for enum {$enum} (only one operator allowed at a time).
             """
@@ -286,11 +286,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Add type
         $mark    = $nullable ? '' : '!';
         $content = implode("\n", array_map(function (Operator $operator) use ($type, $nullable): string {
-            return $this->getOperatorType($operator, $type, $nullable);
+                return $this->getOperatorType($operator, $type, $nullable);
         }, $operators));
 
         $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
+                <<<DEF
             """
             Available operators for scalar {$scalar}{$mark} (only one operator allowed at a time).
             """
@@ -312,7 +312,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
         ScalarTypeDefinitionNode|ScalarType|EnumTypeDefinitionNode|EnumType $node,
         bool $nullable,
     ): string {
-        return $operator->getDefinition($this, $this->getNodeName($node), $nullable);
+        return implode("\n", [
+            $operator->getDefinition($this, $this->getNodeName($node), $nullable),
+            $operator::getDirectiveName(),
+        ]);
     }
 
     protected function getComplexType(
@@ -459,7 +462,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // =========================================================================
     protected function addFakeTypeDefinition(string $name): void {
         $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
+                <<<DEF
             """
             Fake type to prevent circular dependency infinite loop.
             """
