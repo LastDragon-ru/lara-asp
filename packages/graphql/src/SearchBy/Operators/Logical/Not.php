@@ -13,7 +13,7 @@ class Not extends BaseOperator implements LogicalOperator {
         return 'not';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Not.';
     }
 

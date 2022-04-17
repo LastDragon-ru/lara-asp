@@ -7,7 +7,7 @@ class EndsWith extends Contains {
         return 'endsWith';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Ends with a string.';
     }
 

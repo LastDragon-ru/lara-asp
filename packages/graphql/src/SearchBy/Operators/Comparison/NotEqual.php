@@ -12,7 +12,7 @@ class NotEqual extends BaseOperator implements ComparisonOperator {
         return 'notEqual';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Not Equal (`!=`).';
     }
 

@@ -12,7 +12,7 @@ class GreaterThan extends BaseOperator implements ComparisonOperator {
         return 'greaterThan';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Greater than (`>`).';
     }
 

@@ -12,7 +12,7 @@ class Like extends BaseOperator implements ComparisonOperator {
         return 'like';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Like.';
     }
 

@@ -46,6 +46,7 @@ use function array_shift;
 use function count;
 use function implode;
 use function is_null;
+use function is_object;
 use function json_encode;
 
 class Manipulator extends AstManipulator implements TypeProvider {
@@ -149,7 +150,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operators = $this->getScalarOperators(Directive::ScalarLogic, false);
         $scalar    = $this->getScalarTypeNode($name);
         $content   = implode("\n", array_map(function (Operator $operator) use ($scalar): string {
-            return $this->getOperatorType($operator, $scalar, false);
+            return $this->getOperatorType($operator, $scalar);
         }, $operators));
         $type      = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
                 <<<DEF
@@ -246,12 +247,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operators = $this->getEnumOperators($enum, $nullable);
 
         // Add type
-        $content = implode("\n", array_map(function (Operator $operator) use ($type, $nullable): string {
-                return $this->getOperatorType($operator, $type, $nullable);
+        $content = implode("\n", array_map(function (Operator $operator) use ($type): string {
+            return $this->getOperatorType($operator, $type);
         }, $operators));
 
         $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-                <<<DEF
+            <<<DEF
             """
             Available operators for enum {$enum} (only one operator allowed at a time).
             """
@@ -285,8 +286,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Add type
         $mark    = $nullable ? '' : '!';
-        $content = implode("\n", array_map(function (Operator $operator) use ($type, $nullable): string {
-                return $this->getOperatorType($operator, $type, $nullable);
+        $content = implode("\n", array_map(function (Operator $operator) use ($type): string {
+            return $this->getOperatorType($operator, $type);
         }, $operators));
 
         $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
@@ -309,13 +310,21 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     protected function getOperatorType(
         Operator $operator,
-        ScalarTypeDefinitionNode|ScalarType|EnumTypeDefinitionNode|EnumType $node,
-        bool $nullable,
+        ScalarTypeDefinitionNode|ScalarType|EnumTypeDefinitionNode|EnumType $type,
     ): string {
-        return implode("\n", [
-            $operator->getDefinition($this, $this->getNodeName($node), $nullable),
-            $operator::getDirectiveName(),
-        ]);
+        $type        = $this->getNodeName($type);
+        $type        = $operator->getFieldType($this, $type);
+        $field       = $operator::getName();
+        $directive   = $operator::getDirectiveName();
+        $description = $operator->getFieldDescription();
+
+        return <<<DEF
+            """
+            {$description}
+            """
+            {$field}: {$type}
+            {$directive}
+        DEF;
     }
 
     protected function getComplexType(

@@ -12,7 +12,7 @@ class Equal extends BaseOperator implements ComparisonOperator {
         return 'equal';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Equal (`=`).';
     }
 

@@ -12,5 +12,7 @@ interface Operator {
 
     public static function getDirectiveName(): string;
 
-    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string;
+    public function getFieldType(TypeProvider $provider, string $type): string;
+
+    public function getFieldDescription(): string;
 }

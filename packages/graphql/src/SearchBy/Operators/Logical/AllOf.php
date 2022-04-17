@@ -17,12 +17,12 @@ class AllOf extends BaseOperator implements LogicalOperator {
         return 'allOf';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'All of the conditions must be true.';
     }
 
-    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
-        return parent::getDefinition($provider, "[{$scalar}!]", true);
+    public function getFieldType(TypeProvider $provider, string $type): string {
+        return "[{$type}!]";
     }
 
     /**

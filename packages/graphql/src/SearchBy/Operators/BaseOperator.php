@@ -32,18 +32,7 @@ abstract class BaseOperator extends BaseDirective implements Operator {
         GRAPHQL;
     }
 
-    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
-        $name        = static::getName();
-        $description = $this->getDescription();
-
-        return <<<DEF
-        """
-        {$description}
-        """
-        {$name}: {$scalar}
-
-        DEF;
+    public function getFieldType(TypeProvider $provider, string $type): string {
+        return $type;
     }
-
-    abstract protected function getDescription(): string;
 }

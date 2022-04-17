@@ -17,12 +17,12 @@ class IsNotNull extends BaseOperator implements ComparisonOperator {
         return 'isNotNull';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Is NOT NULL?';
     }
 
-    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
-        return parent::getDefinition($provider, $provider->getType(Flag::Name), true);
+    public function getFieldType(TypeProvider $provider, string $type): string {
+        return $provider->getType(Flag::Name);
     }
 
     public function apply(

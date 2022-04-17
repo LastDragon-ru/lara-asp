@@ -11,7 +11,7 @@ class NotBetween extends Between implements ComparisonOperator {
         return 'notBetween';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Outside a range.';
     }
 

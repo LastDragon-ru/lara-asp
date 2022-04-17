@@ -12,7 +12,7 @@ class LessThan extends BaseOperator implements ComparisonOperator {
         return 'lessThan';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Less than (`<`).';
     }
 

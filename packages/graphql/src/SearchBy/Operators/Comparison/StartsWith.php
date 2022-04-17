@@ -7,7 +7,7 @@ class StartsWith extends Contains {
         return 'startsWith';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Starts with a string.';
     }
 

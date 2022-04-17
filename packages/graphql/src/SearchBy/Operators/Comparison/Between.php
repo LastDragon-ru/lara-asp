@@ -14,12 +14,12 @@ class Between extends BaseOperator implements ComparisonOperator {
         return 'between';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Within a range.';
     }
 
-    public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
-        return parent::getDefinition($provider, $provider->getType(Range::Name, $scalar), true);
+    public function getFieldType(TypeProvider $provider, string $type): string {
+        return $provider->getType(Range::Name, $type);
     }
 
     public function apply(

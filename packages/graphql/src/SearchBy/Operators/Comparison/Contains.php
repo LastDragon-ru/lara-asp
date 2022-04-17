@@ -17,7 +17,7 @@ class Contains extends BaseOperator implements ComparisonOperator {
         return 'contains';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Contains.';
     }
 

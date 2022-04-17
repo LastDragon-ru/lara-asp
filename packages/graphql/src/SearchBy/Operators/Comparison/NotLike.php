@@ -12,7 +12,7 @@ class NotLike extends BaseOperator implements ComparisonOperator {
         return 'notLike';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Not like.';
     }
 

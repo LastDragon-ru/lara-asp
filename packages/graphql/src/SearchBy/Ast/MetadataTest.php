@@ -156,7 +156,11 @@ class MetadataTest extends TestCase {
                 return '';
             }
 
-            public function getDefinition(TypeProvider $provider, string $scalar, bool $nullable): string {
+            public function getFieldType(TypeProvider $provider, string $type): string {
+                return '';
+            }
+
+            public function getFieldDescription(): string {
                 return '';
             }
 
