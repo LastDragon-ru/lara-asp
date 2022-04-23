@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Closure;
 use Exception;
+use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Type\Definition\InputObjectField;
@@ -14,6 +15,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
@@ -209,7 +211,7 @@ class SearchBuilderTest extends TestCase {
                 return $builder;
             }
 
-            public function getName(): string {
+            public static function getName(): string {
                 return 'test';
             }
 
@@ -222,13 +224,29 @@ class SearchBuilderTest extends TestCase {
             ): InputObjectTypeDefinitionNode {
                 throw new Exception('Should not be used.');
             }
+
+            public static function getDirectiveName(): string {
+                return '';
+            }
+
+            public function getFieldType(TypeProvider $provider, string $type): string {
+                return '';
+            }
+
+            public function getFieldDescription(): string {
+                return '';
+            }
+
+            public function getFieldDirective(): ?DirectiveNode {
+                return null;
+            }
         };
         $search  = new SearchBuilder([$complex]);
 
         self::assertSame(
             $complex,
             $search->getComplexOperator([
-                $complex->getName() => 'yes',
+                $complex::getName() => 'yes',
             ]),
         );
 

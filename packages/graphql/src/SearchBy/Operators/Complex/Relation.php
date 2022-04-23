@@ -14,8 +14,10 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\BuilderUnsupported;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 
 use function is_array;
@@ -24,13 +26,13 @@ use function reset;
 /**
  * @internal Must not be used directly.
  */
-class Relation implements ComplexOperator {
-    public function __construct() {
-        // empty
+class Relation extends BaseOperator implements ComplexOperator {
+    public static function getName(): string {
+        return 'relation';
     }
 
-    public function getName(): string {
-        return 'relation';
+    public function getFieldDescription(): string {
+        return 'Relationship condition.';
     }
 
     public function getDefinition(

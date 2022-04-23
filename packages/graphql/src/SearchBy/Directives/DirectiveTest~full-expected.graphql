@@ -176,14 +176,16 @@ input SearchByConditionInputA {
     intScalar: SearchByScalarIntOrNull
 
     """
-    Property condition.
+    Relationship condition.
     """
     nested: SearchByComplexRelationNestedA
+    @searchByOperatorRelation
 
     """
-    Property condition.
+    Relationship condition.
     """
     nestedNotNull: SearchByComplexRelationNestedA
+    @searchByOperatorRelation
 
     """
     Not.
@@ -247,9 +249,10 @@ input SearchByConditionNestedA {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Relationship condition.
     """
     nested: SearchByComplexRelationNestedA
+    @searchByOperatorRelation
 
     """
     Not.
@@ -280,9 +283,10 @@ input SearchByConditionNestedB {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Relationship condition.
     """
     nested: SearchByComplexRelationNestedC
+    @searchByOperatorRelation
 
     """
     Not.
@@ -308,9 +312,10 @@ input SearchByConditionNestedC {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Relationship condition.
     """
     nested: SearchByComplexRelationNestedB
+    @searchByOperatorRelation
 
     """
     Not.
@@ -1100,6 +1105,10 @@ on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorNotLike
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorRelation
 on
     | INPUT_FIELD_DEFINITION
 

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
+use GraphQL\Language\AST\DirectiveNode;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
@@ -34,5 +35,9 @@ abstract class BaseOperator extends BaseDirective implements Operator {
 
     public function getFieldType(TypeProvider $provider, string $type): string {
         return $type;
+    }
+
+    public function getFieldDirective(): ?DirectiveNode {
+        return $this->directiveNode;
     }
 }

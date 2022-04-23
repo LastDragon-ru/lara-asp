@@ -98,9 +98,10 @@ input SearchByConditionTestTypeB {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Relationship condition.
     """
     child: SearchByComplexRelationTestTypeA
+    @searchByOperatorRelation
 
     """
     Property condition.
@@ -490,6 +491,10 @@ on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorNotLike
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorRelation
 on
     | INPUT_FIELD_DEFINITION
 

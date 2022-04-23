@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
 use Exception;
+use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
@@ -170,6 +171,10 @@ class MetadataTest extends TestCase {
             public function getDefinitions(): array {
                 return [];
             }
+
+            public function getFieldDirective(): ?DirectiveNode {
+                return null;
+            }
         };
         $metadata = Mockery::mock(Metadata::class, [$this->app]);
         $metadata->makePartial();
@@ -209,7 +214,7 @@ class MetadataTest extends TestCase {
                 return [];
             }
 
-            public function getName(): string {
+            public static function getName(): string {
                 return '';
             }
 
@@ -233,6 +238,22 @@ class MetadataTest extends TestCase {
                 array $conditions,
             ): EloquentBuilder|QueryBuilder {
                 return $builder;
+            }
+
+            public static function getDirectiveName(): string {
+                return '';
+            }
+
+            public function getFieldType(TypeProvider $provider, string $type): string {
+                return '';
+            }
+
+            public function getFieldDescription(): string {
+                return '';
+            }
+
+            public function getFieldDirective(): ?DirectiveNode {
+                return null;
             }
         };
         $metadata = Mockery::mock(Metadata::class, [$this->app]);

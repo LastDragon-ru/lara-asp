@@ -4,17 +4,22 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
@@ -35,14 +40,17 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_map;
 use function array_shift;
+use function assert;
 use function count;
 use function implode;
 use function is_null;
@@ -215,7 +223,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             // Create new Field
-            if ($fieldDefinition) {
+            if ($fieldDefinition instanceof InputValueDefinitionNode) {
+                $type->fields[] = $fieldDefinition;
+            } elseif ($fieldDefinition) {
                 if (!$this->copyFieldToType($type, $field, $fieldDefinition, $description)) {
                     throw new FailedToCreateSearchConditionForField($this->getNodeName($node), $fieldName);
                 }
@@ -291,7 +301,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }, $operators));
 
         $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-                <<<DEF
+            <<<DEF
             """
             Available operators for scalar {$scalar}{$mark} (only one operator allowed at a time).
             """
@@ -310,12 +320,15 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     protected function getOperatorType(
         Operator $operator,
-        ScalarTypeDefinitionNode|ScalarType|EnumTypeDefinitionNode|EnumType $type,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
+        string $field = null
     ): string {
-        $type        = $this->getNodeName($type);
-        $type        = $operator->getFieldType($this, $type);
-        $field       = $operator::getName();
-        $directive   = $operator::getDirectiveName();
+        $type        = $operator->getFieldType($this, $this->getNodeName($type));
+        $field       = $field ?: $operator::getName();
+        $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
+        $directive   = $directive instanceof DirectiveNode
+            ? Printer::doPrint($directive)
+            : $directive;
         $description = $operator->getFieldDescription();
 
         return <<<DEF
@@ -331,44 +344,49 @@ class Manipulator extends AstManipulator implements TypeProvider {
         InputValueDefinitionNode|InputObjectField $field,
         InputObjectTypeDefinitionNode|InputObjectType $type,
         bool $nullable,
-    ): string {
-        // Exists?
+    ): InputValueDefinitionNode {
+        // Prepare
         $operator = $this->getComplexOperator($field, $type);
-        $name     = $this->getComplexTypeName($type, $operator);
+        $name     = $operator->getFieldType($this, $this->getComplexTypeName($type, $operator));
 
-        if ($this->isTypeDefinitionExists($name)) {
+        // Definition
+        if (!$this->isTypeDefinitionExists($name)) {
+            // Fake
+            $this->addFakeTypeDefinition($name);
+
+            // Create
+            $usage                = $this->metadata->getUsage()->start($name);
+            $marker               = $operator::getName();
+            $definition           = $operator->getDefinition($this, $field, $type, $name, $nullable);
+            $definition->fields[] = Parser::inputValueDefinition(
+                <<<DEF
+                """
+                Complex operator marker.
+                """
+                {$marker}: {$this->getType(Flag::Name)}! = yes
+                DEF,
+            );
+
+            // todo(graphql): Remove, not needed anymore
+            if ($name !== $this->getNodeName($definition)) {
+                throw new ComplexOperatorInvalidTypeName($operator::class, $name, $this->getNodeName($definition));
+            }
+
+            $this->removeFakeTypeDefinition($name);
+            $this->addTypeDefinition($definition);
+
+            // End usage
+            $this->metadata->getUsage()->end($usage);
+        } else {
             $this->metadata->getUsage()->addType($name);
-
-            return $name;
         }
-
-        // Fake
-        $this->addFakeTypeDefinition($name);
-
-        // Create
-        $usage                = $this->metadata->getUsage()->start($name);
-        $definition           = $operator->getDefinition($this, $field, $type, $name, $nullable);
-        $definition->fields[] = Parser::inputValueDefinition(
-            <<<DEF
-            """
-            Complex operator marker.
-            """
-            {$operator->getName()}: {$this->getType(Flag::Name)}! = yes
-            DEF,
-        );
-
-        if ($name !== $this->getNodeName($definition)) {
-            throw new ComplexOperatorInvalidTypeName($operator::class, $name, $this->getNodeName($definition));
-        }
-
-        $this->removeFakeTypeDefinition($name);
-        $this->addTypeDefinition($definition);
-
-        // End usage
-        $this->metadata->getUsage()->end($usage);
 
         // Return
-        return $name;
+        return Parser::inputValueDefinition($this->getOperatorType(
+            $operator,
+            $this->getTypeDefinitionNode($name),
+            $this->getNodeName($field),
+        ));
     }
     // </editor-fold>
 
@@ -403,7 +421,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         ComplexOperator $operator,
     ): string {
         $name     = $this->getNodeName($node);
-        $operator = Str::studly($operator->getName());
+        $operator = Str::studly($operator::getName());
 
         return Directive::Name."Complex{$operator}{$name}";
     }
@@ -441,26 +459,22 @@ class Manipulator extends AstManipulator implements TypeProvider {
         InputValueDefinitionNode|InputObjectTypeDefinitionNode|InputObjectField|InputObjectType ...$nodes,
     ): ComplexOperator {
         // Class
-        $class = null;
+        $operator = null;
 
         do {
             $node      = array_shift($nodes);
-            $directive = $node
-                ? $this->getNodeDirective($node, OperatorDirective::class)
+            $operator = $node
+                ? $this->getNodeDirective($node, Operator::class)
                 : null;
-
-            if ($directive instanceof OperatorDirective) {
-                $class = $directive->getClass();
-            }
-        } while ($node && is_null($class));
+        } while ($node && $operator === null);
 
         // Default
-        if (!$class) {
-            $class = $this->container->make(RelationOperatorDirective::class)->getClass();
+        if (!$operator) {
+            $operator = $this->metadata->getComplexOperatorInstance(Relation::class);
         }
 
-        // Return
-        $operator = $this->metadata->getComplexOperatorInstance($class);
+        // fixme(graphql)!: Remove, method should return Operator instance
+        assert($operator instanceof ComplexOperator);
 
         // Return
         return $operator;

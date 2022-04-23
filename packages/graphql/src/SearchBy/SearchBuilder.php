@@ -44,7 +44,7 @@ class SearchBuilder {
             } elseif ($operator instanceof LogicalOperator) {
                 $this->logical[$operator::getName()] = $operator;
             } else {
-                $this->complex[$operator->getName()] = $operator;
+                $this->complex[$operator::getName()] = $operator;
             }
         }
     }
