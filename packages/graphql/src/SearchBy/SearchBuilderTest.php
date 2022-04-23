@@ -215,6 +215,10 @@ class SearchBuilderTest extends TestCase {
                 return 'test';
             }
 
+            public static function definition(): string {
+                return '';
+            }
+
             public function getDefinition(
                 Manipulator $ast,
                 InputValueDefinitionNode|InputObjectField $field,

@@ -76,11 +76,6 @@ parameters:
 			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Directives\\\\OperatorDirective\\:\\:getClass\\(\\) should return class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\ComplexOperator\\> but returns mixed\\.$#"
-			count: 1
-			path: packages/graphql/src/SearchBy/Directives/OperatorDirective.php
-
-		-
 			message: "#^Parameter \\#2 \\$values of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:whereBetween\\(\\) expects iterable\\<int\\|string, mixed\\>, mixed given\\.$#"
 			count: 1
 			path: packages/graphql/src/SearchBy/Operators/Comparison/Between.php

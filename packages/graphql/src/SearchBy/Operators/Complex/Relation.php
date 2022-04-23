@@ -14,7 +14,6 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
@@ -148,7 +147,7 @@ class Relation extends BaseOperator implements ComplexOperator {
     }
 
     /**
-     * @param EloquentBuilder<Model>                                                 $builder
+     * @param EloquentBuilder<Model> $builder
      * @param Closure(EloquentBuilder<Model>): (EloquentBuilder<Model>|QueryBuilder) $closure
      *
      * @return EloquentBuilder<Model>

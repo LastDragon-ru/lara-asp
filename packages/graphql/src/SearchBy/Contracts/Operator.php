@@ -3,13 +3,14 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
 use GraphQL\Language\AST\DirectiveNode;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 /**
  * Operator.
  *
  * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider
  */
-interface Operator {
+interface Operator extends Directive {
     /**
      * Must be a valid GraphQL Object Field name.
      */

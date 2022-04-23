@@ -153,6 +153,10 @@ class MetadataTest extends TestCase {
                 return '';
             }
 
+            public static function definition(): string {
+                return '';
+            }
+
             public static function getDirectiveName(): string {
                 return '';
             }
@@ -215,6 +219,10 @@ class MetadataTest extends TestCase {
             }
 
             public static function getName(): string {
+                return '';
+            }
+
+            public static function definition(): string {
                 return '';
             }
 

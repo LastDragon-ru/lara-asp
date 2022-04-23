@@ -152,19 +152,19 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $usage     = $this->metadata->getUsage()->start($name);
         $operators = $this->getScalarOperators(Directive::ScalarLogic, false);
         $scalar    = $this->getScalarTypeNode($name);
-        $content   = implode("\n", array_map(function (Operator $operator) use ($scalar): string {
-            return $this->getOperatorType($operator, $scalar);
-        }, $operators));
-        $type      = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
+        $content   = $this->getOperatorsFields($operators, $scalar);
+        $type      = $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
                 <<<DEF
-            """
-            Available conditions for input {$this->getNodeName($node)} (only one property allowed at a time).
-            """
-            input {$name} {
-                {$content}
-            }
-            DEF,
-        ));
+                """
+                Available conditions for input {$this->getNodeName($node)} (only one property allowed at a time).
+                """
+                input {$name} {
+                    {$content}
+                }
+                DEF,
+            ),
+        );
 
         // Add searchable fields
         $description = 'Property condition.';
@@ -252,20 +252,20 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operators = $this->getEnumOperators($enum, $nullable);
 
         // Add type
-        $content = implode("\n", array_map(function (Operator $operator) use ($type): string {
-            return $this->getOperatorType($operator, $type);
-        }, $operators));
+        $content = $this->getOperatorsFields($operators, $type);
 
-        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Available operators for enum {$enum} (only one operator allowed at a time).
-            """
-            input {$name} {
-                {$content}
-            }
-            DEF,
-        ));
+        $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
+                <<<DEF
+                """
+                Available operators for enum {$enum} (only one operator allowed at a time).
+                """
+                input {$name} {
+                    {$content}
+                }
+                DEF,
+            ),
+        );
 
         // End usage
         $this->metadata->getUsage()->end($usage);
@@ -291,20 +291,20 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Add type
         $mark    = $nullable ? '' : '!';
-        $content = implode("\n", array_map(function (Operator $operator) use ($type): string {
-            return $this->getOperatorType($operator, $type);
-        }, $operators));
+        $content = $this->getOperatorsFields($operators, $type);
 
-        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Available operators for scalar {$scalar}{$mark} (only one operator allowed at a time).
-            """
-            input {$name} {
-                {$content}
-            }
-            DEF,
-        ));
+        $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
+                <<<DEF
+                """
+                Available operators for scalar {$scalar}{$mark} (only one operator allowed at a time).
+                """
+                input {$name} {
+                    {$content}
+                }
+                DEF,
+            ),
+        );
 
         // End usage
         $this->metadata->getUsage()->end($usage);
@@ -313,10 +313,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return $name;
     }
 
-    protected function getOperatorType(
+    protected function getOperatorField(
         Operator $operator,
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
-        string $field = null
+        string $field = null,
     ): string {
         $type        = $this->getNodeName($type);
         $type        = $operator->getFieldType($this, $type) ?? $type;
@@ -334,6 +334,24 @@ class Manipulator extends AstManipulator implements TypeProvider {
             {$field}: {$type}
             {$directive}
         DEF;
+    }
+
+    /**
+     * @param array<Operator> $operators
+     */
+    protected function getOperatorsFields(
+        array $operators,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
+    ): string {
+        return implode(
+            "\n",
+            array_map(
+                function (Operator $operator) use ($type): string {
+                    return $this->getOperatorField($operator, $type);
+                },
+                $operators,
+            ),
+        );
     }
 
     protected function getComplexType(
@@ -379,11 +397,13 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Return
-        return Parser::inputValueDefinition($this->getOperatorType(
-            $operator,
-            $this->getTypeDefinitionNode($name),
-            $this->getNodeName($field),
-        ));
+        return Parser::inputValueDefinition(
+            $this->getOperatorField(
+                $operator,
+                $this->getTypeDefinitionNode($name),
+                $this->getNodeName($field),
+            ),
+        );
     }
     // </editor-fold>
 
@@ -459,7 +479,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operator = null;
 
         do {
-            $node      = array_shift($nodes);
+            $node     = array_shift($nodes);
             $operator = $node
                 ? $this->getNodeDirective($node, Operator::class)
                 : null;
@@ -481,16 +501,18 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="AST Helpers">
     // =========================================================================
     protected function addFakeTypeDefinition(string $name): void {
-        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
+        $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
                 <<<DEF
-            """
-            Fake type to prevent circular dependency infinite loop.
-            """
-            input {$name} {
-                fake: Boolean! = true
-            }
-            DEF,
-        ));
+                """
+                Fake type to prevent circular dependency infinite loop.
+                """
+                input {$name} {
+                    fake: Boolean! = true
+                }
+                DEF,
+            ),
+        );
     }
 
     protected function removeFakeTypeDefinition(string $name): void {
