@@ -50,8 +50,6 @@ use function array_shift;
 use function assert;
 use function count;
 use function implode;
-use function is_null;
-use function is_object;
 use function json_encode;
 
 class Manipulator extends AstManipulator implements TypeProvider {
@@ -320,7 +318,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
         string $field = null
     ): string {
-        $type        = $operator->getFieldType($this, $this->getNodeName($type));
+        $type        = $this->getNodeName($type);
+        $type        = $operator->getFieldType($this, $type) ?? $type;
         $field       = $field ?: $operator::getName();
         $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
         $directive   = $directive instanceof DirectiveNode
@@ -344,7 +343,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
     ): InputValueDefinitionNode {
         // Prepare
         $operator = $this->getComplexOperator($field, $type);
-        $name     = $operator->getFieldType($this, $this->getComplexTypeName($type, $operator));
+        $name     = $operator->getFieldType($this, $this->getNodeName($type))
+            ?? $this->getComplexTypeName($type, $operator);
 
         // Definition
         if (!$this->isTypeDefinitionExists($name)) {
@@ -364,7 +364,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 DEF,
             );
 
-            // todo(graphql): Remove, not needed anymore
+            // todo(graphql): Remove? seems not needed anymore
             if ($name !== $this->getNodeName($definition)) {
                 throw new ComplexOperatorInvalidTypeName($operator::class, $name, $this->getNodeName($definition));
             }

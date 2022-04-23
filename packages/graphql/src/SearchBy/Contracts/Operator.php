@@ -21,7 +21,7 @@ interface Operator {
      */
     public static function getDirectiveName(): string;
 
-    public function getFieldType(TypeProvider $provider, string $type): string;
+    public function getFieldType(TypeProvider $provider, string $type): ?string;
 
     public function getFieldDescription(): string;
 

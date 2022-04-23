@@ -21,7 +21,7 @@ class IsNull extends BaseOperator implements ComparisonOperator {
         return 'Is NULL?';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
+    public function getFieldType(TypeProvider $provider, string $type): ?string {
         return $provider->getType(Flag::Name);
     }
 

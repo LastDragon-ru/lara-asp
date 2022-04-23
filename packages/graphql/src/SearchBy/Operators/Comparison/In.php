@@ -17,7 +17,7 @@ class In extends BaseOperator implements ComparisonOperator {
         return 'Within a set of values.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
+    public function getFieldType(TypeProvider $provider, string $type): ?string {
         return "[{$type}!]";
     }
 

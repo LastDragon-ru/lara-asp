@@ -21,7 +21,7 @@ class AnyOf extends BaseOperator implements LogicalOperator {
         return 'Any of the conditions must be true.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
+    public function getFieldType(TypeProvider $provider, string $type): ?string {
         return "[{$type}!]";
     }
 

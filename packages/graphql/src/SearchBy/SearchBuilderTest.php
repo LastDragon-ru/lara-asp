@@ -229,8 +229,8 @@ class SearchBuilderTest extends TestCase {
                 return '';
             }
 
-            public function getFieldType(TypeProvider $provider, string $type): string {
-                return '';
+            public function getFieldType(TypeProvider $provider, string $type): ?string {
+                return null;
             }
 
             public function getFieldDescription(): string {

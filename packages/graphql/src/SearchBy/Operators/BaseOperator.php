@@ -33,8 +33,8 @@ abstract class BaseOperator extends BaseDirective implements Operator {
         GRAPHQL;
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
-        return $type;
+    public function getFieldType(TypeProvider $provider, string $type): ?string {
+        return null;
     }
 
     public function getFieldDirective(): ?DirectiveNode {

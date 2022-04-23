@@ -21,7 +21,7 @@ class AllOf extends BaseOperator implements LogicalOperator {
         return 'All of the conditions must be true.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
+    public function getFieldType(TypeProvider $provider, string $type): ?string {
         return "[{$type}!]";
     }
 

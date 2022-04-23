@@ -18,7 +18,7 @@ class Between extends BaseOperator implements ComparisonOperator {
         return 'Within a range.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
+    public function getFieldType(TypeProvider $provider, string $type): ?string {
         return $provider->getType(Range::Name, $type);
     }
 
