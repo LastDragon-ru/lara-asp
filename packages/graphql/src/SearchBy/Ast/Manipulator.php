@@ -28,8 +28,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\OperatorDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\RelationOperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
@@ -45,7 +43,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_map;
