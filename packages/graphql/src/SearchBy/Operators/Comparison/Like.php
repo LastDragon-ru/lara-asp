@@ -4,8 +4,14 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
+
+use function implode;
 
 class Like extends BaseOperator implements ComparisonOperator {
     public static function getName(): string {
@@ -22,5 +28,21 @@ class Like extends BaseOperator implements ComparisonOperator {
         mixed $value,
     ): EloquentBuilder|QueryBuilder {
         return $builder->where($property, 'like', $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+        if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
+            throw new OperatorUnsupportedBuilder($this, $builder);
+        }
+
+        $property = implode('.', $property);
+        $value    = (string) Cast::toStringable($argument->toPlain());
+
+        $builder->where($property, 'like', $value);
+
+        return $builder;
     }
 }

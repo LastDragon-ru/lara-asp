@@ -3,37 +3,42 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Mockery;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In
- *
- * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class InTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::apply
+     * @covers ::call
      *
-     * @dataProvider dataProviderApply
+     * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected
-     * @param BuilderFactory                               $builder
+     * @param Closure(static): object                      $builderFactory
+     * @param array<string>                                $property
+     * @param Closure(static): Argument                    $argumentFactory
      */
-    public function testApply(
+    public function testCall(
         array $expected,
-        Closure $builder,
-        string $property,
-        mixed $value,
+        Closure $builderFactory,
+        array $property,
+        Closure $argumentFactory,
     ): void {
         $operator = $this->app->make(In::class);
-        $builder  = $builder($this);
-        $builder  = $operator->apply($builder, $property, $value);
+        $argument = $argumentFactory($this);
+        $search   = Mockery::mock(Builder::class);
+        $builder  = $builderFactory($this);
+        $builder  = $operator->call($search, $builder, $property, $argument);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -44,18 +49,29 @@ class InTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderApply(): array {
+    public function dataProviderCall(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'in' => [
+                'property'      => [
                     [
                         'query'    => 'select * from "tmp" where "property" in (?, ?, ?)',
-                        'bindings' => ['abc', 2, 4],
+                        'bindings' => [1, 2, 3],
                     ],
-                    'property',
-                    ['abc', 2, 4],
-                    false,
+                    ['property'],
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
+                    },
+                ],
+                'property.path' => [
+                    [
+                        'query'    => 'select * from "tmp" where "path"."to"."property" in (?, ?, ?)',
+                        'bindings' => ['a', 'b', 'c'],
+                    ],
+                    ['path', 'to', 'property'],
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('[String!]!', ['a', 'b', 'c']);
+                    },
                 ],
             ]),
         ))->getData();

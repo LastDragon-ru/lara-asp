@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 
 /**
  * @internal Must not be used directly.
  */
-class AnyOf extends BaseOperator implements LogicalOperator {
+class AnyOf extends Logical implements LogicalOperator {
     public static function getName(): string {
         return 'anyOf';
     }
@@ -50,5 +49,9 @@ class AnyOf extends BaseOperator implements LogicalOperator {
         }
 
         return $builder;
+    }
+
+    protected function getBoolean(): string {
+        return 'or';
     }
 }

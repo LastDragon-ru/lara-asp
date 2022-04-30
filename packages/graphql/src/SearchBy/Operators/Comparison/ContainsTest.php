@@ -4,52 +4,61 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
 use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Database\Query\Grammars\SQLiteGrammar;
 use Illuminate\Database\Query\Grammars\SqlServerGrammar;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Mockery;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains
- *
- * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class ContainsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::apply
+     * @covers ::call
      * @covers ::escape
      *
-     * @dataProvider dataProviderApply
+     * @dataProvider dataProviderCall
+     *
      * @param array{query: string, bindings: array<mixed>} $expected
-     * @param BuilderFactory                               $builder
+     * @param Closure(static): object                      $builderFactory
      * @param class-string<Grammar>                        $grammar
+     * @param array<string>                                $property
+     * @param Closure(static): Argument                    $argumentFactory
      */
-    public function testApply(
+    public function testCall(
         array $expected,
-        Closure $builder,
+        Closure $builderFactory,
         string $grammar,
-        string $property,
-        mixed $value,
+        array $property,
+        Closure $argumentFactory,
     ): void {
-        $builder = $builder($this);
+        $builder = $builderFactory($this);
         $grammar = new $grammar();
 
         if ($builder instanceof EloquentBuilder) {
             $builder->toBase()->grammar = $grammar;
-        } else {
+        } elseif ($builder instanceof QueryBuilder) {
             $builder->grammar = $grammar;
+        } else {
+            self::fail('Unsupported');
         }
 
         $operator = $this->app->make(Contains::class);
-        $builder  = $operator->apply($builder, $property, $value);
+        $argument = $argumentFactory($this);
+        $search   = Mockery::mock(Builder::class);
+        $builder  = $operator->call($search, $builder, $property, $argument);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -60,7 +69,7 @@ class ContainsTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderApply(): array {
+    public function dataProviderCall(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
@@ -70,8 +79,10 @@ class ContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     MySqlGrammar::class,
-                    'property',
-                    '%a[_]c!%',
+                    ['property'],
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('String!', '%a[_]c!%');
+                    },
                 ],
                 SQLiteGrammar::class    => [
                     [
@@ -79,8 +90,10 @@ class ContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     SQLiteGrammar::class,
-                    'property',
-                    '%a[_]c!%',
+                    ['property'],
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('String!', '%a[_]c!%');
+                    },
                 ],
                 PostgresGrammar::class  => [
                     [
@@ -88,8 +101,10 @@ class ContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     PostgresGrammar::class,
-                    'property',
-                    '%a[_]c!%',
+                    ['property'],
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('String!', '%a[_]c!%',);
+                    },
                 ],
                 SqlServerGrammar::class => [
                     [
@@ -97,8 +112,10 @@ class ContainsTest extends TestCase {
                         'bindings' => ['%!%a![!_!]c!!!%%'],
                     ],
                     SqlServerGrammar::class,
-                    'property',
-                    '%a[_]c!%',
+                    ['property'],
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('String!', '%a[_]c!%',);
+                    },
                 ],
             ]),
         ))->getData();

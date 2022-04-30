@@ -8,6 +8,7 @@ use function assert;
 use function is_bool;
 use function is_float;
 use function is_int;
+use function is_iterable;
 use function is_scalar;
 use function is_string;
 
@@ -50,6 +51,15 @@ class Cast {
 
     public static function toStringable(mixed $value): Stringable|string {
         assert(is_string($value) || $value instanceof Stringable);
+
+        return $value;
+    }
+
+    /**
+     * @return iterable<array-key, mixed>
+     */
+    public static function toIterable(mixed $value): iterable {
+        assert(is_iterable($value));
 
         return $value;
     }

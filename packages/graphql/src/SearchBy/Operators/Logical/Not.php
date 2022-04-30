@@ -5,10 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\LogicalOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 
-class Not extends BaseOperator implements LogicalOperator {
+class Not extends Logical implements LogicalOperator {
     public static function getName(): string {
         return 'not';
     }
@@ -38,5 +37,9 @@ class Not extends BaseOperator implements LogicalOperator {
             null,
             'and not',
         );
+    }
+
+    protected function getBoolean(): string {
+        return 'and not';
     }
 }

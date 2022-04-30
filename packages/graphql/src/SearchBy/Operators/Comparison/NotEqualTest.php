@@ -3,37 +3,42 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Mockery;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual
- *
- * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class NotEqualTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::apply
+     * @covers ::call
      *
-     * @dataProvider dataProviderApply
+     * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected
-     * @param BuilderFactory                               $builder
+     * @param Closure(static): object                      $builderFactory
+     * @param array<string>                                $property
+     * @param Closure(static): Argument                    $argumentFactory
      */
-    public function testApply(
+    public function testCall(
         array $expected,
-        Closure $builder,
-        string $property,
-        mixed $value,
+        Closure $builderFactory,
+        array $property,
+        Closure $argumentFactory,
     ): void {
         $operator = $this->app->make(NotEqual::class);
-        $builder  = $builder($this);
-        $builder  = $operator->apply($builder, $property, $value);
+        $argument = $argumentFactory($this);
+        $search   = Mockery::mock(Builder::class);
+        $builder  = $builderFactory($this);
+        $builder  = $operator->call($search, $builder, $property, $argument);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -44,17 +49,29 @@ class NotEqualTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderApply(): array {
+    public function dataProviderCall(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'ok' => [
+                'property'      => [
                     [
                         'query'    => 'select * from "tmp" where "property" != ?',
                         'bindings' => ['abc'],
                     ],
-                    'property',
-                    'abc',
+                    ['property'],
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('String!', 'abc');
+                    },
+                ],
+                'property.path' => [
+                    [
+                        'query'    => 'select * from "tmp" where "path"."to"."property" != ?',
+                        'bindings' => [123],
+                    ],
+                    ['path', 'to', 'property'],
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('Int!', 123);
+                    },
                 ],
             ]),
         ))->getData();

@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Grammars\SqlServerGrammar;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
+use function implode;
 use function strtr;
 
 class Contains extends BaseOperator implements ComparisonOperator {
@@ -36,6 +40,28 @@ class Contains extends BaseOperator implements ComparisonOperator {
                 $this->value($this->escape($builder, $value)),
             ],
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+        if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
+            throw new OperatorUnsupportedBuilder($this, $builder);
+        }
+
+        $property  = $builder->getGrammar()->wrap(implode('.', $property));
+        $value     = (string) Cast::toStringable($argument->toPlain());
+        $character = $this->getEscapeCharacter();
+
+        $builder->whereRaw(
+            "{$property} LIKE ? ESCAPE '{$character}'",
+            [
+                $this->value($this->escape($builder, $value)),
+            ],
+        );
+
+        return $builder;
     }
 
     protected function value(string $value): string {

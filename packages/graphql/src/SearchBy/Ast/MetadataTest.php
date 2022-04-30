@@ -12,6 +12,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use Hamcrest\Core\IsNot;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
@@ -32,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use stdClass;
 
 /**
@@ -179,6 +181,17 @@ class MetadataTest extends TestCase {
             public function getFieldDirective(): ?DirectiveNode {
                 return null;
             }
+
+            public function isBuilderSupported(object $builder): bool {
+                return false;
+            }
+
+            /**
+             * @inheritdoc
+             */
+            public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+                return $builder;
+            }
         };
         $metadata = Mockery::mock(Metadata::class, [$this->app]);
         $metadata->makePartial();
@@ -262,6 +275,17 @@ class MetadataTest extends TestCase {
 
             public function getFieldDirective(): ?DirectiveNode {
                 return null;
+            }
+
+            public function isBuilderSupported(object $builder): bool {
+                return false;
+            }
+
+            /**
+             * @inheritdoc
+             */
+            public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+                return $builder;
             }
         };
         $metadata = Mockery::mock(Metadata::class, [$this->app]);
