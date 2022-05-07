@@ -32,6 +32,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use stdClass;
@@ -189,7 +190,7 @@ class MetadataTest extends TestCase {
             /**
              * @inheritdoc
              */
-            public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+            public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
                 return $builder;
             }
         };
@@ -284,7 +285,7 @@ class MetadataTest extends TestCase {
             /**
              * @inheritdoc
              */
-            public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+            public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
                 return $builder;
             }
         };

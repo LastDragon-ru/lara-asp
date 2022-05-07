@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -22,8 +23,6 @@ use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use Nuwave\Lighthouse\Support\Utils;
-
-use function array_merge;
 
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective, Builder {
     public const Name          = 'SearchBy';
@@ -71,7 +70,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         $argument = $this->factory->getArgument($this->definitionNode, $value);
-        $builder  = $this->where($builder, $argument);
+        $builder  = $this->where($builder, $argument, new Property());
 
         return $builder;
     }
@@ -79,18 +78,18 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     /**
      * @inheritDoc
      */
-    public function where(object $builder, ArgumentSet|Argument $arguments, array $path = []): object {
+    public function where(object $builder, ArgumentSet|Argument $arguments, Property $property): object {
         // Process
         if ($arguments instanceof ArgumentSet) {
             // fixme(graphql)!: only one property allowed
 
-            foreach ($arguments->arguments as $property => $argument) {
-                $property = array_merge($path, [$property]);
+            foreach ($arguments->arguments as $name => $argument) {
+                $property = $property->getChild($name);
                 $operator = $this->getOperator($argument);
                 $builder  = $operator->call($this, $builder, $property, $argument);
             }
         } elseif ($arguments->value instanceof ArgumentSet) {
-            $builder = $this->where($builder, $arguments->value, $path);
+            $builder = $this->where($builder, $arguments->value, $property);
         } else {
             throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
         }

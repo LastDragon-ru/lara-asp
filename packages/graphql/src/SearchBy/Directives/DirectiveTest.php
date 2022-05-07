@@ -33,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -255,7 +256,7 @@ class DirectiveTest extends TestCase {
         }
 
         $builder   = $builder($this);
-        $directive = new class($this->app) extends Directive {
+        $directive = new class($this->app, $this->app->make(ArgumentFactory::class)) extends Directive {
             /**
              * @inheritDoc
              */

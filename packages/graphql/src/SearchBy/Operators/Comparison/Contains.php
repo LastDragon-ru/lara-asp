@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 use function implode;
@@ -45,12 +46,12 @@ class Contains extends BaseOperator implements ComparisonOperator {
     /**
      * @inheritDoc
      */
-    public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+    public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property  = $builder->getGrammar()->wrap(implode('.', $property));
+        $property  = $builder->getGrammar()->wrap((string) $property);
         $value     = (string) Cast::toStringable($argument->toPlain());
         $character = $this->getEscapeCharacter();
 

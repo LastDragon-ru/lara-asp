@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArguments;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
@@ -16,7 +17,7 @@ use function array_slice;
 use function is_array;
 
 abstract class Logical extends BaseOperator {
-    public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+    public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }

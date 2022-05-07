@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
 use GraphQL\Language\AST\DirectiveNode;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArguments;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
@@ -36,15 +36,14 @@ interface Operator extends Directive {
     /**
      * Modifies Builder.
      *
-     * @see OperatorUnsupportedBuilder should be thrown if `$builder` is not supported
-     * @see OperatorInvalidArguments should be thrown if `$argument` has an invalid value
-     *
      * @template TBuilder of object
      *
-     * @param TBuilder      $builder
-     * @param array<string> $property
+     * @param TBuilder $builder
+     * @param Property $property
+     *
+     * @throws OperatorUnsupportedBuilder if `$builder` is not supported
      *
      * @return TBuilder
      */
-    public function call(Builder $search, object $builder, array $property, Argument $argument): object;
+    public function call(Builder $search, object $builder, Property $property, Argument $argument): object;
 }

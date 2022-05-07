@@ -6,6 +6,7 @@ use Closure;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
@@ -25,13 +26,12 @@ class IsNotNullTest extends TestCase {
      *
      * @param array{query: string, bindings: array<mixed>} $expected
      * @param Closure(static): object                      $builderFactory
-     * @param array<string>                                $property
      * @param Closure(static): Argument                    $argumentFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
-        array $property,
+        Property $property,
         Closure $argumentFactory,
     ): void {
         $operator = $this->app->make(IsNotNull::class);
@@ -58,7 +58,7 @@ class IsNotNullTest extends TestCase {
                         'query'    => 'select * from "tmp" where "property" is not null',
                         'bindings' => [],
                     ],
-                    ['property'],
+                    new Property('property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('Boolean', null);
                     },
@@ -68,7 +68,7 @@ class IsNotNullTest extends TestCase {
                         'query'    => 'select * from "tmp" where "path"."to"."property" is not null',
                         'bindings' => [],
                     ],
-                    ['path', 'to', 'property'],
+                    new Property('path', 'to', 'property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('Boolean', null);
                     },

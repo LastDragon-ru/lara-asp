@@ -6,6 +6,7 @@ use Closure;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
@@ -25,13 +26,12 @@ class InTest extends TestCase {
      *
      * @param array{query: string, bindings: array<mixed>} $expected
      * @param Closure(static): object                      $builderFactory
-     * @param array<string>                                $property
      * @param Closure(static): Argument                    $argumentFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
-        array $property,
+        Property $property,
         Closure $argumentFactory,
     ): void {
         $operator = $this->app->make(In::class);
@@ -58,7 +58,7 @@ class InTest extends TestCase {
                         'query'    => 'select * from "tmp" where "property" in (?, ?, ?)',
                         'bindings' => [1, 2, 3],
                     ],
-                    ['property'],
+                    new Property('property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
@@ -68,7 +68,7 @@ class InTest extends TestCase {
                         'query'    => 'select * from "tmp" where "path"."to"."property" in (?, ?, ?)',
                         'bindings' => ['a', 'b', 'c'],
                     ],
-                    ['path', 'to', 'property'],
+                    new Property('path', 'to', 'property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[String!]!', ['a', 'b', 'c']);
                     },

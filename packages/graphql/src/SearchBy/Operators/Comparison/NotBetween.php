@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 use function implode;
@@ -32,12 +33,12 @@ class NotBetween extends Between implements ComparisonOperator {
     /**
      * @inheritDoc
      */
-    public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+    public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = implode('.', $property);
+        $property = (string) $property;
         $value    = Cast::toIterable($argument->toPlain());
 
         $builder->whereNotBetween($property, $value);

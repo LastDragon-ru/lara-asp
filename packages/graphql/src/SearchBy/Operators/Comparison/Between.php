@@ -11,9 +11,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
-
-use function implode;
 
 class Between extends BaseOperator implements ComparisonOperator {
     public static function getName(): string {
@@ -39,12 +38,12 @@ class Between extends BaseOperator implements ComparisonOperator {
     /**
      * @inheritDoc
      */
-    public function call(Builder $search, object $builder, array $property, Argument $argument): object {
+    public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = implode('.', $property);
+        $property = (string) $property;
         $value    = Cast::toIterable($argument->toPlain());
 
         $builder->whereBetween($property, $value);

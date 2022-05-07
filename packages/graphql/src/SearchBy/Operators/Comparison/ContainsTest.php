@@ -13,6 +13,7 @@ use Illuminate\Database\Query\Grammars\SqlServerGrammar;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
@@ -34,14 +35,13 @@ class ContainsTest extends TestCase {
      * @param array{query: string, bindings: array<mixed>} $expected
      * @param Closure(static): object                      $builderFactory
      * @param class-string<Grammar>                        $grammar
-     * @param array<string>                                $property
      * @param Closure(static): Argument                    $argumentFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         string $grammar,
-        array $property,
+        Property $property,
         Closure $argumentFactory,
     ): void {
         $builder = $builderFactory($this);
@@ -79,7 +79,7 @@ class ContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     MySqlGrammar::class,
-                    ['property'],
+                    new Property('property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
@@ -90,7 +90,7 @@ class ContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     SQLiteGrammar::class,
-                    ['property'],
+                    new Property('property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
@@ -101,7 +101,7 @@ class ContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     PostgresGrammar::class,
-                    ['property'],
+                    new Property('property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%',);
                     },
@@ -112,7 +112,7 @@ class ContainsTest extends TestCase {
                         'bindings' => ['%!%a![!_!]c!!!%%'],
                     ],
                     SqlServerGrammar::class,
-                    ['property'],
+                    new Property('property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%',);
                     },
