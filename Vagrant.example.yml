@@ -10,7 +10,7 @@ vm:
   memory: 2048
 
 # Smb user/password
-# (to avoid entering every for "vagrant up")
+# (to avoid entering every "vagrant up")
 #smb:
 #  username: null
 #  password: null
