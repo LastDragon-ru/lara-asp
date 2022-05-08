@@ -107,6 +107,8 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             foreach ($argument->value->arguments as $argument) {
                 $operators = $operators->concat($argument->directives->filter($filter));
             }
+        } else {
+            $operators = $argument->directives->filter($filter);
         }
 
         if ($operators->count() > 1) {
