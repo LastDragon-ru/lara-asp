@@ -19,15 +19,15 @@ class AllOfTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::apply
+     * @covers ::call
      *
-     * @dataProvider dataProviderApply
+     * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected
      * @param Closure(static): object                      $builderFactory
      * @param Closure(static): Argument                    $argumentFactory
      */
-    public function testApply(
+    public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
@@ -48,7 +48,7 @@ class AllOfTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderApply(): array {
+    public function dataProviderCall(): array {
         $factory = static function (self $test): Argument {
             return $test->getGraphQLArgument(
                 '[TestInput!]',
