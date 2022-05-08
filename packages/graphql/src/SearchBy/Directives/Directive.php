@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -166,6 +167,11 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         // Operator?
         if (!$op) {
             throw new SearchConditionEmpty();
+        }
+
+        // Supported?
+        if (!$op->isBuilderSupported($builder)) {
+            throw new OperatorUnsupportedBuilder($operator, $builder);
         }
 
         // Return

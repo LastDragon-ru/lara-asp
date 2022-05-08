@@ -34,12 +34,9 @@ interface Operator extends Directive {
     public function isBuilderSupported(object $builder): bool;
 
     /**
-     * Modifies Builder.
-     *
      * @template TBuilder of object
      *
      * @param TBuilder $builder
-     * @param Property $property
      *
      * @throws OperatorUnsupportedBuilder if `$builder` is not supported
      *
