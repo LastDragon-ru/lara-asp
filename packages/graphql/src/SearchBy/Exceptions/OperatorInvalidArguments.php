@@ -22,7 +22,7 @@ class OperatorInvalidArguments extends SearchByException {
                 $this->getExpected(),
                 gettype($this->getActual()),
             ),
-            $previous
+            $previous,
         );
     }
 

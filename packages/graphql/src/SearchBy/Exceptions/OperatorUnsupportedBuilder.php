@@ -19,7 +19,7 @@ class OperatorUnsupportedBuilder extends SearchByException {
                 $this->operator::class,
                 $this->builder::class,
             ),
-            $previous
+            $previous,
         );
     }
 

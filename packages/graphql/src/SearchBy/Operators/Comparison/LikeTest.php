@@ -53,7 +53,7 @@ class LikeTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'property'          => [
+                'property'      => [
                     [
                         'query'    => 'select * from "tmp" where "property" like ?',
                         'bindings' => ['abc'],

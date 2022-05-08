@@ -11,9 +11,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
-
 use function array_filter;
-use function array_slice;
+use function count;
 use function is_array;
 
 abstract class Logical extends BaseOperator {

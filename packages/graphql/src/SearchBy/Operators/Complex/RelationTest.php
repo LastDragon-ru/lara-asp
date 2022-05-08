@@ -162,7 +162,8 @@ class RelationTest extends TestCase {
                                 and "cars"."property" = ?
                                 and "favorite" = ?
                         )
-                    SQL,
+                    SQL
+                    ,
                     'bindings' => [123, 1],
                 ],
                 static function (): EloquentBuilder {
@@ -192,7 +193,8 @@ class RelationTest extends TestCase {
                             where "users"."localKey" = "cars"."foreignKey"
                                 and "favorite" = ?
                         ) = 345
-                    SQL,
+                    SQL
+                    ,
                     'bindings' => [1],
                 ],
                 static function (): EloquentBuilder {
@@ -239,7 +241,8 @@ class RelationTest extends TestCase {
                             where "users"."localKey" = "laravel_reserved_0"."foreignKey"
                                 and "laravel_reserved_0"."property" = ?
                         )
-                    SQL,
+                    SQL
+                    ,
                     'bindings' => [123],
                 ],
                 static function (): EloquentBuilder {

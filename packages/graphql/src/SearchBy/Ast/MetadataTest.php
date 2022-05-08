@@ -187,9 +187,6 @@ class MetadataTest extends TestCase {
                 return false;
             }
 
-            /**
-             * @inheritdoc
-             */
             public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
                 return $builder;
             }
@@ -278,9 +275,6 @@ class MetadataTest extends TestCase {
                 return false;
             }
 
-            /**
-             * @inheritdoc
-             */
             public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
                 return $builder;
             }

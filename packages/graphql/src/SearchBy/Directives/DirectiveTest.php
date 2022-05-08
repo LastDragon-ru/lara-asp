@@ -35,8 +35,6 @@ use const JSON_THROW_ON_ERROR;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
- *
- * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class DirectiveTest extends TestCase {
     use WithTestObject;
@@ -177,9 +175,9 @@ class DirectiveTest extends TestCase {
                     new Ok(),
                     new JsonContentType(),
                     new JsonBody(
-                        new JsonMatchesFragment($path, $body)
+                        new JsonMatchesFragment($path, $body),
                     ),
-                )
+                ),
             );
     }
 
@@ -211,7 +209,7 @@ class DirectiveTest extends TestCase {
                 a: Int!
                 b: String
             }
-            GRAPHQL
+            GRAPHQL,
         );
 
         $definitionNode = Parser::inputValueDefinition('input: SearchByConditionTest!');
@@ -316,7 +314,8 @@ class DirectiveTest extends TestCase {
                                         ("a" = ?) or ("b" != ?)
                                     )
                                 )
-                        SQL,
+                        SQL
+                        ,
                         'bindings' => [1, 2, 'a'],
                     ],
                     [

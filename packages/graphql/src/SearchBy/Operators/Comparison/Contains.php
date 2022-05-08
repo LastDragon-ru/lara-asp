@@ -24,9 +24,6 @@ class Contains extends BaseOperator {
         return 'Contains.';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

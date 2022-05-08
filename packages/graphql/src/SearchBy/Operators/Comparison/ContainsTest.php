@@ -103,7 +103,7 @@ class ContainsTest extends TestCase {
                     PostgresGrammar::class,
                     new Property('property'),
                     static function (self $test): Argument {
-                        return $test->getGraphQLArgument('String!', '%a[_]c!%',);
+                        return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
                 ],
                 SqlServerGrammar::class => [
@@ -114,7 +114,7 @@ class ContainsTest extends TestCase {
                     SqlServerGrammar::class,
                     new Property('property'),
                     static function (self $test): Argument {
-                        return $test->getGraphQLArgument('String!', '%a[_]c!%',);
+                        return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
                 ],
             ]),

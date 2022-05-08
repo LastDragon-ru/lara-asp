@@ -10,7 +10,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
-use function implode;
 
 class GreaterThanOrEqual extends BaseOperator {
     public static function getName(): string {
@@ -21,9 +20,6 @@ class GreaterThanOrEqual extends BaseOperator {
         return 'Greater than or equal to (`>=`).';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

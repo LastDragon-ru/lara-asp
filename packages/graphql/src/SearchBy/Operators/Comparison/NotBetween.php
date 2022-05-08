@@ -19,9 +19,6 @@ class NotBetween extends Between {
         return 'Outside a range.';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

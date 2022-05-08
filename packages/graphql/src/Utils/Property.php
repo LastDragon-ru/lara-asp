@@ -10,13 +10,10 @@ use function implode;
 
 class Property implements Stringable {
     /**
-     * @var array
+     * @var array<string>
      */
     protected array $path;
 
-    /**
-     * @param string ...$path
-     */
     public function __construct(
         string ...$path,
     ) {

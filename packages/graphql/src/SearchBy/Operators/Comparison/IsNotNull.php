@@ -28,9 +28,6 @@ class IsNotNull extends BaseOperator {
         return $provider->getType(Flag::Name);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

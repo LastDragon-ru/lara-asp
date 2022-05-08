@@ -93,7 +93,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     // =========================================================================
     public function where(object $builder, ArgumentSet|Argument $conditions, Property $parent = null): object {
         // Prepare
-        $parent     = $parent ?? new Property();
+        $parent   ??= new Property();
         $conditions = $conditions instanceof Argument
             ? $conditions->value
             : $conditions;
@@ -112,7 +112,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
 
         if ($isProperty) {
             // Valid?
-            if (count($arguments) != 1) {
+            if (count($arguments) !== 1) {
                 throw new SearchConditionTooManyProperties(array_keys($arguments));
             }
 
@@ -158,7 +158,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
                     throw new SearchConditionTooManyOperators(
                         $operators->map(static function (Operator $operator): string {
                             return $operator::getName();
-                        })
+                        }),
                     );
                 }
             }
