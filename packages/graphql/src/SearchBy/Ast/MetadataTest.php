@@ -200,14 +200,10 @@ class MetadataTest extends TestCase {
             ->shouldReceive('addDefinitions')
             ->once();
 
-        $u = $metadata->getUsage()->start('Test');
         $a = $metadata->getOperatorInstance($operator::class);
         $b = $metadata->getOperatorInstance($operator::class);
 
-        $metadata->getUsage()->end($u);
-
         self::assertSame($a, $b);
-        self::assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
 
     /**
@@ -295,14 +291,10 @@ class MetadataTest extends TestCase {
             ->shouldReceive('addDefinitions')
             ->once();
 
-        $u = $metadata->getUsage()->start('Test');
         $a = $metadata->getComplexOperatorInstance($operator::class);
         $b = $metadata->getComplexOperatorInstance($operator::class);
 
-        $metadata->getUsage()->end($u);
-
         self::assertSame($a, $b);
-        self::assertEquals([$operator::class], $metadata->getUsage()->get('Test'));
     }
 
     /**

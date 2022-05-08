@@ -49,7 +49,6 @@ use function array_map;
 use function array_shift;
 use function count;
 use function implode;
-use function json_encode;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     protected Metadata $metadata;
@@ -69,43 +68,20 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="Update">
     // =========================================================================
     public function update(DirectiveNode $directive, InputValueDefinitionNode $node): void {
-        // Transform
-        $def       = $this->getTypeDefinitionNode($node);
-        $operators = $this->metadata->getUsage()->get($this->getNodeName($def));
+        $def  = $this->getTypeDefinitionNode($node);
+        $type = null;
 
-        if (!$operators) {
-            $type = null;
-            $name = null;
+        if ($def instanceof InputObjectTypeDefinitionNode || $def instanceof InputObjectType) {
+            $name = $this->getInputType($def);
+            $type = Parser::typeReference($name);
+        }
 
-            if ($def instanceof InputObjectTypeDefinitionNode || $def instanceof InputObjectType) {
-                $name = $this->getInputType($def);
-                $type = Parser::typeReference($name);
-            }
-
-            if (!($type instanceof NamedTypeNode)) {
-                throw new FailedToCreateSearchCondition($this->getNodeName($node));
-            }
-
-            // Update
-            $node->type = $type;
-            $operators  = $name
-                ? $this->metadata->getUsage()->get($name)
-                : [];
+        if (!($type instanceof NamedTypeNode)) {
+            throw new FailedToCreateSearchCondition($this->getNodeName($node));
         }
 
         // Update
-        $this->updateDirective($directive, [
-            Directive::ArgOperators => $operators,
-        ]);
-    }
-
-    /**
-     * @param array<string, mixed> $arguments
-     */
-    protected function updateDirective(DirectiveNode $directive, array $arguments): void {
-        foreach ($arguments as $name => $value) {
-            $directive->arguments[] = Parser::constArgument($name.': '.json_encode($value));
-        }
+        $node->type = $type;
     }
     // </editor-fold>
 
@@ -142,13 +118,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getConditionTypeName($node);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addType($name);
-
             return $name;
         }
 
         // Add type
-        $usage     = $this->metadata->getUsage()->start($name);
         $operators = $this->getScalarOperators(Directive::ScalarLogic, false);
         $scalar    = $this->getScalarTypeNode($name);
         $content   = $this->getOperatorsFields($operators, $scalar);
@@ -228,9 +201,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
         }
 
-        // End usage
-        $this->metadata->getUsage()->end($usage);
-
         // Return
         return $name;
     }
@@ -240,14 +210,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getEnumTypeName($type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addType($name);
-
             return $name;
         }
 
         // Determine supported operators
         $enum      = $this->getNodeName($type);
-        $usage     = $this->metadata->getUsage()->start($name);
         $operators = $this->getEnumOperators($enum, $nullable);
 
         // Add type
@@ -266,9 +233,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
             ),
         );
 
-        // End usage
-        $this->metadata->getUsage()->end($usage);
-
         // Return
         return $name;
     }
@@ -278,13 +242,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getScalarTypeName($type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addType($name);
-
             return $name;
         }
 
         // Determine supported operators
-        $usage     = $this->metadata->getUsage()->start($name);
         $scalar    = $this->getNodeName($type);
         $operators = $this->getScalarOperators($scalar, $nullable);
 
@@ -304,9 +265,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 DEF,
             ),
         );
-
-        // End usage
-        $this->metadata->getUsage()->end($usage);
 
         // Return
         return $name;
@@ -369,7 +327,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
             $this->addFakeTypeDefinition($name);
 
             // Create
-            $usage      = $this->metadata->getUsage()->start($name);
             $definition = $operator->getDefinition($this, $field, $type, $name, $nullable);
 
             if ($name !== $this->getNodeName($definition)) {
@@ -378,11 +335,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
             $this->removeFakeTypeDefinition($name);
             $this->addTypeDefinition($definition);
-
-            // End usage
-            $this->metadata->getUsage()->end($usage);
-        } else {
-            $this->metadata->getUsage()->addType($name);
         }
 
         // Return

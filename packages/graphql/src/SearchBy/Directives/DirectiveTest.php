@@ -7,7 +7,6 @@ use Exception;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
@@ -15,27 +14,6 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\EndsWith;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\StartsWith;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -46,15 +24,11 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
-use ReflectionMethod;
 
-use function array_keys;
 use function is_array;
 use function json_encode;
-use function sort;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -81,118 +55,6 @@ class DirectiveTest extends TestCase {
         self::assertGraphQLSchemaEquals(
             $expected($this),
             $this->getTestData()->file($graphql),
-        );
-    }
-
-    /**
-     * @covers ::manipulateArgDefinition
-     */
-    public function testManipulateArgDefinitionDirectiveArguments(): void {
-        // We need to check the arguments of the directive, but the method is
-        // protected -> this is a little hack to unprotect it.
-        $method = new ReflectionMethod(Directive::class, 'directiveArgValue');
-
-        $method->setAccessible(true);
-
-        // Load schema and get Query
-        $locator = $this->app->make(DirectiveLocator::class);
-        $schema  = $this->getGraphQLSchema($this->getTestData()->file('~full.graphql'));
-        $types   = $schema->getTypeMap();
-        $query   = $types['Query'];
-
-        self::assertInstanceOf(ObjectType::class, $query);
-
-        // Collect
-        $operators = [];
-
-        foreach ($query->getFields() as $field) {
-            $node       = $field->getArg('where')?->astNode;
-            $directives = $locator->associatedOfType($node, Directive::class);
-
-            self::assertCount(1, $directives);
-
-            $operators[$field->name] = $method->invoke($directives->first(), Directive::ArgOperators);
-
-            sort($operators[$field->name]);
-        }
-
-        self::assertEquals(
-            [
-                'a' => [
-                    Between::class,
-                    Contains::class,
-                    EndsWith::class,
-                    Equal::class,
-                    GreaterThan::class,
-                    GreaterThanOrEqual::class,
-                    In::class,
-                    IsNotNull::class,
-                    IsNull::class,
-                    LessThan::class,
-                    LessThanOrEqual::class,
-                    Like::class,
-                    NotBetween::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    NotLike::class,
-                    StartsWith::class,
-                    Relation::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-                'b' => [
-                    Between::class,
-                    Contains::class,
-                    EndsWith::class,
-                    Equal::class,
-                    GreaterThan::class,
-                    GreaterThanOrEqual::class,
-                    In::class,
-                    IsNotNull::class,
-                    IsNull::class,
-                    LessThan::class,
-                    LessThanOrEqual::class,
-                    Like::class,
-                    NotBetween::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    NotLike::class,
-                    StartsWith::class,
-                    Relation::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-                'c' => [
-                    Equal::class,
-                    In::class,
-                    IsNotNull::class,
-                    IsNull::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-                'd' => [
-                    Between::class,
-                    Equal::class,
-                    GreaterThan::class,
-                    GreaterThanOrEqual::class,
-                    In::class,
-                    LessThan::class,
-                    LessThanOrEqual::class,
-                    NotBetween::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    Relation::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-            ],
-            $operators,
         );
     }
 
@@ -414,7 +276,7 @@ class DirectiveTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'empty'           => [
+                'empty'               => [
                     new SearchConditionEmpty(),
                     [
                         // empty
@@ -431,7 +293,7 @@ class DirectiveTest extends TestCase {
                         ],
                     ],
                 ],
-                'too many operators' => [
+                'too many operators'  => [
                     new SearchConditionTooManyOperators(['equal', 'notEqual']),
                     [
                         'a' => [
@@ -440,7 +302,7 @@ class DirectiveTest extends TestCase {
                         ],
                     ],
                 ],
-                'valid condition' => [
+                'valid condition'     => [
                     [
                         'query'    => <<<'SQL'
                             select

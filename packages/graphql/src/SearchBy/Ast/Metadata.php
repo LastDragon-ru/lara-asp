@@ -135,15 +135,10 @@ class Metadata {
      */
     protected array $types = [];
 
-    /**
-     * @var Usage<Operator|ComplexOperator>
-     */
-    protected Usage $usage;
-
     public function __construct(
         protected Container $container,
     ) {
-        $this->usage = new Usage();
+        // empty
     }
 
     public function isScalar(string $scalar): bool {
@@ -228,8 +223,6 @@ class Metadata {
             $this->operators[$class] = $operator;
         }
 
-        $this->getUsage()->addValue($class);
-
         return $this->operators[$class];
     }
 
@@ -253,8 +246,6 @@ class Metadata {
             // Save
             $this->complex[$class] = $operator;
         }
-
-        $this->getUsage()->addValue($class);
 
         return $this->complex[$class];
     }
@@ -297,12 +288,5 @@ class Metadata {
 
     public function addType(string $type, string $fullyQualifiedName): void {
         $this->types[$type] = $fullyQualifiedName;
-    }
-
-    /**
-     * @return Usage<Operator|ComplexOperator>
-     */
-    public function getUsage(): Usage {
-        return $this->usage;
     }
 }
