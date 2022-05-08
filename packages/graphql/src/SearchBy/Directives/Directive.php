@@ -70,7 +70,12 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         $argument = $this->factory->getArgument($this->definitionNode, $value);
-        $builder  = $this->where($builder, $argument, new Property());
+
+        if ($argument->value instanceof ArgumentSet) {
+            $builder = $this->where($builder, $argument, new Property());
+        } else {
+            throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
+        }
 
         return $builder;
     }
@@ -78,20 +83,14 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     /**
      * @inheritDoc
      */
-    public function where(object $builder, ArgumentSet|Argument $arguments, Property $property): object {
+    public function where(object $builder, ArgumentSet $arguments, Property $property): object {
         // Process
-        if ($arguments instanceof ArgumentSet) {
-            // fixme(graphql)!: only one property allowed
+        // fixme(graphql)!: only one property allowed
 
-            foreach ($arguments->arguments as $name => $argument) {
-                $property = $property->getChild($name);
-                $operator = $this->getOperator($argument);
-                $builder  = $operator->call($this, $builder, $property, $argument);
-            }
-        } elseif ($arguments->value instanceof ArgumentSet) {
-            $builder = $this->where($builder, $arguments->value, $property);
-        } else {
-            throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
+        foreach ($arguments->arguments as $name => $argument) {
+            $property = $property->getChild($name);
+            $operator = $this->getOperator($argument);
+            $builder  = $operator->call($this, $builder, $property, $argument);
         }
 
         // Return
@@ -99,9 +98,16 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     }
 
     protected function getOperator(Argument $argument): Operator {
+        // Operators
         /** @var Collection<int, Operator> $operators */
-        $operators = $argument->directives->filter(Utils::instanceofMatcher(Operator::class));
-        $operator  = $operators->first();
+        $operators = new Collection();
+        $filter    = Utils::instanceofMatcher(Operator::class);
+
+        if ($argument->value instanceof ArgumentSet) {
+            foreach ($argument->value->arguments as $argument) {
+                $operators = $operators->concat($argument->directives->filter($filter));
+            }
+        }
 
         if ($operators->count() > 1) {
             throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
@@ -110,6 +116,9 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         if ($operators->isEmpty()) {
             throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
         }
+
+        // Operator
+        $operator = $operators->first();
 
         if (!($operator instanceof Operator)) {
             throw new Exception('fixme'); // fixme(graphql): Throw error if no definition

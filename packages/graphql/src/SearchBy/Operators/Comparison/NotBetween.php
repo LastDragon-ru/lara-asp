@@ -6,28 +6,17 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
-use function implode;
-
-class NotBetween extends Between implements ComparisonOperator {
+class NotBetween extends Between {
     public static function getName(): string {
         return 'notBetween';
     }
 
     public function getFieldDescription(): string {
         return 'Outside a range.';
-    }
-
-    public function apply(
-        EloquentBuilder|QueryBuilder $builder,
-        string $property,
-        mixed $value,
-    ): EloquentBuilder|QueryBuilder {
-        return $builder->whereNotBetween($property, $value);
     }
 
     /**

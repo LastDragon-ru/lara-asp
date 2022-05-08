@@ -23,7 +23,7 @@ abstract class Logical extends BaseOperator {
         }
 
         // The last item is the name of the operator not a property
-        $property   = array_slice($property, -1);
+        $property   = $property->getParent();
         $conditions = $this->getConditions($argument);
 
         foreach ($conditions as $arguments) {
@@ -50,7 +50,14 @@ abstract class Logical extends BaseOperator {
      * @return array<ArgumentSet>
      */
     protected function getConditions(Argument $argument): array {
-        $value    = $argument->value;
+        // ArgumentSet?
+        $value = $argument->value;
+
+        if ($argument->value instanceof ArgumentSet) {
+            return [$argument->value];
+        }
+
+        // Array?
         $expected = 'array<'.ArgumentSet::class.'>';
 
         if (!is_array($value)) {

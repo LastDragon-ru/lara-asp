@@ -38,9 +38,9 @@ class Property implements Stringable {
         return new Property(...[...$this->path, $name]);
     }
 
-    public function getParent(): ?Property {
+    public function getParent(): Property {
         $path   = array_slice($this->path, -1);
-        $parent = $path ? new Property(...$path) : null;
+        $parent = new Property(...$path);
 
         return $parent;
     }
