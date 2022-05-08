@@ -4,11 +4,17 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\EndsWith;
@@ -33,14 +39,24 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use ReflectionMethod;
 
+use function array_keys;
+use function is_array;
+use function json_encode;
 use function sort;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
@@ -49,6 +65,9 @@ use function sort;
  * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class DirectiveTest extends TestCase {
+    use WithTestObject;
+    use MakesGraphQLRequests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -247,33 +266,104 @@ class DirectiveTest extends TestCase {
      *
      * @dataProvider dataProviderHandleBuilder
      *
-     * @param BuilderFactory $builder
-     * @param array<mixed>   $input
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param Closure(static): object                                $builderFactory
      */
-    public function testHandleBuilder(bool|Exception $expected, Closure $builder, array $input): void {
+    public function testDirective(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+    ): void {
+        $model = json_encode(TestObject::class, JSON_THROW_ON_ERROR);
+        $path  = is_array($expected) ? 'data.test' : 'errors.0.message';
+        $body  = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
+
+        $this
+            ->useGraphQLSchema(
+                /** @lang GraphQL */
+                <<<GRAPHQL
+                type Query {
+                    test(input: Test @searchBy): [TestObject!]!
+                    @all(model: {$model})
+                }
+
+                input Test {
+                    a: Int!
+                    b: String
+                }
+
+                type TestObject {
+                    id: String!
+                }
+                GRAPHQL,
+            )
+            ->graphQL(
+                /** @lang GraphQL */
+                <<<'GRAPHQL'
+                query test($input: SearchByConditionTest!) {
+                    test(input: $input) {
+                        id
+                    }
+                }
+                GRAPHQL,
+                [
+                    'input' => $value,
+                ],
+            )
+            ->assertThat(
+                new Response(
+                    new Ok(),
+                    new JsonContentType(),
+                    new JsonBody(
+                        new JsonMatchesFragment($path, $body)
+                    ),
+                )
+            );
+    }
+
+    /**
+     * @covers ::handleBuilder
+     *
+     * @dataProvider dataProviderHandleBuilder
+     *
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param Closure(static): object                                $builderFactory
+     */
+    public function testHandleBuilder(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+    ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
-        $builder   = $builder($this);
-        $directive = new class($this->app, $this->app->make(ArgumentFactory::class)) extends Directive {
-            /**
-             * @inheritDoc
-             */
-            protected function directiveArgValue(string $name, $default = null): mixed {
-                return $name !== Directive::ArgOperators
-                    ? parent::directiveArgValue($name, $default)
-                    : [
-                        Not::class,
-                        AllOf::class,
-                        AnyOf::class,
-                        Equal::class,
-                        NotEqual::class,
-                    ];
+        $this->useGraphQLSchema(
+            /** @lang GraphQL */
+            <<<'GRAPHQL'
+            type Query {
+                test(input: Test @searchBy): String! @mock
             }
-        };
 
-        self::assertEquals($expected, (bool) $directive->handleBuilder($builder, $input));
+            input Test {
+                a: Int!
+                b: String
+            }
+            GRAPHQL
+        );
+
+        $definitionNode = Parser::inputValueDefinition('input: SearchByConditionTest!');
+        $directiveNode  = Parser::directive('@test');
+        $directive      = $this->app->make(Directive::class)->hydrate($directiveNode, $definitionNode);
+        $builder        = $builderFactory($this);
+        $actual         = $directive->handleBuilder($builder, $value);
+
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $actual);
+            self::assertDatabaseQueryEquals($expected, $actual);
+        } else {
+            self::fail('Something wrong...');
+        }
     }
 
     // </editor-fold>
@@ -324,8 +414,49 @@ class DirectiveTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
+                'empty'           => [
+                    new SearchConditionEmpty(),
+                    [
+                        // empty
+                    ],
+                ],
+                'too many properties' => [
+                    new SearchConditionTooManyProperties(['a', 'b']),
+                    [
+                        'a' => [
+                            'notEqual' => 1,
+                        ],
+                        'b' => [
+                            'notEqual' => 'a',
+                        ],
+                    ],
+                ],
+                'too many operators' => [
+                    new SearchConditionTooManyOperators(['equal', 'notEqual']),
+                    [
+                        'a' => [
+                            'equal'    => 1,
+                            'notEqual' => 1,
+                        ],
+                    ],
+                ],
                 'valid condition' => [
-                    true,
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                            where
+                                not (
+                                    ("a" != ?)
+                                    and (
+                                        ("a" = ?) or ("b" != ?)
+                                    )
+                                )
+                        SQL,
+                        'bindings' => [1, 2, 'a'],
+                    ],
                     [
                         'not' => [
                             'allOf' => [
@@ -343,7 +474,7 @@ class DirectiveTest extends TestCase {
                                         ],
                                         [
                                             'b' => [
-                                                'notEqual' => 3,
+                                                'notEqual' => 'a',
                                             ],
                                         ],
                                     ],

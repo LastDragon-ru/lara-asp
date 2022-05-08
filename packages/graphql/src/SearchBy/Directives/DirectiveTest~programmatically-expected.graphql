@@ -23,19 +23,14 @@ input SearchByComplexRelationTestTypeA {
     count: SearchByScalarInt
 
     """
-    Alias for `count: {greaterThanOrEqual: 1}` (`has()`). Will be ignored if `count` used.
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
     """
     exists: Boolean
 
     """
-    Alias for `count: {lessThan: 1}` (`doesntHave()`). Will be ignored if `count` used.
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
     """
     notExists: Boolean! = false
-
-    """
-    Complex operator marker.
-    """
-    relation: SearchByTypeFlag! = yes
 
     """
     Additional conditions.

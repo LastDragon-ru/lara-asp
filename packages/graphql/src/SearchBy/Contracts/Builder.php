@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
 interface Builder {
@@ -13,5 +14,5 @@ interface Builder {
      *
      * @return TBuilder
      */
-    public function where(object $builder, ArgumentSet $arguments, Property $property): object;
+    public function where(object $builder, ArgumentSet|Argument $conditions, Property $parent = null): object;
 }

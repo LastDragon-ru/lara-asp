@@ -5,11 +5,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -95,9 +94,9 @@ class RelationTest extends TestCase {
 
         return [
             'not a relation'                          => [
-                new PropertyIsNotRelation(new RelationTest__ModelA(), 'delete'),
+                new PropertyIsNotRelation(new User(), 'delete'),
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
                 new Property('delete'),
                 static function (self $test) use ($graphql): Argument {
@@ -112,16 +111,16 @@ class RelationTest extends TestCase {
             ],
             '{exists: true}'                          => [
                 [
-                    'query'    => 'select * from "table_a" where exists ('.
-                        'select * from "table_b" '.
-                        'where "table_a"."id" = "table_b"."table_a_id"'.
+                    'query'    => 'select * from "users" where exists ('.
+                        'select * from "cars" '.
+                        'where "users"."localKey" = "cars"."foreignKey" and "favorite" = ?'.
                         ')',
-                    'bindings' => [],
+                    'bindings' => [1],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                new Property('test'),
+                new Property('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation!',
@@ -134,16 +133,16 @@ class RelationTest extends TestCase {
             ],
             '{notExists: true}'                       => [
                 [
-                    'query'    => 'select * from "table_a" where not exists ('.
-                        'select * from "table_b" '.
-                        'where "table_a"."id" = "table_b"."table_a_id"'.
+                    'query'    => 'select * from "users" where not exists ('.
+                        'select * from "cars" '.
+                        'where "users"."localKey" = "cars"."foreignKey" and "favorite" = ?'.
                         ')',
-                    'bindings' => [],
+                    'bindings' => [1],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                new Property('test'),
+                new Property('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -156,16 +155,20 @@ class RelationTest extends TestCase {
             ],
             '{relation: {property: {equal: 1}}}'      => [
                 [
-                    'query'    => 'select * from "table_a" where exists ('.
-                        'select * from "table_b" where '.
-                        '"table_a"."id" = "table_b"."table_a_id" and "table_b"."property" = ?'.
-                        ')',
-                    'bindings' => [123],
+                    'query'    => <<<'SQL'
+                        select * from "users" where exists (
+                            select * from "cars"
+                            where "users"."localKey" = "cars"."foreignKey"
+                                and "cars"."property" = ?
+                                and "favorite" = ?
+                        )
+                    SQL,
+                    'bindings' => [123, 1],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                new Property('test'),
+                new Property('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -182,16 +185,20 @@ class RelationTest extends TestCase {
             ],
             '{count: {equal: 1}}'                     => [
                 [
-                    'query'    => 'select * from "table_a" where ('.
-                        'select count(*) from "table_b" where '.
-                        '"table_a"."id" = "table_b"."table_a_id"'.
-                        ') = 345',
-                    'bindings' => [/* strange */],
+                    'query'    => <<<'SQL'
+                        select * from "users" where (
+                            select count(*)
+                            from "cars"
+                            where "users"."localKey" = "cars"."foreignKey"
+                                and "favorite" = ?
+                        ) = 345
+                    SQL,
+                    'bindings' => [1],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                new Property('test'),
+                new Property('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -205,11 +212,11 @@ class RelationTest extends TestCase {
                 },
             ],
             '{count: { multiple operators }}'         => [
-                new SearchConditionTooManyOperators(['equal', 'lt']),
+                new SearchConditionTooManyOperators(['lessThan', 'equal']),
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                new Property('test'),
+                new Property('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -225,17 +232,20 @@ class RelationTest extends TestCase {
             ],
             '{where: {{property: {equal: 1}}}} (own)' => [
                 [
-                    'query'    => 'select * from "table_a" where exists ('.
-                        'select * from "table_a" as "laravel_reserved_0" where '.
-                        '"table_a"."id" = "laravel_reserved_0"."relation_test___model_a_id" '.
-                        'and "laravel_reserved_0"."property" = ?'.
-                        ')',
+                    'query'    => <<<'SQL'
+                        select * from "users" where exists (
+                            select *
+                            from "users" as "laravel_reserved_0"
+                            where "users"."localKey" = "laravel_reserved_0"."foreignKey"
+                                and "laravel_reserved_0"."property" = ?
+                        )
+                    SQL,
                     'bindings' => [123],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                new Property('a'),
+                new Property('parent'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -253,47 +263,4 @@ class RelationTest extends TestCase {
         ];
     }
     // </editor-fold>
-}
-
-// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class RelationTest__ModelA extends Model {
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     *
-     * @var string
-     */
-    public $table = 'table_a';
-
-    /**
-     * @return HasOne<RelationTest__ModelB>
-     */
-    public function test(): HasOne {
-        return $this->hasOne(RelationTest__ModelB::class, 'table_a_id');
-    }
-
-    /**
-     * @return HasOne<static>
-     */
-    public function a(): HasOne {
-        return $this->hasOne(static::class);
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class RelationTest__ModelB extends Model {
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     *
-     * @var string
-     */
-    public $table = 'table_b';
 }

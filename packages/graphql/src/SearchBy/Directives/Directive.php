@@ -10,10 +10,12 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -23,6 +25,10 @@ use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use Nuwave\Lighthouse\Support\Utils;
+
+use function array_keys;
+use function count;
+use function reset;
 
 class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirective, Builder {
     public const Name          = 'SearchBy';
@@ -69,64 +75,101 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
      * @return EloquentBuilder<Model>|QueryBuilder
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
-        $argument = $this->factory->getArgument($this->definitionNode, $value);
+        if ($value !== null) {
+            $argument = $this->factory->getArgument($this->definitionNode, $value);
 
-        if ($argument->value instanceof ArgumentSet) {
-            $builder = $this->where($builder, $argument, new Property());
-        } else {
-            throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
-        }
-
-        return $builder;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function where(object $builder, ArgumentSet $arguments, Property $property): object {
-        // Process
-        // fixme(graphql)!: only one property allowed
-
-        foreach ($arguments->arguments as $name => $argument) {
-            $property = $property->getChild($name);
-            $operator = $this->getOperator($argument);
-            $builder  = $operator->call($this, $builder, $property, $argument);
-        }
-
-        // Return
-        return $builder;
-    }
-
-    protected function getOperator(Argument $argument): Operator {
-        // Operators
-        /** @var Collection<int, Operator> $operators */
-        $operators = new Collection();
-        $filter    = Utils::instanceofMatcher(Operator::class);
-
-        if ($argument->value instanceof ArgumentSet) {
-            foreach ($argument->value->arguments as $argument) {
-                $operators = $operators->concat($argument->directives->filter($filter));
+            if ($argument->value instanceof ArgumentSet) {
+                $builder = $this->where($builder, $argument->value);
+            } else {
+                throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
             }
+        }
+
+        return $builder;
+    }
+
+    // <editor-fold desc="Builder">
+    // =========================================================================
+    public function where(object $builder, ArgumentSet|Argument $conditions, Property $parent = null): object {
+        // Prepare
+        $parent     = $parent ?? new Property();
+        $conditions = $conditions instanceof Argument
+            ? $conditions->value
+            : $conditions;
+        $arguments  = $conditions instanceof ArgumentSet
+            ? $conditions->arguments
+            : [];
+
+        // Empty?
+        if (count($arguments) === 0) {
+            throw new SearchConditionEmpty();
+        }
+
+        // Property or Operator?
+        $first      = reset($arguments);
+        $isProperty = $first && $first->directives->filter(Utils::instanceofMatcher(Operator::class))->isEmpty();
+
+        if ($isProperty) {
+            // Valid?
+            if (count($arguments) != 1) {
+                throw new SearchConditionTooManyProperties(array_keys($arguments));
+            }
+
+            // Process
+            foreach ($arguments as $name => $argument) {
+                $parent  = $parent->getChild($name);
+                $builder = $this->call($builder, $parent, $argument);
+            }
+
+            // Return
+            return $builder;
         } else {
-            $operators = $argument->directives->filter($filter);
+            $builder = $this->call($builder, $parent, $conditions);
         }
 
-        if ($operators->count() > 1) {
-            throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
+        return $builder;
+    }
+
+    protected function call(object $builder, Property $property, ArgumentSet|Argument $operator): object {
+        // Operator & Value
+        /** @var Operator|null $op */
+        $op       = null;
+        $value    = null;
+        $filter   = Utils::instanceofMatcher(Operator::class);
+        $operator = $operator instanceof Argument
+            ? $operator->value
+            : $operator;
+
+        if ($operator instanceof ArgumentSet) {
+            if (count($operator->arguments) > 1) {
+                throw new SearchConditionTooManyOperators(
+                    array_keys($operator->arguments),
+                );
+            }
+
+            foreach ($operator->arguments as $argument) {
+                $operators = $argument->directives->filter($filter);
+
+                if (count($operators) === 1) {
+                    $op    = $operators->first();
+                    $value = $argument;
+                } else {
+                    throw new SearchConditionTooManyOperators(
+                        $operators->map(static function (Operator $operator): string {
+                            return $operator::getName();
+                        })
+                    );
+                }
+            }
         }
 
-        if ($operators->isEmpty()) {
-            throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
-        }
-
-        // Operator
-        $operator = $operators->first();
-
-        if (!($operator instanceof Operator)) {
-            throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
+        // Operator?
+        if (!$op) {
+            throw new SearchConditionEmpty();
         }
 
         // Return
-        return $operator;
+        return $op->call($this, $builder, $property, $value);
     }
+    //</editor-fold>
 }

@@ -116,9 +116,9 @@ class Relation extends BaseOperator implements ComplexOperator {
         $count    = 1;
         $operator = '>=';
 
-        if ($hasCount instanceof Argument && $hasCount->value instanceof ArgumentSet) {
+        if ($hasCount instanceof Argument) {
             $query    = $builder->toBase()->newQuery();
-            $query    = $search->where($query, $hasCount->value, new Property('tmp'));
+            $query    = $search->where($query, $hasCount, new Property('tmp'));
             $query    = $query instanceof EloquentBuilder ? $query->toBase() : $query;
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;

@@ -47,7 +47,6 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_map;
 use function array_shift;
-use function assert;
 use function count;
 use function implode;
 use function json_encode;
@@ -370,19 +369,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
             $this->addFakeTypeDefinition($name);
 
             // Create
-            $usage                = $this->metadata->getUsage()->start($name);
-            $marker               = $operator::getName();
-            $definition           = $operator->getDefinition($this, $field, $type, $name, $nullable);
-            $definition->fields[] = Parser::inputValueDefinition(
-                <<<DEF
-                """
-                Complex operator marker.
-                """
-                {$marker}: {$this->getType(Flag::Name)}! = yes
-                DEF,
-            );
+            $usage      = $this->metadata->getUsage()->start($name);
+            $definition = $operator->getDefinition($this, $field, $type, $name, $nullable);
 
-            // todo(graphql): Remove? seems not needed anymore
             if ($name !== $this->getNodeName($definition)) {
                 throw new ComplexOperatorInvalidTypeName($operator::class, $name, $this->getNodeName($definition));
             }
@@ -481,7 +470,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         do {
             $node     = array_shift($nodes);
             $operator = $node
-                ? $this->getNodeDirective($node, Operator::class)
+                ? $this->getNodeDirective($node, ComplexOperator::class)
                 : null;
         } while ($node && $operator === null);
 
@@ -489,9 +478,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
         if (!$operator) {
             $operator = $this->metadata->getComplexOperatorInstance(Relation::class);
         }
-
-        // fixme(graphql)!: Remove, method should return Operator instance
-        assert($operator instanceof ComplexOperator);
 
         // Return
         return $operator;
