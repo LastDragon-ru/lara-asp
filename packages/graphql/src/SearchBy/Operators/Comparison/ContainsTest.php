@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
 use Illuminate\Database\Query\Grammars\PostgresGrammar;
@@ -22,6 +21,8 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains
+ *
+ * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 class ContainsTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -33,7 +34,7 @@ class ContainsTest extends TestCase {
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected
-     * @param Closure(static): object                      $builderFactory
+     * @param BuilderFactory                               $builderFactory
      * @param class-string<Grammar>                        $grammar
      * @param Closure(static): Argument                    $argumentFactory
      */
@@ -49,10 +50,8 @@ class ContainsTest extends TestCase {
 
         if ($builder instanceof EloquentBuilder) {
             $builder->toBase()->grammar = $grammar;
-        } elseif ($builder instanceof QueryBuilder) {
-            $builder->grammar = $grammar;
         } else {
-            self::fail('Unsupported');
+            $builder->grammar = $grammar;
         }
 
         $operator = $this->app->make(Contains::class);

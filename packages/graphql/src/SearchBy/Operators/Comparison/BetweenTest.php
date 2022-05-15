@@ -15,6 +15,8 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between
+ *
+ * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 class BetweenTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -25,7 +27,7 @@ class BetweenTest extends TestCase {
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected
-     * @param Closure(static): object                      $builderFactory
+     * @param BuilderFactory                               $builderFactory
      * @param Closure(static): Argument                    $argumentFactory
      */
     public function testCall(

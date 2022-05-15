@@ -3,15 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use Closure;
-use Exception;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
@@ -20,7 +17,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArguments;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -115,7 +111,6 @@ class Relation extends BaseOperator implements ComplexOperator {
         if ($hasCount instanceof Argument) {
             $query    = $builder->toBase()->newQuery();
             $query    = $search->where($query, $hasCount, new Property('tmp'));
-            $query    = $query instanceof EloquentBuilder ? $query->toBase() : $query;
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;
@@ -127,47 +122,31 @@ class Relation extends BaseOperator implements ComplexOperator {
         }
 
         // Build
-        return $this->build(
+        $this->build(
             $builder,
             $property,
             $operator,
             $count,
-            static function (
-                EloquentBuilder $builder,
-            ) use (
-                $relation,
-                $search,
-                $alias,
-                $has,
-            ): EloquentBuilder|QueryBuilder {
+            static function (EloquentBuilder $builder) use ($relation, $search, $alias, $has): void {
                 if ($alias === $relation->getRelationCountHash(false)) {
                     $alias = $builder->getModel()->getTable();
                 }
 
-                return $has instanceof Argument && $has->value instanceof ArgumentSet
-                    ? $search->where($builder, $has->value, new Property($alias))
-                    : $builder;
+                if ($has instanceof Argument && $has->value instanceof ArgumentSet) {
+                    $search->where($builder, $has->value, new Property($alias));
+                }
             },
         );
+
+        // Return
+        return $builder;
     }
 
     /**
-     * @inheritDoc
-     */
-    public function apply(
-        SearchBuilder $search,
-        EloquentBuilder|QueryBuilder $builder,
-        string $property,
-        array $conditions,
-    ): EloquentBuilder|QueryBuilder {
-        throw new Exception('deprecated');
-    }
-
-    /**
-     * @param EloquentBuilder<Model> $builder
-     * @param Closure(EloquentBuilder<Model>): (EloquentBuilder<Model>|QueryBuilder) $closure
+     * @template TBuilder of EloquentBuilder<\Illuminate\Database\Eloquent\Model>
      *
-     * @return EloquentBuilder<Model>
+     * @param TBuilder                $builder
+     * @param Closure(TBuilder): void $closure
      */
     protected function build(
         EloquentBuilder $builder,
@@ -175,7 +154,7 @@ class Relation extends BaseOperator implements ComplexOperator {
         string $operator,
         int $count,
         Closure $closure,
-    ): EloquentBuilder {
-        return $builder->whereHas((string) $property, $closure, $operator, $count);
+    ): void {
+        $builder->whereHas((string) $property, $closure, $operator, $count);
     }
 }

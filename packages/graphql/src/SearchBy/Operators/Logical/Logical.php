@@ -31,8 +31,8 @@ abstract class Logical extends BaseOperator {
                     $search,
                     $arguments,
                     $property
-                ): object {
-                    return $search->where($builder, $arguments, $property);
+                ): void {
+                    $search->where($builder, $arguments, $property);
                 },
                 null,
                 null,

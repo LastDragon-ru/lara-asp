@@ -10,6 +10,7 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
@@ -42,7 +43,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public const ScalarNull    = self::Name.'Null';
     public const ScalarLogic   = self::Name.'Logic';
     public const ScalarNumber  = self::Name.'Number';
-    public const ArgOperators  = 'operators';
 
     public function __construct(
         protected Container $container,
@@ -108,7 +108,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
 
         // Property or Operator?
         $first      = reset($arguments);
-        $isProperty = $first && $first->directives->filter(Utils::instanceofMatcher(Operator::class))->isEmpty();
+        $isProperty = $first->directives->filter(Utils::instanceofMatcher(Operator::class))->isEmpty();
 
         if ($isProperty) {
             // Valid?
@@ -124,13 +124,22 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
 
             // Return
             return $builder;
-        } else {
+        } elseif ($conditions instanceof ArgumentSet || $conditions instanceof Argument) {
             $builder = $this->call($builder, $parent, $conditions);
+        } else {
+            throw new Exception('fixme'); // fixme(graphql): Throw error
         }
 
         return $builder;
     }
 
+    /**
+     * @template T of object
+     *
+     * @param T $builder
+     *
+     * @return T
+     */
     protected function call(object $builder, Property $property, ArgumentSet|Argument $operator): object {
         // Operator & Value
         /** @var Operator|null $op */
@@ -149,6 +158,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             }
 
             foreach ($operator->arguments as $argument) {
+                /** @var Collection<int, Operator> $operators */
                 $operators = $argument->directives->filter($filter);
 
                 if (count($operators) === 1) {
@@ -156,22 +166,24 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
                     $value = $argument;
                 } else {
                     throw new SearchConditionTooManyOperators(
-                        $operators->map(static function (Operator $operator): string {
-                            return $operator::getName();
-                        }),
+                        $operators
+                            ->map(static function (Operator $operator): string {
+                                return $operator::getName();
+                            })
+                            ->all(),
                     );
                 }
             }
         }
 
         // Operator?
-        if (!$op) {
+        if (!$op || !$value) {
             throw new SearchConditionEmpty();
         }
 
         // Supported?
         if (!$op->isBuilderSupported($builder)) {
-            throw new OperatorUnsupportedBuilder($operator, $builder);
+            throw new OperatorUnsupportedBuilder($op, $builder);
         }
 
         // Return

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
@@ -18,6 +19,8 @@ use function is_array;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation
+ *
+ * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 class RelationTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -28,7 +31,7 @@ class RelationTest extends TestCase {
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param Closure(static): object                                $builderFactory
+     * @param BuilderFactory                                         $builderFactory
      * @param Closure(static): Argument                              $argumentFactory
      */
     public function testCall(

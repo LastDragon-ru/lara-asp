@@ -10,8 +10,6 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use Hamcrest\Core\IsNot;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
@@ -30,7 +28,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Mockery;
@@ -241,18 +238,6 @@ class MetadataTest extends TestCase {
                 bool $nullable,
             ): InputObjectTypeDefinitionNode {
                 throw new Exception();
-            }
-
-            /**
-             * @inheritDoc
-             */
-            public function apply(
-                SearchBuilder $search,
-                EloquentBuilder|QueryBuilder $builder,
-                string $property,
-                array $conditions,
-            ): EloquentBuilder|QueryBuilder {
-                return $builder;
             }
 
             public static function getDirectiveName(): string {

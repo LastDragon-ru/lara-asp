@@ -14,6 +14,8 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not
+ *
+ * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 class NotTest extends TestCase {
     // <editor-fold desc="Tests">
@@ -24,7 +26,7 @@ class NotTest extends TestCase {
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected
-     * @param Closure(static): object                      $builderFactory
+     * @param BuilderFactory                               $builderFactory
      * @param Closure(static): Argument                    $argumentFactory
      */
     public function testCall(

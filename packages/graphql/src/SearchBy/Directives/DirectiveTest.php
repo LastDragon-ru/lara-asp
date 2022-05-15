@@ -160,7 +160,7 @@ class DirectiveTest extends TestCase {
             ->graphQL(
                 /** @lang GraphQL */
                 <<<'GRAPHQL'
-                query test($input: SearchByConditionTest!) {
+                query test($input: SearchByConditionTest) {
                     test(input: $input) {
                         id
                     }
@@ -212,7 +212,7 @@ class DirectiveTest extends TestCase {
             GRAPHQL,
         );
 
-        $definitionNode = Parser::inputValueDefinition('input: SearchByConditionTest!');
+        $definitionNode = Parser::inputValueDefinition('input: SearchByConditionTest');
         $directiveNode  = Parser::directive('@test');
         $directive      = $this->app->make(Directive::class)->hydrate($directiveNode, $definitionNode);
         $builder        = $builderFactory($this);
@@ -299,6 +299,19 @@ class DirectiveTest extends TestCase {
                             'notEqual' => 1,
                         ],
                     ],
+                ],
+                'null'                => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    null,
                 ],
                 'valid condition'     => [
                     [
