@@ -8,7 +8,7 @@ enum SearchByTypeFlag {
 }
 
 """
-Conditions for the related objects (`has()`/`doesntHave()`) for input NestedA.
+Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedA`.
 
 See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
@@ -37,7 +37,7 @@ input SearchByComplexRelationNestedA {
 }
 
 """
-Conditions for the related objects (`has()`/`doesntHave()`) for input NestedB.
+Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedB`.
 
 See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
@@ -66,7 +66,7 @@ input SearchByComplexRelationNestedB {
 }
 
 """
-Conditions for the related objects (`has()`/`doesntHave()`) for input NestedC.
+Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedC`.
 
 See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
@@ -95,7 +95,7 @@ input SearchByComplexRelationNestedC {
 }
 
 """
-Available conditions for input InputA (only one property allowed at a time).
+Available conditions for `input InputA` (only one property allowed at a time).
 """
 input SearchByConditionInputA {
     """
@@ -190,7 +190,7 @@ input SearchByConditionInputA {
 }
 
 """
-Available conditions for input InputB (only one property allowed at a time).
+Available conditions for `input InputB` (only one property allowed at a time).
 """
 input SearchByConditionInputB {
     """
@@ -218,7 +218,7 @@ input SearchByConditionInputB {
 }
 
 """
-Available conditions for input NestedA (only one property allowed at a time).
+Available conditions for `input NestedA` (only one property allowed at a time).
 """
 input SearchByConditionNestedA {
     """
@@ -252,7 +252,7 @@ input SearchByConditionNestedA {
 }
 
 """
-Available conditions for input NestedB (only one property allowed at a time).
+Available conditions for `input NestedB` (only one property allowed at a time).
 """
 input SearchByConditionNestedB {
     """
@@ -281,7 +281,7 @@ input SearchByConditionNestedB {
 }
 
 """
-Available conditions for input NestedC (only one property allowed at a time).
+Available conditions for `input NestedC` (only one property allowed at a time).
 """
 input SearchByConditionNestedC {
     """
@@ -310,7 +310,7 @@ input SearchByConditionNestedC {
 }
 
 """
-Available operators for enum EnumA (only one operator allowed at a time).
+Available operators for `enum EnumA` (only one operator allowed at a time).
 """
 input SearchByEnumEnumA {
     """
@@ -339,7 +339,7 @@ input SearchByEnumEnumA {
 }
 
 """
-Available operators for enum EnumA (only one operator allowed at a time).
+Available operators for `enum EnumA` (only one operator allowed at a time).
 """
 input SearchByEnumEnumAOrNull {
     """
@@ -380,7 +380,7 @@ input SearchByEnumEnumAOrNull {
 }
 
 """
-Available operators for scalar Boolean! (only one operator allowed at a time).
+Available operators for `scalar Boolean!` (only one operator allowed at a time).
 """
 input SearchByScalarBoolean {
     """
@@ -391,7 +391,7 @@ input SearchByScalarBoolean {
 }
 
 """
-Available operators for scalar Boolean (only one operator allowed at a time).
+Available operators for `scalar Boolean` (only one operator allowed at a time).
 """
 input SearchByScalarBooleanOrNull {
     """
@@ -414,7 +414,7 @@ input SearchByScalarBooleanOrNull {
 }
 
 """
-Available operators for scalar Float! (only one operator allowed at a time).
+Available operators for `scalar Float!` (only one operator allowed at a time).
 """
 input SearchByScalarFloat {
     """
@@ -479,7 +479,7 @@ input SearchByScalarFloat {
 }
 
 """
-Available operators for scalar Float (only one operator allowed at a time).
+Available operators for `scalar Float` (only one operator allowed at a time).
 """
 input SearchByScalarFloatOrNull {
     """
@@ -556,7 +556,7 @@ input SearchByScalarFloatOrNull {
 }
 
 """
-Available operators for scalar ID! (only one operator allowed at a time).
+Available operators for `scalar ID!` (only one operator allowed at a time).
 """
 input SearchByScalarID {
     """
@@ -585,7 +585,7 @@ input SearchByScalarID {
 }
 
 """
-Available operators for scalar ID (only one operator allowed at a time).
+Available operators for `scalar ID` (only one operator allowed at a time).
 """
 input SearchByScalarIDOrNull {
     """
@@ -626,7 +626,7 @@ input SearchByScalarIDOrNull {
 }
 
 """
-Available operators for scalar Int! (only one operator allowed at a time).
+Available operators for `scalar Int!` (only one operator allowed at a time).
 """
 input SearchByScalarInt {
     """
@@ -691,7 +691,7 @@ input SearchByScalarInt {
 }
 
 """
-Available operators for scalar Int (only one operator allowed at a time).
+Available operators for `scalar Int` (only one operator allowed at a time).
 """
 input SearchByScalarIntOrNull {
     """
@@ -768,7 +768,7 @@ input SearchByScalarIntOrNull {
 }
 
 """
-Available operators for scalar String! (only one operator allowed at a time).
+Available operators for `scalar String!` (only one operator allowed at a time).
 """
 input SearchByScalarString {
     """
@@ -827,7 +827,7 @@ input SearchByScalarString {
 }
 
 """
-Available operators for scalar String (only one operator allowed at a time).
+Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScalarStringOrNull {
     """

@@ -45,7 +45,7 @@ class Relation extends BaseOperator implements ComplexOperator {
         return Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Conditions for the related objects (`has()`/`doesntHave()`) for input {$ast->getNodeName($type)}.
+            Conditions for the related objects (`has()`/`doesntHave()`) for `{$ast->getNodeTypeFullName($type)}`.
 
             See also:
             * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence

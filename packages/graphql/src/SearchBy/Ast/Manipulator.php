@@ -129,7 +129,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             Parser::inputObjectTypeDefinition(
                 <<<DEF
                 """
-                Available conditions for input {$this->getNodeName($node)} (only one property allowed at a time).
+                Available conditions for `{$this->getNodeTypeFullName($node)}` (only one property allowed at a time).
                 """
                 input {$name} {
                     {$content}
@@ -224,7 +224,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             Parser::inputObjectTypeDefinition(
                 <<<DEF
                 """
-                Available operators for enum {$enum} (only one operator allowed at a time).
+                Available operators for `{$this->getNodeTypeFullName($type)}` (only one operator allowed at a time).
                 """
                 input {$name} {
                     {$content}
@@ -257,7 +257,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             Parser::inputObjectTypeDefinition(
                 <<<DEF
                 """
-                Available operators for scalar {$scalar}{$mark} (only one operator allowed at a time).
+                Available operators for `scalar {$scalar}{$mark}` (only one operator allowed at a time).
                 """
                 input {$name} {
                     {$content}

@@ -10,7 +10,7 @@ enum TestEnum {
 }
 
 """
-Conditions for the related objects (`has()`/`doesntHave()`) for input TestTypeA.
+Conditions for the related objects (`has()`/`doesntHave()`) for `input TestTypeA`.
 
 See also:
 * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
@@ -39,7 +39,7 @@ input SearchByComplexRelationTestTypeA {
 }
 
 """
-Available conditions for input TestTypeA (only one property allowed at a time).
+Available conditions for `input TestTypeA` (only one property allowed at a time).
 """
 input SearchByConditionTestTypeA {
     """
@@ -77,7 +77,7 @@ input SearchByConditionTestTypeA {
 }
 
 """
-Available conditions for input TestTypeB (only one property allowed at a time).
+Available conditions for `input TestTypeB` (only one property allowed at a time).
 """
 input SearchByConditionTestTypeB {
     """
@@ -111,7 +111,7 @@ input SearchByConditionTestTypeB {
 }
 
 """
-Available operators for enum TestEnum (only one operator allowed at a time).
+Available operators for `enum TestEnum` (only one operator allowed at a time).
 """
 input SearchByEnumTestEnumOrNull {
     """
@@ -152,7 +152,7 @@ input SearchByEnumTestEnumOrNull {
 }
 
 """
-Available operators for scalar Boolean (only one operator allowed at a time).
+Available operators for `scalar Boolean` (only one operator allowed at a time).
 """
 input SearchByScalarBooleanOrNull {
     """
@@ -175,7 +175,7 @@ input SearchByScalarBooleanOrNull {
 }
 
 """
-Available operators for scalar Int! (only one operator allowed at a time).
+Available operators for `scalar Int!` (only one operator allowed at a time).
 """
 input SearchByScalarInt {
     """
@@ -240,7 +240,7 @@ input SearchByScalarInt {
 }
 
 """
-Available operators for scalar String! (only one operator allowed at a time).
+Available operators for `scalar String!` (only one operator allowed at a time).
 """
 input SearchByScalarString {
     """
@@ -299,7 +299,7 @@ input SearchByScalarString {
 }
 
 """
-Available operators for scalar String (only one operator allowed at a time).
+Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScalarStringOrNull {
     """

@@ -1,5 +1,5 @@
 """
-Available conditions for input Properties (only one property allowed at a time).
+Available conditions for `input Properties` (only one property allowed at a time).
 """
 input SearchByConditionProperties {
     """
@@ -27,7 +27,7 @@ input SearchByConditionProperties {
 }
 
 """
-Available operators for scalar String! (only one operator allowed at a time).
+Available operators for `scalar String!` (only one operator allowed at a time).
 """
 input SearchByScalarString {
     """
