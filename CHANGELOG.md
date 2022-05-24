@@ -1,4 +1,34 @@
-## [0.14.1](https://github.com/LastDragon-ru/lara-asp/compare/0.14.0...0.14.1) (2022-04-06)
+## [0.15.0](https://github.com/LastDragon-ru/lara-asp/compare/0.14.1...0.15.0) (2022-05-24)
+
+| ☣    | Breaking changes |
+|:-----:|:-----------------|
+
+
+### Features
+
+* **graphql/SchemaPrinter:** `SchemaPrinter` contract extended with two new methods `SchemaPrinter::getLevel()` and `SchemaPrinter::setLevel()`. ([98953bf](https://github.com/LastDragon-ru/lara-asp/commit/98953bf0ea1e3b53c69d872c761ef43f157ac26c)) ☣
+* **graphql/SchemaPrinter:** Implemented `SchemaTypePrinter` (to print `Type` and all its used types/directives) and `assertGraphQLSchemaTypeEquals()` assertion. ([cc581cf](https://github.com/LastDragon-ru/lara-asp/commit/cc581cfb88408d14fb327655573af09b6f1bfddd))
+* **graphql/SchemaPrinter:** Implemented `TypePrinter` (to print one single `Type`) and `assertGraphQLTypeEquals()` assertion. ([1828e8c](https://github.com/LastDragon-ru/lara-asp/commit/1828e8cc3ca3c9866e3fd0e464436e8822b726ab))
+
+
+### Bug Fixes
+
+* **graphql/SchemaPrinter:** Directives indent in description. ([33c4505](https://github.com/LastDragon-ru/lara-asp/commit/33c4505180db00b1195fc35f606b54138d29b3da)), closes [#16](https://github.com/LastDragon-ru/lara-asp/issues/16)
+* **testing): `CronableAssertions::assertCronableRegistered()`: "TypeError: str_contains(:** Argument [#1](https://github.com/LastDragon-ru/lara-asp/issues/1) ($haystack) must be of type string, null given". ([cc878d2](https://github.com/LastDragon-ru/lara-asp/commit/cc878d2b91ed2736e6568e2bfc2d127658a115c4))
+
+
+### Code Refactoring
+
+* **graphql/SchemaPrinter:** `Printer` contract renamed to `SchemaPrinter`. ([2ddad1b](https://github.com/LastDragon-ru/lara-asp/commit/2ddad1b3abf5b8d75af026f52ab3f6a88e423369)) ☣
+
+
+### Security
+
+* Minimal version of guzzlehttp/psr7 v1.x set to `1.8.5` (CVE-2022-24775) ([f6b5ef3](https://github.com/LastDragon-ru/lara-asp/commit/f6b5ef35268386399440542532a4424e9c2be8c5)) ☣
+* Minimal version of guzzlehttp/psr7 v2.x set to `2.1.1` (CVE-2022-24775) ([82995e7](https://github.com/LastDragon-ru/lara-asp/commit/82995e7a9ef0e45b9354430b8fc2536e0f08c642)) ☣
+
+
+## [0.14.1](https://github.com/LastDragon-ru/lara-asp/compare/0.14.0...0.14.1) (2022-04-06) 
 
 ### Bug Fixes
 
