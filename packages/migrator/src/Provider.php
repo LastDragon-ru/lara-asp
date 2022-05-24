@@ -16,6 +16,8 @@ use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 
+use function array_merge;
+
 class Provider extends ServiceProvider implements DeferrableProvider {
     use ProviderWithCommands;
 
@@ -45,7 +47,7 @@ class Provider extends ServiceProvider implements DeferrableProvider {
      * @return array<string>
      */
     public function provides(): array {
-        return [...parent::provides(), 'migrator', 'command.seeder.make', RawMigrationCreator::class];
+        return array_merge(parent::provides(), ['migrator', 'command.seeder.make', RawMigrationCreator::class]);
     }
     // </editor-fold>
 

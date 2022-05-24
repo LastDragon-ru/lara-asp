@@ -140,7 +140,7 @@ class Builder {
      * @template T of Model
      *
      * @param EloquentBuilder<T> $builder
-     * @param array<string>      $stack
+     * @param array<int, string> $stack
      *
      * @return Relation<T>
      */
