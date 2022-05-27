@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
+use DateInterval;
 use DateTimeInterface;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Container\Container;
@@ -14,6 +15,7 @@ use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 
 use function array_keys;
+use function is_int;
 use function is_string;
 
 /**
@@ -47,9 +49,22 @@ class QueueableConfigurator {
         $config     = $this->config($queueable);
         $properties = array_keys($this->getQueueableProperties());
         $preparers  = [
-            'retryUntil' => static function ($value): ?DateTimeInterface {
+            'retryUntil' => static function (mixed $value): ?DateTimeInterface {
                 if (is_string($value)) {
                     $value = DateFactory::now()->add($value);
+                } else {
+                    $value = null;
+                }
+
+                return $value;
+            },
+            'delay'      => static function (mixed $value): DateInterval|int|null {
+                if (is_string($value)) {
+                    $value = new DateInterval($value);
+                } elseif (is_int($value)) {
+                    // no action
+                } else {
+                    $value = null;
                 }
 
                 return $value;
@@ -82,6 +97,7 @@ class QueueableConfigurator {
             'deleteWhenMissingModels' => null,  // Allow deleting the job if the model does not exist anymore
             'retryUntil'              => null,  // The \DateTime indicating when the job should timeout
             'afterCommit'             => null,  // The job should be dispatched after commit
+            'delay'                   => null,  // Dispatching delay
         ];
     }
 }

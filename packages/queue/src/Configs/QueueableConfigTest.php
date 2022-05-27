@@ -136,6 +136,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'retryUntil'              => null,
                     'afterCommit'             => null,
+                    'delay'                   => null,
                 ],
                 [],
                 [],
@@ -151,6 +152,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'retryUntil'              => null,
                     'afterCommit'             => null,
+                    'delay'                   => null,
                 ],
                 [
                     'queue'   => 'app',
@@ -169,6 +171,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'retryUntil'              => null,
                     'afterCommit'             => null,
+                    'delay'                   => null,
                 ],
                 [],
                 [
@@ -187,6 +190,7 @@ class QueueableConfigTest extends TestCase {
                     'deleteWhenMissingModels' => null,
                     'retryUntil'              => null,
                     'afterCommit'             => null,
+                    'delay'                   => null,
                 ],
                 [
                     'queue'   => 'app',
@@ -216,6 +220,7 @@ class QueueableConfigTest extends TestCase {
                     'unknown'                 => 'key',
                     'retryUntil'              => null,
                     'afterCommit'             => null,
+                    'delay'                   => null,
                 ],
                 [],
                 [
