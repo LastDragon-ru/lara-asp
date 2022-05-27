@@ -14,7 +14,7 @@
 ### Bug Fixes
 
 * **graphql/SchemaPrinter:** Directives indent in description. ([33c4505](https://github.com/LastDragon-ru/lara-asp/commit/33c4505180db00b1195fc35f606b54138d29b3da)), closes [#16](https://github.com/LastDragon-ru/lara-asp/issues/16)
-* **testing): `CronableAssertions::assertCronableRegistered()`: "TypeError: str_contains(:** Argument [#1](https://github.com/LastDragon-ru/lara-asp/issues/1) ($haystack) must be of type string, null given". ([cc878d2](https://github.com/LastDragon-ru/lara-asp/commit/cc878d2b91ed2736e6568e2bfc2d127658a115c4))
+* **testing**: `CronableAssertions::assertCronableRegistered()`: "TypeError: str_contains(): Argument #1 ($haystack) must be of type string, null given". ([cc878d2](https://github.com/LastDragon-ru/lara-asp/commit/cc878d2b91ed2736e6568e2bfc2d127658a115c4))
 
 
 ### Code Refactoring
