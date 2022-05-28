@@ -103,7 +103,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
 
         // Empty?
         if (count($arguments) === 0) {
-            throw new SearchConditionEmpty();
+            return $builder;
         }
 
         // Property or Operator?

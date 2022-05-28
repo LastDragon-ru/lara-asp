@@ -275,9 +275,26 @@ class DirectiveTest extends TestCase {
             new BuilderDataProvider(),
             new ArrayDataProvider([
                 'empty'               => [
-                    new SearchConditionEmpty(),
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
                     [
                         // empty
+                    ],
+                ],
+                'empty operators'     => [
+                    new SearchConditionEmpty(),
+                    [
+                        'a' => [
+                            // empty
+                        ],
                     ],
                 ],
                 'too many properties' => [
