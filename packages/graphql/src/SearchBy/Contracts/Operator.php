@@ -8,11 +8,6 @@ use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
-/**
- * Operator.
- *
- * @see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider
- */
 interface Operator extends Directive {
     /**
      * Must be a valid GraphQL Object Field name.

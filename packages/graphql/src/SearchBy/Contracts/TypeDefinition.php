@@ -6,8 +6,14 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 
 interface TypeDefinition {
+    public static function getName(): string;
+
     /**
      * @return (TypeDefinitionNode&Node)|null
      */
-    public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode;
+    public function getTypeDefinitionNode(
+        string $name,
+        string $scalar = null,
+        bool $nullable = null,
+    ): ?TypeDefinitionNode;
 }

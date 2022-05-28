@@ -23,7 +23,7 @@ class Between extends BaseOperator {
     }
 
     public function getFieldType(TypeProvider $provider, string $type): ?string {
-        return $provider->getType(Range::Name, $type);
+        return $provider->getType(Range::class, $type);
     }
 
     public function call(Builder $search, object $builder, Property $property, Argument $argument): object {

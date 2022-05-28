@@ -36,11 +36,6 @@ parameters:
 			path: packages/graphql/src/Provider.php
 
 		-
-			message: "#^Instanceof between \\*NEVER\\* and LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\TypeDefinitionProvider will always evaluate to false\\.$#"
-			count: 2
-			path: packages/graphql/src/SearchBy/Ast/Metadata.php
-
-		-
 			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Ast\\\\Metadata\\:\\:addScalar\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
 			count: 1
 			path: packages/graphql/src/SearchBy/Ast/MetadataTest.php

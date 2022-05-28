@@ -6,13 +6,9 @@ use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionAlreadyDefined;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
@@ -212,15 +208,8 @@ class Metadata {
                 throw new ClassIsNotOperator($class);
             }
 
-            // Create Instance
-            $operator = $this->container->make($class);
-
-            if ($operator instanceof TypeDefinitionProvider) {
-                $this->addDefinitions($operator);
-            }
-
             // Save
-            $this->operators[$class] = $operator;
+            $this->operators[$class] = $this->container->make($class);
         }
 
         return $this->operators[$class];
@@ -236,50 +225,22 @@ class Metadata {
                 throw new ClassIsNotComplexOperator($class);
             }
 
-            // Create Instance
-            $operator = $this->container->make($class);
-
-            if ($operator instanceof TypeDefinitionProvider) {
-                $this->addDefinitions($operator);
-            }
-
             // Save
-            $this->complex[$class] = $operator;
+            $this->complex[$class] = $this->container->make($class);
         }
 
         return $this->complex[$class];
     }
 
-    public function addDefinitions(TypeDefinitionProvider $provider): void {
-        foreach ($provider->getDefinitions() as $name => $definition) {
-            $this->addDefinition($name, $definition);
-        }
-    }
-
     /**
      * @param class-string<TypeDefinition> $definition
      */
-    public function addDefinition(string $type, string $definition): void {
-        // Defined?
-        if (isset($this->definitions[$type]) && $this->definitions[$type]::class !== $definition) {
-            throw new DefinitionAlreadyDefined($type);
+    public function getDefinition(string $definition): TypeDefinition {
+        if (!isset($this->definitions[$definition])) {
+            $this->definitions[$definition] = $this->container->make($definition);
         }
 
-        // Is Definition?
-        if (!is_a($definition, TypeDefinition::class, true)) {
-            throw new ClassIsNotDefinition($definition);
-        }
-
-        // Add
-        $this->definitions[$type] = $this->container->make($definition);
-    }
-
-    public function getDefinition(string $type): TypeDefinition {
-        if (!isset($this->definitions[$type])) {
-            throw new DefinitionUnknown($type);
-        }
-
-        return $this->definitions[$type];
+        return $this->definitions[$definition];
     }
 
     public function getType(string $type): ?string {

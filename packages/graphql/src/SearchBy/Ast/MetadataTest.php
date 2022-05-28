@@ -14,14 +14,10 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionAlreadyDefined;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
@@ -148,7 +144,7 @@ class MetadataTest extends TestCase {
      * @covers ::getOperatorInstance
      */
     public function testGetOperatorInstance(): void {
-        $operator = new class() implements Operator, TypeDefinitionProvider {
+        $operator = new class() implements Operator {
             public static function getName(): string {
                 return '';
             }
@@ -169,13 +165,6 @@ class MetadataTest extends TestCase {
                 return '';
             }
 
-            /**
-             * @inheritDoc
-             */
-            public function getDefinitions(): array {
-                return [];
-            }
-
             public function getFieldDirective(): ?DirectiveNode {
                 return null;
             }
@@ -190,9 +179,6 @@ class MetadataTest extends TestCase {
         };
         $metadata = Mockery::mock(Metadata::class, [$this->app]);
         $metadata->makePartial();
-        $metadata
-            ->shouldReceive('addDefinitions')
-            ->once();
 
         $a = $metadata->getOperatorInstance($operator::class);
         $b = $metadata->getOperatorInstance($operator::class);
@@ -214,14 +200,7 @@ class MetadataTest extends TestCase {
      * @covers ::getComplexOperatorInstance
      */
     public function testGetComplexOperatorInstance(): void {
-        $operator = new class() implements ComplexOperator, TypeDefinitionProvider {
-            /**
-             * @inheritDoc
-             */
-            public function getDefinitions(): array {
-                return [];
-            }
-
+        $operator  = new class() implements ComplexOperator {
             public static function getName(): string {
                 return '';
             }
@@ -264,16 +243,11 @@ class MetadataTest extends TestCase {
                 return $builder;
             }
         };
-        $metadata = Mockery::mock(Metadata::class, [$this->app]);
-        $metadata->makePartial();
-        $metadata
-            ->shouldReceive('addDefinitions')
-            ->once();
+        $metadata  = $this->app->make(Metadata::class);
+        $operatorA = $metadata->getComplexOperatorInstance($operator::class);
+        $operatorB = $metadata->getComplexOperatorInstance($operator::class);
 
-        $a = $metadata->getComplexOperatorInstance($operator::class);
-        $b = $metadata->getComplexOperatorInstance($operator::class);
-
-        self::assertSame($a, $b);
+        self::assertSame($operatorA, $operatorB);
     }
 
     /**
@@ -287,116 +261,28 @@ class MetadataTest extends TestCase {
     }
 
     /**
-     * @covers ::addDefinitions
-     */
-    public function testAddDefinitions(): void {
-        $provider = Mockery::mock(TypeDefinitionProvider::class);
-        $provider
-            ->shouldReceive('getDefinitions')
-            ->once()
-            ->andReturn([
-                'a' => Mockery::mock(TypeDefinition::class)::class,
-                'b' => Mockery::mock(TypeDefinition::class)::class,
-            ]);
-        $metadata = Mockery::mock(Metadata::class);
-        $metadata->makePartial();
-        $metadata
-            ->shouldReceive('addDefinition')
-            ->twice();
-
-        $metadata->addDefinitions($provider);
-    }
-
-    /**
-     * @covers ::addDefinition
-     */
-    public function testAddDefinition(): void {
-        $metadata   = new Metadata($this->app);
-        $definition = new class() implements TypeDefinition {
-            public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
-                return null;
-            }
-        };
-
-        $metadata->addDefinition('test', $definition::class);
-
-        // The second call must be fine, because definition the same
-        $metadata->addDefinition('test', $definition::class);
-
-        $actual = null;
-
-        try {
-            $actual = $metadata->getDefinition('test');
-        } catch (Exception) {
-            // empty
-        }
-
-        self::assertInstanceOf(TypeDefinition::class, $actual);
-    }
-
-    /**
-     * @covers ::addDefinition
-     */
-    public function testAddDefinitionNotADefinition(): void {
-        self::expectExceptionObject(new ClassIsNotDefinition(stdClass::class));
-
-        /** @phpstan-ignore-next-line Required for test */
-        (new Metadata($this->app))->addDefinition('type', stdClass::class);
-    }
-
-    /**
-     * @covers ::addDefinition
-     */
-    public function testAddDefinitionOverride(): void {
-        $metadata = new Metadata($this->app);
-        $a        = new class() implements TypeDefinition {
-            public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
-                return null;
-            }
-        };
-        $b        = new class() implements TypeDefinition {
-            public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
-                return null;
-            }
-        };
-
-        self::expectExceptionObject(new DefinitionAlreadyDefined('test'));
-
-        $metadata->addDefinition('test', $a::class);
-        $metadata->addDefinition('test', $b::class);
-    }
-
-    /**
      * @covers ::getDefinition
      */
     public function testGetDefinition(): void {
-        $metadata   = new Metadata($this->app);
         $definition = new class() implements TypeDefinition {
-            public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
+            public function getTypeDefinitionNode(
+                string $name,
+                string $scalar = null,
+                bool $nullable = null,
+            ): ?TypeDefinitionNode {
                 return null;
+            }
+
+            public static function getName(): string {
+                return 'Test';
             }
         };
 
-        $metadata->addDefinition('test', $definition::class);
+        $metadata    = $this->app->make(Metadata::class);
+        $definitionA = $metadata->getDefinition($definition::class);
+        $definitionB = $metadata->getDefinition($definition::class);
 
-        $actual = null;
-
-        try {
-            $actual = $metadata->getDefinition('test');
-        } catch (Exception) {
-            // empty
-        }
-
-        self::assertInstanceOf(TypeDefinition::class, $actual);
-    }
-
-    /**
-     * @covers ::getDefinition
-     */
-    public function testGetDefinitionUnknownDefinition(): void {
-        self::expectExceptionObject(new DefinitionUnknown('unknown'));
-
-        (new Metadata($this->app))->getDefinition('unknown');
+        self::assertSame($definitionA, $definitionB);
     }
 
     /**

@@ -39,8 +39,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -89,7 +87,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // =========================================================================
     public function getType(string $type, string $scalar = null, bool $nullable = null): string {
         // Exists?
-        $internal = $this->getTypeName($type, $scalar, $nullable);
+        $internal = $this->getTypeName($type::getName(), $scalar, $nullable);
         $name     = $this->metadata->getType($internal);
 
         if ($name && $this->isTypeDefinitionExists($name)) {
@@ -97,7 +95,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Create new
-        $definition = $this->metadata->getDefinition($type)->get($internal, $scalar, $nullable);
+        $definition = $this->metadata->getDefinition($type)->getTypeDefinitionNode($internal, $scalar, $nullable);
 
         if (!$definition) {
             throw new DefinitionImpossibleToCreateType($type, $scalar, $nullable);
@@ -345,14 +343,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 $this->getNodeName($field),
             ),
         );
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Defaults">
-    // =========================================================================
-    protected function addDefaultTypeDefinitions(): void {
-        $this->metadata->addDefinition(Flag::Name, Flag::class);
-        $this->metadata->addDefinition(Range::Name, Range::class);
     }
     // </editor-fold>
 

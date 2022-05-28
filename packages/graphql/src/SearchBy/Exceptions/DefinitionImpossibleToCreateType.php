@@ -2,26 +2,33 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions;
 
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
 use Throwable;
 
 use function sprintf;
 
 class DefinitionImpossibleToCreateType extends SearchByException {
+    /**
+     * @param class-string<TypeDefinition> $definition
+     */
     public function __construct(
-        protected string $name,
+        protected string $definition,
         protected ?string $scalar,
         protected ?bool $nullable,
         Throwable $previous = null,
     ) {
-        parent::__construct(sprintf(
-            'Definition `%s`: Impossible to create type for scalar `%s`.',
-            $this->name,
-            ($this->scalar ?: 'null').($this->nullable ? '' : '!'),
-        ), $previous);
+        parent::__construct(
+            sprintf(
+                'Definition `%s`: Impossible to create type for scalar `%s`.',
+                $this->definition,
+                ($this->scalar ?: 'null').($this->nullable ? '' : '!'),
+            ),
+            $previous,
+        );
     }
 
-    public function getName(): string {
-        return $this->name;
+    public function getDefinition(): string {
+        return $this->definition;
     }
 
     public function getScalar(): ?string {
