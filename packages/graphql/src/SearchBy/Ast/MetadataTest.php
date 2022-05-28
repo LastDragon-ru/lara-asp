@@ -16,8 +16,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
@@ -28,7 +26,6 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
-use stdClass;
 
 /**
  * @internal
@@ -187,16 +184,6 @@ class MetadataTest extends TestCase {
     }
 
     /**
-     * @covers ::getOperatorInstance
-     */
-    public function testGetOperatorInstanceNotAnOperator(): void {
-        self::expectExceptionObject(new ClassIsNotOperator(stdClass::class));
-
-        /** @phpstan-ignore-next-line Required for test */
-        (new Metadata($this->app))->getOperatorInstance(stdClass::class);
-    }
-
-    /**
      * @covers ::getComplexOperatorInstance
      */
     public function testGetComplexOperatorInstance(): void {
@@ -248,16 +235,6 @@ class MetadataTest extends TestCase {
         $operatorB = $metadata->getComplexOperatorInstance($operator::class);
 
         self::assertSame($operatorA, $operatorB);
-    }
-
-    /**
-     * @covers ::getComplexOperatorInstance
-     */
-    public function testGetComplexOperatorInstanceNotAnOperator(): void {
-        self::expectExceptionObject(new ClassIsNotComplexOperator(stdClass::class));
-
-        /** @phpstan-ignore-next-line Required for test */
-        (new Metadata($this->app))->getComplexOperatorInstance(stdClass::class);
     }
 
     /**

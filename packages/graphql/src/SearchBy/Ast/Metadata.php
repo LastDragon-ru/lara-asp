@@ -7,8 +7,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
@@ -36,7 +34,6 @@ use function array_map;
 use function array_push;
 use function array_unique;
 use function array_values;
-use function is_a;
 use function is_array;
 use function is_string;
 
@@ -203,12 +200,6 @@ class Metadata {
      */
     public function getOperatorInstance(string $class): Operator {
         if (!isset($this->operators[$class])) {
-            // Is operator?
-            if (!is_a($class, Operator::class, true)) {
-                throw new ClassIsNotOperator($class);
-            }
-
-            // Save
             $this->operators[$class] = $this->container->make($class);
         }
 
@@ -220,12 +211,6 @@ class Metadata {
      */
     public function getComplexOperatorInstance(string $class): ComplexOperator {
         if (!isset($this->complex[$class])) {
-            // Is operator?
-            if (!is_a($class, ComplexOperator::class, true)) {
-                throw new ClassIsNotComplexOperator($class);
-            }
-
-            // Save
             $this->complex[$class] = $this->container->make($class);
         }
 
