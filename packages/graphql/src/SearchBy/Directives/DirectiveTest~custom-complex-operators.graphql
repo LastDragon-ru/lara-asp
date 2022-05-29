@@ -1,0 +1,17 @@
+type Query {
+    test(where: Properties @searchBy): ID! @all
+}
+
+input Properties {
+    defaultOperator: Child
+
+    customWithArguments: Child
+    @customComplexOperator(value: "abc")
+
+    customWithoutArguments: Child
+    @customComplexOperator
+}
+
+input Child {
+    value: String
+}

@@ -1,0 +1,378 @@
+enum SearchByTypeFlag {
+    yes
+}
+
+"""
+Conditions for the related objects (`has()`/`doesntHave()`) for `input Child`.
+
+See also:
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByComplexCustomChild {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionChild
+}
+
+"""
+Conditions for the related objects (`has()`/`doesntHave()`) for `input Child`.
+
+See also:
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByComplexRelationChild {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionChild
+}
+
+"""
+Available conditions for `input Child` (only one property allowed at a time).
+"""
+input SearchByConditionChild {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionChild!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionChild!]
+    @searchByOperatorAnyOf
+
+    """
+    Not.
+    """
+    not: SearchByConditionChild
+    @searchByOperatorNot
+
+    """
+    Property condition.
+    """
+    value: SearchByScalarStringOrNull
+}
+
+"""
+Available conditions for `input Properties` (only one property allowed at a time).
+"""
+input SearchByConditionProperties {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionProperties!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionProperties!]
+    @searchByOperatorAnyOf
+
+    """
+    Custom condition.
+    """
+    customWithArguments: SearchByComplexCustomChild
+    @customComplexOperator(
+        value: "abc"
+    )
+
+    """
+    Custom condition.
+    """
+    customWithoutArguments: SearchByComplexCustomChild
+    @customComplexOperator
+
+    """
+    Relationship condition.
+    """
+    defaultOperator: SearchByComplexRelationChild
+    @searchByOperatorRelation
+
+    """
+    Not.
+    """
+    not: SearchByConditionProperties
+    @searchByOperatorNot
+}
+
+"""
+Available operators for `scalar Int!` (only one operator allowed at a time).
+"""
+input SearchByScalarInt {
+    """
+    Within a range.
+    """
+    between: SearchByTypeRangeInt
+    @searchByOperatorBetween
+
+    """
+    Equal (`=`).
+    """
+    equal: Int
+    @searchByOperatorEqual
+
+    """
+    Greater than (`>`).
+    """
+    greaterThan: Int
+    @searchByOperatorGreaterThan
+
+    """
+    Greater than or equal to (`>=`).
+    """
+    greaterThanOrEqual: Int
+    @searchByOperatorGreaterThanOrEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Int!]
+    @searchByOperatorIn
+
+    """
+    Less than (`<`).
+    """
+    lessThan: Int
+    @searchByOperatorLessThan
+
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: Int
+    @searchByOperatorLessThanOrEqual
+
+    """
+    Outside a range.
+    """
+    notBetween: SearchByTypeRangeInt
+    @searchByOperatorNotBetween
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Int
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [Int!]
+    @searchByOperatorNotIn
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByScalarStringOrNull {
+    """
+    Contains.
+    """
+    contains: String
+    @searchByOperatorContains
+
+    """
+    Ends with a string.
+    """
+    endsWith: String
+    @searchByOperatorEndsWith
+
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+
+    """
+    Like.
+    """
+    like: String
+    @searchByOperatorLike
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: String
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
+    @searchByOperatorNotIn
+
+    """
+    Not like.
+    """
+    notLike: String
+    @searchByOperatorNotLike
+
+    """
+    Starts with a string.
+    """
+    startsWith: String
+    @searchByOperatorStartsWith
+}
+
+input SearchByTypeRangeInt {
+    max: Int!
+    min: Int!
+}
+
+type Query {
+    test(
+        where: SearchByConditionProperties
+        @searchBy
+    ): ID!
+    @all
+}
+
+directive @customComplexOperator(
+    value: String
+)
+on
+    | INPUT_FIELD_DEFINITION
+
+"""
+Convert Input into Search Conditions.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorAnyOf
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorBetween
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorContains
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorEndsWith
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorGreaterThan
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorGreaterThanOrEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorIn
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorIsNotNull
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorIsNull
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorLessThan
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorLessThanOrEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorLike
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNot
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotBetween
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotEqual
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotIn
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorNotLike
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorRelation
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorStartsWith
+on
+    | INPUT_FIELD_DEFINITION

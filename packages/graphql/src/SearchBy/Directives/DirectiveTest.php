@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -24,6 +25,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 
@@ -47,9 +49,14 @@ class DirectiveTest extends TestCase {
      *
      * @dataProvider dataProviderManipulateArgDefinition
      *
-     * @param Closure(self): GraphQLExpectedSchema $expected
+     * @param Closure(static): GraphQLExpectedSchema $expected
+     * @param Closure(static): void                  $prepare
      */
-    public function testManipulateArgDefinition(Closure $expected, string $graphql): void {
+    public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+        if ($prepare) {
+            $prepare($this);
+        }
+
         self::assertGraphQLSchemaEquals(
             $expected($this),
             $this->getTestData()->file($graphql),
@@ -249,6 +256,7 @@ class DirectiveTest extends TestCase {
                         ]);
                 },
                 '~full.graphql',
+                null,
             ],
             'only used type should be added' => [
                 static function (self $test): GraphQLExpectedSchema {
@@ -263,6 +271,41 @@ class DirectiveTest extends TestCase {
                         ]);
                 },
                 '~usedonly.graphql',
+                null,
+            ],
+            'custom complex operators'       => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~custom-complex-operators-expected.graphql'),
+                    ));
+                },
+                '~custom-complex-operators.graphql',
+                static function (TestCase $test): void {
+                    $locator   = $test->app->make(DirectiveLocator::class);
+                    $directive = new class() extends Relation {
+                        public static function getName(): string {
+                            return 'custom';
+                        }
+
+                        public function getFieldDescription(): string {
+                            return 'Custom condition.';
+                        }
+
+                        public static function getDirectiveName(): string {
+                            return '@customComplexOperator';
+                        }
+
+                        public static function definition(): string {
+                            $name = static::getDirectiveName();
+
+                            return /** @lang GraphQL */ <<<GRAPHQL
+                                directive ${name}(value: String) on INPUT_FIELD_DEFINITION
+                            GRAPHQL;
+                        }
+                    };
+
+                    $locator->setResolved('customComplexOperator', $directive::class);
+                },
             ],
         ];
     }
