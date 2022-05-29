@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArguments;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
@@ -60,7 +60,7 @@ abstract class Logical extends BaseOperator {
         $expected = 'array<'.ArgumentSet::class.'>';
 
         if (!is_array($value)) {
-            throw new OperatorInvalidArguments($this, $expected, $value);
+            throw new OperatorInvalidArgumentValue($this, $expected, $value);
         }
 
         $count = count($value);
@@ -69,7 +69,7 @@ abstract class Logical extends BaseOperator {
         });
 
         if ($count !== count($args)) {
-            throw new OperatorInvalidArguments($this, $expected, $value);
+            throw new OperatorInvalidArgumentValue($this, $expected, $value);
         }
 
         return $args;

@@ -14,7 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArguments;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
@@ -88,7 +88,7 @@ class Relation extends BaseOperator implements ComplexOperator {
 
         // ArgumentSet?
         if (!($argument->value instanceof ArgumentSet)) {
-            throw new OperatorInvalidArguments($this, ArgumentSet::class, $argument->value);
+            throw new OperatorInvalidArgumentValue($this, ArgumentSet::class, $argument->value);
         }
 
         // Possible variants:

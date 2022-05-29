@@ -121,9 +121,6 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
                 $parent  = $parent->getChild($name);
                 $builder = $this->call($builder, $parent, $argument);
             }
-
-            // Return
-            return $builder;
         } elseif ($conditions instanceof ArgumentSet || $conditions instanceof Argument) {
             $builder = $this->call($builder, $parent, $conditions);
         } else {

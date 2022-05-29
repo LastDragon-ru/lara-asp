@@ -8,7 +8,7 @@ use Throwable;
 use function gettype;
 use function sprintf;
 
-class OperatorInvalidArguments extends SearchByException {
+class OperatorInvalidArgumentValue extends SearchByException {
     public function __construct(
         protected Operator $operator,
         protected string $expected,
