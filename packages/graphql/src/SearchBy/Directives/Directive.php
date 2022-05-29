@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
-use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
@@ -14,6 +13,7 @@ use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\BuilderInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
@@ -82,7 +82,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
             if ($argument->value instanceof ArgumentSet) {
                 $builder = $this->where($builder, $argument->value);
             } else {
-                throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
+                throw new BuilderInvalidConditions($this);
             }
         }
 
@@ -124,7 +124,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
         } elseif ($conditions instanceof ArgumentSet || $conditions instanceof Argument) {
             $builder = $this->call($builder, $parent, $conditions);
         } else {
-            throw new Exception('fixme'); // fixme(graphql): Throw error
+            throw new BuilderInvalidConditions($this);
         }
 
         return $builder;
