@@ -5,16 +5,14 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\BuilderUnsupported;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\SearchBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 use function is_array;
 
@@ -22,38 +20,35 @@ use function is_array;
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation
  *
- * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
+ * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 class RelationTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::apply
+     * @covers ::call
      *
-     * @dataProvider dataProviderApply
+     * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param BuilderFactory                                         $builder
-     * @param array<mixed>                                           $conditions
+     * @param BuilderFactory                                         $builderFactory
+     * @param Closure(static): Argument                              $argumentFactory
      */
-    public function testApply(
+    public function testCall(
         array|Exception $expected,
-        Closure $builder,
-        string $property,
-        array $conditions = [],
+        Closure $builderFactory,
+        Property $property,
+        Closure $argumentFactory,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
-        $search   = new SearchBuilder([
-            $this->app->make(Equal::class),
-            $this->app->make(NotEqual::class),
-            $this->app->make(Relation::class),
-        ]);
-        $relation = $this->app->make(Relation::class);
-        $builder  = $builder($this);
-        $builder  = $relation->apply($search, $builder, $property, $conditions);
+        $operator = $this->app->make(Relation::class);
+        $argument = $argumentFactory($this);
+        $search   = $this->app->make(Directive::class);
+        $builder  = $builderFactory($this);
+        $builder  = $operator->call($search, $builder, $property, $argument);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -68,193 +63,210 @@ class RelationTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderApply(): array {
+    public function dataProviderCall(): array {
+        $graphql = <<<'GRAPHQL'
+            input TestInput {
+                property: TestOperators
+            }
+
+            input TestOperators {
+                lessThan: Int
+                @searchByOperatorLessThan
+
+                equal: Int
+                @searchByOperatorEqual
+
+                notEqual: Int
+                @searchByOperatorNotEqual
+            }
+
+            input TestRelation {
+                where: TestInput
+
+                count: TestOperators
+
+                exists: Boolean
+
+                notExists: Boolean! = false
+            }
+
+            type Query {
+                test(input: TestInput): Int @all
+            }
+        GRAPHQL;
+
         return [
-            'query builder not supported'                            => [
-                new BuilderUnsupported(QueryBuilder::class),
-                static function (self $test): QueryBuilder {
-                    return $test->app->make('db')->table('tmp');
-                },
-                'test',
-                [],
-            ],
-            'not a relation'                                         => [
-                new PropertyIsNotRelation(new RelationTest__ModelA(), 'delete'),
+            'not a relation'                          => [
+                new PropertyIsNotRelation(new User(), 'delete'),
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                'delete',
-                [],
-            ],
-            '{relation: yes}'                                        => [
-                [
-                    'query'    => 'select * from "table_a" where exists ('.
-                        'select * from "table_b" '.
-                        'where "table_a"."id" = "table_b"."table_a_id"'.
-                        ')',
-                    'bindings' => [],
-                ],
-                static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                new Property('delete'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation!',
+                        [
+                            'notExists' => true,
+                        ],
+                        $graphql,
+                    );
                 },
-                'test',
-                [
-                    'relation' => 'yes',
-                ],
             ],
-            '{relation: yes, exists: true}'                          => [
+            '{exists: true}'                          => [
                 [
-                    'query'    => 'select * from "table_a" where exists ('.
-                        'select * from "table_b" '.
-                        'where "table_a"."id" = "table_b"."table_a_id"'.
+                    'query'    => 'select * from "users" where exists ('.
+                        'select * from "cars" '.
+                        'where "users"."localKey" = "cars"."foreignKey" and "favorite" = ?'.
                         ')',
-                    'bindings' => [],
+                    'bindings' => [1],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                'test',
-                [
-                    'relation' => 'yes',
-                    'exists'   => true,
-                ],
+                new Property('car'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation!',
+                        [
+                            'exists' => true,
+                        ],
+                        $graphql,
+                    );
+                },
             ],
-            '{relation: yes, notExists: true}'                       => [
+            '{notExists: true}'                       => [
                 [
-                    'query'    => 'select * from "table_a" where not exists ('.
-                        'select * from "table_b" '.
-                        'where "table_a"."id" = "table_b"."table_a_id"'.
+                    'query'    => 'select * from "users" where not exists ('.
+                        'select * from "cars" '.
+                        'where "users"."localKey" = "cars"."foreignKey" and "favorite" = ?'.
                         ')',
-                    'bindings' => [],
+                    'bindings' => [1],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                'test',
-                [
-                    'relation'  => 'yes',
-                    'notExists' => true,
-                ],
+                new Property('car'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation',
+                        [
+                            'notExists' => true,
+                        ],
+                        $graphql,
+                    );
+                },
             ],
-            '{relation: {property: {equal: 1}}}'                     => [
+            '{relation: {property: {equal: 1}}}'      => [
                 [
-                    'query'    => 'select * from "table_a" where exists ('.
-                        'select * from "table_b" where '.
-                        '"table_a"."id" = "table_b"."table_a_id" and "table_b"."property" = ?'.
-                        ')',
+                    'query'    => <<<'SQL'
+                        select * from "users" where exists (
+                            select * from "cars"
+                            where "users"."localKey" = "cars"."foreignKey"
+                                and "cars"."property" = ?
+                                and "favorite" = ?
+                        )
+                    SQL
+                    ,
+                    'bindings' => [123, 1],
+                ],
+                static function (): EloquentBuilder {
+                    return User::query();
+                },
+                new Property('car'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation',
+                        [
+                            'where' => [
+                                'property' => [
+                                    'equal' => 123,
+                                ],
+                            ],
+                        ],
+                        $graphql,
+                    );
+                },
+            ],
+            '{count: {equal: 1}}'                     => [
+                [
+                    'query'    => <<<'SQL'
+                        select * from "users" where (
+                            select count(*)
+                            from "cars"
+                            where "users"."localKey" = "cars"."foreignKey"
+                                and "favorite" = ?
+                        ) = 345
+                    SQL
+                    ,
+                    'bindings' => [1],
+                ],
+                static function (): EloquentBuilder {
+                    return User::query();
+                },
+                new Property('car'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation',
+                        [
+                            'count' => [
+                                'equal' => 345,
+                            ],
+                        ],
+                        $graphql,
+                    );
+                },
+            ],
+            '{count: { multiple operators }}'         => [
+                new SearchConditionTooManyOperators(['lessThan', 'equal']),
+                static function (): EloquentBuilder {
+                    return User::query();
+                },
+                new Property('car'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation',
+                        [
+                            'count' => [
+                                'equal'    => 345,
+                                'lessThan' => 1,
+                            ],
+                        ],
+                        $graphql,
+                    );
+                },
+            ],
+            '{where: {{property: {equal: 1}}}} (own)' => [
+                [
+                    'query'    => <<<'SQL'
+                        select * from "users" where exists (
+                            select *
+                            from "users" as "laravel_reserved_0"
+                            where "users"."localKey" = "laravel_reserved_0"."foreignKey"
+                                and "laravel_reserved_0"."property" = ?
+                        )
+                    SQL
+                    ,
                     'bindings' => [123],
                 ],
                 static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                    return User::query();
                 },
-                'test',
-                [
-                    'where' => [
-                        'property' => [
-                            'equal' => 123,
+                new Property('parent'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation',
+                        [
+                            'where' => [
+                                'property' => [
+                                    'equal' => 123,
+                                ],
+                            ],
                         ],
-                    ],
-                ],
-            ],
-            '{relation: yes, count: {equal: 1}}'                     => [
-                [
-                    'query'    => 'select * from "table_a" where ('.
-                        'select count(*) from "table_b" where '.
-                        '"table_a"."id" = "table_b"."table_a_id"'.
-                        ') = 345',
-                    'bindings' => [/* strange */],
-                ],
-                static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
+                        $graphql,
+                    );
                 },
-                'test',
-                [
-                    'relation' => 'yes',
-                    'count'    => [
-                        'equal' => 345,
-                    ],
-                ],
-            ],
-            '{relation: yes, count: { multiple operators }}'         => [
-                new SearchConditionTooManyOperators(['equal', 'lt']),
-                static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
-                },
-                'test',
-                [
-                    'relation' => 'yes',
-                    'count'    => [
-                        'equal' => 345,
-                        'lt'    => 1,
-                    ],
-                ],
-            ],
-            '{relation: yes, where: {{property: {equal: 1}}}} (own)' => [
-                [
-                    'query'    => 'select * from "table_a" where exists ('.
-                        'select * from "table_a" as "laravel_reserved_0" where '.
-                        '"table_a"."id" = "laravel_reserved_0"."relation_test___model_a_id" '.
-                        'and "laravel_reserved_0"."property" = ?'.
-                        ')',
-                    'bindings' => [123],
-                ],
-                static function (): EloquentBuilder {
-                    return RelationTest__ModelA::query();
-                },
-                'a',
-                [
-                    'relation' => 'yes',
-                    'where'    => [
-                        'property' => [
-                            'equal' => 123,
-                        ],
-                    ],
-                ],
             ],
         ];
     }
     // </editor-fold>
-}
-
-// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class RelationTest__ModelA extends Model {
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     *
-     * @var string
-     */
-    public $table = 'table_a';
-
-    /**
-     * @return HasOne<RelationTest__ModelB>
-     */
-    public function test(): HasOne {
-        return $this->hasOne(RelationTest__ModelB::class, 'table_a_id');
-    }
-
-    /**
-     * @return HasOne<static>
-     */
-    public function a(): HasOne {
-        return $this->hasOne(static::class);
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class RelationTest__ModelB extends Model {
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     *
-     * @var string
-     */
-    public $table = 'table_b';
 }

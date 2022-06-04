@@ -51,7 +51,7 @@ This package provides additional capabilities for queued jobs and queued listene
 
 ## Eloquent Helpers
 
-This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/8.x/eloquent).
+This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/eloquent).
 
 [Read more](packages/eloquent/README.md).
 

@@ -16,19 +16,19 @@ composer require lastdragon-ru/lara-asp-graphql
 
 # `@searchBy` directive
 
-At this moment this is probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries. 
+At this moment this is probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries.
 
 
 ## Basic usage
 
-Features:
+Out the box directives provides following features:
 
 + Strictly typed - you can define supported operators for each Scalar;
-+ Support both Query and Eloquent Builder
++ Eloquent Builder, Query Builder and Custom Builder support;
 + Support almost all `where` operators;
 + Enums support;
 + `not (<condition>)` support;
-+ Relations support (except Query Builder);
++ Relations support (Eloquent Builder only);
 + Custom operators support
 + easy to use and safe.
 
@@ -54,313 +54,84 @@ input CommentsQuery {
 }
 ```
 
-That's all, just search 😃
+That's all, just search 😃 (or look at [generated GraphQL schema](./src/SearchBy/Directives/DirectiveTest~example-expected.graphql))
 
 ```graphql
-# Write your query or mutation here
 query {
-  # WHERE name = "LastDragon"
-  users(where: {
-    name: {equal: "LastDragon"}
-  }) {
-    id
-  }
-
-  # WHERE name != "LastDragon"
-  users(where: {
-    name: {notEqual: "LastDragon"}
-  }) {
-    id
-  }
-
-  # WHERE name = "LastDragon" or name = "Aleksei"
-  users(where: {
-    anyOf: [
-      {name: {equal: "LastDragon"}}
-      {name: {equal: "Aleksei"}}
-    ]
-  }) {
-    id
-  }
-
-  # WHERE NOT (name = "LastDragon" or name = "Aleksei")
-  users(where: {
-    not: {
-      anyOf: [
-        {name: {equal: "LastDragon"}}
-        {name: {equal: "Aleksei"}}
-      ]
+    # WHERE name = "LastDragon"
+    users(where: {
+        name: {equal: "LastDragon"}
+    }) {
+        id
     }
-  }) {
-    id
-  }
 
-  # WHERE date IS NULL
-  users(where: {
-    date: {isNull: yes}
-  }) {
-    id
-  }
-
-  # Relation: WHERE EXIST (related table)
-  comments(where: {
-    user: {
-      where: {
-        date: {between: {min: "2021-01-01", max: "2021-04-01"}}
-      }
+    # WHERE name != "LastDragon"
+    users(where: {
+        name: {notEqual: "LastDragon"}
+    }) {
+        id
     }
-  }) {
-    id
-  }
 
-  # Relation: WHERE COUNT (related table) = 2
-  comments(where: {
-    user: {
-      where: {
-        date: {between: {min: "2021-01-01", max: "2021-04-01"}}
-      }
-      count: {
-          equal: 2
-      }
+    # WHERE name = "LastDragon" or name = "Aleksei"
+    users(where: {
+        anyOf: [
+            {name: {equal: "LastDragon"}}
+            {name: {equal: "Aleksei"}}
+        ]
+    }) {
+        id
     }
-  }) {
-    id
-  }
+
+    # WHERE NOT (name = "LastDragon" or name = "Aleksei")
+    users(where: {
+        not: {
+            anyOf: [
+                {name: {equal: "LastDragon"}}
+                {name: {equal: "Aleksei"}}
+            ]
+        }
+    }) {
+        id
+    }
+
+    # WHERE date IS NULL
+    users(where: {
+        date: {isNull: yes}
+    }) {
+        id
+    }
+
+    # Relation: WHERE EXIST (related table)
+    comments(where: {
+        user: {
+            where: {
+                date: {between: {min: "2021-01-01", max: "2021-04-01"}}
+            }
+        }
+    }) {
+        id
+    }
+
+    # Relation: WHERE COUNT (related table) = 2
+    comments(where: {
+        user: {
+            where: {
+                date: {between: {min: "2021-01-01", max: "2021-04-01"}}
+            }
+            count: {
+                equal: 2
+            }
+        }
+    }) {
+        id
+    }
 }
 ```
-
-<details>
-<summary>Generated GraphQL schema</summary>
-
-```graphql
-input CommentsQuery {
-  text: String!
-  user: UsersQuery
-  date: Date
-}
-
-scalar Date
-
-type Query {
-  users(where: SearchByConditionUsersQuery): ID!
-  comments(where: SearchByConditionCommentsQuery): ID!
-}
-
-"""
-Conditions for the related objects (`has()`/`doesntHave()`) for input UsersQuery.
-
-See also:
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByComplexRelationUsersQuery {
-  """Additional conditions."""
-  where: SearchByConditionUsersQuery
-
-  """Count conditions."""
-  count: SearchByScalarInt
-
-  """
-  Shortcut for `doesntHave()`, same as:
-  
-  \```
-  count: {
-    lt: 1
-  }
-  \```
-  """
-  not: Boolean! = false
-
-  """Complex operator marker."""
-  relation: SearchByTypeFlag! = yes
-}
-
-"""
-Available conditions for input CommentsQuery (only one property allowed at a time).
-"""
-input SearchByConditionCommentsQuery {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionCommentsQuery!]
-
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionCommentsQuery!]
-
-  """Not."""
-  not: SearchByConditionCommentsQuery
-
-  """Property condition."""
-  text: SearchByScalarString
-
-  """Property condition."""
-  user: SearchByComplexRelationUsersQuery
-
-  """Property condition."""
-  date: SearchByScalarDateOrNull
-}
-
-"""
-Available conditions for input UsersQuery (only one property allowed at a time).
-"""
-input SearchByConditionUsersQuery {
-  """All of the conditions must be true."""
-  allOf: [SearchByConditionUsersQuery!]
-
-  """Any of the conditions must be true."""
-  anyOf: [SearchByConditionUsersQuery!]
-
-  """Not."""
-  not: SearchByConditionUsersQuery
-
-  """Property condition."""
-  id: SearchByScalarID
-
-  """Property condition."""
-  name: SearchByScalarString
-}
-
-"""
-Available operators for scalar Date (only one operator allowed at a time).
-"""
-input SearchByScalarDateOrNull {
-  """Equal (`=`)."""
-  equal: Date
-
-  """Not Equal (`!=`)."""
-  notEqual: Date
-
-  """Less than (`<`)."""
-  lt: Date
-
-  """Less than or equal to (`<=`)."""
-  lte: Date
-
-  """Greater than (`>`)."""
-  gt: Date
-
-  """Greater than or equal to (`>=`)."""
-  gte: Date
-
-  """Within a set of values."""
-  in: [Date!]
-
-  """Outside a set of values."""
-  notIn: [Date!]
-
-  """Within a range."""
-  between: SearchByTypeRangeDate
-
-  """Outside a range."""
-  notBetween: SearchByTypeRangeDate
-
-  """Is NULL?"""
-  isNull: SearchByTypeFlag
-
-  """Is NOT NULL?"""
-  isNotNull: SearchByTypeFlag
-}
-
-"""
-Available operators for scalar ID! (only one operator allowed at a time).
-"""
-input SearchByScalarID {
-  """Equal (`=`)."""
-  equal: ID
-
-  """Not Equal (`!=`)."""
-  notEqual: ID
-
-  """Within a set of values."""
-  in: [ID!]
-
-  """Outside a set of values."""
-  notIn: [ID!]
-}
-
-"""
-Available operators for scalar Int! (only one operator allowed at a time).
-"""
-input SearchByScalarInt {
-  """Equal (`=`)."""
-  equal: Int
-
-  """Not Equal (`!=`)."""
-  notEqual: Int
-
-  """Less than (`<`)."""
-  lt: Int
-
-  """Less than or equal to (`<=`)."""
-  lte: Int
-
-  """Greater than (`>`)."""
-  gt: Int
-
-  """Greater than or equal to (`>=`)."""
-  gte: Int
-
-  """Within a set of values."""
-  in: [Int!]
-
-  """Outside a set of values."""
-  notIn: [Int!]
-
-  """Within a range."""
-  between: SearchByTypeRangeInt
-
-  """Outside a range."""
-  notBetween: SearchByTypeRangeInt
-}
-
-"""
-Available operators for scalar String! (only one operator allowed at a time).
-"""
-input SearchByScalarString {
-  """Equal (`=`)."""
-  equal: String
-
-  """Not Equal (`!=`)."""
-  notEqual: String
-
-  """Like."""
-  like: String
-
-  """Not like."""
-  notLike: String
-
-  """Within a set of values."""
-  in: [String!]
-
-  """Outside a set of values."""
-  notIn: [String!]
-}
-
-enum SearchByTypeFlag {
-  yes
-}
-
-input SearchByTypeRangeDate {
-  min: Date!
-  max: Date!
-}
-
-input SearchByTypeRangeInt {
-  min: Int!
-  max: Int!
-}
-
-input UsersQuery {
-  id: ID!
-  name: String!
-}
-
-```
-
-</details>
 
 
 ## Scalars
 
-In addition to standard GraphQL scalars package defines few own:
+In addition to standard GraphQL scalars the package defines few own:
 
 * `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarNumber` - any operator for this scalar will be available for `Int` and `Float`;
 * `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarNull` - additional operators available for nullable scalars;
@@ -411,13 +182,12 @@ return [
 
             // Or re-use existing type
             'DateTime' => 'Date',
-            
+
             // You can also use enum name to redefine default operators for it:
             'MyEnum' => 'Boolean',
         ],
     ],
 ];
-
 ```
 
 
@@ -425,24 +195,24 @@ return [
 
 There are three types of operators:
 
-* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`ComparisonOperator`](./src/SearchBy/Contracts/ComparisonOperator.php) and add it to scalar(s);
-* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`LogicalOperator`](./src/SearchBy/Contracts/LogicalOperator.php) and add it to `Directive::ScalarLogic` scalar;
-* Complex - used to created conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. These operators must implement [`ComplexOperator`](./src/SearchBy/Contracts/ComplexOperator.php) and then should be added for nested input with `@searchByOperator` (by default will be used [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator):
-  
+* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to scalar(s);
+* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to `Directive::ScalarLogic` scalar;
+* Complex - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. These operators must implement [`ComplexOperator`](./src/SearchBy/Contracts/ComplexOperator.php) (by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used, you can use it as example):
+
     ```graphql
     type Query {
-      users(where: UsersQuery @searchBy): ID! @all
-      comments(where: CommentsQuery @searchBy): ID! @all
+        users(where: UsersQuery @searchBy): ID! @all
+        comments(where: CommentsQuery @searchBy): ID! @all
     }
-    
+
     input UsersQuery {
-      id: ID!
-      name: String!
+        id: ID!
+        name: String!
     }
-    
+
     input CommentsQuery {
-      text: String!
-      user: UsersQuery @searchByOperator(class: "App\\MyComplexOperator")
+        text: String!
+        user: UsersQuery @myComplexOperator
     }
     ```
 
@@ -470,7 +240,7 @@ How to use:
 type Query {
   "You can use normal input type"
   users(order: UsersSort @sortBy): ID! @all
-    
+
   "or `_` to generate type automatically 😛"
   comments(order: _ @sortBy): [Comment!]! @all
 }
@@ -576,7 +346,7 @@ input UsersSort {
 // AppProvider
 
 $this->app->bind(
-    LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\ColumnResolver::class,  
+    LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\ColumnResolver::class,
     MyScoutColumnResolver::class,
 );
 ```
@@ -588,7 +358,7 @@ As you can see in the example above you can use the special placeholder `_` inst
 
 - with list/array type
 - with `@field` directive
-- with `@sortByUnsortable` directive 
+- with `@sortByUnsortable` directive
 - with any directive that implements [`Unsortable`](./src/SortBy/Contracts/Unsortable.php)
 
 

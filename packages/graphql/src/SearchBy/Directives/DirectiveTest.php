@@ -4,50 +4,47 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Contracts\Config\Repository;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\EndsWith;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\StartsWith;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
-use ReflectionMethod;
+use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 
-use function sort;
+use function is_array;
+use function json_encode;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
- *
- * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
  */
 class DirectiveTest extends TestCase {
+    use WithTestObject;
+    use MakesGraphQLRequests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -55,124 +52,17 @@ class DirectiveTest extends TestCase {
      *
      * @dataProvider dataProviderManipulateArgDefinition
      *
-     * @param Closure(self): GraphQLExpectedSchema $expected
+     * @param Closure(static): GraphQLExpectedSchema $expected
+     * @param Closure(static): void                  $prepare
      */
-    public function testManipulateArgDefinition(Closure $expected, string $graphql): void {
+    public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+        if ($prepare) {
+            $prepare($this);
+        }
+
         self::assertGraphQLSchemaEquals(
             $expected($this),
             $this->getTestData()->file($graphql),
-        );
-    }
-
-    /**
-     * @covers ::manipulateArgDefinition
-     */
-    public function testManipulateArgDefinitionDirectiveArguments(): void {
-        // We need to check the arguments of the directive, but the method is
-        // protected -> this is a little hack to unprotect it.
-        $method = new ReflectionMethod(Directive::class, 'directiveArgValue');
-
-        $method->setAccessible(true);
-
-        // Load schema and get Query
-        $locator = $this->app->make(DirectiveLocator::class);
-        $schema  = $this->getGraphQLSchema($this->getTestData()->file('~full.graphql'));
-        $types   = $schema->getTypeMap();
-        $query   = $types['Query'];
-
-        self::assertInstanceOf(ObjectType::class, $query);
-
-        // Collect
-        $operators = [];
-
-        foreach ($query->getFields() as $field) {
-            $node       = $field->getArg('where')?->astNode;
-            $directives = $locator->associatedOfType($node, Directive::class);
-
-            self::assertCount(1, $directives);
-
-            $operators[$field->name] = $method->invoke($directives->first(), Directive::ArgOperators);
-
-            sort($operators[$field->name]);
-        }
-
-        self::assertEquals(
-            [
-                'a' => [
-                    Between::class,
-                    Contains::class,
-                    EndsWith::class,
-                    Equal::class,
-                    GreaterThan::class,
-                    GreaterThanOrEqual::class,
-                    In::class,
-                    IsNotNull::class,
-                    IsNull::class,
-                    LessThan::class,
-                    LessThanOrEqual::class,
-                    Like::class,
-                    NotBetween::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    NotLike::class,
-                    StartsWith::class,
-                    Relation::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-                'b' => [
-                    Between::class,
-                    Contains::class,
-                    EndsWith::class,
-                    Equal::class,
-                    GreaterThan::class,
-                    GreaterThanOrEqual::class,
-                    In::class,
-                    IsNotNull::class,
-                    IsNull::class,
-                    LessThan::class,
-                    LessThanOrEqual::class,
-                    Like::class,
-                    NotBetween::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    NotLike::class,
-                    StartsWith::class,
-                    Relation::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-                'c' => [
-                    Equal::class,
-                    In::class,
-                    IsNotNull::class,
-                    IsNull::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-                'd' => [
-                    Between::class,
-                    Equal::class,
-                    GreaterThan::class,
-                    GreaterThanOrEqual::class,
-                    In::class,
-                    LessThan::class,
-                    LessThanOrEqual::class,
-                    NotBetween::class,
-                    NotEqual::class,
-                    NotIn::class,
-                    Relation::class,
-                    AllOf::class,
-                    AnyOf::class,
-                    Not::class,
-                ],
-            ],
-            $operators,
         );
     }
 
@@ -246,33 +136,104 @@ class DirectiveTest extends TestCase {
      *
      * @dataProvider dataProviderHandleBuilder
      *
-     * @param BuilderFactory $builder
-     * @param array<mixed>   $input
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param Closure(static): object                                $builderFactory
      */
-    public function testHandleBuilder(bool|Exception $expected, Closure $builder, array $input): void {
+    public function testDirective(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+    ): void {
+        $model = json_encode(TestObject::class, JSON_THROW_ON_ERROR);
+        $path  = is_array($expected) ? 'data.test' : 'errors.0.message';
+        $body  = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
+
+        $this
+            ->useGraphQLSchema(
+                /** @lang GraphQL */
+                <<<GRAPHQL
+                type Query {
+                    test(input: Test @searchBy): [TestObject!]!
+                    @all(model: {$model})
+                }
+
+                input Test {
+                    a: Int!
+                    b: String
+                }
+
+                type TestObject {
+                    id: String!
+                }
+                GRAPHQL,
+            )
+            ->graphQL(
+                /** @lang GraphQL */
+                <<<'GRAPHQL'
+                query test($input: SearchByConditionTest) {
+                    test(input: $input) {
+                        id
+                    }
+                }
+                GRAPHQL,
+                [
+                    'input' => $value,
+                ],
+            )
+            ->assertThat(
+                new Response(
+                    new Ok(),
+                    new JsonContentType(),
+                    new JsonBody(
+                        new JsonMatchesFragment($path, $body),
+                    ),
+                ),
+            );
+    }
+
+    /**
+     * @covers ::handleBuilder
+     *
+     * @dataProvider dataProviderHandleBuilder
+     *
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param Closure(static): object                                $builderFactory
+     */
+    public function testHandleBuilder(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+    ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
-        $builder   = $builder($this);
-        $directive = new class($this->app) extends Directive {
-            /**
-             * @inheritDoc
-             */
-            protected function directiveArgValue(string $name, $default = null): mixed {
-                return $name !== Directive::ArgOperators
-                    ? parent::directiveArgValue($name, $default)
-                    : [
-                        Not::class,
-                        AllOf::class,
-                        AnyOf::class,
-                        Equal::class,
-                        NotEqual::class,
-                    ];
+        $this->useGraphQLSchema(
+            /** @lang GraphQL */
+            <<<'GRAPHQL'
+            type Query {
+                test(input: Test @searchBy): String! @mock
             }
-        };
 
-        self::assertEquals($expected, (bool) $directive->handleBuilder($builder, $input));
+            input Test {
+                a: Int!
+                b: String
+            }
+            GRAPHQL,
+        );
+
+        $definitionNode = Parser::inputValueDefinition('input: SearchByConditionTest');
+        $directiveNode  = Parser::directive('@test');
+        $directive      = $this->app->make(Directive::class)->hydrate($directiveNode, $definitionNode);
+        $builder        = $builderFactory($this);
+        $actual         = $directive->handleBuilder($builder, $value);
+
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $actual);
+            self::assertDatabaseQueryEquals($expected, $actual);
+        } else {
+            self::fail('Something wrong...');
+        }
     }
 
     // </editor-fold>
@@ -298,6 +259,23 @@ class DirectiveTest extends TestCase {
                         ]);
                 },
                 '~full.graphql',
+                null,
+            ],
+            'example'                        => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~example-expected.graphql'),
+                    ));
+                },
+                '~example.graphql',
+                static function (TestCase $test): void {
+                    $package = Package::Name;
+                    $config  = $test->app->make(Repository::class);
+
+                    $config->set("{$package}.search_by.scalars.Date", [
+                        Between::class,
+                    ]);
+                },
             ],
             'only used type should be added' => [
                 static function (self $test): GraphQLExpectedSchema {
@@ -312,6 +290,41 @@ class DirectiveTest extends TestCase {
                         ]);
                 },
                 '~usedonly.graphql',
+                null,
+            ],
+            'custom complex operators'       => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~custom-complex-operators-expected.graphql'),
+                    ));
+                },
+                '~custom-complex-operators.graphql',
+                static function (TestCase $test): void {
+                    $locator   = $test->app->make(DirectiveLocator::class);
+                    $directive = new class() extends Relation {
+                        public static function getName(): string {
+                            return 'custom';
+                        }
+
+                        public function getFieldDescription(): string {
+                            return 'Custom condition.';
+                        }
+
+                        public static function getDirectiveName(): string {
+                            return '@customComplexOperator';
+                        }
+
+                        public static function definition(): string {
+                            $name = static::getDirectiveName();
+
+                            return /** @lang GraphQL */ <<<GRAPHQL
+                                directive ${name}(value: String) on INPUT_FIELD_DEFINITION
+                            GRAPHQL;
+                        }
+                    };
+
+                    $locator->setResolved('customComplexOperator', $directive::class);
+                },
             ],
         ];
     }
@@ -323,8 +336,80 @@ class DirectiveTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'valid condition' => [
-                    true,
+                'empty'               => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        // empty
+                    ],
+                ],
+                'empty operators'     => [
+                    new SearchConditionEmpty(),
+                    [
+                        'a' => [
+                            // empty
+                        ],
+                    ],
+                ],
+                'too many properties' => [
+                    new SearchConditionTooManyProperties(['a', 'b']),
+                    [
+                        'a' => [
+                            'notEqual' => 1,
+                        ],
+                        'b' => [
+                            'notEqual' => 'a',
+                        ],
+                    ],
+                ],
+                'too many operators'  => [
+                    new SearchConditionTooManyOperators(['equal', 'notEqual']),
+                    [
+                        'a' => [
+                            'equal'    => 1,
+                            'notEqual' => 1,
+                        ],
+                    ],
+                ],
+                'null'                => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    null,
+                ],
+                'valid condition'     => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                            where
+                                not (
+                                    ("a" != ?)
+                                    and (
+                                        ("a" = ?) or ("b" != ?)
+                                    )
+                                )
+                        SQL
+                        ,
+                        'bindings' => [1, 2, 'a'],
+                    ],
                     [
                         'not' => [
                             'allOf' => [
@@ -342,7 +427,7 @@ class DirectiveTest extends TestCase {
                                         ],
                                         [
                                             'b' => [
-                                                'notEqual' => 3,
+                                                'notEqual' => 'a',
                                             ],
                                         ],
                                     ],

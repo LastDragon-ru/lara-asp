@@ -4,17 +4,22 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
@@ -23,8 +28,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\OperatorDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\RelationOperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
@@ -35,8 +38,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -45,8 +47,6 @@ use function array_map;
 use function array_shift;
 use function count;
 use function implode;
-use function is_null;
-use function json_encode;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     protected Metadata $metadata;
@@ -66,43 +66,20 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="Update">
     // =========================================================================
     public function update(DirectiveNode $directive, InputValueDefinitionNode $node): void {
-        // Transform
-        $def       = $this->getTypeDefinitionNode($node);
-        $operators = $this->metadata->getUsage()->get($this->getNodeName($def));
+        $def  = $this->getTypeDefinitionNode($node);
+        $type = null;
 
-        if (!$operators) {
-            $type = null;
-            $name = null;
+        if ($def instanceof InputObjectTypeDefinitionNode || $def instanceof InputObjectType) {
+            $name = $this->getInputType($def);
+            $type = Parser::typeReference($name);
+        }
 
-            if ($def instanceof InputObjectTypeDefinitionNode || $def instanceof InputObjectType) {
-                $name = $this->getInputType($def);
-                $type = Parser::typeReference($name);
-            }
-
-            if (!($type instanceof NamedTypeNode)) {
-                throw new FailedToCreateSearchCondition($this->getNodeName($node));
-            }
-
-            // Update
-            $node->type = $type;
-            $operators  = $name
-                ? $this->metadata->getUsage()->get($name)
-                : [];
+        if (!($type instanceof NamedTypeNode)) {
+            throw new FailedToCreateSearchCondition($this->getNodeName($node));
         }
 
         // Update
-        $this->updateDirective($directive, [
-            Directive::ArgOperators => $operators,
-        ]);
-    }
-
-    /**
-     * @param array<string, mixed> $arguments
-     */
-    protected function updateDirective(DirectiveNode $directive, array $arguments): void {
-        foreach ($arguments as $name => $value) {
-            $directive->arguments[] = Parser::constArgument($name.': '.json_encode($value));
-        }
+        $node->type = $type;
     }
     // </editor-fold>
 
@@ -110,7 +87,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // =========================================================================
     public function getType(string $type, string $scalar = null, bool $nullable = null): string {
         // Exists?
-        $internal = $this->getTypeName($type, $scalar, $nullable);
+        $internal = $this->getTypeName($type::getName(), $scalar, $nullable);
         $name     = $this->metadata->getType($internal);
 
         if ($name && $this->isTypeDefinitionExists($name)) {
@@ -118,7 +95,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Create new
-        $definition = $this->metadata->getDefinition($type)->get($internal, $scalar, $nullable);
+        $definition = $this->metadata->getDefinition($type)->getTypeDefinitionNode($internal, $scalar, $nullable);
 
         if (!$definition) {
             throw new DefinitionImpossibleToCreateType($type, $scalar, $nullable);
@@ -139,28 +116,25 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getConditionTypeName($node);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addType($name);
-
             return $name;
         }
 
         // Add type
-        $usage     = $this->metadata->getUsage()->start($name);
         $operators = $this->getScalarOperators(Directive::ScalarLogic, false);
         $scalar    = $this->getScalarTypeNode($name);
-        $content   = implode("\n", array_map(function (Operator $operator) use ($scalar): string {
-            return $this->getOperatorType($operator, $scalar, false);
-        }, $operators));
-        $type      = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Available conditions for input {$this->getNodeName($node)} (only one property allowed at a time).
-            """
-            input {$name} {
-                {$content}
-            }
-            DEF,
-        ));
+        $content   = $this->getOperatorsFields($operators, $scalar);
+        $type      = $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
+                <<<DEF
+                """
+                Available conditions for `{$this->getNodeTypeFullName($node)}` (only one property allowed at a time).
+                """
+                input {$name} {
+                    {$content}
+                }
+                DEF,
+            ),
+        );
 
         // Add searchable fields
         $description = 'Property condition.';
@@ -214,7 +188,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             // Create new Field
-            if ($fieldDefinition) {
+            if ($fieldDefinition instanceof InputValueDefinitionNode) {
+                $type->fields[] = $fieldDefinition;
+            } elseif ($fieldDefinition) {
                 if (!$this->copyFieldToType($type, $field, $fieldDefinition, $description)) {
                     throw new FailedToCreateSearchConditionForField($this->getNodeName($node), $fieldName);
                 }
@@ -222,9 +198,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 throw new NotImplemented($fieldType);
             }
         }
-
-        // End usage
-        $this->metadata->getUsage()->end($usage);
 
         // Return
         return $name;
@@ -235,34 +208,28 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getEnumTypeName($type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addType($name);
-
             return $name;
         }
 
         // Determine supported operators
         $enum      = $this->getNodeName($type);
-        $usage     = $this->metadata->getUsage()->start($name);
         $operators = $this->getEnumOperators($enum, $nullable);
 
         // Add type
-        $content = implode("\n", array_map(function (Operator $operator) use ($type, $nullable): string {
-            return $this->getOperatorType($operator, $type, $nullable);
-        }, $operators));
+        $content = $this->getOperatorsFields($operators, $type);
 
-        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Available operators for enum {$enum} (only one operator allowed at a time).
-            """
-            input {$name} {
-                {$content}
-            }
-            DEF,
-        ));
-
-        // End usage
-        $this->metadata->getUsage()->end($usage);
+        $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
+                <<<DEF
+                """
+                Available operators for `{$this->getNodeTypeFullName($type)}` (only one operator allowed at a time).
+                """
+                input {$name} {
+                    {$content}
+                }
+                DEF,
+            ),
+        );
 
         // Return
         return $name;
@@ -273,98 +240,109 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $name = $this->getScalarTypeName($type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addType($name);
-
             return $name;
         }
 
         // Determine supported operators
-        $usage     = $this->metadata->getUsage()->start($name);
         $scalar    = $this->getNodeName($type);
         $operators = $this->getScalarOperators($scalar, $nullable);
 
         // Add type
         $mark    = $nullable ? '' : '!';
-        $content = implode("\n", array_map(function (Operator $operator) use ($type, $nullable): string {
-            return $this->getOperatorType($operator, $type, $nullable);
-        }, $operators));
+        $content = $this->getOperatorsFields($operators, $type);
 
-        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Available operators for scalar {$scalar}{$mark} (only one operator allowed at a time).
-            """
-            input {$name} {
-                {$content}
-            }
-            DEF,
-        ));
-
-        // End usage
-        $this->metadata->getUsage()->end($usage);
+        $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
+                <<<DEF
+                """
+                Available operators for `scalar {$scalar}{$mark}` (only one operator allowed at a time).
+                """
+                input {$name} {
+                    {$content}
+                }
+                DEF,
+            ),
+        );
 
         // Return
         return $name;
     }
 
-    protected function getOperatorType(
+    protected function getOperatorField(
         Operator $operator,
-        ScalarTypeDefinitionNode|ScalarType|EnumTypeDefinitionNode|EnumType $node,
-        bool $nullable,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
+        string $field = null,
     ): string {
-        return $operator->getDefinition($this, $this->getNodeName($node), $nullable);
+        $type        = $this->getNodeName($type);
+        $type        = $operator->getFieldType($this, $type) ?? $type;
+        $field       = $field ?: $operator::getName();
+        $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
+        $directive   = $directive instanceof DirectiveNode
+            ? Printer::doPrint($directive)
+            : $directive;
+        $description = $operator->getFieldDescription();
+
+        return <<<DEF
+            """
+            {$description}
+            """
+            {$field}: {$type}
+            {$directive}
+        DEF;
+    }
+
+    /**
+     * @param array<Operator> $operators
+     */
+    protected function getOperatorsFields(
+        array $operators,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
+    ): string {
+        return implode(
+            "\n",
+            array_map(
+                function (Operator $operator) use ($type): string {
+                    return $this->getOperatorField($operator, $type);
+                },
+                $operators,
+            ),
+        );
     }
 
     protected function getComplexType(
         InputValueDefinitionNode|InputObjectField $field,
         InputObjectTypeDefinitionNode|InputObjectType $type,
         bool $nullable,
-    ): string {
-        // Exists?
+    ): InputValueDefinitionNode {
+        // Prepare
         $operator = $this->getComplexOperator($field, $type);
-        $name     = $this->getComplexTypeName($type, $operator);
+        $name     = $operator->getFieldType($this, $this->getNodeName($type))
+            ?? $this->getComplexTypeName($type, $operator);
 
-        if ($this->isTypeDefinitionExists($name)) {
-            $this->metadata->getUsage()->addType($name);
+        // Definition
+        if (!$this->isTypeDefinitionExists($name)) {
+            // Fake
+            $this->addFakeTypeDefinition($name);
 
-            return $name;
+            // Create
+            $definition = $operator->getDefinition($this, $field, $type, $name, $nullable);
+
+            if ($name !== $this->getNodeName($definition)) {
+                throw new ComplexOperatorInvalidTypeName($operator::class, $name, $this->getNodeName($definition));
+            }
+
+            $this->removeFakeTypeDefinition($name);
+            $this->addTypeDefinition($definition);
         }
-
-        // Fake
-        $this->addFakeTypeDefinition($name);
-
-        // Create
-        $usage                = $this->metadata->getUsage()->start($name);
-        $definition           = $operator->getDefinition($this, $field, $type, $name, $nullable);
-        $definition->fields[] = Parser::inputValueDefinition(
-            <<<DEF
-            """
-            Complex operator marker.
-            """
-            {$operator->getName()}: {$this->getType(Flag::Name)}! = yes
-            DEF,
-        );
-
-        if ($name !== $this->getNodeName($definition)) {
-            throw new ComplexOperatorInvalidTypeName($operator::class, $name, $this->getNodeName($definition));
-        }
-
-        $this->removeFakeTypeDefinition($name);
-        $this->addTypeDefinition($definition);
-
-        // End usage
-        $this->metadata->getUsage()->end($usage);
 
         // Return
-        return $name;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Defaults">
-    // =========================================================================
-    protected function addDefaultTypeDefinitions(): void {
-        $this->metadata->addDefinition(Flag::Name, Flag::class);
-        $this->metadata->addDefinition(Range::Name, Range::class);
+        return Parser::inputValueDefinition(
+            $this->getOperatorField(
+                $operator,
+                $this->getTypeDefinitionNode($name),
+                $this->getNodeName($field),
+            ),
+        );
     }
     // </editor-fold>
 
@@ -391,7 +369,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         ComplexOperator $operator,
     ): string {
         $name     = $this->getNodeName($node);
-        $operator = Str::studly($operator->getName());
+        $operator = Str::studly($operator::getName());
 
         return Directive::Name."Complex{$operator}{$name}";
     }
@@ -429,26 +407,19 @@ class Manipulator extends AstManipulator implements TypeProvider {
         InputValueDefinitionNode|InputObjectTypeDefinitionNode|InputObjectField|InputObjectType ...$nodes,
     ): ComplexOperator {
         // Class
-        $class = null;
+        $operator = null;
 
         do {
-            $node      = array_shift($nodes);
-            $directive = $node
-                ? $this->getNodeDirective($node, OperatorDirective::class)
+            $node     = array_shift($nodes);
+            $operator = $node
+                ? $this->getNodeDirective($node, ComplexOperator::class)
                 : null;
-
-            if ($directive instanceof OperatorDirective) {
-                $class = $directive->getClass();
-            }
-        } while ($node && is_null($class));
+        } while ($node && $operator === null);
 
         // Default
-        if (!$class) {
-            $class = $this->container->make(RelationOperatorDirective::class)->getClass();
+        if (!$operator) {
+            $operator = $this->metadata->getComplexOperatorInstance(Relation::class);
         }
-
-        // Return
-        $operator = $this->metadata->getComplexOperatorInstance($class);
 
         // Return
         return $operator;
@@ -458,16 +429,18 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="AST Helpers">
     // =========================================================================
     protected function addFakeTypeDefinition(string $name): void {
-        $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Fake type to prevent circular dependency infinite loop.
-            """
-            input {$name} {
-                fake: Boolean! = true
-            }
-            DEF,
-        ));
+        $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
+                <<<DEF
+                """
+                Fake type to prevent circular dependency infinite loop.
+                """
+                input {$name} {
+                    fake: Boolean! = true
+                }
+                DEF,
+            ),
+        );
     }
 
     protected function removeFakeTypeDefinition(string $name): void {

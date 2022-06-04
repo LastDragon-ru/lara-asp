@@ -182,7 +182,7 @@ abstract class AstManipulator {
         return $name;
     }
 
-    public function getNodeName(
+    protected function getNodeName(
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $node,
     ): string {
         $name = $node->name;
@@ -194,7 +194,7 @@ abstract class AstManipulator {
         return $name;
     }
 
-    protected function getNodeTypeFullName(
+    public function getNodeTypeFullName(
         Node|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
         $name   = $this->getNodeTypeName($node);

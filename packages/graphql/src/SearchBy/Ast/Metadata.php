@@ -6,13 +6,7 @@ use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinitionProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotDefinition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ClassIsNotOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionAlreadyDefined;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
@@ -40,7 +34,6 @@ use function array_map;
 use function array_push;
 use function array_unique;
 use function array_values;
-use function is_a;
 use function is_array;
 use function is_string;
 
@@ -135,15 +128,10 @@ class Metadata {
      */
     protected array $types = [];
 
-    /**
-     * @var Usage<Operator|ComplexOperator>
-     */
-    protected Usage $usage;
-
     public function __construct(
         protected Container $container,
     ) {
-        $this->usage = new Usage();
+        // empty
     }
 
     public function isScalar(string $scalar): bool {
@@ -212,23 +200,8 @@ class Metadata {
      */
     public function getOperatorInstance(string $class): Operator {
         if (!isset($this->operators[$class])) {
-            // Is operator?
-            if (!is_a($class, Operator::class, true)) {
-                throw new ClassIsNotOperator($class);
-            }
-
-            // Create Instance
-            $operator = $this->container->make($class);
-
-            if ($operator instanceof TypeDefinitionProvider) {
-                $this->addDefinitions($operator);
-            }
-
-            // Save
-            $this->operators[$class] = $operator;
+            $this->operators[$class] = $this->container->make($class);
         }
-
-        $this->getUsage()->addValue($class);
 
         return $this->operators[$class];
     }
@@ -238,57 +211,21 @@ class Metadata {
      */
     public function getComplexOperatorInstance(string $class): ComplexOperator {
         if (!isset($this->complex[$class])) {
-            // Is operator?
-            if (!is_a($class, ComplexOperator::class, true)) {
-                throw new ClassIsNotComplexOperator($class);
-            }
-
-            // Create Instance
-            $operator = $this->container->make($class);
-
-            if ($operator instanceof TypeDefinitionProvider) {
-                $this->addDefinitions($operator);
-            }
-
-            // Save
-            $this->complex[$class] = $operator;
+            $this->complex[$class] = $this->container->make($class);
         }
-
-        $this->getUsage()->addValue($class);
 
         return $this->complex[$class];
-    }
-
-    public function addDefinitions(TypeDefinitionProvider $provider): void {
-        foreach ($provider->getDefinitions() as $name => $definition) {
-            $this->addDefinition($name, $definition);
-        }
     }
 
     /**
      * @param class-string<TypeDefinition> $definition
      */
-    public function addDefinition(string $type, string $definition): void {
-        // Defined?
-        if (isset($this->definitions[$type]) && $this->definitions[$type]::class !== $definition) {
-            throw new DefinitionAlreadyDefined($type);
+    public function getDefinition(string $definition): TypeDefinition {
+        if (!isset($this->definitions[$definition])) {
+            $this->definitions[$definition] = $this->container->make($definition);
         }
 
-        // Is Definition?
-        if (!is_a($definition, TypeDefinition::class, true)) {
-            throw new ClassIsNotDefinition($definition);
-        }
-
-        // Add
-        $this->definitions[$type] = $this->container->make($definition);
-    }
-
-    public function getDefinition(string $type): TypeDefinition {
-        if (!isset($this->definitions[$type])) {
-            throw new DefinitionUnknown($type);
-        }
-
-        return $this->definitions[$type];
+        return $this->definitions[$definition];
     }
 
     public function getType(string $type): ?string {
@@ -297,12 +234,5 @@ class Metadata {
 
     public function addType(string $type, string $fullyQualifiedName): void {
         $this->types[$type] = $fullyQualifiedName;
-    }
-
-    /**
-     * @return Usage<Operator|ComplexOperator>
-     */
-    public function getUsage(): Usage {
-        return $this->usage;
     }
 }

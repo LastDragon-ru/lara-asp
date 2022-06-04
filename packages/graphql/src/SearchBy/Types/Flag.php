@@ -9,9 +9,15 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
 use function is_null;
 
 class Flag implements TypeDefinition {
-    public const Name = 'Flag';
+    public static function getName(): string {
+        return 'Flag';
+    }
 
-    public function get(string $name, string $scalar = null, bool $nullable = null): ?TypeDefinitionNode {
+    public function getTypeDefinitionNode(
+        string $name,
+        string $scalar = null,
+        bool $nullable = null,
+    ): ?TypeDefinitionNode {
         $type = null;
 
         if (is_null($scalar) && is_null($nullable)) {

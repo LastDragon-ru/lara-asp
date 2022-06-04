@@ -86,7 +86,7 @@ class QueueableConfigurator {
      */
     protected function getQueueableProperties(): array {
         // TODO [laravel] [update] Check available queue properties.
-        /** SEE {@link https://laravel.com/docs/8.x/queues} */
+        /** SEE {@link https://laravel.com/docs/queues} */
         return [
             'connection'              => null,  // Connection name for the job
             'queue'                   => null,  // Queue name for the job

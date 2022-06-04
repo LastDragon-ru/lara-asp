@@ -33,6 +33,14 @@ class User extends Model {
     }
 
     /**
+     * @return HasOne<User>
+     */
+    public function parent(): HasOne {
+        return $this
+            ->hasOne(self::class, 'foreignKey', 'localKey');
+    }
+
+    /**
      * @return BelongsTo<Organization, User>
      */
     public function organization(): BelongsTo {

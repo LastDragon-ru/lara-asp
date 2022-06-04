@@ -7,35 +7,40 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Grammars\SqlServerGrammar;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComparisonOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 use function strtr;
 
-class Contains extends BaseOperator implements ComparisonOperator {
-    public function getName(): string {
+class Contains extends BaseOperator {
+    public static function getName(): string {
         return 'contains';
     }
 
-    protected function getDescription(): string {
+    public function getFieldDescription(): string {
         return 'Contains.';
     }
 
-    public function apply(
-        EloquentBuilder|QueryBuilder $builder,
-        string $property,
-        mixed $value,
-    ): EloquentBuilder|QueryBuilder {
-        $value     = Cast::toString($value);
-        $property  = $builder->getGrammar()->wrap($property);
+    public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
+        if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
+            throw new OperatorUnsupportedBuilder($this, $builder);
+        }
+
+        $property  = $builder->getGrammar()->wrap((string) $property);
+        $value     = (string) Cast::toStringable($argument->toPlain());
         $character = $this->getEscapeCharacter();
 
-        return $builder->whereRaw(
+        $builder->whereRaw(
             "{$property} LIKE ? ESCAPE '{$character}'",
             [
                 $this->value($this->escape($builder, $value)),
             ],
         );
+
+        return $builder;
     }
 
     protected function value(string $value): string {

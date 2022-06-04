@@ -15,6 +15,7 @@ parameters:
         # Larastan doesn't support phpstan/phpstan-strict-rules
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Connection\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\:\\:assert[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Connection(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\[^\\\\]+(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"

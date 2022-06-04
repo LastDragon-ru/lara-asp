@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\RelationOperatorDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 
-class SearchByRelationDirective extends RelationOperatorDirective {
-    // Lighthouse loads all classes from directive namespace this leads to
+class SearchByOperatorAnyOfDirective extends AnyOf {
+    // Lighthouse loads Any classes from directive namespace this leads to
     // 'Class "Orchestra\Testbench\TestCase" not found' error for our *Test
     // classes. This class required to avoid this error.
 }
