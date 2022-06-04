@@ -100,7 +100,7 @@ Name                  | Description
 
 # Laravel Response Testing
 
-What is wrong with the [Laravel approach](https://laravel.com/docs/8.x/http-tests)? Well, there are two big problems.
+What is wrong with the [Laravel approach](https://laravel.com/docs/http-tests)? Well, there are two big problems.
 
 ## Where is the error?
 

@@ -94,7 +94,7 @@ type Query {
 }
 
 """
-Convert Input into Search Conditions.
+Use Input as Search Conditions for the current Builder.
 """
 directive @searchBy
 on

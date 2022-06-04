@@ -13,8 +13,8 @@ enum TestEnum {
 Conditions for the related objects (`has()`/`doesntHave()`) for `input TestTypeA`.
 
 See also:
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationTestTypeA {
     """
@@ -383,7 +383,7 @@ type Query {
 }
 
 """
-Convert Input into Search Conditions.
+Use Input as Search Conditions for the current Builder.
 """
 directive @searchBy
 on

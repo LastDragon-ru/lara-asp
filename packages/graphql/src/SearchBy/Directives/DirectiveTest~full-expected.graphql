@@ -11,8 +11,8 @@ enum SearchByTypeFlag {
 Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedA`.
 
 See also:
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNestedA {
     """
@@ -40,8 +40,8 @@ input SearchByComplexRelationNestedA {
 Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedB`.
 
 See also:
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNestedB {
     """
@@ -69,8 +69,8 @@ input SearchByComplexRelationNestedB {
 Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedC`.
 
 See also:
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
 input SearchByComplexRelationNestedC {
     """
@@ -934,7 +934,7 @@ type Query {
 }
 
 """
-Convert Input into Search Conditions.
+Use Input as Search Conditions for the current Builder.
 """
 directive @searchBy
 on

@@ -54,7 +54,7 @@ class Directive extends BaseDirective implements ArgManipulator, ArgBuilderDirec
     public static function definition(): string {
         return /** @lang GraphQL */ <<<'GRAPHQL'
             """
-            Convert Input into Search Conditions.
+            Use Input as Search Conditions for the current Builder.
             """
             directive @searchBy on ARGUMENT_DEFINITION
         GRAPHQL;

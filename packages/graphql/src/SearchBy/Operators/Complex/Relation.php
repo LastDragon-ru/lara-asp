@@ -48,8 +48,8 @@ class Relation extends BaseOperator implements ComplexOperator {
             Conditions for the related objects (`has()`/`doesntHave()`) for `{$ast->getNodeTypeFullName($type)}`.
 
             See also:
-            * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-existence
-            * https://laravel.com/docs/8.x/eloquent-relationships#querying-relationship-absence
+            * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+            * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
             """
             input {$name} {
                 """
