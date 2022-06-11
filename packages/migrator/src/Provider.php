@@ -10,7 +10,6 @@ use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithCommands;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawMigration;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
@@ -19,8 +18,6 @@ use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 use function array_merge;
 
 class Provider extends ServiceProvider implements DeferrableProvider {
-    use ProviderWithCommands;
-
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
     // =========================================================================
     /**
@@ -34,7 +31,7 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     }
 
     public function boot(): void {
-        $this->bootCommands(
+        $this->commands(
             RawMigration::class,
             RawSeeder::class,
         );
