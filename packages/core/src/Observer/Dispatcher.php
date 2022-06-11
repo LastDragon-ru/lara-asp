@@ -41,8 +41,6 @@ class Dispatcher implements Subject {
 
     /**
      * @param TContext $context
-     *
-     * @return $this<TContext>
      */
     public function notify(mixed $context = null): static {
         foreach ($this->observers as $observer) {

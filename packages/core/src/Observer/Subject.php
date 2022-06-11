@@ -10,20 +10,13 @@ use Closure;
 interface Subject {
     /**
      * @param Closure(TContext):void $observer
-     *
-     * @return $this<TContext>
      */
-    public function attach(Closure $observer): self;
+    public function attach(Closure $observer): static;
 
     /**
      * @param Closure(TContext):void $observer
-     *
-     * @return $this<TContext>
      */
-    public function detach(Closure $observer): self;
+    public function detach(Closure $observer): static;
 
-    /**
-     * @return $this<TContext>
-     */
-    public function reset(): self;
+    public function reset(): static;
 }

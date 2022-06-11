@@ -10,7 +10,7 @@ use function implode;
 
 class Property implements Stringable {
     /**
-     * @var array<string>
+     * @var array<int, string>
      */
     protected array $path;
 
