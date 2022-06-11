@@ -2,11 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Exception;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Translation\Translator;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use Throwable;
+
+use function is_array;
 
 /**
  * @internal
@@ -43,10 +45,13 @@ class DateTimeRuleTest extends TestCase {
      * @covers ::getValue
      *
      * @dataProvider dataProviderGetValue
+     *
+     * @param array{class: class-string<Throwable>, message: string}|string $expected
      */
-    public function testGetValue(string|Exception $expected, ?string $tz, string $value): void {
-        if ($expected instanceof Exception) {
-            self::expectExceptionObject($expected);
+    public function testGetValue(string|array $expected, ?string $tz, string $value): void {
+        if (is_array($expected)) {
+            self::expectException($expected['class']);
+            self::expectExceptionMessageMatches($expected['message']);
         }
 
         $translator = $this->app->make(Translator::class);
@@ -81,17 +86,26 @@ class DateTimeRuleTest extends TestCase {
     public function dataProviderGetValue(): array {
         return [
             'date'                          => [
-                new InvalidArgumentException('Data missing'),
+                [
+                    'class'   => InvalidArgumentException::class,
+                    'message' => '/Data missing|Not enough data available to satisfy format/',
+                ],
                 null,
                 '2102-12-01',
             ],
             'invalid date'                  => [
-                new InvalidArgumentException('Data missing'),
+                [
+                    'class'   => InvalidArgumentException::class,
+                    'message' => '/Data missing|Not enough data available to satisfy format/',
+                ],
                 null,
                 '02-12-01',
             ],
             'datetime without timezone'     => [
-                new InvalidArgumentException('Data missing'),
+                [
+                    'class'   => InvalidArgumentException::class,
+                    'message' => '/Data missing|Not enough data available to satisfy format/',
+                ],
                 null,
                 '2102-12-01T00:00:00',
             ],
