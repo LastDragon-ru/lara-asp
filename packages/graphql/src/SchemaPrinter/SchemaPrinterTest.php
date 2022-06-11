@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
+use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedType;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -33,11 +34,11 @@ class SchemaPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::print
+     * @covers ::printSchema
      *
-     * @dataProvider dataProviderPrint
+     * @dataProvider dataProviderPrintSchema
      */
-    public function testPrint(GraphQLExpectedSchema $expected, ?Settings $settings, int $level): void {
+    public function testPrintSchema(GraphQLExpectedSchema $expected, ?Settings $settings, int $level): void {
         // Types
         $directives = $this->app->make(DirectiveLocator::class);
         $registry   = $this->app->make(TypeRegistry::class);
@@ -139,10 +140,140 @@ class SchemaPrinterTest extends TestCase {
 
         // Test
         $printer = $this->app->make(SchemaPrinter::class)->setSettings($settings)->setLevel($level);
-        $schema  = $this->getGraphQLSchema($this->getTestData()->file('~schema.graphql'));
-        $actual  = $printer->print($schema);
+        $schema  = $this->getGraphQLSchema($this->getTestData()->file('~printSchema-schema.graphql'));
+        $actual  = $printer->printSchema($schema);
 
         $this->assertGraphQLSchemaEquals($expected, $actual);
+    }
+
+    /**
+     * @covers ::printSchemaType
+     *
+     * @dataProvider dataProviderPrintSchemaType
+     */
+    public function testPrintSchemaType(
+        GraphQLExpectedType $expected,
+        ?Settings $settings,
+        int $level,
+        Type|string $type,
+    ): void {
+        // Types
+        $directives = $this->app->make(DirectiveLocator::class);
+        $registry   = $this->app->make(TypeRegistry::class);
+        $directive  = (new class() extends BaseDirective {
+            public static function definition(): string {
+                throw new Exception('Should not be called.');
+            }
+        })::class;
+
+        $codeScalar    = new StringType([
+            'name' => 'CodeScalar',
+        ]);
+        $codeEnum      = new EnumType([
+            'name'   => 'CodeEnum',
+            'values' => ['C', 'B', 'A'],
+        ]);
+        $codeInterface = new InterfaceType([
+            'name'        => 'CodeInterface',
+            'astNode'     => Parser::interfaceTypeDefinition('interface CodeInterface @codeDirective'),
+            'description' => 'Description',
+            'fields'      => [
+                [
+                    'name' => 'a',
+                    'type' => Type::nonNull(Type::boolean()),
+                ],
+            ],
+        ]);
+        $codeType      = new ObjectType([
+            'name'        => 'CodeType',
+            'astNode'     => Parser::objectTypeDefinition('type CodeType @schemaDirective'),
+            'description' => 'Description',
+            'fields'      => [
+                [
+                    'name' => 'a',
+                    'type' => Type::boolean(),
+                ],
+            ],
+        ]);
+        $codeUnion     = new UnionType([
+            'name'  => 'CodeUnion',
+            'types' => [
+                $codeType,
+            ],
+        ]);
+        $codeInput     = new InputObjectType([
+            'name'        => 'CodeInput',
+            'astNode'     => Parser::inputObjectTypeDefinition('input InputObjectType @schemaDirective'),
+            'description' => 'Description',
+            'fields'      => [
+                [
+                    'name' => 'a',
+                    'type' => Type::boolean(),
+                ],
+            ],
+        ]);
+
+        $directives->setResolved('schemaDirective', $directive);
+        $directives->setResolved('schemaDirectiveUnused', $directive);
+        $directives->setResolved(
+            'codeDirective',
+            (new class() extends BaseDirective {
+                public static function definition(): string {
+                    return <<<'GRAPHQL'
+                    directive @codeDirective(
+                        enum: CodeDirectiveEnum
+                        input: CodeDirectiveInput
+                        scalar: CodeDirectiveScalar!
+                        custom: [CodeDirectiveScalarCustomClass]
+                    )
+                    repeatable on
+                        | INTERFACE
+                        | SCALAR
+                        | SCHEMA
+
+                    enum CodeDirectiveEnum {
+                        A
+                        B
+                        C
+                    }
+
+                    input CodeDirectiveInput {
+                        a: Int!
+                    }
+
+                    scalar CodeDirectiveScalar
+
+                    scalar CodeDirectiveScalarCustomClass
+                    @scalar(class: "GraphQL\\Type\\Definition\\StringType")
+                    GRAPHQL;
+                }
+            })::class,
+        );
+        $registry->register($codeScalar);
+        $registry->register($codeEnum);
+        $registry->register($codeInterface);
+        $registry->register($codeType);
+        $registry->register($codeUnion);
+        $registry->register($codeInput);
+
+        // Test
+        $printer = $this->app->make(SchemaPrinter::class)->setSettings($settings)->setLevel($level);
+        $schema  = $this->getGraphQLSchema($this->getTestData()->file('~printSchemaType-schema.graphql'));
+        $actual  = $printer->printSchemaType($schema, $type);
+
+        $this->assertGraphQLSchemaTypeEquals($expected, $actual, $schema);
+    }
+
+    /**
+     * @covers ::printType
+     *
+     * @dataProvider dataProviderPrintType
+     */
+    public function testPrintType(GraphQLExpectedType $expected, ?Settings $settings, int $level, Type $type): void {
+        $printer = $this->app->make(SchemaPrinter::class)->setSettings($settings)->setLevel($level);
+        $actual  = $printer->printType($type);
+
+        $this->assertGraphQLTypeEquals($expected, $actual);
     }
     // </editor-fold>
 
@@ -151,11 +282,11 @@ class SchemaPrinterTest extends TestCase {
     /**
      * @return array<string, array<mixed>>
      */
-    public function dataProviderPrint(): array {
+    public function dataProviderPrintSchema(): array {
         return [
             'null'                                             => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~default-settings.graphql'),
+                    $this->getTestData()->file('~printSchema-default-settings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -203,7 +334,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             DefaultSettings::class                             => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~default-settings.graphql'),
+                    $this->getTestData()->file('~printSchema-default-settings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -251,7 +382,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             GraphQLSettings::class                             => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~graphql-settings.graphql'),
+                    $this->getTestData()->file('~printSchema-graphql-settings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -299,7 +430,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class                                => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~test-settings.graphql'),
+                    $this->getTestData()->file('~printSchema-test-settings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',
@@ -351,7 +482,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (no directives definitions)' => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~test-settings-no-directives-definitions.graphql'),
+                    $this->getTestData()->file('~printSchema-test-settings-no-directives-definitions.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -400,7 +531,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (directives in description)' => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~test-settings-directives-in-description.graphql'),
+                    $this->getTestData()->file('~printSchema-test-settings-directives-in-description.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -451,7 +582,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (no normalization)'          => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~test-settings-no-normalization.graphql'),
+                    $this->getTestData()->file('~printSchema-test-settings-no-normalization.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',
@@ -514,7 +645,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (DirectiveDefinitionFilter)' => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~test-settings-directive-definition-filter.graphql'),
+                    $this->getTestData()->file('~printSchema-test-settings-directive-definition-filter.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -573,7 +704,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (TypeDefinitionFilter)'      => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~test-settings-type-definition-filter.graphql'),
+                    $this->getTestData()->file('~printSchema-test-settings-type-definition-filter.graphql'),
                 ))
                     ->setUsedTypes([
                         'Boolean',
@@ -631,7 +762,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (everything)'                => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~test-settings-everything.graphql'),
+                    $this->getTestData()->file('~printSchema-test-settings-everything.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',
@@ -683,6 +814,198 @@ class SchemaPrinterTest extends TestCase {
                     ->setDirectiveFilter(static fn (): bool => true)
                     ->setDirectiveDefinitionFilter(static fn (): bool => true),
                 0,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array<mixed>>
+     */
+    public function dataProviderPrintSchemaType(): array {
+        return [
+            'CodeUnion'  => [
+                (new GraphQLExpectedType(
+                    $this->getTestData()->file('~printSchemaType-CodeUnion.graphql'),
+                ))
+                    ->setUsedTypes([
+                        'String',
+                        'Boolean',
+                        'CodeType',
+                        'CodeUnion',
+                    ])
+                    ->setUsedDirectives([
+                        '@schemaDirective',
+                    ]),
+                new TestSettings(),
+                1,
+                new UnionType([
+                    'name'  => 'CodeUnion',
+                    'types' => [
+                        new ObjectType([
+                            'name' => 'CodeType',
+                        ]),
+                    ],
+                ]),
+            ],
+            'CodeInput'  => [
+                (new GraphQLExpectedType(
+                    $this->getTestData()->file('~printSchemaType-CodeInput.graphql'),
+                ))
+                    ->setUsedTypes([
+                        'String',
+                        'Boolean',
+                        'CodeInput',
+                    ])
+                    ->setUsedDirectives([
+                        '@schemaDirective',
+                    ]),
+                new TestSettings(),
+                0,
+                'CodeInput',
+            ],
+            'SchemaType' => [
+                (new GraphQLExpectedType(
+                    $this->getTestData()->file('~printSchemaType-SchemaType.graphql'),
+                ))
+                    ->setUsedTypes([
+                        'Boolean',
+                        'SchemaInterfaceB',
+                        'String',
+                        'CodeUnion',
+                        'SchemaScalar',
+                        'CodeInput',
+                        'CodeScalar',
+                        'CodeEnum',
+                        'SchemaUnion',
+                        'SchemaType',
+                        'CodeDirectiveEnum',
+                        'SchemaEnum',
+                        'Int',
+                        'CodeDirectiveInput',
+                        'CodeDirectiveScalar',
+                        'CodeDirectiveScalarCustomClass',
+                        'CodeType',
+                    ])
+                    ->setUsedDirectives([
+                        '@codeDirective',
+                        '@deprecated',
+                        '@schemaDirective',
+                        '@scalar',
+                    ]),
+                (new TestSettings())
+                    ->setPrintDirectives(false)
+                    ->setPrintDirectivesInDescription(true),
+                0,
+                'SchemaType',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array<mixed>>
+     */
+    public function dataProviderPrintType(): array {
+        return [
+            UnionType::class       => [
+                (new GraphQLExpectedType(
+                /** @lang GraphQL */
+                    <<<'GRAPHQL'
+                        union CodeUnion =
+                            | CodeType
+
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'CodeType',
+                        'CodeUnion',
+                    ])
+                    ->setUsedDirectives([
+                        // empty
+                    ]),
+                new TestSettings(),
+                1,
+                new UnionType([
+                    'name'  => 'CodeUnion',
+                    'types' => [
+                        new ObjectType([
+                            'name' => 'CodeType',
+                        ]),
+                    ],
+                ]),
+            ],
+            InputObjectType::class => [
+                (new GraphQLExpectedType(
+                /** @lang GraphQL */
+                    <<<'GRAPHQL'
+                    """
+                    Description
+                    """
+                    input CodeInput
+                    @schemaDirective
+                    {
+                        a: Boolean
+                    }
+
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'Boolean',
+                        'CodeInput',
+                    ])
+                    ->setUsedDirectives([
+                        '@schemaDirective',
+                    ]),
+                new TestSettings(),
+                0,
+                new InputObjectType([
+                    'name'        => 'CodeInput',
+                    'astNode'     => Parser::inputObjectTypeDefinition('input InputObjectType @schemaDirective'),
+                    'description' => 'Description',
+                    'fields'      => [
+                        [
+                            'name' => 'a',
+                            'type' => Type::boolean(),
+                        ],
+                    ],
+                ]),
+            ],
+            InterfaceType::class   => [
+                (new GraphQLExpectedType(
+                /** @lang GraphQL */
+                    <<<'GRAPHQL'
+                    """
+                    Description
+
+                    @codeDirective
+                    """
+                    interface CodeInterface {
+                        a: Boolean!
+                    }
+
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'Boolean',
+                        'CodeInterface',
+                    ])
+                    ->setUsedDirectives([
+                        '@codeDirective',
+                    ]),
+                (new TestSettings())
+                    ->setPrintDirectives(false)
+                    ->setPrintDirectivesInDescription(true),
+                0,
+                new InterfaceType([
+                    'name'        => 'CodeInterface',
+                    'astNode'     => Parser::interfaceTypeDefinition('interface CodeInterface @codeDirective'),
+                    'description' => 'Description',
+                    'fields'      => [
+                        [
+                            'name' => 'a',
+                            'type' => Type::nonNull(Type::boolean()),
+                        ],
+                    ],
+                ]),
             ],
         ];
     }

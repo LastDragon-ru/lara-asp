@@ -36,7 +36,7 @@ class IntrospectionSchemaPrinter extends SchemaPrinter {
     }
 
     protected function getPrintedSchema(PrinterSettings $settings, Schema $schema, Block $content): PrintedSchema {
-        return new IntrospectionSchemaPrinted($settings->getResolver(), $schema, $content);
+        return new PrintedIntrospectionSchemaImpl($settings->getResolver(), $schema, $content);
     }
 
     protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): BlockList {

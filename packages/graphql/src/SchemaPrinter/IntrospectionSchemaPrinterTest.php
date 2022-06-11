@@ -24,7 +24,7 @@ class IntrospectionSchemaPrinterTest extends TestCase {
         $expected = $this->getTestData()->content($expected);
         $printer  = $this->app->make(IntrospectionSchemaPrinter::class)->setSettings($settings)->setLevel($level);
         $schema   = new Schema([]);
-        $actual   = $printer->print($schema);
+        $actual   = $printer->printSchema($schema);
 
         self::assertEquals($expected, (string) $actual);
     }

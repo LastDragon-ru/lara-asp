@@ -11,8 +11,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypePrinter;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaTypePrinter;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
@@ -260,7 +258,7 @@ trait GraphQLAssertions {
             $schema = $this->getGraphQLSchema($schema);
         }
 
-        return $this->getGraphQLSchemaPrinter($settings)->print($schema);
+        return $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
     }
 
     protected function printGraphQLSchemaType(
@@ -269,7 +267,7 @@ trait GraphQLAssertions {
         Settings $settings = null,
     ): PrintedType {
         return $type instanceof Type || is_string($type)
-            ? $this->getGraphQLSchemaTypePrinter($settings)->print($schema, $type)
+            ? $this->getGraphQLSchemaPrinter($settings)->printSchemaType($schema, $type)
             : $type;
     }
 
@@ -279,20 +277,12 @@ trait GraphQLAssertions {
 
     protected function printGraphQLType(PrintedType|Type $type, Settings $settings = null): PrintedType {
         return $type instanceof Type
-            ? $this->getGraphQLTypePrinter($settings)->print($type)
+            ? $this->getGraphQLSchemaPrinter($settings)->printType($type)
             : $type;
     }
 
     protected function getGraphQLSchemaPrinter(Settings $settings = null): SchemaPrinter {
         return $this->app->make(SchemaPrinter::class)->setSettings($settings ?? new TestSettings());
-    }
-
-    protected function getGraphQLSchemaTypePrinter(Settings $settings = null): SchemaTypePrinter {
-        return $this->app->make(SchemaTypePrinter::class)->setSettings($settings ?? new TestSettings());
-    }
-
-    protected function getGraphQLTypePrinter(Settings $settings = null): TypePrinter {
-        return $this->app->make(TypePrinter::class)->setSettings($settings ?? new TestSettings());
     }
     // </editor-fold>
 }

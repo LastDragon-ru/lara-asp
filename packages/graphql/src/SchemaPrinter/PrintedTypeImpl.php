@@ -7,6 +7,6 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
 /**
  * @internal
  */
-class TypePrinted extends Printed implements PrintedType {
+class PrintedTypeImpl extends Printed implements PrintedType {
     // empty
 }

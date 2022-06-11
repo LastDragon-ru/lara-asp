@@ -8,7 +8,7 @@ use GraphQL\Type\Introspection;
 /**
  * @internal
  */
-class IntrospectionSchemaPrinted extends SchemaPrinted {
+class PrintedIntrospectionSchemaImpl extends PrintedSchemaImpl {
     protected function isType(Type $type): bool {
         return Introspection::isIntrospectionType($type);
     }

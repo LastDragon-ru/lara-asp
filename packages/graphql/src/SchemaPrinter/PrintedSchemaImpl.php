@@ -14,7 +14,7 @@ use function array_diff_key;
 /**
  * @internal
  */
-class SchemaPrinted extends Printed implements PrintedSchema {
+class PrintedSchemaImpl extends Printed implements PrintedSchema {
     public function __construct(
         protected DirectiveResolver $resolver,
         protected Schema $schema,
