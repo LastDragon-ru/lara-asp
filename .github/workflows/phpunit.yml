@@ -73,6 +73,7 @@ jobs:
         run: |
           composer remove --no-interaction --no-progress --ansi --no-update laravel/framework
           composer require --no-interaction --no-progress --ansi --no-update "laravel/framework:${{ matrix.laravel }}"
+          composer remove --no-interaction --no-progress --ansi --no-update --dev nunomaduro/larastan
 
       - name: Install dependencies
         uses: "ramsey/composer-install@v2"
