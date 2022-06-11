@@ -13,7 +13,7 @@ use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateNumberFormatter;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatDate;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatValue;
 use Locale;
 use NumberFormatter;
 use OutOfBoundsException;
@@ -258,68 +258,52 @@ class Formatter {
     }
 
     public function integer(int|float|null $value): string {
-        return $this
-            ->getIntlNumberFormatter(static::Integer)
-            ->format((float) $value);
+        return $this->formatValue(static::Integer, $value);
     }
 
     public function decimal(float|int|null $value, int $decimals = null): string {
-        $type  = static::Decimal;
-        $value = (float) $value;
-
-        return $this
-            ->getIntlNumberFormatter($type, $decimals, function () use ($type, $decimals): int {
-                return $decimals ?: Cast::toInt($this->getOptions($type, 2));
-            })
-            ->format($value);
+        return $this->formatValue(static::Decimal, $value, $decimals, function () use ($decimals): int {
+            return $decimals ?: Cast::toInt($this->getOptions(static::Decimal, 2));
+        });
     }
 
     public function currency(?float $value, string $currency = null): string {
-        $type     = static::Currency;
-        $value    = (float) $value;
-        $currency = $currency ?: Cast::toString($this->getOptions($type, 'USD'));
+        $type      = static::Currency;
+        $value     = (float) $value;
+        $currency  = $currency ?: Cast::toString($this->getOptions($type, 'USD'));
+        $formatter = $this->getIntlNumberFormatter($type);
+        $formatted = $formatter->formatCurrency($value, $currency);
 
-        return $this
-            ->getIntlNumberFormatter($type)
-            ->formatCurrency($value, $currency);
+        if ($formatted === false) {
+            throw new FailedToFormatValue($type, $formatter->getErrorCode(), $formatter->getErrorMessage());
+        }
+
+        return $formatted;
     }
 
     /**
      * @param float|null $value must be between 0-100
      */
     public function percent(?float $value, int $decimals = null): string {
-        $type  = static::Percent;
-        $value = (float) $value / 100;
-
-        return $this
-            ->getIntlNumberFormatter($type, $decimals, function () use ($type, $decimals): int {
-                return $decimals ?: Cast::toInt($this->getOptions($type, 0));
-            })
-            ->format($value);
+        return $this->formatValue(static::Percent, (float) $value / 100, $decimals, function () use ($decimals): int {
+            return $decimals ?: Cast::toInt($this->getOptions(static::Percent, 0));
+        });
     }
 
     public function scientific(?float $value): string {
-        return $this
-            ->getIntlNumberFormatter(static::Scientific)
-            ->format((float) $value);
+        return $this->formatValue(static::Scientific, $value);
     }
 
     public function spellout(?float $value): string {
-        return $this
-            ->getIntlNumberFormatter(static::Spellout)
-            ->format((float) $value);
+        return $this->formatValue(static::Spellout, $value);
     }
 
     public function ordinal(?int $value): string {
-        return $this
-            ->getIntlNumberFormatter(static::Ordinal)
-            ->format((int) $value);
+        return $this->formatValue(static::Ordinal, $value);
     }
 
     public function duration(?int $value): string {
-        return $this
-            ->getIntlNumberFormatter(static::Duration)
-            ->format((int) $value);
+        return $this->formatValue(static::Duration, $value);
     }
 
     public function time(
@@ -437,6 +421,26 @@ class Formatter {
         return $this->getTranslator()->get($key, $replace, $this->getLocale());
     }
 
+    /**
+     * @param Closure(string, ?int):?int|null $closure
+     */
+    protected function formatValue(
+        string $type,
+        float|int|null $value,
+        int $decimals = null,
+        Closure $closure = null,
+    ): string {
+        $value     = (float) $value;
+        $formatter = $this->getIntlNumberFormatter($type, $decimals, $closure);
+        $formatted = $formatter->format($value);
+
+        if ($formatted === false) {
+            throw new FailedToFormatValue($type, $formatter->getErrorCode(), $formatter->getErrorMessage());
+        }
+
+        return $formatted;
+    }
+
     protected function formatDateTime(
         string $type,
         ?DateTimeInterface $value,
@@ -451,7 +455,7 @@ class Formatter {
         $value     = $formatter->format($value);
 
         if ($value === false) {
-            throw new FailedToFormatDate($type, $formatter->getErrorCode(), $formatter->getErrorMessage());
+            throw new FailedToFormatValue($type, $formatter->getErrorCode(), $formatter->getErrorMessage());
         }
 
         return $value;

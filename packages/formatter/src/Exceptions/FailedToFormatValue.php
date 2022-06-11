@@ -7,7 +7,7 @@ use Throwable;
 
 use function sprintf;
 
-class FailedToFormatDate extends PackageException {
+class FailedToFormatValue extends PackageException {
     public function __construct(
         protected string $type,
         protected int $errorCode,
@@ -15,7 +15,7 @@ class FailedToFormatDate extends PackageException {
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'Date formatting for type `%s` failed: `%s` (`%s`).',
+            'Formatting for type `%s` failed: `%s` (`%s`).',
             $this->getType(),
             $this->getErrorMessage(),
             $this->getErrorCode(),
