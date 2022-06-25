@@ -3,10 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Closure;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;

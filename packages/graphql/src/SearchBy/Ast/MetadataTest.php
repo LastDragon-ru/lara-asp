@@ -10,7 +10,8 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use Hamcrest\Core\IsNot;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
@@ -23,7 +24,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
@@ -170,7 +170,7 @@ class MetadataTest extends TestCase {
                 return false;
             }
 
-            public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
+            public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
                 return $builder;
             }
         };
@@ -226,7 +226,7 @@ class MetadataTest extends TestCase {
                 return false;
             }
 
-            public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
+            public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
                 return $builder;
             }
         };

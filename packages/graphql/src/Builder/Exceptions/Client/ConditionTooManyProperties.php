@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client;
+namespace LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client;
 
 use Throwable;
 
 use function implode;
 use function sprintf;
 
-class SearchConditionTooManyProperties extends SearchLogicException {
+class ConditionTooManyProperties extends ClientException {
     /**
      * @param array<string> $properties
      */

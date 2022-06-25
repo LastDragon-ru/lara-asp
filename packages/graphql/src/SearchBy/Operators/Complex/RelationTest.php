@@ -6,12 +6,12 @@ use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 use function is_array;
@@ -217,7 +217,7 @@ class RelationTest extends TestCase {
                 },
             ],
             '{count: { multiple operators }}'         => [
-                new SearchConditionTooManyOperators(['lessThan', 'equal']),
+                new ConditionTooManyOperators(['lessThan', 'equal']),
                 static function (): EloquentBuilder {
                     return User::query();
                 },

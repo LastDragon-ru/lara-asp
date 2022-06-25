@@ -3,10 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
@@ -38,7 +38,7 @@ class EqualTest extends TestCase {
     ): void {
         $operator = $this->app->make(Equal::class);
         $argument = $argumentFactory($this);
-        $search   = Mockery::mock(Builder::class);
+        $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);
         $builder  = $operator->call($search, $builder, $property, $argument);
 

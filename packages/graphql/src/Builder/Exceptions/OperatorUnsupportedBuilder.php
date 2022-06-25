@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions;
+namespace LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use Throwable;
 
 use function sprintf;
 
-class OperatorUnsupportedBuilder extends SearchByException {
+class OperatorUnsupportedBuilder extends BuilderException {
     public function __construct(
         protected Operator $operator,
         protected object $builder,
