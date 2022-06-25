@@ -14,7 +14,7 @@ class Property implements Stringable {
      */
     protected array $path;
 
-    public function __construct(
+    final public function __construct(
         string ...$path,
     ) {
         $this->path = $path;
@@ -31,13 +31,13 @@ class Property implements Stringable {
         return $this->path;
     }
 
-    public function getChild(string $name): Property {
-        return new Property(...[...$this->path, $name]);
+    public function getChild(string $name): static {
+        return new static(...[...$this->path, $name]);
     }
 
-    public function getParent(): Property {
+    public function getParent(): static {
         $path   = array_slice($this->path, -1);
-        $parent = new Property(...$path);
+        $parent = new static(...$path);
 
         return $parent;
     }
