@@ -37,6 +37,7 @@ class NotLikeTest extends TestCase {
         Closure $argumentFactory,
     ): void {
         $operator = $this->app->make(NotLike::class);
+        $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);

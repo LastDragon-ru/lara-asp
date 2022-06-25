@@ -18,12 +18,19 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property as PropertyOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
 use function reset;
 
 class Relation extends BaseOperator implements ComplexOperator {
+    public function __construct(
+        protected PropertyOperator $property,
+    ) {
+        parent::__construct();
+    }
+
     public static function getName(): string {
         return 'relation';
     }
@@ -98,6 +105,7 @@ class Relation extends BaseOperator implements ComplexOperator {
         // * where + notExists  = doesntHave
 
         // Conditions
+        $property  = $property->getParent();
         $relation  = (new ModelHelper($builder))->getRelation($property->getName());
         $has       = $argument->value->arguments['where'] ?? null;
         $hasCount  = $argument->value->arguments['count'] ?? null;
@@ -110,7 +118,7 @@ class Relation extends BaseOperator implements ComplexOperator {
 
         if ($hasCount instanceof Argument) {
             $query    = $builder->toBase()->newQuery();
-            $query    = $handler->handle($query, $hasCount, new Property('tmp'));
+            $query    = $this->property->call($handler, $query, new Property(), $hasCount);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;
@@ -133,7 +141,7 @@ class Relation extends BaseOperator implements ComplexOperator {
                 }
 
                 if ($has instanceof Argument && $has->value instanceof ArgumentSet) {
-                    $handler->handle($builder, $has->value, new Property($alias));
+                    $handler->handle($builder, new Property($alias), $has->value);
                 }
             },
         );

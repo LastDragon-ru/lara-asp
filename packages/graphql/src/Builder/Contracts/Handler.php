@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
 interface Handler {
@@ -14,5 +13,5 @@ interface Handler {
      *
      * @return TBuilder
      */
-    public function handle(object $builder, ArgumentSet|Argument $conditions, Property $parent = null): object;
+    public function handle(object $builder, Property $property, ArgumentSet $conditions): object;
 }

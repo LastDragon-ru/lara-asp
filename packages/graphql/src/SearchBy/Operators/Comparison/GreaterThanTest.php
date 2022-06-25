@@ -37,6 +37,7 @@ class GreaterThanTest extends TestCase {
         Closure $argumentFactory,
     ): void {
         $operator = $this->app->make(GreaterThan::class);
+        $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);

@@ -33,7 +33,7 @@ class IsNotNull extends BaseOperator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = (string) $property;
+        $property = (string) $property->getParent();
 
         $builder->whereNotNull($property);
 

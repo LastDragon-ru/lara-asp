@@ -18,6 +18,7 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -301,7 +302,8 @@ class DirectiveTest extends TestCase {
                 '~custom-complex-operators.graphql',
                 static function (TestCase $test): void {
                     $locator   = $test->app->make(DirectiveLocator::class);
-                    $directive = new class() extends Relation {
+                    $property  = $test->app->make(Property::class);
+                    $directive = new class($property) extends Relation {
                         public static function getName(): string {
                             return 'custom';
                         }

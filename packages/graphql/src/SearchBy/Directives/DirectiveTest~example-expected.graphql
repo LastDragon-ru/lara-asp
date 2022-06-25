@@ -51,6 +51,7 @@ input SearchByConditionCommentsQuery {
     Property condition.
     """
     date: SearchByScalarDateOrNull
+    @searchByProperty
 
     """
     Not.
@@ -62,6 +63,7 @@ input SearchByConditionCommentsQuery {
     Property condition.
     """
     text: SearchByScalarString
+    @searchByProperty
 
     """
     Relationship condition.
@@ -90,11 +92,13 @@ input SearchByConditionUsersQuery {
     Property condition.
     """
     id: SearchByScalarID
+    @searchByProperty
 
     """
     Property condition.
     """
     name: SearchByScalarString
+    @searchByProperty
 
     """
     Not.
@@ -396,5 +400,9 @@ on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorStartsWith
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByProperty
 on
     | INPUT_FIELD_DEFINITION

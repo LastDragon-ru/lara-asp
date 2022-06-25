@@ -12,14 +12,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
-use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Utils;
 
 use function array_keys;
 use function count;
-use function reset;
 
 abstract class HandlerDirective extends BaseDirective implements Handler {
     public function __construct(
@@ -44,7 +42,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             $argument = $this->getFactory()->getArgument($this->definitionNode, $value);
 
             if ($argument->value instanceof ArgumentSet) {
-                $builder = $this->handle($builder, $argument->value);
+                $builder = $this->handle($builder, new Property(), $argument->value);
             } else {
                 throw new HandlerInvalidConditions($this);
             }
@@ -60,43 +58,19 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      *
      * @return T
      */
-    public function handle(object $builder, ArgumentSet|Argument $conditions, Property $parent = null): object {
-        // Prepare
-        $parent   ??= new Property();
-        $conditions = $conditions instanceof Argument
-            ? $conditions->value
-            : $conditions;
-        $arguments  = $conditions instanceof ArgumentSet
-            ? $conditions->arguments
-            : [];
-
+    public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
         // Empty?
-        if (count($arguments) === 0) {
+        if (count($conditions->arguments) === 0) {
             return $builder;
         }
 
-        // Property or Operator?
-        $first      = reset($arguments);
-        $isProperty = $first->directives->filter(Utils::instanceofMatcher(Operator::class))->isEmpty();
-
-        if ($isProperty) {
-            // Valid?
-            if (count($arguments) !== 1) {
-                throw new ConditionTooManyProperties(array_keys($arguments));
-            }
-
-            // Process
-            foreach ($arguments as $name => $argument) {
-                $parent  = $parent->getChild($name);
-                $builder = $this->call($builder, $parent, $argument);
-            }
-        } elseif ($conditions instanceof ArgumentSet || $conditions instanceof Argument) {
-            $builder = $this->call($builder, $parent, $conditions);
-        } else {
-            throw new HandlerInvalidConditions($this);
+        // Valid?
+        if (count($conditions->arguments) !== 1) {
+            throw new ConditionTooManyProperties(array_keys($conditions->arguments));
         }
 
-        return $builder;
+        // Call
+        return $this->call($builder, $property, $conditions);
     }
 
     /**
@@ -106,39 +80,34 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      *
      * @return T
      */
-    protected function call(object $builder, Property $property, ArgumentSet|Argument $operator): object {
+    protected function call(object $builder, Property $property, ArgumentSet $operator): object {
         // Operator & Value
         /** @var Operator|null $op */
-        $op       = null;
-        $value    = null;
-        $filter   = Utils::instanceofMatcher(Operator::class);
-        $operator = $operator instanceof Argument
-            ? $operator->value
-            : $operator;
+        $op     = null;
+        $value  = null;
+        $filter = Utils::instanceofMatcher(Operator::class);
 
-        if ($operator instanceof ArgumentSet) {
-            if (count($operator->arguments) > 1) {
+        if (count($operator->arguments) > 1) {
+            throw new ConditionTooManyOperators(
+                array_keys($operator->arguments),
+            );
+        }
+
+        foreach ($operator->arguments as $name => $argument) {
+            /** @var Collection<int, Operator> $operators */
+            $operators = $argument->directives->filter($filter);
+            $property  = $property->getChild($name);
+            $value     = $argument;
+            $op        = $operators->first();
+
+            if (count($operators) > 1) {
                 throw new ConditionTooManyOperators(
-                    array_keys($operator->arguments),
+                    $operators
+                        ->map(static function (Operator $operator): string {
+                            return $operator::getName();
+                        })
+                        ->all(),
                 );
-            }
-
-            foreach ($operator->arguments as $argument) {
-                /** @var Collection<int, Operator> $operators */
-                $operators = $argument->directives->filter($filter);
-
-                if (count($operators) === 1) {
-                    $op    = $operators->first();
-                    $value = $argument;
-                } else {
-                    throw new ConditionTooManyOperators(
-                        $operators
-                            ->map(static function (Operator $operator): string {
-                                return $operator::getName();
-                            })
-                            ->all(),
-                    );
-                }
             }
         }
 

@@ -32,13 +32,13 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidType
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchConditionForField;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -47,6 +47,7 @@ use function array_map;
 use function array_shift;
 use function count;
 use function implode;
+use function is_string;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     protected Metadata $metadata;
@@ -137,8 +138,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
         );
 
         // Add searchable fields
-        $description = 'Property condition.';
-        $fields      = $node instanceof InputObjectType
+        $property = $this->metadata->getOperatorInstance(Property::class);
+        $fields   = $node instanceof InputObjectType
             ? $node->getFields()
             : $node->fields;
 
@@ -188,12 +189,18 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             // Create new Field
+            if (is_string($fieldDefinition)) {
+                $fieldDefinition = Parser::inputValueDefinition(
+                    $this->getOperatorField(
+                        $property,
+                        $this->getTypeDefinitionNode($fieldDefinition),
+                        $this->getNodeName($field),
+                    ),
+                );
+            }
+
             if ($fieldDefinition instanceof InputValueDefinitionNode) {
                 $type->fields[] = $fieldDefinition;
-            } elseif ($fieldDefinition) {
-                if (!$this->copyFieldToType($type, $field, $fieldDefinition, $description)) {
-                    throw new FailedToCreateSearchConditionForField($this->getNodeName($node), $fieldName);
-                }
             } else {
                 throw new NotImplemented($fieldType);
             }

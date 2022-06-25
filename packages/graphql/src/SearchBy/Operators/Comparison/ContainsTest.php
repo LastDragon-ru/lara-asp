@@ -55,6 +55,7 @@ class ContainsTest extends TestCase {
         }
 
         $operator = $this->app->make(Contains::class);
+        $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = Mockery::mock(Handler::class);
         $builder  = $operator->call($search, $builder, $property, $argument);

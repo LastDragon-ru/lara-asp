@@ -29,7 +29,7 @@ class Contains extends BaseOperator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property  = $builder->getGrammar()->wrap((string) $property);
+        $property  = $builder->getGrammar()->wrap((string) $property->getParent());
         $value     = (string) Cast::toStringable($argument->toPlain());
         $character = $this->getEscapeCharacter();
 

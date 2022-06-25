@@ -33,7 +33,7 @@ abstract class Logical extends BaseOperator {
                     $arguments,
                     $property
                 ): void {
-                    $handler->handle($builder, $arguments, $property);
+                    $handler->handle($builder, $property, $arguments);
                 },
                 null,
                 null,

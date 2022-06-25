@@ -25,7 +25,7 @@ class NotLike extends BaseOperator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = (string) $property;
+        $property = (string) $property->getParent();
         $value    = (string) Cast::toStringable($argument->toPlain());
 
         $builder->where($property, 'not like', $value);

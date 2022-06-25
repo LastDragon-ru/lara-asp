@@ -36,7 +36,7 @@ class Property implements Stringable {
     }
 
     public function getParent(): static {
-        $path   = array_slice($this->path, -1);
+        $path   = array_slice($this->path, 0, -1);
         $parent = new static(...$path);
 
         return $parent;

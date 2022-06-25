@@ -36,6 +36,7 @@ class AllOfTest extends TestCase {
         Closure $argumentFactory,
     ): void {
         $operator = $this->app->make(AllOf::class);
+        $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = $this->app->make(Directive::class);
         $builder  = $builderFactory($this);
@@ -61,8 +62,10 @@ class AllOfTest extends TestCase {
                 <<<'GRAPHQL'
                     input TestInput {
                         a: TestOperators
+                        @searchByProperty
 
                         b: TestOperators
+                        @searchByProperty
                     }
 
                     input TestOperators {

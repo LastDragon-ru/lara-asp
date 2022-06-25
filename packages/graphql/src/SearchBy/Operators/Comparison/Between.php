@@ -31,7 +31,7 @@ class Between extends BaseOperator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = (string) $property;
+        $property = (string) $property->getParent();
         $value    = Cast::toIterable($argument->toPlain());
 
         $builder->whereBetween($property, $value);

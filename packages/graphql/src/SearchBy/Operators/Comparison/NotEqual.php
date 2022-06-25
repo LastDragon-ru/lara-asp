@@ -24,7 +24,7 @@ class NotEqual extends BaseOperator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = (string) $property;
+        $property = (string) $property->getParent();
         $value    = $argument->toPlain();
 
         $builder->where($property, '!=', $value);
