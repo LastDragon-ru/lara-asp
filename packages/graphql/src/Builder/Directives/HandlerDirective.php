@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
+use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -19,6 +21,7 @@ use Nuwave\Lighthouse\Support\Utils;
 
 use function array_keys;
 use function count;
+use function is_array;
 
 abstract class HandlerDirective extends BaseDirective implements Handler {
     public function __construct(
@@ -45,12 +48,19 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      */
     protected function handleAnyBuilder(object $builder, mixed $value): object {
         if ($value !== null) {
-            $argument = $this->getFactory()->getArgument($this->definitionNode, $value);
+            $argument   = $this->getFactory()->getArgument($this->definitionNode, $value);
+            $isList     = $this->definitionNode instanceof InputValueDefinitionNode
+                && $this->definitionNode->type instanceof ListTypeNode;
+            $conditions = $isList && is_array($argument->value)
+                ? $argument->value
+                : [$argument->value];
 
-            if ($argument->value instanceof ArgumentSet) {
-                $builder = $this->handle($builder, new Property(), $argument->value);
-            } else {
-                throw new HandlerInvalidConditions($this);
+            foreach ($conditions as $condition) {
+                if ($condition instanceof ArgumentSet) {
+                    $builder = $this->handle($builder, new Property(), $condition);
+                } else {
+                    throw new HandlerInvalidConditions($this);
+                }
             }
         }
 

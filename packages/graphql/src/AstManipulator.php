@@ -43,15 +43,8 @@ abstract class AstManipulator {
         protected DocumentAST $document,
         protected TypeRegistry $types,
     ) {
-        $this->addDefaultTypeDefinitions();
-    }
-
-    // <editor-fold desc="Defaults">
-    // =========================================================================
-    protected function addDefaultTypeDefinitions(): void {
         // empty
     }
-    // </editor-fold>
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================

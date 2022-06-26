@@ -1,15 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 
 use function implode;
 
-class Property extends PropertyDirective implements Operator {
+class Property extends PropertyDirective {
     public static function getDirectiveName(): string {
         return implode('', [
             '@',
@@ -19,6 +18,6 @@ class Property extends PropertyDirective implements Operator {
     }
 
     public function getFieldDescription(): string {
-        return 'Property condition.';
+        return 'Property clause.';
     }
 }

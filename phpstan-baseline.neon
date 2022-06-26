@@ -96,14 +96,14 @@ parameters:
 			path: packages/graphql/src/SortBy/Builders/Scout/BuilderTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$clauses of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Directives\\\\Directive\\:\\:getClauses\\(\\) expects array\\<array\\<string, array\\<string, array\\<string, string\\|null\\>\\|string\\>\\|string\\>\\>, mixed given\\.$#"
-			count: 3
-			path: packages/graphql/src/SortBy/Directives/Directive.php
-
-		-
-			message: "#^Parameter \\#1 \\$clauses of method class@anonymous/graphql/src/SortBy/Directives/DirectiveTest\\.php\\:158\\:\\:getClauses\\(\\) expects array\\<array\\<string, array\\<string, array\\<string, string\\|null\\>\\|string\\>\\|string\\>\\>, array given\\.$#"
+			message: "#^Call to an undefined method Nuwave\\\\Lighthouse\\\\Schema\\\\Directives\\\\BaseDirective\\:\\:handleBuilder\\(\\)\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Directives/DirectiveTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$path of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Clause constructor expects non\\-empty\\-array\\<string\\>, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: packages/graphql/src/SortBy/Operators/OrderBy.php
 
 		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\:\\:imageable\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Role\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\User, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\>\\.$#"

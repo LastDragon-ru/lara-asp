@@ -4,9 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
 
 use Closure;
 use Exception;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -74,7 +72,10 @@ class BuilderTest extends TestCase {
                     ],
                 ],
                 'nested not supported' => [
-                    new BuilderUnsupported(QueryBuilder::class),
+                    [
+                        'query'    => 'select * from "tmp" order by "test"."name" asc',
+                        'bindings' => [],
+                    ],
                     [
                         new Clause(['test', 'name'], 'asc'),
                     ],

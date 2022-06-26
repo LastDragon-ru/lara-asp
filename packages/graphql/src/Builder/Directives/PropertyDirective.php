@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
@@ -16,6 +17,10 @@ use function count;
 abstract class PropertyDirective extends OperatorDirective {
     public static function getName(): string {
         return 'Property';
+    }
+
+    public function getFieldType(TypeProvider $provider, string $type): ?string {
+        return null;
     }
 
     public function isBuilderSupported(object $builder): bool {

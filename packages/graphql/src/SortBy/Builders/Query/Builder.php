@@ -4,10 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
 
-use function count;
-use function reset;
+use function implode;
 
 class Builder {
     public function __construct() {
@@ -21,13 +19,8 @@ class Builder {
         foreach ($clauses as $clause) {
             // Column
             $path      = $clause->getPath();
-            $column    = reset($path);
+            $column    = implode('.', $path);
             $direction = $clause->getDirection();
-
-            // Nested?
-            if (count($path) > 1) {
-                throw new BuilderUnsupported($builder::class);
-            }
 
             // Order
             if ($direction) {
