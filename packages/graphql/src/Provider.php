@@ -12,8 +12,8 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter as Schem
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings as SettingsContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Scalars;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;

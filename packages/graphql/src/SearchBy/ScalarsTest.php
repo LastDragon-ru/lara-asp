@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Exception;
 use Hamcrest\Core\IsNot;
@@ -17,7 +17,7 @@ use Mockery\MockInterface;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Scalars
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars
  */
 class ScalarsTest extends TestCase {
     // <editor-fold desc="Init">

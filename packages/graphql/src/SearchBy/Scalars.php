@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository;
