@@ -31,6 +31,16 @@ parameters:
 			path: packages/graphql/src/AstManipulator.php
 
 		-
+			message: "#^Unable to resolve the template type TClass in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
+			count: 1
+			path: packages/graphql/src/Builder/Manipulator.php
+
+		-
+			message: "#^Unable to resolve the template type TInterface in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
+			count: 1
+			path: packages/graphql/src/Builder/Manipulator.php
+
+		-
 			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Builder\\\\Property\\:\\:\\$path \\(array\\<int, string\\>\\) does not accept array\\<int\\|string, string\\>\\.$#"
 			count: 1
 			path: packages/graphql/src/Builder/Property.php
@@ -51,9 +61,9 @@ parameters:
 			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
 
 		-
-			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Ast\\\\Metadata\\:\\:addScalar\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
+			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Ast\\\\Scalars\\:\\:addScalar\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
 			count: 1
-			path: packages/graphql/src/SearchBy/Ast/MetadataTest.php
+			path: packages/graphql/src/SearchBy/Ast/ScalarsTest.php
 
 		-
 			message: "#^Call to an undefined method Nuwave\\\\Lighthouse\\\\Schema\\\\Directives\\\\BaseDirective\\:\\:handleBuilder\\(\\)\\.$#"

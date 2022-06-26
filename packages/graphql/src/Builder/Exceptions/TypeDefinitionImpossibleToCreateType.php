@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions;
+namespace LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use Throwable;
 
 use function sprintf;
 
-class DefinitionImpossibleToCreateType extends SearchByException {
+class TypeDefinitionImpossibleToCreateType extends BuilderException {
     /**
      * @param class-string<TypeDefinition> $definition
      */

@@ -2,10 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
-use Illuminate\Contracts\Container\Container;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
+use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
@@ -39,7 +40,7 @@ use function is_string;
 
 use const SORT_REGULAR;
 
-class Metadata {
+class Scalars {
     /**
      * Determines default operators available for each scalar type.
      *
@@ -100,38 +101,20 @@ class Metadata {
         ],
     ];
 
-    /**
-     * Cached operators instances.
-     *
-     * @var array<string,Operator>
-     */
-    protected array $operators = [];
-
-    /**
-     * Cached complex operators instances.
-     *
-     * @var array<string,ComplexOperator>
-     */
-    protected array $complex = [];
-
-    /**
-     * Types definitions.
-     *
-     * @var array<string,TypeDefinition>
-     */
-    protected array $definitions = [];
-
-    /**
-     * Cached types created by definitions.
-     *
-     * @var array<string,string>
-     */
-    protected array $types = [];
-
     public function __construct(
-        protected Container $container,
+        private Container $container,
+        Repository $config,
     ) {
-        // empty
+        /** @var array<string,array<class-string<Operator>>|string> $scalars */
+        $scalars = (array) $config->get(Package::Name.'.search_by.scalars');
+
+        foreach ($scalars as $scalar => $operators) {
+            $this->addScalar($scalar, $operators);
+        }
+    }
+
+    protected function getContainer(): Container {
+        return $this->container;
     }
 
     public function isScalar(string $scalar): bool {
@@ -154,7 +137,7 @@ class Metadata {
     }
 
     /**
-     * @return array<Operator>
+     * @return array<OperatorContract>
      */
     public function getScalarOperators(string $scalar, bool $nullable): array {
         // Is Scalar?
@@ -170,8 +153,9 @@ class Metadata {
         } while (!is_array($operators));
 
         // Create Instances
-        $operators = array_map(function (string $operator): Operator {
-            return $this->getOperatorInstance($operator);
+        $container = $this->getContainer();
+        $operators = array_map(static function (string $operator) use ($container): OperatorContract {
+            return $container->make($operator);
         }, $operators);
 
         // Add `null` for nullable
@@ -187,52 +171,11 @@ class Metadata {
     }
 
     /**
-     * @return array<Operator>
+     * @return array<OperatorContract>
      */
     public function getEnumOperators(string $enum, bool $nullable): array {
         return $this->isScalar($enum)
             ? $this->getScalarOperators($enum, $nullable)
             : $this->getScalarOperators(Directive::ScalarEnum, $nullable);
-    }
-
-    /**
-     * @param class-string<Operator> $class
-     */
-    public function getOperatorInstance(string $class): Operator {
-        if (!isset($this->operators[$class])) {
-            $this->operators[$class] = $this->container->make($class);
-        }
-
-        return $this->operators[$class];
-    }
-
-    /**
-     * @param class-string<ComplexOperator> $class
-     */
-    public function getComplexOperatorInstance(string $class): ComplexOperator {
-        if (!isset($this->complex[$class])) {
-            $this->complex[$class] = $this->container->make($class);
-        }
-
-        return $this->complex[$class];
-    }
-
-    /**
-     * @param class-string<TypeDefinition> $definition
-     */
-    public function getDefinition(string $definition): TypeDefinition {
-        if (!isset($this->definitions[$definition])) {
-            $this->definitions[$definition] = $this->container->make($definition);
-        }
-
-        return $this->definitions[$definition];
-    }
-
-    public function getType(string $type): ?string {
-        return $this->types[$type] ?? null;
-    }
-
-    public function addType(string $type, string $fullyQualifiedName): void {
-        $this->types[$type] = $fullyQualifiedName;
     }
 }

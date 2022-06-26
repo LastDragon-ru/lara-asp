@@ -4,11 +4,15 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 
 use function is_null;
 
 class Flag implements TypeDefinition {
+    public function __construct() {
+        // empty
+    }
+
     public static function getName(): string {
         return 'Flag';
     }

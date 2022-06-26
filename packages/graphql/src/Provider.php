@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
@@ -13,9 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter as Schem
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings as SettingsContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Metadata;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Repository as MetadataRepository;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Scalars;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
@@ -60,18 +57,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerSearchByDirective(): void {
-        $this->app->singleton(MetadataRepository::class);
-        $this->app->bind(Metadata::class, function (Application $app): Metadata {
-            /** @var array<string,array<class-string<Operator>>|string> $scalars */
-            $scalars  = (array) $app->make(Repository::class)->get("{$this->getName()}.search_by.scalars");
-            $metadata = new Metadata($app);
-
-            foreach ($scalars as $scalar => $operators) {
-                $metadata->addScalar($scalar, $operators);
-            }
-
-            return $metadata;
-        });
+        $this->app->singleton(Scalars::class);
     }
 
     protected function registerEnums(): void {

@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 
 use function implode;

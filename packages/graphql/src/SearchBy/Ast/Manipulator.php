@@ -4,32 +4,26 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
-use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
-use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ScalarType;
-use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\DefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
@@ -43,26 +37,27 @@ use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
-use function array_map;
 use function array_shift;
 use function count;
-use function implode;
 use function is_string;
 
-class Manipulator extends AstManipulator implements TypeProvider {
-    protected Metadata $metadata;
-
+class Manipulator extends BuilderManipulator implements TypeProvider {
     public function __construct(
+        Container $container,
         DirectiveLocator $directives,
         DocumentAST $document,
         TypeRegistry $types,
-        Repository $metadata,
-        protected Container $container,
+        private Scalars $scalars,
     ) {
-        $this->metadata = $metadata->get($document);
-
-        parent::__construct($directives, $document, $types);
+        parent::__construct($container, $directives, $document, $types);
     }
+
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
+    protected function getScalars(): Scalars {
+        return $this->scalars;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Update">
     // =========================================================================
@@ -86,32 +81,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    public function getType(string $type, string $scalar = null, bool $nullable = null): string {
-        // Exists?
-        $internal = $this->getTypeName($type::getName(), $scalar, $nullable);
-        $name     = $this->metadata->getType($internal);
-
-        if ($name && $this->isTypeDefinitionExists($name)) {
-            return $name;
-        }
-
-        // Create new
-        $definition = $this->metadata->getDefinition($type)->getTypeDefinitionNode($internal, $scalar, $nullable);
-
-        if (!$definition) {
-            throw new DefinitionImpossibleToCreateType($type, $scalar, $nullable);
-        }
-
-        // Save
-        $name = $this->getNodeName($definition);
-
-        $this->addTypeDefinition($definition);
-        $this->metadata->addType($internal, $name);
-
-        // Return
-        return $name;
-    }
-
     public function getInputType(InputObjectTypeDefinitionNode|InputObjectType $node): string {
         // Exists?
         $name = $this->getConditionTypeName($node);
@@ -138,7 +107,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
         );
 
         // Add searchable fields
-        $property = $this->metadata->getOperatorInstance(Property::class);
+        $property = $this->getContainer()->make(Property::class);
+        $scalars  = $this->getScalars();
         $fields   = $node instanceof InputObjectType
             ? $node->getFields()
             : $node->fields;
@@ -164,7 +134,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             try {
                 $fieldTypeNode = $this->getTypeDefinitionNode($field);
             } catch (TypeDefinitionUnknown $exception) {
-                if ($this->metadata->isScalar($fieldType)) {
+                if ($scalars->isScalar($fieldType)) {
                     $fieldTypeNode = $this->getScalarTypeNode($fieldType);
                 } else {
                     throw $exception;
@@ -275,47 +245,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return $name;
     }
 
-    protected function getOperatorField(
-        Operator $operator,
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
-        string $field = null,
-    ): string {
-        $type        = $this->getNodeName($type);
-        $type        = $operator->getFieldType($this, $type) ?? $type;
-        $field       = $field ?: $operator::getName();
-        $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
-        $directive   = $directive instanceof DirectiveNode
-            ? Printer::doPrint($directive)
-            : $directive;
-        $description = $operator->getFieldDescription();
-
-        return <<<DEF
-            """
-            {$description}
-            """
-            {$field}: {$type}
-            {$directive}
-        DEF;
-    }
-
-    /**
-     * @param array<Operator> $operators
-     */
-    protected function getOperatorsFields(
-        array $operators,
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
-    ): string {
-        return implode(
-            "\n",
-            array_map(
-                function (Operator $operator) use ($type): string {
-                    return $this->getOperatorField($operator, $type);
-                },
-                $operators,
-            ),
-        );
-    }
-
     protected function getComplexType(
         InputValueDefinitionNode|InputObjectField $field,
         InputObjectTypeDefinitionNode|InputObjectType $type,
@@ -385,10 +314,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * @return array<Operator>
+     * @return array<OperatorContract>
      */
     protected function getEnumOperators(string $enum, bool $nullable): array {
-        $operators = $this->metadata->getEnumOperators($enum, $nullable);
+        $operators = $this->getScalars()->getEnumOperators($enum, $nullable);
 
         if (!$operators) {
             throw new EnumNoOperators($enum);
@@ -398,10 +327,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * @return array<Operator>
+     * @return array<OperatorContract>
      */
     protected function getScalarOperators(string $scalar, bool $nullable): array {
-        $operators = $this->metadata->getScalarOperators($scalar, $nullable);
+        $operators = $this->getScalars()->getScalarOperators($scalar, $nullable);
 
         if (!$operators) {
             throw new ScalarNoOperators($scalar);
@@ -425,7 +354,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Default
         if (!$operator) {
-            $operator = $this->metadata->getComplexOperatorInstance(Relation::class);
+            $operator = $this->getContainer()->make(Relation::class);
         }
 
         // Return

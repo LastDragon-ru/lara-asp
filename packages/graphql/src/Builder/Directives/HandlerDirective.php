@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -21,9 +22,14 @@ use function count;
 
 abstract class HandlerDirective extends BaseDirective implements Handler {
     public function __construct(
+        private Container $container,
         private ArgumentFactory $factory,
     ) {
         // empty
+    }
+
+    protected function getContainer(): Container {
+        return $this->container;
     }
 
     protected function getFactory(): ArgumentFactory {

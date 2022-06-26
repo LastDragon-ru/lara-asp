@@ -5,13 +5,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
@@ -28,13 +26,6 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     public const ScalarLogic   = self::Name.'Logic';
     public const ScalarNumber  = self::Name.'Number';
 
-    public function __construct(
-        protected Container $container,
-        ArgumentFactory $factory,
-    ) {
-        parent::__construct($factory);
-    }
-
     public static function definition(): string {
         return /** @lang GraphQL */ <<<'GRAPHQL'
             """
@@ -50,7 +41,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $this->container
+        $this->getContainer()
             ->make(Manipulator::class, ['document' => $documentAST])
             ->update($this->directiveNode, $argDefinition);
     }
