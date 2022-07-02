@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 
 use function implode;
 
@@ -12,22 +12,16 @@ class Builder {
         // empty
     }
 
-    /**
-     * @param array<Clause> $clauses
-     */
-    public function handle(QueryBuilder $builder, array $clauses): QueryBuilder {
-        foreach ($clauses as $clause) {
-            // Column
-            $path      = $clause->getPath();
-            $column    = implode('.', $path);
-            $direction = $clause->getDirection();
+    public function handle(QueryBuilder $builder, Property $property, string $direction): QueryBuilder {
+        // Column
+        $path   = $property->getPath();
+        $column = implode('.', $path);
 
-            // Order
-            if ($direction) {
-                $builder = $builder->orderBy($column, $direction);
-            } else {
-                $builder = $builder->orderBy($column);
-            }
+        // Order
+        if ($direction) {
+            $builder = $builder->orderBy($column, $direction);
+        } else {
+            $builder = $builder->orderBy($column);
         }
 
         return $builder;

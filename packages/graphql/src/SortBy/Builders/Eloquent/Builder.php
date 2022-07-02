@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\JoinClause;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LogicException;
 
@@ -51,28 +52,24 @@ class Builder {
     // =========================================================================
     /**
      * @param EloquentBuilder<Model> $builder
-     * @param array<Clause>          $clauses
      *
      * @return EloquentBuilder<Model>
      */
-    public function handle(EloquentBuilder $builder, array $clauses): EloquentBuilder {
-        foreach ($clauses as $clause) {
-            // Column
-            $path      = $clause->getPath();
-            $column    = end($path);
-            $relation  = array_slice($path, 0, -1);
-            $direction = $clause->getDirection();
+    public function handle(EloquentBuilder $builder, Property $property, string $direction): EloquentBuilder {
+        // Column
+        $path     = $property->getPath();
+        $column   = Cast::toString(end($path));
+        $relation = array_slice($path, 0, -1);
 
-            if ($relation) {
-                $column = $this->processRelation($builder, $relation, $column, $direction);
-            }
+        if ($relation) {
+            $column = $this->processRelation($builder, $relation, $column, $direction);
+        }
 
-            // Order
-            if ($direction) {
-                $builder = $builder->orderBy($column, $direction);
-            } else {
-                $builder = $builder->orderBy($column);
-            }
+        // Order
+        if ($direction) {
+            $builder = $builder->orderBy($column, $direction);
+        } else {
+            $builder = $builder->orderBy($column);
         }
 
         return $builder;
