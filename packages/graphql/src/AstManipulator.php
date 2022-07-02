@@ -15,7 +15,6 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
-use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
@@ -209,40 +208,6 @@ abstract class AstManipulator {
         }
 
         return trim("{$prefix} {$name}");
-    }
-
-    protected function copyFieldToType(
-        InputObjectTypeDefinitionNode $type,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
-        string $newFieldType,
-        string $newFieldDescription,
-    ): bool {
-        $newField = null;
-
-        if ($field instanceof InputValueDefinitionNode) {
-            $clone = $field->cloneDeep();
-
-            if ($clone instanceof InputValueDefinitionNode) {
-                $clone->type        = Parser::typeReference($newFieldType);
-                $clone->description = Parser::description("\"\"\"{$newFieldDescription}\"\"\"");
-                $newField           = $clone;
-            }
-        } else {
-            $newField = Parser::inputValueDefinition(
-                <<<DEF
-                """
-                {$newFieldDescription}
-                """
-                {$this->getNodeName($field)}: {$newFieldType}
-                DEF,
-            );
-        }
-
-        if ($newField) {
-            $type->fields[] = $newField;
-        }
-
-        return (bool) $newField;
     }
     //</editor-fold>
 }
