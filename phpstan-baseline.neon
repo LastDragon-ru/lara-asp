@@ -26,17 +26,12 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\|null but returns mixed\\.$#"
-			count: 1
-			path: packages/graphql/src/AstManipulator.php
-
-		-
-			message: "#^Unable to resolve the template type TClass in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
+			message: "#^Unable to resolve the template type TClass in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
 			count: 1
 			path: packages/graphql/src/Builder/Manipulator.php
 
 		-
-			message: "#^Unable to resolve the template type TInterface in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
+			message: "#^Unable to resolve the template type TInterface in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
 			count: 1
 			path: packages/graphql/src/Builder/Manipulator.php
 
@@ -109,6 +104,11 @@ parameters:
 			message: "#^Parameter \\#2 \\$results \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Concerns\\\\Model\\>\\) of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Relations\\\\Unsupported\\:\\:match\\(\\) should be contravariant with parameter \\$results \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection\\) of method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<TModel of LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Concerns\\\\Model\\>\\:\\:match\\(\\)$#"
 			count: 1
 			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
+
+		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\|null but returns mixed\\.$#"
+			count: 1
+			path: packages/graphql/src/Utils/AstManipulator.php
 
 		-
 			message: "#^Parameter \\#1 \\$expression of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:cron\\(\\) expects string, mixed given\\.$#"

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL;
+namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
 use Exception;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
