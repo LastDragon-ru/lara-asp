@@ -114,51 +114,61 @@ input SearchByConditionInputA {
     Property condition.
     """
     booleanScalar: SearchByScalarBooleanOrNull
+    @searchByProperty
 
     """
     Property condition.
     """
     booleanScalarNotNull: SearchByScalarBoolean
+    @searchByProperty
 
     """
     Property condition.
     """
     enum: SearchByEnumEnumAOrNull
+    @searchByProperty
 
     """
     Property condition.
     """
     enumNotNull: SearchByEnumEnumA
+    @searchByProperty
 
     """
     Property condition.
     """
     floatScalar: SearchByScalarFloatOrNull
+    @searchByProperty
 
     """
     Property condition.
     """
     floatScalarNotNull: SearchByScalarFloat
+    @searchByProperty
 
     """
     Property condition.
     """
     idScalar: SearchByScalarIDOrNull
+    @searchByProperty
 
     """
     Property condition.
     """
     idScalarNotNull: SearchByScalarID
+    @searchByProperty
 
     """
     Property condition.
     """
     inScalarNotNull: SearchByScalarInt
+    @searchByProperty
 
     """
     Property condition.
     """
     intScalar: SearchByScalarIntOrNull
+    @searchByProperty
 
     """
     Relationship condition.
@@ -182,11 +192,13 @@ input SearchByConditionInputA {
     Property condition.
     """
     stringScalar: SearchByScalarStringOrNull
+    @searchByProperty
 
     """
     Property condition.
     """
     stringScalarNotNull: SearchByScalarString
+    @searchByProperty
 }
 
 """
@@ -209,6 +221,7 @@ input SearchByConditionInputB {
     Property condition.
     """
     id: SearchByScalarIDOrNull
+    @searchByProperty
 
     """
     Not.
@@ -249,6 +262,7 @@ input SearchByConditionNestedA {
     Property condition.
     """
     value: SearchByScalarStringOrNull
+    @searchByProperty
 }
 
 """
@@ -1021,5 +1035,9 @@ on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorStartsWith
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByProperty
 on
     | INPUT_FIELD_DEFINITION

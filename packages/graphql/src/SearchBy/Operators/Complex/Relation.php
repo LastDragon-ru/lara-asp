@@ -10,20 +10,27 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Builder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorUnsupportedBuilder;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property as PropertyOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
 use function reset;
 
 class Relation extends BaseOperator implements ComplexOperator {
+    public function __construct(
+        protected PropertyOperator $property,
+    ) {
+        parent::__construct();
+    }
+
     public static function getName(): string {
         return 'relation';
     }
@@ -80,7 +87,7 @@ class Relation extends BaseOperator implements ComplexOperator {
         return $builder instanceof EloquentBuilder;
     }
 
-    public function call(Builder $search, object $builder, Property $property, Argument $argument): object {
+    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         // Supported?
         if (!($builder instanceof EloquentBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
@@ -98,6 +105,7 @@ class Relation extends BaseOperator implements ComplexOperator {
         // * where + notExists  = doesntHave
 
         // Conditions
+        $property  = $property->getParent();
         $relation  = (new ModelHelper($builder))->getRelation($property->getName());
         $has       = $argument->value->arguments['where'] ?? null;
         $hasCount  = $argument->value->arguments['count'] ?? null;
@@ -110,7 +118,7 @@ class Relation extends BaseOperator implements ComplexOperator {
 
         if ($hasCount instanceof Argument) {
             $query    = $builder->toBase()->newQuery();
-            $query    = $search->where($query, $hasCount, new Property('tmp'));
+            $query    = $this->property->call($handler, $query, new Property(), $hasCount);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;
@@ -127,13 +135,13 @@ class Relation extends BaseOperator implements ComplexOperator {
             $property,
             $operator,
             $count,
-            static function (EloquentBuilder $builder) use ($relation, $search, $alias, $has): void {
+            static function (EloquentBuilder $builder) use ($relation, $handler, $alias, $has): void {
                 if ($alias === $relation->getRelationCountHash(false)) {
                     $alias = $builder->getModel()->getTable();
                 }
 
                 if ($has instanceof Argument && $has->value instanceof ArgumentSet) {
-                    $search->where($builder, $has->value, new Property($alias));
+                    $handler->handle($builder, new Property($alias), $has->value);
                 }
             },
         );

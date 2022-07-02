@@ -4,24 +4,20 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder as SortByEloquentBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query\Builder as SortByQueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder as SortByScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseEmpty;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\Client\SortClauseTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
-use Mockery\MockInterface;
+use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
+use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+
+use function is_array;
 
 /**
  * @internal
@@ -35,9 +31,14 @@ class DirectiveTest extends TestCase {
      *
      * @dataProvider dataProviderManipulateArgDefinition
      *
-     * @param Closure(self): GraphQLExpectedSchema $expected
+     * @param Closure(static): GraphQLExpectedSchema $expected
+     * @param Closure(static): void                  $prepare
      */
-    public function testManipulateArgDefinition(Closure $expected, string $graphql): void {
+    public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+        if ($prepare) {
+            $prepare($this);
+        }
+
         self::assertGraphQLSchemaEquals(
             $expected($this),
             $this->getTestData()->file($graphql),
@@ -143,111 +144,48 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @covers ::getClauses
+     * @covers ::handleBuilder
      *
-     * @dataProvider dataProviderGetClauses
+     * @dataProvider dataProviderHandleBuilder
      *
-     * @param Exception|array<array{array<string>,?string}> $expected
-     * @param array<mixed>                                  $clauses
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param Closure(static): object                                $builderFactory
      */
-    public function testGetClauses(Exception|array $expected, array $clauses): void {
+    public function testHandleBuilder(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+    ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
-        $directive = new class() extends Directive {
-            /** @noinspection PhpMissingParentConstructorInspection */
-            public function __construct() {
-                // empty
+        $this->useGraphQLSchema(
+        /** @lang GraphQL */
+            <<<'GRAPHQL'
+            type Query {
+                test(input: Test @sortBy): String! @mock
             }
 
-            /**
-             * @inheritDoc
-             */
-            public function getClauses(array $clauses): array {
-                return parent::getClauses($clauses);
+            input Test {
+                a: Int!
+                b: String
             }
-        };
-
-        self::assertEquals($expected, $directive->getClauses($clauses));
-    }
-
-    /**
-     * @covers ::handleBuilder
-     */
-    public function testHandleBuilderQuery(): void {
-        $directive = $this->app->make(Directive::class);
-        $builder   = Mockery::mock(QueryBuilder::class);
-        $clauses   = [
-            new Clause(['a'], null),
-        ];
-
-        $this->override(
-            SortByQueryBuilder::class,
-            static function (MockInterface $mock) use ($builder, $clauses): void {
-                $mock
-                    ->shouldReceive('handle')
-                    ->with($builder, $clauses)
-                    ->once()
-                    ->andReturn($builder);
-            },
+            GRAPHQL,
         );
 
-        $directive->handleBuilder($builder, [
-            ['a' => null],
-        ]);
-    }
+        $definitionNode = Parser::inputValueDefinition('input: [SortByClauseTest!]');
+        $directiveNode  = Parser::directive('@test');
+        $directive      = $this->app->make(Directive::class)->hydrate($directiveNode, $definitionNode);
+        $builder        = $builderFactory($this);
+        $actual         = $directive->handleBuilder($builder, $value);
 
-    /**
-     * @covers ::handleBuilder
-     */
-    public function testHandleBuilderEloquent(): void {
-        $directive = $this->app->make(Directive::class);
-        $builder   = Mockery::mock(EloquentBuilder::class);
-        $clauses   = [
-            new Clause(['a'], null),
-        ];
-
-        $this->override(
-            SortByEloquentBuilder::class,
-            static function (MockInterface $mock) use ($builder, $clauses): void {
-                $mock
-                    ->shouldReceive('handle')
-                    ->with($builder, $clauses)
-                    ->once()
-                    ->andReturn($builder);
-            },
-        );
-
-        $directive->handleBuilder($builder, [
-            ['a' => null],
-        ]);
-    }
-
-    /**
-     * @covers ::handleScoutBuilder
-     */
-    public function testHandleScoutBuilder(): void {
-        $directive = $this->app->make(Directive::class);
-        $builder   = Mockery::mock(ScoutBuilder::class);
-        $clauses   = [
-            new Clause(['a'], null),
-        ];
-
-        $this->override(
-            SortByScoutBuilder::class,
-            static function (MockInterface $mock) use ($builder, $clauses): void {
-                $mock
-                    ->shouldReceive('handle')
-                    ->with($builder, $clauses)
-                    ->once()
-                    ->andReturn($builder);
-            },
-        );
-
-        $directive->handleScoutBuilder($builder, [
-            ['a' => null],
-        ]);
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $actual);
+            self::assertDatabaseQueryEquals($expected, $actual);
+        } else {
+            self::fail('Something wrong...');
+        }
     }
     // </editor-fold>
 
@@ -258,7 +196,7 @@ class DirectiveTest extends TestCase {
      */
     public function dataProviderManipulateArgDefinition(): array {
         return [
-            'full' => [
+            'full'    => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
                         $test->getTestData()->file('~full-expected.graphql'),
@@ -274,106 +212,106 @@ class DirectiveTest extends TestCase {
                         ]);
                 },
                 '~full.graphql',
+                null,
+            ],
+            'example' => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~example-expected.graphql'),
+                    ));
+                },
+                '~example.graphql',
+                null,
             ],
         ];
     }
 
     /**
-     * @return array<string,array{Exception|array<array{array<string>,?string}>|array<mixed>}>
+     * @return array<mixed>
      */
-    public function dataProviderGetClauses(): array {
-        return [
-            'no conditions'        => [
-                [],
-                [],
-            ],
-            'empty'                => [
-                new SortClauseEmpty(0, []),
-                [
-                    [],
-                ],
-            ],
-            'empty nested'         => [
-                new SortClauseEmpty(0, ['a' => []]),
-                [
+    public function dataProviderHandleBuilder(): array {
+        return (new CompositeDataProvider(
+            new BuilderDataProvider(),
+            new ArrayDataProvider([
+                'empty'               => [
                     [
-                        'a' => [],
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        // empty
                     ],
                 ],
-            ],
-            'empty nested nested'  => [
-                new SortClauseEmpty(0, ['a' => ['b' => []]]),
-                [
+                'empty operators'     => [
                     [
-                        'a' => ['b' => []],
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            // empty
+                        ],
                     ],
                 ],
-            ],
-            'more than one'        => [
-                new SortClauseTooManyProperties(1, [
+                'too many properties' => [
+                    new ConditionTooManyProperties(['a', 'b']),
                     [
-                        'a' => 'desc',
-                        'b' => 'desc',
-                    ],
-                ]),
-                [
-                    [
-                        'a' => 'desc',
-                    ],
-                    [
-                        'a' => 'desc',
-                        'b' => 'desc',
-                    ],
-                ],
-            ],
-            'more than one nested' => [
-                new SortClauseTooManyProperties(1, [
-                    'a' => [
-                        'a' => 'desc',
-                        'b' => 'desc',
-                    ],
-                ]),
-                [
-                    [
-                        'a' => 'desc',
-                    ],
-                    [
-                        'a' => [
-                            'a' => 'desc',
+                        [
+                            'a' => 'asc',
                             'b' => 'desc',
                         ],
                     ],
                 ],
-            ],
-            'clause'               => [
-                [
-                    new Clause(['a'], null),
-                    new Clause(['a'], 'desc'),
-                    new Clause(['b', 'c'], 'asc'),
-                    new Clause(['b', 'd', 'e'], 'desc'),
+                'null'                => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    null,
                 ],
-                [
+                'valid condition'     => [
                     [
-                        'a' => null,
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                            order by
+                                "a" asc,
+                                "b" desc
+                        SQL
+                        ,
+                        'bindings' => [],
                     ],
                     [
-                        'a' => 'desc',
-                    ],
-                    [
-                        'b' => [
-                            'c' => 'asc',
+                        [
+                            'a' => 'asc',
+                        ],
+                        [
+                            'b' => 'desc',
                         ],
                     ],
-                    [
-                        'b' => [
-                            'd' => [
-                                'e' => 'desc',
-                            ],
-                        ],
-                    ],
                 ],
-            ],
-        ];
+            ]),
+        ))->getData();
     }
     // </editor-fold>
 }

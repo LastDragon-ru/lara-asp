@@ -1,7 +1,7 @@
 """
 Sort direction.
 """
-enum SortByDirection {
+enum SortByTypeDirection {
     asc
     desc
 }
@@ -14,11 +14,13 @@ input SortByClauseNested {
     Property clause.
     """
     nested: SortByClauseNested
+    @sortByProperty
 
     """
     Property clause.
     """
-    value: SortByDirection
+    value: SortByTypeDirection
+    @sortByOperatorProperty
 }
 
 """
@@ -28,32 +30,38 @@ input SortByClauseProperties {
     """
     Property clause.
     """
-    enum: SortByDirection
+    enum: SortByTypeDirection
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
-    enumNotNull: SortByDirection
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
-    idScalar: SortByDirection
+    idScalar: SortByTypeDirection
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
-    idScalarNotNull: SortByDirection
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     nested: SortByClauseNested
+    @sortByProperty
 
     """
     Property clause.
     """
     nestedNotNull: SortByClauseNested
+    @sortByProperty
 }
 
 type Query {
@@ -70,3 +78,11 @@ Convert Input into Sort Clause.
 directive @sortBy
 on
     | ARGUMENT_DEFINITION
+
+directive @sortByOperatorProperty
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @sortByProperty
+on
+    | INPUT_FIELD_DEFINITION

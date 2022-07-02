@@ -6,7 +6,7 @@ use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function implode;
@@ -27,10 +27,14 @@ class BuilderTest extends TestCase {
      * @dataProvider dataProviderHandle
      *
      * @param array<mixed>|Exception   $expected
-     * @param array<Clause>            $clauses
      * @param Closure():ColumnResolver $resolver
      */
-    public function testHandle(array|Exception $expected, array $clauses, Closure $resolver = null): void {
+    public function testHandle(
+        array|Exception $expected,
+        Property $property,
+        string $direction,
+        Closure $resolver = null,
+    ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
@@ -45,7 +49,7 @@ class BuilderTest extends TestCase {
                 // empty
             },
         ]);
-        $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
+        $builder = $this->app->make(Builder::class)->handle($builder, $property, $direction);
         $actual  = json_decode((string) json_encode($builder), true);
         $default = [
             'model'         => [],
@@ -72,39 +76,17 @@ class BuilderTest extends TestCase {
      */
     public function dataProviderHandle(): array {
         return [
-            'empty'                => [
-                [
-                    // empty
-                ],
-                [],
-            ],
             'clause'               => [
                 [
                     'orders' => [
                         [
-                            'column'    => 'a',
-                            'direction' => 'asc',
-                        ],
-                        [
-                            'column'    => 'b',
-                            'direction' => 'desc',
-                        ],
-                        [
                             'column'    => 'c.d.e',
                             'direction' => 'desc',
                         ],
-                        [
-                            'column'    => 'null',
-                            'direction' => 'asc',
-                        ],
                     ],
                 ],
-                [
-                    new Clause(['a'], 'asc'),
-                    new Clause(['b'], 'desc'),
-                    new Clause(['c', 'd', 'e'], 'desc'),
-                    new Clause(['null'], null),
-                ],
+                new Property('c', 'd', 'e'),
+                'desc',
             ],
             'clause with resolver' => [
                 [
@@ -115,9 +97,8 @@ class BuilderTest extends TestCase {
                         ],
                     ],
                 ],
-                [
-                    new Clause(['a', 'b'], 'asc'),
-                ],
+                new Property('a', 'b'),
+                'asc',
                 static function (): ColumnResolver {
                     return new class() implements ColumnResolver {
                         /**

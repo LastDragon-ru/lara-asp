@@ -26,9 +26,19 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\|null but returns mixed\\.$#"
+			message: "#^Unable to resolve the template type TClass in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
 			count: 1
-			path: packages/graphql/src/AstManipulator.php
+			path: packages/graphql/src/Builder/Manipulator.php
+
+		-
+			message: "#^Unable to resolve the template type TInterface in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
+			count: 1
+			path: packages/graphql/src/Builder/Manipulator.php
+
+		-
+			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Builder\\\\Property\\:\\:\\$path \\(array\\<int, string\\>\\) does not accept array\\<int\\|string, string\\>\\.$#"
+			count: 1
+			path: packages/graphql/src/Builder/Property.php
 
 		-
 			message: "#^Parameter \\#1 \\$enum of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\Enum\\\\EnumType constructor expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\Core\\\\Enum\\>, mixed given\\.$#"
@@ -46,14 +56,14 @@ parameters:
 			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
 
 		-
-			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Ast\\\\Metadata\\:\\:addScalar\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
-			count: 1
-			path: packages/graphql/src/SearchBy/Ast/MetadataTest.php
-
-		-
 			message: "#^Call to an undefined method Nuwave\\\\Lighthouse\\\\Schema\\\\Directives\\\\BaseDirective\\:\\:handleBuilder\\(\\)\\.$#"
 			count: 1
 			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Scalars\\:\\:addScalar\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/ScalarsTest.php
 
 		-
 			message: "#^Cannot call method limit\\(\\) on mixed\\.$#"
@@ -81,12 +91,7 @@ parameters:
 			path: packages/graphql/src/SortBy/Builders/Scout/BuilderTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$clauses of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Directives\\\\Directive\\:\\:getClauses\\(\\) expects array\\<array\\<string, array\\<string, array\\<string, string\\|null\\>\\|string\\>\\|string\\>\\>, mixed given\\.$#"
-			count: 3
-			path: packages/graphql/src/SortBy/Directives/Directive.php
-
-		-
-			message: "#^Parameter \\#1 \\$clauses of method class@anonymous/graphql/src/SortBy/Directives/DirectiveTest\\.php\\:158\\:\\:getClauses\\(\\) expects array\\<array\\<string, array\\<string, array\\<string, string\\|null\\>\\|string\\>\\|string\\>\\>, array given\\.$#"
+			message: "#^Call to an undefined method Nuwave\\\\Lighthouse\\\\Schema\\\\Directives\\\\BaseDirective\\:\\:handleBuilder\\(\\)\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Directives/DirectiveTest.php
 
@@ -101,9 +106,9 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
 
 		-
-			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\Property\\:\\:\\$path \\(array\\<int, string\\>\\) does not accept array\\<int\\|string, string\\>\\.$#"
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\|null but returns mixed\\.$#"
 			count: 1
-			path: packages/graphql/src/Utils/Property.php
+			path: packages/graphql/src/Utils/AstManipulator.php
 
 		-
 			message: "#^Parameter \\#1 \\$expression of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:cron\\(\\) expects string, mixed given\\.$#"

@@ -234,7 +234,7 @@ The main feature - the ability to sort results by relation properties, at the mo
 - `HasOneThrough` (https://laravel.com/docs/eloquent-relationships#has-one-through)
 
 
-How to use:
+How to use (and [generated GraphQL schema](./src/SortBy/Directives/DirectiveTest~example-expected.graphql)):
 
 ```graphql
 type Query {
@@ -273,70 +273,6 @@ query {
 }
 ```
 
-<details>
-<summary>Generated GraphQL schema</summary>
-
-```graphql
-type Comment {
-  text: String
-  user: User
-}
-
-type Query {
-  """You can use normal input type"""
-  users(order: [SortByClauseUsersSort!]): ID!
-
-  """or `_` to generate type automatically 😛"""
-  comments(order: [SortByClauseComment!]): [Comment!]!
-}
-
-"""Sort clause for type Comment (only one property allowed at a time)."""
-input SortByClauseComment {
-  """Property clause."""
-  text: SortByDirection
-
-  """Property clause."""
-  user: SortByClauseUser
-}
-
-"""Sort clause for type User (only one property allowed at a time)."""
-input SortByClauseUser {
-  """Property clause."""
-  id: SortByDirection
-
-  """Property clause."""
-  name: SortByDirection
-}
-
-"""
-Sort clause for input UsersSort (only one property allowed at a time).
-"""
-input SortByClauseUsersSort {
-  """Property clause."""
-  id: SortByDirection
-
-  """Property clause."""
-  name: SortByDirection
-}
-
-"""Sort direction."""
-enum SortByDirection {
-  asc
-  desc
-}
-
-type User {
-  id: ID!
-  name: String!
-}
-
-input UsersSort {
-  id: ID!
-  name: String!
-}
-```
-</details>
-
 
 ## Scout
 
@@ -358,8 +294,8 @@ As you can see in the example above you can use the special placeholder `_` inst
 
 - with list/array type
 - with `@field` directive
-- with `@sortByUnsortable` directive
-- with any directive that implements [`Unsortable`](./src/SortBy/Contracts/Unsortable.php)
+- with `@sortByIgnored` directive
+- with any directive that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
 
 
 # Relations

@@ -1,0 +1,103 @@
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    asc
+    desc
+}
+
+"""
+Sort clause for type Comment (only one property allowed at a time).
+"""
+input SortByClauseComment {
+    """
+    Property clause.
+    """
+    text: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    user: SortByClauseUser
+    @sortByProperty
+}
+
+"""
+Sort clause for type User (only one property allowed at a time).
+"""
+input SortByClauseUser {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorProperty
+}
+
+"""
+Sort clause for input UsersSort (only one property allowed at a time).
+"""
+input SortByClauseUsersSort {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorProperty
+}
+
+type Comment {
+    text: String
+    user: User
+}
+
+type Query {
+    """
+    or `_` to generate type automatically 😛
+    """
+    comments(
+        order: [SortByClauseComment!]
+        @sortBy
+    ): [Comment!]!
+    @all
+
+    """
+    You can use normal input type
+    """
+    users(
+        order: [SortByClauseUsersSort!]
+        @sortBy
+    ): ID!
+    @all
+}
+
+type User {
+    id: ID!
+    name: String!
+}
+
+"""
+Convert Input into Sort Clause.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @sortByOperatorProperty
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @sortByProperty
+on
+    | INPUT_FIELD_DEFINITION

@@ -11,13 +11,14 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Package;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionEmpty;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyOperators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\Client\SearchConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -301,7 +302,8 @@ class DirectiveTest extends TestCase {
                 '~custom-complex-operators.graphql',
                 static function (TestCase $test): void {
                     $locator   = $test->app->make(DirectiveLocator::class);
-                    $directive = new class() extends Relation {
+                    $property  = $test->app->make(Property::class);
+                    $directive = new class($property) extends Relation {
                         public static function getName(): string {
                             return 'custom';
                         }
@@ -352,7 +354,7 @@ class DirectiveTest extends TestCase {
                     ],
                 ],
                 'empty operators'     => [
-                    new SearchConditionEmpty(),
+                    new ConditionEmpty(),
                     [
                         'a' => [
                             // empty
@@ -360,7 +362,7 @@ class DirectiveTest extends TestCase {
                     ],
                 ],
                 'too many properties' => [
-                    new SearchConditionTooManyProperties(['a', 'b']),
+                    new ConditionTooManyProperties(['a', 'b']),
                     [
                         'a' => [
                             'notEqual' => 1,
@@ -371,7 +373,7 @@ class DirectiveTest extends TestCase {
                     ],
                 ],
                 'too many operators'  => [
-                    new SearchConditionTooManyOperators(['equal', 'notEqual']),
+                    new ConditionTooManyOperators(['equal', 'notEqual']),
                     [
                         'a' => [
                             'equal'    => 1,

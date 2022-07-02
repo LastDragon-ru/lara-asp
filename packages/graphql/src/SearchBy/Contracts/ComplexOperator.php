@@ -6,7 +6,7 @@ use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Ast\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Manipulator;
 
 /**
  * Complex operator.

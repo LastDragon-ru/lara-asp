@@ -4,9 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
 
 use Closure;
 use Exception;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\BuilderUnsupported;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -30,15 +28,19 @@ class BuilderTest extends TestCase {
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
      * @param BuilderFactory                                         $builder
-     * @param array<Clause>                                          $clauses
      */
-    public function testHandle(array|Exception $expected, Closure $builder, array $clauses): void {
+    public function testHandle(
+        array|Exception $expected,
+        Closure $builder,
+        Property $property,
+        string $direction,
+    ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
         $builder = $builder($this);
-        $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
+        $builder = $this->app->make(Builder::class)->handle($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -57,27 +59,21 @@ class BuilderTest extends TestCase {
         return (new CompositeDataProvider(
             new QueryBuilderDataProvider(),
             new ArrayDataProvider([
-                'empty'                => [
-                    [
-                        'query'    => 'select * from "tmp"',
-                        'bindings' => [],
-                    ],
-                    [],
-                ],
                 'simple condition'     => [
                     [
                         'query'    => 'select * from "tmp" order by "a" asc',
                         'bindings' => [],
                     ],
-                    [
-                        new Clause(['a'], 'asc'),
-                    ],
+                    new Property('a'),
+                    'asc',
                 ],
                 'nested not supported' => [
-                    new BuilderUnsupported(QueryBuilder::class),
                     [
-                        new Clause(['test', 'name'], 'asc'),
+                        'query'    => 'select * from "tmp" order by "test"."name" asc',
+                        'bindings' => [],
                     ],
+                    new Property('test', 'name'),
+                    'asc',
                 ],
             ]),
         ))->getData();

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 
 /**
  * @internal Must not be used directly.

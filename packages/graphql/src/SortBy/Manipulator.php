@@ -14,21 +14,23 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\AstManipulator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Unsortable;
+use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClauseForField;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\PropertyOperator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Pagination\PaginationType;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
-
 use function count;
 use function mb_strlen;
 use function mb_substr;
 use function str_starts_with;
 
-class Manipulator extends AstManipulator {
+class Manipulator extends BuilderManipulator {
     // <editor-fold desc="API">
     // =========================================================================
     public function update(InputValueDefinitionNode $node, FieldDefinitionNode $query): void {
@@ -74,30 +76,34 @@ class Manipulator extends AstManipulator {
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
     ): ?string {
         // Exists?
-        $name = $this->getTypeName($node);
+        $name = $this->getInputTypeName($node);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
         }
 
         // Add type
-        $type = $this->addTypeDefinition(Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Sort clause for {$this->getNodeTypeFullName($node)} (only one property allowed at a time).
-            """
-            input {$name} {
+        $type = $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
+                <<<DEF
                 """
-                If you see this probably something wrong. Please contact to developer.
+                Sort clause for {$this->getNodeTypeFullName($node)} (only one property allowed at a time).
                 """
-                dummy: ID
-            }
-            DEF,
-        ));
+                input {$name} {
+                    """
+                    If you see this probably something wrong. Please contact to developer.
+                    """
+                    dummy: ID
+                }
+                DEF,
+            ),
+        );
 
         // Add sortable fields
-        $description = 'Property clause.';
-        $fields      = $node instanceof InputObjectType || $node instanceof ObjectType
+        $direction = $this->getType(Direction::class);
+        $operator  = $this->getContainer()->make(PropertyOperator::class);
+        $property  = $this->getContainer()->make(Property::class);
+        $fields    = $node instanceof InputObjectType || $node instanceof ObjectType
             ? $node->getFields()
             : $node->fields;
 
@@ -115,28 +121,36 @@ class Manipulator extends AstManipulator {
                 continue;
             }
 
-            // Unsortable?
-            if ($this->getNodeDirective($field, Unsortable::class)) {
+            // Ignored?
+            if ($this->getNodeDirective($field, Ignored::class)) {
                 continue;
             }
 
             // Is supported?
-            $fieldDefinition = Directive::TypeDirection;
-            $fieldTypeNode   = $this->getTypeDefinitionNode($field);
-            $isNested        = $fieldTypeNode instanceof InputObjectTypeDefinitionNode
+            $fieldType     = $direction;
+            $fieldOperator = $operator;
+            $fieldTypeNode = $this->getTypeDefinitionNode($field);
+            $isNested      = $fieldTypeNode instanceof InputObjectTypeDefinitionNode
                 || $fieldTypeNode instanceof ObjectTypeDefinitionNode
                 || $fieldTypeNode instanceof InputObjectType
                 || $fieldTypeNode instanceof ObjectType;
 
             if ($isNested) {
-                $fieldDefinition = $this->getInputType($fieldTypeNode);
+                $fieldType     = $this->getInputType($fieldTypeNode);
+                $fieldOperator = $property;
             } else {
                 // empty
             }
 
             // Create new Field
-            if (!$fieldDefinition || !$this->copyFieldToType($type, $field, $fieldDefinition, $description)) {
-                throw new FailedToCreateSortClauseForField($this->getNodeName($node), $this->getNodeName($field));
+            if ($fieldType) {
+                $type->fields[] = Parser::inputValueDefinition(
+                    $this->getOperatorField(
+                        $fieldOperator,
+                        $this->getTypeDefinitionNode($fieldType),
+                        $this->getNodeName($field),
+                    ),
+                );
             }
         }
 
@@ -155,28 +169,6 @@ class Manipulator extends AstManipulator {
     }
     // </editor-fold>
 
-    // <editor-fold desc="Defaults">
-    // =========================================================================
-    protected function addDefaultTypeDefinitions(): void {
-        $name = Directive::TypeDirection;
-
-        if (!$this->isTypeDefinitionExists($name)) {
-            $this->addTypeDefinition(Parser::enumTypeDefinition(
-                /** @lang GraphQL */
-                <<<GRAPHQL
-                """
-                Sort direction.
-                """
-                enum {$name} {
-                    asc
-                    desc
-                }
-                GRAPHQL,
-            ));
-        }
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Names">
     // =========================================================================
     protected function isTypeName(
@@ -185,7 +177,11 @@ class Manipulator extends AstManipulator {
         return str_starts_with($this->getNodeTypeName($node), Directive::Name);
     }
 
-    protected function getTypeName(
+    protected function getTypeName(string $name, string $scalar = null, bool $nullable = null): string {
+        return Directive::Name.'Type'.Str::studly($name);
+    }
+
+    protected function getInputTypeName(
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
     ): string {
         return Directive::Name."Clause{$this->getNodeName($node)}";
@@ -207,11 +203,11 @@ class Manipulator extends AstManipulator {
             })->getPaginationType($paginate);
 
             if ($pagination->isPaginator()) {
-                $type = mb_substr($type, 0, - mb_strlen('Paginator'));
+                $type = mb_substr($type, 0, -mb_strlen('Paginator'));
             } elseif ($pagination->isSimple()) {
-                $type = mb_substr($type, 0, - mb_strlen('SimplePaginator'));
+                $type = mb_substr($type, 0, -mb_strlen('SimplePaginator'));
             } elseif ($pagination->isConnection()) {
-                $type = mb_substr($type, 0, - mb_strlen('Connection'));
+                $type = mb_substr($type, 0, -mb_strlen('Connection'));
             } else {
                 // empty
             }

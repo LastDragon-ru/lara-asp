@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Clause;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
@@ -45,15 +45,19 @@ class BuilderTest extends TestCase {
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
      * @param BuilderFactory                                         $builder
-     * @param array<Clause>                                          $clauses
      */
-    public function testHandle(array|Exception $expected, Closure $builder, array $clauses): void {
+    public function testHandle(
+        array|Exception $expected,
+        Closure $builder,
+        Property $property,
+        string $direction,
+    ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
         $builder = $builder($this);
-        $builder = $this->app->make(Builder::class)->handle($builder, $clauses);
+        $builder = $this->app->make(Builder::class)->handle($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -73,12 +77,13 @@ class BuilderTest extends TestCase {
             'Both'     => (new CompositeDataProvider(
                 new EloquentBuilderDataProvider(),
                 new ArrayDataProvider([
-                    'empty' => [
+                    'simple condition' => [
                         [
-                            'query'    => 'select * from "tmp"',
+                            'query'    => 'select * from "tmp" order by "name" desc',
                             'bindings' => [],
                         ],
-                        [],
+                        new Property('name'),
+                        'desc',
                     ],
                 ]),
             )),
@@ -88,9 +93,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['unknown', 'name'], 'asc'),
-                    ],
+                    new Property('unknown', 'name'),
+                    'asc',
                 ],
                 'unsupported'         => [
                     new RelationUnsupported(
@@ -111,22 +115,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['unsupported', 'id'], 'asc'),
-                    ],
-                ],
-                'simple condition'    => [
-                    [
-                        'query'    => 'select * from "users" order by "name" desc, "id" asc',
-                        'bindings' => [],
-                    ],
-                    static function (): EloquentBuilder {
-                        return User::query();
-                    },
-                    [
-                        new Clause(['name'], 'desc'),
-                        new Clause(['id'], 'asc'),
-                    ],
+                    new Property('unsupported', 'id'),
+                    'asc',
                 ],
                 BelongsTo::class      => [
                     [
@@ -136,19 +126,6 @@ class BuilderTest extends TestCase {
                             from
                                 "cars"
                             order by
-                                (
-                                    select
-                                        "users"."name"
-                                    from
-                                        "users"
-                                    where
-                                        "cars"."foreignKey" = "users"."ownerKey"
-                                        and "deleted_at" is null
-                                    order by
-                                        "users"."name" asc
-                                    limit
-                                        1
-                                ) asc,
                                 (
                                     select
                                         "sort_by_organization"."name"
@@ -168,8 +145,7 @@ class BuilderTest extends TestCase {
                                         "sort_by_organization"."name" desc
                                     limit
                                         1
-                                ) desc,
-                                "name" asc
+                                ) desc
                             SQL
                         ,
                         'bindings' => [
@@ -179,11 +155,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return Car::query();
                     },
-                    [
-                        new Clause(['user', 'name'], 'asc'),
-                        new Clause(['user', 'organization', 'name'], 'desc'),
-                        new Clause(['name'], 'asc'),
-                    ],
+                    new Property('user', 'organization', 'name'),
+                    'desc',
                 ],
                 HasOne::class         => [
                     [
@@ -193,19 +166,6 @@ class BuilderTest extends TestCase {
                             from
                                 "users"
                             order by
-                                (
-                                    select
-                                        "cars"."name"
-                                    from
-                                        "cars"
-                                    where
-                                        "users"."localKey" = "cars"."foreignKey"
-                                        and "favorite" = ?
-                                    order by
-                                        "cars"."name" desc
-                                    limit
-                                        1
-                                ) desc,
                                 (
                                     select
                                         "sort_by_engine"."id"
@@ -226,12 +186,10 @@ class BuilderTest extends TestCase {
                                         "sort_by_engine"."id" asc
                                     limit
                                         1
-                                ) asc,
-                                "name" asc
+                                ) asc
                             SQL
                         ,
                         'bindings' => [
-                            1,
                             1,
                             1,
                         ],
@@ -239,11 +197,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['car', 'name'], 'desc'),
-                        new Clause(['car', 'engine', 'id'], 'asc'),
-                        new Clause(['name'], 'asc'),
-                    ],
+                    new Property('car', 'engine', 'id'),
+                    'asc',
                 ],
                 HasMany::class        => [
                     [
@@ -265,21 +220,7 @@ class BuilderTest extends TestCase {
                                         "cars"."name" asc
                                     limit
                                         1
-                                ) asc,
-                                (
-                                    select
-                                        "cars"."engines"
-                                    from
-                                        "cars"
-                                    where
-                                        "users"."localKey" = "cars"."foreignKey"
-                                        and "deleted_at" is null
-                                    order by
-                                        "cars"."engines" desc
-                                    limit
-                                        1
-                                ) desc,
-                                "name" asc
+                                ) asc
                             SQL
                         ,
                         'bindings' => [
@@ -289,11 +230,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['cars', 'name'], 'asc'),
-                        new Clause(['cars', 'engines'], 'desc'),
-                        new Clause(['name'], 'asc'),
-                    ],
+                    new Property('cars', 'name'),
+                    'asc',
                 ],
                 MorphOne::class       => [
                     [
@@ -316,8 +254,7 @@ class BuilderTest extends TestCase {
                                         "images"."id" asc
                                     limit
                                         1
-                                ) asc,
-                                "name" asc
+                                ) asc
                             SQL
                         ,
                         'bindings' => [
@@ -327,10 +264,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['avatar', 'id'], 'asc'),
-                        new Clause(['name'], 'asc'),
-                    ],
+                    new Property('avatar', 'id'),
+                    'asc',
                 ],
                 HasOneThrough::class  => [
                     [
@@ -340,20 +275,6 @@ class BuilderTest extends TestCase {
                             from
                                 "users"
                             order by
-                                (
-                                    select
-                                        "roles"."name"
-                                    from
-                                        "roles"
-                                        inner join "user_roles" on "user_roles"."secondLocalKey" = "roles"."secondKey"
-                                    where
-                                        "users"."localKey" = "user_roles"."firstKey"
-                                        and "deleted_at" is null
-                                    order by
-                                        "roles"."name" asc
-                                    limit
-                                        1
-                                ) asc,
                                 (
                                     select
                                         "sort_by_user"."name"
@@ -376,8 +297,7 @@ class BuilderTest extends TestCase {
                                         "sort_by_user"."name" desc
                                     limit
                                         1
-                                ) desc,
-                                "name" desc
+                                ) desc
                             SQL
                         ,
                         'bindings' => [
@@ -387,11 +307,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['role', 'name'], 'asc'),
-                        new Clause(['role', 'user', 'name'], 'desc'),
-                        new Clause(['name'], 'desc'),
-                    ],
+                    new Property('role', 'user', 'name'),
+                    'desc',
                 ],
                 BelongsToMany::class  => [
                     [
@@ -401,20 +318,6 @@ class BuilderTest extends TestCase {
                             from
                                 "users"
                             order by
-                                (
-                                    select
-                                        "roles"."name"
-                                    from
-                                        "roles"
-                                        inner join "user_roles" on "roles"."relatedKey" = "user_roles"."relatedPivotKey"
-                                    where
-                                        "users"."parentKey" = "user_roles"."foreignPivotKey"
-                                        and "deleted_at" is null
-                                    order by
-                                        "roles"."name" asc
-                                    limit
-                                        1
-                                ) asc,
                                 (
                                     select
                                         "sort_by_users"."name"
@@ -438,8 +341,7 @@ class BuilderTest extends TestCase {
                                         "sort_by_users"."name" desc
                                     limit
                                         1
-                                ) desc,
-                                "name" desc
+                                ) desc
                             SQL
                         ,
                         'bindings' => [
@@ -449,11 +351,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['roles', 'name'], 'asc'),
-                        new Clause(['roles', 'users', 'name'], 'desc'),
-                        new Clause(['name'], 'desc'),
-                    ],
+                    new Property('roles', 'users', 'name'),
+                    'desc',
                 ],
                 MorphToMany::class    => [
                     [
@@ -463,20 +362,6 @@ class BuilderTest extends TestCase {
                             from
                                 "users"
                             order by
-                                (
-                                    select
-                                        "tags"."id"
-                                    from
-                                        "tags"
-                                        inner join "taggables" on "tags"."relatedKey" = "taggables"."relatedPivotKey"
-                                    where
-                                        "users"."parentKey" = "taggables"."foreignPivotKey"
-                                        and "taggables"."taggable_type" = ?
-                                    order by
-                                        "tags"."id" asc
-                                    limit
-                                        1
-                                ) asc,
                                 (
                                     select
                                         "sort_by_users"."name"
@@ -498,23 +383,18 @@ class BuilderTest extends TestCase {
                                         "sort_by_users"."name" asc
                                     limit
                                         1
-                                ) asc,
-                                "name" desc
+                                ) asc
                             SQL
                         ,
                         'bindings' => [
-                            User::class,
                             User::class,
                         ],
                     ],
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['tags', 'id'], 'asc'),
-                        new Clause(['tags', 'users', 'name'], 'asc'),
-                        new Clause(['name'], 'desc'),
-                    ],
+                    new Property('tags', 'users', 'name'),
+                    'asc',
                 ],
                 HasManyThrough::class => [
                     [
@@ -537,8 +417,7 @@ class BuilderTest extends TestCase {
                                         "users"."name" asc
                                     limit
                                         1
-                                ) asc,
-                                "id" desc
+                                ) asc
                             SQL
                         ,
                         'bindings' => [
@@ -548,10 +427,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return CarEngine::query();
                     },
-                    [
-                        new Clause(['users', 'name'], 'asc'),
-                        new Clause(['id'], 'desc'),
-                    ],
+                    new Property('users', 'name'),
+                    'asc',
                 ],
                 MorphMany::class      => [
                     [
@@ -574,8 +451,7 @@ class BuilderTest extends TestCase {
                                         "images"."id" asc
                                     limit
                                         1
-                                ) asc,
-                                "name" desc
+                                ) asc
                             SQL
                         ,
                         'bindings' => [
@@ -585,10 +461,8 @@ class BuilderTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    [
-                        new Clause(['images', 'id'], 'asc'),
-                        new Clause(['name'], 'desc'),
-                    ],
+                    new Property('images', 'id'),
+                    'asc',
                 ],
             ])),
         ]))->getData();

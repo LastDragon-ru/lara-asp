@@ -24,6 +24,7 @@ input SearchByConditionProperties {
     Property condition.
     """
     value: SearchByScalarString
+    @searchByProperty
 }
 
 """
@@ -145,5 +146,9 @@ on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorStartsWith
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByProperty
 on
     | INPUT_FIELD_DEFINITION
