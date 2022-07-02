@@ -19,13 +19,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Unsortable;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\OrderBy;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\PropertyOperator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Pagination\PaginationType;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
-
 use function count;
 use function mb_strlen;
 use function mb_substr;
@@ -102,7 +101,7 @@ class Manipulator extends BuilderManipulator {
 
         // Add sortable fields
         $direction = $this->getType(Direction::class);
-        $operator  = $this->getContainer()->make(OrderBy::class);
+        $operator  = $this->getContainer()->make(PropertyOperator::class);
         $property  = $this->getContainer()->make(Property::class);
         $fields    = $node instanceof InputObjectType || $node instanceof ObjectType
             ? $node->getFields()

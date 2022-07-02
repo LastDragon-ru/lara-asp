@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder as ScoutHandler;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
-class OrderBy extends BaseOperator {
+class PropertyOperator extends BaseOperator {
     public function __construct(
         private EloquentHandler $eloquent,
         private QueryHandler $query,
@@ -26,7 +26,7 @@ class OrderBy extends BaseOperator {
     }
 
     public static function getName(): string {
-        return 'orderBy';
+        return 'property';
     }
 
     public function getFieldType(TypeProvider $provider, string $type): ?string {

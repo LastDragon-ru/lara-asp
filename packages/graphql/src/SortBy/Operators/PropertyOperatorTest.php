@@ -21,11 +21,11 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\OrderBy
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\PropertyOperator
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
-class OrderByTest extends TestCase {
+class PropertyOperatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -43,7 +43,7 @@ class OrderByTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
     ): void {
-        $operator  = $this->app->make(OrderBy::class);
+        $operator  = $this->app->make(PropertyOperator::class);
         $argument  = $argumentFactory($this);
         $directive = $this->app->make(Directive::class);
         $builder   = $builderFactory($this);
@@ -65,7 +65,7 @@ class OrderByTest extends TestCase {
 
         $directive = $this->app->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(OrderBy::class);
+        $operator  = $this->app->make(PropertyOperator::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',
@@ -89,7 +89,7 @@ class OrderByTest extends TestCase {
 
         $directive = $this->app->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(OrderBy::class);
+        $operator  = $this->app->make(PropertyOperator::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',
@@ -112,7 +112,7 @@ class OrderByTest extends TestCase {
 
         $directive = $this->app->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(OrderBy::class);
+        $operator  = $this->app->make(PropertyOperator::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',

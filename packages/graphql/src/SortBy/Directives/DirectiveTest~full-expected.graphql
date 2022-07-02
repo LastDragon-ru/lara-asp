@@ -20,7 +20,7 @@ input SortByClauseNested {
     Property clause.
     """
     value: SortByTypeDirection
-    @sortByOperatorOrderBy
+    @sortByOperatorProperty
 }
 
 """
@@ -31,25 +31,25 @@ input SortByClauseProperties {
     Property clause.
     """
     enum: SortByTypeDirection
-    @sortByOperatorOrderBy
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     enumNotNull: SortByTypeDirection
-    @sortByOperatorOrderBy
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     idScalar: SortByTypeDirection
-    @sortByOperatorOrderBy
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     idScalarNotNull: SortByTypeDirection
-    @sortByOperatorOrderBy
+    @sortByOperatorProperty
 
     """
     Property clause.
@@ -79,7 +79,7 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorOrderBy
+directive @sortByOperatorProperty
 on
     | INPUT_FIELD_DEFINITION
 
