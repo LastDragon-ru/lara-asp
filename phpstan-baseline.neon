@@ -106,7 +106,7 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\|null but returns mixed\\.$#"
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return \\(T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\)\\|null but returns mixed\\.$#"
 			count: 1
 			path: packages/graphql/src/Utils/AstManipulator.php
 
