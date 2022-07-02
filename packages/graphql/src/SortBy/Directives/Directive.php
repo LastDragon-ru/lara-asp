@@ -17,8 +17,7 @@ use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
-    public const Name          = 'SortBy';
-    public const TypeDirection = 'SortByDirection';
+    public const Name = 'SortBy';
 
     public static function definition(): string {
         return /** @lang GraphQL */ <<<'GRAPHQL'
