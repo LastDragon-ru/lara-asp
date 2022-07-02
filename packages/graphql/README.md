@@ -358,8 +358,8 @@ As you can see in the example above you can use the special placeholder `_` inst
 
 - with list/array type
 - with `@field` directive
-- with `@sortByUnsortable` directive
-- with any directive that implements [`Unsortable`](./src/SortBy/Contracts/Unsortable.php)
+- with `@sortByIgnored` directive
+- with any directive that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
 
 
 # Relations

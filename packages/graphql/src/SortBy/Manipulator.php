@@ -16,7 +16,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Unsortable;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
@@ -121,8 +121,8 @@ class Manipulator extends BuilderManipulator {
                 continue;
             }
 
-            // Unsortable?
-            if ($this->getNodeDirective($field, Unsortable::class)) {
+            // Ignored?
+            if ($this->getNodeDirective($field, Ignored::class)) {
                 continue;
             }
 

@@ -7,6 +7,6 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 /**
  * Marks that field should be excluded from sort.
  */
-interface Unsortable extends Directive {
+interface Ignored extends Directive {
     // empty
 }
