@@ -59,7 +59,7 @@ This class extends standard `\Illuminate\Database\Eloquent\Factories\Factory`:
 - Fixes `wasRecentlyCreated` value, by default it will be `true`. In most cases, this is unwanted behavior. The factory will set it to `false` after creating the model;
 - Disables all model events while making/creating the instance.
 
-## [`\LastDragon_ru\LaraASP\Testing\Database\WithQueryLog`](./src/Database/WithQueryLog.php)
+## [`\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog`](./src/Database/QueryLog/WithQueryLog.php)
 
 Enables query log for the test case.
 
@@ -143,7 +143,7 @@ Expected status code 200 but received 500.
 Failed asserting that 200 is identical to 500.
  vendor/laravel/framework/src/Illuminate/Testing/TestResponse.php:186
  app/Http/Controllers/IndexControllerTest.php:16
- 
+
 
 
 Time: 00:01.373, Memory: 26.00 MB
@@ -169,7 +169,7 @@ Actual   :'text/html; charset=UTF-8'
 
  vendor/laravel/framework/src/Illuminate/Testing/TestResponse.php:229
  app/Http/Controllers/IndexControllerTest.php:18
- 
+
 
 
 Time: 00:01.082, Memory: 24.00 MB
@@ -362,7 +362,7 @@ class IndexControllerTest extends TestCase {
     public function testIndex() {
         $this->getJson('/')->assertThat(new ValidationErrorResponse());
     }
-    
+
     /**
      * @covers ::index
      */
