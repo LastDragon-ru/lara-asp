@@ -1,0 +1,22 @@
+type Query {
+    "You can use normal input type"
+    users(order: UsersSort @sortBy): ID! @all
+
+    "or `_` to generate type automatically 😛"
+    comments(order: _ @sortBy): [Comment!]! @all
+}
+
+input UsersSort {
+    id: ID!
+    name: String!
+}
+
+type Comment {
+    text: String
+    user: User
+}
+
+type User {
+    id: ID!
+    name: String!
+}

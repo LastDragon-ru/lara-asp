@@ -196,7 +196,7 @@ class DirectiveTest extends TestCase {
      */
     public function dataProviderManipulateArgDefinition(): array {
         return [
-            'full' => [
+            'full'    => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
                         $test->getTestData()->file('~full-expected.graphql'),
@@ -212,6 +212,15 @@ class DirectiveTest extends TestCase {
                         ]);
                 },
                 '~full.graphql',
+                null,
+            ],
+            'example' => [
+                static function (self $test): GraphQLExpectedSchema {
+                    return (new GraphQLExpectedSchema(
+                        $test->getTestData()->file('~example-expected.graphql'),
+                    ));
+                },
+                '~example.graphql',
                 null,
             ],
         ];
