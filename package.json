@@ -1,16 +1,15 @@
 {
   "name": "@lastdragon-ru/lara-asp",
-  "version": "0.15.0",
   "license": "MIT",
   "scripts": {
-    "release": "release-it"
+    "release": "release-it --config=.release-it/config.js"
   },
   "repository": {
     "url": "https://github.com/LastDragon-ru/lara-asp"
   },
   "devDependencies": {
-    "@release-it/bumper": "^3.0.0",
-    "@release-it/conventional-changelog": "^4.0.0",
-    "release-it": "*"
+    "@release-it/bumper": "^4.0.0",
+    "@release-it/conventional-changelog": "^5.0.0",
+    "release-it": "15.1.*"
   }
 }
