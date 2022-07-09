@@ -34,6 +34,9 @@ on:
 env:
   PHP_VERSION: 8.0
 
+permissions:
+  contents: read
+
 jobs:
   settings:
     name: collect

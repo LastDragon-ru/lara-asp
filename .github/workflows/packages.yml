@@ -5,6 +5,9 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: read
+
 jobs:
   settings:
     uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master

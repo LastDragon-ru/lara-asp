@@ -26,6 +26,9 @@ on:
         type: string
         default: '["ubuntu-latest"]'
 
+permissions:
+  contents: read
+
 jobs:
   run:
     name: Laravel ${{ matrix.laravel }} / PHP ${{ matrix.php }} (${{ matrix.dependencies }} / ${{ matrix.os }})
