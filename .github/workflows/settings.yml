@@ -61,7 +61,7 @@ jobs:
       - name: Detect PHP extensions
         id: php-extensions
         run: |
-          echo "::set-output name=value::$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort | join(", ")' -r -c composer.json)"
+          echo "::set-output name=value::$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort' -r -c composer.json)"
       - name: Detect Laravel versions
         id: laravel-versions
         run: |

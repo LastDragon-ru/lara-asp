@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       php-extensions:
-        description: "The comma separated list of required PHP extensions."
+        description: "The JSON with required PHP extensions."
         required: true
         type: string
       laravel-versions:
@@ -62,7 +62,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: ${{ inputs.php-extensions }}
+          extensions: ${{ join(fromJSON(inputs.php-extensions)) }}
           ini-values: opcache.enable_cli=1
           coverage: none
 
