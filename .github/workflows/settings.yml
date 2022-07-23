@@ -4,16 +4,7 @@ name: Settings
 
 on:
   workflow_call:
-    inputs:
-      packages-directory:
-        default: "packages/"
-        required: false
-        type: string
     outputs:
-      packages-names:
-        value: ${{ jobs.settings.outputs.packages-names }}
-      packages-directory:
-        value: ${{ jobs.settings.outputs.packages-directory }}
       php-versions:
         value: ${{ jobs.settings.outputs.php-versions }}
       php-latest:
@@ -42,8 +33,6 @@ jobs:
     name: collect
     runs-on: ubuntu-latest
     outputs:
-      packages-names: ${{ steps.packages.outputs.value }}
-      packages-directory: ${{ inputs.packages-directory }}
       php-versions: ${{ steps.php-versions.outputs.supported }}
       php-latest: ${{ steps.php-versions.outputs.latest }}
       php-lowest: ${{ steps.php-versions.outputs.lowest }}
@@ -65,10 +54,6 @@ jobs:
         run: |
           mkdir "$RUNNER_TEMP/easy-ci"
           composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev symplify/easy-ci
-      - name: Detect packages
-        id: packages
-        run: |
-          echo "::set-output name=value::$(ls -1 -d "${{ inputs.packages-directory }}/"* 2> /dev/null | sed -e 's-/$--' | sed -e 's-.*/--' | jq  --raw-input . | jq --slurp -c .)"
       - name: Detect Supported PHP versions
         id: php-versions
         run: |
@@ -96,8 +81,6 @@ jobs:
           echo "::set-output name=value::$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)"
       - name: Collected
         run: |
-          echo "packages-names: ${{ steps.packages.outputs.value }}"
-          echo "packages-directory: ${{ inputs.packages-directory }}"
           echo "php-versions: ${{ steps.php-versions.outputs.supported }}"
           echo "php-latest: ${{ steps.php-versions.outputs.latest }}"
           echo "php-lowest: ${{ steps.php-versions.outputs.lowest }}"

@@ -91,3 +91,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm run release
+
+  packages:
+    uses: LastDragon-ru/lara-asp/.github/workflows/packages.yml@master
+    needs:
+      - release
+    secrets: inherit
