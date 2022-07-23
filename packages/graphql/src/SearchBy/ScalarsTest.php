@@ -97,6 +97,33 @@ class ScalarsTest extends TestCase {
     /**
      * @covers ::getScalarOperators
      */
+    public function testGetScalarOperatorsExtends(): void {
+        $config  = $this->app->make(Repository::class);
+        $scalars = new class($this->app, $config) extends Scalars {
+            /**
+             * @var array<string, string>
+             */
+            protected array $extends = [
+                'test' => 'base',
+            ];
+        };
+
+        $scalars->addScalar('test', [Equal::class, Equal::class]);
+        $scalars->addScalar('base', [NotEqual::class]);
+
+        self::assertEquals(
+            [Equal::class, NotEqual::class],
+            $this->toClassNames($scalars->getScalarOperators('test', false)),
+        );
+        self::assertEquals(
+            [Equal::class, NotEqual::class, IsNull::class, IsNotNull::class],
+            $this->toClassNames($scalars->getScalarOperators('test', true)),
+        );
+    }
+
+    /**
+     * @covers ::getScalarOperators
+     */
     public function testGetScalarOperatorsUnknownScalar(): void {
         self::expectExceptionObject(new ScalarUnknown('unknown'));
 

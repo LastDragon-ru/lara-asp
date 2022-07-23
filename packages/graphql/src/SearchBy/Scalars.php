@@ -32,6 +32,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 
 use function array_map;
+use function array_merge;
 use function array_push;
 use function array_unique;
 use function array_values;
@@ -101,6 +102,16 @@ class Scalars {
         ],
     ];
 
+    /**
+     * Determines additional operators available for scalar type.
+     *
+     * @var array<string, string>
+     */
+    protected array $extends = [
+        Directive::ScalarInt   => Directive::ScalarNumber,
+        Directive::ScalarFloat => Directive::ScalarNumber,
+    ];
+
     public function __construct(
         private Container $container,
         Repository $config,
@@ -156,7 +167,13 @@ class Scalars {
         $container = $this->getContainer();
         $operators = array_map(static function (string $operator) use ($container): OperatorContract {
             return $container->make($operator);
-        }, $operators);
+        }, array_unique($operators));
+
+        // Extends
+        if (isset($this->extends[$scalar])) {
+            $extends   = $this->getScalarOperators($this->extends[$scalar], $nullable);
+            $operators = array_merge($operators, $extends);
+        }
 
         // Add `null` for nullable
         if ($nullable) {
