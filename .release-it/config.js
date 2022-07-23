@@ -19,7 +19,8 @@ const types          = [
 module.exports = {
     npm:     false,
     git:     {
-        requireBranch: 'release',
+        tagArgs:        '-S',
+        commitArgs:     '-S',
         requireCommits: true,
     },
     github:  {

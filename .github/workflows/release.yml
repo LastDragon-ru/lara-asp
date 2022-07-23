@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'release'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  settings:
+    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
+
+  monorepo:
+    uses: LastDragon-ru/lara-asp/.github/workflows/monorepo.yml@master
+    needs:
+      - settings
+    with:
+      php-version: ${{ needs.settings.outputs.php-latest }}
+      php-extensions: ${{ needs.settings.outputs.php-extensions }}
+
+  phpcs:
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpcs.yml@master
+    needs:
+      - settings
+    with:
+      php-version: ${{ needs.settings.outputs.php-latest }}
+      php-extensions: ${{ needs.settings.outputs.php-extensions }}
+
+  phpstan:
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpstan.yml@master
+    needs:
+      - settings
+    with:
+      php-version: ${{ needs.settings.outputs.php-latest }}
+      php-extensions: ${{ needs.settings.outputs.php-extensions }}
+
+  phpunit:
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@master
+    needs:
+      - settings
+    with:
+      php-versions: ${{ needs.settings.outputs.php-versions }}
+      php-extensions: ${{ needs.settings.outputs.php-extensions }}
+      laravel-versions: ${{ needs.settings.outputs.laravel-versions }}
+      dependencies: ${{ needs.settings.outputs.dependencies }}
+      runs-on: '["ubuntu-latest", "windows-latest"]'
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs:
+      - monorepo
+      - phpcs
+      - phpstan
+      - phpunit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: Install dependencies
+        run: |
+          npm ci
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm run release
