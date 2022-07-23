@@ -1,0 +1,3 @@
+* {{#if scope}}**{{scope}}:** {{/if}}{{~subject~}}
+{{~#if related}} ({{~#each related}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}){{~/if~}}
+{{~#if breaking}} ☣{{~/if~}}

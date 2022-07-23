@@ -121,14 +121,14 @@
     }
   },
   "scripts": {
-    "release": [
-      "npm run release"
-    ],
-    "release:validate": [
-      "./vendor/bin/monorepo-builder validate",
+    "validate:release": [
+      "@validate:dependencies",
       "@phpstan",
       "@phpunit",
       "@phpcs"
+    ],
+    "validate:dependencies": [
+      "./vendor/bin/monorepo-builder validate"
     ],
     "phpstan": [
       "@php ./vendor/bin/phpstan analyse"

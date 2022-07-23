@@ -67,9 +67,8 @@ jobs:
           composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev symplify/easy-ci
       - name: Detect packages
         id: packages
-        working-directory: ${{ inputs.packages-directory }}
         run: |
-          echo "::set-output name=value::$(ls -1 -d */ | sed -e 's-/$--' | jq  --raw-input . | jq --slurp -c .)"
+          echo "::set-output name=value::$(ls -1 -d "${{ inputs.packages-directory }}/*/" 2> /dev/null | sed -e 's-/$--' | sed -e 's-.*/--' | jq  --raw-input . | jq --slurp -c .)"
       - name: Detect Supported PHP versions
         id: php-versions
         run: |
