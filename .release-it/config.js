@@ -19,7 +19,7 @@ const types          = [
 module.exports = {
     npm:     false,
     git:     {
-        tagArgs:        '-S',
+        tagArgs:        '-s',
         commitArgs:     '-S',
         requireCommits: true,
     },
