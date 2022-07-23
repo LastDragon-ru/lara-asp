@@ -11,6 +11,11 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseAnd;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseLeftShift;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseOr;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseRightShift;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseXor;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\EndsWith;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
@@ -55,7 +60,13 @@ class Scalars {
             In::class,
             NotIn::class,
         ],
-        Directive::ScalarInt     => Directive::ScalarNumber,
+        Directive::ScalarInt     => [
+            BitwiseOr::class,
+            BitwiseXor::class,
+            BitwiseAnd::class,
+            BitwiseLeftShift::class,
+            BitwiseRightShift::class,
+        ],
         Directive::ScalarFloat   => Directive::ScalarNumber,
         Directive::ScalarBoolean => [
             Equal::class,

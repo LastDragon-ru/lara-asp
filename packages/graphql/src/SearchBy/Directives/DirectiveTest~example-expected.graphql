@@ -170,6 +170,36 @@ input SearchByScalarInt {
     @searchByOperatorBetween
 
     """
+    Bitwise AND (`&`).
+    """
+    bitwiseAnd: Int
+    @searchByOperatorBitwiseAnd
+
+    """
+    Bitwise Left shift (`<<`).
+    """
+    bitwiseLeftShift: Int
+    @searchByOperatorBitwiseLeftShift
+
+    """
+    Bitwise OR (`|`).
+    """
+    bitwiseOr: Int
+    @searchByOperatorBitwiseOr
+
+    """
+    Bitwise Right shift (`>>`).
+    """
+    bitwiseRightShift: Int
+    @searchByOperatorBitwiseRightShift
+
+    """
+    Bitwise XOR (`^`).
+    """
+    bitwiseXor: Int
+    @searchByOperatorBitwiseXor
+
+    """
     Equal (`=`).
     """
     equal: Int
@@ -328,6 +358,26 @@ on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorBetween
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorBitwiseAnd
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorBitwiseLeftShift
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorBitwiseOr
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorBitwiseRightShift
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorBitwiseXor
 on
     | INPUT_FIELD_DEFINITION
 
