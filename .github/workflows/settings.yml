@@ -68,7 +68,7 @@ jobs:
       - name: Detect packages
         id: packages
         run: |
-          echo "::set-output name=value::$(ls -1 -d "${{ inputs.packages-directory }}/*/" 2> /dev/null | sed -e 's-/$--' | sed -e 's-.*/--' | jq  --raw-input . | jq --slurp -c .)"
+          echo "::set-output name=value::$(ls -1 -d "${{ inputs.packages-directory }}/"* 2> /dev/null | sed -e 's-/$--' | sed -e 's-.*/--' | jq  --raw-input . | jq --slurp -c .)"
       - name: Detect Supported PHP versions
         id: php-versions
         run: |
