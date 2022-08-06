@@ -9,15 +9,14 @@ use function count;
 use function reset;
 
 class Header extends Response {
-    protected string $name;
-
     /**
      * @param array<Constraint> $constraints
      */
-    public function __construct(string $name, array $constraints = []) {
+    public function __construct(
+        protected string $name,
+        array $constraints = [],
+    ) {
         parent::__construct(...$constraints);
-
-        $this->name = $name;
     }
 
     public function getName(): string {
@@ -28,8 +27,9 @@ class Header extends Response {
      * @inheritdoc
      */
     protected function matches($other): bool {
-        return $other->hasHeader($this->getName())
-            && parent::matches($other);
+        return parent::matches($other)
+            && $other instanceof ResponseInterface
+            && $other->hasHeader($this->getName());
     }
 
     public function toString(): string {
@@ -38,10 +38,14 @@ class Header extends Response {
             );
     }
 
-    protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
+    protected function isConstraintMatches(
+        ResponseInterface $other,
+        Constraint $constraint,
+        bool $return = false,
+    ): ?bool {
         $header  = $other->getHeader($this->getName());
         $header  = count($header) === 1 ? reset($header) : $header;
-        $matches = (bool) $constraint->evaluate($header, '', true);
+        $matches = $constraint->evaluate($header, '', $return);
 
         return $matches;
     }

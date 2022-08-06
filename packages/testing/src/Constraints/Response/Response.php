@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\LogicalAnd;
+use PHPUnit\Framework\ExpectationFailedException;
 use Psr\Http\Message\ResponseInterface;
 
 use function array_filter;
@@ -42,33 +43,44 @@ class Response extends Constraint {
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
     public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
-        return parent::evaluate(
-            Args::getResponse($other),
-            $description,
-            $returnResult,
-        );
+        $other        = Args::getResponse($other);
+        $success      = $this->matches($other);
+        $comparison   = null;
+        $this->failed = null;
+
+        if ($success) {
+            foreach ($this->getConstraints() as $constraint) {
+                try {
+                    if ($this->isConstraintMatches($other, $constraint, $returnResult) === false) {
+                        $success      = false;
+                        $this->failed = $constraint;
+                        break;
+                    }
+                } catch (ExpectationFailedException $exception) {
+                    $success      = false;
+                    $comparison   = $exception->getComparisonFailure();
+                    $this->failed = $constraint;
+                    break;
+                }
+            }
+        }
+
+        if ($returnResult) {
+            return $success;
+        }
+
+        if (!$success) {
+            $this->fail($other, $description, $comparison);
+        }
+
+        return null;
     }
 
     /**
      * @inheritdoc
      */
     protected function matches($other): bool {
-        $matches      = true;
-        $this->failed = null;
-
-        if ($other instanceof ResponseInterface) {
-            foreach ($this->getConstraints() as $constraint) {
-                if (!$this->isConstraintMatches($other, $constraint)) {
-                    $matches      = false;
-                    $this->failed = $constraint;
-                    break;
-                }
-            }
-        } else {
-            $matches = false;
-        }
-
-        return $matches;
+        return true;
     }
 
     public function toString(): string {
@@ -112,8 +124,12 @@ class Response extends Constraint {
 
     // <editor-fold desc="Functions">
     // =========================================================================
-    protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
-        return (bool) $constraint->evaluate($other, '', true);
+    protected function isConstraintMatches(
+        ResponseInterface $other,
+        Constraint $constraint,
+        bool $return = false,
+    ): ?bool {
+        return $constraint->evaluate($other, '', $return);
     }
 
     protected function getResponseDescription(ResponseInterface $response): string {

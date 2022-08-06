@@ -25,7 +25,7 @@ class JsonMatchesFragment extends Constraint {
     }
 
     public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
-        if (!parent::evaluate($other, $description, $returnResult)) {
+        if (parent::evaluate($other, $description, $returnResult) === false) {
             return false;
         }
 

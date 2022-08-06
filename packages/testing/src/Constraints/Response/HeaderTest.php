@@ -16,48 +16,38 @@ class HeaderTest extends TestCase {
     /**
      * @covers ::evaluate
      */
-    public function testEvaluate(): void {
+    public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
         self::assertFalse((new Header('Test'))->evaluate(new stdClass()));
     }
 
     /**
-     * @covers ::matches
+     * @covers ::evaluate
      */
-    public function testMatches(): void {
+    public function testEvaluate(): void {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
-        $constraint = new class('Content-Type') extends Header {
-            /**
-             * @inheritdoc
-             */
-            public function matches($other): bool {
-                return parent::matches($other);
-            }
-        };
+        $invalid2   = new Response();
+        $constraint = new Header('Content-Type');
 
-        self::assertTrue($constraint->matches($valid));
-        self::assertTrue($constraint->matches($invalid));
+        self::assertTrue($constraint->evaluate($valid, '', true));
+        self::assertTrue($constraint->evaluate($invalid, '', true));
+        self::assertFalse($constraint->evaluate($invalid2, '', true));
     }
 
     /**
-     * @covers ::matches
+     * @covers ::evaluate
      */
-    public function testMatchesConstraints(): void {
+    public function testEvaluateConstraints(): void {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
-        $constraint = new class('Content-Type', [new IsEqual('example/text')]) extends Header {
-            /**
-             * @inheritdoc
-             */
-            public function matches($other): bool {
-                return parent::matches($other);
-            }
-        };
+        $invalid2   = new Response();
+        $constraint = new Header('Content-Type', [new IsEqual('example/text')]);
 
-        self::assertTrue($constraint->matches($valid));
-        self::assertFalse($constraint->matches($invalid));
+        self::assertTrue($constraint->evaluate($valid, '', true));
+        self::assertFalse($constraint->evaluate($invalid, '', true));
+        self::assertFalse($constraint->evaluate($invalid2, '', true));
     }
 
     /**

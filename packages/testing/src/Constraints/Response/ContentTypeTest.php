@@ -15,31 +15,24 @@ class ContentTypeTest extends TestCase {
     /**
      * @covers ::evaluate
      */
-    public function testEvaluate(): void {
+    public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
         self::assertFalse((new ContentType(''))->evaluate(new stdClass()));
     }
 
     /**
-     * @covers ::matches
+     * @covers ::evaluate
      */
-    public function testMatches(): void {
+    public function testEvaluate(): void {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
         $valid2     = (new Response())->withHeader('Content-Type', 'example/text;charset=utf-8');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
-        $constraint = new class('example/text') extends ContentType {
-            /**
-             * @inheritdoc
-             */
-            public function matches($other): bool {
-                return parent::matches($other);
-            }
-        };
+        $constraint = new ContentType('example/text');
 
-        self::assertTrue($constraint->matches($valid));
-        self::assertTrue($constraint->matches($valid2));
-        self::assertFalse($constraint->matches($invalid));
+        self::assertTrue($constraint->evaluate($valid, '', true));
+        self::assertTrue($constraint->evaluate($valid2, '', true));
+        self::assertFalse($constraint->evaluate($invalid, '', true));
     }
 
     /**

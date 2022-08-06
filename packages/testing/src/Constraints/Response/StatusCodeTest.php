@@ -15,29 +15,22 @@ class StatusCodeTest extends TestCase {
     /**
      * @covers ::evaluate
      */
-    public function testEvaluate(): void {
+    public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
         self::assertFalse((new StatusCode(200))->evaluate(new stdClass()));
     }
 
     /**
-     * @covers ::matches
+     * @covers ::evaluate
      */
-    public function testMatches(): void {
+    public function testEvaluate(): void {
         $valid      = new Response(200);
         $invalid    = new Response(500);
-        $constraint = new class(200) extends StatusCode {
-            /**
-             * @inheritdoc
-             */
-            public function matches($other): bool {
-                return parent::matches($other);
-            }
-        };
+        $constraint = new StatusCode(200);
 
-        self::assertTrue($constraint->matches($valid));
-        self::assertFalse($constraint->matches($invalid));
+        self::assertTrue($constraint->evaluate($valid, '', true));
+        self::assertFalse($constraint->evaluate($invalid, '', true));
     }
 
     /**

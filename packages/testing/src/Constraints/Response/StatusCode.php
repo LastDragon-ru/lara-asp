@@ -15,7 +15,11 @@ class StatusCode extends Response {
         return 'has Status Code '.parent::toString();
     }
 
-    protected function isConstraintMatches(ResponseInterface $other, Constraint $constraint): bool {
-        return (bool) $constraint->evaluate($other->getStatusCode(), '', true);
+    protected function isConstraintMatches(
+        ResponseInterface $other,
+        Constraint $constraint,
+        bool $return = false,
+    ): ?bool {
+        return $constraint->evaluate($other->getStatusCode(), '', $return);
     }
 }

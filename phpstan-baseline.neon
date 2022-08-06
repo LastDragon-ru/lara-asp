@@ -191,11 +191,6 @@ parameters:
 			path: packages/testing/src/Constraints/Response/Factory.php
 
 		-
-			message: "#^Cannot call method hasHeader\\(\\) on mixed\\.$#"
-			count: 1
-			path: packages/testing/src/Constraints/Response/Header.php
-
-		-
 			message: "#^Parameter \\#1 \\$instances \\(Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\) of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\Eloquent\\\\Factories\\\\Factory\\:\\:callAfterCreating\\(\\) should be contravariant with parameter \\$instances \\(Illuminate\\\\Support\\\\Collection\\) of method Illuminate\\\\Database\\\\Eloquent\\\\Factories\\\\Factory\\<TModel of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:callAfterCreating\\(\\)$#"
 			count: 1
 			path: packages/testing/src/Database/Eloquent/Factories/Factory.php
