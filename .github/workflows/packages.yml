@@ -48,24 +48,40 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       # Checkout source repo
-      # Unfortunately actions/checkout cannot be used with `--no-single-branch`
+      # Unfortunately I'm not sure how to use actions/checkout with `--no-single-branch`
+      # that is required to get all commits.
       - name: Checkout src
         run: |
           git clone --no-single-branch "git@github.com:${{ github.repository }}.git" src
 
-      # Checkout package repo
-      # Unfortunately actions/checkout cannot checkout empty repo
-      - name: Checkout package
+      # Create package repo
+      - name: Create package repo
         run: |
-          git clone "git@github.com:${{ github.repository }}-${{ matrix.package }}.git" package
+          git init package
+      - name: Configure package repo
+        working-directory: package
+        run: |
+          git remote add origin "git@github.com:${{ github.repository }}-${{ matrix.package }}.git"
 
       # Update package
-      - name: Update package
+      # There is one known issue: if branch related only for one package it will
+      # be cloned into all other packages (and will be without commits).
+      #
+      # How to disable this behaviour?
+      - name: Extract commits
         run: |
-          git-filter-repo --force --source=src --target=package --subdirectory-filter="${{ env.PACKAGES_DIRECTORY }}${{ matrix.package }}"
+          git-filter-repo --source=src --target=package --subdirectory-filter="${{ env.PACKAGES_DIRECTORY }}${{ matrix.package }}"
 
-      # Push
+      # Before `push --mirror` we need enable track for all branches, or they will
+      # not  be visible after `git clone` and on the Branches page on Github.
+      #
+      # https://stackoverflow.com/a/379842/7511282
+      - name: Setup branches
+        working-directory: package
+        run: |
+          for i in `git branch -a | grep remote | grep -v HEAD | grep -v master`; do git branch --track ${i#remotes/origin/} $i; done
+
       - name: Push package
         working-directory: package
         run: |
-          git push --mirror --force origin
+          git push --mirror origin
