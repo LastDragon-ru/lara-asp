@@ -2,8 +2,8 @@ name: Continuous Integration
 
 on:
   push:
-    branches-ignore:
-      - 'release'
+    branches:
+      - 'master'
   pull_request:
   schedule:
     - cron: "0 0 */7 * *"
