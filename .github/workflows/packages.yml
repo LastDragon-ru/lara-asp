@@ -48,22 +48,16 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       # Checkout source repo
+      # Unfortunately actions/checkout cannot be used with `--no-single-branch`
       - name: Checkout src
-        uses: actions/checkout@v3
-        with:
-          ref: master
-          path: src
-          fetch-depth: 0
+        run: |
+          git clone --no-single-branch "git@github.com:${{ github.repository }}.git" src
 
       # Checkout package repo
       # Unfortunately actions/checkout cannot checkout empty repo
       - name: Checkout package
         run: |
           git clone "git@github.com:${{ github.repository }}-${{ matrix.package }}.git" package
-      - name: Checkout package (refs/replace)
-        working-directory: package
-        run: |
-          git fetch origin "refs/replace/*:refs/replace/*"
 
       # Update package
       - name: Update package
@@ -74,6 +68,4 @@ jobs:
       - name: Push package
         working-directory: package
         run: |
-          git push --all --force origin
-          git push --tags --force origin
-          git push --force origin "refs/replace/*"
+          git push --mirror --force origin
