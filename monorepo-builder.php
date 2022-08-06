@@ -1,10 +1,7 @@
 <?php declare(strict_types = 1);
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\MonorepoBuilder\ValueObject\Option;
+use Symplify\MonorepoBuilder\Config\MBConfig;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $parameters = $containerConfigurator->parameters();
-
-    $parameters->set(Option::PACKAGE_DIRECTORIES, [__DIR__.'/packages']);
+return static function (MBConfig $config): void {
+    $config->packageDirectories([__DIR__.'/packages']);
 };
