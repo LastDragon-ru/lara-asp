@@ -97,7 +97,9 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
                 """
                 Description
 
+                ```graphql
                 @a
+                ```
                 """
                 type Test
                 @a

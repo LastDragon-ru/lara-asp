@@ -76,7 +76,9 @@ class EnumValueDefinitionBlockTest extends TestCase {
                 """
                 Description
 
+                ```graphql
                 @a
+                ```
                 """
                 A
                 @a
