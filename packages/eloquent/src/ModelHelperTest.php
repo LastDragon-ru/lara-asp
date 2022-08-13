@@ -80,6 +80,7 @@ class ModelHelperTest extends TestCase {
      * @return array<mixed>
      */
     public function dataProviderGetRelation(): array {
+        // todo(eloquent): Add tests for Intersection Types (PHP 8.1)
         return (new CompositeDataProvider(
             new ArrayDataProvider([
                 'model'   => [
@@ -91,24 +92,28 @@ class ModelHelperTest extends TestCase {
                 'builder' => [
                     new UnknownValue(),
                     static function (): Builder {
-                        return (new ModelHelperTest__Model())->query();
+                        return ModelHelperTest__Model::query();
                     },
                 ],
             ]),
             new ArrayDataProvider([
-                'noTypeHint'  => [
+                'noTypeHint'       => [
                     new PropertyIsNotRelation(new ModelHelperTest__Model(), 'noTypeHint'),
                     'noTypeHint',
                 ],
-                'notRelation' => [
+                'notRelation'      => [
                     new PropertyIsNotRelation(new ModelHelperTest__Model(), 'notRelation'),
                     'notRelation',
                 ],
-                'union'       => [
-                    new PropertyIsNotRelation(new ModelHelperTest__Model(), 'union'),
+                'union'            => [
+                    BelongsTo::class,
                     'union',
                 ],
-                'ok'          => [
+                'unionNotRelation' => [
+                    new PropertyIsNotRelation(new ModelHelperTest__Model(), 'unionNotRelation'),
+                    'unionNotRelation',
+                ],
+                'ok'               => [
                     BelongsTo::class,
                     'ok',
                 ],
@@ -187,6 +192,13 @@ class ModelHelperTest__Model extends Model {
      * @return BelongsTo<self,self>|HasOne<self>
      */
     public function union(): BelongsTo|HasOne {
+        return $this->belongsTo(self::class);
+    }
+
+    /**
+     * @return BelongsTo<self,self>|stdClass
+     */
+    public function unionNotRelation(): BelongsTo|stdClass {
         return $this->belongsTo(self::class);
     }
 

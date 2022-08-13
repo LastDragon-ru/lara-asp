@@ -9,7 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionIntersectionType;
 use ReflectionNamedType;
+use ReflectionType;
+use ReflectionUnionType;
 
 use function class_uses_recursive;
 use function in_array;
@@ -30,7 +33,7 @@ class ModelHelper {
      */
     private static array $softDeletable = [];
 
-    private bool  $builder;
+    private bool $builder;
 
     /**
      * @var TModel
@@ -71,14 +74,41 @@ class ModelHelper {
             try {
                 $class                          = new ReflectionClass($model);
                 $type                           = $class->getMethod($name)->getReturnType();
-                self::$relations[$model][$name] = $type instanceof ReflectionNamedType
-                    && is_a($type->getName(), Relation::class, true);
+                self::$relations[$model][$name] = $this->isRelationInstanceOf($type);
             } catch (ReflectionException) {
                 // empty
             }
         }
 
         return self::$relations[$model][$name];
+    }
+
+    private function isRelationInstanceOf(?ReflectionType $type): bool {
+        $isInstanceOf = false;
+
+        if ($type instanceof ReflectionNamedType) {
+            $isInstanceOf = is_a($type->getName(), Relation::class, true);
+        } elseif ($type instanceof ReflectionUnionType) {
+            $isInstanceOf = true;
+
+            foreach ($type->getTypes() as $t) {
+                if (!$this->isRelationInstanceOf($t)) {
+                    $isInstanceOf = false;
+                    break;
+                }
+            }
+        } elseif ($type instanceof ReflectionIntersectionType) {
+            foreach ($type->getTypes() as $t) {
+                if ($this->isRelationInstanceOf($t)) {
+                    $isInstanceOf = true;
+                    break;
+                }
+            }
+        } else {
+            // empty
+        }
+
+        return $isInstanceOf;
     }
 
     /**
