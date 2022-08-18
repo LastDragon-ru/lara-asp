@@ -66,12 +66,7 @@ parameters:
 			path: packages/graphql/src/SearchBy/ScalarsTest.php
 
 		-
-			message: "#^Cannot call method limit\\(\\) on mixed\\.$#"
-			count: 1
-			path: packages/graphql/src/SortBy/Builders/Eloquent/Builder.php
-
-		-
-			message: "#^Parameter \\#2 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:when\\(\\) expects \\(callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, mixed\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|void\\)\\|null, Closure\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder, string\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"
+			message: "#^Parameter \\#2 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:when\\(\\) expects \\(callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, string\\|null\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\)\\|null, Closure\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder, string\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Builders/Eloquent/Builder.php
 
@@ -142,6 +137,11 @@ parameters:
 
 		-
 			message: "#^Parameter \\#3 \\$path of method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\:\\:mapResourceValue\\(\\) expects array\\<string\\>, array given\\.$#"
+			count: 1
+			path: packages/spa/src/Http/Resources/Resource.php
+
+		-
+			message: "#^Return type \\(static\\(LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\)\\) of method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\:\\:additional\\(\\) should be covariant with return type \\(\\$this\\(Illuminate\\\\Http\\\\Resources\\\\Json\\\\JsonResource\\)\\) of method Illuminate\\\\Http\\\\Resources\\\\Json\\\\JsonResource\\:\\:additional\\(\\)$#"
 			count: 1
 			path: packages/spa/src/Http/Resources/Resource.php
 

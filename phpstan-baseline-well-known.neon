@@ -47,7 +47,6 @@ parameters:
 
         # False positive
         # https://github.com/nunomaduro/larastan/pull/913
-        - "#^Parameter \\#1 \\$column of method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:orderBy\\(\\) expects Closure\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|Illuminate\\\\Database\\\\Query\\\\Expression\\|string, Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\|string given\\.$#"
         - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::joinSub\\(\\)\\.$#"
         - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::reorder\\(\\)\\.$#"
         - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::offset\\(\\)\\.$#"
