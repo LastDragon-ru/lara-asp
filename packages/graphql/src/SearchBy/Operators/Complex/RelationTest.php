@@ -45,7 +45,6 @@ class RelationTest extends TestCase {
         }
 
         $operator = $this->app->make(Relation::class);
-        $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = $this->app->make(Directive::class);
         $builder  = $builderFactory($this);

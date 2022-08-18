@@ -105,7 +105,6 @@ class Relation extends BaseOperator implements ComplexOperator {
         // * where + notExists  = doesntHave
 
         // Conditions
-        $property  = $property->getParent();
         $relation  = (new ModelHelper($builder))->getRelation($property->getName());
         $has       = $argument->value->arguments['where'] ?? null;
         $hasCount  = $argument->value->arguments['count'] ?? null;
