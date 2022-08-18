@@ -97,7 +97,9 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                 """
                 Description
 
+                ```graphql
                 @a
+                ```
                 """
                 interface Test
                 @a

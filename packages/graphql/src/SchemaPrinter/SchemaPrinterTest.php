@@ -976,7 +976,9 @@ class SchemaPrinterTest extends TestCase {
                     """
                     Description
 
+                    ```graphql
                     @codeDirective
+                    ```
                     """
                     interface CodeInterface {
                         a: Boolean!

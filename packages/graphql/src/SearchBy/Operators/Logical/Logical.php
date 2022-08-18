@@ -22,24 +22,28 @@ abstract class Logical extends BaseOperator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        // The last item is the name of the operator not a property
-        $property   = $property->getParent();
-        $conditions = $this->getConditions($argument);
+        $builder->where(
+            function (EloquentBuilder|QueryBuilder $builder) use ($handler, $property, $argument): void {
+                // The last item is the name of the operator not a property
+                $property   = $property->getParent();
+                $conditions = $this->getConditions($argument);
 
-        foreach ($conditions as $arguments) {
-            $builder->where(
-                static function (EloquentBuilder|QueryBuilder $builder) use (
-                    $handler,
-                    $arguments,
-                    $property
-                ): void {
-                    $handler->handle($builder, $property, $arguments);
-                },
-                null,
-                null,
-                $this->getBoolean(),
-            );
-        }
+                foreach ($conditions as $arguments) {
+                    $builder->where(
+                        static function (EloquentBuilder|QueryBuilder $builder) use (
+                            $handler,
+                            $arguments,
+                            $property
+                        ): void {
+                            $handler->handle($builder, $property, $arguments);
+                        },
+                        null,
+                        null,
+                        $this->getBoolean(),
+                    );
+                }
+            },
+        );
 
         return $builder;
     }

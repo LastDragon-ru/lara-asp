@@ -114,15 +114,19 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     """
                     Description
 
+                    ```graphql
                     @b
                     @a
+                    ```
                     """
                     B
                     @b
                     @a
 
                     """
+                    ```graphql
                     @deprecated
+                    ```
                     """
                     A
                     @deprecated

@@ -80,7 +80,9 @@ class FieldDefinitionBlockTest extends TestCase {
                 """
                 Description
 
+                ```graphql
                 @a
+                ```
                 """
                 test: Test!
                 @a

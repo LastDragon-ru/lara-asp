@@ -220,7 +220,9 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             'directives'                    => [
                 <<<'STRING'
                 """
+                ```graphql
                 @a
+                ```
                 """
                 union Test
                 @a

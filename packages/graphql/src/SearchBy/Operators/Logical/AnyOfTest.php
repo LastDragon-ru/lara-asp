@@ -88,7 +88,7 @@ class AnyOfTest extends TestCase {
             new ArrayDataProvider([
                 'property'   => [
                     [
-                        'query'    => 'select * from "tmp" where ("a" = ?) or ("b" != ?)',
+                        'query'    => 'select * from "tmp" where (("a" = ?) or ("b" != ?))',
                         'bindings' => [
                             2,
                             22,
@@ -99,7 +99,7 @@ class AnyOfTest extends TestCase {
                 ],
                 'with alias' => [
                     [
-                        'query'    => 'select * from "tmp" where ("alias"."a" = ?) or ("alias"."b" != ?)',
+                        'query'    => 'select * from "tmp" where (("alias"."a" = ?) or ("alias"."b" != ?))',
                         'bindings' => [
                             2,
                             22,

@@ -22,12 +22,12 @@ use function is_string;
  * Queueable configurator.
  */
 class QueueableConfigurator {
-    protected Container  $container;
-    protected Repository $config;
-
-    public function __construct(Container $container, Repository $config) {
-        $this->container = $container;
-        $this->config    = $config;
+    public function __construct(
+        protected Container $container,
+        protected Repository $config,
+        protected DateFactory $dateFactory,
+    ) {
+        // empty
     }
 
     public function config(ConfigurableQueueable $queueable): QueueableConfig {
@@ -49,9 +49,9 @@ class QueueableConfigurator {
         $config     = $this->config($queueable);
         $properties = array_keys($this->getQueueableProperties());
         $preparers  = [
-            'retryUntil' => static function (mixed $value): ?DateTimeInterface {
+            'retryUntil' => function (mixed $value): ?DateTimeInterface {
                 if (is_string($value)) {
-                    $value = DateFactory::now()->add($value);
+                    $value = $this->dateFactory->now()->add($value);
                 } else {
                     $value = null;
                 }

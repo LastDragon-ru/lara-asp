@@ -402,10 +402,17 @@ class DirectiveTest extends TestCase {
                             from
                                 "tmp"
                             where
-                                not (
-                                    ("a" != ?)
-                                    and (
-                                        ("a" = ?) or ("b" != ?)
+                                (
+                                    not (
+                                        (
+                                            ("a" != ?)
+                                            and (
+                                                (
+                                                    ("a" = ?)
+                                                    or ("b" != ?)
+                                                )
+                                            )
+                                        )
                                     )
                                 )
                         SQL

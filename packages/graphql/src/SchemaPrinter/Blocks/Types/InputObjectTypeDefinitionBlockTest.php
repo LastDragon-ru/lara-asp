@@ -85,7 +85,9 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
                 """
                 Description
 
+                ```graphql
                 @a
+                ```
                 """
                 input Test
                 @a

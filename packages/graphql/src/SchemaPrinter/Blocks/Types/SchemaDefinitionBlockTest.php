@@ -69,7 +69,9 @@ class SchemaDefinitionBlockTest extends TestCase {
             'standard names with directives'                => [
                 <<<'STRING'
                 """
+                ```graphql
                 @a
+                ```
                 """
                 schema
                 @a
@@ -98,7 +100,9 @@ class SchemaDefinitionBlockTest extends TestCase {
             'standard names with directives in description' => [
                 <<<'STRING'
                 """
+                ```graphql
                 @a
+                ```
                 """
                 schema {
                     query: Query

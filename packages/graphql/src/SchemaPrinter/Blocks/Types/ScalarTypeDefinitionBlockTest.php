@@ -66,7 +66,9 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                 """
                 Description
 
+                ```graphql
                 @a
+                ```
                 """
                 scalar Test
                 @a
@@ -91,7 +93,9 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                 """
                 Description
 
+                ```graphql
                 @a
+                ```
                 """
                 scalar Test
                 STRING,

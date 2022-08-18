@@ -142,6 +142,11 @@ abstract class DefinitionBlock extends Block implements Named {
 
             if ($directives) {
                 $eol         = $description ? $this->eol() : '';
+                $directives  = <<<DIRECTIVES
+                    ```graphql
+                    {$directives}
+                    ```
+                    DIRECTIVES;
                 $description = "{$description}{$eol}{$eol}{$directives}";
             }
         }
