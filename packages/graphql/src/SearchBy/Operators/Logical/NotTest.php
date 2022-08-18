@@ -89,7 +89,7 @@ class NotTest extends TestCase {
             new ArrayDataProvider([
                 'property'   => [
                     [
-                        'query'    => 'select * from "tmp" where not ("a" = ?)',
+                        'query'    => 'select * from "tmp" where (not ("a" = ?))',
                         'bindings' => [
                             2,
                         ],
@@ -99,7 +99,7 @@ class NotTest extends TestCase {
                 ],
                 'with alias' => [
                     [
-                        'query'    => 'select * from "tmp" where not ("alias"."a" = ?)',
+                        'query'    => 'select * from "tmp" where (not ("alias"."a" = ?))',
                         'bindings' => [
                             2,
                         ],
