@@ -68,6 +68,9 @@ class RelationTest extends TestCase {
             input TestInput {
                 property: TestOperators
                 @searchByProperty
+
+                user: TestRelation
+                @searchByOperatorRelation
             }
 
             input TestOperators {
@@ -97,7 +100,7 @@ class RelationTest extends TestCase {
         GRAPHQL;
 
         return [
-            'not a relation'                          => [
+            'not a relation'                                 => [
                 new PropertyIsNotRelation(new User(), 'delete'),
                 static function (): EloquentBuilder {
                     return User::query();
@@ -113,7 +116,7 @@ class RelationTest extends TestCase {
                     );
                 },
             ],
-            '{exists: true}'                          => [
+            '{exists: true}'                                 => [
                 [
                     'query'    => 'select * from "users" where exists ('.
                         'select * from "cars" '.
@@ -135,7 +138,7 @@ class RelationTest extends TestCase {
                     );
                 },
             ],
-            '{notExists: true}'                       => [
+            '{notExists: true}'                              => [
                 [
                     'query'    => 'select * from "users" where not exists ('.
                         'select * from "cars" '.
@@ -157,7 +160,7 @@ class RelationTest extends TestCase {
                     );
                 },
             ],
-            '{relation: {property: {equal: 1}}}'      => [
+            '{relation: {property: {equal: 1}}}'             => [
                 [
                     'query'    => <<<'SQL'
                         select * from "users" where exists (
@@ -188,7 +191,7 @@ class RelationTest extends TestCase {
                     );
                 },
             ],
-            '{count: {equal: 1}}'                     => [
+            '{count: {equal: 1}}'                            => [
                 [
                     'query'    => <<<'SQL'
                         select * from "users" where (
@@ -217,7 +220,7 @@ class RelationTest extends TestCase {
                     );
                 },
             ],
-            '{count: { multiple operators }}'         => [
+            '{count: { multiple operators }}'                => [
                 new ConditionTooManyOperators(['lessThan', 'equal']),
                 static function (): EloquentBuilder {
                     return User::query();
@@ -236,7 +239,7 @@ class RelationTest extends TestCase {
                     );
                 },
             ],
-            '{where: {{property: {equal: 1}}}} (own)' => [
+            '{where: {{property: {equal: 1}}}} (own)'        => [
                 [
                     'query'    => <<<'SQL'
                         select * from "users" where exists (
@@ -260,6 +263,59 @@ class RelationTest extends TestCase {
                             'where' => [
                                 'property' => [
                                     'equal' => 123,
+                                ],
+                            ],
+                        ],
+                        $graphql,
+                    );
+                },
+            ],
+            '{relation: {relation: {property: {equal: 1}}}}' => [
+                [
+                    'query'    => <<<'SQL'
+                        select
+                            *
+                        from
+                            "users"
+                        where
+                            exists (
+                                select
+                                    *
+                                from
+                                    "cars"
+                                where
+                                    "users"."localKey" = "cars"."foreignKey"
+                                    and exists (
+                                        select
+                                            *
+                                        from
+                                            "users"
+                                        where
+                                            "cars"."foreignKey" = "users"."ownerKey"
+                                            and "users"."property" = ?
+                                            and "deleted_at" is null
+                                    )
+                                    and "favorite" = ?
+                            )
+                    SQL
+                    ,
+                    'bindings' => [123, 1],
+                ],
+                static function (): EloquentBuilder {
+                    return User::query();
+                },
+                new Property('car'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation',
+                        [
+                            'where' => [
+                                'user' => [
+                                    'where' => [
+                                        'property' => [
+                                            'equal' => 123,
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],

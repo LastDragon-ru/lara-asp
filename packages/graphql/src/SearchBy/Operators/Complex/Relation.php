@@ -162,6 +162,6 @@ class Relation extends BaseOperator implements ComplexOperator {
         int $count,
         Closure $closure,
     ): void {
-        $builder->whereHas((string) $property, $closure, $operator, $count);
+        $builder->whereHas($property->getName(), $closure, $operator, $count);
     }
 }
