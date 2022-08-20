@@ -22,6 +22,8 @@ interface Settings {
      * of the box.
      *
      * @see https://github.com/graphql/graphql-playground/issues/1207
+     *
+     * @deprecated Because it is useless for initial purpose, see #26
      */
     public function isPrintDirectivesInDescription(): bool;
 
