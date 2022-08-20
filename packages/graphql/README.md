@@ -328,31 +328,3 @@ class Comment extends Model {
 }
 
 ```
-
-
-# Enums
-
-Package also provides the helper to register [`Enum`](https://github.com/LastDragon-ru/lara-asp/blob/master/packages/core/src/Enum.php) as GraphQL Enum:
-
-```php
-<?php declare(strict_types = 1);
-
-namespace LastDragon_ru\LaraASP\GraphQL;
-
-use App\MyEnum;
-use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
-use Nuwave\Lighthouse\Schema\TypeRegistry;
-
-class Provider extends ServiceProvider {
-    public function register(): void {
-        $this->callAfterResolving(
-            TypeRegistry::class,
-            static function (TypeRegistry $registry): void {
-                $registry->register(new EnumType(MyEnum::class));
-            },
-        );
-    }
-}
-
-```

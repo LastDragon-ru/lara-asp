@@ -12,6 +12,7 @@ use function trim;
 
 /**
  * @internal {@see \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType}
+ * @deprecated Please use native PHP enums
  */
 class Factory extends Enum {
     /**
