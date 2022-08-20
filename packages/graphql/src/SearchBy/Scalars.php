@@ -168,11 +168,17 @@ class Scalars {
         }
 
         // Base
+        $base      = $scalar;
         $operators = $scalar;
 
         do {
             $operators = $this->scalars[$operators] ?? [];
-        } while (!is_array($operators));
+            $isAlias   = !is_array($operators);
+
+            if ($isAlias) {
+                $base = $operators;
+            }
+        } while ($isAlias);
 
         // Create Instances
         $container = $this->getContainer();
@@ -181,8 +187,8 @@ class Scalars {
         }, array_unique($operators));
 
         // Extends
-        if (isset($this->extends[$scalar])) {
-            $extends   = $this->getScalarOperators($this->extends[$scalar], $nullable);
+        if (isset($this->extends[$base])) {
+            $extends   = $this->getScalarOperators($this->extends[$base], $nullable);
             $operators = array_merge($operators, $extends);
         }
 
