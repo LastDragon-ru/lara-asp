@@ -110,6 +110,7 @@ class ScalarsTest extends TestCase {
 
         $scalars->addScalar('test', [Equal::class, Equal::class]);
         $scalars->addScalar('base', [NotEqual::class]);
+        $scalars->addScalar('alias', 'test');
 
         self::assertEquals(
             [Equal::class, NotEqual::class],
@@ -118,6 +119,10 @@ class ScalarsTest extends TestCase {
         self::assertEquals(
             [Equal::class, NotEqual::class, IsNull::class, IsNotNull::class],
             $this->toClassNames($scalars->getScalarOperators('test', true)),
+        );
+        self::assertEquals(
+            [Equal::class, NotEqual::class, IsNull::class, IsNotNull::class],
+            $this->toClassNames($scalars->getScalarOperators('alias', true)),
         );
     }
 
