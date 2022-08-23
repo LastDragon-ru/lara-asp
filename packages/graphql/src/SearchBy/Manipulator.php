@@ -40,6 +40,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use function array_shift;
 use function count;
 use function is_string;
+use function str_starts_with;
 
 class Manipulator extends BuilderManipulator implements TypeProvider {
     public function __construct(
@@ -66,8 +67,14 @@ class Manipulator extends BuilderManipulator implements TypeProvider {
         $type = null;
 
         if ($def instanceof InputObjectTypeDefinitionNode || $def instanceof InputObjectType) {
-            $name = $this->getInputType($def);
-            $type = Parser::typeReference($name);
+            $name = $this->getNodeTypeName($def);
+
+            if (!str_starts_with($name, Directive::Name)) {
+                $name = $this->getInputType($def);
+                $type = Parser::typeReference($name);
+            } else {
+                $type = $node->type;
+            }
         }
 
         if (!($type instanceof NamedTypeNode)) {
