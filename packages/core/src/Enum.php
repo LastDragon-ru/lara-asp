@@ -12,6 +12,9 @@ use function array_filter;
 use function count;
 use function sprintf;
 
+/**
+ * @deprecated Please use native PHP enums.
+ */
 abstract class Enum implements JsonSerializable {
     /**
      * @var array<class-string<static>,array<string|int,static>>

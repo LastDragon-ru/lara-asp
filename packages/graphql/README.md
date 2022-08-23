@@ -329,30 +329,19 @@ class Comment extends Model {
 
 ```
 
+# `SchemaPrinter` & Testing Assertions
 
-# Enums
+[`SchemaPrinter`](./src/SchemaPrinter/Contracts/SchemaPrinter.php) allow you to print GraphQL Schema in hightly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are unused in the Schema. To check all options please see [`Settings`](./src/SchemaPrinter/Contracts/Settings.php). See also [tests](./src/SchemaPrinter/SchemaPrinterTest.php) for usage examples.
 
-Package also provides the helper to register [`Enum`](https://github.com/LastDragon-ru/lara-asp/blob/master/packages/core/src/Enum.php) as GraphQL Enum:
+There are also few great [GraphQL Assertions](./src/Testing/GraphQLAssertions.php):
+
+| Name                               | Description              |
+|------------------------------------|--------------------------|
+| `assertDefaultGraphQLSchemaEquals` | Compares default schema. |
+| `assertGraphQLSchemaTypeEquals`    | Compares schema type.    |
+| `assertGraphQLSchemaEquals`        | Compares any schemas.    |
+| `assertGraphQLTypeEquals`          | Compares any types.      |
 
 ```php
-<?php declare(strict_types = 1);
-
-namespace LastDragon_ru\LaraASP\GraphQL;
-
-use App\MyEnum;
-use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
-use Nuwave\Lighthouse\Schema\TypeRegistry;
-
-class Provider extends ServiceProvider {
-    public function register(): void {
-        $this->callAfterResolving(
-            TypeRegistry::class,
-            static function (TypeRegistry $registry): void {
-                $registry->register(new EnumType(MyEnum::class));
-            },
-        );
-    }
-}
 
 ```

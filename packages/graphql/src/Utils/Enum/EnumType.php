@@ -11,6 +11,8 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
  * {@see \Nuwave\Lighthouse\Schema\TypeRegistry}.
  *
  * @see https://lighthouse-php.com/master/the-basics/types.html#enum
+ *
+ * @deprecated Please use native PHP enums
  */
 class EnumType extends GraphQLEnumType {
     /**
