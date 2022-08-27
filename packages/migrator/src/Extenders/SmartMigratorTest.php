@@ -49,7 +49,13 @@ class SmartMigratorTest extends TestCase {
         $expectedUp   = '8.22+up.txt';
         $expectedDown = '8.22+down.txt';
 
-        if (InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=9.21.0')) {
+        if (InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=9.26.0')) {
+            # Since v9.25.0 commands output was slightly changed
+            #
+            # https://github.com/laravel/framework/pull/43769
+            $expectedUp   = '9.26+up.txt';
+            $expectedDown = '9.26+down.txt';
+        } elseif (InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=9.21.0')) {
             # Since v9.21.0 commands output was changed
             #
             # https://github.com/laravel/framework/releases/tag/v9.21.0
