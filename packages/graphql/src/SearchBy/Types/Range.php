@@ -6,8 +6,6 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 
-use function is_null;
-
 class Range implements TypeDefinition {
     public function __construct() {
         // empty
@@ -19,23 +17,23 @@ class Range implements TypeDefinition {
 
     public function getTypeDefinitionNode(
         string $name,
-        string $scalar = null,
+        string $type = null,
         bool $nullable = null,
     ): ?TypeDefinitionNode {
-        $type = null;
+        $node = null;
 
-        if ($scalar && is_null($nullable)) {
-            $type = Parser::inputObjectTypeDefinition(
+        if ($type && $nullable === null) {
+            $node = Parser::inputObjectTypeDefinition(
                 /** @lang GraphQL */
                 <<<GRAPHQL
                 input {$name} {
-                    min: {$scalar}!
-                    max: {$scalar}!
+                    min: {$type}!
+                    max: {$type}!
                 }
                 GRAPHQL,
             );
         }
 
-        return $type;
+        return $node;
     }
 }

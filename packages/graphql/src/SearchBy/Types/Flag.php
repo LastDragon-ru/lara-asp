@@ -6,8 +6,6 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 
-use function is_null;
-
 class Flag implements TypeDefinition {
     public function __construct() {
         // empty
@@ -19,13 +17,13 @@ class Flag implements TypeDefinition {
 
     public function getTypeDefinitionNode(
         string $name,
-        string $scalar = null,
+        string $type = null,
         bool $nullable = null,
     ): ?TypeDefinitionNode {
-        $type = null;
+        $node = null;
 
-        if (is_null($scalar) && is_null($nullable)) {
-            $type = Parser::enumTypeDefinition(
+        if ($type === null && $nullable === null) {
+            $node = Parser::enumTypeDefinition(
                 /** @lang GraphQL */
                 <<<GRAPHQL
                 enum {$name} {
@@ -35,6 +33,6 @@ class Flag implements TypeDefinition {
             );
         }
 
-        return $type;
+        return $node;
     }
 }

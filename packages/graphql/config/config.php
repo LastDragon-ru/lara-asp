@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 
 /**
  * -----------------------------------------------------------------------------
@@ -13,14 +14,14 @@ return [
      */
     'search_by' => [
         /**
-         * Scalars
+         * Operators
          * ---------------------------------------------------------------------
          *
-         * You can (re)define scalars and supported operators here.
+         * You can (re)define types and supported operators here.
          *
-         * @var array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>>
+         * @var array<string, array<class-string<Operator>>>
          */
-        'scalars' => [
+        'operators' => [
             // This value has no effect inside the published config.
             ConfigMerger::Replace => true,
         ],

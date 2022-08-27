@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings as SettingsCo
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
@@ -57,7 +57,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerSearchByDirective(): void {
-        $this->app->singleton(Scalars::class);
+        $this->app->singleton(Operators::class);
     }
 
     protected function registerEnums(): void {

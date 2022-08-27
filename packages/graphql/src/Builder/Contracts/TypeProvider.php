@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
 interface TypeProvider {
     /**
-     * @param class-string<TypeDefinition> $type
+     * @param class-string<TypeDefinition> $definition
      */
-    public function getType(string $type, string $scalar = null, bool $nullable = null): string;
+    public function getType(string $definition, string $type = null, bool $nullable = null): string;
 }

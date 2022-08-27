@@ -15,16 +15,7 @@ use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective {
-    public const Name          = 'SearchBy';
-    public const ScalarID      = 'ID';
-    public const ScalarInt     = 'Int';
-    public const ScalarFloat   = 'Float';
-    public const ScalarString  = 'String';
-    public const ScalarBoolean = 'Boolean';
-    public const ScalarEnum    = self::Name.'Enum';
-    public const ScalarNull    = self::Name.'Null';
-    public const ScalarLogic   = self::Name.'Logic';
-    public const ScalarNumber  = self::Name.'Number';
+    public const Name = 'SearchBy';
 
     public static function definition(): string {
         return /** @lang GraphQL */ <<<'GRAPHQL'

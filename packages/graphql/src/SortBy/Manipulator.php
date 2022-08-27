@@ -25,6 +25,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Pagination\PaginationType;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
+
 use function count;
 use function mb_strlen;
 use function mb_substr;
@@ -177,7 +178,7 @@ class Manipulator extends BuilderManipulator {
         return str_starts_with($this->getNodeTypeName($node), Directive::Name);
     }
 
-    protected function getTypeName(string $name, string $scalar = null, bool $nullable = null): string {
+    protected function getTypeName(string $name, string $type = null, bool $nullable = null): string {
         return Directive::Name.'Type'.Str::studly($name);
     }
 
