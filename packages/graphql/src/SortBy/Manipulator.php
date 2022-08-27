@@ -87,7 +87,7 @@ class Manipulator extends BuilderManipulator {
             Parser::inputObjectTypeDefinition(
                 <<<DEF
                 """
-                Sort clause for {$this->getNodeTypeFullName($node)} (only one property allowed at a time).
+                Sort clause for `{$this->getNodeTypeFullName($node)}` (only one property allowed at a time).
                 """
                 input {$name} {
                     """

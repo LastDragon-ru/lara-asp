@@ -7,7 +7,7 @@ enum SortByTypeDirection {
 }
 
 """
-Sort clause for input Nested (only one property allowed at a time).
+Sort clause for `input Nested` (only one property allowed at a time).
 """
 input SortByClauseNested {
     """
@@ -24,7 +24,7 @@ input SortByClauseNested {
 }
 
 """
-Sort clause for input Properties (only one property allowed at a time).
+Sort clause for `input Properties` (only one property allowed at a time).
 """
 input SortByClauseProperties {
     """
