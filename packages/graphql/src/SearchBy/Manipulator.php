@@ -18,8 +18,8 @@ use GraphQL\Type\Definition\ScalarType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithOperators;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
@@ -42,6 +42,8 @@ use function is_string;
 use function str_starts_with;
 
 class Manipulator extends BuilderManipulator {
+    use WithOperators;
+
     public function __construct(
         Container $container,
         DirectiveLocator $directives,
@@ -323,25 +325,13 @@ class Manipulator extends BuilderManipulator {
      * @return array<OperatorContract>
      */
     protected function getEnumOperators(string $enum, bool $nullable): array {
-        $operators = $this->getOperators()->hasOperators($enum)
-            ? $this->getOperators()->getOperators($enum, $nullable)
-            : $this->getOperators()->getOperators(Operators::Enum, $nullable);
+        $operators = $this->getOperators();
+        $operators = $operators->hasOperators($enum)
+            ? $operators->getOperators($enum, $nullable)
+            : $operators->getOperators(Operators::Enum, $nullable);
 
         if (!$operators) {
             throw new EnumNoOperators($enum);
-        }
-
-        return $operators;
-    }
-
-    /**
-     * @return array<OperatorContract>
-     */
-    protected function getTypeOperators(string $type, bool $nullable): array {
-        $operators = $this->getOperators()->getOperators($type, $nullable);
-
-        if (!$operators) {
-            throw new TypeNoOperators($type);
         }
 
         return $operators;
