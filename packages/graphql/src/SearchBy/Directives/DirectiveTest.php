@@ -273,7 +273,7 @@ class DirectiveTest extends TestCase {
                     $package = Package::Name;
                     $config  = $test->app->make(Repository::class);
 
-                    $config->set("{$package}.search_by.scalars.Date", [
+                    $config->set("{$package}.search_by.operators.Date", [
                         Between::class,
                     ]);
                 },

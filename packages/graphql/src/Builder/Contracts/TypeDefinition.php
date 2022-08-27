@@ -2,17 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 
 interface TypeDefinition {
     public static function getName(): string;
 
     /**
-     * @return (TypeDefinitionNode&\GraphQL\Language\AST\Node)|null
+     * @return (TypeDefinitionNode&Node)|null
      */
     public function getTypeDefinitionNode(
         string $name,
-        string $scalar = null,
+        string $type = null,
         bool $nullable = null,
     ): ?TypeDefinitionNode;
 }

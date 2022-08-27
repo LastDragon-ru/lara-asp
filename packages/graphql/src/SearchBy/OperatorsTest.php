@@ -11,9 +11,9 @@ use Mockery;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators
  */
-class ScalarsTest extends TestCase {
+class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -23,29 +23,29 @@ class ScalarsTest extends TestCase {
         $config = Mockery::mock(Repository::class);
         $config
             ->shouldReceive('get')
-            ->with(Package::Name.'.search_by.scalars')
+            ->with(Package::Name.'.search_by.operators')
             ->andReturn([
-                Scalars::ScalarID  => [
+                Operators::ID  => [
                     Equal::class,
                 ],
-                Scalars::ScalarInt => [
+                Operators::Int => [
                     NotEqual::class,
                 ],
             ]);
 
-        $scalars = new class($this->app, $config) extends Scalars {
+        $operators = new class($this->app, $config) extends Operators {
             // empty
         };
 
-        self::assertTrue($scalars->isScalar(Scalars::ScalarID));
-        self::assertTrue($scalars->isScalar(Scalars::ScalarInt));
-        self::assertFalse($scalars->isScalar('unknown'));
+        self::assertTrue($operators->hasOperators(Operators::ID));
+        self::assertTrue($operators->hasOperators(Operators::Int));
+        self::assertFalse($operators->hasOperators('unknown'));
         self::assertEquals(
             [
                 Equal::class,
             ],
             $this->toClassNames(
-                $scalars->getScalarOperators(Scalars::ScalarID, false),
+                $operators->getOperators(Operators::ID, false),
             ),
         );
     }

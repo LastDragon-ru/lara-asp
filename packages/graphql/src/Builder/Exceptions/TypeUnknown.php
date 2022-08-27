@@ -6,13 +6,13 @@ use Throwable;
 
 use function sprintf;
 
-class ScalarUnknown extends BuilderException {
+class TypeUnknown extends BuilderException {
     public function __construct(
         protected string $name,
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'Scalar `%s` is not defined.',
+            'Type `%s` is not defined.',
             $this->name,
         ), $previous);
     }

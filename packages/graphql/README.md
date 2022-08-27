@@ -129,16 +129,16 @@ query {
 ```
 
 
-## Scalars
+## Config
 
-In addition to standard GraphQL scalars the package defines few own:
+In addition to standard GraphQL types the package defines few own:
 
-* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars::ScalarNumber` - any operator for this scalar will be available for `Int` and `Float`;
-* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars::ScalarNull` - additional operators available for nullable scalars;
-* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars::ScalarLogic` - list of logical operators, please see below;
-* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars::ScalarEnum` - default operators for enums;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Number` - any operator for this type will be available for `Int` and `Float`;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Null` - additional operators available for nullable types;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Logical` - list of logical operators, please see below;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Enum` - default operators for enums;
 
-To work with custom scalars you need to configure supported operators for each of them. First, you need to publish package config:
+To work with custom types you need to configure supported operators for each of them. First, you need to publish package config:
 
 ```shell
 php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider --tag=config
@@ -165,15 +165,15 @@ return [
      */
     'search_by' => [
         /**
-         * Scalars
+         * Operators
          * ---------------------------------------------------------------------
          *
-         * You can (re)define scalars and supported operators here.
+         * You can (re)define types and supported operators here.
          *
-         * @var array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>>
+         * @var array<string, array<class-string<Operator>>>
          */
-        'scalars' => [
-            // You can define a list of operators for each Scalar
+        'operators' => [
+            // You can define a list of operators for each type
             'Date'     => [
                 Equal::class,
                 Between::class,
@@ -195,8 +195,8 @@ return [
 
 There are three types of operators:
 
-* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to scalar(s);
-* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to `Scalars::ScalarLogic` scalar;
+* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to type(s);
+* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to `Operators::Logical` type;
 * Complex - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. These operators must implement [`ComplexOperator`](./src/SearchBy/Contracts/ComplexOperator.php) (by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used, you can use it as example):
 
     ```graphql

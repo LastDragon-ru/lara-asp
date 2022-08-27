@@ -13,15 +13,15 @@ class TypeDefinitionImpossibleToCreateType extends BuilderException {
      */
     public function __construct(
         protected string $definition,
-        protected ?string $scalar,
+        protected ?string $type,
         protected ?bool $nullable,
         Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Definition `%s`: Impossible to create type for scalar `%s`.',
+                'Definition `%s`: Impossible to create type for type `%s`.',
                 $this->definition,
-                ($this->scalar ?: 'null').($this->nullable ? '' : '!'),
+                ($this->type ?: 'null').($this->nullable ? '' : '!'),
             ),
             $previous,
         );
@@ -31,8 +31,8 @@ class TypeDefinitionImpossibleToCreateType extends BuilderException {
         return $this->definition;
     }
 
-    public function getScalar(): ?string {
-        return $this->scalar;
+    public function getType(): ?string {
+        return $this->type;
     }
 
     public function isNullable(): ?bool {

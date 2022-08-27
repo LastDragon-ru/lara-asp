@@ -6,8 +6,8 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\ScalarNoOperators;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\ScalarUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
 use function array_map;
 use function array_merge;
@@ -19,24 +19,24 @@ use function is_string;
 
 use const SORT_REGULAR;
 
-abstract class Scalars {
-    public const ScalarID      = Type::ID;
-    public const ScalarInt     = Type::INT;
-    public const ScalarFloat   = Type::FLOAT;
-    public const ScalarString  = Type::STRING;
-    public const ScalarBoolean = Type::BOOLEAN;
-    public const ScalarEnum    = 'Enum';
-    public const ScalarNull    = 'Null';
+abstract class Operators {
+    public const ID      = Type::ID;
+    public const Int     = Type::INT;
+    public const Float   = Type::FLOAT;
+    public const String  = Type::STRING;
+    public const Boolean = Type::BOOLEAN;
+    public const Enum    = 'Enum';
+    public const Null    = 'Null';
 
     /**
-     * Determines default operators available for each scalar type.
+     * Determines default operators available for each type.
      *
      * @var array<string, array<class-string<Operator>>|string>
      */
-    protected array $scalars = [];
+    protected array $operators = [];
 
     /**
-     * Determines additional operators available for scalar type.
+     * Determines additional operators available for type.
      *
      * @var array<string, string>
      */
@@ -52,40 +52,40 @@ abstract class Scalars {
         return $this->container;
     }
 
-    public function isScalar(string $scalar): bool {
-        return isset($this->scalars[$scalar]);
+    public function hasOperators(string $type): bool {
+        return isset($this->operators[$type]);
     }
 
     /**
      * @param array<class-string<Operator>>|string $operators
      */
-    public function addScalar(string $scalar, array|string $operators): void {
-        if (is_string($operators) && !$this->isScalar($operators)) {
-            throw new ScalarUnknown($operators);
+    public function addOperators(string $type, array|string $operators): void {
+        if (is_string($operators) && !$this->hasOperators($operators)) {
+            throw new TypeUnknown($operators);
         }
 
         if (is_array($operators) && !$operators) {
-            throw new ScalarNoOperators($scalar);
+            throw new TypeNoOperators($type);
         }
 
-        $this->scalars[$scalar] = $operators;
+        $this->operators[$type] = $operators;
     }
 
     /**
      * @return array<Operator>
      */
-    public function getScalarOperators(string $scalar, bool $nullable): array {
-        // Is Scalar?
-        if (!$this->isScalar($scalar)) {
-            throw new ScalarUnknown($scalar);
+    public function getOperators(string $type, bool $nullable): array {
+        // Is known?
+        if (!$this->hasOperators($type)) {
+            throw new TypeUnknown($type);
         }
 
         // Base
-        $base      = $scalar;
-        $operators = $scalar;
+        $base      = $type;
+        $operators = $type;
 
         do {
-            $operators = $this->scalars[$operators] ?? [];
+            $operators = $this->operators[$operators] ?? [];
             $isAlias   = !is_array($operators);
 
             if ($isAlias) {
@@ -101,13 +101,13 @@ abstract class Scalars {
 
         // Extends
         if (isset($this->extends[$base])) {
-            $extends   = $this->getScalarOperators($this->extends[$base], $nullable);
+            $extends   = $this->getOperators($this->extends[$base], $nullable);
             $operators = array_merge($operators, $extends);
         }
 
         // Add `null` for nullable
         if ($nullable) {
-            array_push($operators, ...$this->getScalarOperators(static::ScalarNull, false));
+            array_push($operators, ...$this->getOperators(static::Null, false));
         }
 
         // Cleanup
@@ -121,8 +121,8 @@ abstract class Scalars {
      * @return array<BuilderOperator>
      */
     public function getEnumOperators(string $enum, bool $nullable): array {
-        return $this->isScalar($enum)
-            ? $this->getScalarOperators($enum, $nullable)
-            : $this->getScalarOperators(static::ScalarEnum, $nullable);
+        return $this->hasOperators($enum)
+            ? $this->getOperators($enum, $nullable)
+            : $this->getOperators(static::Enum, $nullable);
     }
 }

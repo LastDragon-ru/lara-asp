@@ -42,34 +42,34 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="TypeProvider">
     // =========================================================================
-    public function getType(string $type, string $scalar = null, bool $nullable = null): string {
+    public function getType(string $definition, string $type = null, bool $nullable = null): string {
         // Exists?
-        $name = $this->getTypeName($type::getName(), $scalar, $nullable);
+        $name = $this->getTypeName($definition::getName(), $type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
         }
 
         // Create new
-        $instance   = $this->getContainer()->make($type);
-        $definition = $instance->getTypeDefinitionNode($name, $scalar, $nullable);
+        $instance = $this->getContainer()->make($definition);
+        $node     = $instance->getTypeDefinitionNode($name, $type, $nullable);
 
-        if (!$definition) {
-            throw new TypeDefinitionImpossibleToCreateType($type, $scalar, $nullable);
+        if (!$node) {
+            throw new TypeDefinitionImpossibleToCreateType($definition, $type, $nullable);
         }
 
-        if ($name !== $this->getNodeName($definition)) {
-            throw new TypeDefinitionInvalidTypeName($type, $name, $this->getNodeName($definition));
+        if ($name !== $this->getNodeName($node)) {
+            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getNodeName($node));
         }
 
         // Save
-        $this->addTypeDefinition($definition);
+        $this->addTypeDefinition($node);
 
         // Return
         return $name;
     }
 
-    abstract protected function getTypeName(string $name, string $scalar = null, bool $nullable = null): string;
+    abstract protected function getTypeName(string $name, string $type = null, bool $nullable = null): string;
     // </editor-fold>
 
     // <editor-fold desc="Operators">

@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars as BuilderScalars;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseAnd;
@@ -33,33 +33,33 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 
-class Scalars extends BuilderScalars {
-    public const ScalarLogic  = 'Logic';
-    public const ScalarNumber = 'Number';
+class Operators extends BuilderOperators {
+    public const Logical = 'Logical';
+    public const Number  = 'Number';
 
     /**
      * @inheritdoc
      */
-    protected array $scalars = [
+    protected array $operators = [
         // Standard types
-        Scalars::ScalarID      => [
+        Operators::ID      => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        Scalars::ScalarInt     => [
+        Operators::Int     => [
             BitwiseOr::class,
             BitwiseXor::class,
             BitwiseAnd::class,
             BitwiseLeftShift::class,
             BitwiseRightShift::class,
         ],
-        Scalars::ScalarFloat   => Scalars::ScalarNumber,
-        Scalars::ScalarBoolean => [
+        Operators::Float   => Operators::Number,
+        Operators::Boolean => [
             Equal::class,
         ],
-        Scalars::ScalarString  => [
+        Operators::String  => [
             Equal::class,
             NotEqual::class,
             Like::class,
@@ -72,7 +72,7 @@ class Scalars extends BuilderScalars {
         ],
 
         // Special types
-        Scalars::ScalarNumber  => [
+        Operators::Number  => [
             Equal::class,
             NotEqual::class,
             LessThan::class,
@@ -84,17 +84,17 @@ class Scalars extends BuilderScalars {
             Between::class,
             NotBetween::class,
         ],
-        Scalars::ScalarEnum    => [
+        Operators::Enum    => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        Scalars::ScalarNull    => [
+        Operators::Null    => [
             IsNull::class,
             IsNotNull::class,
         ],
-        Scalars::ScalarLogic   => [
+        Operators::Logical => [
             AllOf::class,
             AnyOf::class,
             Not::class,
@@ -105,8 +105,8 @@ class Scalars extends BuilderScalars {
      * @inheritdoc
      */
     protected array $extends = [
-        Scalars::ScalarInt   => Scalars::ScalarNumber,
-        Scalars::ScalarFloat => Scalars::ScalarNumber,
+        Operators::Int   => Operators::Number,
+        Operators::Float => Operators::Number,
     ];
 
     public function __construct(
@@ -115,11 +115,11 @@ class Scalars extends BuilderScalars {
     ) {
         parent::__construct($container);
 
-        /** @var array<string,array<class-string<BuilderOperator>>|string> $scalars */
-        $scalars = (array) $config->get(Package::Name.'.search_by.scalars');
+        /** @var array<string,array<class-string<BuilderOperator>>|string> $operators */
+        $operators = (array) $config->get(Package::Name.'.search_by.operators');
 
-        foreach ($scalars as $scalar => $operators) {
-            $this->addScalar($scalar, $operators);
+        foreach ($operators as $type => $typeOperators) {
+            $this->addOperators($type, $typeOperators);
         }
     }
 }

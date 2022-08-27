@@ -177,7 +177,7 @@ class Manipulator extends BuilderManipulator {
         return str_starts_with($this->getNodeTypeName($node), Directive::Name);
     }
 
-    protected function getTypeName(string $name, string $scalar = null, bool $nullable = null): string {
+    protected function getTypeName(string $name, string $type = null, bool $nullable = null): string {
         return Directive::Name.'Type'.Str::studly($name);
     }
 

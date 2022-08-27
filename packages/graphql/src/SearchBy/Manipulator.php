@@ -18,7 +18,7 @@ use GraphQL\Type\Definition\ScalarType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\ScalarNoOperators;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
@@ -47,15 +47,15 @@ class Manipulator extends BuilderManipulator {
         DirectiveLocator $directives,
         DocumentAST $document,
         TypeRegistry $types,
-        private Scalars $scalars,
+        private Operators $operators,
     ) {
         parent::__construct($container, $directives, $document, $types);
     }
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
-    protected function getScalars(): Scalars {
-        return $this->scalars;
+    protected function getOperators(): Operators {
+        return $this->operators;
     }
     // </editor-fold>
 
@@ -96,10 +96,10 @@ class Manipulator extends BuilderManipulator {
         }
 
         // Add type
-        $operators = $this->getScalarOperators(Scalars::ScalarLogic, false);
-        $scalar    = $this->getScalarTypeNode($name);
-        $content   = $this->getOperatorsFields($operators, $scalar);
-        $type      = $this->addTypeDefinition(
+        $logical = $this->getTypeOperators(Operators::Logical, false);
+        $scalar  = $this->getScalarTypeNode($name);
+        $content = $this->getOperatorsFields($logical, $scalar);
+        $type    = $this->addTypeDefinition(
             Parser::inputObjectTypeDefinition(
                 <<<DEF
                 """
@@ -113,9 +113,9 @@ class Manipulator extends BuilderManipulator {
         );
 
         // Add searchable fields
-        $property = $this->getContainer()->make(Property::class);
-        $scalars  = $this->getScalars();
-        $fields   = $node instanceof InputObjectType
+        $operators = $this->getOperators();
+        $property  = $this->getContainer()->make(Property::class);
+        $fields    = $node instanceof InputObjectType
             ? $node->getFields()
             : $node->fields;
 
@@ -140,7 +140,7 @@ class Manipulator extends BuilderManipulator {
             try {
                 $fieldTypeNode = $this->getTypeDefinitionNode($field);
             } catch (TypeDefinitionUnknown $exception) {
-                if ($scalars->isScalar($fieldType)) {
+                if ($operators->hasOperators($fieldType)) {
                     $fieldTypeNode = $this->getScalarTypeNode($fieldType);
                 } else {
                     throw $exception;
@@ -228,7 +228,7 @@ class Manipulator extends BuilderManipulator {
 
         // Determine supported operators
         $scalar    = $this->getNodeName($type);
-        $operators = $this->getScalarOperators($scalar, $nullable);
+        $operators = $this->getTypeOperators($scalar, $nullable);
 
         // Add type
         $mark    = $nullable ? '' : '!';
@@ -290,8 +290,8 @@ class Manipulator extends BuilderManipulator {
 
     // <editor-fold desc="Names">
     // =========================================================================
-    protected function getTypeName(string $name, string $scalar = null, bool $nullable = null): string {
-        return Directive::Name.'Type'.Str::studly($name).($scalar ?: '').($nullable ? 'OrNull' : '');
+    protected function getTypeName(string $name, string $type = null, bool $nullable = null): string {
+        return Directive::Name.'Type'.Str::studly($name).($type ?: '').($nullable ? 'OrNull' : '');
     }
 
     protected function getConditionTypeName(InputObjectTypeDefinitionNode|InputObjectType $node): string {
@@ -323,7 +323,7 @@ class Manipulator extends BuilderManipulator {
      * @return array<OperatorContract>
      */
     protected function getEnumOperators(string $enum, bool $nullable): array {
-        $operators = $this->getScalars()->getEnumOperators($enum, $nullable);
+        $operators = $this->getOperators()->getEnumOperators($enum, $nullable);
 
         if (!$operators) {
             throw new EnumNoOperators($enum);
@@ -335,11 +335,11 @@ class Manipulator extends BuilderManipulator {
     /**
      * @return array<OperatorContract>
      */
-    protected function getScalarOperators(string $scalar, bool $nullable): array {
-        $operators = $this->getScalars()->getScalarOperators($scalar, $nullable);
+    protected function getTypeOperators(string $type, bool $nullable): array {
+        $operators = $this->getOperators()->getOperators($type, $nullable);
 
         if (!$operators) {
-            throw new ScalarNoOperators($scalar);
+            throw new TypeNoOperators($type);
         }
 
         return $operators;

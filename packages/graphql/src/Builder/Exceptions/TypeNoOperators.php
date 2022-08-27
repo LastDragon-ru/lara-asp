@@ -6,13 +6,13 @@ use Throwable;
 
 use function sprintf;
 
-class ScalarNoOperators extends BuilderException {
+class TypeNoOperators extends BuilderException {
     public function __construct(
         protected string $name,
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'List of operators for scalar `%s` cannot be empty.',
+            'List of operators for type `%s` cannot be empty.',
             $this->name,
         ), $previous);
     }
