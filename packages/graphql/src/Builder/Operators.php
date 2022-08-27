@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
@@ -25,7 +24,6 @@ abstract class Operators {
     public const Float   = Type::FLOAT;
     public const String  = Type::STRING;
     public const Boolean = Type::BOOLEAN;
-    public const Enum    = 'Enum';
     public const Null    = 'Null';
 
     /**
@@ -115,14 +113,5 @@ abstract class Operators {
 
         // Return
         return $operators;
-    }
-
-    /**
-     * @return array<BuilderOperator>
-     */
-    public function getEnumOperators(string $enum, bool $nullable): array {
-        return $this->hasOperators($enum)
-            ? $this->getOperators($enum, $nullable)
-            : $this->getOperators(static::Enum, $nullable);
     }
 }

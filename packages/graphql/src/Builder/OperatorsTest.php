@@ -162,66 +162,6 @@ class OperatorsTest extends TestCase {
 
         $operators->getOperators('unknown', false);
     }
-
-    /**
-     * @covers ::getEnumOperators
-     */
-    public function testGetEnumOperators(): void {
-        $enum      = __FUNCTION__;
-        $alias     = 'alias';
-        $operators = new class($this->app) extends Operators {
-            // empty
-        };
-
-        $operators->addOperators($enum, [
-            OperatorsTest__OperatorA::class,
-            OperatorsTest__OperatorA::class,
-        ]);
-        $operators->addOperators($alias, $enum);
-        $operators->addOperators(Operators::Enum, [
-            OperatorsTest__OperatorD::class,
-            OperatorsTest__OperatorD::class,
-        ]);
-        $operators->addOperators(Operators::Null, [
-            OperatorsTest__OperatorB::class,
-            OperatorsTest__OperatorC::class,
-        ]);
-
-        self::assertEquals(
-            [
-                OperatorsTest__OperatorD::class,
-            ],
-            $this->toClassNames($operators->getEnumOperators('unknown', false)),
-        );
-        self::assertEquals(
-            [
-                OperatorsTest__OperatorD::class,
-                OperatorsTest__OperatorB::class,
-                OperatorsTest__OperatorC::class,
-            ],
-            $this->toClassNames($operators->getEnumOperators('unknown', true)),
-        );
-        self::assertEquals(
-            [OperatorsTest__OperatorA::class],
-            $this->toClassNames($operators->getEnumOperators($enum, false)),
-        );
-        self::assertEquals(
-            [
-                OperatorsTest__OperatorA::class,
-                OperatorsTest__OperatorB::class,
-                OperatorsTest__OperatorC::class,
-            ],
-            $this->toClassNames($operators->getEnumOperators($enum, true)),
-        );
-        self::assertEquals(
-            $operators->getEnumOperators($enum, false),
-            $operators->getEnumOperators($alias, false),
-        );
-        self::assertEquals(
-            $operators->getEnumOperators($enum, true),
-            $operators->getEnumOperators($alias, true),
-        );
-    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -267,14 +207,6 @@ class OperatorsTest extends TestCase {
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class OperatorsTest__Operators extends Operators {
-    // empty
-}
 
 /**
  * @internal

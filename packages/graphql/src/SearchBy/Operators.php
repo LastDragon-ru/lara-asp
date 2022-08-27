@@ -36,6 +36,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 class Operators extends BuilderOperators {
     public const Logical = 'Logical';
     public const Number  = 'Number';
+    public const Enum    = 'Enum';
 
     /**
      * @inheritdoc

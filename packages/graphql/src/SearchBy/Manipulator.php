@@ -323,7 +323,9 @@ class Manipulator extends BuilderManipulator {
      * @return array<OperatorContract>
      */
     protected function getEnumOperators(string $enum, bool $nullable): array {
-        $operators = $this->getOperators()->getEnumOperators($enum, $nullable);
+        $operators = $this->getOperators()->hasOperators($enum)
+            ? $this->getOperators()->getOperators($enum, $nullable)
+            : $this->getOperators()->getOperators(Operators::Enum, $nullable);
 
         if (!$operators) {
             throw new EnumNoOperators($enum);
