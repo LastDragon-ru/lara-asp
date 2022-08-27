@@ -18,7 +18,7 @@ use GraphQL\Type\Definition\ScalarType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
@@ -30,7 +30,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFak
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ScalarNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -42,7 +41,7 @@ use function count;
 use function is_string;
 use function str_starts_with;
 
-class Manipulator extends BuilderManipulator implements TypeProvider {
+class Manipulator extends BuilderManipulator {
     public function __construct(
         Container $container,
         DirectiveLocator $directives,
@@ -97,7 +96,7 @@ class Manipulator extends BuilderManipulator implements TypeProvider {
         }
 
         // Add type
-        $operators = $this->getScalarOperators(Directive::ScalarLogic, false);
+        $operators = $this->getScalarOperators(Scalars::ScalarLogic, false);
         $scalar    = $this->getScalarTypeNode($name);
         $content   = $this->getOperatorsFields($operators, $scalar);
         $type      = $this->addTypeDefinition(

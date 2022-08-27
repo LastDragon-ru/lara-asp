@@ -8,13 +8,13 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
@@ -46,7 +46,7 @@ class Relation extends BaseOperator implements ComplexOperator {
         string $name,
         bool $nullable,
     ): InputObjectTypeDefinitionNode {
-        $count = $ast->getScalarType($ast->getScalarTypeNode(Directive::ScalarInt), false);
+        $count = $ast->getScalarType($ast->getScalarTypeNode(Type::INT), false);
         $where = $ast->getInputType($type);
 
         return Parser::inputObjectTypeDefinition(

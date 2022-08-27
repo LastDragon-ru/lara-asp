@@ -133,10 +133,10 @@ query {
 
 In addition to standard GraphQL scalars the package defines few own:
 
-* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarNumber` - any operator for this scalar will be available for `Int` and `Float`;
-* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarNull` - additional operators available for nullable scalars;
-* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarLogic` - list of logical operators, please see below;
-* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarEnum` - default operators for enums;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars::ScalarNumber` - any operator for this scalar will be available for `Int` and `Float`;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars::ScalarNull` - additional operators available for nullable scalars;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars::ScalarLogic` - list of logical operators, please see below;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Scalars::ScalarEnum` - default operators for enums;
 
 To work with custom scalars you need to configure supported operators for each of them. First, you need to publish package config:
 
@@ -196,7 +196,7 @@ return [
 There are three types of operators:
 
 * Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to scalar(s);
-* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to `Directive::ScalarLogic` scalar;
+* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to `Scalars::ScalarLogic` scalar;
 * Complex - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. These operators must implement [`ComplexOperator`](./src/SearchBy/Contracts/ComplexOperator.php) (by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used, you can use it as example):
 
     ```graphql
