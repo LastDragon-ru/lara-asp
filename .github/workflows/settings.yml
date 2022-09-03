@@ -53,7 +53,7 @@ jobs:
       - name: Install easy-ci
         run: |
           mkdir "$RUNNER_TEMP/easy-ci"
-          composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev symplify/easy-ci
+          composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev "symplify/easy-ci:11.1.5"
       - name: Detect Supported PHP versions
         id: php-versions
         run: |
