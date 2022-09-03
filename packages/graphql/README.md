@@ -341,7 +341,3 @@ There are also few great [GraphQL Assertions](./src/Testing/GraphQLAssertions.ph
 | `assertGraphQLSchemaTypeEquals`    | Compares schema type.    |
 | `assertGraphQLSchemaEquals`        | Compares any schemas.    |
 | `assertGraphQLTypeEquals`          | Compares any types.      |
-
-```php
-
-```
