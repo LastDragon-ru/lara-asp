@@ -81,11 +81,6 @@ parameters:
 			path: packages/graphql/src/SortBy/Builders/Query/BuilderTest.php
 
 		-
-			message: "#^Binary operation \"\\+\" between mixed and array\\{model\\: array\\{\\}, query\\: '', callback\\: null, queryCallback\\: null, index\\: null, wheres\\: array\\{\\}, whereIns\\: array\\{\\}, limit\\: null, \\.\\.\\.\\} results in an error\\.$#"
-			count: 1
-			path: packages/graphql/src/SortBy/Builders/Scout/BuilderTest.php
-
-		-
 			message: "#^Call to an undefined method Nuwave\\\\Lighthouse\\\\Schema\\\\Directives\\\\BaseDirective\\:\\:handleBuilder\\(\\)\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Directives/DirectiveTest.php
@@ -207,10 +202,5 @@ parameters:
 
 		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) should return array\\|bool\\|float\\|int\\|stdClass\\|string\\|null but returns mixed\\.$#"
-			count: 1
-			path: packages/testing/src/Utils/Args.php
-
-		-
-			message: "#^Parameter \\#2 \\$bindings of class LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\QueryLog\\\\Query constructor expects array, mixed given\\.$#"
 			count: 1
 			path: packages/testing/src/Utils/Args.php
