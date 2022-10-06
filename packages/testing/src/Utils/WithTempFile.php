@@ -10,10 +10,10 @@ use function register_shutdown_function;
 use function sys_get_temp_dir;
 
 trait WithTempFile {
-    protected function getTempFile(string $content = null): SplFileInfo {
+    protected function getTempFile(string $content = null, string $suffix = ''): SplFileInfo {
         $fs   = new Filesystem();
         $pkg  = Package::Name;
-        $path = $fs->tempnam(sys_get_temp_dir(), $pkg);
+        $path = $fs->tempnam(sys_get_temp_dir(), $pkg, $suffix);
         $file = new SplFileInfo($path);
 
         if ($content) {
