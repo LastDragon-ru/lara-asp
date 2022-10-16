@@ -1,16 +1,24 @@
 <?php declare(strict_types = 1);
 
-use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\Core\Enum as CoreEnum;
+use LastDragon_ru\LaraASP\Eloquent\Enum as EloquentEnum;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 
 /**
  * -----------------------------------------------------------------------------
  * GraphQL Settings
  * -----------------------------------------------------------------------------
+ *
+ * @var array{
+ *      search_by: array{
+ *          operators: array<string, array<string|class-string<Operator>>>
+ *      },
+ *      enums: array<class-string<CoreEnum>>
+ *      } $settings
  */
-return [
+$settings = [
     /**
-     * Settings for @searchBy directive.
+     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective @searchBy} directive.
      */
     'search_by' => [
         /**
@@ -19,11 +27,10 @@ return [
          *
          * You can (re)define types and supported operators here.
          *
-         * @var array<string, array<class-string<Operator>>>
+         * @see Operator
          */
         'operators' => [
-            // This value has no effect inside the published config.
-            ConfigMerger::Replace => true,
+            // empty
         ],
     ],
 
@@ -31,11 +38,14 @@ return [
      * These enums will be registered automatically. You can use key to specify
      * enum name.
      *
-     * @see \LastDragon_ru\LaraASP\Core\Enum
-     * @see \LastDragon_ru\LaraASP\Eloquent\Enum
+     * @deprecated Consider using native PHP enums.
+     *
+     * @see CoreEnum
+     * @see EloquentEnum
      */
     'enums'     => [
-        // This value has no effect inside the published config.
-        ConfigMerger::Replace => true,
+        // empty,
     ],
 ];
+
+return $settings;
