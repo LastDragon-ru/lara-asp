@@ -58,27 +58,27 @@ jobs:
         id: php-versions
         run: |
           PHP_VERSIONS="$("$RUNNER_TEMP/easy-ci/vendor/bin/easy-ci" php-versions-json)"
-          echo "::set-output name=supported::$(echo "$PHP_VERSIONS")"
-          echo "::set-output name=latest::$(echo "$PHP_VERSIONS" | jq "max" -r)"
-          echo "::set-output name=lowest::$(echo "$PHP_VERSIONS" | jq "min" -r)"
+          echo "supported=$(echo "$PHP_VERSIONS")" >> $GITHUB_OUTPUT
+          echo "latest=$(echo "$PHP_VERSIONS" | jq "max" -r)" >> $GITHUB_OUTPUT
+          echo "lowest=$(echo "$PHP_VERSIONS" | jq "min" -r)" >> $GITHUB_OUTPUT
       - name: Detect PHP extensions
         id: php-extensions
         run: |
-          echo "::set-output name=value::$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort' -r -c composer.json)"
+          echo "value=$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort' -r -c composer.json)" >> $GITHUB_OUTPUT
       - name: Detect Laravel versions
         id: laravel-versions
         run: |
           LARAVEL_VERSIONS="$(jq '.require."laravel/framework" | split("|") | sort' -c composer.json)"
-          echo "::set-output name=supported::$(echo "$LARAVEL_VERSIONS")"
-          echo "::set-output name=latest::$(echo "$LARAVEL_VERSIONS" | jq "max" -r)"
-          echo "::set-output name=lowest::$(echo "$LARAVEL_VERSIONS" | jq "min" -r)"
+          echo "supported=$(echo "$LARAVEL_VERSIONS")" >> $GITHUB_OUTPUT
+          echo "latest=$(echo "$LARAVEL_VERSIONS" | jq "max" -r)" >> $GITHUB_OUTPUT
+          echo "lowest=$(echo "$LARAVEL_VERSIONS" | jq "min" -r)" >> $GITHUB_OUTPUT
       - name: Detect dependencies
         id: dependencies
         run: |
           DEPS_HIGHEST="highest"
           DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked"; fi)"
           DEPS_LOWEST="$(if [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "lowest"; fi)"
-          echo "::set-output name=value::$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)"
+          echo "value=$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)" >> $GITHUB_OUTPUT
       - name: Collected
         run: |
           echo "php-versions: ${{ steps.php-versions.outputs.supported }}"

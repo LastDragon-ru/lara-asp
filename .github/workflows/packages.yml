@@ -26,7 +26,7 @@ jobs:
         name: Detect packages
         working-directory: ${{ env.PACKAGES_DIRECTORY }}
         run: |
-          echo "::set-output name=value::$(ls -1 -d */ | sed -e 's-/$--' | jq  --raw-input . | jq --slurp -c .)"
+          echo "value=$(ls -1 -d */ | sed -e 's-/$--' | jq  --raw-input . | jq --slurp -c .)" >> $GITHUB_OUTPUT
 
   sync:
     name: "package: ${{ matrix.package }}"

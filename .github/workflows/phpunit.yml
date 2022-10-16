@@ -79,7 +79,7 @@ jobs:
           composer remove --no-interaction --no-progress --ansi --no-update --dev nunomaduro/larastan
 
       - name: Install dependencies
-        uses: "ramsey/composer-install@v2"
+        uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
       - name: Setup problem matchers for PHP
