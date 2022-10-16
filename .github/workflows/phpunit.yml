@@ -31,8 +31,12 @@ permissions:
 
 jobs:
   run:
-    name: Laravel ${{ matrix.laravel }} / PHP ${{ matrix.php }} (${{ matrix.dependencies }} / ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    # Only 28 characters are visible on UI :(
+    name: >-
+      P${{ matrix.php }}
+      L${{ matrix.laravel }}
+      ${{ matrix.dependencies == 'locked' && '🔒' || (matrix.dependencies == 'highest' && '🡹' || '🡻') }}
+      ${{ startsWith(matrix.os, 'windows') && '🆆' || (startsWith(matrix.os, 'macos') && '🅼' || '🆄') }}
 
     # `continue-on-error: true` will add a red mark in commit/pr, this is
     # definitely not what I want :( So we exclude some items instead.
@@ -41,8 +45,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        laravel: ${{ fromJson(inputs.laravel-versions) }}
         php: ${{ fromJson(inputs.php-versions) }}
+        laravel: ${{ fromJson(inputs.laravel-versions) }}
         dependencies: ${{ fromJson(inputs.dependencies) }}
         os: ${{ fromJson(inputs.runs-on) }}
         exclude:
@@ -52,6 +56,8 @@ jobs:
             php: ${{ fromJson(inputs.php-versions)[2] }}
           - dependencies: 'lowest'
             php: ${{ fromJson(inputs.php-versions)[3] }}
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       # Required to avoid converting LF into CRLF on Windows or some tests will
