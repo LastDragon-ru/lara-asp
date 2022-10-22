@@ -29,8 +29,3 @@ jobs:
     uses: ./.github/workflows/phpunit.yml
     needs:
       - settings
-    with:
-      php-versions: ${{ needs.settings.outputs.php-versions }}
-      laravel-versions: ${{ needs.settings.outputs.laravel-versions }}
-      dependencies: ${{ needs.settings.outputs.dependencies }}
-      runs-on: '["ubuntu-latest", "windows-latest"]'

@@ -1,4 +1,10 @@
-name: 'Checkout Project'
+name: 'Checkout'
+
+inputs:
+  package:
+    description: "Package path to checkout."
+    required: false
+    type: string
 
 runs:
   using: composite
@@ -9,3 +15,10 @@ runs:
 
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        path: ${{ inputs.package && '.repo' || '' }}
+
+    - name: Select Package
+      if: ${{ inputs.package }}
+      run: |
+        cp -R "./.repo/${{ inputs.package }}/." .
