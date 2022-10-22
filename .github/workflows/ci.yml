@@ -17,13 +17,33 @@ jobs:
     uses: ./.github/workflows/settings.yml
 
   monorepo:
-    uses: ./.github/workflows/monorepo.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: ./.github/actions/checkout.yml
+      - name: Install PHP
+        uses: ./.github/actions/php.yml
+      - name: Execute
+        run: |
+          ./vendor/bin/monorepo-builder validate
 
   phpcs:
-    uses: ./.github/workflows/phpcs.yml
+    - name: Checkout
+      uses: ./.github/actions/checkout.yml
+    - name: Install PHP
+      uses: ./.github/actions/php.yml
+    - name: Execute
+      run: |
+        ./vendor/bin/phpcs --report=checkstyle | cs2pr
 
   phpstan:
-    uses: ./.github/workflows/phpstan.yml
+    - name: Checkout
+      uses: ./.github/actions/checkout.yml
+    - name: Install PHP
+      uses: ./.github/actions/php.yml
+    - name: Execute
+      run: |
+        ./vendor/bin/phpstan analyse
 
   phpunit:
     uses: ./.github/workflows/phpunit.yml
