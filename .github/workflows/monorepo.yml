@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: ./.github/actions/checkout.yml
       - name: Install PHP
         uses: ./.github/actions/php.yml
       - name: Execute

@@ -56,13 +56,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      # Required to avoid converting LF into CRLF on Windows or some tests will
-      # fail.
-      - name: Disable core.autocrlf
-        run: git config --global core.autocrlf false
-
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: ./.github/actions/checkout.yml
       - name: Install PHP
         uses: ./.github/actions/php.yml
         with:

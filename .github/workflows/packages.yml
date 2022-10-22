@@ -21,7 +21,7 @@ jobs:
       json: ${{ steps.list.outputs.value }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: ./.github/actions/checkout.yml
       - id: list
         name: Detect packages
         working-directory: ${{ env.PACKAGES_DIRECTORY }}

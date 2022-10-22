@@ -1,0 +1,11 @@
+name: 'Checkout Project'
+
+runs:
+  using: composite
+  steps:
+    # Required to avoid converting LF into CRLF on Windows or some tests will fail.
+    - name: Disable core.autocrlf
+      run: git config --global core.autocrlf false
+
+    - name: Checkout
+      uses: actions/checkout@v3
