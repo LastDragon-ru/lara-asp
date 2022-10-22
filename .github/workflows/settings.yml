@@ -11,8 +11,6 @@ on:
         value: ${{ jobs.settings.outputs.php-latest }}
       php-lowest:
         value: ${{ jobs.settings.outputs.php-lowest }}
-      php-extensions:
-        value: ${{ jobs.settings.outputs.php-extensions }}
       laravel-versions:
         value: ${{ jobs.settings.outputs.laravel-versions }}
       laravel-latest:
@@ -36,7 +34,6 @@ jobs:
       php-versions: ${{ steps.php-versions.outputs.supported }}
       php-latest: ${{ steps.php-versions.outputs.latest }}
       php-lowest: ${{ steps.php-versions.outputs.lowest }}
-      php-extensions: ${{ steps.php-extensions.outputs.value }}
       laravel-versions: ${{ steps.laravel-versions.outputs.supported }}
       laravel-latest: ${{ steps.laravel-versions.outputs.latest }}
       laravel-lowest: ${{ steps.laravel-versions.outputs.lowest }}
@@ -61,10 +58,6 @@ jobs:
           echo "supported=$(echo "$PHP_VERSIONS")" >> $GITHUB_OUTPUT
           echo "latest=$(echo "$PHP_VERSIONS" | jq "max" -r)" >> $GITHUB_OUTPUT
           echo "lowest=$(echo "$PHP_VERSIONS" | jq "min" -r)" >> $GITHUB_OUTPUT
-      - name: Detect PHP extensions
-        id: php-extensions
-        run: |
-          echo "value=$(jq '[.require, ."require-dev", .suggest] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort' -r -c composer.json)" >> $GITHUB_OUTPUT
       - name: Detect Laravel versions
         id: laravel-versions
         run: |
@@ -84,7 +77,6 @@ jobs:
           echo "php-versions: ${{ steps.php-versions.outputs.supported }}"
           echo "php-latest: ${{ steps.php-versions.outputs.latest }}"
           echo "php-lowest: ${{ steps.php-versions.outputs.lowest }}"
-          echo "php-extensions: ${{ steps.php-extensions.outputs.value }}"
           echo "laravel-versions: ${{ steps.laravel-versions.outputs.supported }}"
           echo "laravel-latest: ${{ steps.laravel-versions.outputs.latest }}"
           echo "laravel-lowest: ${{ steps.laravel-versions.outputs.lowest }}"

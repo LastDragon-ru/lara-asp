@@ -7,10 +7,6 @@ on:
         description: "The JSON with required PHP versions."
         required: true
         type: string
-      php-extensions:
-        description: "The JSON with required PHP extensions."
-        required: true
-        type: string
       laravel-versions:
         description: "The JSON with required Laravel versions."
         required: true
@@ -68,12 +64,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install PHP
-        uses: shivammathur/setup-php@v2
+        uses: ./.github/actions/php.yml
         with:
-          php-version: ${{ matrix.php }}
-          extensions: ${{ join(fromJSON(inputs.php-extensions)) }}
-          ini-values: opcache.enable_cli=1
-          coverage: none
+          version: ${{ matrix.php }}
+          dependencies: false
 
       # On Windows, the caret ^ is the escape character, so the version string
       # that contains ^ will be handled incorrectly
@@ -88,10 +82,7 @@ jobs:
         uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
-      - name: Setup problem matchers for PHP
-        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-      - name: Setup problem matchers for PHPUnit
-        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
       - name: Execute
         run: |
-          vendor/bin/phpunit
+          ./vendor/bin/phpunit

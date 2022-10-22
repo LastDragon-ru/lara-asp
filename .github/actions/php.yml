@@ -1,0 +1,42 @@
+name: 'PHP'
+description: 'Install PHP and dependencies'
+
+inputs:
+  version:
+    required: false
+    type: string
+  dependencies:
+    required: false
+    type: boolean
+    default: true
+
+runs:
+  using: composite
+  steps:
+    - name: Detect PHP version
+      id: versions
+      if: ${{ ! inputs.version }}
+      run: |
+        echo "value=$(jq '"8.1|" + .require."php" | split("|") | map(select(. != "")) | last' -r -c composer.json)" >> $GITHUB_OUTPUT
+
+    - name: Detect required PHP extensions
+      id: extensions
+      run: |
+        echo "value=$(jq '[."require", ."require-dev", ."suggest"] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort' -r -c composer.json)" >> $GITHUB_OUTPUT
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.version && inputs.version || steps.version.output.value}}
+        extensions: ${{ join(fromJSON(steps.extensions.output.value)) }}
+        coverage: none
+        tools: cs2pr
+
+    - name: Install dependencies
+      if: ${{ inputs.dependencies }}
+      uses: ramsey/composer-install@v2
+
+    - name: Setup problem matchers
+      run: |
+        echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+        echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"

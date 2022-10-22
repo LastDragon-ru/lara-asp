@@ -17,36 +17,20 @@ jobs:
     uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
 
   monorepo:
-    uses: LastDragon-ru/lara-asp/.github/workflows/monorepo.yml@master
-    needs:
-      - settings
-    with:
-      php-version: ${{ needs.settings.outputs.php-latest }}
-      php-extensions: ${{ needs.settings.outputs.php-extensions }}
+    uses: ./.github/workflows/monorepo.yml
 
   phpcs:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpcs.yml@master
-    needs:
-      - settings
-    with:
-      php-version: ${{ needs.settings.outputs.php-latest }}
-      php-extensions: ${{ needs.settings.outputs.php-extensions }}
+    uses: ./.github/workflows/phpcs.yml
 
   phpstan:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpstan.yml@master
-    needs:
-      - settings
-    with:
-      php-version: ${{ needs.settings.outputs.php-latest }}
-      php-extensions: ${{ needs.settings.outputs.php-extensions }}
+    uses: ./.github/workflows/phpstan.yml
 
   phpunit:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@master
+    uses: ./.github/workflows/phpunit.yml
     needs:
       - settings
     with:
       php-versions: ${{ needs.settings.outputs.php-versions }}
-      php-extensions: ${{ needs.settings.outputs.php-extensions }}
       laravel-versions: ${{ needs.settings.outputs.laravel-versions }}
       dependencies: ${{ needs.settings.outputs.dependencies }}
       runs-on: '["ubuntu-latest", "windows-latest"]'
