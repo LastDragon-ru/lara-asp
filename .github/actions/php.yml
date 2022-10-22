@@ -1,4 +1,4 @@
-name: 'PHP'
+name: 'Install PHP'
 description: 'Install PHP and dependencies'
 
 inputs:

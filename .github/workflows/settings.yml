@@ -1,27 +1,15 @@
-# Determines application's requirements based on `composer.json`.
-
 name: Settings
 
 on:
   workflow_call:
     outputs:
-      php-versions:
-        value: ${{ jobs.settings.outputs.php-versions }}
-      php-latest:
-        value: ${{ jobs.settings.outputs.php-latest }}
-      php-lowest:
-        value: ${{ jobs.settings.outputs.php-lowest }}
-      laravel-versions:
-        value: ${{ jobs.settings.outputs.laravel-versions }}
-      laravel-latest:
-        value: ${{ jobs.settings.outputs.laravel-latest }}
-      laravel-lowest:
-        value: ${{ jobs.settings.outputs.laravel-lowest }}
-      dependencies:
-        value: ${{ jobs.settings.outputs.dependencies }}
+      packages-names:
+        value: ${{ jobs.settings.outputs.packages-names }}
+      packages-directory:
+        value: ${{ jobs.settings.outputs.packages-directory }}
 
 env:
-  PHP_VERSION: 8.0
+  PACKAGES_DIRECTORY: "packages"
 
 permissions:
   contents: read
@@ -31,53 +19,17 @@ jobs:
     name: collect
     runs-on: ubuntu-latest
     outputs:
-      php-versions: ${{ steps.php-versions.outputs.supported }}
-      php-latest: ${{ steps.php-versions.outputs.latest }}
-      php-lowest: ${{ steps.php-versions.outputs.lowest }}
-      laravel-versions: ${{ steps.laravel-versions.outputs.supported }}
-      laravel-latest: ${{ steps.laravel-versions.outputs.latest }}
-      laravel-lowest: ${{ steps.laravel-versions.outputs.lowest }}
-      dependencies: ${{ steps.dependencies.outputs.value }}
+      packages-names: ${{ steps.packages.outputs.value }}
+      packages-directory: ${{ env.PACKAGES_DIRECTORY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ env.PHP_VERSION }}
-          ini-values: opcache.enable_cli=1
-          coverage: none
-      - name: Install easy-ci
+      - name: Detect packages
+        id: packages
+        working-directory: ${{ env.PACKAGES_DIRECTORY }}
         run: |
-          mkdir "$RUNNER_TEMP/easy-ci"
-          composer require --no-interaction --working-dir="$RUNNER_TEMP/easy-ci" --update-no-dev "symplify/easy-ci:11.1.5"
-      - name: Detect Supported PHP versions
-        id: php-versions
-        run: |
-          PHP_VERSIONS="$("$RUNNER_TEMP/easy-ci/vendor/bin/easy-ci" php-versions-json)"
-          echo "supported=$(echo "$PHP_VERSIONS")" >> $GITHUB_OUTPUT
-          echo "latest=$(echo "$PHP_VERSIONS" | jq "max" -r)" >> $GITHUB_OUTPUT
-          echo "lowest=$(echo "$PHP_VERSIONS" | jq "min" -r)" >> $GITHUB_OUTPUT
-      - name: Detect Laravel versions
-        id: laravel-versions
-        run: |
-          LARAVEL_VERSIONS="$(jq '.require."laravel/framework" | split("|") | sort' -c composer.json)"
-          echo "supported=$(echo "$LARAVEL_VERSIONS")" >> $GITHUB_OUTPUT
-          echo "latest=$(echo "$LARAVEL_VERSIONS" | jq "max" -r)" >> $GITHUB_OUTPUT
-          echo "lowest=$(echo "$LARAVEL_VERSIONS" | jq "min" -r)" >> $GITHUB_OUTPUT
-      - name: Detect dependencies
-        id: dependencies
-        run: |
-          DEPS_HIGHEST="highest"
-          DEPS_LOCKED="$(if [ -f "composer.lock" ] && [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "locked"; fi)"
-          DEPS_LOWEST="$(if [ ! "$GITHUB_EVENT_NAME" == "schedule" ]; then echo "lowest"; fi)"
-          echo "value=$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)" >> $GITHUB_OUTPUT
+          echo "value=$(ls -1 -d */ | sed -e 's-/$--' | jq  --raw-input . | jq --slurp -c .)" >> $GITHUB_OUTPUT
       - name: Collected
         run: |
-          echo "php-versions: ${{ steps.php-versions.outputs.supported }}"
-          echo "php-latest: ${{ steps.php-versions.outputs.latest }}"
-          echo "php-lowest: ${{ steps.php-versions.outputs.lowest }}"
-          echo "laravel-versions: ${{ steps.laravel-versions.outputs.supported }}"
-          echo "laravel-latest: ${{ steps.laravel-versions.outputs.latest }}"
-          echo "laravel-lowest: ${{ steps.laravel-versions.outputs.lowest }}"
-          echo "dependencies: ${{ steps.dependencies.outputs.value }}"
+          echo "packages-names: ${{ steps.packages.outputs.value }}"
+          echo "packages-directory: ${{ env.PACKAGES_DIRECTORY }}"
