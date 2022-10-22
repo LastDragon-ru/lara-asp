@@ -10,32 +10,15 @@ permissions:
   contents: read
 
 jobs:
-  settings:
-    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
-
-  monorepo:
-    uses: ./.github/workflows/monorepo.yml
-
-  phpcs:
-    uses: ./.github/workflows/phpcs.yml
-
-  phpstan:
-    uses: ./.github/workflows/phpstan.yml
-
-  phpunit:
-    uses: ./.github/workflows/phpunit.yml
-    needs:
-      - settings
+  ci:
+    uses: ./.github/workflows/ci.yml
 
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     needs:
-      - monorepo
-      - phpcs
-      - phpstan
-      - phpunit
+      - ci
     steps:
       # Bot cannot sign tags/commits yet
       # https://github.com/actions/runner/issues/667
@@ -72,7 +55,7 @@ jobs:
           npm run release
 
   packages:
-    uses: LastDragon-ru/lara-asp/.github/workflows/packages.yml@master
+    uses: ./.github/workflows/packages.yml
     needs:
       - release
     secrets: inherit
