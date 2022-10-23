@@ -28,22 +28,26 @@ jobs:
           ./vendor/bin/monorepo-builder validate
 
   phpcs:
-    - name: Checkout
-      uses: ./.github/actions/checkout.yml
-    - name: Install PHP
-      uses: ./.github/actions/php.yml
-    - name: Execute
-      run: |
-        ./vendor/bin/phpcs --report=checkstyle | cs2pr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: ./.github/actions/checkout.yml
+      - name: Install PHP
+        uses: ./.github/actions/php.yml
+      - name: Execute
+        run: |
+          ./vendor/bin/phpcs --report=checkstyle | cs2pr
 
   phpstan:
-    - name: Checkout
-      uses: ./.github/actions/checkout.yml
-    - name: Install PHP
-      uses: ./.github/actions/php.yml
-    - name: Execute
-      run: |
-        ./vendor/bin/phpstan analyse
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: ./.github/actions/checkout.yml
+      - name: Install PHP
+        uses: ./.github/actions/php.yml
+      - name: Execute
+        run: |
+          ./vendor/bin/phpstan analyse
 
   phpunit:
     uses: ./.github/workflows/phpunit.yml
