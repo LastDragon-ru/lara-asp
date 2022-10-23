@@ -16,6 +16,10 @@ jobs:
   settings:
     name: Settings
     runs-on: ubuntu-latest
+    outputs:
+      php-versions: ${{ steps.settings.outputs.php-versions }}
+      dependencies: ${{ steps.settings.outputs.dependencies }}
+      laravel-versions: ${{ steps.settings.outputs.laravel-versions }}
     steps:
       - name: Checkout
         uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
@@ -24,8 +28,11 @@ jobs:
 
       - name: Install PHP
         uses: LastDragon-ru/lara-asp/.github/actions/php@master
+        with:
+          dependencies: false
 
       - name: Collect Settings
+        id: settings
         run: |
           # PHP (we need a better way...)
           mkdir -p ".tmp/easy-ci"
@@ -43,6 +50,7 @@ jobs:
 
           # Laravel
           echo "laravel-versions=$(jq '.require."laravel/framework" | split("|") | sort' -c composer.json)" >> $GITHUB_OUTPUT
+
   run:
     # Only 28 characters are visible on UI :(
     name: >-
@@ -50,6 +58,10 @@ jobs:
       L${{ matrix.laravel }}
       ${{ matrix.dependencies == 'locked' && '🔒' || (matrix.dependencies == 'highest' && '🡹' || '🡻') }}
       ${{ startsWith(matrix.os, 'windows') && '🆆' || (startsWith(matrix.os, 'macos') && '🅼' || '🆄') }}
+
+    runs-on: ${{ matrix.os }}
+    needs:
+      - settings
 
     # `continue-on-error: true` will add a red mark in commit/pr, this is
     # definitely not what I want :( So we exclude some items instead.
@@ -65,20 +77,16 @@ jobs:
           - ubuntu-latest
           - windows-latest
         exclude:
-          - dependencies: 'lowest'
-            php: ${{ fromJson(needs.settings.outputs.php-versions)[1] }}
-          - dependencies: 'lowest'
-            php: ${{ fromJson(needs.settings.outputs.php-versions)[2] }}
-          - dependencies: 'lowest'
-            php: ${{ fromJson(needs.settings.outputs.php-versions)[3] }}
-          - dependencies: 'lowest'
-            php: ${{ fromJson(needs.settings.outputs.php-versions)[4] }}
-          - dependencies: 'lowest'
-            php: ${{ fromJson(needs.settings.outputs.php-versions)[5] }}
-
-    runs-on: ${{ matrix.os }}
-    needs:
-      - settings
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[1] }}
+            dependencies: 'lowest'
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[2] }}
+            dependencies: 'lowest'
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[3] }}
+            dependencies: 'lowest'
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[4] }}
+            dependencies: 'lowest'
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[5] }}
+            dependencies: 'lowest'
 
     steps:
       # Checkout
