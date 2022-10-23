@@ -11,7 +11,9 @@ runs:
   steps:
     # Required to avoid converting LF into CRLF on Windows or some tests will fail.
     - name: Disable core.autocrlf
-      run: git config --global core.autocrlf false
+      shell: bash
+      run: |
+        git config --global core.autocrlf false
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -20,5 +22,6 @@ runs:
 
     - name: Select Package
       if: ${{ inputs.package }}
+      shell: bash
       run: |
         cp -R "./.repo/${{ inputs.package }}/." .

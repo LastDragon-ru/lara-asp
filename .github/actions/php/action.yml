@@ -18,11 +18,13 @@ runs:
     - name: Detect PHP version
       id: versions
       if: ${{ ! inputs.version }}
+      shell: bash
       run: |
         echo "value=$(jq '"8.1|" + .require."php" | split("|") | map(select(. != "")) | last' -r -c composer.json)" >> $GITHUB_OUTPUT
 
     - name: Detect required PHP extensions
       id: extensions
+      shell: bash
       run: |
         echo "value=$(jq '[."require", ."require-dev", ."suggest"] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort' -r -c composer.json)" >> $GITHUB_OUTPUT
 
@@ -39,6 +41,7 @@ runs:
       uses: ramsey/composer-install@v2
 
     - name: Setup problem matchers
+      shell: bash
       run: |
         echo "::add-matcher::${{ runner.tool_cache }}/php.json"
         echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
