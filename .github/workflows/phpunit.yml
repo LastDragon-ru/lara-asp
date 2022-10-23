@@ -8,6 +8,11 @@ on:
         required: false
         default: ""
         type: string
+      runs-on:
+        description: "The JSON with required OSs."
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
 
 permissions:
   contents: read
@@ -73,9 +78,7 @@ jobs:
         php: ${{ fromJson(needs.settings.outputs.php-versions) }}
         laravel: ${{ fromJson(needs.settings.outputs.laravel-versions) }}
         dependencies: ${{ fromJson(needs.settings.outputs.dependencies) }}
-        os:
-          - ubuntu-latest
-          - windows-latest
+        os: ${{ fromJson(inputs.runs-on) }}
         exclude:
           - php: ${{ fromJson(needs.settings.outputs.php-versions)[1] }}
             dependencies: 'lowest'

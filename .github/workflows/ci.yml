@@ -56,6 +56,8 @@ jobs:
   phpunit:
     name: Tests
     uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@master
+    with:
+      runs-on: '["ubuntu-latest", "windows-latest"]'
 
   phpunit-package:
     name: Package tests
