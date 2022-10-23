@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   settings:
+    name: Settings
     uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
 
   sync:
