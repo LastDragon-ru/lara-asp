@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   settings:
-    name: Collect
+    name: Detect Packages
     runs-on: ubuntu-latest
     outputs:
       packages-names: ${{ steps.packages.outputs.value }}
