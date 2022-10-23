@@ -14,9 +14,11 @@ permissions:
 
 jobs:
   settings:
+    name: Settings
     uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
 
   monorepo:
+    name: Validate composer.json
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,6 +30,7 @@ jobs:
           ./vendor/bin/monorepo-builder validate
 
   phpcs:
+    name: Coding standards
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,6 +42,7 @@ jobs:
           ./vendor/bin/phpcs --report=checkstyle | cs2pr
 
   phpstan:
+    name: PHPStan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -50,9 +54,11 @@ jobs:
           ./vendor/bin/phpstan analyse
 
   phpunit:
+    name: Tests
     uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@master
 
   phpunit-package:
+    name: Package tests
     needs:
       - settings
       - phpunit
