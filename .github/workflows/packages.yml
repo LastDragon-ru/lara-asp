@@ -7,36 +7,22 @@ on:
   workflow_call:
   workflow_dispatch:
 
-env:
-  PACKAGES_DIRECTORY: "packages/"
-
 permissions:
   contents: read
 
 jobs:
-  list:
-    name: list
-    runs-on: ubuntu-latest
-    outputs:
-      json: ${{ steps.list.outputs.value }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - id: list
-        name: Detect packages
-        working-directory: ${{ env.PACKAGES_DIRECTORY }}
-        run: |
-          echo "value=$(ls -1 -d */ | sed -e 's-/$--' | jq  --raw-input . | jq --slurp -c .)" >> $GITHUB_OUTPUT
+  settings:
+    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
 
   sync:
     name: "package: ${{ matrix.package }}"
     runs-on: ubuntu-latest
     needs:
-      - list
+      - settings
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.list.outputs.json) }}
+        package: ${{ fromJson(needs.settings.outputs.packages-names) }}
     steps:
       # Dependencies
       - name: Install git-filter-repo
@@ -70,7 +56,7 @@ jobs:
       # How to disable this behaviour?
       - name: Extract commits
         run: |
-          git-filter-repo --source=src --target=package --subdirectory-filter="${{ env.PACKAGES_DIRECTORY }}${{ matrix.package }}"
+          git-filter-repo --source=src --target=package --subdirectory-filter="${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}"
 
       # Before `push --mirror` we need enable track for all branches, or they will
       # not  be visible after `git clone` and on the Branches page on Github.

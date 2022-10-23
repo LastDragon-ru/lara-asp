@@ -3,23 +3,11 @@ name: PHP Unit
 on:
   workflow_call:
     inputs:
-      php-versions:
-        description: "The JSON with required PHP versions."
-        required: true
-        type: string
-      php-extensions:
-        description: "The JSON with required PHP extensions."
-        required: true
-        type: string
-      laravel-versions:
-        description: "The JSON with required Laravel versions."
-        required: true
-        type: string
-      dependencies:
-        description: "The JSON with required dependencies versions."
+      package:
+        description: "Package path to test."
         required: false
+        default: ""
         type: string
-        default: '["locked"]'
       runs-on:
         description: "The JSON with required OSs."
         required: false
@@ -30,6 +18,44 @@ permissions:
   contents: read
 
 jobs:
+  settings:
+    name: Settings
+    runs-on: ubuntu-latest
+    outputs:
+      php-versions: ${{ steps.settings.outputs.php-versions }}
+      dependencies: ${{ steps.settings.outputs.dependencies }}
+      laravel-versions: ${{ steps.settings.outputs.laravel-versions }}
+    steps:
+      - name: Checkout
+        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
+        with:
+          package: ${{ inputs.package }}
+
+      - name: Install PHP
+        uses: LastDragon-ru/lara-asp/.github/actions/php@master
+        with:
+          dependencies: false
+
+      - name: Collect Settings
+        id: settings
+        run: |
+          # PHP (we need a better way...)
+          mkdir -p ".tmp/easy-ci"
+
+          composer require --no-interaction --working-dir=".tmp/easy-ci" --update-no-dev "symplify/easy-ci:11.1.5"
+
+          echo "php-versions=$(".tmp/easy-ci/vendor/bin/easy-ci" php-versions-json)" >> $GITHUB_OUTPUT
+
+          # Dependencies
+          DEPS_HIGHEST="highest"
+          DEPS_LOCKED="$(if [ ! "${{ github.event_name }}" == "schedule" ] && [ -f "composer.lock" ]; then echo "locked"; fi)"
+          DEPS_LOWEST="$(if [ ! "${{ github.event_name }}" == "schedule" ]; then echo "lowest"; fi)"
+
+          echo "dependencies=$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)" >> $GITHUB_OUTPUT
+
+          # Laravel
+          echo "laravel-versions=$(jq '.require."laravel/framework" | split("|") | sort' -c composer.json)" >> $GITHUB_OUTPUT
+
   run:
     # Only 28 characters are visible on UI :(
     name: >-
@@ -38,6 +64,10 @@ jobs:
       ${{ matrix.dependencies == 'locked' && '🔒' || (matrix.dependencies == 'highest' && '🡹' || '🡻') }}
       ${{ startsWith(matrix.os, 'windows') && '🆆' || (startsWith(matrix.os, 'macos') && '🅼' || '🆄') }}
 
+    runs-on: ${{ matrix.os }}
+    needs:
+      - settings
+
     # `continue-on-error: true` will add a red mark in commit/pr, this is
     # definitely not what I want :( So we exclude some items instead.
     #
@@ -45,35 +75,35 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ${{ fromJson(inputs.php-versions) }}
-        laravel: ${{ fromJson(inputs.laravel-versions) }}
-        dependencies: ${{ fromJson(inputs.dependencies) }}
+        php: ${{ fromJson(needs.settings.outputs.php-versions) }}
+        laravel: ${{ fromJson(needs.settings.outputs.laravel-versions) }}
+        dependencies: ${{ fromJson(needs.settings.outputs.dependencies) }}
         os: ${{ fromJson(inputs.runs-on) }}
         exclude:
-          - dependencies: 'lowest'
-            php: ${{ fromJson(inputs.php-versions)[1] }}
-          - dependencies: 'lowest'
-            php: ${{ fromJson(inputs.php-versions)[2] }}
-          - dependencies: 'lowest'
-            php: ${{ fromJson(inputs.php-versions)[3] }}
-
-    runs-on: ${{ matrix.os }}
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[1] }}
+            dependencies: 'lowest'
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[2] }}
+            dependencies: 'lowest'
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[3] }}
+            dependencies: 'lowest'
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[4] }}
+            dependencies: 'lowest'
+          - php: ${{ fromJson(needs.settings.outputs.php-versions)[5] }}
+            dependencies: 'lowest'
 
     steps:
-      # Required to avoid converting LF into CRLF on Windows or some tests will
-      # fail.
-      - name: Disable core.autocrlf
-        run: git config --global core.autocrlf false
-
+      # Checkout
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
+        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
         with:
-          php-version: ${{ matrix.php }}
-          extensions: ${{ join(fromJSON(inputs.php-extensions)) }}
-          ini-values: opcache.enable_cli=1
-          coverage: none
+          package: ${{ inputs.package }}
+
+      # Install PHP
+      - name: Install PHP
+        uses: LastDragon-ru/lara-asp/.github/actions/php@master
+        with:
+          version: ${{ matrix.php }}
+          dependencies: false
 
       # On Windows, the caret ^ is the escape character, so the version string
       # that contains ^ will be handled incorrectly
@@ -88,10 +118,7 @@ jobs:
         uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
-      - name: Setup problem matchers for PHP
-        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-      - name: Setup problem matchers for PHPUnit
-        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
       - name: Execute
         run: |
-          vendor/bin/phpunit
+          ./vendor/bin/phpunit
