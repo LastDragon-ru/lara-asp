@@ -3,9 +3,11 @@ description: 'Install PHP and dependencies'
 
 inputs:
   version:
+    description: "PHP Version"
     required: false
     type: string
   dependencies:
+    description: "Should requirements be installed via composer or not (default `true`)"
     required: false
     type: boolean
     default: true

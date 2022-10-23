@@ -14,15 +14,15 @@ permissions:
 
 jobs:
   settings:
-    uses: ./.github/workflows/settings.yml
+    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
 
   monorepo:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: ./.github/actions/checkout.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
       - name: Install PHP
-        uses: ./.github/actions/php.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/php@master
       - name: Execute
         run: |
           ./vendor/bin/monorepo-builder validate
@@ -31,9 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: ./.github/actions/checkout.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
       - name: Install PHP
-        uses: ./.github/actions/php.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/php@master
       - name: Execute
         run: |
           ./vendor/bin/phpcs --report=checkstyle | cs2pr
@@ -42,15 +42,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: ./.github/actions/checkout.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
       - name: Install PHP
-        uses: ./.github/actions/php.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/php@master
       - name: Execute
         run: |
           ./vendor/bin/phpstan analyse
 
   phpunit:
-    uses: ./.github/workflows/phpunit.yml
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@master
 
   phpunit-package:
     needs:
@@ -60,6 +60,6 @@ jobs:
       fail-fast: false
       matrix:
         package: ${{ fromJson(needs.settings.outputs.packages-names) }}
-    uses: ./.github/workflows/phpunit.yml
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@master
     with:
       package: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}

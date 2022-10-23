@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   ci:
-    uses: ./.github/workflows/ci.yml
+    uses: LastDragon-ru/lara-asp/.github/workflows/ci.yml@master
 
   release:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
           npm run release
 
   packages:
-    uses: ./.github/workflows/packages.yml
+    uses: LastDragon-ru/lara-asp/.github/workflows/packages.yml@master
     needs:
       - release
     secrets: inherit

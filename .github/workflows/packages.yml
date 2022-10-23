@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   settings:
-    uses: ./.github/workflows/settings.yml
+    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
 
   sync:
     name: "package: ${{ matrix.package }}"

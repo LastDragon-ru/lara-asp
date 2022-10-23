@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: ./.github/actions/checkout.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
         with:
           package: ${{ inputs.package }}
 
       - name: Install PHP
-        uses: ./.github/actions/php.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/php@master
 
       - name: Collect Settings
         run: |
@@ -83,13 +83,13 @@ jobs:
     steps:
       # Checkout
       - name: Checkout
-        uses: ./.github/actions/checkout.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
         with:
           package: ${{ inputs.package }}
 
       # Install PHP
       - name: Install PHP
-        uses: ./.github/actions/php.yml
+        uses: LastDragon-ru/lara-asp/.github/actions/php@master
         with:
           version: ${{ matrix.php }}
           dependencies: false
