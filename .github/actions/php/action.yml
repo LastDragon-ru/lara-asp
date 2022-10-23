@@ -16,7 +16,7 @@ runs:
   using: composite
   steps:
     - name: Detect PHP version
-      id: versions
+      id: version
       if: ${{ ! inputs.version }}
       shell: bash
       run: |
