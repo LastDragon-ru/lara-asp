@@ -14,6 +14,7 @@ jobs:
     uses: LastDragon-ru/lara-asp/.github/workflows/ci.yml@master
 
   release:
+    name: Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -53,6 +54,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm run release
+
+      - name: Congratulations
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+
+          echo "Version **[${VERSION}](https://github.com/${{ github.repository }}/releases/tag/${VERSION})** released! :rocket:" >> $GITHUB_STEP_SUMMARY
 
   packages:
     uses: LastDragon-ru/lara-asp/.github/workflows/packages.yml@master
