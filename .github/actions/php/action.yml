@@ -31,8 +31,8 @@ runs:
     - name: Install PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ inputs.version && inputs.version || steps.version.output.value}}
-        extensions: ${{ join(fromJSON(steps.extensions.output.value)) }}
+        php-version: ${{ inputs.version && inputs.version || steps.version.outputs.value}}
+        extensions: ${{ join(fromJSON(steps.extensions.outputs.value)) }}
         coverage: none
         tools: cs2pr
 
