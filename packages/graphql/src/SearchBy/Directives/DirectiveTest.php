@@ -9,7 +9,8 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Config\Repository;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
@@ -21,6 +22,9 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Model;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
@@ -29,6 +33,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
@@ -145,9 +150,18 @@ class DirectiveTest extends TestCase {
         Closure $builderFactory,
         mixed $value,
     ): void {
-        $model = json_encode(TestObject::class, JSON_THROW_ON_ERROR);
+        $model = json_encode(Model::class, JSON_THROW_ON_ERROR);
         $path  = is_array($expected) ? 'data.test' : 'errors.0.message';
         $body  = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
+        $table = (new Model())->getTable();
+
+        if (!Schema::hasTable($table)) {
+            Schema::create($table, static function (Blueprint $table): void {
+                $table->increments('id');
+                $table->string('a')->nullable();
+                $table->string('b')->nullable();
+            });
+        }
 
         $this
             ->useGraphQLSchema(
@@ -335,68 +349,74 @@ class DirectiveTest extends TestCase {
      * @return array<mixed>
      */
     public function dataProviderHandleBuilder(): array {
-        return (new CompositeDataProvider(
-            new BuilderDataProvider(),
-            new ArrayDataProvider([
-                'empty'               => [
-                    [
-                        'query'    => <<<'SQL'
+        return (new MergeDataProvider([
+            'Both'     => new CompositeDataProvider(
+                new BuilderDataProvider(),
+                new ArrayDataProvider([
+                    'empty'               => [
+                        [
+                            'query'    => <<<'SQL'
                             select
                                 *
                             from
                                 "tmp"
                         SQL
-                        ,
-                        'bindings' => [],
-                    ],
-                    [
-                        // empty
-                    ],
-                ],
-                'empty operators'     => [
-                    new ConditionEmpty(),
-                    [
-                        'a' => [
+                            ,
+                            'bindings' => [],
+                        ],
+                        [
                             // empty
                         ],
                     ],
-                ],
-                'too many properties' => [
-                    new ConditionTooManyProperties(['a', 'b']),
-                    [
-                        'a' => [
-                            'notEqual' => 1,
-                        ],
-                        'b' => [
-                            'notEqual' => 'a',
+                    'empty operators'     => [
+                        new ConditionEmpty(),
+                        [
+                            'a' => [
+                                // empty
+                            ],
                         ],
                     ],
-                ],
-                'too many operators'  => [
-                    new ConditionTooManyOperators(['equal', 'notEqual']),
-                    [
-                        'a' => [
-                            'equal'    => 1,
-                            'notEqual' => 1,
+                    'too many properties' => [
+                        new ConditionTooManyProperties(['a', 'b']),
+                        [
+                            'a' => [
+                                'notEqual' => 1,
+                            ],
+                            'b' => [
+                                'notEqual' => 'a',
+                            ],
                         ],
                     ],
-                ],
-                'null'                => [
-                    [
-                        'query'    => <<<'SQL'
+                    'too many operators'  => [
+                        new ConditionTooManyOperators(['equal', 'notEqual']),
+                        [
+                            'a' => [
+                                'equal'    => 1,
+                                'notEqual' => 1,
+                            ],
+                        ],
+                    ],
+                    'null'                => [
+                        [
+                            'query'    => <<<'SQL'
                             select
                                 *
                             from
                                 "tmp"
                         SQL
-                        ,
-                        'bindings' => [],
+                            ,
+                            'bindings' => [],
+                        ],
+                        null,
                     ],
-                    null,
-                ],
-                'valid condition'     => [
-                    [
-                        'query'    => <<<'SQL'
+                ]),
+            ),
+            'Query'    => new CompositeDataProvider(
+                new QueryBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'valid condition' => [
+                        [
+                            'query'    => <<<'SQL'
                             select
                                 *
                             from
@@ -416,27 +436,28 @@ class DirectiveTest extends TestCase {
                                     )
                                 )
                         SQL
-                        ,
-                        'bindings' => [1, 2, 'a'],
-                    ],
-                    [
-                        'not' => [
-                            'allOf' => [
-                                [
-                                    'a' => [
-                                        'notEqual' => 1,
-                                    ],
-                                ],
-                                [
-                                    'anyOf' => [
-                                        [
-                                            'a' => [
-                                                'equal' => 2,
-                                            ],
+                            ,
+                            'bindings' => [1, 2, 'a'],
+                        ],
+                        [
+                            'not' => [
+                                'allOf' => [
+                                    [
+                                        'a' => [
+                                            'notEqual' => 1,
                                         ],
-                                        [
-                                            'b' => [
-                                                'notEqual' => 'a',
+                                    ],
+                                    [
+                                        'anyOf' => [
+                                            [
+                                                'a' => [
+                                                    'equal' => 2,
+                                                ],
+                                            ],
+                                            [
+                                                'b' => [
+                                                    'notEqual' => 'a',
+                                                ],
                                             ],
                                         ],
                                     ],
@@ -444,9 +465,65 @@ class DirectiveTest extends TestCase {
                             ],
                         ],
                     ],
-                ],
-            ]),
-        ))->getData();
+                ]),
+            ),
+            'Eloquent' => new CompositeDataProvider(
+                new EloquentBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'valid condition' => [
+                        [
+                            'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "tmp"
+                            where
+                                (
+                                    not (
+                                        (
+                                            ("tmp"."a" != ?)
+                                            and (
+                                                (
+                                                    ("tmp"."a" = ?)
+                                                    or ("tmp"."b" != ?)
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                        SQL
+                            ,
+                            'bindings' => [1, 2, 'a'],
+                        ],
+                        [
+                            'not' => [
+                                'allOf' => [
+                                    [
+                                        'a' => [
+                                            'notEqual' => 1,
+                                        ],
+                                    ],
+                                    [
+                                        'anyOf' => [
+                                            [
+                                                'a' => [
+                                                    'equal' => 2,
+                                                ],
+                                            ],
+                                            [
+                                                'b' => [
+                                                    'notEqual' => 'a',
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]),
+            ),
+        ]))->getData();
     }
     // </editor-fold>
 }

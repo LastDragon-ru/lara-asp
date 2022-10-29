@@ -135,7 +135,7 @@ class Relation extends BaseOperator implements ComplexOperator {
             $operator,
             $count,
             static function (EloquentBuilder $builder) use ($relation, $handler, $alias, $has): void {
-                if ($alias === $relation->getRelationCountHash(false)) {
+                if (!$alias || $alias === $relation->getRelationCountHash(false)) {
                     $alias = $builder->getModel()->getTable();
                 }
 
