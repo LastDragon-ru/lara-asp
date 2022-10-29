@@ -6,9 +6,12 @@ use Closure;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
@@ -83,33 +86,62 @@ class AnyOfTest extends TestCase {
             );
         };
 
-        return (new CompositeDataProvider(
-            new BuilderDataProvider(),
-            new ArrayDataProvider([
-                'property'   => [
-                    [
-                        'query'    => 'select * from "tmp" where (("a" = ?) or ("b" != ?))',
-                        'bindings' => [
-                            2,
-                            22,
+        return (new MergeDataProvider([
+            'Query'    => new CompositeDataProvider(
+                new QueryBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'property'   => [
+                        [
+                            'query'    => 'select * from "tmp" where (("a" = ?) or ("b" != ?))',
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
                         ],
+                        new Property(),
+                        $factory,
                     ],
-                    new Property(),
-                    $factory,
-                ],
-                'with alias' => [
-                    [
-                        'query'    => 'select * from "tmp" where (("alias"."a" = ?) or ("alias"."b" != ?))',
-                        'bindings' => [
-                            2,
-                            22,
+                    'with alias' => [
+                        [
+                            'query'    => 'select * from "tmp" where (("alias"."a" = ?) or ("alias"."b" != ?))',
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
                         ],
+                        new Property('alias'),
+                        $factory,
                     ],
-                    new Property('alias'),
-                    $factory,
-                ],
-            ]),
-        ))->getData();
+                ]),
+            ),
+            'Eloquent' => new CompositeDataProvider(
+                new EloquentBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'property'   => [
+                        [
+                            'query'    => 'select * from "tmp" where (("tmp"."a" = ?) or ("tmp"."b" != ?))',
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
+                        ],
+                        new Property(),
+                        $factory,
+                    ],
+                    'with alias' => [
+                        [
+                            'query'    => 'select * from "tmp" where (("alias"."a" = ?) or ("alias"."b" != ?))',
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
+                        ],
+                        new Property('alias'),
+                        $factory,
+                    ],
+                ]),
+            ),
+        ]))->getData();
     }
     // </editor-fold>
 }

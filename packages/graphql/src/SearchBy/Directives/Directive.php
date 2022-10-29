@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Manipulator;
+use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
@@ -52,5 +54,17 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
         return $this->handleAnyBuilder($builder, $value);
+    }
+
+    public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
+        // Some relations (eg `HasManyThrough`) require a table name prefix to
+        // avoid "SQLSTATE[23000]: Integrity constraint violation: 1052 Column
+        // 'xxx' in where clause is ambiguous" error.
+        if ($builder instanceof EloquentBuilder && $property->getPath() === []) {
+            $property = $property->getChild($builder->getModel()->getTable());
+        }
+
+        // Return
+        return parent::handle($builder, $property, $conditions);
     }
 }
