@@ -15,7 +15,6 @@ abstract class ImmutableSettings implements Settings {
     protected int              $lineLength;
     protected bool             $printDirectives;
     protected bool             $printDirectiveDefinitions;
-    protected bool             $printDirectivesInDescription;
     protected bool             $printUnusedDefinitions;
     protected bool             $normalizeSchema;
     protected bool             $normalizeUnions;
@@ -114,16 +113,6 @@ abstract class ImmutableSettings implements Settings {
     public function setPrintDirectiveDefinitions(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
             $settings->printDirectiveDefinitions = $value;
-        });
-    }
-
-    public function isPrintDirectivesInDescription(): bool {
-        return $this->printDirectivesInDescription;
-    }
-
-    public function setPrintDirectivesInDescription(bool $value): static {
-        return $this->set(static function (self $settings) use ($value): void {
-            $settings->printDirectivesInDescription = $value;
         });
     }
 
@@ -299,7 +288,6 @@ abstract class ImmutableSettings implements Settings {
             ->setLineLength($settings->getLineLength())
             ->setPrintDirectives($settings->isPrintDirectives())
             ->setPrintDirectiveDefinitions($settings->isPrintDirectiveDefinitions())
-            ->setPrintDirectivesInDescription($settings->isPrintDirectivesInDescription())
             ->setPrintUnusedDefinitions($settings->isPrintUnusedDefinitions())
             ->setNormalizeSchema($settings->isNormalizeSchema())
             ->setNormalizeUnions($settings->isNormalizeUnions())

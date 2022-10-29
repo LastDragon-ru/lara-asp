@@ -55,7 +55,7 @@ class SchemaDefinitionBlockTest extends TestCase {
             ->setNormalizeFields(false);
 
         return [
-            'standard names'                                => [
+            'standard names'                 => [
                 '',
                 $settings,
                 0,
@@ -66,13 +66,8 @@ class SchemaDefinitionBlockTest extends TestCase {
                     'subscription' => new ObjectType(['name' => 'Subscription']),
                 ]),
             ],
-            'standard names with directives'                => [
+            'standard names with directives' => [
                 <<<'STRING'
-                """
-                ```graphql
-                @a
-                ```
-                """
                 schema
                 @a
                 {
@@ -82,7 +77,6 @@ class SchemaDefinitionBlockTest extends TestCase {
                 }
                 STRING,
                 $settings
-                    ->setPrintDirectivesInDescription(true)
                     ->setPrintDirectives(true),
                 0,
                 0,
@@ -97,34 +91,7 @@ class SchemaDefinitionBlockTest extends TestCase {
                     ),
                 ]),
             ],
-            'standard names with directives in description' => [
-                <<<'STRING'
-                """
-                ```graphql
-                @a
-                ```
-                """
-                schema {
-                    query: Query
-                    mutation: Mutation
-                    subscription: Subscription
-                }
-                STRING,
-                $settings->setPrintDirectivesInDescription(true),
-                0,
-                0,
-                new Schema([
-                    'query'        => new ObjectType(['name' => 'Query']),
-                    'mutation'     => new ObjectType(['name' => 'Mutation']),
-                    'subscription' => new ObjectType(['name' => 'Subscription']),
-                    'astNode'      => Parser::schemaDefinition(
-                        <<<'STRING'
-                        schema @a { query: Query }
-                        STRING,
-                    ),
-                ]),
-            ],
-            'non standard names'                            => [
+            'non standard names'             => [
                 <<<'STRING'
                 schema {
                     query: MyQuery
@@ -141,7 +108,7 @@ class SchemaDefinitionBlockTest extends TestCase {
                     'subscription' => new ObjectType(['name' => 'Subscription']),
                 ]),
             ],
-            'indent'                                        => [
+            'indent'                         => [
                 <<<'STRING'
                 schema {
                         query: MyQuery

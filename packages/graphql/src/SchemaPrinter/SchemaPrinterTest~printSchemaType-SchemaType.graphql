@@ -1,8 +1,3 @@
-"""
-```graphql
-@schemaDirective
-```
-"""
 type SchemaType
 implements
     & SchemaInterfaceB
@@ -11,10 +6,6 @@ implements
 
     """
     Deprecated field
-
-    ```graphql
-    @deprecated
-    ```
     """
     b: [String]!
 
@@ -44,12 +35,6 @@ implements
     ): SchemaUnion
 }
 
-enum CodeDirectiveEnum {
-    A
-    B
-    C
-}
-
 enum CodeEnum {
     A
     B
@@ -57,11 +42,6 @@ enum CodeEnum {
 }
 
 enum SchemaEnum {
-    """
-    ```graphql
-    @deprecated
-    ```
-    """
     A
 
     """
@@ -70,16 +50,8 @@ enum SchemaEnum {
     B
 }
 
-input CodeDirectiveInput {
-    a: Int!
-}
-
 """
 Description
-
-```graphql
-@schemaDirective
-```
 """
 input CodeInput {
     a: Boolean
@@ -89,20 +61,12 @@ input CodeInput {
 Lighthouse not yet support "implements" for interface...
 
 @see https://github.com/webonyx/graphql-php/issues/728
-
-```graphql
-@schemaDirective
-```
 """
 interface SchemaInterfaceB {
     a: Boolean!
 
     """
     Deprecated field
-
-    ```graphql
-    @deprecated
-    ```
     """
     b: [String]!
 
@@ -124,17 +88,6 @@ interface SchemaInterfaceB {
     e: CodeEnum
 }
 
-scalar CodeDirectiveScalar
-
-"""
-```graphql
-@scalar(
-    class: "GraphQL\\Type\\Definition\\StringType"
-)
-```
-"""
-scalar CodeDirectiveScalarCustomClass
-
 """
 The `String` scalar type represents textual data, represented as UTF-8
 character sequences. The String type is most often used by GraphQL to
@@ -146,32 +99,16 @@ scalar CodeScalar
 The `String` scalar type represents textual data, represented as UTF-8
 character sequences. The String type is most often used by GraphQL to
 represent free-form human-readable text.
-
-```graphql
-@scalar(
-    class: "GraphQL\\Type\\Definition\\StringType"
-)
-@codeDirective
-```
 """
 scalar SchemaScalar
 
 """
 Description
-
-```graphql
-@schemaDirective
-```
 """
 type CodeType {
     a: Boolean
 }
 
-"""
-```graphql
-@schemaDirective
-```
-"""
 type SchemaType
 implements
     & SchemaInterfaceB
@@ -180,10 +117,6 @@ implements
 
     """
     Deprecated field
-
-    ```graphql
-    @deprecated
-    ```
     """
     b: [String]!
 
@@ -216,53 +149,6 @@ implements
 union CodeUnion =
     | CodeType
 
-"""
-```graphql
-@schemaDirective
-```
-"""
 union SchemaUnion =
     | CodeType
     | SchemaType
-
-directive @codeDirective(
-    custom: [CodeDirectiveScalarCustomClass]
-    enum: CodeDirectiveEnum
-    input: CodeDirectiveInput
-    scalar: CodeDirectiveScalar!
-)
-repeatable on
-    | INTERFACE
-    | SCALAR
-    | SCHEMA
-
-"""
-Reference a class implementing a scalar definition.
-"""
-directive @scalar(
-    """
-    Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
-    """
-    class: String!
-)
-on
-    | SCALAR
-
-"""
-Directive
-"""
-directive @schemaDirective(
-    """
-    Directive argument
-    """
-    message: String
-)
-on
-    | ARGUMENT_DEFINITION
-    | FIELD
-    | INPUT_OBJECT
-    | INTERFACE
-    | OBJECT
-    | SCALAR
-    | SCHEMA
-    | UNION

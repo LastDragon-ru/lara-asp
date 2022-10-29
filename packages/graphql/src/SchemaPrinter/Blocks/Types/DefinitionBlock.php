@@ -136,21 +136,6 @@ abstract class DefinitionBlock extends Block implements Named {
             $description = $definition->description;
         }
 
-        // Directives
-        if ($this->getSettings()->isPrintDirectivesInDescription()) {
-            $directives = (string) $this->addUsed($this->directives(0, mb_strlen($this->indent())));
-
-            if ($directives) {
-                $eol         = $description ? $this->eol() : '';
-                $directives  = <<<DIRECTIVES
-                    ```graphql
-                    {$directives}
-                    ```
-                    DIRECTIVES;
-                $description = "{$description}{$eol}{$eol}{$directives}";
-            }
-        }
-
         // Return
         return new Description(
             $this->getSettings(),

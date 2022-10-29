@@ -18,16 +18,6 @@ interface Settings {
     public function isPrintDirectiveDefinitions(): bool;
 
     /**
-     * Temporary workaround to show directives when they are not supported out
-     * of the box.
-     *
-     * @see https://github.com/graphql/graphql-playground/issues/1207
-     *
-     * @deprecated Because it is useless for initial purpose, see #26
-     */
-    public function isPrintDirectivesInDescription(): bool;
-
-    /**
      * If `false` unused Types and Directives definition will not be printed.
      */
     public function isPrintUnusedDefinitions(): bool;

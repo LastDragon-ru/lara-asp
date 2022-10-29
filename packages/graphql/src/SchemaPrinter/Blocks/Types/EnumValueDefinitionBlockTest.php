@@ -47,7 +47,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
         $settings = new TestSettings();
 
         return [
-            'value'                      => [
+            'value'  => [
                 <<<'STRING'
                 A
                 STRING,
@@ -59,7 +59,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
                     'value' => 'A',
                 ]),
             ],
-            'indent'                     => [
+            'indent' => [
                 <<<'STRING'
                 A
                 STRING,
@@ -69,30 +69,6 @@ class EnumValueDefinitionBlockTest extends TestCase {
                 new EnumValueDefinition([
                     'name'  => 'A',
                     'value' => 'A',
-                ]),
-            ],
-            'description and directives' => [
-                <<<'STRING'
-                """
-                Description
-
-                ```graphql
-                @a
-                ```
-                """
-                A
-                @a
-                STRING,
-                $settings
-                    ->setPrintDirectivesInDescription(true)
-                    ->setPrintDirectives(true),
-                0,
-                0,
-                new EnumValueDefinition([
-                    'name'        => 'A',
-                    'value'       => 'A',
-                    'astNode'     => Parser::enumValueDefinition('A @a'),
-                    'description' => 'Description',
                 ]),
             ],
         ];

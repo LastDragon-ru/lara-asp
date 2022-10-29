@@ -50,7 +50,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
             ->setPrintDirectives(false);
 
         return [
-            'scalar'                          => [
+            'scalar'                  => [
                 <<<'STRING'
                 scalar Test
                 STRING,
@@ -61,58 +61,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                     'name' => 'Test',
                 ]),
             ],
-            'with description and directives' => [
-                <<<'STRING'
-                """
-                Description
-
-                ```graphql
-                @a
-                ```
-                """
-                scalar Test
-                @a
-                STRING,
-                $settings
-                    ->setPrintDirectivesInDescription(true)
-                    ->setPrintDirectives(true),
-                0,
-                0,
-                new CustomScalarType([
-                    'name'        => 'Test',
-                    'description' => 'Description',
-                    'astNode'     => Parser::scalarTypeDefinition(
-                        <<<'STRING'
-                        scalar Test @a
-                        STRING,
-                    ),
-                ]),
-            ],
-            'with directives in description'  => [
-                <<<'STRING'
-                """
-                Description
-
-                ```graphql
-                @a
-                ```
-                """
-                scalar Test
-                STRING,
-                $settings->setPrintDirectivesInDescription(true),
-                0,
-                0,
-                new CustomScalarType([
-                    'name'        => 'Test',
-                    'description' => 'Description',
-                    'astNode'     => Parser::scalarTypeDefinition(
-                        <<<'STRING'
-                        scalar Test @a
-                        STRING,
-                    ),
-                ]),
-            ],
-            'indent'                          => [
+            'indent'                  => [
                 <<<'STRING'
                 """
                     Description
@@ -136,7 +85,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
                     ),
                 ]),
             ],
-            'indent + no description'         => [
+            'indent + no description' => [
                 <<<'STRING'
                 scalar Test
                     @a(

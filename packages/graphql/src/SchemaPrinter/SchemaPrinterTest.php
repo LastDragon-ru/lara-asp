@@ -529,57 +529,6 @@ class SchemaPrinterTest extends TestCase {
                     ->setPrintDirectiveDefinitions(false),
                 0,
             ],
-            TestSettings::class.' (directives in description)' => [
-                (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-test-settings-directives-in-description.graphql'),
-                ))
-                    ->setUsedTypes([
-                        'Query',
-                        'String',
-                        'Boolean',
-                        'SchemaType',
-                        'SchemaEnum',
-                        'SchemaInput',
-                        'SchemaUnion',
-                        'SchemaScalar',
-                        'SchemaInterfaceB',
-                        'CodeScalar',
-                        'CodeInput',
-                        'CodeUnion',
-                        'CodeEnum',
-                        'CodeType',
-                    ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Int',
-                        'Float',
-                        'CodeInterface',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceA',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
-                    ])
-                    ->setUsedDirectives([
-                        '@deprecated',
-                        '@schemaDirective',
-                        '@scalar',
-                        '@codeDirective',
-                        '@mock',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirectiveUnused',
-                    ]),
-                (new TestSettings())
-                    ->setPrintDirectives(false)
-                    ->setPrintDirectiveDefinitions(false)
-                    ->setPrintDirectivesInDescription(true),
-                0,
-            ],
             TestSettings::class.' (no normalization)'          => [
                 (new GraphQLExpectedSchema(
                     $this->getTestData()->file('~printSchema-test-settings-no-normalization.graphql'),
@@ -878,23 +827,14 @@ class SchemaPrinterTest extends TestCase {
                         'CodeEnum',
                         'SchemaUnion',
                         'SchemaType',
-                        'CodeDirectiveEnum',
                         'SchemaEnum',
-                        'Int',
-                        'CodeDirectiveInput',
-                        'CodeDirectiveScalar',
-                        'CodeDirectiveScalarCustomClass',
                         'CodeType',
                     ])
                     ->setUsedDirectives([
-                        '@codeDirective',
-                        '@deprecated',
-                        '@schemaDirective',
-                        '@scalar',
+                        // empty
                     ]),
                 (new TestSettings())
-                    ->setPrintDirectives(false)
-                    ->setPrintDirectivesInDescription(true),
+                    ->setPrintDirectives(false),
                 0,
                 'SchemaType',
             ],
@@ -975,10 +915,6 @@ class SchemaPrinterTest extends TestCase {
                     <<<'GRAPHQL'
                     """
                     Description
-
-                    ```graphql
-                    @codeDirective
-                    ```
                     """
                     interface CodeInterface {
                         a: Boolean!
@@ -991,11 +927,10 @@ class SchemaPrinterTest extends TestCase {
                         'CodeInterface',
                     ])
                     ->setUsedDirectives([
-                        '@codeDirective',
+                        // empty
                     ]),
                 (new TestSettings())
-                    ->setPrintDirectives(false)
-                    ->setPrintDirectivesInDescription(true),
+                    ->setPrintDirectives(false),
                 0,
                 new InterfaceType([
                     'name'        => 'CodeInterface',

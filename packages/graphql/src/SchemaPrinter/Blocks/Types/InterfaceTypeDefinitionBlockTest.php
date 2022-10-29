@@ -96,16 +96,11 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
                 <<<'STRING'
                 """
                 Description
-
-                ```graphql
-                @a
-                ```
                 """
                 interface Test
                 @a
                 STRING,
                 $settings
-                    ->setPrintDirectivesInDescription(true)
                     ->setPrintDirectives(true),
                 0,
                 0,

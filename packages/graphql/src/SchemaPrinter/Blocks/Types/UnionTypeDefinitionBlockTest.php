@@ -219,17 +219,11 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             ],
             'directives'                    => [
                 <<<'STRING'
-                """
-                ```graphql
-                @a
-                ```
-                """
                 union Test
                 @a
                 = C | B | A
                 STRING,
-                $settings
-                    ->setPrintDirectivesInDescription(true),
+                $settings,
                 0,
                 0,
                 new UnionType([
