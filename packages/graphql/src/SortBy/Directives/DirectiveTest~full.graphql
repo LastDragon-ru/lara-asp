@@ -1,23 +1,24 @@
 type Query {
-  test(order: Properties @sortBy): ID! @all
+    eloquent(order: Properties @sortBy): ID! @all
+    scout(search: String @search, order: Properties @sortBy): ID! @all
 }
 
 input Properties {
-  idScalar: ID
-  idScalarNotNull: ID!
-  nested: Nested
-  nestedNotNull: Nested!
-  enum: Value
-  enumNotNull: Value!
-  ignored: ID! @sortByIgnored
+    idScalar: ID
+    idScalarNotNull: ID!
+    nested: Nested
+    nestedNotNull: Nested!
+    enum: Value
+    enumNotNull: Value!
+    ignored: ID! @sortByIgnored
 }
 
 input Nested {
-  value: String
-  nested: Nested
+    value: String
+    nested: Nested
 }
 
 enum Value {
-  one
-  two
+    one
+    two
 }

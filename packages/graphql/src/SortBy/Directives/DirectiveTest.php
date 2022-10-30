@@ -15,7 +15,9 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Nuwave\Lighthouse\Scout\SearchDirective;
 
 use function is_array;
 
@@ -35,6 +37,10 @@ class DirectiveTest extends TestCase {
      * @param Closure(static): void                  $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+        $directives = $this->app->make(DirectiveLocator::class);
+
+        $directives->setResolved('search', SearchDirective::class);
+
         if ($prepare) {
             $prepare($this);
         }
@@ -205,7 +211,6 @@ class DirectiveTest extends TestCase {
                             'Properties',
                             'Nested',
                             'Value',
-                            'String',
                             'Float',
                             'Int',
                             'Boolean',

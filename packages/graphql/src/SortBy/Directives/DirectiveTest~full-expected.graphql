@@ -64,10 +64,77 @@ input SortByClauseProperties {
     @sortByProperty
 }
 
+"""
+Sort clause for `input Nested` (only one property allowed at a time).
+"""
+input SortByScoutClauseNested {
+    """
+    Property clause.
+    """
+    nested: SortByScoutClauseNested
+    @sortByProperty
+
+    """
+    Property clause.
+    """
+    value: SortByTypeDirection
+    @sortByOperatorProperty
+}
+
+"""
+Sort clause for `input Properties` (only one property allowed at a time).
+"""
+input SortByScoutClauseProperties {
+    """
+    Property clause.
+    """
+    enum: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    idScalar: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    nested: SortByScoutClauseNested
+    @sortByProperty
+
+    """
+    Property clause.
+    """
+    nestedNotNull: SortByScoutClauseNested
+    @sortByProperty
+}
+
 type Query {
-    test(
+    eloquent(
         order: [SortByClauseProperties!]
         @sortBy
+    ): ID!
+    @all
+
+    scout(
+        order: [SortByScoutClauseProperties!]
+        @sortBy
+
+        search: String
+        @search
     ): ID!
     @all
 }

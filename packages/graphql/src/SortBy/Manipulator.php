@@ -185,7 +185,11 @@ class Manipulator extends BuilderManipulator {
     protected function getInputTypeName(
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
     ): string {
-        return Directive::Name."Clause{$this->getNodeName($node)}";
+        $directiveName = Directive::Name;
+        $builderName   = $this->getBuilderInfo()->getName();
+        $nodeName      = $this->getNodeName($node);
+
+        return "{$directiveName}{$builderName}Clause{$nodeName}";
     }
     // </editor-fold>
 

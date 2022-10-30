@@ -299,25 +299,41 @@ class Manipulator extends BuilderManipulator {
     }
 
     protected function getConditionTypeName(InputObjectTypeDefinitionNode|InputObjectType $node): string {
-        return Directive::Name."Condition{$this->getNodeName($node)}";
+        $directiveName = Directive::Name;
+        $builderName   = $this->getBuilderInfo()->getName();
+        $nodeName      = $this->getNodeName($node);
+
+        return "{$directiveName}{$builderName}Condition{$nodeName}";
     }
 
     protected function getEnumTypeName(EnumTypeDefinitionNode|EnumType $node, bool $nullable): string {
-        return Directive::Name."Enum{$this->getNodeName($node)}".($nullable ? 'OrNull' : '');
+        $directiveName = Directive::Name;
+        $builderName   = $this->getBuilderInfo()->getName();
+        $nodeName      = $this->getNodeName($node);
+        $isNull        = $nullable ? 'OrNull' : '';
+
+        return "{$directiveName}{$builderName}Enum{$nodeName}{$isNull}";
     }
 
     protected function getScalarTypeName(ScalarTypeDefinitionNode|ScalarType $node, bool $nullable): string {
-        return Directive::Name."Scalar{$this->getNodeName($node)}".($nullable ? 'OrNull' : '');
+        $directiveName = Directive::Name;
+        $builderName   = $this->getBuilderInfo()->getName();
+        $nodeName      = $this->getNodeName($node);
+        $isNull        = $nullable ? 'OrNull' : '';
+
+        return "{$directiveName}{$builderName}Scalar{$nodeName}{$isNull}";
     }
 
     protected function getComplexTypeName(
         InputObjectTypeDefinitionNode|InputObjectType $node,
-        ComplexOperator $operator,
+        ComplexOperator $operatorName,
     ): string {
-        $name     = $this->getNodeName($node);
-        $operator = Str::studly($operator::getName());
+        $directiveName = Directive::Name;
+        $builderName   = $this->getBuilderInfo()->getName();
+        $nodeName      = $this->getNodeName($node);
+        $operatorName  = Str::studly($operatorName::getName());
 
-        return Directive::Name."Complex{$operator}{$name}";
+        return "{$directiveName}{$builderName}Complex{$operatorName}{$nodeName}";
     }
     // </editor-fold>
 
