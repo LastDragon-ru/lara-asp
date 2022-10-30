@@ -2,11 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
+use Closure;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
@@ -20,13 +22,19 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
+use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Utils;
 use ReflectionClass;
+use ReflectionFunction;
+use ReflectionNamedType;
+
 use function array_keys;
 use function count;
+use function is_a;
 use function is_array;
 
 abstract class HandlerDirective extends BaseDirective implements Handler {
@@ -154,10 +162,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     }
 
     protected function getBuilderInfo(FieldDefinitionNode $field): BuilderInfo {
-        // Right now, we are supporting detection of Scout and Eloquent builders
-        // only (as the most used and easy in implementation). In the future
-        // would be good to be more smart...
-
         // Scout?
         $scout      = false;
         $directives = $this->getDirectives();
@@ -169,20 +173,40 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             }
         }
 
-        // Info
-        $info = null;
-
         if ($scout) {
             $builder = (new ReflectionClass(ScoutBuilder::class))->newInstanceWithoutConstructor();
             $name    = 'Scout';
             $info    = new BuilderInfo($name, $builder);
-        } else {
-            $builder = (new ReflectionClass(EloquentBuilder::class))->newInstanceWithoutConstructor();
-            $name    = '';
-            $info    = new BuilderInfo($name, $builder);
+
+            return $info;
         }
 
-        // Return
+        // Query?
+        $argument  = 'builder';
+        $directive = $directives->associatedOfType($field, AllDirective::class)->first()
+            ?? $directives->associatedOfType($field, PaginateDirective::class)->first();
+        $resolver  = $directive instanceof BaseDirective && $directive->directiveHasArgument($argument)
+            ? $directive->getResolverFromArgument($argument)
+            : null;
+
+        if ($resolver instanceof Closure) {
+            $type = (new ReflectionFunction($resolver))->getReturnType();
+            $type = $type instanceof ReflectionNamedType ? $type->getName() : null;
+
+            if ($type && is_a($type, QueryBuilder::class, true)) {
+                $builder = (new ReflectionClass($type))->newInstanceWithoutConstructor();
+                $name    = 'Query';
+                $info    = new BuilderInfo($name, $builder);
+
+                return $info;
+            }
+        }
+
+        // Eloquent (default)
+        $builder = (new ReflectionClass(EloquentBuilder::class))->newInstanceWithoutConstructor();
+        $name    = '';
+        $info    = new BuilderInfo($name, $builder);
+
         return $info;
     }
 }
