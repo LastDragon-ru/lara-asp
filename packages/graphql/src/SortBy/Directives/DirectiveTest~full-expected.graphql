@@ -65,6 +65,35 @@ input SortByClauseProperties {
 }
 
 """
+Sort clause for `input Properties` (only one property allowed at a time).
+"""
+input SortByQueryClauseProperties {
+    """
+    Property clause.
+    """
+    enum: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    idScalar: SortByTypeDirection
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorProperty
+}
+
+"""
 Sort clause for `input Nested` (only one property allowed at a time).
 """
 input SortByScoutClauseNested {
@@ -128,6 +157,14 @@ type Query {
         @sortBy
     ): ID!
     @all
+
+    query(
+        order: [SortByQueryClauseProperties!]
+        @sortBy
+    ): ID!
+    @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
 
     scout(
         order: [SortByScoutClauseProperties!]

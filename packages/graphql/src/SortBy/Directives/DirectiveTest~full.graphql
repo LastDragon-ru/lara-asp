@@ -1,5 +1,10 @@
 type Query {
     eloquent(order: Properties @sortBy): ID! @all
+
+    query(order: Properties @sortBy): ID! @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+
     scout(search: String @search, order: Properties @sortBy): ID! @all
 }
 

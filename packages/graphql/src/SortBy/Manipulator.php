@@ -104,6 +104,7 @@ class Manipulator extends BuilderManipulator {
         $direction = $this->getType(Direction::class);
         $operator  = $this->getContainer()->make(PropertyOperator::class);
         $property  = $this->getContainer()->make(Property::class);
+        $builder   = $this->getBuilderInfo()->getBuilder();
         $fields    = $node instanceof InputObjectType || $node instanceof ObjectType
             ? $node->getFields()
             : $node->fields;
@@ -137,14 +138,19 @@ class Manipulator extends BuilderManipulator {
                 || $fieldTypeNode instanceof ObjectType;
 
             if ($isNested) {
-                $fieldType     = $this->getInputType($fieldTypeNode);
-                $fieldOperator = $property;
+                if ($property->isBuilderSupported($builder)) {
+                    $fieldType     = $this->getInputType($fieldTypeNode);
+                    $fieldOperator = $property;
+                } else {
+                    $fieldType     = null;
+                    $fieldOperator = null;
+                }
             } else {
                 // empty
             }
 
             // Create new Field
-            if ($fieldType) {
+            if ($fieldType && $fieldOperator) {
                 $type->fields[] = Parser::inputValueDefinition(
                     $this->getOperatorField(
                         $fieldOperator,

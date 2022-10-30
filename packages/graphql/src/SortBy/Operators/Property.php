@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Str;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 
@@ -19,5 +21,10 @@ class Property extends PropertyDirective {
 
     public function getFieldDescription(): string {
         return 'Property clause.';
+    }
+
+    public function isBuilderSupported(object $builder): bool {
+        return $builder instanceof EloquentBuilder
+            || $builder instanceof ScoutBuilder;
     }
 }
