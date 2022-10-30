@@ -25,10 +25,11 @@ use function implode;
 
 abstract class Manipulator extends AstManipulator implements TypeProvider {
     public function __construct(
-        private Container $container,
         DirectiveLocator $directives,
         DocumentAST $document,
         TypeRegistry $types,
+        private Container $container,
+        private BuilderInfo $builderInfo,
     ) {
         parent::__construct($directives, $document, $types);
     }
@@ -37,6 +38,10 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
     // =========================================================================
     protected function getContainer(): Container {
         return $this->container;
+    }
+
+    protected function getBuilderInfo(): BuilderInfo {
+        return $this->builderInfo;
     }
     // </editor-fold>
 

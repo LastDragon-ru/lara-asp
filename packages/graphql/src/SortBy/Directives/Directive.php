@@ -35,7 +35,10 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         ObjectTypeDefinitionNode &$parentType,
     ): void {
         $this->getContainer()
-            ->make(Manipulator::class, ['document' => $documentAST])
+            ->make(Manipulator::class, [
+                'document'    => $documentAST,
+                'builderInfo' => $this->getBuilderInfo($parentField),
+            ])
             ->update($argDefinition, $parentField);
     }
 

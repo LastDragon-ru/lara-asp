@@ -8,6 +8,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
@@ -15,7 +16,9 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Nuwave\Lighthouse\Scout\SearchDirective;
 
 use function is_array;
 
@@ -35,6 +38,10 @@ class DirectiveTest extends TestCase {
      * @param Closure(static): void                  $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+        $directives = $this->app->make(DirectiveLocator::class);
+
+        $directives->setResolved('search', SearchDirective::class);
+
         if ($prepare) {
             $prepare($this);
         }
@@ -205,7 +212,6 @@ class DirectiveTest extends TestCase {
                             'Properties',
                             'Nested',
                             'Value',
-                            'String',
                             'Float',
                             'Int',
                             'Boolean',
@@ -314,4 +320,17 @@ class DirectiveTest extends TestCase {
         ))->getData();
     }
     // </editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest__QueryBuilderResolver {
+    public function __invoke(): QueryBuilder {
+        throw new Exception('should not be called.');
+    }
 }
