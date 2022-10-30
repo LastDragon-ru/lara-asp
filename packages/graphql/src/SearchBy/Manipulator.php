@@ -17,6 +17,7 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ScalarType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithOperators;
@@ -45,13 +46,14 @@ class Manipulator extends BuilderManipulator {
     use WithOperators;
 
     public function __construct(
-        Container $container,
         DirectiveLocator $directives,
         DocumentAST $document,
         TypeRegistry $types,
+        Container $container,
+        BuilderInfo $builderInfo,
         private Operators $operators,
     ) {
-        parent::__construct($container, $directives, $document, $types);
+        parent::__construct($directives, $document, $types, $container, $builderInfo);
     }
 
     // <editor-fold desc="Getters / Setters">
