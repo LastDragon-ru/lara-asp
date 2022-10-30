@@ -7,7 +7,9 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginationServiceProvider;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
@@ -38,15 +40,29 @@ class ManipulatorTest extends TestCase {
      * @dataProvider dataProviderGetPlaceholderTypeDefinitionNode
      */
     public function testGetPlaceholderTypeDefinitionNode(?string $expected, string $graphql): void {
-        $locator     = $this->app->make(DirectiveLocator::class);
-        $registry    = $this->app->make(TypeRegistry::class);
-        $manipulator = new class($locator, $registry) extends Manipulator {
+        $ast         = Mockery::mock(DocumentAST::class);
+        $types       = $this->app->make(TypeRegistry::class);
+        $directives  = $this->app->make(DirectiveLocator::class);
+        $manipulator = new class($directives, $types, $ast) extends Manipulator {
             /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct(
                 protected DirectiveLocator $directives,
                 protected TypeRegistry $types,
+                protected DocumentAST $document,
             ) {
                 // empty
+            }
+
+            protected function getDirectives(): DirectiveLocator {
+                return $this->directives;
+            }
+
+            protected function getDocument(): DocumentAST {
+                return $this->document;
+            }
+
+            protected function getTypes(): TypeRegistry {
+                return $this->types;
             }
 
             public function getPlaceholderTypeDefinitionNode(FieldDefinitionNode $field): TypeDefinitionNode|Type|null {

@@ -38,15 +38,30 @@ use function trim;
 
 abstract class AstManipulator {
     public function __construct(
-        protected DirectiveLocator $directives,
-        protected DocumentAST $document,
-        protected TypeRegistry $types,
+        private DirectiveLocator $directives,
+        private DocumentAST $document,
+        private TypeRegistry $types,
     ) {
         // empty
     }
 
-    // <editor-fold desc="AST Helpers">
+    // <editor-fold desc="Getters & Setters">
     // =========================================================================
+    protected function getDirectives(): DirectiveLocator {
+        return $this->directives;
+    }
+
+    protected function getDocument(): DocumentAST {
+        return $this->document;
+    }
+
+    protected function getTypes(): TypeRegistry {
+        return $this->types;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="AST Helpers">
+    // =========================================================================}
     protected function isPlaceholder(Node|InputObjectField|string $node): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
         return $this->getNodeTypeName($node) === '_';
@@ -90,14 +105,15 @@ abstract class AstManipulator {
         Node|InputObjectField|FieldDefinition|string $node,
     ): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
-        $definition = $this->document->types[$name] ?? null;
+        $types      = $this->getTypes();
+        $definition = $this->getDocument()->types[$name] ?? null;
 
         if (!$definition) {
             $definition = Type::getStandardTypes()[$name] ?? null;
         }
 
-        if (!$definition && $this->types->has($name)) {
-            $definition = $this->types->get($name);
+        if (!$definition && $types->has($name)) {
+            $definition = $types->get($name);
         }
 
         if (!$definition) {
@@ -122,7 +138,7 @@ abstract class AstManipulator {
             throw new TypeDefinitionAlreadyDefined($name);
         }
 
-        $this->document->setTypeDefinition($definition);
+        $this->getDocument()->setTypeDefinition($definition);
 
         return $definition;
     }
@@ -133,7 +149,7 @@ abstract class AstManipulator {
         }
 
         // Remove
-        unset($this->document->types[$name]);
+        unset($this->getDocument()->types[$name]);
     }
 
     /**
@@ -146,7 +162,7 @@ abstract class AstManipulator {
     protected function getNodeDirective(Node|Type|InputObjectField|FieldDefinition $node, string $class): ?Directive {
         // TODO [graphql] Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         return $node instanceof Node
-            ? $this->directives->associatedOfType($node, $class)->first()
+            ? $this->getDirectives()->associatedOfType($node, $class)->first()
             : null;
     }
 
