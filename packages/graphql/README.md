@@ -282,7 +282,7 @@ query {
 // AppProvider
 
 $this->app->bind(
-    LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\ColumnResolver::class,
+    LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver::class,
     MyScoutColumnResolver::class,
 );
 ```

@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
@@ -26,8 +27,8 @@ class BuilderTest extends TestCase {
      *
      * @dataProvider dataProviderHandle
      *
-     * @param array<mixed>|Exception   $expected
-     * @param Closure():ColumnResolver $resolver
+     * @param array<mixed>|Exception  $expected
+     * @param Closure():FieldResolver $resolver
      */
     public function testHandle(
         array|Exception $expected,
@@ -40,7 +41,7 @@ class BuilderTest extends TestCase {
         }
 
         if ($resolver) {
-            $this->override(ColumnResolver::class, $resolver);
+            $this->override(FieldResolver::class, $resolver);
         }
 
         $builder = $this->app->make(ScoutBuilder::class, [
@@ -99,13 +100,13 @@ class BuilderTest extends TestCase {
                 ],
                 new Property('a', 'b'),
                 'asc',
-                static function (): ColumnResolver {
-                    return new class() implements ColumnResolver {
+                static function (): FieldResolver {
+                    return new class() implements FieldResolver {
                         /**
                          * @inheritDoc
                          */
-                        public function getColumn(Model $model, array $path): string {
-                            return 'properties/'.implode('/', $path);
+                        public function getField(Model $model, Property $property): string {
+                            return 'properties/'.implode('/', $property->getPath());
                         }
                     };
                 },

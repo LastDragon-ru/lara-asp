@@ -8,12 +8,14 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver as ScoutFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Scout\DefaultFieldResolver as ScoutDefaultFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings as SettingsContract;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators as SearchByOperators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
@@ -37,8 +39,8 @@ class Provider extends ServiceProvider {
         parent::register();
 
         $this->registerEnums();
+        $this->registerBuilders();
         $this->registerSchemaPrinter();
-        $this->registerSearchByDirective();
     }
 
     protected function bootDirectives(Dispatcher $dispatcher): void {
@@ -56,8 +58,9 @@ class Provider extends ServiceProvider {
         );
     }
 
-    protected function registerSearchByDirective(): void {
-        $this->app->singleton(Operators::class);
+    protected function registerBuilders(): void {
+        $this->app->singleton(ScoutFieldResolver::class, ScoutDefaultFieldResolver::class);
+        $this->app->singleton(SearchByOperators::class);
     }
 
     protected function registerEnums(): void {
