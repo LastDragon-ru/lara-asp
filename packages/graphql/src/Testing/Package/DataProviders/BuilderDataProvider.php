@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
+namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders;
 
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 

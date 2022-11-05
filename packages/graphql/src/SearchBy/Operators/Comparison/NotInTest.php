@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 use Closure;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
