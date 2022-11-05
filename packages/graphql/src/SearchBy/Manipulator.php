@@ -25,13 +25,13 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorNotFound;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -40,6 +40,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use function array_shift;
 use function count;
 use function is_string;
+use function reset;
 use function str_starts_with;
 
 class Manipulator extends BuilderManipulator {
@@ -261,7 +262,7 @@ class Manipulator extends BuilderManipulator {
         bool $nullable,
     ): InputValueDefinitionNode {
         // Prepare
-        $operator = $this->getComplexOperator($field, $type);
+        $operator = $this->getComplexOperator($nullable, $field, $type);
         $name     = $operator->getFieldType($this, $this->getNodeName($type))
             ?? $this->getComplexTypeName($type, $operator);
 
@@ -326,12 +327,12 @@ class Manipulator extends BuilderManipulator {
 
     protected function getComplexTypeName(
         InputObjectTypeDefinitionNode|InputObjectType $node,
-        ComplexOperator $operatorName,
+        ComplexOperator $operator,
     ): string {
         $directiveName = Directive::Name;
         $builderName   = $this->getBuilderInfo()->getName();
         $nodeName      = $this->getNodeName($node);
-        $operatorName  = Str::studly($operatorName::getName());
+        $operatorName  = Str::studly($operator::getName());
 
         return "{$directiveName}{$builderName}Complex{$operatorName}{$nodeName}";
     }
@@ -355,6 +356,7 @@ class Manipulator extends BuilderManipulator {
     }
 
     protected function getComplexOperator(
+        bool $nullable,
         InputValueDefinitionNode|InputObjectTypeDefinitionNode|InputObjectField|InputObjectType ...$nodes,
     ): ComplexOperator {
         // Class
@@ -369,7 +371,13 @@ class Manipulator extends BuilderManipulator {
 
         // Default
         if (!$operator) {
-            $operator = $this->getContainer()->make(Relation::class);
+            $operators = $this->getTypeOperators(Operators::Complex, $nullable);
+            $operator  = reset($operators);
+        }
+
+        // Found?
+        if (!($operator instanceof ComplexOperator)) {
+            throw new ComplexOperatorNotFound();
         }
 
         // Return

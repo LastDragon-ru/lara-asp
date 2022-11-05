@@ -29,11 +29,13 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\StartsWith;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 
 class Operators extends BuilderOperators {
+    public const Complex = 'Complex';
     public const Logical = 'Logical';
     public const Number  = 'Number';
     public const Enum    = 'Enum';
@@ -103,6 +105,9 @@ class Operators extends BuilderOperators {
             AllOf::class,
             AnyOf::class,
             Not::class,
+        ],
+        Operators::Complex => [
+            Relation::class,
         ],
     ];
 
