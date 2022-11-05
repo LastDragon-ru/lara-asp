@@ -176,6 +176,12 @@ input SearchByScalarBooleanOrNull {
     """
     isNull: SearchByTypeFlag
     @searchByOperatorIsNull
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Boolean
+    @searchByOperatorNotEqual
 }
 
 """

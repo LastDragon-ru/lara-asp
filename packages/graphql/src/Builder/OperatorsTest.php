@@ -40,11 +40,13 @@ class OperatorsTest extends TestCase {
     }
 
     /**
-     * @covers ::addOperators
+     * @covers ::setOperators
      *
-     * @dataProvider dataProviderAddOperators
+     * @dataProvider dataProviderSetOperators
+     *
+     * @param array<class-string<Operator>|string> $typeOperators
      */
-    public function testAddOperators(Exception|bool $expected, string $type, mixed $typeOperators): void {
+    public function testSetOperators(Exception|bool $expected, string $type, array $typeOperators): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
@@ -53,7 +55,7 @@ class OperatorsTest extends TestCase {
             // empty
         };
 
-        $operators->addOperators($type, $typeOperators);
+        $operators->setOperators($type, $typeOperators);
 
         self::assertEquals($expected, $operators->hasOperators($type));
     }
@@ -68,12 +70,12 @@ class OperatorsTest extends TestCase {
             // empty
         };
 
-        $operators->addOperators($type, [
+        $operators->setOperators($type, [
             OperatorsTest__OperatorA::class,
             OperatorsTest__OperatorA::class,
         ]);
-        $operators->addOperators($alias, $type);
-        $operators->addOperators(Operators::Null, [
+        $operators->setOperators($alias, [$type]);
+        $operators->setOperators(Operators::Null, [
             OperatorsTest__OperatorB::class,
             OperatorsTest__OperatorC::class,
         ]);
@@ -103,56 +105,6 @@ class OperatorsTest extends TestCase {
     /**
      * @covers ::getOperators
      */
-    public function testGetOperatorsExtends(): void {
-        $operators = new class($this->app) extends Operators {
-            /**
-             * @inheritdoc
-             */
-            protected array $extends = [
-                'test' => 'base',
-            ];
-        };
-
-        $operators->addOperators('test', [
-            OperatorsTest__OperatorA::class,
-            OperatorsTest__OperatorA::class,
-        ]);
-        $operators->addOperators('base', [
-            OperatorsTest__OperatorD::class,
-        ]);
-        $operators->addOperators('alias', 'test');
-        $operators->addOperators(Operators::Null, [
-            OperatorsTest__OperatorB::class,
-            OperatorsTest__OperatorC::class,
-        ]);
-
-        self::assertEquals(
-            [OperatorsTest__OperatorA::class, OperatorsTest__OperatorD::class],
-            $this->toClassNames($operators->getOperators('test', false)),
-        );
-        self::assertEquals(
-            [
-                OperatorsTest__OperatorA::class,
-                OperatorsTest__OperatorD::class,
-                OperatorsTest__OperatorB::class,
-                OperatorsTest__OperatorC::class,
-            ],
-            $this->toClassNames($operators->getOperators('test', true)),
-        );
-        self::assertEquals(
-            [
-                OperatorsTest__OperatorA::class,
-                OperatorsTest__OperatorD::class,
-                OperatorsTest__OperatorB::class,
-                OperatorsTest__OperatorC::class,
-            ],
-            $this->toClassNames($operators->getOperators('alias', true)),
-        );
-    }
-
-    /**
-     * @covers ::getOperators
-     */
     public function testGetOperatorsUnknownType(): void {
         self::expectExceptionObject(new TypeUnknown('unknown'));
 
@@ -169,13 +121,13 @@ class OperatorsTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderAddOperators(): array {
+    public function dataProviderSetOperators(): array {
         return [
             'ok'              => [true, 'scalar', [IsNot::class]],
             'unknown scalar'  => [
-                new TypeUnknown('unknown'),
+                true,
                 'scalar',
-                'unknown',
+                ['unknown'],
             ],
             'empty operators' => [
                 new TypeNoOperators('scalar'),

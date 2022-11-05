@@ -10,11 +10,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
 use function array_map;
 use function array_merge;
+use function array_pop;
 use function array_push;
 use function array_unique;
 use function array_values;
-use function is_array;
-use function is_string;
+use function is_a;
+use function sort;
 
 use const SORT_REGULAR;
 
@@ -29,16 +30,9 @@ abstract class Operators {
     /**
      * Determines default operators available for each type.
      *
-     * @var array<string, array<class-string<Operator>>|string>
+     * @var array<string, array<class-string<Operator>|string>>
      */
     protected array $operators = [];
-
-    /**
-     * Determines additional operators available for type.
-     *
-     * @var array<string, string>
-     */
-    protected array $extends = [];
 
     public function __construct(
         private Container $container,
@@ -55,14 +49,10 @@ abstract class Operators {
     }
 
     /**
-     * @param array<class-string<Operator>>|string $operators
+     * @param array<class-string<Operator>|string> $operators
      */
-    public function addOperators(string $type, array|string $operators): void {
-        if (is_string($operators) && !$this->hasOperators($operators)) {
-            throw new TypeUnknown($operators);
-        }
-
-        if (is_array($operators) && !$operators) {
+    public function setOperators(string $type, array $operators): void {
+        if (!$operators) {
             throw new TypeNoOperators($type);
         }
 
@@ -79,29 +69,26 @@ abstract class Operators {
         }
 
         // Base
-        $base      = $type;
-        $operators = $type;
+        $extends   = [$type];
+        $operators = [];
 
         do {
-            $operators = $this->operators[$operators] ?? [];
-            $isAlias   = !is_array($operators);
+            $operator = array_pop($extends);
 
-            if ($isAlias) {
-                $base = $operators;
+            if (!is_a($operator, Operator::class, true)) {
+                $extends = array_merge($extends, $this->operators[$operator] ?? []);
+            } else {
+                $operators[] = $operator;
             }
-        } while ($isAlias);
+        } while ($extends);
+
+        sort($operators);
 
         // Create Instances
         $container = $this->getContainer();
         $operators = array_map(static function (string $operator) use ($container): Operator {
             return $container->make($operator);
         }, array_unique($operators));
-
-        // Extends
-        if (isset($this->extends[$base])) {
-            $extends   = $this->getOperators($this->extends[$base], $nullable);
-            $operators = array_merge($operators, $extends);
-        }
 
         // Add `null` for nullable
         if ($nullable) {

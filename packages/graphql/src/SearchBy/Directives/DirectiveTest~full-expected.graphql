@@ -402,6 +402,12 @@ input SearchByScalarBoolean {
     """
     equal: Boolean
     @searchByOperatorEqual
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Boolean
+    @searchByOperatorNotEqual
 }
 
 """
@@ -425,6 +431,12 @@ input SearchByScalarBooleanOrNull {
     """
     isNull: SearchByTypeFlag
     @searchByOperatorIsNull
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Boolean
+    @searchByOperatorNotEqual
 }
 
 """

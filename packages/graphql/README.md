@@ -149,19 +149,25 @@ And then edit `config/lara-asp-graphql.php`
 ```php
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\LaraASP\Core\Enum as CoreEnum;
+use LastDragon_ru\LaraASP\Eloquent\Enum as EloquentEnum;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+
 /**
  * -----------------------------------------------------------------------------
  * GraphQL Settings
  * -----------------------------------------------------------------------------
+ *
+ * @var array{
+ *      search_by: array{
+ *          operators: array<string, array<string|class-string<Operator>>>
+ *      },
+ *      enums: array<class-string<CoreEnum>>
+ *      } $settings
  */
-
-use App\GraphQL\Operators\MyCustomOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-
-return [
+$settings = [
     /**
-     * Settings for @searchBy directive.
+     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective @searchBy} directive.
      */
     'search_by' => [
         /**
@@ -170,7 +176,7 @@ return [
          *
          * You can (re)define types and supported operators here.
          *
-         * @var array<string, array<class-string<Operator>>>
+         * @see Operator
          */
         'operators' => [
             // You can define a list of operators for each type
@@ -181,13 +187,19 @@ return [
             ],
 
             // Or re-use existing type
-            'DateTime' => 'Date',
+            'DateTime' => [
+                'Date',
+            ],
 
             // You can also use enum name to redefine default operators for it:
-            'MyEnum' => 'Boolean',
+            'MyEnum' => [
+                'Boolean',
+            ],
         ],
     ],
 ];
+
+return $settings;
 ```
 
 

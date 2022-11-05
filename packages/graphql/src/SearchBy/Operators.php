@@ -50,15 +50,19 @@ class Operators extends BuilderOperators {
             NotIn::class,
         ],
         Operators::Int     => [
+            Operators::Number,
             BitwiseOr::class,
             BitwiseXor::class,
             BitwiseAnd::class,
             BitwiseLeftShift::class,
             BitwiseRightShift::class,
         ],
-        Operators::Float   => Operators::Number,
+        Operators::Float   => [
+            Operators::Number,
+        ],
         Operators::Boolean => [
             Equal::class,
+            NotEqual::class,
         ],
         Operators::String  => [
             Equal::class,
@@ -102,25 +106,17 @@ class Operators extends BuilderOperators {
         ],
     ];
 
-    /**
-     * @inheritdoc
-     */
-    protected array $extends = [
-        Operators::Int   => Operators::Number,
-        Operators::Float => Operators::Number,
-    ];
-
     public function __construct(
         Container $container,
         Repository $config,
     ) {
         parent::__construct($container);
 
-        /** @var array<string,array<class-string<BuilderOperator>>|string> $operators */
+        /** @var array<string,array<class-string<BuilderOperator>|string>> $operators */
         $operators = (array) $config->get(Package::Name.'.search_by.operators');
 
         foreach ($operators as $type => $typeOperators) {
-            $this->addOperators($type, $typeOperators);
+            $this->setOperators($type, $typeOperators);
         }
     }
 }

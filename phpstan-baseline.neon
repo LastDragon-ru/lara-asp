@@ -36,11 +36,6 @@ parameters:
 			path: packages/graphql/src/Builder/Manipulator.php
 
 		-
-			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Builder\\\\Operators\\:\\:addOperators\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Builder\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
-			count: 1
-			path: packages/graphql/src/Builder/OperatorsTest.php
-
-		-
 			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Builder\\\\Property\\:\\:\\$path \\(array\\<int, string\\>\\) does not accept array\\<int\\|string, string\\>\\.$#"
 			count: 1
 			path: packages/graphql/src/Builder/Property.php
