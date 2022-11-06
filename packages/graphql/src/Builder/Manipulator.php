@@ -92,7 +92,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * @return array<Operator>
+     * @return non-empty-list<Operator>
      */
     public function getTypeOperators(string $type, bool $nullable): array {
         $operators = $this->getOperators()->getOperators($type, $nullable);

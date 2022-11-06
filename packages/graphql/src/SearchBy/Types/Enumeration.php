@@ -8,8 +8,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\TypeDefinitionNoOperators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\TypeDefinitionNoTypeName;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
 class Enumeration implements TypeDefinition {
@@ -36,20 +34,14 @@ class Enumeration implements TypeDefinition {
     ): ?TypeDefinitionNode {
         // Type?
         if (!$type) {
-            throw new TypeDefinitionNoTypeName($this::class);
+            return null;
         }
 
-        // Operators
-        $nullable  = (bool) $nullable;
-        $operators = $manipulator->hasTypeOperators($type)
+        // Definition
+        $nullable   = (bool) $nullable;
+        $operators  = $manipulator->hasTypeOperators($type)
             ? $manipulator->getTypeOperators($type, $nullable)
             : $manipulator->getTypeOperators(Operators::Enum, $nullable);
-
-        if (!$operators) {
-            throw new TypeDefinitionNoOperators($this::class, $type);
-        }
-
-        // Add type
         $content    = $manipulator->getOperatorsFields($operators, $type);
         $typeName   = $manipulator->getNodeTypeFullName($type);
         $definition = Parser::inputObjectTypeDefinition(

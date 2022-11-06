@@ -8,8 +8,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\TypeDefinitionNoOperators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\TypeDefinitionNoTypeName;
 
 class Scalar implements TypeDefinition {
     public function __construct() {
@@ -35,18 +33,12 @@ class Scalar implements TypeDefinition {
     ): ?TypeDefinitionNode {
         // Type?
         if (!$type) {
-            throw new TypeDefinitionNoTypeName($this::class);
+            return null;
         }
 
-        // Operators
-        $nullable  = (bool) $nullable;
-        $operators = $manipulator->getTypeOperators($type, $nullable);
-
-        if (!$operators) {
-            throw new TypeDefinitionNoOperators($this::class, $type);
-        }
-
-        // Add type
+        // Definition
+        $nullable   = (bool) $nullable;
+        $operators  = $manipulator->getTypeOperators($type, $nullable);
         $content    = $manipulator->getOperatorsFields($operators, $type);
         $typeName   = $manipulator->getNodeTypeFullName($type).($nullable ? '' : '!');
         $definition = Parser::inputObjectTypeDefinition(
