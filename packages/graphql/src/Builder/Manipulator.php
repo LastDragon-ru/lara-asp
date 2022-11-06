@@ -49,7 +49,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
     // =========================================================================
     public function getType(string $definition, string $type = null, bool $nullable = null): string {
         // Exists?
-        $name = $definition::getName($type, $nullable);
+        $name = $definition::getName($this->getBuilderInfo(), $type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
