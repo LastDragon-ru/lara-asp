@@ -31,6 +31,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Enumeration;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -185,36 +186,7 @@ class Manipulator extends BuilderManipulator {
     }
 
     public function getScalarType(ScalarTypeDefinitionNode|ScalarType $type, bool $nullable): string {
-        // Exists?
-        $name = $this->getScalarTypeName($type, $nullable);
-
-        if ($this->isTypeDefinitionExists($name)) {
-            return $name;
-        }
-
-        // Determine supported operators
-        $scalar    = $this->getNodeName($type);
-        $operators = $this->getTypeOperators($scalar, $nullable);
-
-        // Add type
-        $mark    = $nullable ? '' : '!';
-        $content = $this->getOperatorsFields($operators, $type);
-
-        $this->addTypeDefinition(
-            Parser::inputObjectTypeDefinition(
-                <<<DEF
-                """
-                Available operators for `scalar {$scalar}{$mark}` (only one operator allowed at a time).
-                """
-                input {$name} {
-                    {$content}
-                }
-                DEF,
-            ),
-        );
-
-        // Return
-        return $name;
+        return $this->getType(Scalar::class, $this->getNodeName($type), $nullable);
     }
 
     protected function getComplexType(
@@ -262,15 +234,6 @@ class Manipulator extends BuilderManipulator {
         $nodeName      = $this->getNodeName($node);
 
         return "{$directiveName}{$builderName}Condition{$nodeName}";
-    }
-
-    protected function getScalarTypeName(ScalarTypeDefinitionNode|ScalarType $node, bool $nullable): string {
-        $directiveName = Directive::Name;
-        $builderName   = $this->getBuilderInfo()->getName();
-        $nodeName      = $this->getNodeName($node);
-        $isNull        = $nullable ? 'OrNull' : '';
-
-        return "{$directiveName}{$builderName}Scalar{$nodeName}{$isNull}";
     }
 
     protected function getComplexTypeName(
