@@ -18,20 +18,19 @@ use GraphQL\Type\Definition\ScalarType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorNotFound;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\EnumNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Enumeration;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -182,35 +181,7 @@ class Manipulator extends BuilderManipulator {
     }
 
     public function getEnumType(EnumTypeDefinitionNode|EnumType $type, bool $nullable): string {
-        // Exists?
-        $name = $this->getEnumTypeName($type, $nullable);
-
-        if ($this->isTypeDefinitionExists($name)) {
-            return $name;
-        }
-
-        // Determine supported operators
-        $enum      = $this->getNodeName($type);
-        $operators = $this->getEnumOperators($enum, $nullable);
-
-        // Add type
-        $content = $this->getOperatorsFields($operators, $type);
-
-        $this->addTypeDefinition(
-            Parser::inputObjectTypeDefinition(
-                <<<DEF
-                """
-                Available operators for `{$this->getNodeTypeFullName($type)}` (only one operator allowed at a time).
-                """
-                input {$name} {
-                    {$content}
-                }
-                DEF,
-            ),
-        );
-
-        // Return
-        return $name;
+        return $this->getType(Enumeration::class, $this->getNodeName($type), $nullable);
     }
 
     public function getScalarType(ScalarTypeDefinitionNode|ScalarType $type, bool $nullable): string {
@@ -293,15 +264,6 @@ class Manipulator extends BuilderManipulator {
         return "{$directiveName}{$builderName}Condition{$nodeName}";
     }
 
-    protected function getEnumTypeName(EnumTypeDefinitionNode|EnumType $node, bool $nullable): string {
-        $directiveName = Directive::Name;
-        $builderName   = $this->getBuilderInfo()->getName();
-        $nodeName      = $this->getNodeName($node);
-        $isNull        = $nullable ? 'OrNull' : '';
-
-        return "{$directiveName}{$builderName}Enum{$nodeName}{$isNull}";
-    }
-
     protected function getScalarTypeName(ScalarTypeDefinitionNode|ScalarType $node, bool $nullable): string {
         $directiveName = Directive::Name;
         $builderName   = $this->getBuilderInfo()->getName();
@@ -326,21 +288,6 @@ class Manipulator extends BuilderManipulator {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    /**
-     * @return array<OperatorContract>
-     */
-    protected function getEnumOperators(string $enum, bool $nullable): array {
-        $operators = $this->getOperators()->hasOperators($enum)
-            ? $this->getTypeOperators($enum, $nullable)
-            : $this->getTypeOperators(Operators::Enum, $nullable);
-
-        if (!$operators) {
-            throw new EnumNoOperators($enum);
-        }
-
-        return $operators;
-    }
-
     protected function getComplexOperator(
         bool $nullable,
         InputValueDefinitionNode|InputObjectTypeDefinitionNode|InputObjectField|InputObjectType ...$nodes,

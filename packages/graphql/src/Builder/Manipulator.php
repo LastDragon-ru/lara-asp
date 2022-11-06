@@ -24,6 +24,9 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use function array_filter;
 use function array_map;
 use function implode;
+use function is_object;
+
+// @phpcs:disable Generic.Files.LineLength.TooLong
 
 abstract class Manipulator extends AstManipulator implements TypeProvider {
     public function __construct(
@@ -84,10 +87,14 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Operators">
     // =========================================================================
+    public function hasTypeOperators(string $type): bool {
+        return $this->getOperators()->hasOperators($type);
+    }
+
     /**
      * @return array<Operator>
      */
-    protected function getTypeOperators(string $type, bool $nullable): array {
+    public function getTypeOperators(string $type, bool $nullable): array {
         $operators = $this->getOperators()->getOperators($type, $nullable);
         $operators = array_filter($operators, function (Operator $operator): bool {
             return $operator->isBuilderSupported($this->getBuilderInfo()->getBuilder());
@@ -100,12 +107,12 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
         return $operators;
     }
 
-    protected function getOperatorField(
+    public function getOperatorField(
         Operator $operator,
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type|string $type,
         string $field = null,
     ): string {
-        $type        = $this->getNodeName($type);
+        $type        = is_object($type) ? $this->getNodeName($type) : $type;
         $type        = $operator->getFieldType($this, $type) ?? $type;
         $field       = $field ?: $operator::getName();
         $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
@@ -126,9 +133,9 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @param array<Operator> $operators
      */
-    protected function getOperatorsFields(
+    public function getOperatorsFields(
         array $operators,
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type|string $type,
     ): string {
         return implode(
             "\n",
