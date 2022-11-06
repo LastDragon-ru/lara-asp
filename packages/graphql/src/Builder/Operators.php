@@ -19,7 +19,7 @@ use function sort;
 
 use const SORT_REGULAR;
 
-abstract class Operators {
+class Operators {
     public const ID      = Type::ID;
     public const Int     = Type::INT;
     public const Float   = Type::FLOAT;

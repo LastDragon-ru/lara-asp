@@ -6,6 +6,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 
 class Range implements TypeDefinition {
@@ -18,6 +19,7 @@ class Range implements TypeDefinition {
     }
 
     public function getTypeDefinitionNode(
+        Manipulator $manipulator,
         string $name,
         string $type = null,
         bool $nullable = null,

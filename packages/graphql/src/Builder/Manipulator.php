@@ -15,11 +15,13 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidTypeName;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
+use function array_filter;
 use function array_map;
 use function implode;
 
@@ -30,6 +32,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
         TypeRegistry $types,
         private Container $container,
         private BuilderInfo $builderInfo,
+        private Operators $operators,
     ) {
         parent::__construct($directives, $document, $types);
     }
@@ -42,6 +45,10 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
     protected function getBuilderInfo(): BuilderInfo {
         return $this->builderInfo;
+    }
+
+    protected function getOperators(): Operators {
+        return $this->operators;
     }
     // </editor-fold>
 
@@ -57,7 +64,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
         // Create new
         $instance = $this->getContainer()->make($definition);
-        $node     = $instance->getTypeDefinitionNode($name, $type, $nullable);
+        $node     = $instance->getTypeDefinitionNode($this, $name, $type, $nullable);
 
         if (!$node) {
             throw new TypeDefinitionImpossibleToCreateType($definition, $type, $nullable);
@@ -77,6 +84,22 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Operators">
     // =========================================================================
+    /**
+     * @return array<Operator>
+     */
+    protected function getTypeOperators(string $type, bool $nullable): array {
+        $operators = $this->getOperators()->getOperators($type, $nullable);
+        $operators = array_filter($operators, function (Operator $operator): bool {
+            return $operator->isBuilderSupported($this->getBuilderInfo()->getBuilder());
+        });
+
+        if (!$operators) {
+            throw new TypeNoOperators($type);
+        }
+
+        return $operators;
+    }
+
     protected function getOperatorField(
         Operator $operator,
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $type,

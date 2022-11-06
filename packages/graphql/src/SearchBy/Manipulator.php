@@ -20,7 +20,6 @@ use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithOperators;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
@@ -44,25 +43,16 @@ use function reset;
 use function str_starts_with;
 
 class Manipulator extends BuilderManipulator {
-    use WithOperators;
-
     public function __construct(
         DirectiveLocator $directives,
         DocumentAST $document,
         TypeRegistry $types,
         Container $container,
         BuilderInfo $builderInfo,
-        private Operators $operators,
+        Operators $operators,
     ) {
-        parent::__construct($directives, $document, $types, $container, $builderInfo);
+        parent::__construct($directives, $document, $types, $container, $builderInfo, $operators);
     }
-
-    // <editor-fold desc="Getters / Setters">
-    // =========================================================================
-    protected function getOperators(): Operators {
-        return $this->operators;
-    }
-    // </editor-fold>
 
     // <editor-fold desc="Update">
     // =========================================================================

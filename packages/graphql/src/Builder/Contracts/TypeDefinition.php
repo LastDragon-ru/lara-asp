@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
 interface TypeDefinition {
     public static function getName(BuilderInfo $builder, string $type = null, bool $nullable = null): string;
@@ -13,6 +14,7 @@ interface TypeDefinition {
      * @return (TypeDefinitionNode&Node)|null
      */
     public function getTypeDefinitionNode(
+        Manipulator $manipulator,
         string $name,
         string $type = null,
         bool $nullable = null,
