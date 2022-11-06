@@ -5,14 +5,15 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 
 class Direction implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
-    public static function getName(): string {
-        return 'Direction';
+    public static function getName(string $type = null, bool $nullable = null): string {
+        return Directive::Name.'TypeDirection';
     }
 
     public function getTypeDefinitionNode(

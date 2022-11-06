@@ -49,7 +49,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
     // =========================================================================
     public function getType(string $definition, string $type = null, bool $nullable = null): string {
         // Exists?
-        $name = $this->getTypeName($definition::getName(), $type, $nullable);
+        $name = $definition::getName($type, $nullable);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
@@ -73,8 +73,6 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
         // Return
         return $name;
     }
-
-    abstract protected function getTypeName(string $name, string $type = null, bool $nullable = null): string;
     // </editor-fold>
 
     // <editor-fold desc="Operators">

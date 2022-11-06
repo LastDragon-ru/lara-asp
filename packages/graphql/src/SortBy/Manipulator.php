@@ -14,7 +14,6 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
@@ -182,10 +181,6 @@ class Manipulator extends BuilderManipulator {
         Node|Type|InputObjectField|FieldDefinition|string $node,
     ): bool {
         return str_starts_with($this->getNodeTypeName($node), Directive::Name);
-    }
-
-    protected function getTypeName(string $name, string $type = null, bool $nullable = null): string {
-        return Directive::Name.'Type'.Str::studly($name);
     }
 
     protected function getInputTypeName(

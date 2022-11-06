@@ -5,14 +5,15 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 
 class Range implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
-    public static function getName(): string {
-        return 'Range';
+    public static function getName(string $type = null, bool $nullable = null): string {
+        return Directive::Name.'TypeRange'.((string) $type);
     }
 
     public function getTypeDefinitionNode(
@@ -24,7 +25,7 @@ class Range implements TypeDefinition {
 
         if ($type && $nullable === null) {
             $node = Parser::inputObjectTypeDefinition(
-                /** @lang GraphQL */
+            /** @lang GraphQL */
                 <<<GRAPHQL
                 input {$name} {
                     min: {$type}!

@@ -6,7 +6,7 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 
 interface TypeDefinition {
-    public static function getName(): string;
+    public static function getName(string $type = null, bool $nullable = null): string;
 
     /**
      * @return (TypeDefinitionNode&Node)|null

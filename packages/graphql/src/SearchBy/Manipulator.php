@@ -295,10 +295,6 @@ class Manipulator extends BuilderManipulator {
 
     // <editor-fold desc="Names">
     // =========================================================================
-    protected function getTypeName(string $name, string $type = null, bool $nullable = null): string {
-        return Directive::Name.'Type'.Str::studly($name).($type ?: '').($nullable ? 'OrNull' : '');
-    }
-
     protected function getConditionTypeName(InputObjectTypeDefinitionNode|InputObjectType $node): string {
         $directiveName = Directive::Name;
         $builderName   = $this->getBuilderInfo()->getName();

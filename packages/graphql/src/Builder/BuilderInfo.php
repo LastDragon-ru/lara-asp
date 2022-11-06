@@ -7,6 +7,7 @@ class BuilderInfo {
         protected string $name,
         protected object $builder,
     ) {
+        // empty
     }
 
     public function getName(): string {
