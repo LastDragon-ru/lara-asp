@@ -14,7 +14,7 @@ class Range implements TypeDefinition {
         // empty
     }
 
-    public static function getName(BuilderInfo $builder, string $type = null, bool $nullable = null): string {
+    public static function getTypeName(BuilderInfo $builder, string $type = null, bool $nullable = null): string {
         return Directive::Name.'TypeRange'.((string) $type);
     }
 

@@ -14,7 +14,7 @@ class Scalar implements TypeDefinition {
         // empty
     }
 
-    public static function getName(BuilderInfo $builder, string $type = null, bool $nullable = null): string {
+    public static function getTypeName(BuilderInfo $builder, string $type = null, bool $nullable = null): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
         $isNull        = $nullable ? 'OrNull' : '';
