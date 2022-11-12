@@ -15,6 +15,7 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
@@ -51,7 +52,7 @@ abstract class AstManipulator {
         return $this->directives;
     }
 
-    protected function getDocument(): DocumentAST {
+    public function getDocument(): DocumentAST {
         return $this->document;
     }
 
@@ -62,12 +63,26 @@ abstract class AstManipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================}
-    protected function isPlaceholder(Node|InputObjectField|string $node): bool {
+    public function isPlaceholder(Node|InputObjectField|string $node): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
         return $this->getNodeTypeName($node) === '_';
     }
 
-    protected function isList(
+    public function isNullable(
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $node,
+    ): bool {
+        $isNullable = true;
+
+        if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
+            $isNullable = !($node->getType() instanceof NonNull);
+        } else {
+            $isNullable = !($node->type instanceof NonNullTypeNode);
+        }
+
+        return $isNullable;
+    }
+
+    public function isList(
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $node,
     ): bool {
         $isList = false;
@@ -93,7 +108,7 @@ abstract class AstManipulator {
         return $isList;
     }
 
-    protected function isTypeDefinitionExists(string $name): bool {
+    public function isTypeDefinitionExists(string $name): bool {
         try {
             return (bool) $this->getTypeDefinitionNode($name);
         } catch (Exception) {
@@ -101,7 +116,7 @@ abstract class AstManipulator {
         }
     }
 
-    protected function getTypeDefinitionNode(
+    public function getTypeDefinitionNode(
         Node|InputObjectField|FieldDefinition|string $node,
     ): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
@@ -131,7 +146,7 @@ abstract class AstManipulator {
      *
      * @return TInterface&TClass
      */
-    protected function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
+    public function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
         $name = $this->getNodeName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
@@ -143,13 +158,18 @@ abstract class AstManipulator {
         return $definition;
     }
 
-    protected function removeTypeDefinition(string $name): void {
+    public function removeTypeDefinition(string $name): void {
         if (!$this->isTypeDefinitionExists($name)) {
             throw new TypeDefinitionUnknown($name);
         }
 
         // Remove
         unset($this->getDocument()->types[$name]);
+    }
+
+    public function getScalarTypeDefinitionNode(string $scalar): ScalarTypeDefinitionNode {
+        // fixme(graphql): Is there any better way for this?
+        return Parser::scalarTypeDefinition("scalar {$scalar}");
     }
 
     /**
@@ -159,14 +179,18 @@ abstract class AstManipulator {
      *
      * @return T|null
      */
-    protected function getNodeDirective(Node|Type|InputObjectField|FieldDefinition $node, string $class): ?Directive {
-        // TODO [graphql] Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
+    public function getNodeDirective(
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
+        string $class,
+    ): ?Directive {
+        // todo(graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
+        // todo(graphql): Should we throw an error if $node has multiple directives?
         return $node instanceof Node
             ? $this->getDirectives()->associatedOfType($node, $class)->first()
             : null;
     }
 
-    protected function getNodeTypeName(
+    public function getNodeTypeName(
         Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode|string $node,
     ): string {
         $name = null;
@@ -190,7 +214,7 @@ abstract class AstManipulator {
         return $name;
     }
 
-    protected function getNodeName(
+    public function getNodeName(
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $node,
     ): string {
         $name = $node->name;
@@ -203,7 +227,7 @@ abstract class AstManipulator {
     }
 
     public function getNodeTypeFullName(
-        Node|Type|InputObjectField|FieldDefinition|string $node,
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
         $name   = $this->getNodeTypeName($node);
         $node   = $this->getTypeDefinitionNode($name);

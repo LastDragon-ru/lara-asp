@@ -96,6 +96,17 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Operators">
     // =========================================================================
+    /**
+     * @template T of Operator
+     *
+     * @param class-string<T> $operator
+     *
+     * @return T
+     */
+    public function getOperator(string $operator): Operator {
+        return $this->getOperators()->getOperator($operator);
+    }
+
     public function hasTypeOperators(string $type): bool {
         return $this->getOperators()->hasOperators($type);
     }

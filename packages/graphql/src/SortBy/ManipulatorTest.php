@@ -57,7 +57,7 @@ class ManipulatorTest extends TestCase {
                 return $this->directives;
             }
 
-            protected function getDocument(): DocumentAST {
+            public function getDocument(): DocumentAST {
                 return $this->document;
             }
 

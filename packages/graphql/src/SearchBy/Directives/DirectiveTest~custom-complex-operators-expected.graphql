@@ -3,32 +3,10 @@ enum SearchByTypeFlag {
 }
 
 """
-Conditions for the related objects (`has()`/`doesntHave()`) for `input Child`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+Custom operator
 """
-input SearchByComplexCustomChild {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionChild
+input SearchByComplexCustomInt {
+    custom: Int
 }
 
 """
@@ -108,7 +86,7 @@ input SearchByConditionProperties {
     """
     Custom condition.
     """
-    customWithArguments: SearchByComplexCustomChild
+    customWithArguments: SearchByComplexCustomInt
     @customComplexOperator(
         value: "abc"
     )
@@ -116,7 +94,7 @@ input SearchByConditionProperties {
     """
     Custom condition.
     """
-    customWithoutArguments: SearchByComplexCustomChild
+    customWithoutArguments: SearchByComplexCustomInt
     @customComplexOperator
 
     """

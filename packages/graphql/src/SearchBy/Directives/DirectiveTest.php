@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
@@ -11,15 +12,21 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
+use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
@@ -34,6 +41,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
@@ -165,7 +173,7 @@ class DirectiveTest extends TestCase {
 
         $this
             ->useGraphQLSchema(
-                /** @lang GraphQL */
+            /** @lang GraphQL */
                 <<<GRAPHQL
                 type Query {
                     test(input: Test @searchBy): [TestObject!]!
@@ -183,7 +191,7 @@ class DirectiveTest extends TestCase {
                 GRAPHQL,
             )
             ->graphQL(
-                /** @lang GraphQL */
+            /** @lang GraphQL */
                 <<<'GRAPHQL'
                 query test($input: SearchByConditionTest) {
                     test(input: $input) {
@@ -224,7 +232,7 @@ class DirectiveTest extends TestCase {
         }
 
         $this->useGraphQLSchema(
-            /** @lang GraphQL */
+        /** @lang GraphQL */
             <<<'GRAPHQL'
             type Query {
                 test(input: Test @searchBy): String! @mock
@@ -316,10 +324,13 @@ class DirectiveTest extends TestCase {
                 '~custom-complex-operators.graphql',
                 static function (TestCase $test): void {
                     $locator   = $test->app->make(DirectiveLocator::class);
-                    $property  = $test->app->make(Property::class);
-                    $directive = new class($property) extends Relation {
+                    $directive = new class() extends BaseOperator implements TypeDefinition {
                         public static function getName(): string {
                             return 'custom';
+                        }
+
+                        public function getFieldType(TypeProvider $provider, string $type): string {
+                            return $provider->getType(static::class, Type::INT, false);
                         }
 
                         public function getFieldDescription(): string {
@@ -336,6 +347,41 @@ class DirectiveTest extends TestCase {
                             return /** @lang GraphQL */ <<<GRAPHQL
                                 directive ${name}(value: String) on INPUT_FIELD_DEFINITION
                             GRAPHQL;
+                        }
+
+                        public function call(
+                            Handler $handler,
+                            object $builder,
+                            Property $property,
+                            Argument $argument,
+                        ): object {
+                            throw new Exception('should not be called');
+                        }
+
+                        public static function getTypeName(
+                            BuilderInfo $builder,
+                            string $type = null,
+                            bool $nullable = null,
+                        ): string {
+                            return Directive::Name.'ComplexCustom'.Str::studly($type ?? '');
+                        }
+
+                        public function getTypeDefinitionNode(
+                            Manipulator $manipulator,
+                            string $name,
+                            string $type = null,
+                            bool $nullable = null,
+                        ): ?TypeDefinitionNode {
+                            return Parser::inputObjectTypeDefinition(
+                                <<<DEF
+                                """
+                                Custom operator
+                                """
+                                input {$name} {
+                                    custom: {$type}
+                                }
+                                DEF,
+                            );
                         }
                     };
 

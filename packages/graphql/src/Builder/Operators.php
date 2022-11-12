@@ -44,6 +44,17 @@ class Operators {
         return $this->container;
     }
 
+    /**
+     * @template T of Operator
+     *
+     * @param class-string<T> $operator
+     *
+     * @return T
+     */
+    public function getOperator(string $operator): Operator {
+        return $this->container->make($operator);
+    }
+
     public function hasOperators(string $type): bool {
         return isset($this->operators[$type]);
     }
@@ -85,9 +96,8 @@ class Operators {
         sort($operators);
 
         // Create Instances
-        $container = $this->getContainer();
-        $operators = array_map(static function (string $operator) use ($container): Operator {
-            return $container->make($operator);
+        $operators = array_map(function (string $operator): Operator {
+            return $this->getOperator($operator);
         }, array_unique($operators));
 
         // Add `null` for nullable
