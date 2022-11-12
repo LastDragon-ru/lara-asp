@@ -22,8 +22,8 @@ abstract class BaseOperator extends OperatorDirective implements Operator {
         ]);
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): ?string {
-        return null;
+    public function getFieldType(TypeProvider $provider, string $type): string {
+        return $type;
     }
 
     public function isBuilderSupported(object $builder): bool {

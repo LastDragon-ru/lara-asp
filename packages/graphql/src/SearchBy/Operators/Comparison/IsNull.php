@@ -24,7 +24,7 @@ class IsNull extends BaseOperator {
         return 'Is NULL?';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): ?string {
+    public function getFieldType(TypeProvider $provider, string $type): string {
         return $provider->getType(Flag::class);
     }
 

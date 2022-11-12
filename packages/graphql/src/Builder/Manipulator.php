@@ -122,7 +122,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
         string $field = null,
     ): string {
         $type        = is_object($type) ? $this->getNodeName($type) : $type;
-        $type        = $operator->getFieldType($this, $type) ?? $type;
+        $type        = $operator->getFieldType($this, $type);
         $field       = $field ?: $operator::getName();
         $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
         $directive   = $directive instanceof DirectiveNode

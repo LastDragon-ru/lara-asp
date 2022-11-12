@@ -20,7 +20,7 @@ class In extends BaseOperator {
         return 'Within a set of values.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): ?string {
+    public function getFieldType(TypeProvider $provider, string $type): string {
         return "[{$type}!]";
     }
 

@@ -192,8 +192,11 @@ class Manipulator extends BuilderManipulator {
     ): InputValueDefinitionNode {
         // Prepare
         $operator = $this->getComplexOperator($field, $type);
-        $name     = $operator->getFieldType($this, $this->getNodeName($type))
-            ?? $this->getComplexTypeName($type, $operator);
+        $typeName = $this->getNodeName($type);
+        $name     = $operator->getFieldType($this, $typeName);
+        $name     = $name === $typeName
+            ? $this->getComplexTypeName($type, $operator)
+            : $typeName;
 
         // Definition
         if (!$this->isTypeDefinitionExists($name)) {

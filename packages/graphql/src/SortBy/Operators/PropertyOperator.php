@@ -29,7 +29,7 @@ class PropertyOperator extends BaseOperator {
         return 'property';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): ?string {
+    public function getFieldType(TypeProvider $provider, string $type): string {
         return $provider->getType(Direction::class);
     }
 
