@@ -4,8 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
@@ -13,6 +15,8 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
@@ -23,6 +27,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_filter;
 use function array_map;
+use function count;
 use function implode;
 use function is_object;
 
@@ -65,6 +70,9 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
             return $name;
         }
 
+        // Fake
+        $this->addFakeTypeDefinition($name);
+
         // Create new
         $instance = $this->getContainer()->make($definition);
         $node     = $instance->getTypeDefinitionNode($this, $name, $type, $nullable);
@@ -78,6 +86,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Save
+        $this->removeFakeTypeDefinition($name);
         $this->addTypeDefinition($node);
 
         // Return
@@ -146,6 +155,40 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
                 $operators,
             ),
         );
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =================================================================================================================
+    protected function addFakeTypeDefinition(string $name): void {
+        $this->addTypeDefinition(
+            Parser::inputObjectTypeDefinition(
+                <<<DEF
+                """
+                Fake type to prevent circular dependency infinite loop.
+                """
+                input {$name} {
+                    fake: Boolean! = true
+                }
+                DEF,
+            ),
+        );
+    }
+
+    protected function removeFakeTypeDefinition(string $name): void {
+        // Possible?
+        $fake = $this->getTypeDefinitionNode($name);
+
+        if (!($fake instanceof InputObjectTypeDefinitionNode)) {
+            throw new FakeTypeDefinitionUnknown($name);
+        }
+
+        if (count($fake->fields) !== 1 || $this->getNodeName($fake->fields[0]) !== 'fake') {
+            throw new FakeTypeDefinitionIsNotFake($name);
+        }
+
+        // Remove
+        $this->removeTypeDefinition($name);
     }
     // </editor-fold>
 }

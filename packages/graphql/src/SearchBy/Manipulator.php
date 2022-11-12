@@ -25,8 +25,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorNotFound;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionIsNotFake;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
@@ -37,7 +35,6 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_shift;
-use function count;
 use function is_string;
 use function reset;
 use function str_starts_with;
@@ -283,37 +280,6 @@ class Manipulator extends BuilderManipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================
-    protected function addFakeTypeDefinition(string $name): void {
-        $this->addTypeDefinition(
-            Parser::inputObjectTypeDefinition(
-                <<<DEF
-                """
-                Fake type to prevent circular dependency infinite loop.
-                """
-                input {$name} {
-                    fake: Boolean! = true
-                }
-                DEF,
-            ),
-        );
-    }
-
-    protected function removeFakeTypeDefinition(string $name): void {
-        // Possible?
-        $fake = $this->getTypeDefinitionNode($name);
-
-        if (!($fake instanceof InputObjectTypeDefinitionNode)) {
-            throw new FakeTypeDefinitionUnknown($name);
-        }
-
-        if (count($fake->fields) !== 1 || $this->getNodeName($fake->fields[0]) !== 'fake') {
-            throw new FakeTypeDefinitionIsNotFake($name);
-        }
-
-        // Remove
-        $this->removeTypeDefinition($name);
-    }
-
     public function getScalarTypeNode(string $scalar): ScalarTypeDefinitionNode {
         // TODO [GraphQL] Is there any better way for this?
         return Parser::scalarTypeDefinition("scalar {$scalar}");
