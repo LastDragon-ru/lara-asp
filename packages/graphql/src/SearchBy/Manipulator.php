@@ -23,10 +23,10 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorInvalidTypeName;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\ComplexOperatorNotFound;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\InputFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Enumeration;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
@@ -36,7 +36,6 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_shift;
 use function is_string;
-use function reset;
 use function str_starts_with;
 
 class Manipulator extends BuilderManipulator {
@@ -192,7 +191,7 @@ class Manipulator extends BuilderManipulator {
         bool $nullable,
     ): InputValueDefinitionNode {
         // Prepare
-        $operator = $this->getComplexOperator($nullable, $field, $type);
+        $operator = $this->getComplexOperator($field, $type);
         $name     = $operator->getFieldType($this, $this->getNodeName($type))
             ?? $this->getComplexTypeName($type, $operator);
 
@@ -249,7 +248,6 @@ class Manipulator extends BuilderManipulator {
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function getComplexOperator(
-        bool $nullable,
         InputValueDefinitionNode|InputObjectTypeDefinitionNode|InputObjectField|InputObjectType ...$nodes,
     ): ComplexOperator {
         // Class
@@ -264,13 +262,7 @@ class Manipulator extends BuilderManipulator {
 
         // Default
         if (!$operator) {
-            $operators = $this->getTypeOperators(Operators::Complex, $nullable);
-            $operator  = reset($operators);
-        }
-
-        // Found?
-        if (!($operator instanceof ComplexOperator)) {
-            throw new ComplexOperatorNotFound();
+            $operator = $this->getContainer()->make(Relation::class);
         }
 
         // Return
