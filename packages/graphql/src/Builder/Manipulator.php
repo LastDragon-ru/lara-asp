@@ -21,6 +21,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToC
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use Nuwave\Lighthouse\Pagination\PaginateDirective;
+use Nuwave\Lighthouse\Pagination\PaginationType;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -30,6 +32,8 @@ use function array_map;
 use function count;
 use function implode;
 use function is_object;
+use function mb_strlen;
+use function mb_substr;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
@@ -200,6 +204,38 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
         // Remove
         $this->removeTypeDefinition($name);
+    }
+
+    public function getPlaceholderTypeDefinitionNode(FieldDefinitionNode $field): TypeDefinitionNode|Type|null {
+        $node     = null;
+        $paginate = $this->getNodeDirective($field, PaginateDirective::class);
+
+        if ($paginate) {
+            $type       = $this->getNodeTypeName($this->getTypeDefinitionNode($field));
+            $pagination = (new class() extends PaginateDirective {
+                public function getPaginationType(PaginateDirective $directive): PaginationType {
+                    return $directive->paginationType();
+                }
+            })->getPaginationType($paginate);
+
+            if ($pagination->isPaginator()) {
+                $type = mb_substr($type, 0, -mb_strlen('Paginator'));
+            } elseif ($pagination->isSimple()) {
+                $type = mb_substr($type, 0, -mb_strlen('SimplePaginator'));
+            } elseif ($pagination->isConnection()) {
+                $type = mb_substr($type, 0, -mb_strlen('Connection'));
+            } else {
+                // empty
+            }
+
+            if ($type) {
+                $node = $this->getTypeDefinitionNode($type);
+            }
+        } else {
+            $node = $this->getTypeDefinitionNode($field);
+        }
+
+        return $node;
     }
     // </editor-fold>
 }

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
+namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
@@ -17,7 +17,7 @@ use function array_merge;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Manipulator
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator
  */
 class ManipulatorTest extends TestCase {
     // <editor-fold desc="Prepare">
