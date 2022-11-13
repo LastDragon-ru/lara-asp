@@ -9,7 +9,6 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
-use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
@@ -18,6 +17,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
@@ -61,13 +61,15 @@ class Condition extends InputObject {
         return $manipulator->getTypeOperators(Operators::Logical, false);
     }
 
-    protected function getFieldDefinition(
+    /**
+     * @inheritdoc
+     */
+    protected function getFieldOperator(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
-        TypeDefinitionNode|Type $fieldType,
-    ): InputValueDefinitionNode|null {
-        // Type or Operator
-        $definition = match (true) {
+        FieldDefinition|InputValueDefinitionNode|InputObjectField|FieldDefinitionNode $field,
+        Type|TypeDefinitionNode $fieldType,
+    ): ?array {
+        $operator = match (true) {
             $fieldType instanceof ScalarTypeDefinitionNode,
                 $fieldType instanceof ScalarType => Scalar::class,
             $fieldType instanceof EnumTypeDefinitionNode,
@@ -75,37 +77,30 @@ class Condition extends InputObject {
             $fieldType instanceof InputObjectTypeDefinitionNode,
                 $fieldType instanceof ObjectTypeDefinitionNode,
                 $fieldType instanceof InputObjectType,
-                $fieldType instanceof ObjectType => $this->getFieldOperator($manipulator, $field, $fieldType),
+                $fieldType instanceof ObjectType => $this->getObjectDefaultOperator($manipulator, $field, $fieldType),
             default                              => null,
         };
 
-        if (!$definition) {
+        if (!$operator) {
             throw new NotImplemented($manipulator->getNodeTypeFullName($fieldType));
         }
 
         // Create input
-        $name     = $manipulator->getNodeName($field);
-        $type     = $manipulator->getNodeName($fieldType);
-        $operator = null;
+        $type = $manipulator->getNodeName($fieldType);
 
-        if (is_string($definition)) {
+        if (is_string($operator)) {
+            $type     = $manipulator->getType($operator, $type, $manipulator->isNullable($field));
             $operator = $manipulator->getOperator(Property::class);
-            $nullable = $manipulator->isNullable($field);
-            $type     = $manipulator->getType($definition, $type, $nullable);
-        } else {
-            $operator = $definition;
         }
 
-        return Parser::inputValueDefinition(
-            $manipulator->getOperatorField($operator, $type, $name),
-        );
+        return [$operator, $type];
     }
 
-    protected function getFieldOperator(
+    protected function getObjectDefaultOperator(
         Manipulator $manipulator,
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $fieldType,
-    ): Operator {
+    ): OperatorContract {
         return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType)
             ?? $manipulator->getOperator(Relation::class);
     }

@@ -148,11 +148,32 @@ abstract class InputObject implements TypeDefinition {
         return true;
     }
 
-    abstract protected function getFieldDefinition(
+    protected function getFieldDefinition(
         Manipulator $manipulator,
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         TypeDefinitionNode|Type $fieldType,
-    ): InputValueDefinitionNode|null;
+    ): InputValueDefinitionNode|null {
+        $name              = $manipulator->getNodeName($field);
+        $builder           = $manipulator->getBuilderInfo()->getBuilder();
+        [$operator, $type] = $this->getFieldOperator($manipulator, $field, $fieldType) ?? [null, null];
+
+        if (!$type || !$operator || !$operator->isBuilderSupported($builder)) {
+            return null;
+        }
+
+        return Parser::inputValueDefinition(
+            $manipulator->getOperatorField($operator, $type, $name),
+        );
+    }
+
+    /**
+     * @return array{Operator, string}|null
+     */
+    abstract protected function getFieldOperator(
+        Manipulator $manipulator,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
+        TypeDefinitionNode|Type $fieldType,
+    ): ?array;
 
     /**
      * @template T of Operator
