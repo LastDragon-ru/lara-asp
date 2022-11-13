@@ -14,15 +14,10 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator as BuilderManipulator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\PropertyOperator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
-use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 
-use function count;
 use function str_starts_with;
 
 class Manipulator extends BuilderManipulator {
@@ -43,11 +38,8 @@ class Manipulator extends BuilderManipulator {
                 || $definition instanceof ObjectType;
 
             if ($isSupported) {
-                $name = $this->getInputType($definition);
-
-                if ($name) {
-                    $type = Parser::typeReference("[{$name}!]");
-                }
+                $name = $this->getType(Clause::class, $this->getNodeTypeName($definition));
+                $type = Parser::typeReference("[{$name}!]");
             }
         } else {
             $type = $node->type;
@@ -65,127 +57,12 @@ class Manipulator extends BuilderManipulator {
     }
     // </editor-fold>
 
-    // <editor-fold desc="Types">
-    // =========================================================================
-    protected function getInputType(
-        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
-    ): ?string {
-        // Exists?
-        $name = $this->getInputTypeName($node);
-
-        if ($this->isTypeDefinitionExists($name)) {
-            return $name;
-        }
-
-        // Add type
-        $type = $this->addTypeDefinition(
-            Parser::inputObjectTypeDefinition(
-                <<<DEF
-                """
-                Sort clause for `{$this->getNodeTypeFullName($node)}` (only one property allowed at a time).
-                """
-                input {$name} {
-                    """
-                    If you see this probably something wrong. Please contact to developer.
-                    """
-                    dummy: ID
-                }
-                DEF,
-            ),
-        );
-
-        // Add sortable fields
-        $direction = $this->getType(Direction::class);
-        $operator  = $this->getContainer()->make(PropertyOperator::class);
-        $property  = $this->getContainer()->make(Property::class);
-        $builder   = $this->getBuilderInfo()->getBuilder();
-        $fields    = $node instanceof InputObjectType || $node instanceof ObjectType
-            ? $node->getFields()
-            : $node->fields;
-
-        foreach ($fields as $field) {
-            // Convertable?
-            if ($this->isList($field)) {
-                continue;
-            }
-
-            // Resolver?
-            if (
-                !($field instanceof InputObjectField || $field instanceof InputValueDefinitionNode)
-                && $this->getNodeDirective($field, FieldResolver::class)
-            ) {
-                continue;
-            }
-
-            // Ignored?
-            if ($this->getNodeDirective($field, Ignored::class)) {
-                continue;
-            }
-
-            // Is supported?
-            $fieldType     = $direction;
-            $fieldOperator = $operator;
-            $fieldTypeNode = $this->getTypeDefinitionNode($field);
-            $isNested      = $fieldTypeNode instanceof InputObjectTypeDefinitionNode
-                || $fieldTypeNode instanceof ObjectTypeDefinitionNode
-                || $fieldTypeNode instanceof InputObjectType
-                || $fieldTypeNode instanceof ObjectType;
-
-            if ($isNested) {
-                if ($property->isBuilderSupported($builder)) {
-                    $fieldType     = $this->getInputType($fieldTypeNode);
-                    $fieldOperator = $property;
-                } else {
-                    $fieldType     = null;
-                    $fieldOperator = null;
-                }
-            } else {
-                // empty
-            }
-
-            // Create new Field
-            if ($fieldType && $fieldOperator) {
-                $type->fields[] = Parser::inputValueDefinition(
-                    $this->getOperatorField(
-                        $fieldOperator,
-                        $this->getTypeDefinitionNode($fieldType),
-                        $this->getNodeName($field),
-                    ),
-                );
-            }
-        }
-
-        // Remove dummy
-        unset($type->fields[0]);
-
-        // Empty?
-        if (count($type->fields) === 0) {
-            $this->removeTypeDefinition($name);
-
-            $name = null;
-        }
-
-        // Return
-        return $name;
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Names">
     // =========================================================================
     protected function isTypeName(
         Node|Type|InputObjectField|FieldDefinition|string $node,
     ): bool {
         return str_starts_with($this->getNodeTypeName($node), Directive::Name);
-    }
-
-    protected function getInputTypeName(
-        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $node,
-    ): string {
-        $directiveName = Directive::Name;
-        $builderName   = $this->getBuilderInfo()->getName();
-        $nodeName      = $this->getNodeName($node);
-
-        return "{$directiveName}{$builderName}Clause{$nodeName}";
     }
     // </editor-fold>
 }
