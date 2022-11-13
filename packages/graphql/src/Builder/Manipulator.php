@@ -55,7 +55,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
         return $this->container;
     }
 
-    protected function getBuilderInfo(): BuilderInfo {
+    public function getBuilderInfo(): BuilderInfo {
         return $this->builderInfo;
     }
 

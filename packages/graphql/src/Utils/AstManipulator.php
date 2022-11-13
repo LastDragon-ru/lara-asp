@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
+use Closure;
 use Exception;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
@@ -27,6 +28,7 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
+use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -176,18 +178,41 @@ abstract class AstManipulator {
      * @template T of \Nuwave\Lighthouse\Support\Contracts\Directive
      *
      * @param class-string<T> $class
+     * @param Closure(T): bool|null $callback
      *
      * @return T|null
      */
     public function getNodeDirective(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
         string $class,
+        ?Closure $callback = null,
     ): ?Directive {
         // todo(graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         // todo(graphql): Should we throw an error if $node has multiple directives?
-        return $node instanceof Node
-            ? $this->getDirectives()->associatedOfType($node, $class)->first()
-            : null;
+        return $this->getNodeDirectives($node, $class, $callback)->first();
+    }
+
+    /**
+     * @template T of \Nuwave\Lighthouse\Support\Contracts\Directive
+     *
+     * @param class-string<T>       $class
+     * @param Closure(T): bool|null $callback
+     *
+     * @return Collection<int, T>
+     */
+    public function getNodeDirectives(
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
+        string $class,
+        ?Closure $callback = null,
+    ): Collection {
+        $directives = $node instanceof Node
+            ? $this->getDirectives()->associatedOfType($node, $class)
+            : new Collection();
+        $directives = $callback
+            ? $directives->filter($callback)
+            : $directives;
+
+        return $directives;
     }
 
     public function getNodeTypeName(
