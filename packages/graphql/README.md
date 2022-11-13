@@ -151,7 +151,7 @@ And then edit `config/lara-asp-graphql.php`
 
 use LastDragon_ru\LaraASP\Core\Enum as CoreEnum;
 use LastDragon_ru\LaraASP\Eloquent\Enum as EloquentEnum;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 
 /**
  * -----------------------------------------------------------------------------
@@ -207,9 +207,9 @@ return $settings;
 
 There are three types of operators:
 
-* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to type(s);
-* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to `Operators::Logical` type;
-* Complex - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. These operators must implement [`ComplexOperator`](./src/SearchBy/Contracts/ComplexOperator.php) (by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used, you can use it as example):
+* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to type(s);
+* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to `Operators::Logical` type;
+* Complex - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. All the same, but these operators should be explicitly added to the fields/input types, by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used:
 
     ```graphql
     type Query {
