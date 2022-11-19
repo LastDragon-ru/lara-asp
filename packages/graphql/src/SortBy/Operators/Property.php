@@ -22,8 +22,8 @@ class Property extends PropertyDirective implements Operator {
         ]);
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
-        return $provider->getType(Clause::class, $type);
+    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
+        return $provider->getType(Clause::class, $type, $nullable);
     }
 
     public function getFieldDescription(): string {

@@ -42,7 +42,7 @@ class Manipulator extends BuilderManipulator {
             $name = $this->getNodeTypeName($def);
 
             if (!str_starts_with($name, Directive::Name)) {
-                $name = $this->getType(Condition::class, $name);
+                $name = $this->getType(Condition::class, $name, $this->isNullable($node));
                 $type = Parser::typeReference($name);
             } else {
                 $type = $node->type;

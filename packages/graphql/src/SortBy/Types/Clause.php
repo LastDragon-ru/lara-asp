@@ -24,7 +24,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\PropertyOperator;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 
 class Clause extends InputObject {
-    public static function getTypeName(BuilderInfo $builder, string $type = null, bool $nullable = null): string {
+    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
 
@@ -78,6 +78,7 @@ class Clause extends InputObject {
         Manipulator $manipulator,
         FieldDefinition|InputValueDefinitionNode|InputObjectField|FieldDefinitionNode $field,
         Type|TypeDefinitionNode $fieldType,
+        ?bool $fieldNullable,
     ): ?array {
         $type     = $manipulator->getNodeName($fieldType);
         $operator = null;
@@ -87,9 +88,9 @@ class Clause extends InputObject {
             || $fieldType instanceof ObjectType;
 
         if ($isNested) {
-            $operator = $this->getObjectDefaultOperator($manipulator, $field, $fieldType);
+            $operator = $this->getObjectDefaultOperator($manipulator, $field, $fieldType, $fieldNullable);
         } else {
-            $type     = $manipulator->getType(Direction::class);
+            $type     = $manipulator->getType(Direction::class, null, null);
             $operator = $manipulator->getOperator(PropertyOperator::class);
         }
 
@@ -100,8 +101,9 @@ class Clause extends InputObject {
         Manipulator $manipulator,
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $fieldType,
+        ?bool $fieldNullable,
     ): OperatorContract {
-        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType)
+        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType, $fieldNullable)
             ?? $manipulator->getOperator(Property::class);
     }
 }

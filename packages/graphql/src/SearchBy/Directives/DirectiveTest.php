@@ -329,8 +329,8 @@ class DirectiveTest extends TestCase {
                             return 'custom';
                         }
 
-                        public function getFieldType(TypeProvider $provider, string $type): string {
-                            return $provider->getType(static::class, Type::INT, false);
+                        public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
+                            return $provider->getType(static::class, Type::INT, $nullable);
                         }
 
                         public function getFieldDescription(): string {
@@ -360,8 +360,8 @@ class DirectiveTest extends TestCase {
 
                         public static function getTypeName(
                             BuilderInfo $builder,
-                            string $type = null,
-                            bool $nullable = null,
+                            ?string $type,
+                            ?bool $nullable,
                         ): string {
                             return Directive::Name.'ComplexCustom'.Str::studly($type ?? '');
                         }
@@ -369,8 +369,8 @@ class DirectiveTest extends TestCase {
                         public function getTypeDefinitionNode(
                             Manipulator $manipulator,
                             string $name,
-                            string $type = null,
-                            bool $nullable = null,
+                            ?string $type,
+                            ?bool $nullable,
                         ): ?TypeDefinitionNode {
                             return Parser::inputObjectTypeDefinition(
                                 <<<DEF

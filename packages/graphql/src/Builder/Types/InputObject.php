@@ -39,8 +39,8 @@ abstract class InputObject implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        string $type = null,
-        bool $nullable = null,
+        ?string $type,
+        ?bool $nullable,
     ): ?TypeDefinitionNode {
         // Type?
         if (!$type) {
@@ -97,6 +97,7 @@ abstract class InputObject implements TypeDefinition {
 
             // Determine type
             $fieldType     = $manipulator->getNodeTypeName($field);
+            $fieldNullable = $manipulator->isNullable($field);
             $fieldTypeNode = null;
 
             try {
@@ -110,7 +111,7 @@ abstract class InputObject implements TypeDefinition {
             }
 
             // Add
-            $fieldDefinition = $this->getFieldDefinition($manipulator, $field, $fieldTypeNode);
+            $fieldDefinition = $this->getFieldDefinition($manipulator, $field, $fieldTypeNode, $fieldNullable);
 
             if ($fieldDefinition) {
                 $definition->fields[] = $fieldDefinition;
@@ -135,8 +136,8 @@ abstract class InputObject implements TypeDefinition {
     protected function getTypeOperators(
         Manipulator $manipulator,
         string $name,
-        string $type = null,
-        bool $nullable = null,
+        string $type,
+        ?bool $nullable,
     ): array {
         return [];
     }
@@ -152,17 +153,18 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         TypeDefinitionNode|Type $fieldType,
+        ?bool $fieldNullable,
     ): InputValueDefinitionNode|null {
         $name              = $manipulator->getNodeName($field);
         $builder           = $manipulator->getBuilderInfo()->getBuilder();
-        [$operator, $type] = $this->getFieldOperator($manipulator, $field, $fieldType) ?? [null, null];
+        [$operator, $type] = $this->getFieldOperator($manipulator, $field, $fieldType, $fieldNullable) ?? [null, null];
 
         if (!$type || !$operator || !$operator->isBuilderSupported($builder)) {
             return null;
         }
 
         return Parser::inputValueDefinition(
-            $manipulator->getOperatorField($operator, $type, $name),
+            $manipulator->getOperatorField($operator, $type, $name, $fieldNullable),
         );
     }
 
@@ -173,6 +175,7 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         TypeDefinitionNode|Type $fieldType,
+        ?bool $fieldNullable,
     ): ?array;
 
     /**
@@ -187,6 +190,7 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $fieldType,
+        ?bool $fieldNullable,
     ): ?Operator {
         // Directive?
         $operator = null;

@@ -38,7 +38,7 @@ class Manipulator extends BuilderManipulator {
                 || $definition instanceof ObjectType;
 
             if ($isSupported) {
-                $name = $this->getType(Clause::class, $this->getNodeTypeName($definition));
+                $name = $this->getType(Clause::class, $this->getNodeTypeName($definition), $this->isNullable($node));
                 $type = Parser::typeReference("[{$name}!]");
             }
         } else {

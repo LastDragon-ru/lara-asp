@@ -19,7 +19,7 @@ abstract class PropertyDirective extends OperatorDirective {
         return 'Property';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
+    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
         return $type;
     }
 

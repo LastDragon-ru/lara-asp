@@ -6,5 +6,5 @@ interface TypeProvider {
     /**
      * @param class-string<TypeDefinition> $definition
      */
-    public function getType(string $definition, string $type = null, bool $nullable = null): string;
+    public function getType(string $definition, ?string $type, ?bool $nullable): string;
 }

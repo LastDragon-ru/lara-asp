@@ -66,7 +66,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="TypeProvider">
     // =========================================================================
-    public function getType(string $definition, string $type = null, bool $nullable = null): string {
+    public function getType(string $definition, ?string $type, ?bool $nullable): string {
         // Exists?
         $name = $definition::getTypeName($this->getBuilderInfo(), $type, $nullable);
 
@@ -134,10 +134,11 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
     public function getOperatorField(
         Operator $operator,
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type|string $type,
-        string $field = null,
+        ?string $field,
+        ?bool $nullable,
     ): string {
         $type        = is_object($type) ? $this->getNodeName($type) : $type;
-        $type        = $operator->getFieldType($this, $type);
+        $type        = $operator->getFieldType($this, $type, $nullable);
         $field       = $field ?: $operator::getName();
         $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
         $directive   = $directive instanceof DirectiveNode
@@ -165,7 +166,7 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
             "\n",
             array_map(
                 function (Operator $operator) use ($type): string {
-                    return $this->getOperatorField($operator, $type);
+                    return $this->getOperatorField($operator, $type, null, null);
                 },
                 $operators,
             ),

@@ -29,8 +29,8 @@ class PropertyOperator extends BaseOperator {
         return 'property';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
-        return $provider->getType(Direction::class);
+    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
+        return $provider->getType(Direction::class, null, null);
     }
 
     public function getFieldDescription(): string {

@@ -30,7 +30,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use function is_string;
 
 class Condition extends InputObject {
-    public static function getTypeName(BuilderInfo $builder, string $type = null, bool $nullable = null): string {
+    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
 
@@ -55,8 +55,8 @@ class Condition extends InputObject {
     protected function getTypeOperators(
         Manipulator $manipulator,
         string $name,
-        string $type = null,
-        bool $nullable = null,
+        string $type,
+        ?bool $nullable,
     ): array {
         return $manipulator->getTypeOperators(Operators::Logical, false);
     }
@@ -68,17 +68,22 @@ class Condition extends InputObject {
         Manipulator $manipulator,
         FieldDefinition|InputValueDefinitionNode|InputObjectField|FieldDefinitionNode $field,
         Type|TypeDefinitionNode $fieldType,
+        ?bool $fieldNullable,
     ): ?array {
         $operator = match (true) {
             $fieldType instanceof ScalarTypeDefinitionNode,
-                $fieldType instanceof ScalarType => Scalar::class,
+                $fieldType instanceof ScalarType
+                    => Scalar::class,
             $fieldType instanceof EnumTypeDefinitionNode,
-                $fieldType instanceof EnumType   => Enumeration::class,
+                $fieldType instanceof EnumType
+                    => Enumeration::class,
             $fieldType instanceof InputObjectTypeDefinitionNode,
                 $fieldType instanceof ObjectTypeDefinitionNode,
                 $fieldType instanceof InputObjectType,
-                $fieldType instanceof ObjectType => $this->getObjectDefaultOperator($manipulator, $field, $fieldType),
-            default                              => null,
+                $fieldType instanceof ObjectType
+                    => $this->getObjectDefaultOperator($manipulator, $field, $fieldType, $fieldNullable),
+            default
+                    => null,
         };
 
         if (!$operator) {
@@ -89,7 +94,7 @@ class Condition extends InputObject {
         $type = $manipulator->getNodeName($fieldType);
 
         if (is_string($operator)) {
-            $type     = $manipulator->getType($operator, $type, $manipulator->isNullable($field));
+            $type     = $manipulator->getType($operator, $type, $fieldNullable);
             $operator = $manipulator->getOperator(Property::class);
         }
 
@@ -100,8 +105,9 @@ class Condition extends InputObject {
         Manipulator $manipulator,
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $fieldType,
+        ?bool $fieldNullable,
     ): OperatorContract {
-        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType)
+        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType, $fieldNullable)
             ?? $manipulator->getOperator(Relation::class);
     }
 }

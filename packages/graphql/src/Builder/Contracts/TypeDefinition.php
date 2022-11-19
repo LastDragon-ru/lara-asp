@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
 interface TypeDefinition {
-    public static function getTypeName(BuilderInfo $builder, string $type = null, bool $nullable = null): string;
+    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string;
 
     /**
      * @return (TypeDefinitionNode&Node)|null
@@ -16,7 +16,7 @@ interface TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        string $type = null,
-        bool $nullable = null,
+        ?string $type,
+        ?bool $nullable,
     ): ?TypeDefinitionNode;
 }

@@ -23,7 +23,7 @@ abstract class BaseOperator extends OperatorDirective implements Operator, Marke
         ]);
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
+    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
         return $type;
     }
 

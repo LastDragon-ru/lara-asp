@@ -177,7 +177,7 @@ abstract class OperatorsTest__Operator implements Operator {
         throw new Exception('Should not be called');
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): string {
+    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
         throw new Exception('Should not be called');
     }
 

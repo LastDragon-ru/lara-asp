@@ -14,15 +14,15 @@ class Flag implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(BuilderInfo $builder, string $type = null, bool $nullable = null): string {
+    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
         return Directive::Name.'TypeFlag';
     }
 
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        string $type = null,
-        bool $nullable = null,
+        ?string $type,
+        ?bool $nullable,
     ): ?TypeDefinitionNode {
         $node = null;
 
