@@ -37,7 +37,7 @@ use function mb_substr;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
-abstract class Manipulator extends AstManipulator implements TypeProvider {
+class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @var array<string, Operators>
      */
