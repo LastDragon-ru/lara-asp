@@ -37,6 +37,10 @@ class Condition extends InputObject {
         return "{$directiveName}{$builderName}Condition{$type}";
     }
 
+    protected function getScope(): string {
+        return Directive::class;
+    }
+
     protected function getTypeDescription(
         Manipulator $manipulator,
         string $name,
@@ -58,7 +62,7 @@ class Condition extends InputObject {
         string $type,
         ?bool $nullable,
     ): array {
-        return $manipulator->getTypeOperators(Operators::Logical, false);
+        return $manipulator->getTypeOperators($this->getScope(), Operators::Logical, false);
     }
 
     /**
@@ -95,7 +99,7 @@ class Condition extends InputObject {
 
         if (is_string($operator)) {
             $type     = $manipulator->getType($operator, $type, $fieldNullable);
-            $operator = $manipulator->getOperator(Property::class);
+            $operator = $manipulator->getOperator($this->getScope(), Property::class);
         }
 
         return [$operator, $type];
@@ -108,6 +112,6 @@ class Condition extends InputObject {
         ?bool $fieldNullable,
     ): OperatorContract {
         return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType, $fieldNullable)
-            ?? $manipulator->getOperator(Relation::class);
+            ?? $manipulator->getOperator($this->getScope(), Relation::class);
     }
 }

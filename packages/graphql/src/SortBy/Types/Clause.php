@@ -31,6 +31,10 @@ class Clause extends InputObject {
         return "{$directiveName}{$builderName}Clause{$type}";
     }
 
+    protected function getScope(): string {
+        return Directive::class;
+    }
+
     protected function getTypeDescription(
         Manipulator $manipulator,
         string $name,
@@ -91,7 +95,7 @@ class Clause extends InputObject {
             $operator = $this->getObjectDefaultOperator($manipulator, $field, $fieldType, $fieldNullable);
         } else {
             $type     = $manipulator->getType(Direction::class, null, null);
-            $operator = $manipulator->getOperator(PropertyOperator::class);
+            $operator = $manipulator->getOperator($this->getScope(), PropertyOperator::class);
         }
 
         return [$operator, $type];
@@ -104,6 +108,6 @@ class Clause extends InputObject {
         ?bool $fieldNullable,
     ): OperatorContract {
         return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType, $fieldNullable)
-            ?? $manipulator->getOperator(Property::class);
+            ?? $manipulator->getOperator($this->getScope(), Property::class);
     }
 }

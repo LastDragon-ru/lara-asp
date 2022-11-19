@@ -8,7 +8,6 @@ use Hamcrest\Core\IsNot;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -33,6 +32,10 @@ class OperatorsTest extends TestCase {
                     OperatorsTest__OperatorA::class,
                 ],
             ];
+
+            public function getScope(): string {
+                return __METHOD__;
+            }
         };
 
         self::assertTrue($operators->hasOperators(Operators::Int));
@@ -52,7 +55,9 @@ class OperatorsTest extends TestCase {
         }
 
         $operators = new class($this->app) extends Operators {
-            // empty
+            public function getScope(): string {
+                return __METHOD__;
+            }
         };
 
         $operators->setOperators($type, $typeOperators);
@@ -67,7 +72,9 @@ class OperatorsTest extends TestCase {
         $type      = __FUNCTION__;
         $alias     = 'alias';
         $operators = new class($this->app) extends Operators {
-            // empty
+            public function getScope(): string {
+                return __METHOD__;
+            }
         };
 
         $operators->setOperators($type, [
@@ -106,11 +113,13 @@ class OperatorsTest extends TestCase {
      * @covers ::getOperators
      */
     public function testGetOperatorsUnknownType(): void {
-        self::expectExceptionObject(new TypeUnknown('unknown'));
-
         $operators = new class($this->app) extends Operators {
-            // empty
+            public function getScope(): string {
+                return __METHOD__;
+            }
         };
+
+        self::expectExceptionObject(new TypeUnknown($operators->getScope(), 'unknown'));
 
         $operators->getOperators('unknown', false);
     }
@@ -130,7 +139,7 @@ class OperatorsTest extends TestCase {
                 ['unknown'],
             ],
             'empty operators' => [
-                new TypeNoOperators('scalar'),
+                false,
                 'scalar',
                 [],
             ],

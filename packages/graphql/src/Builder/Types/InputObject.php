@@ -26,6 +26,8 @@ abstract class InputObject implements TypeDefinition {
         // empty
     }
 
+    abstract protected function getScope(): string;
+
     abstract protected function getTypeDescription(
         Manipulator $manipulator,
         string $name,
@@ -103,7 +105,7 @@ abstract class InputObject implements TypeDefinition {
             try {
                 $fieldTypeNode = $manipulator->getTypeDefinitionNode($field);
             } catch (TypeDefinitionUnknown $exception) {
-                if ($manipulator->hasTypeOperators($fieldType)) {
+                if ($manipulator->hasTypeOperators($this->getScope(), $fieldType)) {
                     $fieldTypeNode = $manipulator->getScalarTypeDefinitionNode($fieldType);
                 } else {
                     throw $exception;

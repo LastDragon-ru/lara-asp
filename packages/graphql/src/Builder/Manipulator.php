@@ -38,13 +38,17 @@ use function mb_substr;
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 abstract class Manipulator extends AstManipulator implements TypeProvider {
+    /**
+     * @var array<string, Operators>
+     */
+    private array $operators = [];
+
     public function __construct(
         DirectiveLocator $directives,
         DocumentAST $document,
         TypeRegistry $types,
         private Container $container,
         private BuilderInfo $builderInfo,
-        private Operators $operators,
     ) {
         parent::__construct($directives, $document, $types);
     }
@@ -57,10 +61,6 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
     public function getBuilderInfo(): BuilderInfo {
         return $this->builderInfo;
-    }
-
-    protected function getOperators(): Operators {
-        return $this->operators;
     }
     // </editor-fold>
 
@@ -100,6 +100,12 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Operators">
     // =========================================================================
+    public function addOperators(Operators $operators): static {
+        $this->operators[$operators->getScope()] = $operators;
+
+        return $this;
+    }
+
     /**
      * @template T of Operator
      *
@@ -107,25 +113,25 @@ abstract class Manipulator extends AstManipulator implements TypeProvider {
      *
      * @return T
      */
-    public function getOperator(string $operator): Operator {
-        return $this->getOperators()->getOperator($operator);
+    public function getOperator(string $scope, string $operator): Operator {
+        return $this->getContainer()->make($operator);
     }
 
-    public function hasTypeOperators(string $type): bool {
-        return $this->getOperators()->hasOperators($type);
+    public function hasTypeOperators(string $scope, string $type): bool {
+        return (bool) ($this->operators[$scope] ?? null)?->hasOperators($type);
     }
 
     /**
      * @return non-empty-list<Operator>
      */
-    public function getTypeOperators(string $type, bool $nullable): array {
-        $operators = $this->getOperators()->getOperators($type, $nullable);
+    public function getTypeOperators(string $scope, string $type, bool $nullable): array {
+        $operators = (array) ($this->operators[$scope] ?? null)?->getOperators($type, $nullable);
         $operators = array_filter($operators, function (Operator $operator): bool {
             return $operator->isBuilderSupported($this->getBuilderInfo()->getBuilder());
         });
 
         if (!$operators) {
-            throw new TypeNoOperators($type);
+            throw new TypeNoOperators($scope, $type);
         }
 
         return $operators;

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseAnd;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseLeftShift;
@@ -118,5 +119,9 @@ class Operators extends BuilderOperators {
         foreach ($operators as $type => $typeOperators) {
             $this->setOperators($type, $typeOperators);
         }
+    }
+
+    public function getScope(): string {
+        return Directive::class;
     }
 }

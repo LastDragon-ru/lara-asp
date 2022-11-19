@@ -8,12 +8,14 @@ use function sprintf;
 
 class TypeUnknown extends BuilderException {
     public function __construct(
+        protected string $scope,
         protected string $name,
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'Type `%s` is not defined.',
+            'Type `%s` in `%s` scope is not defined.',
             $this->name,
+            $this->scope,
         ), $previous);
     }
 

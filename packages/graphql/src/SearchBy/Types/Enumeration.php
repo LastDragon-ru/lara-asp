@@ -38,10 +38,11 @@ class Enumeration implements TypeDefinition {
         }
 
         // Definition
+        $scope      = Directive::class;
         $nullable   = (bool) $nullable;
-        $operators  = $manipulator->hasTypeOperators($type)
-            ? $manipulator->getTypeOperators($type, $nullable)
-            : $manipulator->getTypeOperators(Operators::Enum, $nullable);
+        $operators  = $manipulator->hasTypeOperators($scope, $type)
+            ? $manipulator->getTypeOperators($scope, $type, $nullable)
+            : $manipulator->getTypeOperators($scope, Operators::Enum, $nullable);
         $content    = $manipulator->getOperatorsFields($operators, $type);
         $typeName   = $manipulator->getNodeTypeFullName($type);
         $definition = Parser::inputObjectTypeDefinition(

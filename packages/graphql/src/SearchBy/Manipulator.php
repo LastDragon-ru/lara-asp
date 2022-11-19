@@ -29,7 +29,9 @@ class Manipulator extends BuilderManipulator {
         BuilderInfo $builderInfo,
         Operators $operators,
     ) {
-        parent::__construct($directives, $document, $types, $container, $builderInfo, $operators);
+        parent::__construct($directives, $document, $types, $container, $builderInfo);
+
+        $this->addOperators($operators);
     }
 
     // <editor-fold desc="Update">
