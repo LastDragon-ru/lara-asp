@@ -47,7 +47,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $type = $this->getTypeDefinitionNode($documentAST, $argDefinition, $parentField, Clause::class);
+        $type = $this->getArgumentTypeDefinitionNode($documentAST, $argDefinition, $parentField, Clause::class);
 
         if (!$type) {
             throw new FailedToCreateSortClause($argDefinition->name->value);
@@ -60,7 +60,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         return str_starts_with($name, Directive::Name);
     }
 
-    protected function getTypeDefinitionNode(
+    protected function getArgumentTypeDefinitionNode(
         DocumentAST $document,
         InputValueDefinitionNode $argument,
         FieldDefinitionNode $field,
@@ -90,11 +90,15 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         if ($isSupported) {
             $name = $manipulator->getNodeTypeName($definition);
             $name = $manipulator->getType(Clause::class, $name, $manipulator->isNullable($argument));
-            $type = Parser::typeReference("[{$name}!]");
+            $type = $this->getArgumentTypeReferenceNode($name);
         }
 
         // Return
         return $type;
+    }
+
+    protected function getArgumentTypeReferenceNode(string $name): ListTypeNode|NamedTypeNode|NonNullTypeNode {
+        return Parser::typeReference("[{$name}!]");
     }
     // </editor-fold>
 

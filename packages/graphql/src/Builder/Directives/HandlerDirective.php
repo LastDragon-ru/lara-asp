@@ -182,7 +182,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     /**
      * @param class-string<TypeDefinition> $typeDefinition
      */
-    protected function getTypeDefinitionNode(
+    protected function getArgumentTypeDefinitionNode(
         DocumentAST $document,
         InputValueDefinitionNode $argument,
         FieldDefinitionNode $field,
@@ -206,11 +206,15 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         if ($definition instanceof InputObjectTypeDefinitionNode || $definition instanceof InputObjectType) {
             $name = $manipulator->getNodeTypeName($definition);
             $name = $manipulator->getType($typeDefinition, $name, $manipulator->isNullable($argument));
-            $type = Parser::typeReference($name);
+            $type = $this->getArgumentTypeReferenceNode($name);
         }
 
         // Return
         return $type;
+    }
+
+    protected function getArgumentTypeReferenceNode(string $name): ListTypeNode|NamedTypeNode|NonNullTypeNode {
+        return Parser::typeReference($name);
     }
 
     protected function getBuilderInfo(FieldDefinitionNode $field): BuilderInfo {

@@ -38,7 +38,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $type = $this->getTypeDefinitionNode($documentAST, $argDefinition, $parentField, Condition::class);
+        $type = $this->getArgumentTypeDefinitionNode($documentAST, $argDefinition, $parentField, Condition::class);
 
         if (!$type) {
             throw new FailedToCreateSearchCondition($argDefinition->name->value);
