@@ -135,7 +135,7 @@ In addition to standard GraphQL types the package defines few own:
 
 * `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Number` - any operator for this type will be available for `Int` and `Float`;
 * `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Null` - additional operators available for nullable types;
-* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Logical` - list of logical operators, please see below;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Extra` - list of additional operators for all types, please see below;
 * `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Enum` - default operators for enums;
 
 To work with custom types you need to configure supported operators for each of them. First, you need to publish package config:
@@ -208,7 +208,7 @@ return $settings;
 There are three types of operators:
 
 * Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to type(s);
-* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to `Operators::Logical` type;
+* Extra - used to add additional fields, by default package provides few Logical operators which allow you to do eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to `Operators::Extra` type;
 * Complex - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. All the same, but these operators should be explicitly added to the fields/input types, by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used:
 
     ```graphql

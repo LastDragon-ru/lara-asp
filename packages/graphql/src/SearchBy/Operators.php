@@ -35,9 +35,9 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 
 class Operators extends BuilderOperators {
-    public const Logical = 'Logical';
-    public const Number  = 'Number';
-    public const Enum    = 'Enum';
+    public const Extra  = 'Extra';
+    public const Number = 'Number';
+    public const Enum   = 'Enum';
 
     /**
      * @inheritdoc
@@ -100,7 +100,7 @@ class Operators extends BuilderOperators {
             IsNull::class,
             IsNotNull::class,
         ],
-        Operators::Logical => [
+        Operators::Extra   => [
             AllOf::class,
             AnyOf::class,
             Not::class,
