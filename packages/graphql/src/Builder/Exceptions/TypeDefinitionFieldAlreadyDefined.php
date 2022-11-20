@@ -6,17 +6,18 @@ use Throwable;
 
 use function sprintf;
 
-class TypeNoOperators extends BuilderException {
+class TypeDefinitionFieldAlreadyDefined extends BuilderException {
     public function __construct(
-        protected string $scope,
         protected string $name,
         Throwable $previous = null,
     ) {
-        parent::__construct(sprintf(
-            'List of operators for type `%s` in `%s` scope cannot be empty.',
-            $this->name,
-            $this->scope,
-        ), $previous);
+        parent::__construct(
+            sprintf(
+                'Field `%s` already defined.',
+                $this->name,
+            ),
+            $previous,
+        );
     }
 
     public function getName(): string {

@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator as Marker;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 
 use function implode;
 
-class Property extends PropertyDirective implements Operator {
+class Property extends PropertyDirective implements Marker {
     public static function getDirectiveName(): string {
         return implode('', [
             '@',

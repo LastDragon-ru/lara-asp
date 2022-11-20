@@ -6,17 +6,18 @@ use Throwable;
 
 use function sprintf;
 
-class TypeNoOperators extends BuilderException {
+class FakeTypeDefinitionUnknown extends BuilderException {
     public function __construct(
-        protected string $scope,
         protected string $name,
         Throwable $previous = null,
     ) {
-        parent::__construct(sprintf(
-            'List of operators for type `%s` in `%s` scope cannot be empty.',
-            $this->name,
-            $this->scope,
-        ), $previous);
+        parent::__construct(
+            sprintf(
+                'Fake type definition `%s` is not exists.',
+                $this->name,
+            ),
+            $previous,
+        );
     }
 
     public function getName(): string {

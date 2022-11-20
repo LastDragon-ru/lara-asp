@@ -7,6 +7,7 @@ use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseAnd;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseLeftShift;
@@ -29,13 +30,11 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\StartsWith;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 
 class Operators extends BuilderOperators {
-    public const Complex = 'Complex';
     public const Logical = 'Logical';
     public const Number  = 'Number';
     public const Enum    = 'Enum';
@@ -106,9 +105,6 @@ class Operators extends BuilderOperators {
             AnyOf::class,
             Not::class,
         ],
-        Operators::Complex => [
-            Relation::class,
-        ],
     ];
 
     public function __construct(
@@ -123,5 +119,9 @@ class Operators extends BuilderOperators {
         foreach ($operators as $type => $typeOperators) {
             $this->setOperators($type, $typeOperators);
         }
+    }
+
+    public function getScope(): string {
+        return Directive::class;
     }
 }

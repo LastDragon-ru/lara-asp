@@ -91,7 +91,7 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return \\(T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\)\\|null but returns mixed\\.$#"
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:filter\\(\\) expects \\(callable\\(mixed, \\(int\\|string\\)\\)\\: bool\\)\\|null, Closure\\(T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\)\\: bool given\\.$#"
 			count: 1
 			path: packages/graphql/src/Utils/AstManipulator.php
 

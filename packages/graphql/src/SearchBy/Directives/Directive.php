@@ -10,11 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
+use function str_starts_with;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective {
     public const Name = 'SearchBy';
@@ -28,20 +30,30 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         GRAPHQL;
     }
 
+    // <editor-fold desc="Manipulate">
+    // =========================================================================
     public function manipulateArgDefinition(
         DocumentAST &$documentAST,
         InputValueDefinitionNode &$argDefinition,
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $this->getContainer()
-            ->make(Manipulator::class, [
-                'document'    => $documentAST,
-                'builderInfo' => $this->getBuilderInfo($parentField),
-            ])
-            ->update($this->directiveNode, $argDefinition);
+        $type = $this->getArgumentTypeDefinitionNode($documentAST, $argDefinition, $parentField, Condition::class);
+
+        if (!$type) {
+            throw new FailedToCreateSearchCondition($argDefinition->name->value);
+        }
+
+        $argDefinition->type = $type;
     }
 
+    protected function isTypeName(string $name): bool {
+        return str_starts_with($name, Directive::Name);
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Handle">
+    // =========================================================================
     /**
      * @inheritDoc
      * @return EloquentBuilder<Model>|QueryBuilder
@@ -61,4 +73,5 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         // Return
         return parent::handle($builder, $property, $conditions);
     }
+    // </editor-fold>
 }

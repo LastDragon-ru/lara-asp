@@ -4,8 +4,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use Closure;
 use GraphQL\Language\AST\FieldDefinitionNode;
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\InputObjectType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -14,15 +19,18 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -46,6 +54,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         // empty
     }
 
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
     protected function getContainer(): Container {
         return $this->container;
     }
@@ -57,7 +67,10 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     protected function getDirectives(): DirectiveLocator {
         return $this->directives;
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Handle">
+    // =========================================================================
     /**
      * @template T of object
      *
@@ -160,6 +173,49 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         // Return
         return $op->call($this, $builder, $property, $value);
     }
+    // </editor-fold>
+
+    // <editor-fold desc="Manipulate">
+    // =========================================================================
+    abstract protected function isTypeName(string $name): bool;
+
+    /**
+     * @param class-string<TypeDefinition> $typeDefinition
+     */
+    protected function getArgumentTypeDefinitionNode(
+        DocumentAST $document,
+        InputValueDefinitionNode $argument,
+        FieldDefinitionNode $field,
+        string $typeDefinition,
+    ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
+        // Converted?
+        /** @var Manipulator $manipulator */
+        $manipulator = $this->getContainer()->make(Manipulator::class, [
+            'document'    => $document,
+            'builderInfo' => $this->getBuilderInfo($field),
+        ]);
+
+        if ($this->isTypeName($manipulator->getNodeTypeName($argument))) {
+            return $argument->type;
+        }
+
+        // Convert
+        $definition = $manipulator->getTypeDefinitionNode($argument);
+        $type       = null;
+
+        if ($definition instanceof InputObjectTypeDefinitionNode || $definition instanceof InputObjectType) {
+            $name = $manipulator->getNodeTypeName($definition);
+            $name = $manipulator->getType($typeDefinition, $name, $manipulator->isNullable($argument));
+            $type = $this->getArgumentTypeReferenceNode($name);
+        }
+
+        // Return
+        return $type;
+    }
+
+    protected function getArgumentTypeReferenceNode(string $name): ListTypeNode|NamedTypeNode|NonNullTypeNode {
+        return Parser::typeReference($name);
+    }
 
     protected function getBuilderInfo(FieldDefinitionNode $field): BuilderInfo {
         // Scout?
@@ -209,4 +265,5 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
         return $info;
     }
+    // </editor-fold>
 }

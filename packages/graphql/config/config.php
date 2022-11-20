@@ -2,7 +2,7 @@
 
 use LastDragon_ru\LaraASP\Core\Enum as CoreEnum;
 use LastDragon_ru\LaraASP\Eloquent\Enum as EloquentEnum;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 
 /**
  * -----------------------------------------------------------------------------

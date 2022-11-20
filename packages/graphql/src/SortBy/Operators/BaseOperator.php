@@ -7,11 +7,12 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 
 use function implode;
 
-abstract class BaseOperator extends OperatorDirective {
+abstract class BaseOperator extends OperatorDirective implements Operator {
     public static function getDirectiveName(): string {
         return implode('', [
             '@',

@@ -3,20 +3,13 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use Closure;
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\InputObjectField;
-use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\Type;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\ComplexOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property as PropertyOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -24,63 +17,25 @@ use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
 use function reset;
 
-class Relation extends BaseOperator implements ComplexOperator {
+class Relation extends BaseOperator {
     public function __construct(
         protected PropertyOperator $property,
     ) {
         parent::__construct();
     }
 
+    // <editor-fold desc="Operator">
+    // =========================================================================
     public static function getName(): string {
         return 'relation';
     }
 
-    public function getFieldDescription(): string {
-        return 'Relationship condition.';
+    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
+        return $provider->getType(RelationType::class, $type, $nullable);
     }
 
-    public function getDefinition(
-        Manipulator $ast,
-        InputValueDefinitionNode|InputObjectField $field,
-        InputObjectTypeDefinitionNode|InputObjectType $type,
-        string $name,
-        bool $nullable,
-    ): InputObjectTypeDefinitionNode {
-        $count = $ast->getScalarType($ast->getScalarTypeNode(Type::INT), false);
-        $where = $ast->getInputType($type);
-
-        return Parser::inputObjectTypeDefinition(
-            <<<DEF
-            """
-            Conditions for the related objects (`has()`/`doesntHave()`) for `{$ast->getNodeTypeFullName($type)}`.
-
-            See also:
-            * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-            * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-            """
-            input {$name} {
-                """
-                Additional conditions.
-                """
-                where: {$where}
-
-                """
-                Count conditions.
-                """
-                count: {$count}
-
-                """
-                Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-                """
-                exists: Boolean
-
-                """
-                Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-                """
-                notExists: Boolean! = false
-            }
-            DEF,
-        );
+    public function getFieldDescription(): string {
+        return 'Relationship condition.';
     }
 
     public function isBuilderSupported(object $builder): bool {

@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
 use function array_map;
@@ -44,18 +43,27 @@ abstract class Operators {
         return $this->container;
     }
 
+    abstract public function getScope(): string;
+
+    /**
+     * @template T of Operator
+     *
+     * @param class-string<T> $operator
+     *
+     * @return T
+     */
+    public function getOperator(string $operator): Operator {
+        return $this->container->make($operator);
+    }
+
     public function hasOperators(string $type): bool {
-        return isset($this->operators[$type]);
+        return isset($this->operators[$type]) && !!$this->operators[$type];
     }
 
     /**
      * @param array<class-string<Operator>|string> $operators
      */
     public function setOperators(string $type, array $operators): void {
-        if (!$operators) {
-            throw new TypeNoOperators($type);
-        }
-
         $this->operators[$type] = $operators;
     }
 
@@ -65,7 +73,7 @@ abstract class Operators {
     public function getOperators(string $type, bool $nullable): array {
         // Is known?
         if (!$this->hasOperators($type)) {
-            throw new TypeUnknown($type);
+            throw new TypeUnknown($this->getScope(), $type);
         }
 
         // Base
@@ -85,9 +93,8 @@ abstract class Operators {
         sort($operators);
 
         // Create Instances
-        $container = $this->getContainer();
-        $operators = array_map(static function (string $operator) use ($container): Operator {
-            return $container->make($operator);
+        $operators = array_map(function (string $operator): Operator {
+            return $this->getOperator($operator);
         }, array_unique($operators));
 
         // Add `null` for nullable

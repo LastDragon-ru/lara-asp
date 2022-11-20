@@ -10,7 +10,8 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -135,7 +136,7 @@ class DirectiveTest extends TestCase {
             ],
         ]);
 
-        self::expectExceptionObject(new FailedToCreateSortClause('type TestType'));
+        self::expectExceptionObject(new TypeDefinitionImpossibleToCreateType(Clause::class, 'TestType', true));
 
         $registry = $this->app->make(TypeRegistry::class);
         $registry->register($type);

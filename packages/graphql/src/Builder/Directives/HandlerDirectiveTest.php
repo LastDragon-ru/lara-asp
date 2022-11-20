@@ -51,6 +51,10 @@ class HandlerDirectiveTest extends TestCase {
             public function getBuilderInfo(FieldDefinitionNode $field): BuilderInfo {
                 return parent::getBuilderInfo($field);
             }
+
+            protected function isTypeName(string $name): bool {
+                return false;
+            }
         };
 
         $actual = $directive->getBuilderInfo($field);
