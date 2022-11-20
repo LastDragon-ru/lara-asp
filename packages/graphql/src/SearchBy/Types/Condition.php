@@ -62,7 +62,9 @@ class Condition extends InputObject {
         string $type,
         ?bool $nullable,
     ): array {
-        return $manipulator->getTypeOperators($this->getScope(), Operators::Logical, false);
+        return $manipulator->hasTypeOperators($this->getScope(), Operators::Logical)
+            ? $manipulator->getTypeOperators($this->getScope(), Operators::Logical, false)
+            : [];
     }
 
     /**
