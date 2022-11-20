@@ -354,7 +354,7 @@ class Formatter {
 
         // Format
         return $unit === 0
-            ? $this->integer($bytes).($bytes > 0 ? " {$units[$unit]}" : '')
+            ? $this->integer($bytes)." {$units[$unit]}"
             : $this->decimal($bytes, $decimals)." {$units[$unit]}";
     }
 
