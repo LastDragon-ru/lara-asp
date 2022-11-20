@@ -16,8 +16,9 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings as SettingsCo
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators as SearchByOperators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -64,7 +65,8 @@ class Provider extends ServiceProvider {
         $this->callAfterResolving(
             Manipulator::class,
             static function (Manipulator $manipulator, Container $container): void {
-                $manipulator->addOperators($container->make(Operators::class));
+                $manipulator->addOperators($container->make(SearchByOperators::class));
+                $manipulator->addOperators($container->make(SortByOperators::class));
             },
         );
     }

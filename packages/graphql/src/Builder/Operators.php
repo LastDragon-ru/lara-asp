@@ -98,7 +98,7 @@ abstract class Operators {
         }, array_unique($operators));
 
         // Add `null` for nullable
-        if ($nullable) {
+        if ($nullable && $this->hasOperators(static::Null)) {
             array_push($operators, ...$this->getOperators(static::Null, false));
         }
 

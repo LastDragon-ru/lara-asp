@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\PropertyOperator;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
@@ -45,6 +46,20 @@ class Clause extends InputObject {
         $description = "Sort clause for `{$typeName}` (only one property allowed at a time).";
 
         return $description;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getTypeOperators(
+        Manipulator $manipulator,
+        string $name,
+        string $type,
+        ?bool $nullable,
+    ): array {
+        return $manipulator->hasTypeOperators($this->getScope(), Operators::Extra)
+            ? $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false)
+            : [];
     }
 
     protected function isFieldConvertable(

@@ -144,7 +144,7 @@ To work with custom types you need to configure supported operators for each of 
 php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider --tag=config
 ```
 
-And then edit `config/lara-asp-graphql.php`
+And then edit `config/lara-asp-graphql.php`:
 
 ```php
 <?php declare(strict_types = 1);
@@ -285,6 +285,63 @@ query {
 }
 ```
 
+### Order by random
+
+It is also possible to sort records in random order, but it is not enabled by default. To enable it you just need to add [`Random`](./src/SortBy/Operators/Extra/Random.php) operator for `Extra` type in `config/lara-asp-graphql.php`:
+
+```php
+<?php declare(strict_types = 1);
+
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
+
+/**
+ * -----------------------------------------------------------------------------
+ * GraphQL Settings
+ * -----------------------------------------------------------------------------
+ *
+ * @var array{
+ *      sort_by: array{
+ *          operators: array<string, array<string|class-string<Operator>>>
+ *      },
+ *      } $settings
+ */
+$settings = [
+    /**
+     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective @sortBy} directive.
+     */
+    'sort_by'   => [
+        /**
+         * Operators
+         * ---------------------------------------------------------------------
+         *
+         * You can (re)define types and supported operators here.
+         *
+         * @see Operator
+         */
+        'operators' => [
+            SortByOperators::Extra => [
+                Random::class,
+            ],
+        ],
+    ],
+];
+
+return $settings;
+
+```
+
+And after this, you can 🎉
+
+```graphql
+query {
+    # ORDER BY RANDOM()
+    comments(order: [
+        {random: yes}
+    ])
+}
+```
 
 ## Scout
 

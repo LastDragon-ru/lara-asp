@@ -8,9 +8,13 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
+use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -158,14 +162,20 @@ class DirectiveTest extends TestCase {
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
      * @param Closure(static): object                                $builderFactory
+     * @param Closure(static): void                                  $prepare
      */
     public function testHandleBuilder(
         array|Exception $expected,
         Closure $builderFactory,
         mixed $value,
+        ?Closure $prepare = null,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
+        }
+
+        if ($prepare) {
+            $prepare($this);
         }
 
         $this->useGraphQLSchema(
@@ -219,7 +229,16 @@ class DirectiveTest extends TestCase {
                         ]);
                 },
                 '~full.graphql',
-                null,
+                static function (TestCase $test): void {
+                    $package = Package::Name;
+                    $config  = $test->app->make(Repository::class);
+
+                    $config->set("{$package}.sort_by.operators", [
+                        Operators::Extra => [
+                            Random::class,
+                        ],
+                    ]);
+                },
             ],
             'example' => [
                 static function (self $test): GraphQLExpectedSchema {
@@ -254,6 +273,7 @@ class DirectiveTest extends TestCase {
                     [
                         // empty
                     ],
+                    null,
                 ],
                 'empty operators'     => [
                     [
@@ -271,6 +291,7 @@ class DirectiveTest extends TestCase {
                             // empty
                         ],
                     ],
+                    null,
                 ],
                 'too many properties' => [
                     new ConditionTooManyProperties(['a', 'b']),
@@ -280,6 +301,7 @@ class DirectiveTest extends TestCase {
                             'b' => 'desc',
                         ],
                     ],
+                    null,
                 ],
                 'null'                => [
                     [
@@ -293,6 +315,7 @@ class DirectiveTest extends TestCase {
                         'bindings' => [],
                     ],
                     null,
+                    null,
                 ],
                 'valid condition'     => [
                     [
@@ -303,7 +326,8 @@ class DirectiveTest extends TestCase {
                                 "tmp"
                             order by
                                 "a" asc,
-                                "b" desc
+                                "b" desc,
+                                RANDOM()
                         SQL
                         ,
                         'bindings' => [],
@@ -315,7 +339,20 @@ class DirectiveTest extends TestCase {
                         [
                             'b' => 'desc',
                         ],
+                        [
+                            'random' => 'yes',
+                        ],
                     ],
+                    static function (TestCase $test): void {
+                        $package = Package::Name;
+                        $config  = $test->app->make(Repository::class);
+
+                        $config->set("{$package}.sort_by.operators", [
+                            Operators::Extra => [
+                                Random::class,
+                            ],
+                        ]);
+                    },
                 ],
             ]),
         ))->getData();

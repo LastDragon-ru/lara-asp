@@ -6,6 +6,10 @@ enum SortByTypeDirection {
     desc
 }
 
+enum SortByTypeFlag {
+    yes
+}
+
 """
 Sort clause for `input Nested` (only one property allowed at a time).
 """
@@ -15,6 +19,12 @@ input SortByClauseNested {
     """
     nested: SortByClauseNested
     @sortByProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
 
     """
     Property clause.
@@ -62,6 +72,12 @@ input SortByClauseProperties {
     """
     nestedNotNull: SortByClauseNested
     @sortByProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
 }
 
 """
@@ -91,6 +107,12 @@ input SortByQueryClauseProperties {
     """
     idScalarNotNull: SortByTypeDirection
     @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
 }
 
 """
@@ -102,6 +124,12 @@ input SortByScoutClauseNested {
     """
     nested: SortByScoutClauseNested
     @sortByProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
 
     """
     Property clause.
@@ -149,6 +177,12 @@ input SortByScoutClauseProperties {
     """
     nestedNotNull: SortByScoutClauseNested
     @sortByProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
 }
 
 type Query {
@@ -184,6 +218,10 @@ on
     | ARGUMENT_DEFINITION
 
 directive @sortByOperatorProperty
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @sortByOperatorRandom
 on
     | INPUT_FIELD_DEFINITION
 
