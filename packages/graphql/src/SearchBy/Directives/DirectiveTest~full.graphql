@@ -6,6 +6,8 @@ type Query {
   c(where: InputB @searchBy): ID! @all
 
   d(where: NestedB @searchBy): ID! @all
+
+  e(search: String @search, where: InputA @searchBy): ID! @all
 }
 
 input InputA {

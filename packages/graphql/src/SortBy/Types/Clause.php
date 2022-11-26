@@ -57,9 +57,7 @@ class Clause extends InputObject {
         string $type,
         ?bool $nullable,
     ): array {
-        return $manipulator->hasTypeOperators($this->getScope(), Operators::Extra)
-            ? $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false)
-            : [];
+        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false);
     }
 
     protected function isFieldConvertable(

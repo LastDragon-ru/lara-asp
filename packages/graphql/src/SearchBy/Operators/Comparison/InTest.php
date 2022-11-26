@@ -3,14 +3,20 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+
+use function implode;
 
 /**
  * @internal
@@ -45,6 +51,37 @@ class InTest extends TestCase {
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
+
+    /**
+     * @covers ::call
+     *
+     * @dataProvider dataProviderCallScout
+     *
+     * @param array<string, mixed>          $expected
+     * @param Closure(static): ScoutBuilder $builderFactory
+     * @param Closure(static): Argument     $argumentFactory
+     * @param Closure():FieldResolver|null  $resolver
+     */
+    public function testCallScout(
+        array $expected,
+        Closure $builderFactory,
+        Property $property,
+        Closure $argumentFactory,
+        Closure $resolver = null,
+    ): void {
+        if ($resolver) {
+            $this->override(FieldResolver::class, $resolver);
+        }
+
+        $operator = $this->app->make(In::class);
+        $property = $property->getChild('operator name should be ignored');
+        $argument = $argumentFactory($this);
+        $search   = Mockery::mock(Handler::class);
+        $builder  = $builderFactory($this);
+        $builder  = $operator->call($search, $builder, $property, $argument);
+
+        self::assertScoutQueryEquals($expected, $builder);
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -74,6 +111,50 @@ class InTest extends TestCase {
                     new Property('path', 'to', 'property'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[String!]!', ['a', 'b', 'c']);
+                    },
+                ],
+            ]),
+        ))->getData();
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function dataProviderCallScout(): array {
+        return (new CompositeDataProvider(
+            new ScoutBuilderDataProvider(),
+            new ArrayDataProvider([
+                'property'               => [
+                    [
+                        'whereIns' => [
+                            'path.to.property' => [1, 2, 3],
+                        ],
+                    ],
+                    new Property('path', 'to', 'property'),
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
+                    },
+                    null,
+                ],
+                'property with resolver' => [
+                    [
+                        'whereIns' => [
+                            'properties/path/to/property' => [1, 2, 3],
+                        ],
+                    ],
+                    new Property('path', 'to', 'property'),
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
+                    },
+                    static function (): FieldResolver {
+                        return new class() implements FieldResolver {
+                            /**
+                             * @inheritDoc
+                             */
+                            public function getField(Model $model, Property $property): string {
+                                return 'properties/'.implode('/', $property->getPath());
+                            }
+                        };
                     },
                 ],
             ]),

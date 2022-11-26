@@ -24,7 +24,6 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 
 use function is_string;
@@ -62,9 +61,7 @@ class Condition extends InputObject {
         string $type,
         ?bool $nullable,
     ): array {
-        return $manipulator->hasTypeOperators($this->getScope(), Operators::Extra)
-            ? $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false)
-            : [];
+        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false);
     }
 
     /**
@@ -112,8 +109,32 @@ class Condition extends InputObject {
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
         InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $fieldType,
         ?bool $fieldNullable,
-    ): OperatorContract {
-        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType, $fieldNullable)
-            ?? $manipulator->getOperator($this->getScope(), Relation::class);
+    ): ?OperatorContract {
+        // Directive?
+        $directive = parent::getFieldDirectiveOperator(
+            Operator::class,
+            $manipulator,
+            $field,
+            $fieldType,
+            $fieldNullable,
+        );
+
+        if ($directive) {
+            return $directive;
+        }
+
+        // Condition
+        $builder   = $manipulator->getBuilderInfo()->getBuilder();
+        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Condition, false);
+        $condition = null;
+
+        foreach ($operators as $operator) {
+            if ($operator->isBuilderSupported($builder)) {
+                $condition = $operator;
+                break;
+            }
+        }
+
+        return $condition;
     }
 }

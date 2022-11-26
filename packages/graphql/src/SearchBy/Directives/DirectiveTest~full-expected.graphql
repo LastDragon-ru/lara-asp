@@ -983,6 +983,316 @@ input SearchByScalarStringOrNull {
     @searchByOperatorStartsWith
 }
 
+"""
+Available conditions for `input InputA` (only one property allowed at a time).
+"""
+input SearchByScoutConditionInputA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionInputA!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScoutScalarBooleanOrNull
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScoutScalarBoolean
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    enum: SearchByScoutEnumEnumAOrNull
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByScoutEnumEnumA
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScoutScalarFloatOrNull
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScoutScalarFloat
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    idScalar: SearchByScoutScalarIDOrNull
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScoutScalarID
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    inScalarNotNull: SearchByScoutScalarInt
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    intScalar: SearchByScoutScalarIntOrNull
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionNestedA
+    @searchByCondition
+
+    """
+    Property condition.
+    """
+    nestedNotNull: SearchByScoutConditionNestedA
+    @searchByCondition
+
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScoutScalarStringOrNull
+    @searchByProperty
+
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScoutScalarString
+    @searchByProperty
+}
+
+"""
+Available conditions for `input NestedA` (only one property allowed at a time).
+"""
+input SearchByScoutConditionNestedA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionNestedA!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionNestedA
+    @searchByCondition
+
+    """
+    Property condition.
+    """
+    value: SearchByScoutScalarStringOrNull
+    @searchByProperty
+}
+
+"""
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByScoutEnumEnumA {
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByScoutEnumEnumAOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar Boolean!` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarBoolean {
+    """
+    Equal (`=`).
+    """
+    equal: Boolean
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Boolean` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarBooleanOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Boolean
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Float!` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarFloat {
+    """
+    Equal (`=`).
+    """
+    equal: Float
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Float!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar Float` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarFloatOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Float
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Float!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar ID!` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarID {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [ID!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarIDOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [ID!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar Int!` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarInt {
+    """
+    Equal (`=`).
+    """
+    equal: Int
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Int!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar Int` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarIntOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Int
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Int!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar String!` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarString {
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarStringOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+}
+
 input SearchByTypeRangeFloat {
     max: Float!
     min: Float!
@@ -1017,6 +1327,15 @@ type Query {
         @searchBy
     ): ID!
     @all
+
+    e(
+        search: String
+        @search
+
+        where: SearchByScoutConditionInputA
+        @searchBy
+    ): ID!
+    @all
 }
 
 """
@@ -1025,6 +1344,10 @@ Use Input as Search Conditions for the current Builder.
 directive @searchBy
 on
     | ARGUMENT_DEFINITION
+
+directive @searchByCondition
+on
+    | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorAllOf
 on
