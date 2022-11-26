@@ -343,19 +343,6 @@ query {
 }
 ```
 
-## Scout
-
-[Scout](https://laravel.com/docs/scout) is also supported 🤩 (tested on v9). By default `@sortBy` will convert nested/related properties into dot string: `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`ScoutColumnResolver`](./src/SortBy/Contracts/ScoutColumnResolver.php):
-
-```php
-// AppProvider
-
-$this->app->bind(
-    LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver::class,
-    MyScoutColumnResolver::class,
-);
-```
-
 
 ## Input type auto-generation
 
@@ -366,6 +353,19 @@ As you can see in the example above you can use the special placeholder `_` inst
 - with `@sortByIgnored` directive
 - with any directive that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
 
+
+# Scout
+
+[Scout](https://laravel.com/docs/scout) is also supported 🤩 (tested on v9). By default `@searchBy`/`@sortBy` will convert nested/related properties into dot string: eg `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`FieldResolver`](./src/Builder/Contracts/Scout/FieldResolver.php):
+
+```php
+// AppProvider
+
+$this->app->bind(
+    LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver::class,
+    MyScoutColumnResolver::class,
+);
+```
 
 # Relations
 
