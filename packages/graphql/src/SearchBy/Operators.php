@@ -30,27 +30,29 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\StartsWith;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 
 class Operators extends BuilderOperators {
-    public const Extra  = 'Extra';
-    public const Number = 'Number';
-    public const Enum   = 'Enum';
+    public const Extra     = 'Extra';
+    public const Number    = 'Number';
+    public const Enum      = 'Enum';
+    public const Condition = 'Condition';
 
     /**
      * @inheritdoc
      */
     protected array $operators = [
         // Standard types
-        Operators::ID      => [
+        Operators::ID        => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        Operators::Int     => [
+        Operators::Int       => [
             Operators::Number,
             BitwiseOr::class,
             BitwiseXor::class,
@@ -58,14 +60,14 @@ class Operators extends BuilderOperators {
             BitwiseLeftShift::class,
             BitwiseRightShift::class,
         ],
-        Operators::Float   => [
+        Operators::Float     => [
             Operators::Number,
         ],
-        Operators::Boolean => [
+        Operators::Boolean   => [
             Equal::class,
             NotEqual::class,
         ],
-        Operators::String  => [
+        Operators::String    => [
             Equal::class,
             NotEqual::class,
             Like::class,
@@ -78,7 +80,7 @@ class Operators extends BuilderOperators {
         ],
 
         // Special types
-        Operators::Number  => [
+        Operators::Number    => [
             Equal::class,
             NotEqual::class,
             LessThan::class,
@@ -90,20 +92,23 @@ class Operators extends BuilderOperators {
             Between::class,
             NotBetween::class,
         ],
-        Operators::Enum    => [
+        Operators::Enum      => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        Operators::Null    => [
+        Operators::Null      => [
             IsNull::class,
             IsNotNull::class,
         ],
-        Operators::Extra   => [
+        Operators::Extra     => [
             AllOf::class,
             AnyOf::class,
             Not::class,
+        ],
+        Operators::Condition => [
+            Relation::class,
         ],
     ];
 
