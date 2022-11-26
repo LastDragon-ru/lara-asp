@@ -19,7 +19,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidTypeName;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeNoOperators;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Pagination\PaginationType;
@@ -117,22 +116,24 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return $this->getContainer()->make($operator);
     }
 
+    /**
+     * Method doesn't check Builder!
+     */
     public function hasTypeOperators(string $scope, string $type): bool {
         return (bool) ($this->operators[$scope] ?? null)?->hasOperators($type);
     }
 
     /**
-     * @return non-empty-list<Operator>
+     * @return list<Operator>
      */
     public function getTypeOperators(string $scope, string $type, bool $nullable): array {
-        $operators = (array) ($this->operators[$scope] ?? null)?->getOperators($type, $nullable);
+        $operators = $this->operators[$scope] ?? null;
+        $operators = $operators && $operators->hasOperators($type)
+            ? $operators->getOperators($type, $nullable)
+            : [];
         $operators = array_filter($operators, function (Operator $operator): bool {
             return $operator->isBuilderSupported($this->getBuilderInfo()->getBuilder());
         });
-
-        if (!$operators) {
-            throw new TypeNoOperators($scope, $type);
-        }
 
         return $operators;
     }

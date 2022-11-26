@@ -36,10 +36,16 @@ class Scalar implements TypeDefinition {
             return null;
         }
 
+        // Operators
+        $scope     = Directive::class;
+        $nullable  = (bool) $nullable;
+        $operators = $manipulator->getTypeOperators($scope, $type, $nullable);
+
+        if (!$operators) {
+            return null;
+        }
+
         // Definition
-        $scope      = Directive::class;
-        $nullable   = (bool) $nullable;
-        $operators  = $manipulator->getTypeOperators($scope, $type, $nullable);
         $content    = $manipulator->getOperatorsFields($operators, $type);
         $typeName   = $manipulator->getNodeTypeFullName($type).($nullable ? '' : '!');
         $definition = Parser::inputObjectTypeDefinition(
