@@ -8,17 +8,20 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
+
 use function str_starts_with;
 
-class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective {
+class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
     public const Name = 'SearchBy';
 
     public static function definition(): string {
@@ -59,6 +62,10 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
      * @return EloquentBuilder<Model>|QueryBuilder
      */
     public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
+        return $this->handleAnyBuilder($builder, $value);
+    }
+
+    public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {
         return $this->handleAnyBuilder($builder, $value);
     }
 
