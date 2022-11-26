@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Testing\Assertions\Application\CronableAssertions;
 trait Assertions {
     use XmlAssertions;
     use JsonAssertions;
+    use ScoutAssertions;
     use CronableAssertions;
     use ResponseAssertions;
     use DatabaseAssertions;
