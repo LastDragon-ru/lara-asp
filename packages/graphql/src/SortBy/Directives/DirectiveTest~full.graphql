@@ -6,6 +6,8 @@ type Query {
     )
 
     scout(search: String @search, order: Properties @sortBy): ID! @all
+
+    placeholder(order: _ @sortBy): Object! @all
 }
 
 input Properties {
@@ -16,6 +18,9 @@ input Properties {
     enum: Value
     enumNotNull: Value!
     ignored: ID! @sortByIgnored
+    resolver: ID! @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
 }
 
 input Nested {
@@ -26,4 +31,22 @@ input Nested {
 enum Value {
     one
     two
+}
+
+type Object {
+    idScalar: ID
+    idScalarNotNull: ID!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+    enum: Value
+    enumNotNull: Value!
+    ignored: ID! @sortByIgnored
+    resolver: ID! @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+}
+
+type ObjectNested {
+    value: String
+    nested: ObjectNested
 }

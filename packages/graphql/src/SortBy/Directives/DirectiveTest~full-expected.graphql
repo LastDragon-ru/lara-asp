@@ -10,6 +10,11 @@ enum SortByTypeFlag {
     yes
 }
 
+enum Value {
+    one
+    two
+}
+
 """
 Sort clause for `input Nested` (only one property allowed at a time).
 """
@@ -18,6 +23,76 @@ input SortByClauseNested {
     Property clause.
     """
     nested: SortByClauseNested
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+
+    """
+    Property clause.
+    """
+    value: SortByTypeDirection
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `type Object` (only one property allowed at a time).
+"""
+input SortByClauseObject {
+    """
+    Property clause.
+    """
+    enum: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    nested: SortByClauseObjectNested
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    nestedNotNull: SortByClauseObjectNested
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+}
+
+"""
+Sort clause for `type ObjectNested` (only one property allowed at a time).
+"""
+input SortByClauseObjectNested {
+    """
+    Property clause.
+    """
+    nested: SortByClauseObjectNested
     @sortByOperatorProperty
 
     """
@@ -185,11 +260,40 @@ input SortByScoutClauseProperties {
     @sortByOperatorRandom
 }
 
+type Object {
+    enum: Value
+    enumNotNull: Value!
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: ID!
+    @sortByIgnored
+
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: ID!
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+}
+
+type ObjectNested {
+    nested: ObjectNested
+    value: String
+}
+
 type Query {
     eloquent(
         order: [SortByClauseProperties!]
         @sortBy
     ): ID!
+    @all
+
+    placeholder(
+        order: [SortByClauseObject!]
+        @sortBy
+    ): Object!
     @all
 
     query(
@@ -216,6 +320,14 @@ Convert Input into Sort Clause.
 directive @sortBy
 on
     | ARGUMENT_DEFINITION
+
+"""
+Marks that field should be excluded from sort.
+"""
+directive @sortByIgnored
+on
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
 
 directive @sortByOperatorField
 on

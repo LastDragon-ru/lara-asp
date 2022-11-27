@@ -222,7 +222,6 @@ class DirectiveTest extends TestCase {
                         ->setUnusedTypes([
                             'Properties',
                             'Nested',
-                            'Value',
                             'Float',
                             'Int',
                             'Boolean',
