@@ -38,8 +38,8 @@ Let's start:
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 type Query {
-  users(where: UsersQuery @searchBy): ID! @all
-  comments(where: CommentsQuery @searchBy): ID! @all
+  users(where: _ @searchBy): [User!]! @all
+  comments(where: CommentsQuery @searchBy): [Comment!]! @all
 }
 
 input UsersQuery {
@@ -51,6 +51,17 @@ input CommentsQuery {
   text: String!
   user: UsersQuery
   date: Date
+}
+
+type User {
+    id: ID!
+    name: String!
+}
+
+input Comment {
+    text: String!
+    user: User
+    date: Date
 }
 ```
 
@@ -128,6 +139,13 @@ query {
 }
 ```
 
+## Input type auto-generation
+
+As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@searchBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
+
+- with `@field` directive
+- with `@searchByIgnored` directive
+- with any directive that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
 
 ## Config
 
@@ -227,7 +245,6 @@ There are three types of operators:
         user: UsersQuery @myComplexOperator
     }
     ```
-
 
 # `@sortBy` directive
 

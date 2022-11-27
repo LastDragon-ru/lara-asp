@@ -2,6 +2,12 @@ enum SearchByTypeFlag {
     yes
 }
 
+input Comment {
+    date: Date
+    text: String!
+    user: User
+}
+
 """
 Conditions for the related objects (`has()`/`doesntHave()`) for `input UsersQuery`.
 
@@ -70,6 +76,41 @@ input SearchByConditionCommentsQuery {
     """
     user: SearchByComplexRelationUsersQuery
     @searchByOperatorRelation
+}
+
+"""
+Available conditions for `type User` (only one property allowed at a time).
+"""
+input SearchByConditionUser {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionUser!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionUser!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorProperty
+
+    """
+    Not.
+    """
+    not: SearchByConditionUser
+    @searchByOperatorNot
 }
 
 """
@@ -332,14 +373,19 @@ type Query {
     comments(
         where: SearchByConditionCommentsQuery
         @searchBy
-    ): ID!
+    ): [Comment!]!
     @all
 
     users(
-        where: SearchByConditionUsersQuery
+        where: SearchByConditionUser
         @searchBy
-    ): ID!
+    ): [User!]!
     @all
+}
+
+type User {
+    id: ID!
+    name: String!
 }
 
 """
