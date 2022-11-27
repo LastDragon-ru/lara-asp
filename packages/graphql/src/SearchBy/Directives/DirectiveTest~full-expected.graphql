@@ -7,6 +7,11 @@ enum SearchByTypeFlag {
     yes
 }
 
+input ObjectNested {
+    nested: ObjectNested
+    value: String
+}
+
 """
 Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedA`.
 
@@ -95,6 +100,35 @@ input SearchByComplexRelationNestedC {
 }
 
 """
+Conditions for the related objects (`has()`/`doesntHave()`) for `input ObjectNested`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByComplexRelationObjectNested {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionObjectNested
+}
+
+"""
 Available conditions for `input InputA` (only one property allowed at a time).
 """
 input SearchByConditionInputA {
@@ -114,61 +148,61 @@ input SearchByConditionInputA {
     Property condition.
     """
     booleanScalar: SearchByScalarBooleanOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     booleanScalarNotNull: SearchByScalarBoolean
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     enum: SearchByEnumEnumAOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     enumNotNull: SearchByEnumEnumA
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     floatScalar: SearchByScalarFloatOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     floatScalarNotNull: SearchByScalarFloat
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     idScalar: SearchByScalarIDOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     idScalarNotNull: SearchByScalarID
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     inScalarNotNull: SearchByScalarInt
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     intScalar: SearchByScalarIntOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Relationship condition.
@@ -192,13 +226,13 @@ input SearchByConditionInputA {
     Property condition.
     """
     stringScalar: SearchByScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     stringScalarNotNull: SearchByScalarString
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -221,7 +255,7 @@ input SearchByConditionInputB {
     Property condition.
     """
     id: SearchByScalarIDOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Not.
@@ -262,7 +296,7 @@ input SearchByConditionNestedA {
     Property condition.
     """
     value: SearchByScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -321,6 +355,148 @@ input SearchByConditionNestedC {
     """
     not: SearchByConditionNestedC
     @searchByOperatorNot
+}
+
+"""
+Available conditions for `type Object` (only one property allowed at a time).
+"""
+input SearchByConditionObject {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionObject!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionObject!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScalarBooleanOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScalarBoolean
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enum: SearchByEnumEnumAOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByEnumEnumA
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScalarFloatOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScalarFloat
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalar: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    inScalarNotNull: SearchByScalarInt
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalar: SearchByScalarIntOrNull
+    @searchByOperatorProperty
+
+    """
+    Relationship condition.
+    """
+    nested: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    nestedNotNull: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Not.
+    """
+    not: SearchByConditionObject
+    @searchByOperatorNot
+
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScalarStringOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScalarString
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `input ObjectNested` (only one property allowed at a time).
+"""
+input SearchByConditionObjectNested {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionObjectNested!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionObjectNested!]
+    @searchByOperatorAnyOf
+
+    """
+    Relationship condition.
+    """
+    nested: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Not.
+    """
+    not: SearchByConditionObjectNested
+    @searchByOperatorNot
+
+    """
+    Property condition.
+    """
+    value: SearchByScalarStringOrNull
+    @searchByOperatorProperty
 }
 
 """
@@ -997,85 +1173,85 @@ input SearchByScoutConditionInputA {
     Property condition.
     """
     booleanScalar: SearchByScoutScalarBooleanOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     booleanScalarNotNull: SearchByScoutScalarBoolean
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     enum: SearchByScoutEnumEnumAOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     enumNotNull: SearchByScoutEnumEnumA
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     floatScalar: SearchByScoutScalarFloatOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     floatScalarNotNull: SearchByScoutScalarFloat
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     idScalar: SearchByScoutScalarIDOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     idScalarNotNull: SearchByScoutScalarID
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     inScalarNotNull: SearchByScoutScalarInt
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     intScalar: SearchByScoutScalarIntOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByCondition
+    @searchByOperatorCondition
 
     """
     Property condition.
     """
     nestedNotNull: SearchByScoutConditionNestedA
-    @searchByCondition
+    @searchByOperatorCondition
 
     """
     Property condition.
     """
     stringScalar: SearchByScoutScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     stringScalarNotNull: SearchByScoutScalarString
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -1092,13 +1268,13 @@ input SearchByScoutConditionNestedA {
     Property condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByCondition
+    @searchByOperatorCondition
 
     """
     Property condition.
     """
     value: SearchByScoutScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -1303,6 +1479,33 @@ input SearchByTypeRangeInt {
     min: Int!
 }
 
+type Object {
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    enum: EnumA
+    enumNotNull: EnumA!
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: String
+    @searchByIgnored
+
+    inScalarNotNull: Int!
+    intScalar: Int
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: Float
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    stringScalar: String
+    stringScalarNotNull: String!
+}
+
 type Query {
     a(
         where: SearchByConditionInputA
@@ -1336,6 +1539,12 @@ type Query {
         @searchBy
     ): ID!
     @all
+
+    f(
+        where: SearchByConditionObject
+        @searchBy
+    ): Object!
+    @all
 }
 
 """
@@ -1345,8 +1554,12 @@ directive @searchBy
 on
     | ARGUMENT_DEFINITION
 
-directive @searchByCondition
+"""
+Marks that field should be excluded from search.
+"""
+directive @searchByIgnored
 on
+    | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorAllOf
@@ -1378,6 +1591,10 @@ on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorBitwiseXor
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorCondition
 on
     | INPUT_FIELD_DEFINITION
 
@@ -1445,14 +1662,15 @@ directive @searchByOperatorNotLike
 on
     | INPUT_FIELD_DEFINITION
 
+directive @searchByOperatorProperty
+on
+    | INPUT_FIELD_DEFINITION
+
 directive @searchByOperatorRelation
 on
+    | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorStartsWith
-on
-    | INPUT_FIELD_DEFINITION
-
-directive @searchByProperty
 on
     | INPUT_FIELD_DEFINITION

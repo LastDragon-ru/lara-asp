@@ -14,13 +14,13 @@ input SortByClauseA {
     Property clause.
     """
     flag: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
@@ -31,13 +31,13 @@ input SortByClauseB {
     Property clause.
     """
     child: SortByClauseA
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
@@ -48,13 +48,13 @@ input SortByClauseC {
     Property clause.
     """
     flag: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
@@ -65,7 +65,7 @@ input SortByClauseD {
     Property clause.
     """
     child: SortByClauseC
-    @sortByProperty
+    @sortByOperatorProperty
 }
 
 type C {
@@ -105,10 +105,10 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorProperty
+directive @sortByOperatorField
 on
     | INPUT_FIELD_DEFINITION
 
-directive @sortByProperty
+directive @sortByOperatorProperty
 on
     | INPUT_FIELD_DEFINITION

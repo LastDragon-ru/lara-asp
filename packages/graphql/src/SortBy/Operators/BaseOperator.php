@@ -4,23 +4,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Str;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
-
-use function implode;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Traits\DirectiveName;
 
 abstract class BaseOperator extends OperatorDirective implements Operator {
-    public static function getDirectiveName(): string {
-        return implode('', [
-            '@',
-            Str::camel(Directive::Name),
-            'Operator',
-            Str::studly(static::getName()),
-        ]);
-    }
+    use DirectiveName;
 
     public function isBuilderSupported(object $builder): bool {
         return $builder instanceof EloquentBuilder

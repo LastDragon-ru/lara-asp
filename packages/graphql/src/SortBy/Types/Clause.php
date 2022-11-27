@@ -20,9 +20,8 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\PropertyOperator;
-use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 
 class Clause extends InputObject {
     public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
@@ -33,7 +32,7 @@ class Clause extends InputObject {
     }
 
     protected function getScope(): string {
-        return Directive::class;
+        return Directive::getScope();
     }
 
     protected function getTypeDescription(
@@ -74,11 +73,6 @@ class Clause extends InputObject {
             return false;
         }
 
-        // Resolver?
-        if ($manipulator->getNodeDirective($field, FieldResolver::class)) {
-            return false;
-        }
-
         // Ignored?
         if ($manipulator->getNodeDirective($field, Ignored::class)) {
             return false;
@@ -108,7 +102,7 @@ class Clause extends InputObject {
             $operator = $this->getObjectDefaultOperator($manipulator, $field, $fieldType, $fieldNullable);
         } else {
             $type     = $manipulator->getType(Direction::class, null, null);
-            $operator = $manipulator->getOperator($this->getScope(), PropertyOperator::class);
+            $operator = $manipulator->getOperator($this->getScope(), Field::class);
         }
 
         return [$operator, $type];

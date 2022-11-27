@@ -34,6 +34,6 @@ class Operators extends BuilderOperators {
     }
 
     public function getScope(): string {
-        return Directive::class;
+        return Directive::getScope();
     }
 }

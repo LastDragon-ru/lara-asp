@@ -12,7 +12,7 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
@@ -41,7 +41,12 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $type = $this->getArgumentTypeDefinitionNode($documentAST, $argDefinition, $parentField, Condition::class);
+        $type = $this->getArgumentTypeDefinitionNode(
+            $documentAST,
+            $argDefinition,
+            $parentField,
+            Condition::class,
+        );
 
         if (!$type) {
             throw new FailedToCreateSearchCondition($argDefinition->name->value);

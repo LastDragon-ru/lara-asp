@@ -18,6 +18,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
+use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 
 use function count;
 
@@ -148,6 +149,12 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
     ): bool {
+        // Resolver?
+        if ($manipulator->getNodeDirective($field, FieldResolver::class)) {
+            return false;
+        }
+
+        // Ok
         return true;
     }
 

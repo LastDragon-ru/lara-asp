@@ -777,3 +777,16 @@ class DirectiveTest extends TestCase {
     }
     // </editor-fold>
 }
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest__Resolver {
+    public function __invoke(): mixed {
+        throw new Exception('should not be called.');
+    }
+}

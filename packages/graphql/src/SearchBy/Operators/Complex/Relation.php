@@ -24,6 +24,17 @@ class Relation extends BaseOperator {
         parent::__construct();
     }
 
+    // <editor-fold desc="Directive">
+    // =========================================================================
+    public static function definition(): string {
+        $name = static::getDirectiveName();
+
+        return /** @lang GraphQL */ <<<GRAPHQL
+            directive ${name} on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+        GRAPHQL;
+    }
+    // </editor-fold>
+
     // <editor-fold desc="Operator">
     // =========================================================================
     public static function getName(): string {
