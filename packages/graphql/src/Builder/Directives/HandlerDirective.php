@@ -9,8 +9,10 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -203,10 +205,16 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Convert
-        $definition = $manipulator->getTypeDefinitionNode($argument);
-        $type       = null;
+        $type        = null;
+        $definition  = $manipulator->isPlaceholder($argument)
+            ? $manipulator->getPlaceholderTypeDefinitionNode($field)
+            : $manipulator->getTypeDefinitionNode($argument);
+        $isSupported = $definition instanceof InputObjectTypeDefinitionNode
+            || $definition instanceof ObjectTypeDefinitionNode
+            || $definition instanceof InputObjectType
+            || $definition instanceof ObjectType;
 
-        if ($definition instanceof InputObjectTypeDefinitionNode || $definition instanceof InputObjectType) {
+        if ($isSupported) {
             $operator = $manipulator->getOperator(static::getScope(), $operator);
             $name     = $manipulator->getNodeTypeName($definition);
             $type     = $operator->getFieldType($manipulator, $name, $manipulator->isNullable($argument));

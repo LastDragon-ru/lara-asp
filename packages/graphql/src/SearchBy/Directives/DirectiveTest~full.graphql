@@ -1,50 +1,82 @@
 type Query {
-  a(where: InputA @searchBy): ID! @all
+    a(where: InputA @searchBy): ID! @all
 
-  b(where: NestedA @searchBy): ID! @all
+    b(where: NestedA @searchBy): ID! @all
 
-  c(where: InputB @searchBy): ID! @all
+    c(where: InputB @searchBy): ID! @all
 
-  d(where: NestedB @searchBy): ID! @all
+    d(where: NestedB @searchBy): ID! @all
 
-  e(search: String @search, where: InputA @searchBy): ID! @all
+    e(search: String @search, where: InputA @searchBy): ID! @all
+
+    f(where: _ @searchBy): Object! @all
 }
 
 input InputA {
-  idScalar: ID
-  idScalarNotNull: ID!
-  intScalar: Int
-  inScalarNotNull: Int!
-  floatScalar: Float
-  floatScalarNotNull: Float!
-  stringScalar: String
-  stringScalarNotNull: String!
-  booleanScalar: Boolean
-  booleanScalarNotNull: Boolean!
-  nested: NestedA
-  nestedNotNull: NestedA!
-  enum: EnumA
-  enumNotNull: EnumA!
+    idScalar: ID
+    idScalarNotNull: ID!
+    intScalar: Int
+    inScalarNotNull: Int!
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    stringScalar: String
+    stringScalarNotNull: String!
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    nested: NestedA
+    nestedNotNull: NestedA!
+    enum: EnumA
+    enumNotNull: EnumA!
+    ignored: String @searchByIgnored
+    resolver: Float @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
 }
 
 input NestedA {
-  value: String
-  nested: NestedA
+    value: String
+    nested: NestedA
 }
 
 input NestedB {
-  nested: NestedC
+    nested: NestedC
 }
 
 input NestedC {
-  nested: NestedB
+    nested: NestedB
 }
 
 input InputB {
-  id: ID
+    id: ID
 }
 
 enum EnumA {
-  one
-  two
+    one
+    two
+}
+
+type Object {
+    idScalar: ID
+    idScalarNotNull: ID!
+    intScalar: Int
+    inScalarNotNull: Int!
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    stringScalar: String
+    stringScalarNotNull: String!
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+    enum: EnumA
+    enumNotNull: EnumA!
+    ignored: String @searchByIgnored
+    resolver: Float @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+}
+
+input ObjectNested {
+    value: String
+    nested: ObjectNested
 }

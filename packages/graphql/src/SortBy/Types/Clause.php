@@ -22,7 +22,6 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
-use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 
 class Clause extends InputObject {
     public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
@@ -71,11 +70,6 @@ class Clause extends InputObject {
 
         // Convertable?
         if ($manipulator->isList($field)) {
-            return false;
-        }
-
-        // Resolver?
-        if ($manipulator->getNodeDirective($field, FieldResolver::class)) {
             return false;
         }
 

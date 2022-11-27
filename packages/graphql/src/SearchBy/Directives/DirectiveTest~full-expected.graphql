@@ -7,6 +7,11 @@ enum SearchByTypeFlag {
     yes
 }
 
+input ObjectNested {
+    nested: ObjectNested
+    value: String
+}
+
 """
 Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedA`.
 
@@ -92,6 +97,35 @@ input SearchByComplexRelationNestedC {
     Additional conditions.
     """
     where: SearchByConditionNestedC
+}
+
+"""
+Conditions for the related objects (`has()`/`doesntHave()`) for `input ObjectNested`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByComplexRelationObjectNested {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionObjectNested
 }
 
 """
@@ -321,6 +355,148 @@ input SearchByConditionNestedC {
     """
     not: SearchByConditionNestedC
     @searchByOperatorNot
+}
+
+"""
+Available conditions for `type Object` (only one property allowed at a time).
+"""
+input SearchByConditionObject {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionObject!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionObject!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScalarBooleanOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScalarBoolean
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enum: SearchByEnumEnumAOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByEnumEnumA
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScalarFloatOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScalarFloat
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalar: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    inScalarNotNull: SearchByScalarInt
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalar: SearchByScalarIntOrNull
+    @searchByOperatorProperty
+
+    """
+    Relationship condition.
+    """
+    nested: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    nestedNotNull: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Not.
+    """
+    not: SearchByConditionObject
+    @searchByOperatorNot
+
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScalarStringOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScalarString
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `input ObjectNested` (only one property allowed at a time).
+"""
+input SearchByConditionObjectNested {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionObjectNested!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionObjectNested!]
+    @searchByOperatorAnyOf
+
+    """
+    Relationship condition.
+    """
+    nested: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Not.
+    """
+    not: SearchByConditionObjectNested
+    @searchByOperatorNot
+
+    """
+    Property condition.
+    """
+    value: SearchByScalarStringOrNull
+    @searchByOperatorProperty
 }
 
 """
@@ -1303,6 +1479,33 @@ input SearchByTypeRangeInt {
     min: Int!
 }
 
+type Object {
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    enum: EnumA
+    enumNotNull: EnumA!
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: String
+    @searchByIgnored
+
+    inScalarNotNull: Int!
+    intScalar: Int
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: Float
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    stringScalar: String
+    stringScalarNotNull: String!
+}
+
 type Query {
     a(
         where: SearchByConditionInputA
@@ -1336,6 +1539,12 @@ type Query {
         @searchBy
     ): ID!
     @all
+
+    f(
+        where: SearchByConditionObject
+        @searchBy
+    ): Object!
+    @all
 }
 
 """
@@ -1344,6 +1553,14 @@ Use Input as Search Conditions for the current Builder.
 directive @searchBy
 on
     | ARGUMENT_DEFINITION
+
+"""
+Marks that field should be excluded from search.
+"""
+directive @searchByIgnored
+on
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorAllOf
 on

@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\NotImplemented;
@@ -62,6 +63,24 @@ class Condition extends InputObject {
         ?bool $nullable,
     ): array {
         return $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false);
+    }
+
+    protected function isFieldConvertable(
+        Manipulator $manipulator,
+        FieldDefinition|InputValueDefinitionNode|InputObjectField|FieldDefinitionNode $field,
+    ): bool {
+        // Parent?
+        if (!parent::isFieldConvertable($manipulator, $field)) {
+            return false;
+        }
+
+        // Ignored?
+        if ($manipulator->getNodeDirective($field, Ignored::class)) {
+            return false;
+        }
+
+        // Ok
+        return true;
     }
 
     /**
