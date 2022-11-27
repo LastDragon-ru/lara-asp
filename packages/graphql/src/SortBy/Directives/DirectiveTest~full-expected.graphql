@@ -18,7 +18,7 @@ input SortByClauseNested {
     Property clause.
     """
     nested: SortByClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     By random
@@ -65,13 +65,13 @@ input SortByClauseProperties {
     Property clause.
     """
     nested: SortByClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     nestedNotNull: SortByClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     By random
@@ -123,7 +123,7 @@ input SortByScoutClauseNested {
     Property clause.
     """
     nested: SortByScoutClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     By random
@@ -170,13 +170,13 @@ input SortByScoutClauseProperties {
     Property clause.
     """
     nested: SortByScoutClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     nestedNotNull: SortByScoutClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     By random
@@ -221,10 +221,10 @@ directive @sortByOperatorField
 on
     | INPUT_FIELD_DEFINITION
 
-directive @sortByOperatorRandom
+directive @sortByOperatorProperty
 on
     | INPUT_FIELD_DEFINITION
 
-directive @sortByProperty
+directive @sortByOperatorRandom
 on
     | INPUT_FIELD_DEFINITION

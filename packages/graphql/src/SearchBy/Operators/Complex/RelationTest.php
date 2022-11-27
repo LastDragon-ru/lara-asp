@@ -67,7 +67,7 @@ class RelationTest extends TestCase {
         $graphql = <<<'GRAPHQL'
             input TestInput {
                 property: TestOperators
-                @searchByProperty
+                @searchByOperatorProperty
 
                 user: TestRelation
                 @searchByOperatorRelation

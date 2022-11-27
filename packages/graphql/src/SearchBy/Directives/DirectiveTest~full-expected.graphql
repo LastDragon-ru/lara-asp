@@ -114,61 +114,61 @@ input SearchByConditionInputA {
     Property condition.
     """
     booleanScalar: SearchByScalarBooleanOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     booleanScalarNotNull: SearchByScalarBoolean
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     enum: SearchByEnumEnumAOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     enumNotNull: SearchByEnumEnumA
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     floatScalar: SearchByScalarFloatOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     floatScalarNotNull: SearchByScalarFloat
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     idScalar: SearchByScalarIDOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     idScalarNotNull: SearchByScalarID
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     inScalarNotNull: SearchByScalarInt
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     intScalar: SearchByScalarIntOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Relationship condition.
@@ -192,13 +192,13 @@ input SearchByConditionInputA {
     Property condition.
     """
     stringScalar: SearchByScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     stringScalarNotNull: SearchByScalarString
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -221,7 +221,7 @@ input SearchByConditionInputB {
     Property condition.
     """
     id: SearchByScalarIDOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Not.
@@ -262,7 +262,7 @@ input SearchByConditionNestedA {
     Property condition.
     """
     value: SearchByScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -997,85 +997,85 @@ input SearchByScoutConditionInputA {
     Property condition.
     """
     booleanScalar: SearchByScoutScalarBooleanOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     booleanScalarNotNull: SearchByScoutScalarBoolean
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     enum: SearchByScoutEnumEnumAOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     enumNotNull: SearchByScoutEnumEnumA
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     floatScalar: SearchByScoutScalarFloatOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     floatScalarNotNull: SearchByScoutScalarFloat
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     idScalar: SearchByScoutScalarIDOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     idScalarNotNull: SearchByScoutScalarID
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     inScalarNotNull: SearchByScoutScalarInt
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     intScalar: SearchByScoutScalarIntOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByCondition
+    @searchByOperatorCondition
 
     """
     Property condition.
     """
     nestedNotNull: SearchByScoutConditionNestedA
-    @searchByCondition
+    @searchByOperatorCondition
 
     """
     Property condition.
     """
     stringScalar: SearchByScoutScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     stringScalarNotNull: SearchByScoutScalarString
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -1092,13 +1092,13 @@ input SearchByScoutConditionNestedA {
     Property condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByCondition
+    @searchByOperatorCondition
 
     """
     Property condition.
     """
     value: SearchByScoutScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -1345,10 +1345,6 @@ directive @searchBy
 on
     | ARGUMENT_DEFINITION
 
-directive @searchByCondition
-on
-    | INPUT_FIELD_DEFINITION
-
 directive @searchByOperatorAllOf
 on
     | INPUT_FIELD_DEFINITION
@@ -1378,6 +1374,10 @@ on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorBitwiseXor
+on
+    | INPUT_FIELD_DEFINITION
+
+directive @searchByOperatorCondition
 on
     | INPUT_FIELD_DEFINITION
 
@@ -1445,14 +1445,14 @@ directive @searchByOperatorNotLike
 on
     | INPUT_FIELD_DEFINITION
 
+directive @searchByOperatorProperty
+on
+    | INPUT_FIELD_DEFINITION
+
 directive @searchByOperatorRelation
 on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorStartsWith
-on
-    | INPUT_FIELD_DEFINITION
-
-directive @searchByProperty
 on
     | INPUT_FIELD_DEFINITION

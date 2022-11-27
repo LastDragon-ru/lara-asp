@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions;
 
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 
-class SearchByPropertyDirective extends Property {
+class SearchByOperatorPropertyDirective extends Property {
     // Lighthouse loads all classes from directive namespace this leads to
     // 'Class "Orchestra\Testbench\TestCase" not found' error for our *Test
     // classes. This class required to avoid this error.

@@ -20,7 +20,7 @@ input SortByClauseComment {
     Property clause.
     """
     user: SortByClauseUser
-    @sortByProperty
+    @sortByOperatorProperty
 }
 
 """
@@ -98,6 +98,6 @@ directive @sortByOperatorField
 on
     | INPUT_FIELD_DEFINITION
 
-directive @sortByProperty
+directive @sortByOperatorProperty
 on
     | INPUT_FIELD_DEFINITION

@@ -31,7 +31,7 @@ input SortByClauseB {
     Property clause.
     """
     child: SortByClauseA
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     Property clause.
@@ -65,7 +65,7 @@ input SortByClauseD {
     Property clause.
     """
     child: SortByClauseC
-    @sortByProperty
+    @sortByOperatorProperty
 }
 
 type C {
@@ -109,6 +109,6 @@ directive @sortByOperatorField
 on
     | INPUT_FIELD_DEFINITION
 
-directive @sortByProperty
+directive @sortByOperatorProperty
 on
     | INPUT_FIELD_DEFINITION

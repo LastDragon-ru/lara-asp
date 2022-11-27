@@ -58,13 +58,13 @@ input SearchByConditionTestTypeA {
     Property condition.
     """
     flag: SearchByScalarBooleanOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     name: SearchByScalarStringOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Not.
@@ -76,7 +76,7 @@ input SearchByConditionTestTypeA {
     Property condition.
     """
     value: SearchByEnumTestEnumOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 }
 
 """
@@ -105,7 +105,7 @@ input SearchByConditionTestTypeB {
     Property condition.
     """
     name: SearchByScalarString
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Not.
@@ -525,14 +525,14 @@ directive @searchByOperatorNotLike
 on
     | INPUT_FIELD_DEFINITION
 
+directive @searchByOperatorProperty
+on
+    | INPUT_FIELD_DEFINITION
+
 directive @searchByOperatorRelation
 on
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorStartsWith
-on
-    | INPUT_FIELD_DEFINITION
-
-directive @searchByProperty
 on
     | INPUT_FIELD_DEFINITION
