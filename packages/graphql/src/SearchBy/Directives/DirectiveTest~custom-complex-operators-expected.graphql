@@ -404,6 +404,7 @@ on
 
 directive @searchByOperatorRelation
 on
+    | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorStartsWith

@@ -13,6 +13,19 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Flag;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 class Random extends BaseOperator {
+    // <editor-fold desc="Directive">
+    // =========================================================================
+    public static function definition(): string {
+        $name = static::getDirectiveName();
+
+        return /** @lang GraphQL */ <<<GRAPHQL
+            directive ${name} on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+        GRAPHQL;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Operator">
+    // =========================================================================
     public static function getName(): string {
         return 'random';
     }
@@ -34,4 +47,5 @@ class Random extends BaseOperator {
 
         return $builder;
     }
+    // </editor-fold>
 }
