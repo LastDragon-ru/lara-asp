@@ -33,7 +33,7 @@ class Clause extends InputObject {
     }
 
     protected function getScope(): string {
-        return Directive::class;
+        return Directive::getScope();
     }
 
     protected function getTypeDescription(

@@ -19,7 +19,6 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
@@ -56,6 +55,10 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
+    public static function getScope(): string {
+        return static::class;
+    }
+
     protected function getContainer(): Container {
         return $this->container;
     }
@@ -180,13 +183,13 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     abstract protected function isTypeName(string $name): bool;
 
     /**
-     * @param class-string<TypeDefinition> $typeDefinition
+     * @param class-string<Operator> $operator
      */
     protected function getArgumentTypeDefinitionNode(
         DocumentAST $document,
         InputValueDefinitionNode $argument,
         FieldDefinitionNode $field,
-        string $typeDefinition,
+        string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         // Converted?
         /** @var Manipulator $manipulator */
@@ -204,17 +207,14 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         $type       = null;
 
         if ($definition instanceof InputObjectTypeDefinitionNode || $definition instanceof InputObjectType) {
-            $name = $manipulator->getNodeTypeName($definition);
-            $name = $manipulator->getType($typeDefinition, $name, $manipulator->isNullable($argument));
-            $type = $this->getArgumentTypeReferenceNode($name);
+            $operator = $manipulator->getOperator(static::getScope(), $operator);
+            $name     = $manipulator->getNodeTypeName($definition);
+            $type     = $operator->getFieldType($manipulator, $name, $manipulator->isNullable($argument));
+            $type     = Parser::typeReference($type);
         }
 
         // Return
         return $type;
-    }
-
-    protected function getArgumentTypeReferenceNode(string $name): ListTypeNode|NamedTypeNode|NonNullTypeNode {
-        return Parser::typeReference($name);
     }
 
     protected function getBuilderInfo(FieldDefinitionNode $field): BuilderInfo {

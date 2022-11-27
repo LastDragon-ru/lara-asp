@@ -19,7 +19,7 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Clause;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
@@ -47,7 +47,12 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $type = $this->getArgumentTypeDefinitionNode($documentAST, $argDefinition, $parentField, Clause::class);
+        $type = $this->getArgumentTypeDefinitionNode(
+            $documentAST,
+            $argDefinition,
+            $parentField,
+            Clause::class,
+        );
 
         if (!$type) {
             throw new FailedToCreateSortClause($argDefinition->name->value);
@@ -64,7 +69,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         DocumentAST $document,
         InputValueDefinitionNode $argument,
         FieldDefinitionNode $field,
-        string $typeDefinition,
+        string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         // Converted?
         /** @var Manipulator $manipulator */
@@ -88,17 +93,14 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
             || $definition instanceof ObjectType;
 
         if ($isSupported) {
-            $name = $manipulator->getNodeTypeName($definition);
-            $name = $manipulator->getType(Clause::class, $name, $manipulator->isNullable($argument));
-            $type = $this->getArgumentTypeReferenceNode($name);
+            $operator = $manipulator->getOperator(static::getScope(), $operator);
+            $name     = $manipulator->getNodeTypeName($definition);
+            $type     = $operator->getFieldType($manipulator, $name, $manipulator->isNullable($argument));
+            $type     = Parser::typeReference($type);
         }
 
         // Return
         return $type;
-    }
-
-    protected function getArgumentTypeReferenceNode(string $name): ListTypeNode|NamedTypeNode|NonNullTypeNode {
-        return Parser::typeReference("[{$name}!]");
     }
     // </editor-fold>
 
