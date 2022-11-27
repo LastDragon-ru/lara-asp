@@ -14,7 +14,7 @@ input SortByClauseComment {
     Property clause.
     """
     text: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
@@ -31,13 +31,13 @@ input SortByClauseUser {
     Property clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
@@ -48,13 +48,13 @@ input SortByClauseUsersSort {
     Property clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 type Comment {
@@ -94,7 +94,7 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorProperty
+directive @sortByOperatorField
 on
     | INPUT_FIELD_DEFINITION
 

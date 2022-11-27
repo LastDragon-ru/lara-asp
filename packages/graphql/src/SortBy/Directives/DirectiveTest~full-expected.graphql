@@ -30,7 +30,7 @@ input SortByClauseNested {
     Property clause.
     """
     value: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
@@ -41,25 +41,25 @@ input SortByClauseProperties {
     Property clause.
     """
     enum: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     enumNotNull: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     idScalar: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     idScalarNotNull: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
@@ -88,25 +88,25 @@ input SortByQueryClauseProperties {
     Property clause.
     """
     enum: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     enumNotNull: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     idScalar: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     idScalarNotNull: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     By random
@@ -135,7 +135,7 @@ input SortByScoutClauseNested {
     Property clause.
     """
     value: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
@@ -146,25 +146,25 @@ input SortByScoutClauseProperties {
     Property clause.
     """
     enum: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     enumNotNull: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     idScalar: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     idScalarNotNull: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
@@ -217,7 +217,7 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorProperty
+directive @sortByOperatorField
 on
     | INPUT_FIELD_DEFINITION
 

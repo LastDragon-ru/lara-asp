@@ -21,11 +21,11 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\PropertyOperator
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
-class PropertyOperatorTest extends TestCase {
+class FieldTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -43,7 +43,7 @@ class PropertyOperatorTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
     ): void {
-        $operator  = $this->app->make(PropertyOperator::class);
+        $operator  = $this->app->make(Field::class);
         $argument  = $argumentFactory($this);
         $directive = $this->app->make(Directive::class);
         $builder   = $builderFactory($this);
@@ -65,7 +65,7 @@ class PropertyOperatorTest extends TestCase {
 
         $directive = $this->app->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(PropertyOperator::class);
+        $operator  = $this->app->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',
@@ -89,7 +89,7 @@ class PropertyOperatorTest extends TestCase {
 
         $directive = $this->app->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(PropertyOperator::class);
+        $operator  = $this->app->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',
@@ -112,7 +112,7 @@ class PropertyOperatorTest extends TestCase {
 
         $directive = $this->app->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(PropertyOperator::class);
+        $operator  = $this->app->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',
