@@ -11,10 +11,10 @@ permissions:
 
 jobs:
   settings:
-    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@1.x
 
   monorepo:
-    uses: LastDragon-ru/lara-asp/.github/workflows/monorepo.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/monorepo.yml@1.x
     needs:
       - settings
     with:
@@ -22,7 +22,7 @@ jobs:
       php-extensions: ${{ needs.settings.outputs.php-extensions }}
 
   phpcs:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpcs.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpcs.yml@1.x
     needs:
       - settings
     with:
@@ -30,7 +30,7 @@ jobs:
       php-extensions: ${{ needs.settings.outputs.php-extensions }}
 
   phpstan:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpstan.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpstan.yml@1.x
     needs:
       - settings
     with:
@@ -38,7 +38,7 @@ jobs:
       php-extensions: ${{ needs.settings.outputs.php-extensions }}
 
   phpunit:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@1.x
     needs:
       - settings
     with:
@@ -93,7 +93,7 @@ jobs:
           npm run release
 
   packages:
-    uses: LastDragon-ru/lara-asp/.github/workflows/packages.yml@master
+    uses: LastDragon-ru/lara-asp/.github/workflows/packages.yml@1.x
     needs:
       - release
     secrets: inherit
