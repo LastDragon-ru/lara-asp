@@ -62,7 +62,7 @@ class EnumTypeTest extends TestCase {
                     new JsonMatches(json_encode(
                         [
                             'data' => [
-                                'test' => EnumTypeTest__Enum::b(),
+                                'test' => 'B',
                             ],
                         ],
                         JSON_THROW_ON_ERROR,
