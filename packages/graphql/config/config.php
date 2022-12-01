@@ -29,7 +29,7 @@ $settings = [
          *
          * @see Operator
          */
-        'operators' => [
+        'scalars' => [
             // empty
         ],
     ],
