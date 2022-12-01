@@ -34,7 +34,7 @@ jobs:
     needs:
       - settings
     with:
-      php-version: ${{ needs.settings.outputs.php-latest }}
+      php-version: "8.1"
       php-extensions: ${{ needs.settings.outputs.php-extensions }}
 
   phpunit:
