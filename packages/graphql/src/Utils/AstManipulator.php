@@ -8,7 +8,9 @@ use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
@@ -21,6 +23,7 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
@@ -37,6 +40,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
+use function array_merge;
 use function trim;
 
 abstract class AstManipulator {
@@ -177,7 +181,7 @@ abstract class AstManipulator {
     /**
      * @template T of \Nuwave\Lighthouse\Support\Contracts\Directive
      *
-     * @param class-string<T> $class
+     * @param class-string<T>       $class
      * @param Closure(T): bool|null $callback
      *
      * @return T|null
@@ -273,6 +277,38 @@ abstract class AstManipulator {
         }
 
         return trim("{$prefix} {$name}");
+    }
+
+    /**
+     * @return array<string, InterfaceTypeDefinitionNode|InterfaceType>
+     */
+    public function getNodeInterfaces(
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $node,
+    ): array {
+        $interfaces     = [];
+        $nodeInterfaces = $node instanceof Type
+            ? $node->getInterfaces()
+            : $node->interfaces;
+
+        foreach ($nodeInterfaces as $interface) {
+            $name = $this->getNodeTypeName($interface);
+
+            if ($interface instanceof NamedTypeNode) {
+                $interface = $this->getTypeDefinitionNode($interface);
+            }
+
+            if ($interface instanceof InterfaceTypeDefinitionNode || $interface instanceof InterfaceType) {
+                $interfaces = array_merge(
+                    $interfaces,
+                    [
+                        $name => $interface,
+                    ],
+                    $this->getNodeInterfaces($interface),
+                );
+            }
+        }
+
+        return $interfaces;
     }
     //</editor-fold>
 }
