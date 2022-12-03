@@ -50,8 +50,8 @@ class AstManipulatorTest extends TestCase {
             'builderInfo' => $builder,
         ]);
 
-        $types->registerLazy('ObjectB', static function () use ($types): ObjectType {
-            return new ObjectType([
+        $types->register(
+            new ObjectType([
                 'name'       => 'ObjectB',
                 'interfaces' => [
                     static function () use ($types): Type {
@@ -64,10 +64,10 @@ class AstManipulatorTest extends TestCase {
                         'type' => Type::nonNull(Type::id()),
                     ],
                 ],
-            ]);
-        });
-        $types->registerLazy('InterfaceC', static function (): InterfaceType {
-            return new InterfaceType([
+            ]),
+        );
+        $types->register(
+            new InterfaceType([
                 'name'       => 'InterfaceC',
                 'interfaces' => [
                     static function (): InterfaceType {
@@ -88,8 +88,8 @@ class AstManipulatorTest extends TestCase {
                         'type' => Type::nonNull(Type::id()),
                     ],
                 ],
-            ]);
-        });
+            ]),
+        );
 
         // Object
         $object = $manipulator->getTypeDefinitionNode('ObjectA');
