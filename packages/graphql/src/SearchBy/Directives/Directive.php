@@ -9,6 +9,7 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
@@ -39,11 +40,13 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     }
 
     protected function getArgDefinitionType(
+        Manipulator $manipulator,
         DocumentAST $document,
         InputValueDefinitionNode $argument,
         FieldDefinitionNode $field,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
+            $manipulator,
             $document,
             $argument,
             $field,

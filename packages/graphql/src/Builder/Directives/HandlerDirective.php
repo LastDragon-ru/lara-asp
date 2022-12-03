@@ -204,7 +204,17 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType,
     ): void {
-        $argDefinition->type = $this->getArgDefinitionType($documentAST, $argDefinition, $parentField);
+        /** @var Manipulator $manipulator */
+        $manipulator         = $this->getContainer()->make(Manipulator::class, [
+            'document'    => $documentAST,
+            'builderInfo' => $this->getBuilderInfo($parentField),
+        ]);
+        $argDefinition->type = $this->getArgDefinitionType(
+            $manipulator,
+            $documentAST,
+            $argDefinition,
+            $parentField,
+        );
     }
 
     /**
@@ -213,6 +223,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     abstract protected function isTypeName(string $name): bool;
 
     abstract protected function getArgDefinitionType(
+        Manipulator $manipulator,
         DocumentAST $document,
         InputValueDefinitionNode $argument,
         FieldDefinitionNode $field,
@@ -222,18 +233,13 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      * @param class-string<Operator> $operator
      */
     protected function getArgumentTypeDefinitionNode(
+        Manipulator $manipulator,
         DocumentAST $document,
         InputValueDefinitionNode $argument,
         FieldDefinitionNode $field,
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         // Converted?
-        /** @var Manipulator $manipulator */
-        $manipulator = $this->getContainer()->make(Manipulator::class, [
-            'document'    => $document,
-            'builderInfo' => $this->getBuilderInfo($field),
-        ]);
-
         if ($this->isTypeName($manipulator->getNodeTypeName($argument))) {
             return $argument->type;
         }
