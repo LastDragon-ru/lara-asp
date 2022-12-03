@@ -15,6 +15,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -76,6 +77,21 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
     // <editor-fold desc="Handle">
     // =========================================================================
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint
+     *
+     * @param EloquentBuilder<Model>|QueryBuilder $builder
+     *
+     * @return EloquentBuilder<Model>|QueryBuilder
+     */
+    public function handleBuilder($builder, mixed $value): EloquentBuilder|QueryBuilder {
+        return $this->handleAnyBuilder($builder, $value);
+    }
+
+    public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {
+        return $this->handleAnyBuilder($builder, $value);
+    }
+
     /**
      * @template T of object
      *
@@ -182,7 +198,25 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
     // <editor-fold desc="Manipulate">
     // =========================================================================
+    public function manipulateArgDefinition(
+        DocumentAST &$documentAST,
+        InputValueDefinitionNode &$argDefinition,
+        FieldDefinitionNode &$parentField,
+        ObjectTypeDefinitionNode &$parentType,
+    ): void {
+        $argDefinition->type = $this->getArgDefinitionType($documentAST, $argDefinition, $parentField);
+    }
+
+    /**
+     * Should return `true` if `$name` is already converted.
+     */
     abstract protected function isTypeName(string $name): bool;
+
+    abstract protected function getArgDefinitionType(
+        DocumentAST $document,
+        InputValueDefinitionNode $argument,
+        FieldDefinitionNode $field,
+    ): ListTypeNode|NamedTypeNode|NonNullTypeNode;
 
     /**
      * @param class-string<Operator> $operator

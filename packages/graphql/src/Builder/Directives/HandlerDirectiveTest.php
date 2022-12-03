@@ -5,6 +5,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 use Closure;
 use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\Parser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -15,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
@@ -54,6 +59,14 @@ class HandlerDirectiveTest extends TestCase {
 
             protected function isTypeName(string $name): bool {
                 return false;
+            }
+
+            protected function getArgDefinitionType(
+                DocumentAST $document,
+                InputValueDefinitionNode $argument,
+                FieldDefinitionNode $field,
+            ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
+                throw new Exception('should not be called.');
             }
         };
 

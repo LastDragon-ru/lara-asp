@@ -85,11 +85,3 @@ parameters:
             message: "#^Parameter \\#2 \\$type of static method GraphQL\\\\Utils\\\\AST\\:\\:astFromValue\\(\\) expects GraphQL\\\\Type\\\\Definition\\\\InputType, GraphQL\\\\Type\\\\Definition\\\\Type given\\.$#"
             paths:
                 - packages/graphql/src/SchemaPrinter/Blocks/Types/InputValueDefinitionBlock.php
-        -
-            message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Directives\\\\Directive\\:\\:handleBuilder\\(\\) has parameter \\$builder with generic class Illuminate\\\\Database\\\\Eloquent\\\\Builder but does not specify its types: TModelClass$#"
-            paths:
-                - packages/graphql/src/SortBy/Directives/Directive.php
-        -
-            message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Directives\\\\Directive\\:\\:handleBuilder\\(\\) has parameter \\$builder with generic class Illuminate\\\\Database\\\\Eloquent\\\\Builder but does not specify its types: TModelClass$#"
-            paths:
-                - packages/graphql/src/SearchBy/Directives/Directive.php
