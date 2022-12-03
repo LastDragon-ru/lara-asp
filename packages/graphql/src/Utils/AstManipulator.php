@@ -20,6 +20,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
@@ -29,6 +30,7 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\TypeWithFields;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
 use Illuminate\Support\Collection;
@@ -309,6 +311,46 @@ abstract class AstManipulator {
         }
 
         return $interfaces;
+    }
+
+    public function getNodeField(
+        InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|TypeWithFields $node,
+        string $name,
+    ): FieldDefinitionNode|FieldDefinition|null {
+        $field = null;
+
+        if ($node instanceof TypeWithFields) {
+            $field = $node->hasField($name) ? $node->getField($name) : null;
+        } else {
+            foreach ($node->fields as $nodeField) {
+                if ($this->getNodeName($nodeField) === $name) {
+                    $field = $nodeField;
+                    break;
+                }
+            }
+        }
+
+        return $field;
+    }
+
+    public function getNodeAttribute(
+        FieldDefinitionNode|FieldDefinition $node,
+        string $name,
+    ): InputValueDefinitionNode|FieldArgument|null {
+        $attribute = null;
+
+        if ($node instanceof FieldDefinition) {
+            $attribute = $node->getArg($name);
+        } else {
+            foreach ($node->arguments as $nodeArgument) {
+                if ($this->getNodeName($nodeArgument) === $name) {
+                    $attribute = $nodeArgument;
+                    break;
+                }
+            }
+        }
+
+        return $attribute;
     }
     //</editor-fold>
 }

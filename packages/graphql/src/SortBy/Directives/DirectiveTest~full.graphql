@@ -1,4 +1,4 @@
-type Query {
+type Query implements Eloquent & Scout {
     eloquent(order: Properties @sortBy): ID! @all
 
     query(order: Properties @sortBy): ID! @all(
@@ -8,6 +8,14 @@ type Query {
     scout(search: String @search, order: Properties @sortBy): ID! @all
 
     placeholder(order: _ @sortBy): Object! @all
+}
+
+interface Eloquent {
+    eloquent(order: Properties): ID!
+}
+
+interface Scout {
+    scout(search: String, order: Properties): ID!
 }
 
 input Properties {

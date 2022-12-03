@@ -260,6 +260,19 @@ input SortByScoutClauseProperties {
     @sortByOperatorRandom
 }
 
+interface Eloquent {
+    eloquent(
+        order: [SortByClauseProperties!]
+    ): ID!
+}
+
+interface Scout {
+    scout(
+        order: [SortByScoutClauseProperties!]
+        search: String
+    ): ID!
+}
+
 type Object {
     enum: Value
     enumNotNull: Value!
@@ -283,7 +296,11 @@ type ObjectNested {
     value: String
 }
 
-type Query {
+type Query
+implements
+    & Eloquent
+    & Scout
+{
     eloquent(
         order: [SortByClauseProperties!]
         @sortBy
