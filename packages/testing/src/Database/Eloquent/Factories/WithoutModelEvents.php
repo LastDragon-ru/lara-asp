@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait WithoutModelEvents {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function make($attributes = [], ?Model $parent = null) {
         return $this->callWithoutModelEvents(function () use ($attributes, $parent) {
@@ -21,7 +21,7 @@ trait WithoutModelEvents {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function create($attributes = [], ?Model $parent = null) {
         return $this->callWithoutModelEvents(function () use ($attributes, $parent) {

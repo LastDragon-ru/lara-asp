@@ -7,7 +7,7 @@ use SebastianBergmann\Comparator\ScalarComparator;
 
 class ScalarStrictComparator extends ScalarComparator {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false): void {
         if ($expected !== $actual) {

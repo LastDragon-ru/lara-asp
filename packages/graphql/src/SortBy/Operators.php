@@ -13,7 +13,7 @@ class Operators extends BuilderOperators {
     public const Extra = 'Extra';
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected array $operators = [
         // empty

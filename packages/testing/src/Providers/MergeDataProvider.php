@@ -50,7 +50,7 @@ class MergeDataProvider extends BaseDataProvider {
     // <editor-fold desc="API">
     // =========================================================================
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getData(bool $raw = false): array {
         $data = [];

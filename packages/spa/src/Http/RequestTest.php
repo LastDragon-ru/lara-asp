@@ -25,7 +25,7 @@ class RequestTest extends TestCase {
             $translator,
             new class($router) extends Resolver {
                 /**
-                 * @inheritdoc
+                 * @inheritDoc
                  */
                 protected function resolve(mixed $value, array $parameters): mixed {
                     return ['a' => $value];
@@ -36,7 +36,7 @@ class RequestTest extends TestCase {
             $translator,
             new class($router) extends Resolver {
                 /**
-                 * @inheritdoc
+                 * @inheritDoc
                  */
                 protected function resolve(mixed $value, array $parameters): mixed {
                     return ['b' => $value];
@@ -45,7 +45,7 @@ class RequestTest extends TestCase {
         );
         $rule          = new class() implements Rule {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function passes($attribute, $value): bool {
                 return (bool) $value;

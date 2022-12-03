@@ -10,7 +10,7 @@ use function is_float;
  */
 class NumberRule extends IntRule {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function passes($attribute, $value) {
         return (is_float($value) && is_finite($value)) || parent::passes($attribute, $value);

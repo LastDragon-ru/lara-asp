@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
  */
 trait FixRecentlyCreated {
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param Collection<array-key,Model> $instances
      */

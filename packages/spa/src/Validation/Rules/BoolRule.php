@@ -9,7 +9,7 @@ use function is_bool;
  */
 class BoolRule extends Rule {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function passes($attribute, $value) {
         return is_bool($value);

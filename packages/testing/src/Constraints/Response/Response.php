@@ -77,7 +77,7 @@ class Response extends Constraint {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function matches($other): bool {
         return true;
@@ -90,7 +90,7 @@ class Response extends Constraint {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function additionalFailureDescription($other, bool $root = true): string {
         if (!$other instanceof ResponseInterface) {

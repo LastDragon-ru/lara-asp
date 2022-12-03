@@ -9,7 +9,7 @@ use function is_string;
  */
 class StringRule extends Rule {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function passes($attribute, $value) {
         return is_string($value);

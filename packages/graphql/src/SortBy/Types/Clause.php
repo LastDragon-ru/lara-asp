@@ -48,7 +48,7 @@ class Clause extends InputObject {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getTypeOperators(
         Manipulator $manipulator,
@@ -83,7 +83,7 @@ class Clause extends InputObject {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getFieldOperator(
         Manipulator $manipulator,

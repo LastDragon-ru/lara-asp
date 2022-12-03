@@ -25,7 +25,7 @@ class OperatorsTest extends TestCase {
     public function testHasOperators(): void {
         $operators = new class($this->app) extends Operators {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             protected array $operators = [
                 Operators::Int => [

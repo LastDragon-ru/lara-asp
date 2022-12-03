@@ -22,7 +22,7 @@ class ResolverRule extends Rule implements ValueProvider {
     // <editor-fold desc="Rule">
     // =========================================================================
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function passes($attribute, $value) {
         try {
@@ -35,7 +35,7 @@ class ResolverRule extends Rule implements ValueProvider {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getMessageReplace(): array {
         return array_merge(parent::getMessageReplace(), [
@@ -44,7 +44,7 @@ class ResolverRule extends Rule implements ValueProvider {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getMessageVariants(): array {
         $defaults   = parent::getMessageVariants();

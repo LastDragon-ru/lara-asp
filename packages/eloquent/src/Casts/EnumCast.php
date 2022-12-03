@@ -23,7 +23,7 @@ class EnumCast implements CastsAttributes {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param array<mixed> $attributes
      */
@@ -44,7 +44,7 @@ class EnumCast implements CastsAttributes {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param array<mixed> $attributes
      */

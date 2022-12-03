@@ -9,7 +9,7 @@ use function is_int;
  */
 class IntRule extends Rule {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function passes($attribute, $value) {
         return is_int($value);

@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
  */
 class PaginatedResponse extends PaginatedResourceResponse {
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @return array<mixed>
      */
@@ -21,7 +21,7 @@ class PaginatedResponse extends PaginatedResourceResponse {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param array<mixed> $paginated
      *
@@ -43,7 +43,7 @@ class PaginatedResponse extends PaginatedResourceResponse {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param array<mixed> $data
      */
@@ -54,7 +54,7 @@ class PaginatedResponse extends PaginatedResourceResponse {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function wrapper() {
         return 'items';

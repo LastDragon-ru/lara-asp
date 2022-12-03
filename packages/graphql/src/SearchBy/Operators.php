@@ -43,7 +43,7 @@ class Operators extends BuilderOperators {
     public const Condition = 'Condition';
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected array $operators = [
         // Standard types

@@ -26,7 +26,7 @@ class SpaControllerTest extends TestCase {
     // <editor-fold desc="Prepare">
     // =========================================================================
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);

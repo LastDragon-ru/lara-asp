@@ -43,7 +43,7 @@ class JsonMatchesFragment extends Constraint {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function matches($other): bool {
         $json    = Args::getJson($other, true);

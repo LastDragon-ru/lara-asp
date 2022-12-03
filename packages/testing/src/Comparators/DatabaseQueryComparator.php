@@ -25,7 +25,7 @@ use const PREG_SET_ORDER;
  */
 class DatabaseQueryComparator extends ObjectComparator {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function accepts($expected, $actual) {
         return $expected instanceof Query
@@ -33,7 +33,7 @@ class DatabaseQueryComparator extends ObjectComparator {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param array<mixed> $processed
      */

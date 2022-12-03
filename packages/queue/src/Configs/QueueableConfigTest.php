@@ -59,7 +59,7 @@ class QueueableConfigTest extends TestCase {
         $dateFactory  = new DateFactory();
         $configurator = new class($container, $repository, $dateFactory) extends QueueableConfigurator {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function getQueueableProperties(): array {
                 return parent::getQueueableProperties();
@@ -77,7 +77,7 @@ class QueueableConfigTest extends TestCase {
             }
 
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function getQueueConfig(): array {
                 return $this->config;
@@ -85,7 +85,7 @@ class QueueableConfigTest extends TestCase {
         };
         $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function config(): array {
                 return parent::config();

@@ -11,7 +11,7 @@ class RawMigrationCreator extends MigrationCreator {
     // <editor-fold desc="Illuminate\Database\Migrations\MigrationCreator">
     // =========================================================================
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection
      */
     public function create($name, $path, $table = null, $create = false) {
@@ -26,7 +26,7 @@ class RawMigrationCreator extends MigrationCreator {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection
      */
     protected function getStub($table, $create) {
