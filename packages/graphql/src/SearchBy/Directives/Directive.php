@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NonNullTypeNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
@@ -35,45 +35,34 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
 
     // <editor-fold desc="Manipulate">
     // =========================================================================
-    public function manipulateArgDefinition(
-        DocumentAST &$documentAST,
-        InputValueDefinitionNode &$argDefinition,
-        FieldDefinitionNode &$parentField,
-        ObjectTypeDefinitionNode &$parentType,
-    ): void {
+    protected function isTypeName(string $name): bool {
+        return str_starts_with($name, Directive::Name);
+    }
+
+    protected function getArgDefinitionType(
+        Manipulator $manipulator,
+        DocumentAST $document,
+        InputValueDefinitionNode $argument,
+        FieldDefinitionNode $field,
+    ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
-            $documentAST,
-            $argDefinition,
-            $parentField,
+            $manipulator,
+            $document,
+            $argument,
+            $field,
             Condition::class,
         );
 
         if (!$type) {
-            throw new FailedToCreateSearchCondition($argDefinition->name->value);
+            throw new FailedToCreateSearchCondition($argument->name->value);
         }
 
-        $argDefinition->type = $type;
-    }
-
-    protected function isTypeName(string $name): bool {
-        return str_starts_with($name, Directive::Name);
+        return $type;
     }
     // </editor-fold>
 
     // <editor-fold desc="Handle">
     // =========================================================================
-    /**
-     * @inheritDoc
-     * @return EloquentBuilder<Model>|QueryBuilder
-     */
-    public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
-        return $this->handleAnyBuilder($builder, $value);
-    }
-
-    public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {
-        return $this->handleAnyBuilder($builder, $value);
-    }
-
     public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
         // Some relations (eg `HasManyThrough`) require a table name prefix to
         // avoid "SQLSTATE[23000]: Integrity constraint violation: 1052 Column

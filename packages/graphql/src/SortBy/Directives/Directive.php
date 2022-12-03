@@ -4,12 +4,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Laravel\Scout\Builder as ScoutBuilder;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NonNullTypeNode;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Clause;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -33,43 +32,29 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
 
     // <editor-fold desc="Manipulate">
     // =========================================================================
-    public function manipulateArgDefinition(
-        DocumentAST &$documentAST,
-        InputValueDefinitionNode &$argDefinition,
-        FieldDefinitionNode &$parentField,
-        ObjectTypeDefinitionNode &$parentType,
-    ): void {
+    protected function isTypeName(string $name): bool {
+        return str_starts_with($name, Directive::Name);
+    }
+
+    protected function getArgDefinitionType(
+        Manipulator $manipulator,
+        DocumentAST $document,
+        InputValueDefinitionNode $argument,
+        FieldDefinitionNode $field,
+    ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
-            $documentAST,
-            $argDefinition,
-            $parentField,
+            $manipulator,
+            $document,
+            $argument,
+            $field,
             Clause::class,
         );
 
         if (!$type) {
-            throw new FailedToCreateSortClause($argDefinition->name->value);
+            throw new FailedToCreateSortClause($argument->name->value);
         }
 
-        $argDefinition->type = $type;
-    }
-
-    protected function isTypeName(string $name): bool {
-        return str_starts_with($name, Directive::Name);
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Handle">
-    // =========================================================================
-    /**
-     * @inheritDoc
-     * @return EloquentBuilder<Model>|QueryBuilder
-     */
-    public function handleBuilder($builder, mixed $value): EloquentBuilder|QueryBuilder {
-        return $this->handleAnyBuilder($builder, $value);
-    }
-
-    public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {
-        return $this->handleAnyBuilder($builder, $value);
+        return $type;
     }
     // </editor-fold>
 }

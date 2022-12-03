@@ -11,10 +11,12 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -28,6 +30,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
@@ -76,6 +79,21 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
     // <editor-fold desc="Handle">
     // =========================================================================
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint
+     *
+     * @param EloquentBuilder<Model>|QueryBuilder $builder
+     *
+     * @return EloquentBuilder<Model>|QueryBuilder
+     */
+    public function handleBuilder($builder, mixed $value): EloquentBuilder|QueryBuilder {
+        return $this->handleAnyBuilder($builder, $value);
+    }
+
+    public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {
+        return $this->handleAnyBuilder($builder, $value);
+    }
+
     /**
      * @template T of object
      *
@@ -182,28 +200,74 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
     // <editor-fold desc="Manipulate">
     // =========================================================================
+    public function manipulateArgDefinition(
+        DocumentAST &$documentAST,
+        InputValueDefinitionNode &$argDefinition,
+        FieldDefinitionNode &$parentField,
+        ObjectTypeDefinitionNode &$parentType,
+    ): void {
+        // Converted?
+        /** @var Manipulator $manipulator */
+        $manipulator = $this->getContainer()->make(Manipulator::class, [
+            'document'    => $documentAST,
+            'builderInfo' => $this->getBuilderInfo($parentField),
+        ]);
+
+        if ($this->isTypeName($manipulator->getNodeTypeName($argDefinition))) {
+            return;
+        }
+
+        // Argument
+        $argDefinition->type = $this->getArgDefinitionType(
+            $manipulator,
+            $documentAST,
+            $argDefinition,
+            $parentField,
+        );
+
+        // Interfaces
+        $interfaces   = $manipulator->getNodeInterfaces($parentType);
+        $fieldName    = $manipulator->getNodeName($parentField);
+        $argumentName = $manipulator->getNodeName($argDefinition);
+
+        foreach ($interfaces as $interface) {
+            $field    = $manipulator->getNodeField($interface, $fieldName);
+            $argument = $field
+                ? $manipulator->getNodeAttribute($field, $argumentName)
+                : null;
+
+            if ($argument instanceof InputValueDefinitionNode) {
+                $argument->type = $argDefinition->type;
+            } elseif ($argument instanceof FieldArgument) {
+                throw new NotImplemented($argument::class);
+            } else {
+                // ignore
+            }
+        }
+    }
+
+    /**
+     * Should return `true` if `$name` is already converted.
+     */
     abstract protected function isTypeName(string $name): bool;
+
+    abstract protected function getArgDefinitionType(
+        Manipulator $manipulator,
+        DocumentAST $document,
+        InputValueDefinitionNode $argument,
+        FieldDefinitionNode $field,
+    ): ListTypeNode|NamedTypeNode|NonNullTypeNode;
 
     /**
      * @param class-string<Operator> $operator
      */
     protected function getArgumentTypeDefinitionNode(
+        Manipulator $manipulator,
         DocumentAST $document,
         InputValueDefinitionNode $argument,
         FieldDefinitionNode $field,
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
-        // Converted?
-        /** @var Manipulator $manipulator */
-        $manipulator = $this->getContainer()->make(Manipulator::class, [
-            'document'    => $document,
-            'builderInfo' => $this->getBuilderInfo($field),
-        ]);
-
-        if ($this->isTypeName($manipulator->getNodeTypeName($argument))) {
-            return $argument->type;
-        }
-
         // Convert
         $type        = null;
         $definition  = $manipulator->isPlaceholder($argument)
