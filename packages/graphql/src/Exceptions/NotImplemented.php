@@ -1,7 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions;
+namespace LastDragon_ru\LaraASP\GraphQL\Exceptions;
 
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\SearchByException;
 use Throwable;
 
 use function sprintf;
@@ -12,7 +13,7 @@ class NotImplemented extends SearchByException {
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'Hmm... Seems `%s` not yet supported :( Please contact to developer.',
+            'Hmm... Seems `%s` not yet supported 🤷 You are free to create an issue/pull request.',
             $feature,
         ), $previous);
     }
