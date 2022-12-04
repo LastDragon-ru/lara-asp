@@ -29,6 +29,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      * @covers ::getIterator
      * @covers ::getOffset
      * @covers ::getIndex
+     * @covers ::count
      */
     public function testGetIterator(): void {
         TestObject::factory()->create(['value' => '1']);
@@ -74,6 +75,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
 
         self::assertEquals(count($expected), $iterator->getIndex());
         self::assertEquals(count($expected), $iterator->getOffset());
+        self::assertEquals(4, count($iterator));
 
         $spyBefore
             ->shouldHaveBeenCalled()
@@ -133,7 +135,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
      * @covers ::getIterator
      */
     public function testGetIteratorUnion(): void {
-        self::expectExceptionObject(new InvalidArgumentException('Queries with UNION is not supported.'));
+        self::expectExceptionObject(new InvalidArgumentException('Query with UNION is not supported.'));
 
         new ChunkedChangeSafeIterator(TestObject::query()->union(TestObject::query()->toBase()));
     }

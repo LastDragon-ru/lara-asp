@@ -3,12 +3,14 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
+use Countable;
 use EmptyIterator;
 use Generator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 
+use function max;
 use function min;
 
 /**
@@ -18,7 +20,7 @@ use function min;
  *
  * @internal
  */
-abstract class IteratorImpl implements Iterator {
+abstract class IteratorImpl implements Iterator, Countable {
     /**
      * @var Dispatcher<Collection<array-key,TItem>>
      */
@@ -190,5 +192,9 @@ abstract class IteratorImpl implements Iterator {
      */
     protected function getBuilder(): Builder {
         return $this->builder;
+    }
+
+    public function count(): int {
+        return max(0, $this->getBuilder()->toBase()->count());
     }
 }
