@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
-use Exception;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\Node;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -22,7 +20,7 @@ class ArgumentFactory {
         // empty
     }
 
-    public function getArgument(Node|string $node, mixed $value): Argument {
+    public function getArgument(InputValueDefinitionNode|string $node, mixed $value): Argument {
         $arguments = $this->getArgumentSet($node, $value);
         $argument  = reset($arguments->arguments);
 
@@ -31,22 +29,8 @@ class ArgumentFactory {
         return $argument;
     }
 
-    public function getArgumentSet(Node|string $node, mixed $value): ArgumentSet {
-        // Type
-        $type = null;
-
-        if ($node instanceof InputValueDefinitionNode) {
-            $type = Printer::doPrint($node->type);
-        } elseif (is_string($node)) {
-            $type = $node;
-        } else {
-            // empty
-        }
-
-        if (!$type) {
-            throw new Exception('fixme'); // fixme(graphql): Throw error if no definition
-        }
-
+    public function getArgumentSet(InputValueDefinitionNode|string $node, mixed $value): ArgumentSet {
+        $type      = is_string($node) ? $node : Printer::doPrint($node->type);
         $input     = Parser::inputObjectTypeDefinition("input A { value: {$type} }");
         $arguments = $this->factory->wrapArgs($input, ['value' => $value]);
 

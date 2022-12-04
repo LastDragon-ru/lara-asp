@@ -102,10 +102,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      * @return T
      */
     protected function handleAnyBuilder(object $builder, mixed $value): object {
-        if ($value !== null) {
+        if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
             $argument   = $this->getFactory()->getArgument($this->definitionNode, $value);
-            $isList     = $this->definitionNode instanceof InputValueDefinitionNode
-                && $this->definitionNode->type instanceof ListTypeNode;
+            $isList     = $this->definitionNode->type instanceof ListTypeNode;
             $conditions = $isList && is_array($argument->value)
                 ? $argument->value
                 : [$argument->value];
