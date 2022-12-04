@@ -23,8 +23,9 @@ use function trim;
  * - the `column` should not be changed while iteration or this may lead to
  *   repeating row in results;
  * - the row inserted while iteration may be skipped if it has `column` with
- *   the value that lover than the internal pointer;
- * - queries with UNION is not supported.
+ *   the value that is lower than the internal pointer, or it was inserted after
+ *   the last chunk loaded;
+ * - queries with UNION are not supported.
  *
  * @see      https://github.com/laravel/framework/issues/35400
  *

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 
+use function count;
 use function max;
 use function min;
 
@@ -118,7 +119,7 @@ abstract class IteratorImpl implements Iterator, Countable {
         $limit = $this->limit;
 
         // Limit?
-        if ($limit <= 0 && $limit !== null) {
+        if ($limit !== null && $limit <= 0) {
             return new EmptyIterator();
         }
 
@@ -127,6 +128,7 @@ abstract class IteratorImpl implements Iterator, Countable {
             $builder = (clone $this->getBuilder())->offset(0);
             $chunk   = $limit ? min($chunk, $limit - $index) : $chunk;
             $items   = $this->getChunk($builder, $chunk);
+            $count   = count($items);
 
             $this->chunkLoaded($items);
 
@@ -139,7 +141,7 @@ abstract class IteratorImpl implements Iterator, Countable {
             if (!$this->chunkProcessed($items) || ($limit && $index >= $limit)) {
                 break;
             }
-        } while (!$items->isEmpty());
+        } while ($count !== 0 && $count >= $chunk);
     }
 
     /**

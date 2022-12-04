@@ -56,7 +56,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         foreach ($iterator as $model) {
             $actual[] = $model;
 
-            if (count($actual) === 3) {
+            if (count($actual) === 2) {
                 TestObject::factory()->create(['value' => '4']);
             }
         }
@@ -66,12 +66,11 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         $expected = (clone $query)->reorder($key)->get()->all();
 
         self::assertEquals($expected, $actual);
-        self::assertEquals(5, $count);
+        self::assertEquals(4, $count);
         // 1 - first chunk
-        // 2 - second chunk
-        // 3 - create #4
+        // 2 - create #4
+        // 3 - second chunk
         // 4 - third chunk (because second chunk returned value)
-        // 5 - last empty chunk (because third chunk returned value)
 
         self::assertEquals(count($expected), $iterator->getIndex());
         self::assertEquals(count($expected), $iterator->getOffset());
@@ -79,10 +78,10 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
 
         $spyBefore
             ->shouldHaveBeenCalled()
-            ->times(3);
+            ->times(2);
         $spyAfter
             ->shouldHaveBeenCalled()
-            ->times(3);
+            ->times(2);
     }
 
     /**

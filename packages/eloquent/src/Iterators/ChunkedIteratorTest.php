@@ -48,7 +48,7 @@ class ChunkedIteratorTest extends TestCase {
         $actual = iterator_to_array($iterator);
 
         self::assertEquals($expected, $actual);
-        self::assertEquals(2, count($log) - $count);
+        self::assertEquals(1, count($log) - $count);
         self::assertEquals(count($expected), $iterator->getIndex());
         self::assertEquals(count($expected), $iterator->getOffset());
         self::assertEquals(3, count($iterator));
