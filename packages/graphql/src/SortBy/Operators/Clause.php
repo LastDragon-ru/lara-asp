@@ -10,7 +10,7 @@ class Clause extends Property {
     use DirectiveName;
 
     public static function getName(): string {
-        return 'Condition';
+        return 'condition';
     }
 
     public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
