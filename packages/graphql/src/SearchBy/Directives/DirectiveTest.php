@@ -413,7 +413,7 @@ class DirectiveTest extends TestCase {
                             $name = static::getDirectiveName();
 
                             return /** @lang GraphQL */ <<<GRAPHQL
-                                directive ${name}(value: String) on INPUT_FIELD_DEFINITION
+                                directive {$name}(value: String) on INPUT_FIELD_DEFINITION
                             GRAPHQL;
                         }
 

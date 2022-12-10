@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
 use Illuminate\Foundation\Console\Kernel;
+use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 
 /**
@@ -24,4 +25,9 @@ class ConsoleKernelWithScheduleTest extends TestCase {
  */
 class ConsoleKernelWithScheduleTest_Impl extends Kernel {
     use ConsoleKernelWithSchedule;
+
+    /**
+     * @var array<class-string<Cronable>>
+     */
+    protected array $schedule = [];
 }

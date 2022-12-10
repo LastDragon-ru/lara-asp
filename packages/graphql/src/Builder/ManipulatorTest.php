@@ -2,10 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
-use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginationServiceProvider;
@@ -64,10 +61,6 @@ class ManipulatorTest extends TestCase {
             protected function getTypes(): TypeRegistry {
                 return $this->types;
             }
-
-            public function getPlaceholderTypeDefinitionNode(FieldDefinitionNode $field): TypeDefinitionNode|Type|null {
-                return parent::getPlaceholderTypeDefinitionNode($field);
-            }
         };
 
         $schema = $this->getGraphQLSchema($graphql);
@@ -82,7 +75,7 @@ class ManipulatorTest extends TestCase {
 
         if ($expected !== null) {
             self::assertNotNull($type);
-            self::assertEquals($expected, $type->name);
+            self::assertEquals($expected, $manipulator->getNodeName($type));
         } else {
             self::assertNull($type);
         }

@@ -15,7 +15,7 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
         $name = static::getDirectiveName();
 
         return /** @lang GraphQL */ <<<GRAPHQL
-            directive ${name} on INPUT_FIELD_DEFINITION
+            directive {$name} on INPUT_FIELD_DEFINITION
         GRAPHQL;
     }
 

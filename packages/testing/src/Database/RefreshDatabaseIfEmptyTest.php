@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Testing\Database;
 
 use Exception;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
-use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -24,7 +23,7 @@ class RefreshDatabaseIfEmptyTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class RefreshDatabaseIfEmptyTest_Impl extends BaseTestCase {
+class RefreshDatabaseIfEmptyTest_Impl extends TestCase {
     use RefreshDatabaseIfEmpty;
 
     public function createApplication(): HttpKernelInterface {

@@ -19,7 +19,7 @@ class Random extends BaseOperator {
         $name = static::getDirectiveName();
 
         return /** @lang GraphQL */ <<<GRAPHQL
-            directive ${name} on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+            directive {$name} on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
         GRAPHQL;
     }
     // </editor-fold>

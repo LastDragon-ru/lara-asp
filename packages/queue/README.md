@@ -35,13 +35,13 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Job;
 
 class MyJobWithConfig extends Job {
     /**
-     * As a small bonus you can inject dependencies into the constructor, but 
-     * keep in mind that you, probably, should not assign them to class 
+     * As a small bonus you can inject dependencies into the constructor, but
+     * keep in mind that you, probably, should not assign them to class
      * properties (even private) or they will be serialized.
      */
     public function __construct(QueueableConfigurator $configurator, Application $app) {
         // $app ...
-    
+
         parent::__construct($configurator);
     }
 
@@ -157,7 +157,7 @@ class Kernel extends ConsoleKernel {
     /**
      * The application's command schedule.
      *
-     * @var string[]
+     * @var array<class-string<Cronable>>
      */
     protected array $schedule = [
         MyCronJob::class,
@@ -232,7 +232,7 @@ then inside the app
 
 ```php
 <?php  declare(strict_types = 1);
-      
+
 namespace App\Jobs;
 
 class CustomUpdateSomethingJob extends UpdateSomethingJob {
@@ -269,7 +269,7 @@ The `CustomUpdateSomethingJob` will use the same settings name in `config/queue.
 
 ```php
 <?php  declare(strict_types = 1);
-      
+
 namespace App\Jobs;
 
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
