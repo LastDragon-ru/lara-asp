@@ -27,12 +27,20 @@ jobs:
       laravel-versions: ${{ steps.settings.outputs.laravel-versions }}
     steps:
       - name: Checkout
-        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
+        uses: actions/checkout@v3
         with:
-          package: ${{ inputs.package }}
+          path: ${{ inputs.package && '.repo' || '' }}
+
+      # The `.git` directory is required for Composer to resolve `self.version`.
+      - name: Select Package
+        if: ${{ inputs.package }}
+        run: |
+          cp -R "./.repo/.git" .
+          cp -R "./.repo/.github" .
+          cp -R "./.repo/${{ inputs.package }}/." .
 
       - name: Install PHP
-        uses: LastDragon-ru/lara-asp/.github/actions/php@master
+        uses: ./.github/actions/php
         with:
           dependencies: false
 
@@ -88,15 +96,28 @@ jobs:
             dependencies: 'lowest'
 
     steps:
+      # Required to avoid converting LF into CRLF on Windows or some tests will fail.
+      - name: Disable core.autocrlf
+        run: |
+          git config --global core.autocrlf false
+
       # Checkout
       - name: Checkout
-        uses: LastDragon-ru/lara-asp/.github/actions/checkout@master
+        uses: actions/checkout@v3
         with:
-          package: ${{ inputs.package }}
+          path: ${{ inputs.package && '.repo' || '' }}
+
+      # The `.git` directory is required for Composer to resolve `self.version`.
+      - name: Select Package
+        if: ${{ inputs.package }}
+        run: |
+          cp -R "./.repo/.git" .
+          cp -R "./.repo/.github" .
+          cp -R "./.repo/${{ inputs.package }}/." .
 
       # Install PHP
       - name: Install PHP
-        uses: LastDragon-ru/lara-asp/.github/actions/php@master
+        uses: ./.github/actions/php
         with:
           version: ${{ matrix.php }}
           dependencies: false
