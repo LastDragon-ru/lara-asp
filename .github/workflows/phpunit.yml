@@ -39,12 +39,8 @@ jobs:
       - name: Collect Settings
         id: settings
         run: |
-          # PHP (we need a better way...)
-          mkdir -p ".tmp/easy-ci"
-
-          composer require --no-interaction --working-dir=".tmp/easy-ci" --update-no-dev "symplify/easy-ci:11.1.5"
-
-          echo "php-versions=$(".tmp/easy-ci/vendor/bin/easy-ci" php-versions-json)" >> $GITHUB_OUTPUT
+          # PHP
+          echo "php-versions=$(jq '.require."php" | split("|") | map(sub("^[^\\d]+"; "")) | sort' -c composer.json)" >> $GITHUB_OUTPUT
 
           # Dependencies
           DEPS_HIGHEST="highest"
