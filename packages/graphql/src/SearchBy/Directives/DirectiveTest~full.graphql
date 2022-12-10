@@ -12,12 +12,16 @@ type Query implements A & B {
     f(where: _ @searchBy): Object! @all
 }
 
-interface A {
+interface A implements C {
     a(where: InputA): ID!
 }
 
 interface B {
     b(where: NestedA): ID!
+}
+
+interface C {
+    c(where: InputB): ID!
 }
 
 input InputA {

@@ -260,10 +260,19 @@ input SortByScoutClauseProperties {
     @sortByOperatorRandom
 }
 
-interface Eloquent {
+interface Eloquent
+implements
+    & Placeholder
+{
     eloquent(
         order: [SortByClauseProperties!]
     ): ID!
+}
+
+interface Placeholder {
+    placeholder(
+        order: [SortByClauseObject!]
+    ): Object!
 }
 
 interface Scout {

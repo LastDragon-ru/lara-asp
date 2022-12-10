@@ -10,12 +10,16 @@ type Query implements Eloquent & Scout {
     placeholder(order: _ @sortBy): Object! @all
 }
 
-interface Eloquent {
+interface Eloquent implements Placeholder {
     eloquent(order: Properties): ID!
 }
 
 interface Scout {
     scout(search: String, order: Properties): ID!
+}
+
+interface Placeholder {
+    placeholder(order: _): Object!
 }
 
 input Properties {

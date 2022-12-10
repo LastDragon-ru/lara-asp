@@ -69,11 +69,9 @@ interface SchemaInterfaceA {
 }
 
 """
-Lighthouse not yet support "implements" for interface...
-
-@see https://github.com/webonyx/graphql-php/issues/728
+Interface description.
 """
-interface SchemaInterfaceB {
+interface SchemaInterfaceB implements SchemaInterfaceA & CodeInterface {
   a: Boolean!
 
   """

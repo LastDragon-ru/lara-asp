@@ -58,11 +58,24 @@ input CodeInput {
 }
 
 """
-Lighthouse not yet support "implements" for interface...
-
-@see https://github.com/webonyx/graphql-php/issues/728
+Description
 """
-interface SchemaInterfaceB {
+interface CodeInterface {
+    a: Boolean!
+}
+
+interface SchemaInterfaceA {
+    a: Boolean!
+}
+
+"""
+Interface description.
+"""
+interface SchemaInterfaceB
+implements
+    & CodeInterface
+    & SchemaInterfaceA
+{
     a: Boolean!
 
     """

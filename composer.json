@@ -46,7 +46,7 @@
     "guzzlehttp/psr7": "^1.8.5|^2.1.1",
     "http-interop/http-factory-guzzle": "^1.0.0",
     "laravel/framework": "^8.22.1|^9.0.0",
-    "nuwave/lighthouse": "^5.8.0",
+    "nuwave/lighthouse": "^5.68.0",
     "opis/json-schema": "^2.1.0",
     "phpdocumentor/reflection-docblock": "^5.2",
     "psr/http-message": "^1.0.0",

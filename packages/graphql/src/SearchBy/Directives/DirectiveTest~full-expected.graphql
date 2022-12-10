@@ -1479,7 +1479,10 @@ input SearchByTypeRangeInt {
     min: Int!
 }
 
-interface A {
+interface A
+implements
+    & C
+{
     a(
         where: SearchByConditionInputA
     ): ID!
@@ -1488,6 +1491,12 @@ interface A {
 interface B {
     b(
         where: SearchByConditionNestedA
+    ): ID!
+}
+
+interface C {
+    c(
+        where: SearchByConditionInputB
     ): ID!
 }
 
