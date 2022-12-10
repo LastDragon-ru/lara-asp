@@ -4,8 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use Illuminate\Contracts\Config\Repository;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
@@ -14,14 +13,13 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
-use Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider;
-use Nuwave\Lighthouse\Schema\Source\SchemaStitcher;
 use Nuwave\Lighthouse\Testing\MocksResolvers;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 use function array_combine;
+use function assert;
 use function is_string;
 
 /**
@@ -218,32 +216,27 @@ trait GraphQLAssertions {
         $schema   = Args::content($schema);
         $provider = new TestSchemaProvider($schema);
 
-        $this->instance(SchemaSourceProvider::class, $provider);
+        $this->getGraphQLSchemaBuilder()->setSchema($provider);
 
         return $this;
     }
 
     protected function getGraphQLSchema(SplFileInfo|string $schema): Schema {
-        $this->useGraphQLSchema($schema);
+        try {
+            return $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
+        } finally {
+            $this->useDefaultGraphQLSchema();
+        }
+    }
 
-        $graphql = $this->app->make(SchemaBuilder::class);
-        $schema  = $graphql->schema();
+    protected function useDefaultGraphQLSchema(): static {
+        $this->getGraphQLSchemaBuilder()->setSchema(null);
 
-        return $schema;
+        return $this;
     }
 
     protected function getDefaultGraphQLSchema(): Schema {
-        $this->instance(
-            SchemaSourceProvider::class,
-            new SchemaStitcher(
-                Cast::toString($this->app->make(Repository::class)->get('lighthouse.schema.register', '')),
-            ),
-        );
-
-        $graphql = $this->app->make(SchemaBuilder::class);
-        $schema  = $graphql->schema();
-
-        return $schema;
+        return $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
     }
 
     protected function printGraphQLSchema(
@@ -283,6 +276,30 @@ trait GraphQLAssertions {
 
     protected function getGraphQLSchemaPrinter(Settings $settings = null): SchemaPrinter {
         return $this->app->make(SchemaPrinter::class)->setSettings($settings ?? new TestSettings());
+    }
+
+    protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {
+        // Wrap
+        $builder = $this->app->resolved(SchemaBuilder::class)
+            ? $this->app->make(SchemaBuilder::class)
+            : null;
+
+        if (!($builder instanceof SchemaBuilderWrapper)) {
+            $this->app->extend(
+                SchemaBuilder::class,
+                static function (SchemaBuilder $builder, Container $container): SchemaBuilder {
+                    return new SchemaBuilderWrapper($container, $builder);
+                },
+            );
+        }
+
+        // Instance
+        $builder = $this->app->make(SchemaBuilder::class);
+
+        assert($builder instanceof SchemaBuilderWrapper);
+
+        // Return
+        return $builder;
     }
     // </editor-fold>
 }
