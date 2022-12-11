@@ -23,7 +23,7 @@ class OperatorsTest extends TestCase {
      * @covers ::hasOperators
      */
     public function testHasOperators(): void {
-        $operators = new class($this->app) extends Operators {
+        $operators = new class() extends Operators {
             /**
              * @inheritDoc
              */
@@ -54,7 +54,7 @@ class OperatorsTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $operators = new class($this->app) extends Operators {
+        $operators = new class() extends Operators {
             public function getScope(): string {
                 return __METHOD__;
             }
@@ -71,7 +71,7 @@ class OperatorsTest extends TestCase {
     public function testGetOperators(): void {
         $type      = __FUNCTION__;
         $alias     = 'alias';
-        $operators = new class($this->app) extends Operators {
+        $operators = new class() extends Operators {
             public function getScope(): string {
                 return __METHOD__;
             }
@@ -113,7 +113,7 @@ class OperatorsTest extends TestCase {
      * @covers ::getOperators
      */
     public function testGetOperatorsUnknownType(): void {
-        $operators = new class($this->app) extends Operators {
+        $operators = new class() extends Operators {
             public function getScope(): string {
                 return __METHOD__;
             }

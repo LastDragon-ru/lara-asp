@@ -2,10 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Foundation\Bus\PendingDispatch;
-
-use function app;
 
 trait Dispatchable {
     use WithInitialization;
@@ -18,7 +17,7 @@ trait Dispatchable {
 
     public function run(): mixed {
         return $this->ifInitialized(function (): mixed {
-            return app(Dispatcher::class)->dispatchSync($this);
+            return Container::getInstance()->make(Dispatcher::class)->dispatchSync($this);
         });
     }
 }

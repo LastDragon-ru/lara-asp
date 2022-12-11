@@ -33,14 +33,8 @@ abstract class Operators {
      */
     protected array $operators = [];
 
-    public function __construct(
-        private Container $container,
-    ) {
+    public function __construct() {
         // empty
-    }
-
-    protected function getContainer(): Container {
-        return $this->container;
     }
 
     abstract public function getScope(): string;
@@ -53,7 +47,7 @@ abstract class Operators {
      * @return T
      */
     public function getOperator(string $operator): Operator {
-        return $this->container->make($operator);
+        return Container::getInstance()->make($operator);
     }
 
     public function hasOperators(string $type): bool {

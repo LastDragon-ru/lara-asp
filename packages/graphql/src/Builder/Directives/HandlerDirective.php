@@ -14,7 +14,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -51,7 +51,6 @@ use function is_array;
 
 abstract class HandlerDirective extends BaseDirective implements Handler {
     public function __construct(
-        private Container $container,
         private ArgumentFactory $factory,
         private DirectiveLocator $directives,
     ) {
@@ -62,10 +61,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     // =========================================================================
     public static function getScope(): string {
         return static::class;
-    }
-
-    protected function getContainer(): Container {
-        return $this->container;
     }
 
     protected function getFactory(): ArgumentFactory {
@@ -207,7 +202,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     ): void {
         // Converted?
         /** @var Manipulator $manipulator */
-        $manipulator = $this->getContainer()->make(Manipulator::class, [
+        $manipulator = Container::getInstance()->make(Manipulator::class, [
             'document'    => $documentAST,
             'builderInfo' => $this->getBuilderInfo($parentField),
         ]);

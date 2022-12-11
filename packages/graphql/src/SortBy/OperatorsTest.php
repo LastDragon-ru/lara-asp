@@ -29,7 +29,7 @@ class OperatorsTest extends TestCase {
                 ],
             ]);
 
-        $operators = new class($this->app, $config) extends Operators {
+        $operators = new class($config) extends Operators {
             // empty
         };
 

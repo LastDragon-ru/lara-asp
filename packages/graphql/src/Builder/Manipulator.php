@@ -12,7 +12,7 @@ use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
@@ -46,7 +46,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
         DirectiveLocator $directives,
         DocumentAST $document,
         TypeRegistry $types,
-        private Container $container,
         private BuilderInfo $builderInfo,
     ) {
         parent::__construct($directives, $document, $types);
@@ -54,10 +53,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
-    protected function getContainer(): Container {
-        return $this->container;
-    }
-
     public function getBuilderInfo(): BuilderInfo {
         return $this->builderInfo;
     }
@@ -77,7 +72,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $this->addFakeTypeDefinition($name);
 
         // Create new
-        $instance = $this->getContainer()->make($definition);
+        $instance = Container::getInstance()->make($definition);
         $node     = $instance->getTypeDefinitionNode($this, $name, $type, $nullable);
 
         if (!$node) {
@@ -113,7 +108,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
      * @return T
      */
     public function getOperator(string $scope, string $operator): Operator {
-        return $this->getContainer()->make($operator);
+        return Container::getInstance()->make($operator);
     }
 
     /**

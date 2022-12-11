@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Formatter;
 use Closure;
 use DateTimeInterface;
 use DateTimeZone;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Traits\Macroable;
@@ -220,7 +221,7 @@ class Formatter {
     }
 
     protected function create(): static {
-        $formatter           = $this->getApplication()->make(static::class);
+        $formatter           = Container::getInstance()->make(static::class);
         $formatter->locale   = $this->locale;
         $formatter->timezone = $this->timezone;
 

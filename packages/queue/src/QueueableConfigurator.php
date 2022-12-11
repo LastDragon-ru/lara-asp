@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Queue;
 use DateInterval;
 use DateTimeInterface;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Support\DateFactory;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
@@ -23,7 +22,6 @@ use function is_string;
  */
 class QueueableConfigurator {
     public function __construct(
-        protected Container $container,
         protected Repository $config,
         protected DateFactory $dateFactory,
     ) {
@@ -35,11 +33,11 @@ class QueueableConfigurator {
         $properties = $this->getQueueableProperties();
 
         if ($queueable instanceof Mailable) {
-            $config = new MailableConfig($this->container, $this->config, $queueable, $properties);
+            $config = new MailableConfig($this->config, $queueable, $properties);
         } elseif ($queueable instanceof Cronable) {
-            $config = new CronableConfig($this->container, $this->config, $queueable, $properties);
+            $config = new CronableConfig($this->config, $queueable, $properties);
         } else {
-            $config = new QueueableConfig($this->container, $this->config, $queueable, $properties);
+            $config = new QueueableConfig($this->config, $queueable, $properties);
         }
 
         return $config;

@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
@@ -287,8 +286,8 @@ trait GraphQLAssertions {
         if (!($builder instanceof SchemaBuilderWrapper)) {
             $this->app->extend(
                 SchemaBuilder::class,
-                static function (SchemaBuilder $builder, Container $container): SchemaBuilder {
-                    return new SchemaBuilderWrapper($container, $builder);
+                static function (SchemaBuilder $builder): SchemaBuilder {
+                    return new SchemaBuilderWrapper($builder);
                 },
             );
         }

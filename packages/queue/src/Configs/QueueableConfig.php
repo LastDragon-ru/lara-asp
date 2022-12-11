@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Queue\Configs;
 
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
@@ -33,7 +32,6 @@ class QueueableConfig {
      * @param array<string, mixed> $properties
      */
     public function __construct(
-        protected Container $container,
         protected Repository $global,
         protected ConfigurableQueueable $queueable,
         protected array $properties,

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
@@ -114,11 +113,8 @@ class Operators extends BuilderOperators {
         ],
     ];
 
-    public function __construct(
-        Container $container,
-        Repository $config,
-    ) {
-        parent::__construct($container);
+    public function __construct(Repository $config) {
+        parent::__construct();
 
         /** @var array<string,array<class-string<BuilderOperator>|string>> $operators */
         $operators = (array) $config->get(Package::Name.'.search_by.operators');

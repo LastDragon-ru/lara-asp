@@ -61,7 +61,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerDirectives(): void {
-        $this->app->singleton(ScoutFieldResolver::class, ScoutDefaultFieldResolver::class);
+        $this->app->bindIf(ScoutFieldResolver::class, ScoutDefaultFieldResolver::class);
         $this->callAfterResolving(
             Manipulator::class,
             static function (Manipulator $manipulator, Container $container): void {

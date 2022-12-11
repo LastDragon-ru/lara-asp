@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Migrator;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
@@ -51,12 +52,12 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function registerMigrator(): void {
-        $this->app->singleton('migrator', static function (Application $app): Migrator {
+        $this->app->singleton('migrator', static function (Container $container): Migrator {
             return new SmartMigrator(
-                $app->make('migration.repository'),
-                $app->make(ConnectionResolverInterface::class),
-                $app->make(Filesystem::class),
-                $app->make(Dispatcher::class),
+                $container->make('migration.repository'),
+                $container->make(ConnectionResolverInterface::class),
+                $container->make(Filesystem::class),
+                $container->make(Dispatcher::class),
             );
         });
     }

@@ -10,7 +10,6 @@ use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\Parser;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -47,9 +46,8 @@ class HandlerDirectiveTest extends TestCase {
     public function testGetBuilderInfo(array $expected, Closure $fieldFactory): void {
         $directives = $this->app->make(DirectiveLocator::class);
         $argFactory = Mockery::mock(ArgumentFactory::class);
-        $container  = Mockery::mock(Container::class);
         $field      = $fieldFactory($directives);
-        $directive  = new class($container, $argFactory, $directives) extends HandlerDirective {
+        $directive  = new class($argFactory, $directives) extends HandlerDirective {
             public static function definition(): string {
                 throw new Exception('should not be called.');
             }

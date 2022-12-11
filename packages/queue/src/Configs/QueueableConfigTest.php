@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Queue\Configs;
 
 use Exception;
 use Illuminate\Config\Repository;
-use Illuminate\Container\Container;
 use Illuminate\Support\DateFactory;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
@@ -30,13 +29,12 @@ class QueueableConfigTest extends TestCase {
      * @param class-string<ConfigurableQueueable> $class
      */
     public function testGetQueueClass(string $expected, string $class): void {
-        $container    = Container::getInstance();
         $repository   = new Repository();
         $dateFactory  = new DateFactory();
-        $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
+        $configurator = new QueueableConfigurator($repository, $dateFactory);
         $properties   = [];
         $queueable    = new $class($configurator);
-        $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
+        $config       = new class($repository, $queueable, $properties) extends QueueableConfig {
             public function getQueueClass(): string {
                 return parent::getQueueClass();
             }
@@ -54,10 +52,9 @@ class QueueableConfigTest extends TestCase {
      * @param array<string,mixed>    $queueableConfig
      */
     public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
-        $container    = Container::getInstance();
         $repository   = new Repository();
         $dateFactory  = new DateFactory();
-        $configurator = new class($container, $repository, $dateFactory) extends QueueableConfigurator {
+        $configurator = new class($repository, $dateFactory) extends QueueableConfigurator {
             /**
              * @inheritDoc
              */
@@ -83,7 +80,7 @@ class QueueableConfigTest extends TestCase {
                 return $this->config;
             }
         };
-        $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
+        $config       = new class($repository, $queueable, $properties) extends QueueableConfig {
             /**
              * @inheritDoc
              */
