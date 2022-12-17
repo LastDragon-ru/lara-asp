@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
-use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
+
+use function config;
 
 /**
  * @internal
@@ -19,19 +19,15 @@ class OperatorsTest extends TestCase {
      * @covers ::__construct
      */
     public function testConstructor(): void {
-        $config = Mockery::mock(Repository::class);
-        $config
-            ->shouldReceive('get')
-            ->with(Package::Name.'.sort_by.operators')
-            ->andReturn([
+        config([
+            Package::Name.'.sort_by.operators' => [
                 Operators::Extra => [
                     Random::class,
                 ],
-            ]);
+            ],
+        ]);
 
-        $operators = new class($config) extends Operators {
-            // empty
-        };
+        $operators = $this->app->make(Operators::class);
 
         self::assertTrue($operators->hasOperators(Operators::Extra));
         self::assertFalse($operators->hasOperators('unknown'));

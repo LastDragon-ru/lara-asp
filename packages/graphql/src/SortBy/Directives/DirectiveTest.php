@@ -8,7 +8,6 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
@@ -24,7 +23,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
-
+use function config;
 use function is_array;
 
 /**
@@ -230,11 +229,12 @@ class DirectiveTest extends TestCase {
                 '~full.graphql',
                 static function (TestCase $test): void {
                     $package = Package::Name;
-                    $config  = $test->app->make(Repository::class);
 
-                    $config->set("{$package}.sort_by.operators", [
-                        Operators::Extra => [
-                            Random::class,
+                    config([
+                        "{$package}.sort_by.operators" => [
+                            Operators::Extra => [
+                                Random::class,
+                            ],
                         ],
                     ]);
                 },
@@ -344,11 +344,12 @@ class DirectiveTest extends TestCase {
                     ],
                     static function (TestCase $test): void {
                         $package = Package::Name;
-                        $config  = $test->app->make(Repository::class);
 
-                        $config->set("{$package}.sort_by.operators", [
-                            Operators::Extra => [
-                                Random::class,
+                        config([
+                            "{$package}.sort_by.operators" => [
+                                Operators::Extra => [
+                                    Random::class,
+                                ],
                             ],
                         ]);
                     },

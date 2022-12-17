@@ -33,8 +33,13 @@ abstract class Operators {
      */
     protected array $operators = [];
 
-    public function __construct() {
-        // empty
+    /**
+     * @param array<string, array<class-string<Operator>|string>> $operators
+     */
+    public function __construct(array $operators = []) {
+        foreach ($operators as $key => $value) {
+            $this->setOperators($key, $value);
+        }
     }
 
     abstract public function getScope(): string;

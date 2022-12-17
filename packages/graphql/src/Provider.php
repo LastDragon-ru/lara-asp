@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL;
 
-use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
@@ -24,6 +22,7 @@ use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_slice;
+use function config;
 use function explode;
 use function implode;
 use function is_int;
@@ -64,9 +63,9 @@ class Provider extends ServiceProvider {
         $this->app->bindIf(ScoutFieldResolver::class, ScoutDefaultFieldResolver::class);
         $this->callAfterResolving(
             Manipulator::class,
-            static function (Manipulator $manipulator, Container $container): void {
-                $manipulator->addOperators($container->make(SearchByOperators::class));
-                $manipulator->addOperators($container->make(SortByOperators::class));
+            static function (Manipulator $manipulator): void {
+                $manipulator->addOperators(new SearchByOperators());
+                $manipulator->addOperators(new SortByOperators());
             },
         );
     }
@@ -74,8 +73,8 @@ class Provider extends ServiceProvider {
     protected function registerEnums(): void {
         $this->callAfterResolving(
             TypeRegistry::class,
-            function (TypeRegistry $registry, Container $container): void {
-                $enums = (array) $container->make(Repository::class)->get("{$this->getName()}.enums");
+            function (TypeRegistry $registry): void {
+                $enums = (array) config("{$this->getName()}.enums");
 
                 foreach ($enums as $name => $enum) {
                     if (is_int($name)) {

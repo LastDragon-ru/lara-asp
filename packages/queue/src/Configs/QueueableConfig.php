@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Queue\Configs;
 
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Arr;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use ReflectionClass;
 
+use function config;
 use function get_class;
 use function in_array;
 use function is_null;
@@ -32,7 +32,6 @@ class QueueableConfig {
      * @param array<string, mixed> $properties
      */
     public function __construct(
-        protected Repository $global,
         protected ConfigurableQueueable $queueable,
         protected array $properties,
     ) {
@@ -60,7 +59,7 @@ class QueueableConfig {
      * @internal
      */
     public function isRedefined(string $key): bool {
-        return Arr::has((array) $this->global->get($this->getApplicationConfig()), $key)
+        return Arr::has((array) config($this->getApplicationConfig()), $key)
             || Arr::has($this->queueable->getQueueConfig(), $key);
     }
     // </editor-fold>
@@ -72,7 +71,7 @@ class QueueableConfig {
      */
     protected function config(): array {
         if (is_null($this->config)) {
-            $global       = (array) $this->global->get($this->getApplicationConfig());
+            $global       = (array) config($this->getApplicationConfig());
             $config       = $this->queueable->getQueueConfig();
             $target       = $this->getDefaultConfig() + $config;
             $this->config = (new ConfigMerger())->merge($target, $config, $global);

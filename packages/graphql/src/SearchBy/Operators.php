@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
-use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
@@ -34,6 +33,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
+
+use function config;
 
 class Operators extends BuilderOperators {
     public const Extra     = 'Extra';
@@ -113,15 +114,11 @@ class Operators extends BuilderOperators {
         ],
     ];
 
-    public function __construct(Repository $config) {
-        parent::__construct();
-
+    public function __construct() {
         /** @var array<string,array<class-string<BuilderOperator>|string>> $operators */
-        $operators = (array) $config->get(Package::Name.'.search_by.operators');
+        $operators = (array) config(Package::Name.'.search_by.operators');
 
-        foreach ($operators as $type => $typeOperators) {
-            $this->setOperators($type, $typeOperators);
-        }
+        parent::__construct($operators);
     }
 
     public function getScope(): string {

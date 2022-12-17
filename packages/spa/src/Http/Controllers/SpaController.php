@@ -2,11 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Spa\Package;
+
+use function config;
 
 class SpaController extends Controller {
     // <editor-fold desc="Actions">
@@ -16,8 +17,8 @@ class SpaController extends Controller {
      *
      * @return array<string, mixed>
      */
-    public function settings(Repository $config): array {
-        return $this->getSettings($config);
+    public function settings(): array {
+        return $this->getSettings();
     }
     // </editor-fold>
 
@@ -26,16 +27,16 @@ class SpaController extends Controller {
     /**
      * @return array<string, mixed>
      */
-    protected function getSettings(Repository $config): array {
+    protected function getSettings(): array {
         $package  = Package::Name;
         $default  = [
             ConfigMerger::Strict => false,
-            'title'              => $config->get('app.name'),
+            'title'              => config('app.name'),
             'upload'             => [
                 'max' => UploadedFile::getMaxFilesize(),
             ],
         ];
-        $custom   = $config->get("{$package}.spa");
+        $custom   = config("{$package}.spa");
         $settings = (new ConfigMerger())->merge($default, $custom);
 
         return $settings;

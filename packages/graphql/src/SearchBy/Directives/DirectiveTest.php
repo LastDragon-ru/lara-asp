@@ -9,7 +9,6 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -52,6 +51,7 @@ use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 
 use function assert;
+use function config;
 use function implode;
 use function is_array;
 use function json_encode;
@@ -361,10 +361,11 @@ class DirectiveTest extends TestCase {
                 '~example.graphql',
                 static function (TestCase $test): void {
                     $package = Package::Name;
-                    $config  = $test->app->make(Repository::class);
 
-                    $config->set("{$package}.search_by.operators.Date", [
-                        Between::class,
+                    config([
+                        "{$package}.search_by.operators.Date" => [
+                            Between::class,
+                        ],
                     ]);
                 },
             ],

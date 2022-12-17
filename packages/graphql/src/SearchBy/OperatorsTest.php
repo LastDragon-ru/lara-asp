@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
-use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
+
+use function config;
 
 /**
  * @internal
@@ -20,22 +20,18 @@ class OperatorsTest extends TestCase {
      * @covers ::__construct
      */
     public function testConstructor(): void {
-        $config = Mockery::mock(Repository::class);
-        $config
-            ->shouldReceive('get')
-            ->with(Package::Name.'.search_by.operators')
-            ->andReturn([
+        config([
+            Package::Name.'.search_by.operators' => [
                 Operators::ID  => [
                     Equal::class,
                 ],
                 Operators::Int => [
                     NotEqual::class,
                 ],
-            ]);
+            ],
+        ]);
 
-        $operators = new class($config) extends Operators {
-            // empty
-        };
+        $operators = $this->app->make(Operators::class);
 
         self::assertTrue($operators->hasOperators(Operators::ID));
         self::assertTrue($operators->hasOperators(Operators::Int));
