@@ -42,7 +42,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: lts/*
           cache: npm
 
       - name: Install dependencies
@@ -53,7 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run release
+          npm run release -- --github.releaseName="$(git log -1 --pretty=%s)"
 
       - name: Congratulations
         run: |
