@@ -77,7 +77,7 @@ class CronableRegistratorTest extends TestCase {
         $schedule    = $this->app->make(Schedule::class);
         $registrator = $this->app->make(CronableRegistrator::class);
 
-        $registrator->register($schedule, $cronable::class);
+        $registrator->register($this->app, $schedule, $cronable::class);
 
         if ($enabled) {
             Queue::assertPushed($cronable::class);
@@ -90,7 +90,7 @@ class CronableRegistratorTest extends TestCase {
      * @covers ::register
      */
     public function testRegisterNotConsole(): void {
-        $cronable    = new class() implements Cronable {
+        $cronable = new class() implements Cronable {
             /**
              * @inheritDoc
              */
@@ -98,25 +98,23 @@ class CronableRegistratorTest extends TestCase {
                 return [];
             }
         };
-        $application = Mockery::mock(Application::class);
-        $application
+        $app      = Mockery::mock(Application::class);
+        $app
             ->shouldReceive('runningInConsole')
             ->once()
             ->andReturn(false);
 
         $schedule    = $this->app->make(Schedule::class);
-        $registrator = new class($application) extends CronableRegistrator {
+        $registrator = new class() extends CronableRegistrator {
             /** @noinspection PhpMissingParentConstructorInspection */
-            public function __construct(
-                protected Application $application,
-            ) {
+            public function __construct() {
                 // empty
             }
         };
 
         self::expectExceptionObject(new LogicException('The application is not running in console.'));
 
-        $registrator->register($schedule, $cronable::class);
+        $registrator->register($app, $schedule, $cronable::class);
     }
 
     /**
@@ -141,7 +139,7 @@ class CronableRegistratorTest extends TestCase {
         $schedule    = $this->app->make(Schedule::class);
         $registrator = $this->app->make(CronableRegistrator::class);
 
-        $registrator->register($schedule, $cronable::class);
+        $registrator->register($this->app, $schedule, $cronable::class);
     }
 
     /**
@@ -171,7 +169,7 @@ class CronableRegistratorTest extends TestCase {
         $schedule    = $this->app->make(Schedule::class);
         $registrator = $this->app->make(CronableRegistrator::class);
 
-        $registrator->register($schedule, $cronable::class);
+        $registrator->register($this->app, $schedule, $cronable::class);
     }
     // </editor-fold>
 

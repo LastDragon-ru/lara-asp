@@ -183,7 +183,6 @@ class Formatter {
     private array $numbersFormatters = [];
 
     public function __construct(
-        private Application $application,
         private PackageTranslator $translator,
     ) {
         // empty
@@ -236,10 +235,6 @@ class Formatter {
 
     public function getTimezone(): IntlTimeZone|DateTimeZone|string|null {
         return $this->timezone ?: $this->getDefaultTimezone();
-    }
-
-    protected function getApplication(): Application {
-        return $this->application;
     }
 
     protected function getTranslator(): PackageTranslator {
@@ -386,7 +381,8 @@ class Formatter {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function getDefaultLocale(): string {
-        return $this->getApplication()->getLocale() ?: Locale::getDefault();
+        return Container::getInstance()->make(Application::class)->getLocale()
+            ?: Locale::getDefault();
     }
 
     protected function getDefaultTimezone(): IntlTimeZone|DateTimeZone|string|null {

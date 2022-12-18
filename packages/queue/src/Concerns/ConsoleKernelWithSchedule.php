@@ -21,7 +21,7 @@ trait ConsoleKernelWithSchedule {
         $registrator = $this->app->make(CronableRegistrator::class);
 
         foreach ($this->schedule as $job) {
-            $registrator->register($schedule, $job);
+            $registrator->register($this->app, $schedule, $job);
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LastDragon_ru\LaraASP\Queue\CronableRegistrator;
@@ -24,11 +24,11 @@ trait ProviderWithSchedule {
 
         $this->callAfterResolving(
             Schedule::class,
-            static function (Schedule $schedule, Container $container) use ($jobs): void {
-                $registrator = $container->make(CronableRegistrator::class);
+            static function (Schedule $schedule, Application $app) use ($jobs): void {
+                $registrator = $app->make(CronableRegistrator::class);
 
                 foreach ($jobs as $job) {
-                    $registrator->register($schedule, $job);
+                    $registrator->register($app, $schedule, $job);
                 }
             },
         );
