@@ -181,7 +181,7 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template T of \Nuwave\Lighthouse\Support\Contracts\Directive
+     * @template T of Directive
      *
      * @param class-string<T>       $class
      * @param Closure(T): bool|null $callback
@@ -199,7 +199,7 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template T of \Nuwave\Lighthouse\Support\Contracts\Directive
+     * @template T of Directive
      *
      * @param class-string<T>       $class
      * @param Closure(T): bool|null $callback

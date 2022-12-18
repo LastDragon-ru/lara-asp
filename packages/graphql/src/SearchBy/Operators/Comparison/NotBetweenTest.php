@@ -14,7 +14,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\
+ * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */

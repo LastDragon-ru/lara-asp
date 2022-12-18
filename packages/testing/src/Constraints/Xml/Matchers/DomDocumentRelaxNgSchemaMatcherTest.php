@@ -15,7 +15,7 @@ class DomDocumentRelaxNgSchemaMatcherTest extends TestCase {
     use WithTestData;
 
     /**
-     * @covers ::evaluate
+     * @covers ::isMatchesSchema
      */
     public function testEvaluateValid(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
@@ -26,7 +26,7 @@ class DomDocumentRelaxNgSchemaMatcherTest extends TestCase {
     }
 
     /**
-     * @covers ::evaluate
+     * @covers ::isMatchesSchema
      */
     public function testEvaluateInvalid(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
@@ -37,7 +37,7 @@ class DomDocumentRelaxNgSchemaMatcherTest extends TestCase {
     }
 
     /**
-     * @covers ::evaluate
+     * @covers ::isMatchesSchema
      */
     public function testEvaluateNotDocument(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');

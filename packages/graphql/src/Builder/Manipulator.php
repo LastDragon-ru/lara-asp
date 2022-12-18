@@ -28,6 +28,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_filter;
 use function array_map;
+use function array_values;
 use function count;
 use function implode;
 use function is_object;
@@ -129,6 +130,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operators = array_filter($operators, function (Operator $operator): bool {
             return $operator->isBuilderSupported($this->getBuilderInfo()->getBuilder());
         });
+        $operators = array_values($operators);
 
         return $operators;
     }

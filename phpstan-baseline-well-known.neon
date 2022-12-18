@@ -46,12 +46,6 @@ parameters:
                 - packages/testing/src/Mixins/TestResponseMixin.php
 
         # False positive
-        # https://github.com/nunomaduro/larastan/pull/913
-        - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::joinSub\\(\\)\\.$#"
-        - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::reorder\\(\\)\\.$#"
-        - "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder<[^>]+>::offset\\(\\)\\.$#"
-
-        # False positive
         # https://github.com/phpstan/phpstan-mockery/issues/34
         -
             message: "#^Parameter \\#1 \\$callback of static method Closure\\:\\:fromCallable\\(\\) expects callable\\(\\)\\: mixed, Mockery\\\\MockInterface given\\.$#"

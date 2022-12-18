@@ -96,7 +96,7 @@ class DatabaseQueryComparator extends ObjectComparator {
             });
 
             foreach ($matches as $match => $index) {
-                $sql = str_replace((string) $match, "__tmp_alias_{$index}", $sql);
+                $sql = str_replace($match, "__tmp_alias_{$index}", $sql);
             }
 
             $sql = str_replace('__tmp_alias_', 'laravel_reserved_', $sql);

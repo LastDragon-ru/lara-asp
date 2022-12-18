@@ -14,6 +14,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use function array_map;
 use function array_merge;
 use function explode;
+use function get_class;
 use function implode;
 use function json_decode;
 use function json_encode;
@@ -29,14 +30,12 @@ class SmartMigratorTest extends TestCase {
      * @covers \LastDragon_ru\LaraASP\Migrator\Provider::registerMigrator
      */
     public function testProvider(): void {
-        self::assertInstanceOf(SmartMigrator::class, $this->app->make('migrator'));
+        self::assertEquals(SmartMigrator::class, get_class($this->app->make('migrator')));
     }
 
     /**
      * @covers ::run
      * @covers ::rollback
-     * @covers \LastDragon_ru\LaraASP\Migrator\Migrations\RawMigration::__construct
-     * @covers \LastDragon_ru\LaraASP\Migrator\Migrations\RawDataMigration::__construct
      */
     public function testMigrate(): void {
         // Prepare

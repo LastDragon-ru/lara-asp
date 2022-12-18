@@ -60,8 +60,8 @@ $settings = [
      *
      * @deprecated Consider using native PHP enums.
      *
-     * @see CoreEnum
-     * @see EloquentEnum
+     * @see        CoreEnum
+     * @see        EloquentEnum
      */
     'enums'     => [
         // empty,

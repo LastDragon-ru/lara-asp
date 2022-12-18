@@ -7,6 +7,7 @@ use Countable;
 use EmptyIterator;
 use Generator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 
@@ -15,7 +16,7 @@ use function max;
 use function min;
 
 /**
- * @template TItem of \Illuminate\Database\Eloquent\Model
+ * @template TItem of Model
  *
  * @implements Iterator<TItem>
  *
@@ -125,7 +126,9 @@ abstract class IteratorImpl implements Iterator, Countable {
 
         // Iterate
         do {
-            $builder = (clone $this->getBuilder())->offset(0);
+            $builder = (clone $this->getBuilder())->tap(static function (Builder $builder): void {
+                $builder->offset(0);
+            });
             $chunk   = $limit ? min($chunk, $limit - $index) : $chunk;
             $items   = $this->getChunk($builder, $chunk);
             $count   = count($items);

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 use function count;
@@ -14,17 +15,21 @@ use function count;
  * generators instead of {@link \Closure}. Be careful, you should not modify/delete
  * the items while iteration or you will get unexpected results (eg missing
  * items). If you need to modify/delete items while iteration you can use
- * {@link \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator}.
+ * {@link ChunkedChangeSafeIterator}.
  *
- * @see      \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
+ * @see      ChunkedChangeSafeIterator
  *
- * @template TItem of \Illuminate\Database\Eloquent\Model
+ * @template TItem of Model
  *
  * @extends IteratorImpl<TItem>
  */
 class ChunkedIterator extends IteratorImpl {
     protected function getChunk(Builder $builder, int $chunk): Collection {
-        return $builder->offset($this->getOffset())->limit($chunk)->get();
+        $builder
+            ->offset($this->getOffset())
+            ->limit($chunk);
+
+        return $builder->get();
     }
 
     protected function chunkProcessed(Collection $items): bool {

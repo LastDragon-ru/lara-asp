@@ -16,7 +16,7 @@ class IntrospectionSchemaPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::print
+     * @covers ::printSchema
      *
      * @dataProvider dataProviderPrint
      */

@@ -49,8 +49,8 @@ class ConfigMerger {
      * any new keys, cannot replace existing scalar values by the array, and
      * vice versa. This behavior can be changed by marks.
      *
-     * @see \LastDragon_ru\LaraASP\Core\Utils\ConfigMerger::Strict
-     * @see \LastDragon_ru\LaraASP\Core\Utils\ConfigMerger::Replace
+     * @see ConfigMerger::Replace
+     * @see ConfigMerger::Strict
      *
      * @param array<mixed> $target
      * @param array<mixed> $configs
