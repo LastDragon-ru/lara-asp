@@ -140,6 +140,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type|string $type,
         ?string $field,
         ?bool $nullable,
+        ?string $description = null,
     ): string {
         $type        = is_object($type) ? $this->getNodeName($type) : $type;
         $type        = $operator->getFieldType($this, $type, $nullable);
@@ -148,7 +149,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $directive   = $directive instanceof DirectiveNode
             ? Printer::doPrint($directive)
             : $directive;
-        $description = $operator->getFieldDescription();
+        $description = $description ?: $operator->getFieldDescription();
 
         return <<<DEF
             """

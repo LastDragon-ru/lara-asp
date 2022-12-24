@@ -176,6 +176,12 @@ input SearchByConditionInputA {
     @searchByOperatorProperty
 
     """
+    Description should be used.
+    """
+    description: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
     Property condition.
     """
     enum: SearchByEnumEnumAOrNull
@@ -420,6 +426,12 @@ input SearchByConditionObject {
     Property condition.
     """
     customScalarNonNull: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    description: SearchByScalarIDOrNull
     @searchByOperatorProperty
 
     """
@@ -1271,6 +1283,12 @@ input SearchByScoutConditionInputA {
     @searchByOperatorProperty
 
     """
+    Description should be used.
+    """
+    description: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
     Property condition.
     """
     enum: SearchByScoutEnumEnumAOrNull
@@ -1631,6 +1649,12 @@ type Object {
     customScalarIgnoredNonNull: DateIgnored!
     customScalarList: [Date!]!
     customScalarNonNull: Date!
+
+    """
+    Description should NOT be used.
+    """
+    description: ID
+
     enum: EnumA
     enumEnumIgnoredNotNull: EnumIgnored!
     enumIgnored: EnumIgnored

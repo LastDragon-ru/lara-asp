@@ -69,6 +69,12 @@ input SortByClauseObject {
     """
     Property clause.
     """
+    description: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
     enum: SortByTypeDirection
     @sortByOperatorField
 
@@ -155,6 +161,12 @@ input SortByClauseProperties {
     @sortByOperatorField
 
     """
+    Description should be used.
+    """
+    description: SortByTypeDirection
+    @sortByOperatorField
+
+    """
     Property clause.
     """
     enum: SortByTypeDirection
@@ -217,6 +229,12 @@ input SortByQueryClauseProperties {
     Property clause.
     """
     customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Description should be used.
+    """
+    description: SortByTypeDirection
     @sortByOperatorField
 
     """
@@ -293,6 +311,12 @@ input SortByScoutClauseProperties {
     Property clause.
     """
     customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Description should be used.
+    """
+    description: SortByTypeDirection
     @sortByOperatorField
 
     """
@@ -378,6 +402,12 @@ type Object {
     customScalarIgnoredNonNull: DateIgnored!
     customScalarList: [Date!]!
     customScalarNonNull: Date!
+
+    """
+    Description should NOT be used.
+    """
+    description: ID
+
     enum: Value
     enumEnumIgnoredNotNull: EnumIgnored!
     enumIgnored: EnumIgnored

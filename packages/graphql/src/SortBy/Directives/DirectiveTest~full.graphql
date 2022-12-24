@@ -44,6 +44,9 @@ input Properties {
     customScalarIgnored: DateIgnored
     customScalarIgnoredList: [DateIgnored!]!
     customScalarIgnoredNonNull: DateIgnored!
+
+    "Description should be used."
+    description: ID
 }
 
 input Nested {
@@ -96,6 +99,9 @@ type Object {
     customScalarIgnored: DateIgnored
     customScalarIgnoredList: [DateIgnored!]!
     customScalarIgnoredNonNull: DateIgnored!
+
+    "Description should NOT be used."
+    description: ID
 }
 
 type ObjectNested {

@@ -182,9 +182,10 @@ abstract class InputObject implements TypeDefinition {
             return null;
         }
 
-        return Parser::inputValueDefinition(
-            $manipulator->getOperatorField($operator, $type, $name, $fieldNullable),
-        );
+        $fieldDescription = $this->getFieldDescription($manipulator, $field, $fieldType, $fieldNullable);
+        $fieldDefinition  = $manipulator->getOperatorField($operator, $type, $name, $fieldNullable, $fieldDescription);
+
+        return Parser::inputValueDefinition($fieldDefinition);
     }
 
     /**
@@ -232,5 +233,24 @@ abstract class InputObject implements TypeDefinition {
 
         // Return
         return $operator;
+    }
+
+    protected function getFieldDescription(
+        Manipulator $manipulator,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
+        TypeDefinitionNode|Type $fieldType,
+        ?bool $fieldNullable,
+    ): string|null {
+        $description = null;
+
+        if ($field instanceof InputValueDefinitionNode) {
+            $description = $field->description->value ?? null;
+        } elseif ($field instanceof InputObjectField) {
+            $description = $field->description;
+        } else {
+            // empty
+        }
+
+        return $description;
     }
 }
