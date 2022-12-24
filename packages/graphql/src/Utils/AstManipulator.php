@@ -176,8 +176,21 @@ abstract class AstManipulator {
     }
 
     public function getScalarTypeDefinitionNode(string $scalar): ScalarTypeDefinitionNode {
-        // fixme(graphql): Is there any better way for this?
-        return Parser::scalarTypeDefinition("scalar {$scalar}");
+        // It can be defined inside schema
+        $node = $this->isTypeDefinitionExists($scalar)
+            ? $this->getTypeDefinitionNode($scalar)
+            : null;
+
+        if (!$node) {
+            // or programmatically (and there is no definition...)
+            $node = Parser::scalarTypeDefinition("scalar {$scalar}");
+        } elseif (!($node instanceof ScalarTypeDefinitionNode)) {
+            throw new TypeDefinitionUnknown($scalar);
+        } else {
+            // empty
+        }
+
+        return $node;
     }
 
     /**
