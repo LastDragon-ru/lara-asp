@@ -10,7 +10,13 @@ class Ignored implements IgnoredContract {
             """
             Marks that field should be excluded from sort.
             """
-            directive @sortByIgnored on FIELD_DEFINITION | INPUT_FIELD_DEFINITION,
+            directive @sortByIgnored on
+                | FIELD_DEFINITION
+                | INPUT_FIELD_DEFINITION
+                | OBJECT
+                | INPUT_OBJECT
+                | ENUM
+                | SCALAR,
         GRAPHQL;
     }
 }

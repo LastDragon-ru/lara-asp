@@ -29,10 +29,21 @@ input Properties {
     nestedNotNull: Nested!
     enum: Value
     enumNotNull: Value!
+    enumIgnored: EnumIgnored
+    enumEnumIgnoredNotNull: EnumIgnored!
     ignored: ID! @sortByIgnored
     resolver: ID! @field(
         resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
     )
+    ignoredType: InputIgnored
+    ignoredTypeList: [InputIgnored!]!
+    ignoredTypeNonNull: InputIgnored!
+    customScalar: Date
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
 }
 
 input Nested {
@@ -40,9 +51,24 @@ input Nested {
     nested: Nested
 }
 
+input InputIgnored @sortByIgnored {
+    id: ID
+}
+
+scalar Date
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+scalar DateIgnored
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+@sortByIgnored
+
 enum Value {
     one
     two
+}
+
+enum EnumIgnored @sortByIgnored {
+    one
 }
 
 type Object {
@@ -52,6 +78,8 @@ type Object {
     nestedNotNull: ObjectNested!
     enum: Value
     enumNotNull: Value!
+    enumIgnored: EnumIgnored
+    enumEnumIgnoredNotNull: EnumIgnored!
     ignored: ID! @sortByIgnored
     resolver: ID! @field(
         resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
@@ -59,6 +87,15 @@ type Object {
     union: ObjectUnion
     unionList: [ObjectUnion!]!
     unionNonNull: ObjectUnion!
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    customScalar: Date
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
 }
 
 type ObjectNested {
@@ -67,3 +104,7 @@ type ObjectNested {
 }
 
 union ObjectUnion = Object | ObjectNested
+
+type ObjectIgnored @sortByIgnored {
+    value: String
+}

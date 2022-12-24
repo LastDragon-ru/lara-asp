@@ -1,3 +1,9 @@
+enum EnumIgnored
+@sortByIgnored
+{
+    one
+}
+
 """
 Sort direction.
 """
@@ -42,6 +48,24 @@ input SortByClauseNested {
 Sort clause for `type Object` (only one property allowed at a time).
 """
 input SortByClauseObject {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarList: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
     """
     Property clause.
     """
@@ -115,6 +139,24 @@ input SortByClauseProperties {
     """
     Property clause.
     """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarList: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
     enum: SortByTypeDirection
     @sortByOperatorField
 
@@ -159,6 +201,24 @@ input SortByClauseProperties {
 Sort clause for `input Properties` (only one property allowed at a time).
 """
 input SortByQueryClauseProperties {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarList: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
     """
     Property clause.
     """
@@ -217,6 +277,24 @@ input SortByScoutClauseNested {
 Sort clause for `input Properties` (only one property allowed at a time).
 """
 input SortByScoutClauseProperties {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarList: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
     """
     Property clause.
     """
@@ -282,8 +360,27 @@ interface Scout {
     ): ID!
 }
 
+scalar Date
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+
+scalar DateIgnored
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@sortByIgnored
+
 type Object {
+    customScalar: Date
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
     enum: Value
+    enumEnumIgnoredNotNull: EnumIgnored!
+    enumIgnored: EnumIgnored
     enumNotNull: Value!
     idScalar: ID
     idScalarNotNull: ID!
@@ -291,6 +388,9 @@ type Object {
     ignored: ID!
     @sortByIgnored
 
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
     nested: ObjectNested
     nestedNotNull: ObjectNested!
 
@@ -302,6 +402,12 @@ type Object {
     union: ObjectUnion
     unionList: [ObjectUnion!]!
     unionNonNull: ObjectUnion!
+}
+
+type ObjectIgnored
+@sortByIgnored
+{
+    value: String
 }
 
 type ObjectNested {
@@ -360,8 +466,12 @@ Marks that field should be excluded from sort.
 """
 directive @sortByIgnored
 on
+    | ENUM
     | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
 
 directive @sortByOperatorField
 on

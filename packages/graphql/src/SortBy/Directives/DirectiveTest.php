@@ -224,10 +224,11 @@ class DirectiveTest extends TestCase {
                             'Float',
                             'Int',
                             'Boolean',
+                            'InputIgnored',
                         ]);
                 },
                 '~full.graphql',
-                static function (TestCase $test): void {
+                static function (): void {
                     $package = Package::Name;
 
                     config([
