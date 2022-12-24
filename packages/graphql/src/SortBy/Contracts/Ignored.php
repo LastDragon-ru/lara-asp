@@ -2,11 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts;
 
-use Nuwave\Lighthouse\Support\Contracts\Directive;
-
 /**
- * Marks that field should be excluded from sort.
+ * Marks that field/type should be excluded from sort.
  */
-interface Ignored extends Directive {
+interface Ignored {
     // empty
 }

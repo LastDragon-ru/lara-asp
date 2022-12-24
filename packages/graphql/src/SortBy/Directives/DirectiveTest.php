@@ -12,6 +12,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
@@ -60,6 +61,17 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      */
     public function testManipulateArgDefinitionTypeRegistry(): void {
+        $i = new class([
+            'name'   => 'I',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::string(),
+                ],
+            ],
+        ]) extends InputObjectType implements Ignored {
+            // empty
+        };
         $a = new InputObjectType([
             'name'   => 'A',
             'fields' => [
@@ -70,6 +82,10 @@ class DirectiveTest extends TestCase {
                 [
                     'name' => 'flag',
                     'type' => Type::nonNull(Type::boolean()),
+                ],
+                [
+                    'name' => 'ignored',
+                    'type' => Type::nonNull($i),
                 ],
             ],
         ]);
@@ -118,6 +134,7 @@ class DirectiveTest extends TestCase {
         $registry->register($b);
         $registry->register($c);
         $registry->register($d);
+        $registry->register($i);
 
         self::assertGraphQLSchemaEquals(
             $this->getTestData()->file('~registry-expected.graphql'),
