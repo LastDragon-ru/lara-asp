@@ -96,11 +96,6 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:filter\\(\\) expects \\(callable\\(mixed, \\(int\\|string\\)\\)\\: bool\\)\\|null, Closure\\(T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\)\\: bool given\\.$#"
-			count: 1
-			path: packages/graphql/src/Utils/AstManipulator.php
-
-		-
 			message: "#^Parameter \\#1 \\$expression of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:cron\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: packages/queue/src/CronableRegistrator.php

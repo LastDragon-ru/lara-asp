@@ -3,8 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored as IgnoredContract;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 
-class Ignored implements IgnoredContract {
+class Ignored implements Directive, IgnoredContract {
     public static function definition(): string {
         return /** @lang GraphQL */ <<<'GRAPHQL'
             """

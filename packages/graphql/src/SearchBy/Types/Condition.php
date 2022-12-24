@@ -75,7 +75,7 @@ class Condition extends InputObject {
         }
 
         // Ignored?
-        if ($manipulator->getNodeDirective($node, Ignored::class)) {
+        if ($node instanceof Ignored || $manipulator->getNodeDirective($node, Ignored::class) !== null) {
             return false;
         }
 

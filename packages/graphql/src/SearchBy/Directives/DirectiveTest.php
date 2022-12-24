@@ -27,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
@@ -105,7 +106,7 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      */
     public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {
-        $enum  = new EnumType([
+        $enum    = new EnumType([
             'name'   => 'TestEnum',
             'values' => [
                 'property' => [
@@ -114,7 +115,18 @@ class DirectiveTest extends TestCase {
                 ],
             ],
         ]);
-        $typeA = new InputObjectType([
+        $ignored = new class([
+            'name'   => 'TestIgnored',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::nonNull(Type::string()),
+                ],
+            ],
+        ]) extends InputObjectType implements Ignored {
+            // empty
+        };
+        $typeA   = new InputObjectType([
             'name'   => 'TestTypeA',
             'fields' => [
                 [
@@ -129,9 +141,13 @@ class DirectiveTest extends TestCase {
                     'name' => 'value',
                     'type' => Type::listOf(Type::nonNull($enum)),
                 ],
+                [
+                    'name' => 'ignored',
+                    'type' => Type::listOf(Type::nonNull($ignored)),
+                ],
             ],
         ]);
-        $typeB = new InputObjectType([
+        $typeB   = new InputObjectType([
             'name'   => 'TestTypeB',
             'fields' => [
                 [
@@ -150,6 +166,7 @@ class DirectiveTest extends TestCase {
         $registry->register($enum);
         $registry->register($typeA);
         $registry->register($typeB);
+        $registry->register($ignored);
 
         self::assertGraphQLSchemaEquals(
             $this->getTestData()->file('~programmatically-expected.graphql'),

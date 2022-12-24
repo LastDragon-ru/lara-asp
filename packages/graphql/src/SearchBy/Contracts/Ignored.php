@@ -2,11 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts;
 
-use Nuwave\Lighthouse\Support\Contracts\Directive;
-
 /**
- * Marks that field should be excluded from search.
+ * Marks that field/type should be excluded from search.
  */
-interface Ignored extends Directive {
+interface Ignored {
     // empty
 }

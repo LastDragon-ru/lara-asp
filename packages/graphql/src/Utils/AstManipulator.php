@@ -42,6 +42,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function array_merge;
+use function is_a;
 use function trim;
 
 abstract class AstManipulator {
@@ -217,12 +218,12 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template T of Directive
+     * @template T
      *
      * @param class-string<T>       $class
      * @param Closure(T): bool|null $callback
      *
-     * @return T|null
+     * @return (T&Directive)|null
      */
     public function getNodeDirective(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
@@ -235,12 +236,12 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template T of Directive
+     * @template T
      *
      * @param class-string<T>       $class
      * @param Closure(T): bool|null $callback
      *
-     * @return Collection<int, T>
+     * @return Collection<int, T&Directive>
      */
     public function getNodeDirectives(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
@@ -248,11 +249,27 @@ abstract class AstManipulator {
         ?Closure $callback = null,
     ): Collection {
         $directives = $node instanceof Node
-            ? $this->getDirectives()->associatedOfType($node, $class)
+            ? $this->getDirectives()->associated($node)
             : new Collection();
-        $directives = $callback
-            ? $directives->filter($callback)
-            : $directives;
+        $directives = $directives->filter(static function (mixed $directive) use ($class, $callback): bool {
+            // Directive?
+            if (!($directive instanceof Directive)) {
+                return false;
+            }
+
+            // Class?
+            if (!is_a($directive, $class, true)) {
+                return false;
+            }
+
+            // Callback?
+            if ($callback && !$callback($directive)) {
+                return false;
+            }
+
+            // Ok
+            return true;
+        });
 
         return $directives;
     }
