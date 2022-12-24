@@ -29,6 +29,7 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
@@ -347,10 +348,19 @@ class DirectiveTest extends TestCase {
                             'NestedB',
                             'NestedC',
                             'InputB',
+                            'InputIgnored',
                         ]);
                 },
                 '~full.graphql',
-                null,
+                static function (TestCase $test): void {
+                    $package = Package::Name;
+
+                    config([
+                        "{$package}.search_by.operators.Date" => [
+                            Equal::class,
+                        ],
+                    ]);
+                },
             ],
             'example'                        => [
                 static function (self $test): GraphQLExpectedSchema {

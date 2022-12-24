@@ -3,6 +3,12 @@ enum EnumA {
     two
 }
 
+enum EnumIgnored
+@searchByIgnored
+{
+    one
+}
+
 enum SearchByTypeFlag {
     yes
 }
@@ -149,6 +155,24 @@ input SearchByConditionInputA {
     Property condition.
     """
     booleanScalarNotNull: SearchByScalarBoolean
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalar: SearchByScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarList: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarNonNull: SearchByScalarDate
     @searchByOperatorProperty
 
     """
@@ -383,6 +407,24 @@ input SearchByConditionObject {
     """
     Property condition.
     """
+    customScalar: SearchByScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarList: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarNonNull: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
     enum: SearchByEnumEnumAOrNull
     @searchByOperatorProperty
 
@@ -608,6 +650,40 @@ input SearchByScalarBooleanOrNull {
     """
     notEqual: Boolean
     @searchByOperatorNotEqual
+}
+
+"""
+Available operators for `scalar Date!` (only one operator allowed at a time).
+"""
+input SearchByScalarDate {
+    """
+    Equal (`=`).
+    """
+    equal: Date
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Date` (only one operator allowed at a time).
+"""
+input SearchByScalarDateOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Date
+    @searchByOperatorEqual
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
 }
 
 """
@@ -1179,6 +1255,24 @@ input SearchByScoutConditionInputA {
     """
     Property condition.
     """
+    customScalar: SearchByScoutScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarList: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarNonNull: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
     enum: SearchByScoutEnumEnumAOrNull
     @searchByOperatorProperty
 
@@ -1325,6 +1419,28 @@ input SearchByScoutScalarBooleanOrNull {
     Equal (`=`).
     """
     equal: Boolean
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Date!` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarDate {
+    """
+    Equal (`=`).
+    """
+    equal: Date
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Date` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarDateOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Date
     @searchByOperatorEqual
 }
 
@@ -1495,10 +1611,29 @@ interface C {
     ): ID!
 }
 
+scalar Date
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+
+scalar DateIgnored
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@searchByIgnored
+
 type Object {
     booleanScalar: Boolean
     booleanScalarNotNull: Boolean!
+    customScalar: Date
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
     enum: EnumA
+    enumEnumIgnoredNotNull: EnumIgnored!
+    enumIgnored: EnumIgnored
     enumNotNull: EnumA!
     floatScalar: Float
     floatScalarNotNull: Float!
@@ -1508,6 +1643,9 @@ type Object {
     ignored: String
     @searchByIgnored
 
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
     inScalarNotNull: Int!
     intScalar: Int
     nested: ObjectNested
@@ -1523,6 +1661,12 @@ type Object {
     union: ObjectUnion
     unionList: [ObjectUnion!]!
     unionNonNull: ObjectUnion!
+}
+
+type ObjectIgnored
+@searchByIgnored
+{
+    value: String
 }
 
 type ObjectNested {
@@ -1591,8 +1735,12 @@ Marks that field should be excluded from search.
 """
 directive @searchByIgnored
 on
+    | ENUM
     | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
 
 directive @searchByOperatorAllOf
 on
