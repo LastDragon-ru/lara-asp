@@ -59,22 +59,22 @@ class Clause extends InputObject {
         return $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false);
     }
 
-    protected function isFieldConvertable(
+    protected function isConvertable(
         Manipulator $manipulator,
-        FieldDefinition|InputValueDefinitionNode|InputObjectField|FieldDefinitionNode $field,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
     ): bool {
         // Parent?
-        if (!parent::isFieldConvertable($manipulator, $field)) {
+        if (!parent::isConvertable($manipulator, $node)) {
             return false;
         }
 
         // Convertable?
-        if ($manipulator->isList($field)) {
+        if ($manipulator->isList($node)) {
             return false;
         }
 
         // Ignored?
-        if ($manipulator->getNodeDirective($field, Ignored::class)) {
+        if ($manipulator->getNodeDirective($node, Ignored::class)) {
             return false;
         }
 

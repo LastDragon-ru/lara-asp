@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
 use Closure;
-use Exception;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
@@ -91,9 +90,9 @@ abstract class AstManipulator {
     }
 
     public function isList(
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $node,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
     ): bool {
-        $isList = false;
+        $type = null;
 
         if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
             $type = $node->getType();
@@ -101,25 +100,45 @@ abstract class AstManipulator {
             if ($type instanceof NonNull) {
                 $type = $type->getWrappedType(false);
             }
-
-            $isList = $type instanceof ListOfType;
-        } else {
+        } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
             $type = $node->type;
 
             if ($type instanceof NonNullTypeNode) {
                 $type = $type->type;
             }
-
-            $isList = $type instanceof ListTypeNode;
+        } else {
+            // empty
         }
 
-        return $isList;
+        return $type instanceof ListOfType
+            || $node instanceof ListTypeNode;
+    }
+
+    public function isUnion(
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
+    ): bool {
+        $type = null;
+
+        if ($node instanceof WrappingType) {
+            $type = $node->getWrappedType(true);
+        } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
+            try {
+                $type = $this->getTypeDefinitionNode($node);
+            } catch (TypeDefinitionUnknown) {
+                // empty
+            }
+        } else {
+            // empty
+        }
+
+        return $type instanceof UnionTypeDefinitionNode
+            || $type instanceof UnionType;
     }
 
     public function isTypeDefinitionExists(string $name): bool {
         try {
             return (bool) $this->getTypeDefinitionNode($name);
-        } catch (Exception) {
+        } catch (TypeDefinitionUnknown) {
             return false;
         }
     }
@@ -177,9 +196,13 @@ abstract class AstManipulator {
 
     public function getScalarTypeDefinitionNode(string $scalar): ScalarTypeDefinitionNode {
         // It can be defined inside schema
-        $node = $this->isTypeDefinitionExists($scalar)
-            ? $this->getTypeDefinitionNode($scalar)
-            : null;
+        $node = null;
+
+        try {
+            $node = $this->getTypeDefinitionNode($scalar);
+        } catch (TypeDefinitionUnknown) {
+            // empty
+        }
 
         if (!$node) {
             // or programmatically (and there is no definition...)

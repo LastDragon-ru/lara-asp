@@ -94,7 +94,7 @@ abstract class InputObject implements TypeDefinition {
             }
 
             // Convertable?
-            if (!$this->isFieldConvertable($manipulator, $field)) {
+            if (!$this->isConvertable($manipulator, $field)) {
                 continue;
             }
 
@@ -111,6 +111,11 @@ abstract class InputObject implements TypeDefinition {
                 } else {
                     throw $exception;
                 }
+            }
+
+            // Convertable?
+            if (!$this->isConvertable($manipulator, $fieldTypeNode)) {
+                continue;
             }
 
             // Add
@@ -145,12 +150,17 @@ abstract class InputObject implements TypeDefinition {
         return [];
     }
 
-    protected function isFieldConvertable(
+    protected function isConvertable(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
     ): bool {
+        // Union?
+        if ($manipulator->isUnion($node)) {
+            return false;
+        }
+
         // Resolver?
-        if ($manipulator->getNodeDirective($field, FieldResolver::class)) {
+        if ($manipulator->getNodeDirective($node, FieldResolver::class)) {
             return false;
         }
 

@@ -86,9 +86,14 @@ type Object {
     resolver: Float @field(
         resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
     )
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
 }
 
-input ObjectNested {
+type ObjectNested {
     value: String
     nested: ObjectNested
 }
+
+union ObjectUnion = Object | ObjectNested

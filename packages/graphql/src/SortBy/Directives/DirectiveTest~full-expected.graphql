@@ -298,6 +298,10 @@ type Object {
     @field(
         resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
     )
+
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
 }
 
 type ObjectNested {
@@ -339,6 +343,10 @@ implements
     ): ID!
     @all
 }
+
+union ObjectUnion =
+    | Object
+    | ObjectNested
 
 """
 Convert Input into Sort Clause.

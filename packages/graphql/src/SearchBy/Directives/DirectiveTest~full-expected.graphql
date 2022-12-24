@@ -7,11 +7,6 @@ enum SearchByTypeFlag {
     yes
 }
 
-input ObjectNested {
-    nested: ObjectNested
-    value: String
-}
-
 """
 Conditions for the related objects (`has()`/`doesntHave()`) for `input NestedA`.
 
@@ -100,7 +95,7 @@ input SearchByComplexRelationNestedC {
 }
 
 """
-Conditions for the related objects (`has()`/`doesntHave()`) for `input ObjectNested`.
+Conditions for the related objects (`has()`/`doesntHave()`) for `type ObjectNested`.
 
 See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
@@ -465,7 +460,7 @@ input SearchByConditionObject {
 }
 
 """
-Available conditions for `input ObjectNested` (only one property allowed at a time).
+Available conditions for `type ObjectNested` (only one property allowed at a time).
 """
 input SearchByConditionObjectNested {
     """
@@ -1525,6 +1520,14 @@ type Object {
 
     stringScalar: String
     stringScalarNotNull: String!
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+}
+
+type ObjectNested {
+    nested: ObjectNested
+    value: String
 }
 
 type Query
@@ -1571,6 +1574,10 @@ implements
     ): Object!
     @all
 }
+
+union ObjectUnion =
+    | Object
+    | ObjectNested
 
 """
 Use Input as Search Conditions for the current Builder.
