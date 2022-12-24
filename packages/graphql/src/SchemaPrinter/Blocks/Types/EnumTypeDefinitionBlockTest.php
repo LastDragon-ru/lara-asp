@@ -104,6 +104,27 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     'values' => ['C', 'B', 'A'],
                 ]),
             ],
+            'directives' => [
+                <<<'STRING'
+                enum Test
+                @a
+                {
+                    A
+                }
+                STRING,
+                $settings,
+                0,
+                0,
+                new EnumType([
+                    'name'    => 'Test',
+                    'values'  => ['A'],
+                    'astNode' => Parser::enumTypeDefinition(
+                        <<<'STRING'
+                        enum Test @a { A }
+                        STRING,
+                    ),
+                ]),
+            ],
         ];
     }
     // </editor-fold>

@@ -82,7 +82,10 @@ represent free-form human-readable text.
 """
 scalar CodeScalar
 
-enum SchemaEnum {
+enum SchemaEnum
+@schemaDirective
+@codeDirective
+{
     A
     @deprecated
 

@@ -1,4 +1,7 @@
-enum SchemaEnum {
+enum SchemaEnum
+@schemaDirective
+@codeDirective
+{
     A
     @deprecated
 

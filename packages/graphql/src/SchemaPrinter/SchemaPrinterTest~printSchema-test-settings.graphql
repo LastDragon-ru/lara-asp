@@ -10,7 +10,10 @@ enum CodeEnum {
     C
 }
 
-enum SchemaEnum {
+enum SchemaEnum
+@schemaDirective
+@codeDirective
+{
     A
     @deprecated
 

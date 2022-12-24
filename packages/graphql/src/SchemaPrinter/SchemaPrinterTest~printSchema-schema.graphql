@@ -10,7 +10,7 @@ directive @schemaDirective(
 
 scalar SchemaScalar @scalar(class: "GraphQL\\Type\\Definition\\StringType") @codeDirective
 
-enum SchemaEnum {
+enum SchemaEnum @schemaDirective @codeDirective {
   A @deprecated
 
   "Description"
