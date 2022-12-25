@@ -6,10 +6,12 @@ use DOMDocument;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use JsonSerializable;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentDatabaseQuery;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentJson;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentResponse;
+use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentScoutQuery;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentSplFileInfo;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentSplFileInfoIsNotAFile;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentSplFileInfoIsNotReadable;
@@ -180,5 +182,33 @@ class Args {
         }
 
         return new Query($sql, $bindings);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function getScoutQuery(mixed $query): array {
+        $actual  = [];
+        $default = [
+            'model'         => [],
+            'query'         => '',
+            'callback'      => null,
+            'queryCallback' => null,
+            'index'         => null,
+            'wheres'        => [],
+            'whereIns'      => [],
+            'limit'         => null,
+            'orders'        => [],
+        ];
+
+        if ($query instanceof ScoutBuilder) {
+            $actual = json_decode(json_encode($query, JSON_THROW_ON_ERROR), true, JSON_THROW_ON_ERROR);
+        } elseif (is_array($query)) {
+            $actual = $query;
+        } else {
+            throw new InvalidArgumentScoutQuery('$query', $query);
+        }
+
+        return $actual + $default;
     }
 }

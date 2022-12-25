@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Concerns;
 
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\SchemaState;
@@ -18,21 +18,18 @@ use function method_exists;
  * @internal
  */
 trait RawSqlHelper {
-    abstract protected function getContainer(): Container;
-
-    abstract protected function getFilesystem(): Filesystem;
-
     protected function runRaw(string $type = null): void {
         $connection = $this->getConnectionInstance();
         $state      = $this->getSchemaState($connection);
         $path       = $this->getRawPath($type);
+        $fs         = Container::getInstance()->make(Filesystem::class);
 
-        if ($this->getFilesystem()->isFile($path)) {
+        if ($fs->isFile($path)) {
             if (!$connection->pretending()) {
                 $state->load($path);
             }
 
-            $connection->logQuery($this->getFilesystem()->get($path), [], 0);
+            $connection->logQuery($fs->get($path), [], 0);
         }
     }
 
@@ -50,7 +47,7 @@ trait RawSqlHelper {
         $connection = $this instanceof Migration
             ? $this->getConnection()
             : null;
-        $connection = $this->getContainer()->make('db')->connection($connection);
+        $connection = Container::getInstance()->make('db')->connection($connection);
 
         return $connection;
     }

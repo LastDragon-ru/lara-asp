@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
-use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
@@ -18,6 +16,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
 
+use function config;
+
 /**
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController
@@ -26,14 +26,14 @@ class SpaControllerTest extends TestCase {
     // <editor-fold desc="Prepare">
     // =========================================================================
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);
 
-        $this->setSettings([
-            'routes.enabled' => false,
-        ], $app);
+        config([
+            Package::Name.'.routes.enabled' => false,
+        ]);
     }
     // </editor-fold>
 
@@ -54,10 +54,10 @@ class SpaControllerTest extends TestCase {
         array $headers = [],
         array $settings = [],
     ): void {
-        $this->setSettings([
-            'routes.enabled' => $routes,
-            'routes.prefix'  => $prefix,
-            'spa'            => $settings,
+        config([
+            Package::Name.'.routes.enabled' => $routes,
+            Package::Name.'.routes.prefix'  => $prefix,
+            Package::Name.'.spa'            => $settings,
         ]);
 
         $this->loadRoutes();
@@ -143,18 +143,6 @@ class SpaControllerTest extends TestCase {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    /**
-     * @param array<string,mixed> $settings
-     */
-    protected function setSettings(array $settings, Application $app = null): void {
-        $package = Package::Name;
-        $config  = ($app ?? $this->app)->get(Repository::class);
-
-        foreach ($settings as $name => $value) {
-            $config->set("{$package}.{$name}", $value);
-        }
-    }
-
     protected function loadRoutes(): void {
         (new class($this->app) extends Provider {
             public function bootRoutes(): void {

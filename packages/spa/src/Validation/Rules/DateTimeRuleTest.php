@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Translation\Translator;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use Throwable;
 
+use function config;
 use function is_array;
 
 /**
@@ -24,8 +24,7 @@ class DateTimeRuleTest extends TestCase {
      */
     public function testPasses(bool $expected, string $value): void {
         $translator = $this->app->make(Translator::class);
-        $config     = $this->app->make(Repository::class);
-        $rule       = new DateTimeRule($translator, $config);
+        $rule       = new DateTimeRule($translator);
 
         self::assertEquals($expected, $rule->passes('attribute', $value));
     }
@@ -35,8 +34,7 @@ class DateTimeRuleTest extends TestCase {
      */
     public function testMessage(): void {
         $translator = $this->app->make(Translator::class);
-        $config     = $this->app->make(Repository::class);
-        $rule       = new DateTimeRule($translator, $config);
+        $rule       = new DateTimeRule($translator);
 
         self::assertEquals('The :attribute is not a valid datetime.', $rule->message());
     }
@@ -55,10 +53,11 @@ class DateTimeRuleTest extends TestCase {
         }
 
         $translator = $this->app->make(Translator::class);
-        $config     = $this->app->make(Repository::class);
-        $rule       = new DateTimeRule($translator, $config);
+        $rule       = new DateTimeRule($translator);
 
-        $config->set('app.timezone', $tz);
+        config([
+            'app.timezone' => $tz,
+        ]);
 
         $date = $rule->getValue($value);
 

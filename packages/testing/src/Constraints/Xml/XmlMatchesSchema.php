@@ -80,7 +80,7 @@ class XmlMatchesSchema extends Constraint {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);

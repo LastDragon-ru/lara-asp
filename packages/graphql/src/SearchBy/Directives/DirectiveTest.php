@@ -4,27 +4,39 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
+use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Model;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
@@ -34,10 +46,15 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 
+use function assert;
+use function config;
+use function implode;
 use function is_array;
 use function json_encode;
 
@@ -62,6 +79,10 @@ class DirectiveTest extends TestCase {
      * @param Closure(static): void                  $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+        $directives = $this->app->make(DirectiveLocator::class);
+
+        $directives->setResolved('search', SearchDirective::class);
+
         if ($prepare) {
             $prepare($this);
         }
@@ -85,7 +106,7 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      */
     public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {
-        $enum  = new EnumType([
+        $enum    = new EnumType([
             'name'   => 'TestEnum',
             'values' => [
                 'property' => [
@@ -94,7 +115,18 @@ class DirectiveTest extends TestCase {
                 ],
             ],
         ]);
-        $typeA = new InputObjectType([
+        $ignored = new class([
+            'name'   => 'TestIgnored',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::nonNull(Type::string()),
+                ],
+            ],
+        ]) extends InputObjectType implements Ignored {
+            // empty
+        };
+        $typeA   = new InputObjectType([
             'name'   => 'TestTypeA',
             'fields' => [
                 [
@@ -109,9 +141,13 @@ class DirectiveTest extends TestCase {
                     'name' => 'value',
                     'type' => Type::listOf(Type::nonNull($enum)),
                 ],
+                [
+                    'name' => 'ignored',
+                    'type' => Type::listOf(Type::nonNull($ignored)),
+                ],
             ],
         ]);
-        $typeB = new InputObjectType([
+        $typeB   = new InputObjectType([
             'name'   => 'TestTypeB',
             'fields' => [
                 [
@@ -130,6 +166,7 @@ class DirectiveTest extends TestCase {
         $registry->register($enum);
         $registry->register($typeA);
         $registry->register($typeB);
+        $registry->register($ignored);
 
         self::assertGraphQLSchemaEquals(
             $this->getTestData()->file('~programmatically-expected.graphql'),
@@ -165,7 +202,7 @@ class DirectiveTest extends TestCase {
 
         $this
             ->useGraphQLSchema(
-                /** @lang GraphQL */
+            /** @lang GraphQL */
                 <<<GRAPHQL
                 type Query {
                     test(input: Test @searchBy): [TestObject!]!
@@ -183,7 +220,7 @@ class DirectiveTest extends TestCase {
                 GRAPHQL,
             )
             ->graphQL(
-                /** @lang GraphQL */
+            /** @lang GraphQL */
                 <<<'GRAPHQL'
                 query test($input: SearchByConditionTest) {
                     test(input: $input) {
@@ -224,7 +261,7 @@ class DirectiveTest extends TestCase {
         }
 
         $this->useGraphQLSchema(
-            /** @lang GraphQL */
+        /** @lang GraphQL */
             <<<'GRAPHQL'
             type Query {
                 test(input: Test @searchBy): String! @mock
@@ -251,6 +288,63 @@ class DirectiveTest extends TestCase {
         }
     }
 
+    /**
+     * @covers ::handleBuilder
+     *
+     * @dataProvider dataProviderHandleScoutBuilder
+     *
+     * @param array<string, mixed>|Exception $expected
+     * @param Closure(static): ScoutBuilder  $builderFactory
+     * @param Closure():FieldResolver|null   $fieldResolver
+     */
+    public function testHandleScoutBuilder(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+        Closure $fieldResolver = null,
+    ): void {
+        if ($expected instanceof Exception) {
+            self::expectExceptionObject($expected);
+        }
+
+        if ($fieldResolver) {
+            $this->override(FieldResolver::class, $fieldResolver);
+        }
+
+        $this->app->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        $this->useGraphQLSchema(
+        /** @lang GraphQL */
+            <<<'GRAPHQL'
+            type Query {
+                test(search: String @search, input: Test @searchBy): String! @mock
+            }
+
+            input Test {
+                a: Int!
+                b: String
+                c: Test
+            }
+            GRAPHQL,
+        );
+
+        $definitionNode = Parser::inputValueDefinition('input: SearchByScoutConditionTest');
+        $directiveNode  = Parser::directive('@test');
+        $directive      = $this->app->make(Directive::class)->hydrate($directiveNode, $definitionNode);
+
+        assert($directive instanceof Directive);
+
+        $builder = $builderFactory($this);
+        $actual  = $directive->handleScoutBuilder($builder, $value);
+
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $actual);
+            self::assertScoutQueryEquals($expected, $actual);
+        } else {
+            self::fail('Something wrong...');
+        }
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProvider">
@@ -271,10 +365,19 @@ class DirectiveTest extends TestCase {
                             'NestedB',
                             'NestedC',
                             'InputB',
+                            'InputIgnored',
                         ]);
                 },
                 '~full.graphql',
-                null,
+                static function (TestCase $test): void {
+                    $package = Package::Name;
+
+                    config([
+                        "{$package}.search_by.operators.Date" => [
+                            Equal::class,
+                        ],
+                    ]);
+                },
             ],
             'example'                        => [
                 static function (self $test): GraphQLExpectedSchema {
@@ -285,10 +388,11 @@ class DirectiveTest extends TestCase {
                 '~example.graphql',
                 static function (TestCase $test): void {
                     $package = Package::Name;
-                    $config  = $test->app->make(Repository::class);
 
-                    $config->set("{$package}.search_by.scalars.Date", [
-                        Between::class,
+                    config([
+                        "{$package}.search_by.operators.Date" => [
+                            Between::class,
+                        ],
                     ]);
                 },
             ],
@@ -316,10 +420,13 @@ class DirectiveTest extends TestCase {
                 '~custom-complex-operators.graphql',
                 static function (TestCase $test): void {
                     $locator   = $test->app->make(DirectiveLocator::class);
-                    $property  = $test->app->make(Property::class);
-                    $directive = new class($property) extends Relation {
+                    $directive = new class() extends BaseOperator implements TypeDefinition {
                         public static function getName(): string {
                             return 'custom';
+                        }
+
+                        public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
+                            return $provider->getType(static::class, Type::INT, $nullable);
                         }
 
                         public function getFieldDescription(): string {
@@ -334,8 +441,43 @@ class DirectiveTest extends TestCase {
                             $name = static::getDirectiveName();
 
                             return /** @lang GraphQL */ <<<GRAPHQL
-                                directive ${name}(value: String) on INPUT_FIELD_DEFINITION
+                                directive {$name}(value: String) on INPUT_FIELD_DEFINITION
                             GRAPHQL;
+                        }
+
+                        public function call(
+                            Handler $handler,
+                            object $builder,
+                            Property $property,
+                            Argument $argument,
+                        ): object {
+                            throw new Exception('should not be called');
+                        }
+
+                        public static function getTypeName(
+                            BuilderInfo $builder,
+                            ?string $type,
+                            ?bool $nullable,
+                        ): string {
+                            return Directive::Name.'ComplexCustom'.Str::studly($type ?? '');
+                        }
+
+                        public function getTypeDefinitionNode(
+                            Manipulator $manipulator,
+                            string $name,
+                            ?string $type,
+                            ?bool $nullable,
+                        ): ?TypeDefinitionNode {
+                            return Parser::inputObjectTypeDefinition(
+                                <<<DEF
+                                """
+                                Custom operator
+                                """
+                                input {$name} {
+                                    custom: {$type}
+                                }
+                                DEF,
+                            );
                         }
                     };
 
@@ -525,5 +667,154 @@ class DirectiveTest extends TestCase {
             ),
         ]))->getData();
     }
+
+    /**
+     * @return array<mixed>
+     */
+    public function dataProviderHandleScoutBuilder(): array {
+        return (new CompositeDataProvider(
+            new ScoutBuilderDataProvider(),
+            new ArrayDataProvider([
+                'empty'                  => [
+                    [
+                        // empty
+                    ],
+                    [
+                        // empty
+                    ],
+                    null,
+                ],
+                'empty operators'        => [
+                    new ConditionEmpty(),
+                    [
+                        'a' => [
+                            // empty
+                        ],
+                    ],
+                    null,
+                ],
+                'too many properties'    => [
+                    new ConditionTooManyProperties(['a', 'b']),
+                    [
+                        'a' => [
+                            'equal' => 1,
+                        ],
+                        'b' => [
+                            'equal' => 'a',
+                        ],
+                    ],
+                    null,
+                ],
+                'too many operators'     => [
+                    new ConditionTooManyOperators(['equal', 'in']),
+                    [
+                        'a' => [
+                            'equal' => 1,
+                            'in'    => [1, 2, 3],
+                        ],
+                    ],
+                    null,
+                ],
+                'null'                   => [
+                    [
+                        // empty
+                    ],
+                    null,
+                    null,
+                ],
+                'default field resolver' => [
+                    [
+                        'wheres'   => [
+                            'a'   => 1,
+                            'c.a' => 2,
+                        ],
+                        'whereIns' => [
+                            'b' => [1, 2, 3],
+                        ],
+                    ],
+                    [
+                        'allOf' => [
+                            [
+                                'a' => [
+                                    'equal' => 1,
+                                ],
+                            ],
+                            [
+                                'b' => [
+                                    'in' => [1, 2, 3],
+                                ],
+                            ],
+                            [
+                                'c' => [
+                                    'a' => [
+                                        'equal' => 2,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    null,
+                ],
+                'custom field resolver'  => [
+                    [
+                        'wheres'   => [
+                            'properties/a'   => 1,
+                            'properties/c/a' => 2,
+                        ],
+                        'whereIns' => [
+                            'properties/b' => [1, 2, 3],
+                        ],
+                    ],
+                    [
+                        'allOf' => [
+                            [
+                                'a' => [
+                                    'equal' => 1,
+                                ],
+                            ],
+                            [
+                                'b' => [
+                                    'in' => [1, 2, 3],
+                                ],
+                            ],
+                            [
+                                'c' => [
+                                    'a' => [
+                                        'equal' => 2,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    static function (): FieldResolver {
+                        return new class() implements FieldResolver {
+                            /**
+                             * @inheritDoc
+                             */
+                            public function getField(
+                                EloquentModel $model,
+                                Property $property,
+                            ): string {
+                                return 'properties/'.implode('/', $property->getPath());
+                            }
+                        };
+                    },
+                ],
+            ]),
+        ))->getData();
+    }
     // </editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest__Resolver {
+    public function __invoke(): mixed {
+        throw new Exception('should not be called.');
+    }
 }

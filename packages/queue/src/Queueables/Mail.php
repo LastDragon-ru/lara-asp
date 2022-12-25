@@ -34,7 +34,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
     // <editor-fold desc="\Illuminate\Contracts\Mail\Mailable">
     // =========================================================================
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function send($mailer) {
         $this->ifInitialized(function () use ($mailer): mixed {
@@ -43,7 +43,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function queue(Factory $queue) {
         return $this->ifInitialized(function () use ($queue): mixed {
@@ -52,7 +52,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function later($delay, Factory $queue) {
         return $this->ifInitialized(function () use ($delay, $queue): mixed {

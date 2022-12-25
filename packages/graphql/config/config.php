@@ -2,7 +2,7 @@
 
 use LastDragon_ru\LaraASP\Core\Enum as CoreEnum;
 use LastDragon_ru\LaraASP\Eloquent\Enum as EloquentEnum;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 
 /**
  * -----------------------------------------------------------------------------
@@ -11,6 +11,9 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
  *
  * @var array{
  *      search_by: array{
+ *          operators: array<string, array<string|class-string<Operator>>>
+ *      },
+ *      sort_by: array{
  *          operators: array<string, array<string|class-string<Operator>>>
  *      },
  *      enums: array<class-string<CoreEnum>>
@@ -22,14 +25,31 @@ $settings = [
      */
     'search_by' => [
         /**
-         * Scalars
+         * Operators
          * ---------------------------------------------------------------------
          *
-         * You can (re)define scalars and supported operators here.
+         * You can (re)define types and supported operators here.
          *
          * @see Operator
          */
-        'scalars' => [
+        'operators' => [
+            // empty
+        ],
+    ],
+
+    /**
+     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective @sortBy} directive.
+     */
+    'sort_by'   => [
+        /**
+         * Operators
+         * ---------------------------------------------------------------------
+         *
+         * You can (re)define types and supported operators here.
+         *
+         * @see Operator
+         */
+        'operators' => [
             // empty
         ],
     ],
@@ -40,8 +60,8 @@ $settings = [
      *
      * @deprecated Consider using native PHP enums.
      *
-     * @see CoreEnum
-     * @see EloquentEnum
+     * @see        CoreEnum
+     * @see        EloquentEnum
      */
     'enums'     => [
         // empty,

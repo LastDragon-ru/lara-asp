@@ -10,53 +10,16 @@ permissions:
   contents: read
 
 jobs:
-  settings:
-    uses: LastDragon-ru/lara-asp/.github/workflows/settings.yml@1.x
-
-  monorepo:
-    uses: LastDragon-ru/lara-asp/.github/workflows/monorepo.yml@1.x
-    needs:
-      - settings
-    with:
-      php-version: ${{ needs.settings.outputs.php-latest }}
-      php-extensions: ${{ needs.settings.outputs.php-extensions }}
-
-  phpcs:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpcs.yml@1.x
-    needs:
-      - settings
-    with:
-      php-version: ${{ needs.settings.outputs.php-latest }}
-      php-extensions: ${{ needs.settings.outputs.php-extensions }}
-
-  phpstan:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpstan.yml@1.x
-    needs:
-      - settings
-    with:
-      php-version: "8.1"
-      php-extensions: ${{ needs.settings.outputs.php-extensions }}
-
-  phpunit:
-    uses: LastDragon-ru/lara-asp/.github/workflows/phpunit.yml@1.x
-    needs:
-      - settings
-    with:
-      php-versions: ${{ needs.settings.outputs.php-versions }}
-      php-extensions: ${{ needs.settings.outputs.php-extensions }}
-      laravel-versions: ${{ needs.settings.outputs.laravel-versions }}
-      dependencies: ${{ needs.settings.outputs.dependencies }}
-      runs-on: '["ubuntu-latest", "windows-latest"]'
+  ci:
+    uses: ./.github/workflows/ci.yml
 
   release:
+    name: Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
     needs:
-      - monorepo
-      - phpcs
-      - phpstan
-      - phpunit
+      - ci
     steps:
       # Bot cannot sign tags/commits yet
       # https://github.com/actions/runner/issues/667
@@ -79,7 +42,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: lts/*
           cache: npm
 
       - name: Install dependencies
@@ -90,10 +53,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run release
+          npm run release -- --github.releaseName="$(git log -1 --pretty=%s)"
+
+      - name: Congratulations
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+
+          echo "Version **[${VERSION}](https://github.com/${{ github.repository }}/releases/tag/${VERSION})** released! :rocket:" >> $GITHUB_STEP_SUMMARY
 
   packages:
-    uses: LastDragon-ru/lara-asp/.github/workflows/packages.yml@1.x
+    uses: ./.github/workflows/packages.yml
     needs:
       - release
     secrets: inherit

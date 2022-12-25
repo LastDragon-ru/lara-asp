@@ -2,22 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Traits\DirectiveName;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 
-use function implode;
+class Property extends PropertyDirective implements Operator {
+    use DirectiveName;
 
-class Property extends PropertyDirective {
-    public static function getDirectiveName(): string {
-        return implode('', [
-            '@',
-            Str::camel(Directive::Name),
-            Str::studly(static::getName()),
-        ]);
+    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
+        return $provider->getType(Clause::class, $type, $nullable);
     }
 
     public function getFieldDescription(): string {
         return 'Property clause.';
+    }
+
+    public function isBuilderSupported(object $builder): bool {
+        return $builder instanceof EloquentBuilder
+            || $builder instanceof ScoutBuilder;
     }
 }

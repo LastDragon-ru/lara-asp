@@ -11,6 +11,7 @@ use Mockery\Exception\InvalidCountException;
 use Mockery\MockInterface;
 use OutOfBoundsException;
 
+use function is_callable;
 use function sprintf;
 
 /**
@@ -52,12 +53,12 @@ trait Override {
     /**
      * @template T
      *
-     * @param class-string<T>                                                               $class
-     * @param Closure(T&MockInterface,static=):void|Closure(T&MockInterface,static=):T|null $factory
+     * @param class-string<T>                                                                                   $class
+     * @param callable(T&MockInterface,static=):void|callable(T&MockInterface,static=):T|(T&MockInterface)|null $factory
      *
      * @return T&MockInterface
      */
-    protected function override(string $class, Closure $factory = null): mixed {
+    protected function override(string $class, mixed $factory = null): mixed {
         // Overridden?
         if (isset($this->overrides[$class])) {
             throw new LogicException(
@@ -72,8 +73,13 @@ trait Override {
         /** @var T&MockInterface $mock */
         $mock = Mockery::mock($class);
 
-        if ($factory) {
-            $mock = $factory($mock, $this) ?: $mock; /** @phpstan-ignore-line (void) is fine here */
+        if (is_callable($factory)) {
+            /** @phpstan-ignore-next-line (void) is fine here */
+            $mock = $factory($mock, $this) ?: $mock;
+        } elseif ($factory) {
+            $mock = $factory;
+        } else {
+            // empty
         }
 
         // Override

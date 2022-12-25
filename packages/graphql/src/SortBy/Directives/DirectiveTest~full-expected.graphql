@@ -1,3 +1,9 @@
+enum EnumIgnored
+@sortByIgnored
+{
+    one
+}
+
 """
 Sort direction.
 """
@@ -6,71 +12,477 @@ enum SortByTypeDirection {
     desc
 }
 
+enum SortByTypeFlag {
+    yes
+}
+
+enum Value {
+    one
+    two
+}
+
 """
-Sort clause for input Nested (only one property allowed at a time).
+Sort clause for `input Nested` (only one property allowed at a time).
 """
 input SortByClauseNested {
     """
     Property clause.
     """
     nested: SortByClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
 
     """
     Property clause.
     """
     value: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
-Sort clause for input Properties (only one property allowed at a time).
+Sort clause for `type Object` (only one property allowed at a time).
 """
-input SortByClauseProperties {
+input SortByClauseObject {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarList: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    description: SortByTypeDirection
+    @sortByOperatorField
+
     """
     Property clause.
     """
     enum: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     enumNotNull: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     idScalar: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     idScalarNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    nested: SortByClauseObjectNested
     @sortByOperatorProperty
 
     """
     Property clause.
     """
+    nestedNotNull: SortByClauseObjectNested
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+}
+
+"""
+Sort clause for `type ObjectNested` (only one property allowed at a time).
+"""
+input SortByClauseObjectNested {
+    """
+    Property clause.
+    """
+    nested: SortByClauseObjectNested
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+
+    """
+    Property clause.
+    """
+    value: SortByTypeDirection
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `input Properties` (only one property allowed at a time).
+"""
+input SortByClauseProperties {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarList: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Description should be used.
+    """
+    description: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enum: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
     nested: SortByClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     nestedNotNull: SortByClauseNested
-    @sortByProperty
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
 }
 
-type Query {
-    test(
+"""
+Sort clause for `input Properties` (only one property allowed at a time).
+"""
+input SortByQueryClauseProperties {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarList: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Description should be used.
+    """
+    description: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enum: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+}
+
+"""
+Sort clause for `input Nested` (only one property allowed at a time).
+"""
+input SortByScoutClauseNested {
+    """
+    Property clause.
+    """
+    nested: SortByScoutClauseNested
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+
+    """
+    Property clause.
+    """
+    value: SortByTypeDirection
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `input Properties` (only one property allowed at a time).
+"""
+input SortByScoutClauseProperties {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarList: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Description should be used.
+    """
+    description: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enum: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    nested: SortByScoutClauseNested
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    nestedNotNull: SortByScoutClauseNested
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+}
+
+interface Eloquent
+implements
+    & Placeholder
+{
+    eloquent(
+        order: [SortByClauseProperties!]
+    ): ID!
+}
+
+interface Placeholder {
+    placeholder(
+        order: [SortByClauseObject!]
+    ): Object!
+}
+
+interface Scout {
+    scout(
+        order: [SortByScoutClauseProperties!]
+        search: String
+    ): ID!
+}
+
+scalar Date
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+
+scalar DateIgnored
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@sortByIgnored
+
+type Object {
+    customScalar: Date
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+
+    """
+    Description should NOT be used.
+    """
+    description: ID
+
+    enum: Value
+    enumEnumIgnoredNotNull: EnumIgnored!
+    enumIgnored: EnumIgnored
+    enumNotNull: Value!
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: ID!
+    @sortByIgnored
+
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: ID!
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+}
+
+type ObjectIgnored
+@sortByIgnored
+{
+    value: String
+}
+
+type ObjectNested {
+    nested: ObjectNested
+    value: String
+}
+
+type Query
+implements
+    & Eloquent
+    & Scout
+{
+    eloquent(
         order: [SortByClauseProperties!]
         @sortBy
     ): ID!
     @all
+
+    placeholder(
+        order: [SortByClauseObject!]
+        @sortBy
+    ): Object!
+    @all
+
+    query(
+        order: [SortByQueryClauseProperties!]
+        @sortBy
+    ): ID!
+    @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+
+    scout(
+        order: [SortByScoutClauseProperties!]
+        @sortBy
+
+        search: String
+        @search
+    ): ID!
+    @all
 }
+
+union ObjectUnion =
+    | Object
+    | ObjectNested
 
 """
 Convert Input into Sort Clause.
@@ -79,10 +491,27 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
+"""
+Marks that field should be excluded from sort.
+"""
+directive @sortByIgnored
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
+
+directive @sortByOperatorField
+on
+    | INPUT_FIELD_DEFINITION
+
 directive @sortByOperatorProperty
 on
     | INPUT_FIELD_DEFINITION
 
-directive @sortByProperty
+directive @sortByOperatorRandom
 on
+    | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION

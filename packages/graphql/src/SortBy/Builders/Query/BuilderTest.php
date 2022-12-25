@@ -5,7 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -16,7 +17,7 @@ use function is_array;
  * @internal
  * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder
  *
- * @phpstan-import-type BuilderFactory from \LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider
+ * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">

@@ -24,7 +24,7 @@ class RawSeeder extends SeederMakeCommand {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection
      */
     protected function resolveStubPath($stub) {
@@ -37,7 +37,7 @@ class RawSeeder extends SeederMakeCommand {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection
      */
     protected function makeDirectory($path) {

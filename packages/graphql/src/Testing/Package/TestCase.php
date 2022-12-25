@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\LighthouseDirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
@@ -24,6 +25,7 @@ class TestCase extends PackageTestCase {
     protected function getPackageProviders(mixed $app): array {
         return [
             Provider::class,
+            TestProvider::class,
             LighthouseServiceProvider::class,
         ];
     }
@@ -39,17 +41,21 @@ class TestCase extends PackageTestCase {
     }
 
     protected function getGraphQLArgument(string $type, mixed $value, SplFileInfo|string $schema = null): Argument {
-        $this->useGraphQLSchema(
-            $schema ?? <<<'GRAPHQL'
-            type Query {
-                test: Int @all
-            }
-            GRAPHQL,
-        );
+        try {
+            $this->useGraphQLSchema(
+                $schema ?? <<<'GRAPHQL'
+                type Query {
+                    test: Int @all
+                }
+                GRAPHQL,
+            );
 
-        $factory  = $this->app->make(ArgumentFactory::class);
-        $argument = $factory->getArgument($type, $value);
+            $factory  = $this->app->make(ArgumentFactory::class);
+            $argument = $factory->getArgument($type, $value);
 
-        return $argument;
+            return $argument;
+        } finally {
+            $this->useDefaultGraphQLSchema();
+        }
     }
 }

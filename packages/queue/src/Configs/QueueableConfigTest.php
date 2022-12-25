@@ -3,8 +3,6 @@
 namespace LastDragon_ru\LaraASP\Queue\Configs;
 
 use Exception;
-use Illuminate\Config\Repository;
-use Illuminate\Container\Container;
 use Illuminate\Support\DateFactory;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
@@ -14,7 +12,9 @@ use LastDragon_ru\LaraASP\Queue\Queueables\CronJob;
 use LastDragon_ru\LaraASP\Queue\Queueables\Job;
 use LastDragon_ru\LaraASP\Queue\Queueables\Listener;
 use LastDragon_ru\LaraASP\Queue\Queueables\Mail;
-use PHPUnit\Framework\TestCase;
+use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+
+use function config;
 
 /**
  * @internal
@@ -30,13 +30,11 @@ class QueueableConfigTest extends TestCase {
      * @param class-string<ConfigurableQueueable> $class
      */
     public function testGetQueueClass(string $expected, string $class): void {
-        $container    = Container::getInstance();
-        $repository   = new Repository();
         $dateFactory  = new DateFactory();
-        $configurator = new QueueableConfigurator($container, $repository, $dateFactory);
+        $configurator = new QueueableConfigurator($dateFactory);
         $properties   = [];
         $queueable    = new $class($configurator);
-        $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
+        $config       = new class($queueable, $properties) extends QueueableConfig {
             public function getQueueClass(): string {
                 return parent::getQueueClass();
             }
@@ -54,12 +52,10 @@ class QueueableConfigTest extends TestCase {
      * @param array<string,mixed>    $queueableConfig
      */
     public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
-        $container    = Container::getInstance();
-        $repository   = new Repository();
         $dateFactory  = new DateFactory();
-        $configurator = new class($container, $repository, $dateFactory) extends QueueableConfigurator {
+        $configurator = new class($dateFactory) extends QueueableConfigurator {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function getQueueableProperties(): array {
                 return parent::getQueueableProperties();
@@ -77,15 +73,15 @@ class QueueableConfigTest extends TestCase {
             }
 
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function getQueueConfig(): array {
                 return $this->config;
             }
         };
-        $config       = new class($container, $repository, $queueable, $properties) extends QueueableConfig {
+        $config       = new class($queueable, $properties) extends QueueableConfig {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function config(): array {
                 return parent::config();
@@ -96,7 +92,9 @@ class QueueableConfigTest extends TestCase {
             }
         };
 
-        $repository->set($config->getApplicationConfig(), $appConfig);
+        config([
+            $config->getApplicationConfig() => $appConfig,
+        ]);
 
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

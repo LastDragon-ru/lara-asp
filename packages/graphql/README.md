@@ -38,8 +38,8 @@ Let's start:
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 type Query {
-  users(where: UsersQuery @searchBy): ID! @all
-  comments(where: CommentsQuery @searchBy): ID! @all
+  users(where: _ @searchBy): [User!]! @all
+  comments(where: CommentsQuery @searchBy): [Comment!]! @all
 }
 
 input UsersQuery {
@@ -51,6 +51,17 @@ input CommentsQuery {
   text: String!
   user: UsersQuery
   date: Date
+}
+
+type User {
+    id: ID!
+    name: String!
+}
+
+input Comment {
+    text: String!
+    user: User
+    date: Date
 }
 ```
 
@@ -128,52 +139,66 @@ query {
 }
 ```
 
+## Input type auto-generation
 
-## Scalars
+As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@searchBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
 
-In addition to standard GraphQL scalars the package defines few own:
+- with `@field` directive
+- with `@searchByIgnored` directive
+- with any directive that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
+- any `Type` that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
 
-* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarNumber` - any operator for this scalar will be available for `Int` and `Float`;
-* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarNull` - additional operators available for nullable scalars;
-* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarLogic` - list of logical operators, please see below;
-* `LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\Directive::ScalarEnum` - default operators for enums;
+## Config
 
-To work with custom scalars you need to configure supported operators for each of them. First, you need to publish package config:
+In addition to standard GraphQL types the package defines few own:
+
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Number` - any operator for this type will be available for `Int` and `Float`;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Null` - additional operators available for nullable types;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Extra` - list of additional operators for all types, please see below;
+* `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Enum` - default operators for enums;
+
+To work with custom types you need to configure supported operators for each of them. First, you need to publish package config:
 
 ```shell
 php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider --tag=config
 ```
 
-And then edit `config/lara-asp-graphql.php`
+And then edit `config/lara-asp-graphql.php`:
 
 ```php
 <?php declare(strict_types = 1);
+
+use LastDragon_ru\LaraASP\Core\Enum as CoreEnum;
+use LastDragon_ru\LaraASP\Eloquent\Enum as EloquentEnum;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 
 /**
  * -----------------------------------------------------------------------------
  * GraphQL Settings
  * -----------------------------------------------------------------------------
+ *
+ * @var array{
+ *      search_by: array{
+ *          operators: array<string, array<string|class-string<Operator>>>
+ *      },
+ *      enums: array<class-string<CoreEnum>>
+ *      } $settings
  */
-
-use App\GraphQL\Operators\MyCustomOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-
-return [
+$settings = [
     /**
-     * Settings for @searchBy directive.
+     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective @searchBy} directive.
      */
     'search_by' => [
         /**
-         * Scalars
+         * Operators
          * ---------------------------------------------------------------------
          *
-         * You can (re)define scalars and supported operators here.
+         * You can (re)define types and supported operators here.
          *
-         * @var array<string, array<class-string<\LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator>>>
+         * @see Operator
          */
-        'scalars' => [
-            // You can define a list of operators for each Scalar
+        'operators' => [
+            // You can define a list of operators for each type
             'Date'     => [
                 Equal::class,
                 Between::class,
@@ -181,13 +206,19 @@ return [
             ],
 
             // Or re-use existing type
-            'DateTime' => 'Date',
+            'DateTime' => [
+                'Date',
+            ],
 
             // You can also use enum name to redefine default operators for it:
-            'MyEnum' => 'Boolean',
+            'MyEnum' => [
+                'Boolean',
+            ],
         ],
     ],
 ];
+
+return $settings;
 ```
 
 
@@ -195,9 +226,9 @@ return [
 
 There are three types of operators:
 
-* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to scalar(s);
-* Logical - used to group comparisons into groups, eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/SearchBy/Contracts/Operator.php) and add it to `Directive::ScalarLogic` scalar;
-* Complex - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. These operators must implement [`ComplexOperator`](./src/SearchBy/Contracts/ComplexOperator.php) (by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used, you can use it as example):
+* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to type(s);
+* Extra - used to add additional fields, by default package provides few Logical operators which allow you to do eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to `Operators::Extra` type;
+* Complex - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. All the same, but these operators should be explicitly added to the fields/input types, by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used:
 
     ```graphql
     type Query {
@@ -215,7 +246,6 @@ There are three types of operators:
         user: UsersQuery @myComplexOperator
     }
     ```
-
 
 # `@sortBy` directive
 
@@ -273,18 +303,62 @@ query {
 }
 ```
 
+### Order by random
 
-## Scout
-
-[Scout](https://laravel.com/docs/scout) is also supported 🤩 (tested on v9). By default `@sortBy` will convert nested/related properties into dot string: `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`ScoutColumnResolver`](./src/SortBy/Contracts/ScoutColumnResolver.php):
+It is also possible to sort records in random order, but it is not enabled by default. To enable it you just need to add [`Random`](./src/SortBy/Operators/Extra/Random.php) operator for `Extra` type in `config/lara-asp-graphql.php`:
 
 ```php
-// AppProvider
+<?php declare(strict_types = 1);
 
-$this->app->bind(
-    LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\ColumnResolver::class,
-    MyScoutColumnResolver::class,
-);
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
+
+/**
+ * -----------------------------------------------------------------------------
+ * GraphQL Settings
+ * -----------------------------------------------------------------------------
+ *
+ * @var array{
+ *      sort_by: array{
+ *          operators: array<string, array<string|class-string<Operator>>>
+ *      },
+ *      } $settings
+ */
+$settings = [
+    /**
+     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective @sortBy} directive.
+     */
+    'sort_by'   => [
+        /**
+         * Operators
+         * ---------------------------------------------------------------------
+         *
+         * You can (re)define types and supported operators here.
+         *
+         * @see Operator
+         */
+        'operators' => [
+            SortByOperators::Extra => [
+                Random::class,
+            ],
+        ],
+    ],
+];
+
+return $settings;
+
+```
+
+And after this, you can 🎉
+
+```graphql
+query {
+    # ORDER BY RANDOM()
+    comments(order: [
+        {random: yes}
+    ])
+}
 ```
 
 
@@ -296,7 +370,20 @@ As you can see in the example above you can use the special placeholder `_` inst
 - with `@field` directive
 - with `@sortByIgnored` directive
 - with any directive that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
+- any `Type` that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
 
+# Scout
+
+[Scout](https://laravel.com/docs/scout) is also supported 🤩 (tested on v9). By default `@searchBy`/`@sortBy` will convert nested/related properties into dot string: eg `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`FieldResolver`](./src/Builder/Contracts/Scout/FieldResolver.php):
+
+```php
+// AppProvider
+
+$this->app->bind(
+    LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver::class,
+    MyScoutColumnResolver::class,
+);
+```
 
 # Relations
 
@@ -341,7 +428,3 @@ There are also few great [GraphQL Assertions](./src/Testing/GraphQLAssertions.ph
 | `assertGraphQLSchemaTypeEquals`    | Compares schema type.    |
 | `assertGraphQLSchemaEquals`        | Compares any schemas.    |
 | `assertGraphQLTypeEquals`          | Compares any types.      |
-
-```php
-
-```

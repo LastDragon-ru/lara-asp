@@ -6,13 +6,12 @@ use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function implode;
 use function is_array;
-use function json_decode;
-use function json_encode;
 
 /**
  * @internal
@@ -26,8 +25,8 @@ class BuilderTest extends TestCase {
      *
      * @dataProvider dataProviderHandle
      *
-     * @param array<mixed>|Exception   $expected
-     * @param Closure():ColumnResolver $resolver
+     * @param array<string, mixed>|Exception $expected
+     * @param Closure():FieldResolver|null   $resolver
      */
     public function testHandle(
         array|Exception $expected,
@@ -40,7 +39,7 @@ class BuilderTest extends TestCase {
         }
 
         if ($resolver) {
-            $this->override(ColumnResolver::class, $resolver);
+            $this->override(FieldResolver::class, $resolver);
         }
 
         $builder = $this->app->make(ScoutBuilder::class, [
@@ -50,21 +49,9 @@ class BuilderTest extends TestCase {
             },
         ]);
         $builder = $this->app->make(Builder::class)->handle($builder, $property, $direction);
-        $actual  = json_decode((string) json_encode($builder), true);
-        $default = [
-            'model'         => [],
-            'query'         => '',
-            'callback'      => null,
-            'queryCallback' => null,
-            'index'         => null,
-            'wheres'        => [],
-            'whereIns'      => [],
-            'limit'         => null,
-            'orders'        => [],
-        ];
 
         if (is_array($expected)) {
-            self::assertEquals($expected + $default, $actual + $default);
+            self::assertScoutQueryEquals($expected, $builder);
         }
     }
     // </editor-fold>
@@ -99,13 +86,13 @@ class BuilderTest extends TestCase {
                 ],
                 new Property('a', 'b'),
                 'asc',
-                static function (): ColumnResolver {
-                    return new class() implements ColumnResolver {
+                static function (): FieldResolver {
+                    return new class() implements FieldResolver {
                         /**
                          * @inheritDoc
                          */
-                        public function getColumn(Model $model, array $path): string {
-                            return 'properties/'.implode('/', $path);
+                        public function getField(Model $model, Property $property): string {
+                            return 'properties/'.implode('/', $property->getPath());
                         }
                     };
                 },

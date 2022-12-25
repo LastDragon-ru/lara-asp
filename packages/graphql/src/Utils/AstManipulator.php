@@ -2,12 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
-use Exception;
+use Closure;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
@@ -15,17 +17,22 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\TypeWithFields;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
+use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -34,28 +41,59 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
+use function array_merge;
+use function is_a;
 use function trim;
 
 abstract class AstManipulator {
     public function __construct(
-        protected DirectiveLocator $directives,
-        protected DocumentAST $document,
-        protected TypeRegistry $types,
+        private DirectiveLocator $directives,
+        private DocumentAST $document,
+        private TypeRegistry $types,
     ) {
         // empty
     }
 
-    // <editor-fold desc="AST Helpers">
+    // <editor-fold desc="Getters & Setters">
     // =========================================================================
-    protected function isPlaceholder(Node|InputObjectField|string $node): bool {
+    protected function getDirectives(): DirectiveLocator {
+        return $this->directives;
+    }
+
+    public function getDocument(): DocumentAST {
+        return $this->document;
+    }
+
+    protected function getTypes(): TypeRegistry {
+        return $this->types;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="AST Helpers">
+    // =========================================================================}
+    public function isPlaceholder(Node|InputObjectField|string $node): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
         return $this->getNodeTypeName($node) === '_';
     }
 
-    protected function isList(
+    public function isNullable(
         InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $node,
     ): bool {
-        $isList = false;
+        $isNullable = true;
+
+        if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
+            $isNullable = !($node->getType() instanceof NonNull);
+        } else {
+            $isNullable = !($node->type instanceof NonNullTypeNode);
+        }
+
+        return $isNullable;
+    }
+
+    public function isList(
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
+    ): bool {
+        $type = null;
 
         if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
             $type = $node->getType();
@@ -63,41 +101,62 @@ abstract class AstManipulator {
             if ($type instanceof NonNull) {
                 $type = $type->getWrappedType(false);
             }
-
-            $isList = $type instanceof ListOfType;
-        } else {
+        } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
             $type = $node->type;
 
             if ($type instanceof NonNullTypeNode) {
                 $type = $type->type;
             }
-
-            $isList = $type instanceof ListTypeNode;
+        } else {
+            // empty
         }
 
-        return $isList;
+        return $type instanceof ListOfType
+            || $node instanceof ListTypeNode;
     }
 
-    protected function isTypeDefinitionExists(string $name): bool {
+    public function isUnion(
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
+    ): bool {
+        $type = null;
+
+        if ($node instanceof WrappingType) {
+            $type = $node->getWrappedType(true);
+        } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
+            try {
+                $type = $this->getTypeDefinitionNode($node);
+            } catch (TypeDefinitionUnknown) {
+                // empty
+            }
+        } else {
+            // empty
+        }
+
+        return $type instanceof UnionTypeDefinitionNode
+            || $type instanceof UnionType;
+    }
+
+    public function isTypeDefinitionExists(string $name): bool {
         try {
             return (bool) $this->getTypeDefinitionNode($name);
-        } catch (Exception) {
+        } catch (TypeDefinitionUnknown) {
             return false;
         }
     }
 
-    protected function getTypeDefinitionNode(
+    public function getTypeDefinitionNode(
         Node|InputObjectField|FieldDefinition|string $node,
     ): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
-        $definition = $this->document->types[$name] ?? null;
+        $types      = $this->getTypes();
+        $definition = $this->getDocument()->types[$name] ?? null;
 
         if (!$definition) {
             $definition = Type::getStandardTypes()[$name] ?? null;
         }
 
-        if (!$definition && $this->types->has($name)) {
-            $definition = $this->types->get($name);
+        if (!$definition && $types->has($name)) {
+            $definition = $types->get($name);
         }
 
         if (!$definition) {
@@ -115,42 +174,107 @@ abstract class AstManipulator {
      *
      * @return TInterface&TClass
      */
-    protected function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
+    public function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
         $name = $this->getNodeName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
             throw new TypeDefinitionAlreadyDefined($name);
         }
 
-        $this->document->setTypeDefinition($definition);
+        $this->getDocument()->setTypeDefinition($definition);
 
         return $definition;
     }
 
-    protected function removeTypeDefinition(string $name): void {
+    public function removeTypeDefinition(string $name): void {
         if (!$this->isTypeDefinitionExists($name)) {
             throw new TypeDefinitionUnknown($name);
         }
 
         // Remove
-        unset($this->document->types[$name]);
+        unset($this->getDocument()->types[$name]);
+    }
+
+    public function getScalarTypeDefinitionNode(string $scalar): ScalarTypeDefinitionNode {
+        // It can be defined inside schema
+        $node = null;
+
+        try {
+            $node = $this->getTypeDefinitionNode($scalar);
+        } catch (TypeDefinitionUnknown) {
+            // empty
+        }
+
+        if (!$node) {
+            // or programmatically (and there is no definition...)
+            $node = Parser::scalarTypeDefinition("scalar {$scalar}");
+        } elseif (!($node instanceof ScalarTypeDefinitionNode)) {
+            throw new TypeDefinitionUnknown($scalar);
+        } else {
+            // empty
+        }
+
+        return $node;
     }
 
     /**
-     * @template T of \Nuwave\Lighthouse\Support\Contracts\Directive
+     * @template T
      *
-     * @param class-string<T> $class
+     * @param class-string<T>       $class
+     * @param Closure(T): bool|null $callback
      *
-     * @return T|null
+     * @return (T&Directive)|null
      */
-    protected function getNodeDirective(Node|Type|InputObjectField|FieldDefinition $node, string $class): ?Directive {
-        // TODO [graphql] Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
-        return $node instanceof Node
-            ? $this->directives->associatedOfType($node, $class)->first()
-            : null;
+    public function getNodeDirective(
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
+        string $class,
+        ?Closure $callback = null,
+    ): ?Directive {
+        // todo(graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
+        // todo(graphql): Should we throw an error if $node has multiple directives?
+        return $this->getNodeDirectives($node, $class, $callback)->first();
     }
 
-    protected function getNodeTypeName(
+    /**
+     * @template T
+     *
+     * @param class-string<T>       $class
+     * @param Closure(T): bool|null $callback
+     *
+     * @return Collection<int, T&Directive>
+     */
+    public function getNodeDirectives(
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
+        string $class,
+        ?Closure $callback = null,
+    ): Collection {
+        $directives = $node instanceof Node
+            ? $this->getDirectives()->associated($node)
+            : new Collection();
+        $directives = $directives->filter(static function (mixed $directive) use ($class, $callback): bool {
+            // Directive?
+            if (!($directive instanceof Directive)) {
+                return false;
+            }
+
+            // Class?
+            if (!is_a($directive, $class, true)) {
+                return false;
+            }
+
+            // Callback?
+            if ($callback && !$callback($directive)) {
+                return false;
+            }
+
+            // Ok
+            return true;
+        });
+
+        return $directives;
+    }
+
+    public function getNodeTypeName(
         Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode|string $node,
     ): string {
         $name = null;
@@ -174,7 +298,7 @@ abstract class AstManipulator {
         return $name;
     }
 
-    protected function getNodeName(
+    public function getNodeName(
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $node,
     ): string {
         $name = $node->name;
@@ -187,7 +311,7 @@ abstract class AstManipulator {
     }
 
     public function getNodeTypeFullName(
-        Node|Type|InputObjectField|FieldDefinition|string $node,
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
         $name   = $this->getNodeTypeName($node);
         $node   = $this->getTypeDefinitionNode($name);
@@ -208,6 +332,78 @@ abstract class AstManipulator {
         }
 
         return trim("{$prefix} {$name}");
+    }
+
+    /**
+     * @return array<string, InterfaceTypeDefinitionNode|InterfaceType>
+     */
+    public function getNodeInterfaces(
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $node,
+    ): array {
+        $interfaces     = [];
+        $nodeInterfaces = $node instanceof Type
+            ? $node->getInterfaces()
+            : $node->interfaces;
+
+        foreach ($nodeInterfaces as $interface) {
+            $name = $this->getNodeTypeName($interface);
+
+            if ($interface instanceof NamedTypeNode) {
+                $interface = $this->getTypeDefinitionNode($interface);
+            }
+
+            if ($interface instanceof InterfaceTypeDefinitionNode || $interface instanceof InterfaceType) {
+                $interfaces = array_merge(
+                    $interfaces,
+                    [
+                        $name => $interface,
+                    ],
+                    $this->getNodeInterfaces($interface),
+                );
+            }
+        }
+
+        return $interfaces;
+    }
+
+    public function getNodeField(
+        InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|TypeWithFields $node,
+        string $name,
+    ): FieldDefinitionNode|FieldDefinition|null {
+        $field = null;
+
+        if ($node instanceof TypeWithFields) {
+            $field = $node->hasField($name) ? $node->getField($name) : null;
+        } else {
+            foreach ($node->fields as $nodeField) {
+                if ($this->getNodeName($nodeField) === $name) {
+                    $field = $nodeField;
+                    break;
+                }
+            }
+        }
+
+        return $field;
+    }
+
+    public function getNodeAttribute(
+        FieldDefinitionNode|FieldDefinition $node,
+        string $name,
+    ): InputValueDefinitionNode|FieldArgument|null {
+        $attribute = null;
+
+        if ($node instanceof FieldDefinition) {
+            $attribute = $node->getArg($name);
+        } else {
+            foreach ($node->arguments as $nodeArgument) {
+                if ($this->getNodeName($nodeArgument) === $name) {
+                    $attribute = $nodeArgument;
+                    break;
+                }
+            }
+        }
+
+        return $attribute;
     }
     //</editor-fold>
 }

@@ -27,7 +27,7 @@ class ResourceCollection extends AnonymousResourceCollection implements SafeReso
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function preparePaginatedResponse($request) {
         // Our PaginatedResponse does not return any links, so we shouldn't

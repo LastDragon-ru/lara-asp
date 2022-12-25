@@ -4,9 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use Closure;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\EnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
@@ -58,7 +56,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
             ->setNormalizeEnums(false);
 
         return [
-            'enum'                       => [
+            'enum'       => [
                 <<<'STRING'
                 enum Test {
                     C
@@ -74,7 +72,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     'values' => ['C', 'B', 'A'],
                 ]),
             ],
-            'indent'                     => [
+            'indent'     => [
                 <<<'STRING'
                 enum Test {
                         C
@@ -90,7 +88,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     'values' => ['C', 'B', 'A'],
                 ]),
             ],
-            'normalized'                 => [
+            'normalized' => [
                 <<<'STRING'
                 enum Test {
                     A
@@ -106,58 +104,26 @@ class EnumTypeDefinitionBlockTest extends TestCase {
                     'values' => ['C', 'B', 'A'],
                 ]),
             ],
-            'directives and description' => [
+            'directives' => [
                 <<<'STRING'
-                enum Test {
-                    C
-
-                    """
-                    Description
-
-                    ```graphql
-                    @b
-                    @a
-                    ```
-                    """
-                    B
-                    @b
-                    @a
-
-                    """
-                    ```graphql
-                    @deprecated
-                    ```
-                    """
+                enum Test
+                @a
+                {
                     A
-                    @deprecated
                 }
                 STRING,
-                $settings
-                    ->setPrintDirectivesInDescription(true)
-                    ->setPrintDirectives(true),
+                $settings,
                 0,
                 0,
-                static function (): EnumType {
-                    $enum = new EnumType([
-                        'name'   => 'Test',
-                        'values' => ['C', 'B', 'A'],
-                    ]);
-
-                    $a = $enum->getValue('A');
-
-                    if ($a instanceof EnumValueDefinition) {
-                        $a->deprecationReason = Directive::DEFAULT_DEPRECATION_REASON;
-                    }
-
-                    $b = $enum->getValue('B');
-
-                    if ($b instanceof EnumValueDefinition) {
-                        $b->astNode     = Parser::enumValueDefinition('A @b @a');
-                        $b->description = 'Description';
-                    }
-
-                    return $enum;
-                },
+                new EnumType([
+                    'name'    => 'Test',
+                    'values'  => ['A'],
+                    'astNode' => Parser::enumTypeDefinition(
+                        <<<'STRING'
+                        enum Test @a { A }
+                        STRING,
+                    ),
+                ]),
             ],
         ];
     }

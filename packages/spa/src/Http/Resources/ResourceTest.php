@@ -77,7 +77,7 @@ class ResourceTest extends TestCase {
 
         $resource = new class($value) extends Resource {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function toArray($request): mixed {
                 if ($this->resource instanceof Model) {
@@ -128,7 +128,7 @@ class ResourceTest extends TestCase {
     public function testAdditional(): void {
         $resource = new class(123) extends Resource {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             protected function mapResourceData(array $data, array $path): array {
                 throw new Exception(__FUNCTION__);
@@ -148,7 +148,7 @@ class ResourceTest extends TestCase {
     public function testWith(): void {
         $resource = new class(123) extends Resource {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             protected function mapResourceData(array $data, array $path): array {
                 throw new Exception(__FUNCTION__);
@@ -214,7 +214,7 @@ class ResourceTest extends TestCase {
                     }
 
                     /**
-                     * @inheritdoc
+                     * @inheritDoc
                      */
                     public function toArray() {
                         return [];

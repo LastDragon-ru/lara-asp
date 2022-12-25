@@ -23,7 +23,7 @@ class ResolverRuleTest extends TestCase {
         $router     = $this->app->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             protected function resolve(mixed $value, array $parameters): mixed {
                 return new stdClass();
@@ -42,7 +42,7 @@ class ResolverRuleTest extends TestCase {
         $router     = $this->app->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             protected function resolve(mixed $value, array $parameters): mixed {
                 return null;
@@ -61,7 +61,7 @@ class ResolverRuleTest extends TestCase {
         $router     = $this->app->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             protected function resolve(mixed $value, array $parameters): mixed {
                 return new stdClass();

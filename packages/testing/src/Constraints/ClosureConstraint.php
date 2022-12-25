@@ -29,7 +29,7 @@ class ClosureConstraint extends Constraint {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function matches($other): bool {
         return $this->getClosure()($other);

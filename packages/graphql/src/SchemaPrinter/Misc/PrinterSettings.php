@@ -116,10 +116,6 @@ class PrinterSettings implements Settings {
         return $this->settings->isPrintDirectiveDefinitions();
     }
 
-    public function isPrintDirectivesInDescription(): bool {
-        return $this->settings->isPrintDirectivesInDescription();
-    }
-
     public function isPrintUnusedDefinitions(): bool {
         return $this->settings->isPrintUnusedDefinitions();
     }

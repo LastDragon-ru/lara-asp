@@ -1,4 +1,7 @@
-enum SchemaEnum {
+enum SchemaEnum
+@schemaDirective
+@codeDirective
+{
     A
     @deprecated
 
@@ -24,12 +27,17 @@ input SchemaInput
     f: [String!]
 }
 
-"""
-Lighthouse not yet support "implements" for interface...
+interface SchemaInterfaceA {
+    a: Boolean!
+}
 
-@see https://github.com/webonyx/graphql-php/issues/728
+"""
+Interface description.
 """
 interface SchemaInterfaceB
+implements
+    & CodeInterface
+    & SchemaInterfaceA
 @schemaDirective
 {
     a: Boolean!

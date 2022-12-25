@@ -14,7 +14,7 @@ class UrlTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__construct()
+     * @covers ::__construct
      * @covers ::extract
      *
      * @dataProvider dataProviderConstruct

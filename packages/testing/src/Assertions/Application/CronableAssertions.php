@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
@@ -12,6 +11,7 @@ use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use PHPUnit\Framework\Assert;
 
 use function array_filter;
+use function config;
 use function count;
 use function is_object;
 use function method_exists;
@@ -43,12 +43,13 @@ trait CronableAssertions {
      * @param array<string, mixed>                                      $settings
      */
     protected function setQueueableConfig(ConfigurableQueueable|string $queueable, array $settings): void {
-        $config = $this->app->make(Repository::class);
-        $merger = new ConfigMerger();
         $key    = sprintf('queue.queueables.%s', is_object($queueable) ? $queueable::class : $queueable);
-        $target = [ConfigMerger::Strict => false] + (array) $config->get($key);
+        $target = [ConfigMerger::Strict => false] + (array) config($key);
+        $merger = new ConfigMerger();
 
-        $config->set($key, $merger->merge($target, $settings));
+        config([
+            $key => $merger->merge($target, $settings),
+        ]);
     }
 
     /**

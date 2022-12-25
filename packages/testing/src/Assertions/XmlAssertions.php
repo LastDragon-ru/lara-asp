@@ -14,7 +14,7 @@ trait XmlAssertions {
     /**
      * Asserts that XML matches schema.
      *
-     * @see \LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchema
+     * @see XmlMatchesSchema
      */
     public static function assertXmlMatchesSchema(
         SplFileInfo $schema,

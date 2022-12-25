@@ -4,28 +4,30 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
 
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
-
-use function is_null;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 
 class Direction implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
-    public static function getName(): string {
-        return 'Direction';
+    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
+        return Directive::Name.'TypeDirection';
     }
 
     public function getTypeDefinitionNode(
+        Manipulator $manipulator,
         string $name,
-        string $scalar = null,
-        bool $nullable = null,
+        ?string $type,
+        ?bool $nullable,
     ): ?TypeDefinitionNode {
-        $type = null;
+        $node = null;
 
-        if (is_null($scalar) && is_null($nullable)) {
-            $type = Parser::enumTypeDefinition(
+        if ($type === null && $nullable === null) {
+            $node = Parser::enumTypeDefinition(
             /** @lang GraphQL */
                 <<<GRAPHQL
                 """
@@ -39,6 +41,6 @@ class Direction implements TypeDefinition {
             );
         }
 
-        return $type;
+        return $node;
     }
 }

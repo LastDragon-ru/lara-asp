@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Spa\Package;
  */
 class DateRule extends Rule implements ValueProvider {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function passes($attribute, $value) {
         $passes = false;

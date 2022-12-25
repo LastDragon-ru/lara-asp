@@ -8,15 +8,23 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
+use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
-
+use Nuwave\Lighthouse\Scout\SearchDirective;
+use function config;
 use function is_array;
 
 /**
@@ -35,6 +43,10 @@ class DirectiveTest extends TestCase {
      * @param Closure(static): void                  $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+        $directives = $this->app->make(DirectiveLocator::class);
+
+        $directives->setResolved('search', SearchDirective::class);
+
         if ($prepare) {
             $prepare($this);
         }
@@ -49,6 +61,17 @@ class DirectiveTest extends TestCase {
      * @covers ::manipulateArgDefinition
      */
     public function testManipulateArgDefinitionTypeRegistry(): void {
+        $i = new class([
+            'name'   => 'I',
+            'fields' => [
+                [
+                    'name' => 'name',
+                    'type' => Type::string(),
+                ],
+            ],
+        ]) extends InputObjectType implements Ignored {
+            // empty
+        };
         $a = new InputObjectType([
             'name'   => 'A',
             'fields' => [
@@ -59,6 +82,10 @@ class DirectiveTest extends TestCase {
                 [
                     'name' => 'flag',
                     'type' => Type::nonNull(Type::boolean()),
+                ],
+                [
+                    'name' => 'ignored',
+                    'type' => Type::nonNull($i),
                 ],
             ],
         ]);
@@ -107,6 +134,7 @@ class DirectiveTest extends TestCase {
         $registry->register($b);
         $registry->register($c);
         $registry->register($d);
+        $registry->register($i);
 
         self::assertGraphQLSchemaEquals(
             $this->getTestData()->file('~registry-expected.graphql'),
@@ -128,7 +156,7 @@ class DirectiveTest extends TestCase {
             ],
         ]);
 
-        self::expectExceptionObject(new FailedToCreateSortClause('type TestType'));
+        self::expectExceptionObject(new TypeDefinitionImpossibleToCreateType(Clause::class, 'TestType', true));
 
         $registry = $this->app->make(TypeRegistry::class);
         $registry->register($type);
@@ -150,14 +178,20 @@ class DirectiveTest extends TestCase {
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
      * @param Closure(static): object                                $builderFactory
+     * @param Closure(static): void                                  $prepare
      */
     public function testHandleBuilder(
         array|Exception $expected,
         Closure $builderFactory,
         mixed $value,
+        ?Closure $prepare = null,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
+        }
+
+        if ($prepare) {
+            $prepare($this);
         }
 
         $this->useGraphQLSchema(
@@ -204,15 +238,24 @@ class DirectiveTest extends TestCase {
                         ->setUnusedTypes([
                             'Properties',
                             'Nested',
-                            'Value',
-                            'String',
                             'Float',
                             'Int',
                             'Boolean',
+                            'InputIgnored',
                         ]);
                 },
                 '~full.graphql',
-                null,
+                static function (): void {
+                    $package = Package::Name;
+
+                    config([
+                        "{$package}.sort_by.operators" => [
+                            Operators::Extra => [
+                                Random::class,
+                            ],
+                        ],
+                    ]);
+                },
             ],
             'example' => [
                 static function (self $test): GraphQLExpectedSchema {
@@ -247,6 +290,7 @@ class DirectiveTest extends TestCase {
                     [
                         // empty
                     ],
+                    null,
                 ],
                 'empty operators'     => [
                     [
@@ -264,6 +308,7 @@ class DirectiveTest extends TestCase {
                             // empty
                         ],
                     ],
+                    null,
                 ],
                 'too many properties' => [
                     new ConditionTooManyProperties(['a', 'b']),
@@ -273,6 +318,7 @@ class DirectiveTest extends TestCase {
                             'b' => 'desc',
                         ],
                     ],
+                    null,
                 ],
                 'null'                => [
                     [
@@ -286,6 +332,7 @@ class DirectiveTest extends TestCase {
                         'bindings' => [],
                     ],
                     null,
+                    null,
                 ],
                 'valid condition'     => [
                     [
@@ -296,7 +343,8 @@ class DirectiveTest extends TestCase {
                                 "tmp"
                             order by
                                 "a" asc,
-                                "b" desc
+                                "b" desc,
+                                RANDOM()
                         SQL
                         ,
                         'bindings' => [],
@@ -308,10 +356,37 @@ class DirectiveTest extends TestCase {
                         [
                             'b' => 'desc',
                         ],
+                        [
+                            'random' => 'yes',
+                        ],
                     ],
+                    static function (TestCase $test): void {
+                        $package = Package::Name;
+
+                        config([
+                            "{$package}.sort_by.operators" => [
+                                Operators::Extra => [
+                                    Random::class,
+                                ],
+                            ],
+                        ]);
+                    },
                 ],
             ]),
         ))->getData();
     }
     // </editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest__QueryBuilderResolver {
+    public function __invoke(): QueryBuilder {
+        throw new Exception('should not be called.');
+    }
 }

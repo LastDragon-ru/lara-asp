@@ -178,7 +178,7 @@ class Builder {
         string $currentAlias,
     ): EloquentBuilder {
         if ($relation instanceof BelongsTo) {
-            $builder = $builder->joinSub(
+            $builder->joinSub(
                 $relation->getQuery(),
                 $currentAlias,
                 "{$currentAlias}.{$relation->getOwnerKeyName()}",
@@ -188,7 +188,7 @@ class Builder {
                     : $relation->getQualifiedForeignKeyName(),
             );
         } elseif ($relation instanceof HasOne || $relation instanceof HasMany) {
-            $builder = $builder->joinSub(
+            $builder->joinSub(
                 $relation->getQuery(),
                 $currentAlias,
                 "{$currentAlias}.{$relation->getForeignKeyName()}",
@@ -198,7 +198,7 @@ class Builder {
                     : $relation->getQualifiedParentKeyName(),
             );
         } elseif ($relation instanceof MorphOneOrMany) {
-            $builder = $builder->joinSub(
+            $builder->joinSub(
                 $relation->getQuery(),
                 $currentAlias,
                 static function (JoinClause $join) use ($relation, $currentAlias, $parentAlias): void {
@@ -217,7 +217,7 @@ class Builder {
                 },
             );
         } elseif ($relation instanceof HasManyThrough) {
-            $builder = $builder->joinSub(
+            $builder->joinSub(
                 $relation->getQuery()->select([
                     "{$relation->getParent()->getQualifiedKeyName()} as {$currentAlias}_key",
                     $relation->getRelated()->qualifyColumn('*'),
@@ -230,7 +230,7 @@ class Builder {
                     : $relation->getQualifiedLocalKeyName(),
             );
         } elseif ($relation instanceof BelongsToMany) {
-            $builder = $builder->joinSub(
+            $builder->joinSub(
                 $relation->getQuery(),
                 $currentAlias,
                 "{$currentAlias}.{$relation->getParentKeyName()}",

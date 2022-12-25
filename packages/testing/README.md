@@ -68,35 +68,36 @@ Enables query log for the test case.
 
 ## `\Illuminate\Testing\TestResponse`
 
-Name                  | Description
---------------------- | ----
-`assertThat()`                  | Asserts that response satisfies given constraint.
-`assertContentType()`           | Asserts that a response has a specified content type.
-`assertStatusCode()`            | Asserts that a response has a specified status code.
-`assertJsonMatchesSchema()`     | Asserts that a response contains JSON that matches the schema.
-`assertXmlMatchesSchema()`      | Asserts that a response contains XML that matches the schema.
+| Name                        | Description                                                    |
+|-----------------------------|----------------------------------------------------------------|
+| `assertThat()`              | Asserts that response satisfies given constraint.              |
+| `assertContentType()`       | Asserts that a response has a specified content type.          |
+| `assertStatusCode()`        | Asserts that a response has a specified status code.           |
+| `assertJsonMatchesSchema()` | Asserts that a response contains JSON that matches the schema. |
+| `assertXmlMatchesSchema()`  | Asserts that a response contains XML that matches the schema.  |
 
 # Assertions
 
-:warning: | By default package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
-:---: | :---
+| :warning: | By default package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`. |
+|:---------:|:---------------------------------------------------------------------------------------------------------|
 
 ## General
 
 These assertions can be used without Laravel at all (#4).
 
-Name                  | Description
---------------------- | ----
-[`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L17) | Asserts that JSON matches schema
-[`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L15)   | Asserts that XML matches schema (XSD or Relax NG).
-[`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L14)    | Asserts that PSR Response satisfies given constraint.
-[`assertDatabaseQueryEquals()`](./src/Assertions/DatabaseAssertions.php) | Asserts that SQL Query equals SQL Query.
+| Name                                                                     | Description                                           |
+|--------------------------------------------------------------------------|-------------------------------------------------------|
+| [`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L17)   | Asserts that JSON matches schema                      |
+| [`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L15)     | Asserts that XML matches schema (XSD or Relax NG).    |
+| [`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L14)    | Asserts that PSR Response satisfies given constraint. |
 
 ## Laravel
 
-Name                  | Description
---------------------- | ----
-[`assertCronableRegistered()`](./src/Assertions/Application/CronableAssertions.php#L30) | Asserts that [Cronable](../queue/README.md#cron-jobs) is registered.
+| Name                                                                                    | Description                                                          |
+|-----------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| [`assertDatabaseQueryEquals()`](./src/Assertions/DatabaseAssertions.php)                | Asserts that SQL Query equals SQL Query.                             |
+| [`assertScoutQueryEquals()`](./src/Assertions/ScoutAssertions.php)                      | Asserts that Scout Query equals Scout Query.                         |
+| [`assertCronableRegistered()`](./src/Assertions/Application/CronableAssertions.php#L30) | Asserts that [Cronable](../queue/README.md#cron-jobs) is registered. |
 
 # Laravel Response Testing
 

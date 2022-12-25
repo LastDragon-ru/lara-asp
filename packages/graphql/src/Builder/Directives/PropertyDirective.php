@@ -16,11 +16,11 @@ use function count;
 
 abstract class PropertyDirective extends OperatorDirective {
     public static function getName(): string {
-        return 'Property';
+        return 'property';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type): ?string {
-        return null;
+    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
+        return $type;
     }
 
     public function isBuilderSupported(object $builder): bool {

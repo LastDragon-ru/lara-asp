@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Formatter;
 use Closure;
 use DateTimeInterface;
 use DateTimeZone;
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
@@ -19,6 +19,7 @@ use NumberFormatter;
 use OutOfBoundsException;
 
 use function abs;
+use function config;
 use function is_int;
 use function is_null;
 use function is_string;
@@ -182,8 +183,6 @@ class Formatter {
     private array $numbersFormatters = [];
 
     public function __construct(
-        private Application $application,
-        private Repository $config,
         private PackageTranslator $translator,
     ) {
         // empty
@@ -220,7 +219,7 @@ class Formatter {
     }
 
     protected function create(): static {
-        $formatter           = $this->getApplication()->make(static::class);
+        $formatter           = Container::getInstance()->make(static::class);
         $formatter->locale   = $this->locale;
         $formatter->timezone = $this->timezone;
 
@@ -236,14 +235,6 @@ class Formatter {
 
     public function getTimezone(): IntlTimeZone|DateTimeZone|string|null {
         return $this->timezone ?: $this->getDefaultTimezone();
-    }
-
-    protected function getApplication(): Application {
-        return $this->application;
-    }
-
-    protected function getConfig(): Repository {
-        return $this->config;
     }
 
     protected function getTranslator(): PackageTranslator {
@@ -390,25 +381,26 @@ class Formatter {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function getDefaultLocale(): string {
-        return $this->getApplication()->getLocale() ?: Locale::getDefault();
+        return Container::getInstance()->make(Application::class)->getLocale()
+            ?: Locale::getDefault();
     }
 
     protected function getDefaultTimezone(): IntlTimeZone|DateTimeZone|string|null {
-        return $this->getConfig()->get('app.timezone') ?: null;
+        return config('app.timezone') ?: null;
     }
 
     protected function getOptions(string $type, mixed $default = null): mixed {
         $package = Package::Name;
         $key     = "{$package}.options.{$type}";
 
-        return $this->getConfig()->get($key, $default);
+        return config($key, $default);
     }
 
     protected function getLocaleOptions(string $type, string $option): mixed {
         $package = Package::Name;
         $locale  = $this->getLocale();
-        $pattern = $this->getConfig()->get("{$package}.locales.{$locale}.{$type}.{$option}")
-            ?: $this->getConfig()->get("{$package}.all.{$type}.{$option}");
+        $pattern = config("{$package}.locales.{$locale}.{$type}.{$option}")
+            ?: config("{$package}.all.{$type}.{$option}");
 
         return $pattern;
     }

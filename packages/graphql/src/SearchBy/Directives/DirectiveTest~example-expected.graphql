@@ -2,6 +2,12 @@ enum SearchByTypeFlag {
     yes
 }
 
+input Comment {
+    date: Date
+    text: String!
+    user: User
+}
+
 """
 Conditions for the related objects (`has()`/`doesntHave()`) for `input UsersQuery`.
 
@@ -51,7 +57,7 @@ input SearchByConditionCommentsQuery {
     Property condition.
     """
     date: SearchByScalarDateOrNull
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Not.
@@ -63,13 +69,48 @@ input SearchByConditionCommentsQuery {
     Property condition.
     """
     text: SearchByScalarString
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Relationship condition.
     """
     user: SearchByComplexRelationUsersQuery
     @searchByOperatorRelation
+}
+
+"""
+Available conditions for `type User` (only one property allowed at a time).
+"""
+input SearchByConditionUser {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionUser!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionUser!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorProperty
+
+    """
+    Not.
+    """
+    not: SearchByConditionUser
+    @searchByOperatorNot
 }
 
 """
@@ -92,13 +133,13 @@ input SearchByConditionUsersQuery {
     Property condition.
     """
     id: SearchByScalarID
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Property condition.
     """
     name: SearchByScalarString
-    @searchByProperty
+    @searchByOperatorProperty
 
     """
     Not.
@@ -332,14 +373,19 @@ type Query {
     comments(
         where: SearchByConditionCommentsQuery
         @searchBy
-    ): ID!
+    ): [Comment!]!
     @all
 
     users(
-        where: SearchByConditionUsersQuery
+        where: SearchByConditionUser
         @searchBy
-    ): ID!
+    ): [User!]!
     @all
+}
+
+type User {
+    id: ID!
+    name: String!
 }
 
 """
@@ -445,14 +491,15 @@ directive @searchByOperatorNotLike
 on
     | INPUT_FIELD_DEFINITION
 
+directive @searchByOperatorProperty
+on
+    | INPUT_FIELD_DEFINITION
+
 directive @searchByOperatorRelation
 on
+    | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorStartsWith
-on
-    | INPUT_FIELD_DEFINITION
-
-directive @searchByProperty
 on
     | INPUT_FIELD_DEFINITION

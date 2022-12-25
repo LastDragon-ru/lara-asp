@@ -35,7 +35,7 @@ class EventsDispatcher extends Dispatcher {
      *
      * @see          https://github.com/laravel/framework/issues/25272
      *
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param array<mixed> $arguments
      *

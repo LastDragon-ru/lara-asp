@@ -3,22 +3,26 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
+use Countable;
 use EmptyIterator;
 use Generator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 
+use function count;
+use function max;
 use function min;
 
 /**
- * @template TItem of \Illuminate\Database\Eloquent\Model
+ * @template TItem of Model
  *
  * @implements Iterator<TItem>
  *
  * @internal
  */
-abstract class IteratorImpl implements Iterator {
+abstract class IteratorImpl implements Iterator, Countable {
     /**
      * @var Dispatcher<Collection<array-key,TItem>>
      */
@@ -116,15 +120,18 @@ abstract class IteratorImpl implements Iterator {
         $limit = $this->limit;
 
         // Limit?
-        if ($limit <= 0 && $limit !== null) {
+        if ($limit !== null && $limit <= 0) {
             return new EmptyIterator();
         }
 
         // Iterate
         do {
-            $builder = (clone $this->getBuilder())->offset(0);
+            $builder = (clone $this->getBuilder())->tap(static function (Builder $builder): void {
+                $builder->offset(0);
+            });
             $chunk   = $limit ? min($chunk, $limit - $index) : $chunk;
             $items   = $this->getChunk($builder, $chunk);
+            $count   = count($items);
 
             $this->chunkLoaded($items);
 
@@ -137,7 +144,7 @@ abstract class IteratorImpl implements Iterator {
             if (!$this->chunkProcessed($items) || ($limit && $index >= $limit)) {
                 break;
             }
-        } while (!$items->isEmpty());
+        } while ($count !== 0 && $count >= $chunk);
     }
 
     /**
@@ -190,5 +197,9 @@ abstract class IteratorImpl implements Iterator {
      */
     protected function getBuilder(): Builder {
         return $this->builder;
+    }
+
+    public function count(): int {
+        return max(0, $this->getBuilder()->toBase()->count());
     }
 }

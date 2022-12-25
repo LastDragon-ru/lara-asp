@@ -24,7 +24,7 @@ class Header extends Response {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function matches($other): bool {
         return parent::matches($other)

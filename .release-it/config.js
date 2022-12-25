@@ -41,6 +41,10 @@ module.exports = {
             writerOpts:        {
                 mainTemplate:  mainTemplate,
                 commitPartial: commitTemplate,
+                commitsSort: (a, b) => {
+                    return (a.scope || '').localeCompare(b.scope || '')
+                        || a.subject.localeCompare(b.subject);
+                },
                 transform:     (commit, context) => {
                     // Type?
                     const breaking = commit.notes.length > 0;

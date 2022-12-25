@@ -7,65 +7,65 @@ enum SortByTypeDirection {
 }
 
 """
-Sort clause for input A (only one property allowed at a time).
+Sort clause for `input A` (only one property allowed at a time).
 """
 input SortByClauseA {
     """
     Property clause.
     """
     flag: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
-Sort clause for input B (only one property allowed at a time).
+Sort clause for `input B` (only one property allowed at a time).
 """
 input SortByClauseB {
     """
     Property clause.
     """
     child: SortByClauseA
-    @sortByProperty
+    @sortByOperatorProperty
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
-Sort clause for type C (only one property allowed at a time).
+Sort clause for `type C` (only one property allowed at a time).
 """
 input SortByClauseC {
     """
     Property clause.
     """
     flag: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
-Sort clause for type D (only one property allowed at a time).
+Sort clause for `type D` (only one property allowed at a time).
 """
 input SortByClauseD {
     """
     Property clause.
     """
     child: SortByClauseC
-    @sortByProperty
+    @sortByOperatorProperty
 }
 
 type C {
@@ -105,10 +105,10 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorProperty
+directive @sortByOperatorField
 on
     | INPUT_FIELD_DEFINITION
 
-directive @sortByProperty
+directive @sortByOperatorProperty
 on
     | INPUT_FIELD_DEFINITION

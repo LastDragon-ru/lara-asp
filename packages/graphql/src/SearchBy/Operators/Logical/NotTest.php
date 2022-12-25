@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 use Closure;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\EloquentBuilderDataProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\QueryBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -66,10 +66,10 @@ class NotTest extends TestCase {
                 <<<'GRAPHQL'
                     input TestInput {
                         a: TestOperators
-                        @searchByProperty
+                        @searchByOperatorProperty
 
                         b: TestOperators
-                        @searchByProperty
+                        @searchByOperatorProperty
                     }
 
                     input TestOperators {

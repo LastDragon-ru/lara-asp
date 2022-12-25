@@ -18,17 +18,17 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.0.0",
+    "php": "^8.0|^8.1|^8.2",
     "ext-mbstring": "*",
     "laravel/framework": "^8.22.1|^9.0.0",
-    "nuwave/lighthouse": "^5.8.0",
+    "nuwave/lighthouse": "^5.68.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "phpdocumentor/reflection-docblock": "^5.2"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
-    "laravel/scout": "^9.2",
+    "laravel/scout": "^9.2.1",
     "mockery/mockery": "^1.4",
     "phpunit/phpunit": "^9.5.0",
     "lastdragon-ru/lara-asp-testing": "self.version",

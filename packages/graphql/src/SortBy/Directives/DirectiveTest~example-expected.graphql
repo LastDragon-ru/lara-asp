@@ -7,54 +7,54 @@ enum SortByTypeDirection {
 }
 
 """
-Sort clause for type Comment (only one property allowed at a time).
+Sort clause for `type Comment` (only one property allowed at a time).
 """
 input SortByClauseComment {
     """
     Property clause.
     """
     text: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     user: SortByClauseUser
-    @sortByProperty
+    @sortByOperatorProperty
 }
 
 """
-Sort clause for type User (only one property allowed at a time).
+Sort clause for `type User` (only one property allowed at a time).
 """
 input SortByClauseUser {
     """
     Property clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 """
-Sort clause for input UsersSort (only one property allowed at a time).
+Sort clause for `input UsersSort` (only one property allowed at a time).
 """
 input SortByClauseUsersSort {
     """
     Property clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 
     """
     Property clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorProperty
+    @sortByOperatorField
 }
 
 type Comment {
@@ -94,10 +94,10 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorProperty
+directive @sortByOperatorField
 on
     | INPUT_FIELD_DEFINITION
 
-directive @sortByProperty
+directive @sortByOperatorProperty
 on
     | INPUT_FIELD_DEFINITION

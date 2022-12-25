@@ -2,21 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator as Marker;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\DirectiveName;
 
-use function implode;
-
-class Property extends PropertyDirective implements Operator {
-    public static function getDirectiveName(): string {
-        return implode('', [
-            '@',
-            Str::camel(Directive::Name),
-            Str::studly(static::getName()),
-        ]);
-    }
+class Property extends PropertyDirective implements Marker {
+    use DirectiveName;
 
     public function getFieldDescription(): string {
         return 'Property condition.';

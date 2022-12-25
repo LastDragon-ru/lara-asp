@@ -41,7 +41,7 @@ class JsonMatchesSchema extends Constraint {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function matches($other): bool {
         $this->result = $this->getValidator()->validate($other, $this->schema->getSchema());
@@ -51,14 +51,14 @@ class JsonMatchesSchema extends Constraint {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function failureDescription($other): string {
         return "{$this->prettify($other)} {$this->toString()}";
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function additionalFailureDescription($other): string {
         $description = parent::additionalFailureDescription($other);

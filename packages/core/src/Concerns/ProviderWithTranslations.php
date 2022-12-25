@@ -3,9 +3,10 @@
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 use Illuminate\Support\ServiceProvider;
+use LastDragon_ru\LaraASP\Core\Translator;
 
 /**
- * @see \LastDragon_ru\LaraASP\Core\Translator
+ * @see Translator
  *
  * @mixin ServiceProvider
  */

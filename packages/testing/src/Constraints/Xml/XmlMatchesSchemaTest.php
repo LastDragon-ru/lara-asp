@@ -24,7 +24,7 @@ class XmlMatchesSchemaTest extends TestCase {
     public function testEvaluate(bool|string $expected, SplFileInfo $schema, DOMDocument|SplFileInfo $xml): void {
         $constraint = new class($schema) extends XmlMatchesSchema {
             /**
-             * @inheritdoc
+             * @inheritDoc
              */
             public function additionalFailureDescription($other): string {
                 return parent::additionalFailureDescription($other);

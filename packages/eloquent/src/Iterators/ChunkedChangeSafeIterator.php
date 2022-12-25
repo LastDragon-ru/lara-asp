@@ -23,12 +23,13 @@ use function trim;
  * - the `column` should not be changed while iteration or this may lead to
  *   repeating row in results;
  * - the row inserted while iteration may be skipped if it has `column` with
- *   the value that lover than the internal pointer;
- * - queries with UNION is not supported.
+ *   the value that is lower than the internal pointer, or it was inserted after
+ *   the last chunk loaded;
+ * - queries with UNION are not supported.
  *
  * @see      https://github.com/laravel/framework/issues/35400
  *
- * @template TItem of \Illuminate\Database\Eloquent\Model
+ * @template TItem of Model
  *
  * @extends IteratorImpl<TItem>
  */
@@ -44,7 +45,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         // it just adds conditional to the main query, and this leads to an
         // infinite loop.
         if ($this->hasUnions()) {
-            throw new InvalidArgumentException('Queries with UNION is not supported.');
+            throw new InvalidArgumentException('Query with UNION is not supported.');
         }
     }
 
@@ -53,12 +54,18 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     }
 
     protected function getChunk(Builder $builder, int $chunk): Collection {
-        $column  = $this->getColumn();
-        $builder = $builder->reorder()->orderBy($column)->limit($chunk);
+        $column = $this->getColumn();
 
-        if ($this->getOffset()) {
-            $builder->where($column, '>', $this->getOffset());
-        }
+        $builder
+            ->reorder()
+            ->orderBy($column)
+            ->limit($chunk)
+            ->when(
+                $this->getOffset(),
+                static function (Builder $builder, string|int|null $offset) use ($column): void {
+                    $builder->where($column, '>', $offset);
+                },
+            );
 
         return $builder->get();
     }

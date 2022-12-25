@@ -51,6 +51,11 @@ parameters:
 			path: packages/graphql/src/SchemaPrinter/Blocks/Types/DefinitionBlock.php
 
 		-
+			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SchemaPrinter\\\\Misc\\\\DirectiveResolver\\:\\:\\$definitions \\(array\\<string, GraphQL\\\\Type\\\\Definition\\\\Directive\\>\\) does not accept array\\<int\\|string, GraphQL\\\\Type\\\\Definition\\\\Directive\\>\\.$#"
+			count: 1
+			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
+
+		-
 			message: "#^Using nullsafe property access \"\\?\\-\\>definitions\" on left side of \\?\\? is unnecessary\\. Use \\-\\> instead\\.$#"
 			count: 1
 			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
@@ -59,11 +64,6 @@ parameters:
 			message: "#^Call to an undefined method Nuwave\\\\Lighthouse\\\\Schema\\\\Directives\\\\BaseDirective\\:\\:handleBuilder\\(\\)\\.$#"
 			count: 1
 			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$operators of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Scalars\\:\\:addScalar\\(\\) expects array\\<class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SearchBy\\\\Contracts\\\\Operator\\>\\>\\|string, mixed given\\.$#"
-			count: 1
-			path: packages/graphql/src/SearchBy/ScalarsTest.php
 
 		-
 			message: "#^Parameter \\#2 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:when\\(\\) expects \\(callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, string\\|null\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\)\\|null, Closure\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder, string\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"
@@ -94,11 +94,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$results \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Concerns\\\\Model\\>\\) of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Relations\\\\Unsupported\\:\\:match\\(\\) should be contravariant with parameter \\$results \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection\\) of method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<TModel of LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Concerns\\\\Model\\>\\:\\:match\\(\\)$#"
 			count: 1
 			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
-
-		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:getNodeDirective\\(\\) should return \\(T of Nuwave\\\\Lighthouse\\\\Support\\\\Contracts\\\\Directive\\)\\|null but returns mixed\\.$#"
-			count: 1
-			path: packages/graphql/src/Utils/AstManipulator.php
 
 		-
 			message: "#^Parameter \\#1 \\$expression of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:cron\\(\\) expects string, mixed given\\.$#"
@@ -204,4 +199,3 @@ parameters:
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) should return array\\|bool\\|float\\|int\\|stdClass\\|string\\|null but returns mixed\\.$#"
 			count: 1
 			path: packages/testing/src/Utils/Args.php
-

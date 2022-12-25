@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -67,7 +67,7 @@ class RelationTest extends TestCase {
         $graphql = <<<'GRAPHQL'
             input TestInput {
                 property: TestOperators
-                @searchByProperty
+                @searchByOperatorProperty
 
                 user: TestRelation
                 @searchByOperatorRelation

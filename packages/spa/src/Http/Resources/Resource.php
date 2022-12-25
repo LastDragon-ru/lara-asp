@@ -31,7 +31,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     // <editor-fold desc="JsonResource">
     // =========================================================================
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @return array<mixed>|Arrayable<array-key,mixed>|JsonSerializable
      */
@@ -46,7 +46,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @return array<mixed>
      */
@@ -62,7 +62,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param array<mixed> $data
      *
@@ -84,7 +84,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @return AnonymousResourceCollection<mixed>
      */

@@ -21,7 +21,7 @@ use function substr_replace;
  */
 class EloquentModelComparator extends ObjectComparator {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function accepts($expected, $actual) {
         return $expected instanceof Model
@@ -29,7 +29,7 @@ class EloquentModelComparator extends ObjectComparator {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param array<mixed> $processed
      */

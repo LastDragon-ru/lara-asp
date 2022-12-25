@@ -28,6 +28,10 @@ class EnumTypeDefinitionBlock extends DefinitionBlock {
     }
 
     protected function body(int $used): Block|string|null {
+        return null;
+    }
+
+    protected function fields(int $used): Block|string|null {
         $space  = $this->space();
         $values = $this->addUsed(
             new EnumValuesDefinitionList(
@@ -38,10 +42,6 @@ class EnumTypeDefinitionBlock extends DefinitionBlock {
             ),
         );
 
-        return "{$space}{$values}";
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
+        return $values;
     }
 }

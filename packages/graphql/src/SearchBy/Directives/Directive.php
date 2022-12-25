@@ -4,29 +4,25 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NonNullTypeNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
-class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective {
-    public const Name          = 'SearchBy';
-    public const ScalarID      = 'ID';
-    public const ScalarInt     = 'Int';
-    public const ScalarFloat   = 'Float';
-    public const ScalarString  = 'String';
-    public const ScalarBoolean = 'Boolean';
-    public const ScalarEnum    = self::Name.'Enum';
-    public const ScalarNull    = self::Name.'Null';
-    public const ScalarLogic   = self::Name.'Logic';
-    public const ScalarNumber  = self::Name.'Number';
+use function str_starts_with;
+
+class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
+    public const Name = 'SearchBy';
 
     public static function definition(): string {
         return /** @lang GraphQL */ <<<'GRAPHQL'
@@ -37,25 +33,36 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         GRAPHQL;
     }
 
-    public function manipulateArgDefinition(
-        DocumentAST &$documentAST,
-        InputValueDefinitionNode &$argDefinition,
-        FieldDefinitionNode &$parentField,
-        ObjectTypeDefinitionNode &$parentType,
-    ): void {
-        $this->getContainer()
-            ->make(Manipulator::class, ['document' => $documentAST])
-            ->update($this->directiveNode, $argDefinition);
+    // <editor-fold desc="Manipulate">
+    // =========================================================================
+    protected function isTypeName(string $name): bool {
+        return str_starts_with($name, Directive::Name);
     }
 
-    /**
-     * @inheritDoc
-     * @return EloquentBuilder<Model>|QueryBuilder
-     */
-    public function handleBuilder($builder, $value): EloquentBuilder|QueryBuilder {
-        return $this->handleAnyBuilder($builder, $value);
-    }
+    protected function getArgDefinitionType(
+        Manipulator $manipulator,
+        DocumentAST $document,
+        InputValueDefinitionNode $argument,
+        FieldDefinitionNode $field,
+    ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
+        $type = $this->getArgumentTypeDefinitionNode(
+            $manipulator,
+            $document,
+            $argument,
+            $field,
+            Condition::class,
+        );
 
+        if (!$type) {
+            throw new FailedToCreateSearchCondition($argument->name->value);
+        }
+
+        return $type;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Handle">
+    // =========================================================================
     public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
         // Some relations (eg `HasManyThrough`) require a table name prefix to
         // avoid "SQLSTATE[23000]: Integrity constraint violation: 1052 Column
@@ -67,4 +74,5 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         // Return
         return parent::handle($builder, $property, $conditions);
     }
+    // </editor-fold>
 }

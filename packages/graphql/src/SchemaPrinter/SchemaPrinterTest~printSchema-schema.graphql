@@ -10,7 +10,7 @@ directive @schemaDirective(
 
 scalar SchemaScalar @scalar(class: "GraphQL\\Type\\Definition\\StringType") @codeDirective
 
-enum SchemaEnum {
+enum SchemaEnum @schemaDirective @codeDirective {
   A @deprecated
 
   "Description"
@@ -22,9 +22,7 @@ interface SchemaInterfaceA {
 }
 
 """
-Lighthouse not yet support "implements" for interface...
-
-@see https://github.com/webonyx/graphql-php/issues/728
+Interface description.
 """
 interface SchemaInterfaceB implements SchemaInterfaceA & CodeInterface @schemaDirective {
   a: Boolean!

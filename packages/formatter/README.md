@@ -19,9 +19,10 @@ composer require lastdragon-ru/lara-asp-formatter
 Formatter is very simple to use:
 
 ```php
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 
-$formatter = app()->make(Formatter::class); // For default app locale
+$formatter = Container::getInstance()->make(Formatter::class); // For default app locale
 $formatter = $formatter->forLocale('ru_RU'); // For ru_RU locale
 
 $formatter->string(123);        // '123'

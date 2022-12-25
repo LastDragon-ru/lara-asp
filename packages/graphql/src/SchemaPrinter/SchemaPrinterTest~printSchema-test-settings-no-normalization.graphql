@@ -82,7 +82,10 @@ represent free-form human-readable text.
 """
 scalar CodeScalar
 
-enum SchemaEnum {
+enum SchemaEnum
+@schemaDirective
+@codeDirective
+{
     A
     @deprecated
 
@@ -145,11 +148,9 @@ input CodeInput
 union CodeUnion = CodeType
 
 """
-Lighthouse not yet support "implements" for interface...
-
-@see https://github.com/webonyx/graphql-php/issues/728
+Interface description.
 """
-interface SchemaInterfaceB
+interface SchemaInterfaceB implements SchemaInterfaceA & CodeInterface
 @schemaDirective
 {
     a: Boolean!
@@ -176,6 +177,19 @@ interface SchemaInterfaceB
 
     d: CodeScalar
     e: CodeEnum
+}
+
+"""
+Description
+"""
+interface CodeInterface
+@codeDirective
+{
+    a: Boolean!
+}
+
+interface SchemaInterfaceA {
+    a: Boolean!
 }
 
 scalar CodeDirectiveScalarCustomClass

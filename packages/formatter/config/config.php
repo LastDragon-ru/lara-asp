@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
+use LastDragon_ru\LaraASP\Formatter\Formatter;
 
 /**
  * -----------------------------------------------------------------------------
@@ -13,7 +14,7 @@ return [
      * -------------------------------------------------------------------------
      * Default options for specific formats.
      *
-     * @see LastDragon_ru\LaraASP\Formatter\Formatter
+     * @see Formatter
      */
     'options' => [
         // This value has no effect inside the published config.

@@ -1,23 +1,116 @@
-type Query {
-  test(order: Properties @sortBy): ID! @all
+type Query implements Eloquent & Scout {
+    eloquent(order: Properties @sortBy): ID! @all
+
+    query(order: Properties @sortBy): ID! @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+
+    scout(search: String @search, order: Properties @sortBy): ID! @all
+
+    placeholder(order: _ @sortBy): Object! @all
+}
+
+interface Eloquent implements Placeholder {
+    eloquent(order: Properties): ID!
+}
+
+interface Scout {
+    scout(search: String, order: Properties): ID!
+}
+
+interface Placeholder {
+    placeholder(order: _): Object!
 }
 
 input Properties {
-  idScalar: ID
-  idScalarNotNull: ID!
-  nested: Nested
-  nestedNotNull: Nested!
-  enum: Value
-  enumNotNull: Value!
-  ignored: ID! @sortByIgnored
+    idScalar: ID
+    idScalarNotNull: ID!
+    nested: Nested
+    nestedNotNull: Nested!
+    enum: Value
+    enumNotNull: Value!
+    enumIgnored: EnumIgnored
+    enumEnumIgnoredNotNull: EnumIgnored!
+    ignored: ID! @sortByIgnored
+    resolver: ID! @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+    ignoredType: InputIgnored
+    ignoredTypeList: [InputIgnored!]!
+    ignoredTypeNonNull: InputIgnored!
+    customScalar: Date
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+
+    "Description should be used."
+    description: ID
 }
 
 input Nested {
-  value: String
-  nested: Nested
+    value: String
+    nested: Nested
 }
 
+input InputIgnored @sortByIgnored {
+    id: ID
+}
+
+scalar Date
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+scalar DateIgnored
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+@sortByIgnored
+
 enum Value {
-  one
-  two
+    one
+    two
+}
+
+enum EnumIgnored @sortByIgnored {
+    one
+}
+
+type Object {
+    idScalar: ID
+    idScalarNotNull: ID!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+    enum: Value
+    enumNotNull: Value!
+    enumIgnored: EnumIgnored
+    enumEnumIgnoredNotNull: EnumIgnored!
+    ignored: ID! @sortByIgnored
+    resolver: ID! @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    customScalar: Date
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+
+    "Description should NOT be used."
+    description: ID
+}
+
+type ObjectNested {
+    value: String
+    nested: ObjectNested
+}
+
+union ObjectUnion = Object | ObjectNested
+
+type ObjectIgnored @sortByIgnored {
+    value: String
 }
