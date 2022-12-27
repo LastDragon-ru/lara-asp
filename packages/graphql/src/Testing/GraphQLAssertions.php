@@ -246,11 +246,15 @@ trait GraphQLAssertions {
             return $schema;
         }
 
-        if (!($schema instanceof Schema)) {
-            $schema = $this->getGraphQLSchema($schema);
-        }
+        try {
+            if (!($schema instanceof Schema)) {
+                $schema = $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
+            }
 
-        return $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
+            return $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
+        } finally {
+            $this->useDefaultGraphQLSchema();
+        }
     }
 
     protected function printGraphQLSchemaType(
@@ -264,7 +268,10 @@ trait GraphQLAssertions {
     }
 
     protected function printDefaultGraphQLSchema(Settings $settings = null): PrintedSchema {
-        return $this->printGraphQLSchema($this->getDefaultGraphQLSchema(), $settings);
+        $schema  = $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
+        $printed = $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
+
+        return $printed;
     }
 
     protected function printGraphQLType(PrintedType|Type $type, Settings $settings = null): PrintedType {
