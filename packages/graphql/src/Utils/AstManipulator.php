@@ -112,7 +112,7 @@ abstract class AstManipulator {
         }
 
         return $type instanceof ListOfType
-            || $node instanceof ListTypeNode;
+            || $type instanceof ListTypeNode;
     }
 
     public function isUnion(
