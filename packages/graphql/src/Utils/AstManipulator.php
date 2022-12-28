@@ -42,7 +42,6 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function array_merge;
-use function is_a;
 use function trim;
 
 abstract class AstManipulator {
@@ -112,7 +111,7 @@ abstract class AstManipulator {
         }
 
         return $type instanceof ListOfType
-            || $node instanceof ListTypeNode;
+            || $type instanceof ListTypeNode;
     }
 
     public function isUnion(
@@ -258,7 +257,7 @@ abstract class AstManipulator {
             }
 
             // Class?
-            if (!is_a($directive, $class, true)) {
+            if (!($directive instanceof $class)) {
                 return false;
             }
 

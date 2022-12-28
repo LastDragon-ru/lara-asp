@@ -57,12 +57,6 @@ input SortByClauseObject {
     """
     Property clause.
     """
-    customScalarList: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    Property clause.
-    """
     customScalarNonNull: SortByTypeDirection
     @sortByOperatorField
 
@@ -151,12 +145,6 @@ input SortByClauseProperties {
     """
     Property clause.
     """
-    customScalarList: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    Property clause.
-    """
     customScalarNonNull: SortByTypeDirection
     @sortByOperatorField
 
@@ -217,12 +205,6 @@ input SortByQueryClauseProperties {
     Property clause.
     """
     customScalar: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    Property clause.
-    """
-    customScalarList: SortByTypeDirection
     @sortByOperatorField
 
     """
@@ -299,12 +281,6 @@ input SortByScoutClauseProperties {
     Property clause.
     """
     customScalar: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    Property clause.
-    """
-    customScalarList: SortByTypeDirection
     @sortByOperatorField
 
     """

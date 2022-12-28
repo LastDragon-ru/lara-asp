@@ -86,16 +86,16 @@ abstract class InputObject implements TypeDefinition {
             : $node->fields;
 
         foreach ($fields as $field) {
+            // Convertable?
+            if (!$this->isConvertable($manipulator, $field)) {
+                continue;
+            }
+
             // Name should be unique (may conflict with Type's operators)
             $fieldName = $manipulator->getNodeName($field);
 
             if (isset($definition->fields[$fieldName])) {
                 throw new TypeDefinitionFieldAlreadyDefined($fieldName);
-            }
-
-            // Convertable?
-            if (!$this->isConvertable($manipulator, $field)) {
-                continue;
             }
 
             // Determine type

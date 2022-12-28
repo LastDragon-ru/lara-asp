@@ -143,6 +143,7 @@ query {
 
 As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@searchBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
 
+- unions
 - with `@field` directive
 - with `@searchByIgnored` directive
 - with any directive that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
@@ -366,6 +367,7 @@ query {
 
 As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@sortBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
 
+- unions
 - with list/array type
 - with `@field` directive
 - with `@sortByIgnored` directive
