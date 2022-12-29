@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Queue\Queueables;
 
+use AllowDynamicProperties;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\Factory;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,6 +12,7 @@ use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithInitialization;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 
+#[AllowDynamicProperties]
 abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueable {
     use Queueable;
     use SerializesModels;
