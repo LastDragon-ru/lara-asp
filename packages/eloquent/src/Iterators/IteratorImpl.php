@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
-use Countable;
 use EmptyIterator;
 use Generator;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,7 +21,7 @@ use function min;
  *
  * @internal
  */
-abstract class IteratorImpl implements Iterator, Countable {
+abstract class IteratorImpl implements Iterator {
     /**
      * @var Dispatcher<Collection<array-key,TItem>>
      */

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
+use Countable;
 use Illuminate\Support\Collection;
 use IteratorAggregate;
 
@@ -11,7 +12,7 @@ use IteratorAggregate;
  *
  * @extends IteratorAggregate<int,TItem>
  */
-interface Iterator extends IteratorAggregate {
+interface Iterator extends IteratorAggregate, Countable {
     public function getIndex(): int;
 
     public function setIndex(int $index): static;
