@@ -61,11 +61,6 @@ parameters:
 			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
 
 		-
-			message: "#^Call to an undefined method Nuwave\\\\Lighthouse\\\\Schema\\\\Directives\\\\BaseDirective\\:\\:handleBuilder\\(\\)\\.$#"
-			count: 1
-			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:when\\(\\) expects \\(callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, string\\|null\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\)\\|null, Closure\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder, string\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Builders/Eloquent/Builder.php
@@ -79,11 +74,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$builder of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Query\\\\Builder\\:\\:handle\\(\\) expects Illuminate\\\\Database\\\\Query\\\\Builder, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder given\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Builders/Query/BuilderTest.php
-
-		-
-			message: "#^Call to an undefined method Nuwave\\\\Lighthouse\\\\Schema\\\\Directives\\\\BaseDirective\\:\\:handleBuilder\\(\\)\\.$#"
-			count: 1
-			path: packages/graphql/src/SortBy/Directives/DirectiveTest.php
 
 		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\:\\:imageable\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Role\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\User, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\>\\.$#"
@@ -104,11 +94,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$timezone of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:timezone\\(\\) expects DateTimeZone\\|string, mixed given\\.$#"
 			count: 1
 			path: packages/queue/src/CronableRegistrator.php
-
-		-
-			message: "#^Access to an undefined property LastDragon_ru\\\\LaraASP\\\\Queue\\\\ProviderTest_ConfigurableQueueable\\:\\:\\$queue\\.$#"
-			count: 1
-			path: packages/queue/src/ProviderTest.php
 
 		-
 			message: "#^Parameter \\#2 \\.\\.\\.\\$configs of method LastDragon_ru\\\\LaraASP\\\\Core\\\\Utils\\\\ConfigMerger\\:\\:merge\\(\\) expects array, mixed given\\.$#"
