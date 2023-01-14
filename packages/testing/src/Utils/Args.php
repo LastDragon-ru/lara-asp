@@ -199,6 +199,7 @@ class Args {
             'whereIns'      => [],
             'limit'         => null,
             'orders'        => [],
+            'options'       => [],
         ];
 
         if ($query instanceof ScoutBuilder) {
