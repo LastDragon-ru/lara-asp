@@ -200,6 +200,11 @@ abstract class IteratorImpl implements Iterator, Countable {
     }
 
     public function count(): int {
-        return max(0, $this->getBuilder()->toBase()->count());
+        $limit = $this->getLimit();
+        $count = $this->getBuilder()->toBase()->count();
+        $count = $limit !== null ? min($limit, $count) : $count;
+        $count = max(0, $count);
+
+        return $count;
     }
 }
