@@ -72,4 +72,5 @@ jobs:
     uses: ./.github/workflows/phpunit.yml
     with:
       package: ${{ matrix.package }}
+      packages-names: ${{ needs.settings.outputs.packages-names }}
       packages-directory: ${{ needs.settings.outputs.packages-directory }}

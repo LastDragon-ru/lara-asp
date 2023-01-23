@@ -8,6 +8,11 @@ on:
         required: false
         default: ""
         type: string
+      packages-names:
+        description: "The JSON with all packages (required to configure composer repositories to resolve dependencies)."
+        required: false
+        default: ""
+        type: string
       packages-directory:
         description: "The path of packages directory (required if `package` set)."
         required: false
@@ -112,6 +117,19 @@ jobs:
           version: ${{ matrix.php }}
           dependencies: false
           working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      # Required to resolve packages correctly.
+      - name: Composer repositories
+        if: ${{ inputs.packages-names }}
+        shell: bash
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          PACKAGES=$(echo '${{ inputs.packages-names }}' | jq 'map(select(. != "${{ inputs.package }}"))' | jq -c -r '.[]')
+
+          while read -r PKG
+          do
+            composer config "repositories.${PKG}" path "../${PKG}"
+          done <<< "${PACKAGES}"
 
       # On Windows, the caret ^ is the escape character, so the version string
       # that contains ^ will be handled incorrectly
