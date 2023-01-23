@@ -28,24 +28,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          path: ${{ inputs.package && '.repo' || '' }}
-
-      # The `.git` directory is required for Composer to resolve `self.version`.
-      - name: Select Package
-        if: ${{ inputs.package }}
-        run: |
-          cp -R "./.repo/.git" .
-          cp -R "./.repo/.github" .
-          cp -R "./.repo/${{ inputs.package }}/." .
 
       - name: Install PHP
         uses: ./.github/actions/php
         with:
+          working-directory: ${{ inputs.package }}
           dependencies: false
 
       - name: Collect Settings
         id: settings
+        working-directory: ${{ inputs.package }}
         run: |
           # PHP
           echo "php-versions=$(jq '.require."php" | split("|") | map(sub("^[^\\d]+"; "")) | sort' -c composer.json)" >> $GITHUB_OUTPUT
@@ -104,16 +96,6 @@ jobs:
       # Checkout
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          path: ${{ inputs.package && '.repo' || '' }}
-
-      # The `.git` directory is required for Composer to resolve `self.version`.
-      - name: Select Package
-        if: ${{ inputs.package }}
-        run: |
-          cp -R "./.repo/.git" .
-          cp -R "./.repo/.github" .
-          cp -R "./.repo/${{ inputs.package }}/." .
 
       # Install PHP
       - name: Install PHP
@@ -121,11 +103,13 @@ jobs:
         with:
           version: ${{ matrix.php }}
           dependencies: false
+          working-directory: ${{ inputs.package }}
 
       # On Windows, the caret ^ is the escape character, so the version string
       # that contains ^ will be handled incorrectly
       - name: Install Laravel
         shell: bash
+        working-directory: ${{ inputs.package }}
         run: |
           composer remove --no-interaction --no-progress --ansi --no-update laravel/framework
           composer require --no-interaction --no-progress --ansi --no-update "laravel/framework:${{ matrix.laravel }}"
@@ -134,8 +118,10 @@ jobs:
       - name: Install dependencies
         uses: ramsey/composer-install@v2
         with:
+          working-directory: ${{ inputs.package }}
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: Execute
+        working-directory: ${{ inputs.package }}
         run: |
           ./vendor/bin/phpunit
