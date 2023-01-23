@@ -101,6 +101,11 @@ parameters:
 			path: packages/spa/src/Http/Controllers/SpaController.php
 
 		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Request\\:\\:validated\\(\\) has parameter \\$key with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: packages/spa/src/Http/Request.php
+
+		-
 			message: "#^Parameter \\#1 \\$array of static method Illuminate\\\\Support\\\\Arr\\:\\:get\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
 			count: 1
 			path: packages/spa/src/Http/Request.php
