@@ -11,6 +11,11 @@ inputs:
     required: false
     type: boolean
     default: true
+  working-directory:
+    description: "The directory where `composer.json` is located (default repository root)."
+    required: false
+    type: string
+    default: ""
 
 runs:
   using: composite
@@ -19,12 +24,14 @@ runs:
       id: version
       if: ${{ ! inputs.version }}
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         echo "value=$(jq '"8.1|" + .require."php" | split("|") | map(select(. != "")) | last | sub("^[^\\d]+"; "")' -r -c composer.json)" >> $GITHUB_OUTPUT
 
     - name: Detect required PHP extensions
       id: extensions
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         echo "value=$(jq '[."require", ."require-dev", ."suggest"] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort' -r -c composer.json)" >> $GITHUB_OUTPUT
 
@@ -39,6 +46,8 @@ runs:
     - name: Install dependencies
       if: ${{ inputs.dependencies == 'true' || inputs.dependencies == 1 }} # https://github.com/actions/runner/issues/1483
       uses: ramsey/composer-install@v2
+      with:
+        working-directory: ${{ inputs.working-directory }}
 
     - name: Setup problem matchers
       shell: bash
