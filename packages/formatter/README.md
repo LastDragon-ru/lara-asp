@@ -6,13 +6,11 @@
 
 This package provides a customizable wrapper around Intl formatters.
 
-
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-formatter
 ```
-
 
 # Usage & Configuration
 

@@ -1,4 +1,4 @@
-# The GraphQL Extensions.
+# The GraphQL Extensions
 
 > This package is the part of Awesome Set of Packages for Laravel.
 >
@@ -6,31 +6,28 @@
 
 This package provides highly powerful `@searchBy` and `@sortBy`  directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
 
-
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-graphql
 ```
 
-
 # `@searchBy` directive
 
 At this moment this is probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries.
-
 
 ## Basic usage
 
 Out the box directives provides following features:
 
-+ Strictly typed - you can define supported operators for each Scalar;
-+ Eloquent Builder, Query Builder and Custom Builder support;
-+ Support almost all `where` operators;
-+ Enums support;
-+ `not (<condition>)` support;
-+ Relations support (Eloquent Builder only);
-+ Custom operators support
-+ easy to use and safe.
+* Strictly typed - you can define supported operators for each Scalar;
+* Eloquent Builder, Query Builder and Custom Builder support;
+* Support almost all `where` operators;
+* Enums support;
+* `not (<condition>)` support;
+* Relations support (Eloquent Builder only);
+* Custom operators support
+* easy to use and safe.
 
 Let's start:
 
@@ -38,19 +35,19 @@ Let's start:
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 type Query {
-  users(where: _ @searchBy): [User!]! @all
-  comments(where: CommentsQuery @searchBy): [Comment!]! @all
+    users(where: _ @searchBy): [User!]! @all
+    comments(where: CommentsQuery @searchBy): [Comment!]! @all
 }
 
 input UsersQuery {
-  id: ID!
-  name: String!
+    id: ID!
+    name: String!
 }
 
 input CommentsQuery {
-  text: String!
-  user: UsersQuery
-  date: Date
+    text: String!
+    user: UsersQuery
+    date: Date
 }
 
 type User {
@@ -143,11 +140,11 @@ query {
 
 As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@searchBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
 
-- unions
-- with `@field` directive
-- with `@searchByIgnored` directive
-- with any directive that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
-- any `Type` that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
+* unions
+* with `@field` directive
+* with `@searchByIgnored` directive
+* with any directive that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
+* any `Type` that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
 
 ## Config
 
@@ -222,7 +219,6 @@ $settings = [
 return $settings;
 ```
 
-
 ## Operators
 
 There are three types of operators:
@@ -254,41 +250,40 @@ There are three types of operators:
 
 The main feature - the ability to sort results by relation properties, at the moment supported the following relation types:
 
-- `HasOne` (https://laravel.com/docs/eloquent-relationships#one-to-one)
-- `HasMany` (https://laravel.com/docs/eloquent-relationships#one-to-many)
-- `HasManyThrough` (https://laravel.com/docs/eloquent-relationships#has-many-through)
-- `BelongsTo` (https://laravel.com/docs/eloquent-relationships#one-to-many-inverse)
-- `BelongsToMany` (https://laravel.com/docs/eloquent-relationships#many-to-many)
-- `MorphOne` (https://laravel.com/docs/eloquent-relationships#one-of-many-polymorphic-relations)
-- `MorphMany` (https://laravel.com/docs/eloquent-relationships#one-to-many-polymorphic-relations)
-- `MorphToMany` (https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations)
-- `HasOneThrough` (https://laravel.com/docs/eloquent-relationships#has-one-through)
-
+* `HasOne` (<https://laravel.com/docs/eloquent-relationships#one-to-one>)
+* `HasMany` (<https://laravel.com/docs/eloquent-relationships#one-to-many>)
+* `HasManyThrough` (<https://laravel.com/docs/eloquent-relationships#has-many-through>)
+* `BelongsTo` (<https://laravel.com/docs/eloquent-relationships#one-to-many-inverse>)
+* `BelongsToMany` (<https://laravel.com/docs/eloquent-relationships#many-to-many>)
+* `MorphOne` (<https://laravel.com/docs/eloquent-relationships#one-of-many-polymorphic-relations>)
+* `MorphMany` (<https://laravel.com/docs/eloquent-relationships#one-to-many-polymorphic-relations>)
+* `MorphToMany` (<https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations>)
+* `HasOneThrough` (<https://laravel.com/docs/eloquent-relationships#has-one-through>)
 
 How to use (and [generated GraphQL schema](./src/SortBy/Directives/DirectiveTest~example-expected.graphql)):
 
 ```graphql
 type Query {
-  "You can use normal input type"
-  users(order: UsersSort @sortBy): ID! @all
+    "You can use normal input type"
+    users(order: UsersSort @sortBy): ID! @all
 
-  "or `_` to generate type automatically 😛"
-  comments(order: _ @sortBy): [Comment!]! @all
+    "or `_` to generate type automatically 😛"
+    comments(order: _ @sortBy): [Comment!]! @all
 }
 
 input UsersSort {
-  id: ID!
-  name: String!
+    id: ID!
+    name: String!
 }
 
 type Comment {
-  text: String
-  user: User
+    text: String
+    user: User
 }
 
 type User {
-  id: ID!
-  name: String!
+    id: ID!
+    name: String!
 }
 ```
 
@@ -296,11 +291,11 @@ And:
 
 ```graphql
 query {
-  # ORDER BY user.name ASC, text DESC
-  comments(order: [
-    {user: {name: asc}}
-    {text: desc}
-  ])
+    # ORDER BY user.name ASC, text DESC
+    comments(order: [
+        {user: {name: asc}}
+        {text: desc}
+    ])
 }
 ```
 
@@ -362,17 +357,16 @@ query {
 }
 ```
 
-
 ## Input type auto-generation
 
 As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@sortBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
 
-- unions
-- with list/array type
-- with `@field` directive
-- with `@sortByIgnored` directive
-- with any directive that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
-- any `Type` that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
+* unions
+* with list/array type
+* with `@field` directive
+* with `@sortByIgnored` directive
+* with any directive that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
+* any `Type` that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
 
 # Scout
 

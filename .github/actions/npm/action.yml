@@ -1,0 +1,24 @@
+name: 'Install Node.js'
+description: 'Install Node.js and dependencies'
+
+inputs:
+  working-directory:
+    description: "The directory where `packages.json` is located (default repository root)."
+    required: false
+    type: string
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: lts/*
+        cache: npm
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        npm ci
