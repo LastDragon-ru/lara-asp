@@ -125,7 +125,8 @@
       "@validate:dependencies",
       "@phpstan",
       "@phpunit",
-      "@phpcs"
+      "@phpcs",
+      "@markdownlint"
     ],
     "validate:dependencies": [
       "./vendor/bin/monorepo-builder validate"
@@ -138,6 +139,9 @@
     ],
     "phpcs": [
       "@php ./vendor/bin/phpcs"
+    ],
+    "markdownlint": [
+      "npx markdownlint-cli --ignore-path=.gitignore ."
     ],
     "coverage": [
       "@php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-html=.phpunit/coverage.html"
