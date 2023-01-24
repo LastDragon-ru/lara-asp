@@ -23,7 +23,7 @@ MD003:
 # MD004/ul-style - Unordered list style
 MD004:
   # List style
-  style: "consistent"
+  style: "asterisk"
 
 # MD005/list-indent - Inconsistent indentation for list items at the same level
 MD005: true
@@ -69,11 +69,11 @@ MD012:
 # MD013/line-length - Line length
 MD013:
   # Number of characters
-  line_length: 80
+  line_length: 99999
   # Number of characters for headings
-  heading_line_length: 80
+  heading_line_length: 120
   # Number of characters for code blocks
-  code_block_line_length: 80
+  code_block_line_length: 120
   # Include code blocks
   code_blocks: true
   # Include tables
@@ -117,14 +117,10 @@ MD024:
   # Only check sibling headings
   allow_different_nesting: false
   # Only check sibling headings
-  siblings_only: false
+  siblings_only: true
 
 # MD025/single-title/single-h1 - Multiple top-level headings in the same document
-MD025:
-  # Heading level
-  level: 1
-  # RegExp for matching title in front matter
-  front_matter_title: "^\\s*title\\s*[:=]"
+MD025: false
 
 # MD026/no-trailing-punctuation - Trailing punctuation in heading
 MD026:
@@ -164,7 +160,9 @@ MD032: true
 # MD033/no-inline-html - Inline HTML
 MD033:
   # Allowed elements
-  allowed_elements: []
+  allowed_elements:
+    - details
+    - summary
 
 # MD034/no-bare-urls - Bare URL used
 MD034: true
@@ -206,13 +204,7 @@ MD041:
 MD042: true
 
 # MD043/required-headings/required-headers - Required heading structure
-MD043:
-  # List of headings
-  headings: []
-  # List of headings
-  headers: []
-  # Match case of headings
-  match_case: false
+MD043: false
 
 # MD044/proper-names - Proper names should have the correct capitalization
 MD044:

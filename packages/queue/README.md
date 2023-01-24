@@ -9,15 +9,18 @@ This package provides additional capabilities for queued jobs and queued listene
 # Installation
 
 1. Run
-    ```shell
+
+   ```shell
     composer require lastdragon-ru/lara-asp-queue
     ```
-1. Overwrite default event Dispatcher by adding following code into `bootstrap/app.php` (before all others singletons):
+
+2. Overwrite default event Dispatcher by adding following code into `bootstrap/app.php` (before all others singletons):
+
    ```php
    $app->singleton('events', \LastDragon_ru\LaraASP\Queue\EventsDispatcher::class);
    ```
 
-   This is required if you want use configuration/DI for queued Listeners. Please see https://github.com/laravel/framework/issues/25272 for reason.
+   This is required if you want use configuration/DI for queued Listeners. Please see <https://github.com/laravel/framework/issues/25272> for reason.
 
 # Configuration
 
@@ -72,10 +75,10 @@ class MyJobWithConfig extends Job {
 
 Configurations have the following priority  (last win):
 
-- own properties (`$this->connection`, `$this->queue`, etc)
-- own config from `getQueueConfig()`
-- app's config (`queue.queueables.<class>` from `config/queue.php` if present)
-- `onConnection()`, `onQueue()`, etc calls
+* own properties (`$this->connection`, `$this->queue`, etc)
+* own config from `getQueueConfig()`
+* app's config (`queue.queueables.<class>` from `config/queue.php` if present)
+* `onConnection()`, `onQueue()`, etc calls
 
 Thus, you can easily set settings for your jobs in app config, for example, we can set the `expire` setting on `8 hours`:
 
@@ -200,19 +203,18 @@ class Provider extends ServiceProvider {
 
 Finally, the package also discloses all settings in the job description:
 
-```txt
+```text
 $ php artisan schedule:list
 
-+---------+-------------+---------------------------------------------------------------------------------+---------------------+
-| Command | Interval    | Description                                                                     | Next Due            |
-+---------+-------------+---------------------------------------------------------------------------------+---------------------+
-|         | 0 0 * * *   | App\Jobs\JobsCleanupCronJob                                                     | 2021-03-14 00:00:00 |
-|         |             | {"queue":"default","enabled":true,"settings":{"expire":"18 hours"}}             |                     |
-|         | */5 * * * * | App\Jobs\SiteLogsCleanupCronJob                                                 | 2021-03-13 06:40:00 |
-|         |             | {"queue":"default","enabled":true,"settings":{"expire":"30 days"}}              |                     |
-+---------+-------------+---------------------------------------------------------------------------------+---------------------+
++---------+-------------+------------------------------------------------------------------------+---------------------+
+| Command | Interval    | Description                                                            | Next Due            |
++---------+-------------+------------------------------------------------------------------------+---------------------+
+|         | 0 0 * * *   | App\Jobs\JobsCleanupCronJob                                            | 2021-03-14 00:00:00 |
+|         |             | {"queue":"default","enabled":true,"settings":{"expire":"18 hours"}}    |                     |
+|         | */5 * * * * | App\Jobs\SiteLogsCleanupCronJob                                        | 2021-03-13 06:40:00 |
+|         |             | {"queue":"default","enabled":true,"settings":{"expire":"30 days"}}     |                     |
++---------+-------------+------------------------------------------------------------------------+---------------------+
 ```
-
 
 # Overriding package Jobs
 
