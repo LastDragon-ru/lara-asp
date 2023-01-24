@@ -8,14 +8,11 @@ use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Enum
+ * @covers \LastDragon_ru\LaraASP\Eloquent\Enum
  */
 class EnumTest extends TestCase {
     use WithTestObject;
 
-    /**
-     * @covers ::castUsing
-     */
     public function testCastUsing(): void {
         // From string/int
         $model        = new EnumTest_Model();

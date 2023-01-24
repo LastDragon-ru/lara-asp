@@ -14,14 +14,12 @@ use function mb_strlen;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList
  */
 class BlockListTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      *
      * @param array<string, Block> $blocks
@@ -61,10 +59,6 @@ class BlockListTest extends TestCase {
         self::assertCount($count, $list);
     }
 
-    /**
-     * @covers ::content
-     * @covers ::analyze
-     */
     public function testStatistics(): void {
         $settings = new TestSettings();
         $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);

@@ -138,6 +138,9 @@
     ],
     "phpcs": [
       "@php ./vendor/bin/phpcs"
+    ],
+    "coverage": [
+      "@php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-html=.phpunit/coverage.html"
     ]
   },
   "config": {

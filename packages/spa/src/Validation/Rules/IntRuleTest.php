@@ -10,14 +10,12 @@ use const NAN;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Validation\Rules\IntRule
+ * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\IntRule
  */
 class IntRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::passes
-     *
      * @dataProvider dataProviderPasses
      */
     public function testPasses(bool $expected, mixed $value): void {
@@ -27,9 +25,6 @@ class IntRuleTest extends TestCase {
         self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
-    /**
-     * @covers ::message
-     */
     public function testMessage(): void {
         $translator = $this->app->make(Translator::class);
         $rule       = new IntRule($translator);

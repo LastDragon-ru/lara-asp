@@ -9,12 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Assertions\XmlAssertions
+ * @covers \LastDragon_ru\LaraASP\Testing\Assertions\XmlAssertions
  */
 class XmlAssertionsTest extends TestCase {
-    /**
-     * @covers ::assertXmlMatchesSchema
-     */
     public function testAssertXmlMatchesSchema(): void {
         $data      = new TestData(XmlMatchesSchemaTest::class);
         $assertion = new class() extends Assert {

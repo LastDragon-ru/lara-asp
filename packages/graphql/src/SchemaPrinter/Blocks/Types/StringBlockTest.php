@@ -14,14 +14,12 @@ use function implode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock
  */
 class StringBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      */
     public function testToString(

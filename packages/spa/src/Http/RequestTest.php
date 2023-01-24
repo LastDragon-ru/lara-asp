@@ -12,12 +12,9 @@ use LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Request
+ * @covers \LastDragon_ru\LaraASP\Spa\Http\Request
  */
 class RequestTest extends TestCase {
-    /**
-     * @covers ::validated
-     */
     public function testValidated(): void {
         $router        = $this->app->make(Router::class);
         $translator    = $this->app->make(Translator::class);

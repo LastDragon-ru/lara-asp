@@ -11,14 +11,11 @@ use function config;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators
  */
 class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::__construct
-     */
     public function testConstructor(): void {
         config([
             Package::Name.'.search_by.operators' => [

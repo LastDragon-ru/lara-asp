@@ -17,7 +17,7 @@ use function iterator_to_array;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
+ * @covers \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator
  */
 class ChunkedChangeSafeIteratorTest extends TestCase {
     use WithTestObject;
@@ -25,12 +25,6 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
 
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::getIterator
-     * @covers ::getOffset
-     * @covers ::getIndex
-     * @covers ::count
-     */
     public function testGetIterator(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
@@ -85,10 +79,6 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     }
 
     /**
-     * @covers ::getIterator
-     * @covers ::getDefaultLimit
-     * @covers ::getDefaultOffset
-     *
      * @dataProvider dataProviderGetIteratorColumn
      */
     public function testGetIteratorDefaults(string $column): void {
@@ -108,10 +98,6 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     }
 
     /**
-     * @covers ::getIterator
-     * @covers ::getDefaultLimit
-     * @covers ::getDefaultOffset
-     *
      * @dataProvider dataProviderGetIteratorColumn
      */
     public function testGetIteratorEloquentDefaults(string $column): void {
@@ -130,9 +116,6 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @covers ::getIterator
-     */
     public function testGetIteratorUnion(): void {
         self::expectExceptionObject(new InvalidArgumentException('Query with UNION is not supported.'));
 
@@ -140,8 +123,6 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     }
 
     /**
-     * @covers ::getDefaultColumn
-     *
      * @dataProvider dataProviderGetDefaultColumn
      *
      * @param Closure(): Builder<Model> $factory

@@ -10,12 +10,9 @@ use ReflectionMethod;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings
  */
 class ImmutableSettingsTest extends TestCase {
-    /**
-     * @covers ::createFrom
-     */
     public function testCreateFrom(): void {
         $methods  = (new ReflectionClass(Settings::class))->getMethods(ReflectionMethod::IS_PUBLIC);
         $settings = Mockery::mock(Settings::class);

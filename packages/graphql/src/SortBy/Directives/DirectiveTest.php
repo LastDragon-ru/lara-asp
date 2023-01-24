@@ -29,14 +29,12 @@ use function is_array;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive
  */
 class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::manipulateArgDefinition
-     *
      * @dataProvider dataProviderManipulateArgDefinition
      *
      * @param Closure(static): GraphQLExpectedSchema $expected
@@ -57,9 +55,6 @@ class DirectiveTest extends TestCase {
         );
     }
 
-    /**
-     * @covers ::manipulateArgDefinition
-     */
     public function testManipulateArgDefinitionTypeRegistry(): void {
         $i = new class([
             'name'   => 'I',
@@ -142,9 +137,6 @@ class DirectiveTest extends TestCase {
         );
     }
 
-    /**
-     * @covers ::manipulateArgDefinition
-     */
     public function testManipulateArgDefinitionTypeRegistryEmpty(): void {
         $type = new ObjectType([
             'name'   => 'TestType',
@@ -172,8 +164,6 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @covers ::handleBuilder
-     *
      * @dataProvider dataProviderHandleBuilder
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected

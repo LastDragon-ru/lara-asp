@@ -20,14 +20,12 @@ use function is_string;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\ModelHelper
+ * @covers \LastDragon_ru\LaraASP\Eloquent\ModelHelper
  */
 class ModelHelperTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::getRelation
-     *
      * @dataProvider dataProviderGetRelation
      *
      * @param Exception|class-string                                $expected
@@ -46,8 +44,6 @@ class ModelHelperTest extends TestCase {
     }
 
     /**
-     * @covers ::isRelation
-     *
      * @dataProvider dataProviderGetRelation
      *
      * @param Exception|class-string                                $expected
@@ -61,8 +57,6 @@ class ModelHelperTest extends TestCase {
     }
 
     /**
-     * @covers ::isSoftDeletable
-     *
      * @dataProvider dataProviderIsSoftDeletable
      *
      * @param Closure(): (Builder<Model>|Model|class-string<Model>) $model

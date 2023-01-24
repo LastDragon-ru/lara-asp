@@ -9,12 +9,9 @@ use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\QueueableConfigurator
+ * @covers \LastDragon_ru\LaraASP\Queue\QueueableConfigurator
  */
 class QueueableConfiguratorTest extends TestCase {
-    /**
-     * @covers ::configure
-     */
     public function testConfigure(): void {
         $configurator = $this->app->make(QueueableConfigurator::class);
         $queueable    = new class() implements ConfigurableQueueable {

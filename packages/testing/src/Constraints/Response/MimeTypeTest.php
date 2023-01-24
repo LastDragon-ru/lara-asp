@@ -9,21 +9,15 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Response\MimeType
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Response\MimeType
  */
 class MimeTypeTest extends TestCase {
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
         self::assertFalse((new MimeType(''))->evaluate(new stdClass()));
     }
 
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluate(): void {
         $map        = [
             'example/text'    => ['example'],
@@ -39,9 +33,6 @@ class MimeTypeTest extends TestCase {
         self::assertFalse($constraint->evaluate($invalid, '', true));
     }
 
-    /**
-     * @covers ::toString
-     */
     public function testToString(): void {
         $constraint = new MimeType('example', [
             'example/text'    => ['example'],

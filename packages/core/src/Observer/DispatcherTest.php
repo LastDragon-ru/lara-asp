@@ -9,14 +9,9 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Observer\Dispatcher
+ * @covers \LastDragon_ru\LaraASP\Core\Observer\Dispatcher
  */
 class DispatcherTest extends TestCase {
-    /**
-     * @covers ::attach
-     * @covers ::detach
-     * @covers ::notify
-     */
     public function testSubject(): void {
         $spy      = Mockery::spy(static fn(stdClass $context) => null);
         $context  = new stdClass();
@@ -38,9 +33,6 @@ class DispatcherTest extends TestCase {
             ->with($context);
     }
 
-    /**
-     * @covers ::reset
-     */
     public function testReset(): void {
         $spy      = Mockery::spy(static fn(stdClass $context) => null);
         $context  = new stdClass();
@@ -56,9 +48,6 @@ class DispatcherTest extends TestCase {
         $spy->shouldNotHaveBeenCalled();
     }
 
-    /**
-     * @covers ::getObservers
-     */
     public function testGetObservers(): void {
         $subject  = new Dispatcher();
         $observer = static function (): void {

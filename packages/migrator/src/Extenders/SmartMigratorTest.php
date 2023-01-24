@@ -23,20 +23,16 @@ use function trim;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator
+ * @covers \LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator
  */
 class SmartMigratorTest extends TestCase {
     /**
-     * @covers \LastDragon_ru\LaraASP\Migrator\Provider::registerMigrator
+     * @covers \LastDragon_ru\LaraASP\Migrator\Provider
      */
     public function testProvider(): void {
         self::assertEquals(SmartMigrator::class, get_class($this->app->make('migrator')));
     }
 
-    /**
-     * @covers ::run
-     * @covers ::rollback
-     */
     public function testMigrate(): void {
         // Prepare
         $path         = $this->getTestData()->path('/named');

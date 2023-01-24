@@ -10,14 +10,11 @@ use function config;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators
  */
 class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::__construct
-     */
     public function testConstructor(): void {
         config([
             Package::Name.'.sort_by.operators' => [

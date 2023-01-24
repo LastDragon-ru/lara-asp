@@ -6,12 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider
+ * @covers \LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider
  */
 class CompositeDataProviderTest extends TestCase {
-    /**
-     * @covers ::getData
-     */
     public function testGetData(): void {
         $a = [
             ['expected a', 'value a'],
@@ -40,9 +37,6 @@ class CompositeDataProviderTest extends TestCase {
         ))->getData());
     }
 
-    /**
-     * @covers ::getData
-     */
     public function testGetDataRaw(): void {
         $f = new ExpectedFinal('expected final');
         $u = new UnknownValue();
@@ -66,9 +60,6 @@ class CompositeDataProviderTest extends TestCase {
         ))->getData(true));
     }
 
-    /**
-     * @covers ::getData
-     */
     public function testGetDataSingleProviderPassed(): void {
         $a = [
             ['expected a', 'value a'],

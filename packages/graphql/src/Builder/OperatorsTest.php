@@ -14,14 +14,11 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Builder\Operators
+ * @covers \LastDragon_ru\LaraASP\GraphQL\Builder\Operators
  */
 class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::hasOperators
-     */
     public function testHasOperators(): void {
         $operators = new class() extends Operators {
             /**
@@ -43,8 +40,6 @@ class OperatorsTest extends TestCase {
     }
 
     /**
-     * @covers ::setOperators
-     *
      * @dataProvider dataProviderSetOperators
      *
      * @param array<class-string<Operator>|string> $typeOperators
@@ -65,9 +60,6 @@ class OperatorsTest extends TestCase {
         self::assertEquals($expected, $operators->hasOperators($type));
     }
 
-    /**
-     * @covers ::getOperators
-     */
     public function testGetOperators(): void {
         $type      = __FUNCTION__;
         $alias     = 'alias';
@@ -109,9 +101,6 @@ class OperatorsTest extends TestCase {
         );
     }
 
-    /**
-     * @covers ::getOperators
-     */
     public function testGetOperatorsUnknownType(): void {
         $operators = new class() extends Operators {
             public function getScope(): string {

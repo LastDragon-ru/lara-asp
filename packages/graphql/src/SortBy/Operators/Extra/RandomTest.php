@@ -14,7 +14,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -22,8 +22,6 @@ class RandomTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::call
-     *
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected

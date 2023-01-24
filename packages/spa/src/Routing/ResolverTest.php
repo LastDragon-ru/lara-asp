@@ -9,12 +9,9 @@ use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Routing\Resolver
+ * @covers \LastDragon_ru\LaraASP\Spa\Routing\Resolver
  */
 class ResolverTest extends TestCase {
-    /**
-     * @covers ::get
-     */
     public function testGet(): void {
         $router   = $this->app->make(Router::class);
         $resolver = new class($router) extends Resolver {
@@ -48,9 +45,6 @@ class ResolverTest extends TestCase {
         self::assertNotSame($a, $c);
     }
 
-    /**
-     * @covers ::get
-     */
     public function testGetUnresolvedValue(): void {
         self::expectException(UnresolvedValueException::class);
 

@@ -13,14 +13,11 @@ use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Mixins\EloquentBuilderMixin
+ * @covers \LastDragon_ru\LaraASP\Eloquent\Mixins\EloquentBuilderMixin
  */
 class EloquentBuilderMixinTest extends TestCase {
     use WithTestObject;
 
-    /**
-     * @covers ::getChunkedIterator
-     */
     public function testIterator(): void {
         $actual = null;
         $model  = new class() extends Model {
@@ -38,9 +35,6 @@ class EloquentBuilderMixinTest extends TestCase {
         self::assertInstanceOf(ChunkedIterator::class, $actual);
     }
 
-    /**
-     * @covers ::getChangeSafeIterator
-     */
     public function testChangeSafeIterator(): void {
         $actual = null;
         $model  = new class() extends Model {
@@ -58,10 +52,6 @@ class EloquentBuilderMixinTest extends TestCase {
         self::assertInstanceOf(ChunkedChangeSafeIterator::class, $actual);
     }
 
-    /**
-     * @covers ::orderByKey
-     * @covers ::orderByKeyDesc
-     */
     public function testOrderByKey(): void {
         $a = TestObject::factory()->create();
         $b = TestObject::factory()->create();

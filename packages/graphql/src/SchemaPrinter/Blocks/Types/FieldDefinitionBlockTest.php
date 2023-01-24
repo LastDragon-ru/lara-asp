@@ -16,14 +16,12 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\FieldDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\FieldDefinitionBlock
  */
 class FieldDefinitionBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      */
     public function testToString(
@@ -41,9 +39,6 @@ class FieldDefinitionBlockTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @covers ::__toString
-     */
     public function testStatistics(): void {
         $settings   = new TestSettings();
         $settings   = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);

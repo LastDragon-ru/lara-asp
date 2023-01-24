@@ -15,14 +15,12 @@ use function is_array;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder
  */
 class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::handle
-     *
      * @dataProvider dataProviderHandle
      *
      * @param array<string, mixed>|Exception $expected

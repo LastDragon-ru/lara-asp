@@ -10,14 +10,12 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Comparators\EloquentModelComparator
+ * @covers \LastDragon_ru\LaraASP\Testing\Comparators\EloquentModelComparator
  */
 class EloquentModelComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::accepts
-     *
      * @dataProvider dataProviderAccepts
      */
     public function testAccepts(bool $equals, mixed $expected, mixed $actual): void {
@@ -25,8 +23,6 @@ class EloquentModelComparatorTest extends TestCase {
     }
 
     /**
-     * @covers ::assertEquals
-     *
      * @dataProvider dataProviderAssertEquals
      */
     public function testAssertEquals(bool|string $equals, mixed $expected, mixed $actual): void {

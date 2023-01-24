@@ -9,21 +9,15 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCode
  */
 class StatusCodeTest extends TestCase {
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
         self::assertFalse((new StatusCode(200))->evaluate(new stdClass()));
     }
 
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluate(): void {
         $valid      = new Response(200);
         $invalid    = new Response(500);
@@ -33,9 +27,6 @@ class StatusCodeTest extends TestCase {
         self::assertFalse($constraint->evaluate($invalid, '', true));
     }
 
-    /**
-     * @covers ::toString
-     */
     public function testToString(): void {
         $constraint = new StatusCode(200);
 

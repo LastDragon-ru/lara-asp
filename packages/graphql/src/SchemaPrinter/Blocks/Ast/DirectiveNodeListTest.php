@@ -18,14 +18,12 @@ use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList
  */
 class DirectiveNodeListTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      *
      * @param array<DirectiveNode> $directives
@@ -59,9 +57,6 @@ class DirectiveNodeListTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @covers ::__toString
-     */
     public function testStatistics(): void {
         $a        = Parser::directive('@a');
         $b        = Parser::directive('@b');

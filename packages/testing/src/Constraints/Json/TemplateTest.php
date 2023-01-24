@@ -10,14 +10,12 @@ use function json_decode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Json\Template
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Json\Template
  */
 class TemplateTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::build
-     *
      * @dataProvider dataProviderBuild
      *
      * @param array<string,string> $parameters

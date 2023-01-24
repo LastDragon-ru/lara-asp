@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Testing\Http\Resources\ResourceCollection
+ * @covers \LastDragon_ru\LaraASP\Spa\Testing\Http\Resources\ResourceCollection
  */
 class ResourceCollectionTest extends TestCase {
     // <editor-fold desc="Tests">

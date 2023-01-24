@@ -13,14 +13,12 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeBlock
  */
 class DirectiveNodeBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      */
     public function testToString(
@@ -44,9 +42,6 @@ class DirectiveNodeBlockTest extends TestCase {
         }
     }
 
-    /**
-     * @covers ::__toString
-     */
     public function testStatistics(): void {
         $settings = new TestSettings();
         $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);

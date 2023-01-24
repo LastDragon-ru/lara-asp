@@ -9,12 +9,9 @@ use ReflectionMethod;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Testing\SchemaBuilderWrapper
+ * @covers \LastDragon_ru\LaraASP\GraphQL\Testing\SchemaBuilderWrapper
  */
 class SchemaBuilderWrapperTest extends TestCase {
-    /**
-     * @covers ::__construct
-     */
     public function testWrappedSuccessfully(): void {
         $missed  = [];
         $origin  = new ReflectionClass(SchemaBuilder::class);

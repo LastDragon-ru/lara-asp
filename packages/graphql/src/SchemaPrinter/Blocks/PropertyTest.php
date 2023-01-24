@@ -11,15 +11,9 @@ use function mb_strlen;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property
  */
 class PropertyTest extends TestCase {
-    /**
-     * @covers ::__toString
-     * @covers ::getLength
-     * @covers ::getLevel
-     * @covers ::getUsed
-     */
     public function testToString(): void {
         $name      = 'name';
         $used      = 123;

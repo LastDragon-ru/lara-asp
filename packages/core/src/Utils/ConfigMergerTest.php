@@ -9,14 +9,12 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Utils\ConfigMerger
+ * @covers \LastDragon_ru\LaraASP\Core\Utils\ConfigMerger
  */
 class ConfigMergerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::merge
-     *
      * @dataProvider dataProviderMerge
      *
      * @param array<mixed>|Exception $expected

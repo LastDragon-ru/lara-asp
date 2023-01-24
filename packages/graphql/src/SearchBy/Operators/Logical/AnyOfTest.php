@@ -16,7 +16,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -24,8 +24,6 @@ class AnyOfTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::call
-     *
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected

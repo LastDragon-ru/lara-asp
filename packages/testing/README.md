@@ -116,12 +116,9 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \App\Http\Controllers\IndexController
+ * @covers \App\Http\Controllers\IndexController
  */
 class IndexControllerTest extends TestCase {
-    /**
-     * @covers ::index
-     */
     public function testIndex() {
         $this->get('/')
             ->assertOk()
@@ -202,12 +199,9 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \App\Http\Controllers\IndexController
+ * @covers \App\Http\Controllers\IndexController
  */
 class IndexControllerTest extends TestCase {
-    /**
-     * @covers ::index
-     */
     public function testIndex() {
         $this->get('/')->assertThat(new Response(
             new Ok(),
@@ -354,19 +348,13 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \App\Http\Controllers\IndexController
+ * @covers \App\Http\Controllers\IndexController
  */
 class IndexControllerTest extends TestCase {
-    /**
-     * @covers ::index
-     */
     public function testIndex() {
         $this->getJson('/')->assertThat(new ValidationErrorResponse());
     }
 
-    /**
-     * @covers ::index
-     */
     public function testTest() {
         $this->getJson('/test')->assertThat(new ValidationErrorResponse());
     }
@@ -384,12 +372,9 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \App\Http\Controllers\IndexController
+ * @covers \App\Http\Controllers\IndexController
  */
 class IndexControllerTest extends TestCase {
-    /**
-     * @covers ::index
-     */
     public function testIndex() {
         $this->getJson('/')
             ->assertStatus(422)
@@ -400,9 +385,6 @@ class IndexControllerTest extends TestCase {
             ]);
     }
 
-    /**
-     * @covers ::index
-     */
     public function testTest() {
         $this->getJson('/test')
             ->assertStatus(422)

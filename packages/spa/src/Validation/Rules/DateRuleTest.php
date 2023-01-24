@@ -9,14 +9,12 @@ use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Validation\Rules\DateRule
+ * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\DateRule
  */
 class DateRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::passes
-     *
      * @dataProvider dataProviderPasses
      */
     public function testPasses(bool $expected, string $value): void {
@@ -26,9 +24,6 @@ class DateRuleTest extends TestCase {
         self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
-    /**
-     * @covers ::message
-     */
     public function testMessage(): void {
         $translator = $this->app->make(Translator::class);
         $rule       = new DateRule($translator);
@@ -37,8 +32,6 @@ class DateRuleTest extends TestCase {
     }
 
     /**
-     * @covers ::getValue
-     *
      * @dataProvider dataProviderGetValue
      */
     public function testGetValue(Exception|string|null $expected, string $value): void {

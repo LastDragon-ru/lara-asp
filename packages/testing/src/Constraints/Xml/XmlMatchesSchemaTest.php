@@ -11,7 +11,7 @@ use function is_string;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchema
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchema
  */
 class XmlMatchesSchemaTest extends TestCase {
     use WithTestData;

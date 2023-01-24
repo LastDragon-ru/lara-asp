@@ -13,14 +13,12 @@ use function sprintf;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Casts\EnumCast
+ * @covers \LastDragon_ru\LaraASP\Eloquent\Casts\EnumCast
  */
 class EnumCastTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::get
-     *
      * @dataProvider dataProviderGet
      */
     public function testGet(Exception|Enum|null $expected, mixed $value): void {
@@ -39,8 +37,6 @@ class EnumCastTest extends TestCase {
     }
 
     /**
-     * @covers ::set
-     *
      * @dataProvider dataProviderSet
      */
     public function testSet(Exception|string|int|null $expected, mixed $value): void {

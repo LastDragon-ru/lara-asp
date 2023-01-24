@@ -10,12 +10,9 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder
+ * @covers \LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder
  */
 class RawSeederTest extends TestCase {
-    /**
-     * @covers ::handle
-     */
     public function testHandle(): void {
         // Pre test
         $pkg    = Package::Name;

@@ -12,12 +12,11 @@ use function json_decode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedCollection
+ * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedCollection
  */
 class PaginatedCollectionTest extends TestCase {
     /**
-     * @covers ::toResponse
-     * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedResponse::toResponse
+     * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedResponse
      */
     public function testToResponseLengthAwarePaginator(): void {
         $total     = 123;
@@ -66,8 +65,7 @@ class PaginatedCollectionTest extends TestCase {
     }
 
     /**
-     * @covers ::toResponse
-     * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedResponse::toResponse
+     * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedResponse
      */
     public function testToResponsePaginator(): void {
         $perPage   = 25;

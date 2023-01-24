@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Translator as PackageTranslator;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Translator
+ * @covers \LastDragon_ru\LaraASP\Core\Translator
  *
  * @phpstan-import-type TranslationsFactory from \LastDragon_ru\LaraASP\Testing\Utils\WithTranslations
  */
@@ -16,9 +16,6 @@ class TranslatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::choice
-     * @covers ::translate
-     *
      * @param array<string>|string $key
      * @param TranslationsFactory  $translations
      * @param array<mixed>         $replace
@@ -44,9 +41,6 @@ class TranslatorTest extends TestCase {
     }
 
     /**
-     * @covers ::get
-     * @covers ::translate
-     *
      * @param array<string>|string $key
      * @param TranslationsFactory  $translations
      * @param array<mixed>         $replace

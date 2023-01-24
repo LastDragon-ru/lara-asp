@@ -8,15 +8,12 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Angular\Url
+ * @covers \LastDragon_ru\LaraASP\Spa\Angular\Url
  */
 class UrlTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__construct
-     * @covers ::extract
-     *
      * @dataProvider dataProviderConstruct
      *
      * @param array<mixed> $expected
@@ -29,8 +26,6 @@ class UrlTest extends TestCase {
     }
 
     /**
-     * @covers ::build
-     *
      * @dataProvider dataProviderBuild
      *
      * @param array<mixed> $parameters

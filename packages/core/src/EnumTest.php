@@ -8,28 +8,19 @@ use function json_encode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Enum
+ * @covers \LastDragon_ru\LaraASP\Core\Enum
  */
 class EnumTest extends TestCase {
-    /**
-     * @covers ::__toString
-     */
     public function testToString(): void {
         self::assertEquals('1', (string) EnumTest_A::i());
         self::assertEquals('a', (string) EnumTest_A::a());
     }
 
-    /**
-     * @covers ::jsonSerialize
-     */
     public function testJsonSerialize(): void {
         self::assertEquals(json_encode(1), json_encode(EnumTest_A::i()));
         self::assertEquals(json_encode('a'), json_encode(EnumTest_A::a()));
     }
 
-    /**
-     * @covers ::getValues
-     */
     public function testGetValues(): void {
         self::assertEquals([
             'a' => EnumTest_A::a(),
@@ -38,17 +29,11 @@ class EnumTest extends TestCase {
         ], EnumTest_A::getValues());
     }
 
-    /**
-     * @covers ::getValue
-     */
     public function testGetValue(): void {
         self::assertEquals(1, EnumTest_A::i()->getValue());
         self::assertEquals('a', EnumTest_A::a()->getValue());
     }
 
-    /**
-     * @covers ::get
-     */
     public function testGet(): void {
         self::assertSame(EnumTest_A::a(), EnumTest_A::get('a'));
         self::assertSame(EnumTest_A::i(), EnumTest_A::get(1));

@@ -31,7 +31,7 @@
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true"
-              cacheDirectory=".phpunit/code-coverage">
+              cacheDirectory=".phpunit/coverage.cache">
         <include>
             <directory suffix=".php">./packages/core/src</directory>
             <directory suffix=".php">./packages/migrator/src</directory>

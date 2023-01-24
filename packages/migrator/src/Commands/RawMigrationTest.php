@@ -16,12 +16,9 @@ use function implode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Migrator\Commands\RawMigration
+ * @covers \LastDragon_ru\LaraASP\Migrator\Commands\RawMigration
  */
 class RawMigrationTest extends TestCase {
-    /**
-     * @covers ::handle
-     */
     public function testHandle(): void {
         // make:migration also call dump-autoload we no need this.
         $composer = Mockery::mock(Composer::class);

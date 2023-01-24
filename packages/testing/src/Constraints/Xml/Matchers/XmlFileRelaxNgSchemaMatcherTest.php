@@ -9,14 +9,11 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileRelaxNgSchemaMatcher
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileRelaxNgSchemaMatcher
  */
 class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
     use WithTestData;
 
-    /**
-     * @covers ::isMatchesSchema
-     */
     public function testEvaluateValid(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.xml');
@@ -25,9 +22,6 @@ class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
         self::assertTrue($c->isMatchesSchema($schema, $xml));
     }
 
-    /**
-     * @covers ::isMatchesSchema
-     */
     public function testEvaluateInvalid(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.invalid.xml');
@@ -36,9 +30,6 @@ class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
         self::assertFalse($c->isMatchesSchema($schema, $xml));
     }
 
-    /**
-     * @covers ::isMatchesSchema
-     */
     public function testEvaluateNotDocument(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $c      = new XmlFileRelaxNgSchemaMatcher();

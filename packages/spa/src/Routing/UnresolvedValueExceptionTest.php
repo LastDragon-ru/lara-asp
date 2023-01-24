@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException
+ * @covers \LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException
  */
 class UnresolvedValueExceptionTest extends TestCase {
     public function testHttpResponse(): void {

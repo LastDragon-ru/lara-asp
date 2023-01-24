@@ -13,14 +13,11 @@ use function mb_strlen;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block
  */
 class BlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::getContent
-     */
     public function testGetContent(): void {
         $settings = new TestSettings();
         $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
@@ -37,9 +34,6 @@ class BlockTest extends TestCase {
         self::assertEquals($content, $block->getContent());
     }
 
-    /**
-     * @covers ::getLength
-     */
     public function testGetLength(): void {
         $settings = new TestSettings();
         $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
@@ -58,8 +52,6 @@ class BlockTest extends TestCase {
     }
 
     /**
-     * @covers ::isMultiline
-     *
      * @dataProvider dataProviderIsMultiline
      */
     public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
@@ -77,8 +69,6 @@ class BlockTest extends TestCase {
     }
 
     /**
-     * @covers ::isEmpty
-     *
      * @dataProvider dataProviderIsEmpty
      */
     public function testIsEmpty(bool $expected, string $content): void {

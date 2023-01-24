@@ -7,12 +7,9 @@ use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\Provider
+ * @covers \LastDragon_ru\LaraASP\Queue\Provider
  */
 class ProviderTest extends TestCase {
-    /**
-     * @covers ::registerConfigurator
-     */
     public function testRegisterConfigurator(): void {
         $actual   = $this->app->make(ProviderTest_ConfigurableQueueable::class)->queue ?? null;
         $expected = 'test';
