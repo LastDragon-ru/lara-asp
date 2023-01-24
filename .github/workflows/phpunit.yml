@@ -4,7 +4,17 @@ on:
   workflow_call:
     inputs:
       package:
-        description: "Package path to test."
+        description: "Package name to test."
+        required: false
+        default: ""
+        type: string
+      packages-names:
+        description: "The JSON with all packages (required to configure composer repositories to resolve dependencies)."
+        required: false
+        default: ""
+        type: string
+      packages-directory:
+        description: "The path of packages directory (required if `package` set)."
         required: false
         default: ""
         type: string
@@ -17,6 +27,9 @@ on:
 permissions:
   contents: read
 
+env:
+  WORKING_DIRECTORY: ${{ inputs.package && format('{0}/{1}', inputs.packages-directory, inputs.package) || ''}}
+
 jobs:
   settings:
     name: Settings
@@ -28,24 +41,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          path: ${{ inputs.package && '.repo' || '' }}
-
-      # The `.git` directory is required for Composer to resolve `self.version`.
-      - name: Select Package
-        if: ${{ inputs.package }}
-        run: |
-          cp -R "./.repo/.git" .
-          cp -R "./.repo/.github" .
-          cp -R "./.repo/${{ inputs.package }}/." .
 
       - name: Install PHP
         uses: ./.github/actions/php
         with:
+          working-directory: ${{ env.WORKING_DIRECTORY }}
           dependencies: false
 
       - name: Collect Settings
         id: settings
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           # PHP
           echo "php-versions=$(jq '.require."php" | split("|") | map(sub("^[^\\d]+"; "")) | sort' -c composer.json)" >> $GITHUB_OUTPUT
@@ -104,16 +109,6 @@ jobs:
       # Checkout
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          path: ${{ inputs.package && '.repo' || '' }}
-
-      # The `.git` directory is required for Composer to resolve `self.version`.
-      - name: Select Package
-        if: ${{ inputs.package }}
-        run: |
-          cp -R "./.repo/.git" .
-          cp -R "./.repo/.github" .
-          cp -R "./.repo/${{ inputs.package }}/." .
 
       # Install PHP
       - name: Install PHP
@@ -121,11 +116,26 @@ jobs:
         with:
           version: ${{ matrix.php }}
           dependencies: false
+          working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      # Required to resolve packages correctly.
+      - name: Composer repositories
+        if: ${{ inputs.packages-names }}
+        shell: bash
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          PACKAGES=$(echo '${{ inputs.packages-names }}' | jq 'map(select(. != "${{ inputs.package }}"))' | jq -c -r '.[]')
+
+          while read -r PKG
+          do
+            composer config "repositories.${PKG}" path "../${PKG}"
+          done <<< "${PACKAGES}"
 
       # On Windows, the caret ^ is the escape character, so the version string
       # that contains ^ will be handled incorrectly
       - name: Install Laravel
         shell: bash
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           composer remove --no-interaction --no-progress --ansi --no-update laravel/framework
           composer require --no-interaction --no-progress --ansi --no-update "laravel/framework:${{ matrix.laravel }}"
@@ -134,8 +144,10 @@ jobs:
       - name: Install dependencies
         uses: ramsey/composer-install@v2
         with:
+          working-directory: ${{ env.WORKING_DIRECTORY }}
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: Execute
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           ./vendor/bin/phpunit

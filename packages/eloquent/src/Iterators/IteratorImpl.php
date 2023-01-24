@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
-use Countable;
 use EmptyIterator;
 use Generator;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,7 +21,7 @@ use function min;
  *
  * @internal
  */
-abstract class IteratorImpl implements Iterator, Countable {
+abstract class IteratorImpl implements Iterator {
     /**
      * @var Dispatcher<Collection<array-key,TItem>>
      */
@@ -200,6 +199,11 @@ abstract class IteratorImpl implements Iterator, Countable {
     }
 
     public function count(): int {
-        return max(0, $this->getBuilder()->toBase()->count());
+        $limit = $this->getLimit();
+        $count = $this->getBuilder()->toBase()->count();
+        $count = $limit !== null ? min($limit, $count) : $count;
+        $count = max(0, $count);
+
+        return $count;
     }
 }

@@ -71,4 +71,6 @@ jobs:
         package: ${{ fromJson(needs.settings.outputs.packages-names) }}
     uses: ./.github/workflows/phpunit.yml
     with:
-      package: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
+      package: ${{ matrix.package }}
+      packages-names: ${{ needs.settings.outputs.packages-names }}
+      packages-directory: ${{ needs.settings.outputs.packages-directory }}
