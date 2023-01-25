@@ -9,7 +9,7 @@ use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\StringBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
@@ -46,7 +46,7 @@ class ValueNodeBlock extends Block {
 
             foreach ($this->node->fields as $field) {
                 $name           = $field->name->value;
-                $content[$name] = new Property(
+                $content[$name] = new PropertyBlock(
                     $settings,
                     $name,
                     new ValueNodeBlock(

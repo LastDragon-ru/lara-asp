@@ -3,15 +3,15 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\FieldArgument;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use Traversable;
 
 /**
  * @internal
- * @extends BlockList<InputValueDefinitionBlock>
+ * @extends ListBlock<InputValueDefinitionBlock>
  */
-class ArgumentsDefinitionList extends BlockList {
+class ArgumentsDefinitionList extends ListBlock {
     /**
      * @param Traversable<FieldArgument>|array<FieldArgument> $arguments
      */

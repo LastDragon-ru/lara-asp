@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer\DefinitionList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
@@ -136,9 +136,9 @@ class SchemaPrinter implements SchemaPrinterContract {
     /**
      * Returns all types defined in the schema.
      *
-     * @return BlockList<Block>
+     * @return ListBlock<Block>
      */
-    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
+    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): ListBlock {
         $blocks = $this->getDefinitionList($settings);
 
         foreach ($schema->getTypeMap() as $type) {
@@ -153,9 +153,9 @@ class SchemaPrinter implements SchemaPrinterContract {
     /**
      * Returns all directives defined in the schema.
      *
-     * @return BlockList<Block>
+     * @return ListBlock<Block>
      */
-    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
+    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): ListBlock {
         // Included?
         $blocks = $this->getDefinitionList($settings);
 
@@ -191,14 +191,14 @@ class SchemaPrinter implements SchemaPrinterContract {
     }
 
     /**
-     * @return BlockList<Block>
+     * @return ListBlock<Block>
      */
-    protected function getDefinitionList(PrinterSettings $settings, bool $root = false): BlockList {
+    protected function getDefinitionList(PrinterSettings $settings, bool $root = false): ListBlock {
         return new DefinitionList($settings, $this->getLevel(), $root);
     }
 
     /**
-     * @return array<BlockList<Block>>
+     * @return array<ListBlock<Block>>
      */
     protected function getUsedDefinitions(PrinterSettings $settings, Schema $schema, Block $root): array {
         $directivesDefinitions = $settings->isPrintDirectiveDefinitions();

@@ -5,16 +5,16 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Printer;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 use function rtrim;
 
 /**
  * @internal
- * @extends BlockList<Block>
+ * @extends ListBlock<Block>
  */
-class DefinitionList extends BlockList {
+class DefinitionList extends ListBlock {
     public function __construct(
         PrinterSettings $settings,
         int $level,

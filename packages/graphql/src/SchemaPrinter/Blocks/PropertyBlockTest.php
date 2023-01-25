@@ -11,9 +11,9 @@ use function mb_strlen;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\PropertyBlock
  */
-class PropertyTest extends TestCase {
+class PropertyBlockTest extends TestCase {
     public function testToString(): void {
         $name      = 'name';
         $used      = 123;
@@ -37,7 +37,7 @@ class PropertyTest extends TestCase {
                 return $this->content;
             }
         };
-        $property  = new class($settings, $name, $block, $separator) extends Property {
+        $property  = new class($settings, $name, $block, $separator) extends PropertyBlock {
             public function __construct(
                 PrinterSettings $settings,
                 string $name,

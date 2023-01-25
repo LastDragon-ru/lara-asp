@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use Traversable;
 
@@ -13,9 +13,9 @@ use function mb_strlen;
  * @internal
  * @template TBlock of Block
  * @template TType
- * @extends BlockList<TBlock>
+ * @extends ListBlock<TBlock>
  */
-abstract class UsageList extends BlockList {
+abstract class UsageList extends ListBlock {
     /**
      * @param Traversable<TType>|array<TType> $items
      */

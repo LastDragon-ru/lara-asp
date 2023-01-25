@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\DirectiveDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\InputObjectTypeDefinitionBlock;
@@ -27,7 +27,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 /**
  * @internal
  */
-class DefinitionBlock extends Block implements Named {
+class DefinitionBlock extends Block implements NamedBlock {
     private Block $block;
 
     public function __construct(
@@ -44,7 +44,7 @@ class DefinitionBlock extends Block implements Named {
         $name  = '';
         $block = $this->getBlock();
 
-        if ($block instanceof Named) {
+        if ($block instanceof NamedBlock) {
             $name = $block->getName();
         }
 

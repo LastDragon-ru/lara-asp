@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
@@ -39,7 +39,7 @@ class IntrospectionSchemaPrinter extends SchemaPrinter {
         return new PrintedIntrospectionSchemaImpl($settings->getResolver(), $schema, $content);
     }
 
-    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
+    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): ListBlock {
         $blocks = $this->getDefinitionList($settings);
 
         foreach (Introspection::getTypes() as $type) {
@@ -49,7 +49,7 @@ class IntrospectionSchemaPrinter extends SchemaPrinter {
         return $blocks;
     }
 
-    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): BlockList {
+    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): ListBlock {
         $blocks     = $this->getDefinitionList($settings);
         $directives = $schema->getDirectives();
 

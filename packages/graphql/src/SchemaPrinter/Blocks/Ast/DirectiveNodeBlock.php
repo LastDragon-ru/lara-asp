@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
 use GraphQL\Language\AST\DirectiveNode;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 use function mb_strlen;
@@ -12,7 +12,7 @@ use function mb_strlen;
 /**
  * @internal
  */
-class DirectiveNodeBlock extends Block implements Named {
+class DirectiveNodeBlock extends Block implements NamedBlock {
     public function __construct(
         PrinterSettings $settings,
         int $level,

@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
  *
  * @template TBlock of Block
  */
-class Property extends Block implements Named {
+class PropertyBlock extends Block implements NamedBlock {
     /**
      * @param TBlock $block
      */

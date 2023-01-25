@@ -3,16 +3,16 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
 use GraphQL\Language\AST\ArgumentNode;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Property;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use Traversable;
 
 /**
  * @internal
- * @extends BlockList<Property<ValueNodeBlock>>
+ * @extends ListBlock<PropertyBlock<ValueNodeBlock>>
  */
-class ArgumentNodeList extends BlockList {
+class ArgumentNodeList extends ListBlock {
     /**
      * @param Traversable<ArgumentNode>|array<ArgumentNode> $arguments
      */
@@ -26,7 +26,7 @@ class ArgumentNodeList extends BlockList {
 
         foreach ($arguments as $argument) {
             $name        = $argument->name->value;
-            $this[$name] = new Property(
+            $this[$name] = new PropertyBlock(
                 $this->getSettings(),
                 $name,
                 new ValueNodeBlock(

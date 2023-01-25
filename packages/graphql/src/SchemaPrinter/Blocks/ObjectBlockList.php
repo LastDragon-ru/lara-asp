@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 /**
  * @internal
  * @template TBlock of Block
- * @extends BlockList<TBlock>
+ * @extends ListBlock<TBlock>
  */
-class ObjectBlockList extends BlockList {
+class ObjectBlockList extends ListBlock {
     protected function getPrefix(): string {
         return '{';
     }

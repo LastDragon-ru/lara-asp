@@ -3,14 +3,14 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 
 /**
  * @internal
  * @template TBlock of Block
- * @extends BlockList<TBlock>
+ * @extends ListBlock<TBlock>
  */
-class ListValueList extends BlockList {
+class ListValueList extends ListBlock {
     protected function getPrefix(): string {
         return '[';
     }

@@ -13,7 +13,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 use function mb_strlen;
@@ -23,7 +23,7 @@ use function mb_strlen;
  *
  * @template TType of Type|FieldDefinition|EnumValueDefinition|FieldArgument|Directive|InputObjectField|Schema
  */
-abstract class DefinitionBlock extends Block implements Named {
+abstract class DefinitionBlock extends Block implements NamedBlock {
     /**
      * @param TType $definition
      */

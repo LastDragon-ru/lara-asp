@@ -3,13 +3,13 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Named;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 
 /**
  * @internal
  */
-class DirectiveLocationBlock extends Block implements Named {
+class DirectiveLocationBlock extends Block implements NamedBlock {
     public function __construct(
         PrinterSettings $settings,
         int $level,

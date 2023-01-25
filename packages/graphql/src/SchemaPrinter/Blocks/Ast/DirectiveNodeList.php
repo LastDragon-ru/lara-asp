@@ -6,7 +6,7 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use Traversable;
 
@@ -14,9 +14,9 @@ use function json_encode;
 
 /**
  * @internal
- * @extends BlockList<DirectiveNodeBlock>
+ * @extends ListBlock<DirectiveNodeBlock>
  */
-class DirectiveNodeList extends BlockList {
+class DirectiveNodeList extends ListBlock {
     /**
      * @param Traversable<DirectiveNode>|array<DirectiveNode> $directives
      */

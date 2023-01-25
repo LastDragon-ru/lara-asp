@@ -3,15 +3,15 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\FieldDefinition;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use Traversable;
 
 /**
  * @internal
- * @extends BlockList<FieldDefinitionBlock>
+ * @extends ListBlock<FieldDefinitionBlock>
  */
-class FieldsDefinitionList extends BlockList {
+class FieldsDefinitionList extends ListBlock {
     /**
      * @param Traversable<FieldDefinition>|array<FieldDefinition> $fields
      */

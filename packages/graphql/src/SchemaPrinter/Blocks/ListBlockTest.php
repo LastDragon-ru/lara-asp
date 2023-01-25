@@ -14,9 +14,9 @@ use function mb_strlen;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock
  */
-class BlockListTest extends TestCase {
+class ListBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -39,7 +39,7 @@ class BlockListTest extends TestCase {
         int $count,
     ): void {
         $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $list     = new BlockListTest__BlockList(
+        $list     = new ListBlockTest__ListBlock(
             $settings,
             $level,
             $used,
@@ -62,11 +62,11 @@ class BlockListTest extends TestCase {
     public function testStatistics(): void {
         $settings = new TestSettings();
         $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $list     = new class($settings) extends BlockList {
+        $list     = new class($settings) extends ListBlock {
             // empty
         };
-        $list[]   = new BlockListTest__StatisticsBlock(['ta'], ['da']);
-        $list[]   = new BlockListTest__StatisticsBlock(['tb'], ['db']);
+        $list[]   = new ListBlockTest__StatisticsBlock(['ta'], ['da']);
+        $list[]   = new ListBlockTest__StatisticsBlock(['tb'], ['db']);
 
         self::assertEquals(['ta' => 'ta', 'tb' => 'tb'], $list->getUsedTypes());
         self::assertEquals(['da' => 'da', 'db' => 'db'], $list->getUsedDirectives());
@@ -97,7 +97,7 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(false, 'block a'),
                     ],
                     1,
                 ],
@@ -115,7 +115,7 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(true, 'block a'),
+                        new ListBlockTest__Block(true, 'block a'),
                     ],
                     1,
                 ],
@@ -133,8 +133,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(false, 'block a'),
-                        new BlockListTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(false, 'block b'),
                     ],
                     2,
                 ],
@@ -153,8 +153,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(false, 'block b'),
-                        new BlockListTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
                     ],
                     2,
                 ],
@@ -174,8 +174,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(false, 'block a'),
-                        new BlockListTest__Block(true, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(true, 'block b'),
                     ],
                     2,
                 ],
@@ -203,13 +203,13 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(true, 'block a'),
-                        new BlockListTest__Block(false, 'block b'),
-                        new BlockListTest__Block(false, 'block c'),
-                        new BlockListTest__Block(true, 'block d'),
-                        new BlockListTest__Block(false, 'block e'),
-                        new BlockListTest__Block(false, 'block f'),
-                        new BlockListTest__Block(true, 'block g'),
+                        new ListBlockTest__Block(true, 'block a'),
+                        new ListBlockTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(false, 'block c'),
+                        new ListBlockTest__Block(true, 'block d'),
+                        new ListBlockTest__Block(false, 'block e'),
+                        new ListBlockTest__Block(false, 'block f'),
+                        new ListBlockTest__Block(true, 'block g'),
                     ],
                     7,
                 ],
@@ -229,9 +229,9 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(true, 'block c'),
-                        new BlockListTest__Block(false, 'block b'),
-                        new BlockListTest__Block(true, 'block a'),
+                        new ListBlockTest__Block(true, 'block c'),
+                        new ListBlockTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(true, 'block a'),
                     ],
                     3,
                 ],
@@ -249,8 +249,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(false, 'block b'),
-                        new BlockListTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
                     ],
                     2,
                 ],
@@ -269,8 +269,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(true, 'block a'),
-                        new BlockListTest__Block(true, 'block b'),
+                        new ListBlockTest__Block(true, 'block a'),
+                        new ListBlockTest__Block(true, 'block b'),
                     ],
                     2,
                 ],
@@ -290,7 +290,7 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('a', false, 'block a'),
+                        new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
                     1,
                 ],
@@ -308,7 +308,7 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('a', true, 'block a'),
+                        new ListBlockTest__NamedBlock('a', true, 'block a'),
                     ],
                     1,
                 ],
@@ -326,8 +326,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('a', false, 'block a'),
-                        new BlockListTest__NamedBlock('b', false, 'block b'),
+                        new ListBlockTest__NamedBlock('a', false, 'block a'),
+                        new ListBlockTest__NamedBlock('b', false, 'block b'),
                     ],
                     2,
                 ],
@@ -346,8 +346,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('b', false, 'block b'),
-                        new BlockListTest__NamedBlock('a', false, 'block a'),
+                        new ListBlockTest__NamedBlock('b', false, 'block b'),
+                        new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
                     2,
                 ],
@@ -367,8 +367,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('a', false, 'block a'),
-                        new BlockListTest__NamedBlock('b', true, 'block b'),
+                        new ListBlockTest__NamedBlock('a', false, 'block a'),
+                        new ListBlockTest__NamedBlock('b', true, 'block b'),
                     ],
                     2,
                 ],
@@ -396,13 +396,13 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('a', true, 'block a'),
-                        new BlockListTest__NamedBlock('b', false, 'block b'),
-                        new BlockListTest__NamedBlock('c', false, 'block c'),
-                        new BlockListTest__NamedBlock('d', true, 'block d'),
-                        new BlockListTest__NamedBlock('e', false, 'block e'),
-                        new BlockListTest__NamedBlock('f', false, 'block f'),
-                        new BlockListTest__NamedBlock('g', true, 'block g'),
+                        new ListBlockTest__NamedBlock('a', true, 'block a'),
+                        new ListBlockTest__NamedBlock('b', false, 'block b'),
+                        new ListBlockTest__NamedBlock('c', false, 'block c'),
+                        new ListBlockTest__NamedBlock('d', true, 'block d'),
+                        new ListBlockTest__NamedBlock('e', false, 'block e'),
+                        new ListBlockTest__NamedBlock('f', false, 'block f'),
+                        new ListBlockTest__NamedBlock('g', true, 'block g'),
                     ],
                     7,
                 ],
@@ -422,9 +422,9 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('c', true, 'block c'),
-                        new BlockListTest__NamedBlock('b', false, 'block b'),
-                        new BlockListTest__NamedBlock('a', true, 'block a'),
+                        new ListBlockTest__NamedBlock('c', true, 'block c'),
+                        new ListBlockTest__NamedBlock('b', false, 'block b'),
+                        new ListBlockTest__NamedBlock('a', true, 'block a'),
                     ],
                     3,
                 ],
@@ -442,8 +442,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('b', false, 'block b'),
-                        new BlockListTest__NamedBlock('a', false, 'block a'),
+                        new ListBlockTest__NamedBlock('b', false, 'block b'),
+                        new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
                     2,
                 ],
@@ -462,8 +462,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('a', true, 'block a'),
-                        new BlockListTest__NamedBlock('b', true, 'block b'),
+                        new ListBlockTest__NamedBlock('a', true, 'block a'),
+                        new ListBlockTest__NamedBlock('b', true, 'block b'),
                     ],
                     2,
                 ],
@@ -483,7 +483,7 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('a', false, 'block a'),
+                        new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
                     1,
                 ],
@@ -503,7 +503,7 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('a', true, 'block a'),
+                        new ListBlockTest__NamedBlock('a', true, 'block a'),
                     ],
                     1,
                 ],
@@ -521,8 +521,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(false, 'block a'),
-                        new BlockListTest__NamedBlock('b', false, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
+                        new ListBlockTest__NamedBlock('b', false, 'block b'),
                     ],
                     2,
                 ],
@@ -543,8 +543,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__NamedBlock('b', false, 'block b'),
-                        new BlockListTest__NamedBlock('a', false, 'block a'),
+                        new ListBlockTest__NamedBlock('b', false, 'block b'),
+                        new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
                     2,
                 ],
@@ -566,8 +566,8 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(false, 'block a'),
-                        new BlockListTest__Block(true, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(true, 'block b'),
                     ],
                     2,
                 ],
@@ -587,7 +587,7 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(true, 'block a'),
+                        new ListBlockTest__Block(true, 'block a'),
                     ],
                     1,
                 ],
@@ -621,8 +621,8 @@ class BlockListTest extends TestCase {
                     ' | ',
                     '||',
                     [
-                        new BlockListTest__Block(false, 'block a'),
-                        new BlockListTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(false, 'block b'),
                     ],
                     2,
                 ],
@@ -641,8 +641,8 @@ class BlockListTest extends TestCase {
                     '|',
                     '|| ',
                     [
-                        new BlockListTest__Block(false, 'block a'),
-                        new BlockListTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(false, 'block b'),
                     ],
                     2,
                 ],
@@ -661,8 +661,8 @@ class BlockListTest extends TestCase {
                     '|',
                     '|| ',
                     [
-                        new BlockListTest__Block(false, 'block a'),
-                        new BlockListTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(false, 'block b'),
                     ],
                     2,
                 ],
@@ -683,11 +683,11 @@ class BlockListTest extends TestCase {
                     ', ',
                     '',
                     [
-                        new BlockListTest__Block(false, ''),
-                        new BlockListTest__Block(false, 'block a'),
-                        new BlockListTest__Block(true, ''),
-                        new BlockListTest__Block(false, 'block b'),
-                        new BlockListTest__Block(false, ''),
+                        new ListBlockTest__Block(false, ''),
+                        new ListBlockTest__Block(false, 'block a'),
+                        new ListBlockTest__Block(true, ''),
+                        new ListBlockTest__Block(false, 'block b'),
+                        new ListBlockTest__Block(false, ''),
                     ],
                     2,
                 ],
@@ -704,9 +704,9 @@ class BlockListTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @extends BlockList<Block>
+ * @extends ListBlock<Block>
  */
-class BlockListTest__BlockList extends BlockList {
+class ListBlockTest__ListBlock extends ListBlock {
     public function __construct(
         PrinterSettings $settings,
         int $level,
@@ -750,7 +750,7 @@ class BlockListTest__BlockList extends BlockList {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class BlockListTest__Block extends Block {
+class ListBlockTest__Block extends Block {
     /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(
         protected bool $multiline,
@@ -780,9 +780,9 @@ class BlockListTest__Block extends Block {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @extends Property<Block>
+ * @extends PropertyBlock<Block>
  */
-class BlockListTest__NamedBlock extends Property {
+class ListBlockTest__NamedBlock extends PropertyBlock {
     /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(
         protected string $name,
@@ -797,7 +797,7 @@ class BlockListTest__NamedBlock extends Property {
     }
 
     protected function getBlock(): Block {
-        return new BlockListTest__Block($this->multiline, $this->content);
+        return new ListBlockTest__Block($this->multiline, $this->content);
     }
 
     protected function space(): string {
@@ -809,7 +809,7 @@ class BlockListTest__NamedBlock extends Property {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class BlockListTest__StatisticsBlock extends Block {
+class ListBlockTest__StatisticsBlock extends Block {
     /**
      * @param array<string> $types
      * @param array<string> $directives

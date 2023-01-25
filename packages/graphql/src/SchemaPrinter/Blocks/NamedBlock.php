@@ -5,6 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks;
 /**
  * @internal
  */
-interface Named {
+interface NamedBlock {
     public function getName(): string;
 }

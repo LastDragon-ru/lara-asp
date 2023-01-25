@@ -3,15 +3,15 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\InputObjectField;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\BlockList;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\PrinterSettings;
 use Traversable;
 
 /**
  * @internal
- * @extends BlockList<InputValueDefinitionBlock>
+ * @extends ListBlock<InputValueDefinitionBlock>
  */
-class InputFieldsDefinitionList extends BlockList {
+class InputFieldsDefinitionList extends ListBlock {
     /**
      * @param Traversable<InputObjectField>|array<InputObjectField> $fields
      */

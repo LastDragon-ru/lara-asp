@@ -17,7 +17,7 @@ use function usort;
  * @template TBlock of Block
  * @implements ArrayAccess<string|int,TBlock>
  */
-abstract class BlockList extends Block implements Statistics, ArrayAccess, Countable {
+abstract class ListBlock extends Block implements Statistics, ArrayAccess, Countable {
     /**
      * @var array<int|string,TBlock>
      */
@@ -85,8 +85,8 @@ abstract class BlockList extends Block implements Statistics, ArrayAccess, Count
 
         if (count($blocks) > 0 && $this->isNormalized()) {
             usort($blocks, static function (Block $a, Block $b): int {
-                $aName = $a instanceof Named ? $a->getName() : '';
-                $bName = $b instanceof Named ? $b->getName() : '';
+                $aName = $a instanceof NamedBlock ? $a->getName() : '';
+                $bName = $b instanceof NamedBlock ? $b->getName() : '';
 
                 return strnatcmp($aName, $bName);
             });
