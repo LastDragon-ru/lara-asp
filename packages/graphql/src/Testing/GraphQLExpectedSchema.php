@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
 class GraphQLExpectedSchema extends GraphQLExpected {

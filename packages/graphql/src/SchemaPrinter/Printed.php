@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 
 /**
  * @internal

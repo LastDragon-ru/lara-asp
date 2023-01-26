@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 abstract class GraphQLExpected {
     /**

@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
 use Closure;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\TypeFilter;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
 
 abstract class ImmutableSettings implements Settings {
     protected string           $space;

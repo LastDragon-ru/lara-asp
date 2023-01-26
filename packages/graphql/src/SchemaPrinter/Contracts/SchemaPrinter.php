@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 interface SchemaPrinter {
     public function printSchema(Schema $schema): PrintedSchema;

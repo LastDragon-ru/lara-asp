@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter;
 
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 

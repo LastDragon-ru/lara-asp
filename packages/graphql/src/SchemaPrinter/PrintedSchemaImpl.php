@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 
 use function array_diff_key;
 

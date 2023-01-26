@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Mockery;
 use ReflectionClass;
 use ReflectionMethod;
