@@ -29,6 +29,9 @@
         <testsuite name="lastdragon-ru/lara-asp-graphql">
             <directory suffix="Test.php">./packages/graphql/src</directory>
         </testsuite>
+        <testsuite name="lastdragon-ru/lara-asp-graphql-printer">
+            <directory suffix="Test.php">./packages/graphql-printer/src</directory>
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true"
               cacheDirectory=".phpunit/coverage.cache">
@@ -41,6 +44,7 @@
             <directory suffix=".php">./packages/formatter/src</directory>
             <directory suffix=".php">./packages/spa/src</directory>
             <directory suffix=".php">./packages/graphql/src</directory>
+            <directory suffix=".php">./packages/graphql-printer/src</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./packages/core/src</directory>
@@ -51,6 +55,7 @@
             <directory suffix="Test.php">./packages/formatter/src</directory>
             <directory suffix="Test.php">./packages/spa/src</directory>
             <directory suffix="Test.php">./packages/graphql/src</directory>
+            <directory suffix="Test.php">./packages/graphql-printer/src</directory>
         </exclude>
     </coverage>
     <php>
