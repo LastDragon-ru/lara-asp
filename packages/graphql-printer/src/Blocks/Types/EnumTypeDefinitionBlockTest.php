@@ -5,9 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 use Closure;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -35,8 +33,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
             $type = $type();
         }
 
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $actual   = (string) (new EnumTypeDefinitionBlock($settings, $level, $used, $type));
+        $actual = (string) (new EnumTypeDefinitionBlock($settings, $level, $used, $type));
 
         Parser::enumTypeDefinition($actual);
 

@@ -7,7 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Traversable;
 
 use function json_encode;
@@ -21,7 +21,7 @@ class DirectiveNodeList extends ListBlock {
      * @param Traversable<DirectiveNode>|array<DirectiveNode> $directives
      */
     public function __construct(
-        PrinterSettings $settings,
+        Settings $settings,
         int $level,
         int $used,
         Traversable|array|null $directives,

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\FieldDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 /**
  * @internal
@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
  */
 class FieldDefinitionBlock extends DefinitionBlock {
     public function __construct(
-        PrinterSettings $settings,
+        Settings $settings,
         int $level,
         int $used,
         FieldDefinition $definition,

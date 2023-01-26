@@ -2,13 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+
 use function mb_strlen;
 
 /**
@@ -37,8 +36,7 @@ class ListBlockTest extends TestCase {
         array $blocks,
         int $count,
     ): void {
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $list     = new ListBlockTest__ListBlock(
+        $list = new ListBlockTest__ListBlock(
             $settings,
             $level,
             $used,
@@ -60,7 +58,6 @@ class ListBlockTest extends TestCase {
 
     public function testStatistics(): void {
         $settings = new TestSettings();
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $list     = new class($settings) extends ListBlock {
             // empty
         };
@@ -707,7 +704,7 @@ class ListBlockTest extends TestCase {
  */
 class ListBlockTest__ListBlock extends ListBlock {
     public function __construct(
-        PrinterSettings $settings,
+        Settings $settings,
         int $level,
         int $used,
         private bool $normalized,

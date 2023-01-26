@@ -6,12 +6,12 @@ use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 
 /**
  * Introspection schema printer.
@@ -35,27 +35,27 @@ class IntrospectionSchemaPrinter extends SchemaPrinter {
         );
     }
 
-    protected function getPrintedSchema(PrinterSettings $settings, Schema $schema, Block $content): PrintedSchema {
-        return new PrintedIntrospectionSchemaImpl($settings->getResolver(), $schema, $content);
+    protected function getPrintedSchema(DirectiveResolver $resolver, Schema $schema, Block $content): PrintedSchema {
+        return new PrintedIntrospectionSchemaImpl($resolver, $schema, $content);
     }
 
-    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): ListBlock {
-        $blocks = $this->getDefinitionList($settings);
+    protected function getTypeDefinitions(Schema $schema): ListBlock {
+        $blocks = $this->getDefinitionList();
 
         foreach (Introspection::getTypes() as $type) {
-            $blocks[] = $this->getDefinitionBlock($settings, $type);
+            $blocks[] = $this->getDefinitionBlock($type);
         }
 
         return $blocks;
     }
 
-    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): ListBlock {
-        $blocks     = $this->getDefinitionList($settings);
+    protected function getDirectiveDefinitions(DirectiveResolver $resolver, Schema $schema): ListBlock {
+        $blocks     = $this->getDefinitionList();
         $directives = $schema->getDirectives();
 
         foreach ($directives as $directive) {
             if (Directive::isSpecifiedDirective($directive)) {
-                $blocks[] = $this->getDefinitionBlock($settings, $directive);
+                $blocks[] = $this->getDefinitionBlock($directive);
             }
         }
 

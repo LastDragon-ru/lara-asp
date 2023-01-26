@@ -26,6 +26,11 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
+			message: "#^Using nullsafe property access \"\\?\\-\\>directives\" on left side of \\?\\? is unnecessary\\. Use \\-\\> instead\\.$#"
+			count: 1
+			path: packages/graphql-printer/src/Blocks/Types/DefinitionBlock.php
+
+		-
 			message: "#^Unable to resolve the template type TClass in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
 			count: 1
 			path: packages/graphql/src/Builder/Manipulator.php
@@ -44,11 +49,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$enum of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\Enum\\\\EnumType constructor expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\Core\\\\Enum\\>, mixed given\\.$#"
 			count: 1
 			path: packages/graphql/src/Provider.php
-
-		-
-			message: "#^Using nullsafe property access \"\\?\\-\\>directives\" on left side of \\?\\? is unnecessary\\. Use \\-\\> instead\\.$#"
-			count: 1
-			path: packages/graphql/src/SchemaPrinter/Blocks/Types/DefinitionBlock.php
 
 		-
 			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SchemaPrinter\\\\Misc\\\\DirectiveResolver\\:\\:\\$definitions \\(array\\<string, GraphQL\\\\Type\\\\Definition\\\\Directive\\>\\) does not accept array\\<int\\|string, GraphQL\\\\Type\\\\Definition\\\\Directive\\>\\.$#"

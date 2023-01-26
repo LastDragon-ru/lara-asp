@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
 use GraphQL\Language\AST\ArgumentNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Traversable;
 
 /**
@@ -17,7 +17,7 @@ class ArgumentNodeList extends ListBlock {
      * @param Traversable<ArgumentNode>|array<ArgumentNode> $arguments
      */
     public function __construct(
-        PrinterSettings $settings,
+        Settings $settings,
         int $level,
         int $used,
         Traversable|array $arguments,

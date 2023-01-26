@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 use function preg_replace;
 use function rtrim;
@@ -14,7 +14,7 @@ use function trim;
  */
 class Description extends StringBlock {
     public function __construct(
-        PrinterSettings $settings,
+        Settings $settings,
         int $level,
         int $used,
         ?string $string,

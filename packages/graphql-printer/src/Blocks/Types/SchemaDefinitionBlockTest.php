@@ -5,11 +5,10 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+
 use function str_starts_with;
 
 /**
@@ -29,8 +28,7 @@ class SchemaDefinitionBlockTest extends TestCase {
         int $used,
         Schema $schema,
     ): void {
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $actual   = (string) (new SchemaDefinitionBlock($settings, $level, $used, $schema));
+        $actual = (string) (new SchemaDefinitionBlock($settings, $level, $used, $schema));
 
         if ($expected && !str_starts_with($actual, '"""')) {
             // https://github.com/webonyx/graphql-php/issues/1027

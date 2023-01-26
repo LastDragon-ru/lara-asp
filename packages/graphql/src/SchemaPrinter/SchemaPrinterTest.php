@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
 use Exception;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
@@ -22,8 +21,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
-use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
+use function in_array;
 use function str_starts_with;
 
 /**
@@ -317,11 +316,8 @@ class SchemaPrinterTest extends TestCase {
                     ->setUnusedDirectives([
                         '@include',
                         '@skip',
-                        '@scalar',
-                        '@mock',
                         '@schemaDirective',
                         '@schemaDirectiveUnused',
-                        '@codeDirective',
                     ]),
                 null,
                 0,
@@ -365,11 +361,8 @@ class SchemaPrinterTest extends TestCase {
                     ->setUnusedDirectives([
                         '@include',
                         '@skip',
-                        '@scalar',
-                        '@mock',
                         '@schemaDirective',
                         '@schemaDirectiveUnused',
-                        '@codeDirective',
                     ]),
                 new DefaultSettings(),
                 0,
@@ -415,9 +408,6 @@ class SchemaPrinterTest extends TestCase {
                         '@skip',
                         '@schemaDirective',
                         '@schemaDirectiveUnused',
-                        '@codeDirective',
-                        '@mock',
-                        '@scalar',
                     ]),
                 new GraphQLSettings(),
                 0,
@@ -506,6 +496,10 @@ class SchemaPrinterTest extends TestCase {
                         'SchemaScalarUnused',
                         'SchemaTypeUnused',
                         'SchemaUnionUnused',
+                        'CodeDirectiveEnum',
+                        'CodeDirectiveInput',
+                        'CodeDirectiveScalar',
+                        'CodeDirectiveScalarCustomClass',
                     ])
                     ->setUsedDirectives([
                         '@schemaDirective',
@@ -637,10 +631,9 @@ class SchemaPrinterTest extends TestCase {
                     ]),
                 (new TestSettings())
                     ->setDirectiveDefinitionFilter(
-                        static function (GraphQLDirective|LighthouseDirective $directive, bool $isStandard): bool {
+                        static function (string $directive, bool $isStandard): bool {
                             return $isStandard === false
-                                && $directive instanceof GraphQLDirective
-                                && $directive->name !== 'codeDirective';
+                                && !in_array($directive, ['mock', 'scalar', 'codeDirective'], true);
                         },
                     ),
                 0,

@@ -15,9 +15,7 @@ use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\AST\VariableNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -40,9 +38,8 @@ class ValueNodeTest extends TestCase {
         int $used,
         ValueNode $node,
     ): void {
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $actual   = (string) (new ValueNodeBlock($settings, $level, $used, $node));
-        $parsed   = Parser::valueLiteral($actual);
+        $actual = (string) (new ValueNodeBlock($settings, $level, $used, $node));
+        $parsed = Parser::valueLiteral($actual);
 
         self::assertEquals($expected, $actual);
 

@@ -5,9 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\UnionType;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -29,8 +27,7 @@ class UnionTypeDefinitionBlockTest extends TestCase {
         int $used,
         UnionType $type,
     ): void {
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $actual   = (string) (new UnionTypeDefinitionBlock($settings, $level, $used, $type));
+        $actual = (string) (new UnionTypeDefinitionBlock($settings, $level, $used, $type));
 
         Parser::unionTypeDefinition($actual);
 
@@ -51,7 +48,6 @@ class UnionTypeDefinitionBlockTest extends TestCase {
             'astNode' => Parser::unionTypeDefinition('union Test @a = A | B'),
         ]);
         $settings = new TestSettings();
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = new UnionTypeDefinitionBlock($settings, 0, 0, $union);
 
         self::assertNotEmpty((string) $block);

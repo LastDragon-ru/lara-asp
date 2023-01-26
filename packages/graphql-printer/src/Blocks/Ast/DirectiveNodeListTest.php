@@ -3,18 +3,11 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
 
 use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\DirectiveLocation;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
-use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
-use Nuwave\Lighthouse\Schema\TypeRegistry;
-use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 /**
  * @internal
@@ -36,21 +29,7 @@ class DirectiveNodeListTest extends TestCase {
         array|null $directives,
         string $reason = null,
     ): void {
-        $locator   = $this->app->make(DirectiveLocator::class);
-        $registry  = $this->app->make(TypeRegistry::class);
-        $convertor = $this->app->make(ExecutableTypeNodeConverter::class);
-        $instances = [];
-
-        foreach ((array) $directives as $directive) {
-            $instances[] = new GraphQLDirective([
-                'name'      => $directive->name->value,
-                'locations' => [DirectiveLocation::OBJECT],
-            ]);
-        }
-
-        $resolver = new DirectiveResolver($registry, $locator, $convertor, $instances);
-        $settings = new PrinterSettings($resolver, $settings);
-        $actual   = (string) (new DirectiveNodeList($settings, $level, $used, $directives, $reason));
+        $actual = (string) (new DirectiveNodeList($settings, $level, $used, $directives, $reason));
 
         Parser::directives($actual);
 
@@ -61,7 +40,6 @@ class DirectiveNodeListTest extends TestCase {
         $a        = Parser::directive('@a');
         $b        = Parser::directive('@b');
         $settings = (new TestSettings())->setPrintDirectives(true);
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = new DirectiveNodeList($settings, 0, 0, [$a, $b]);
 
         self::assertNotEmpty((string) $block);

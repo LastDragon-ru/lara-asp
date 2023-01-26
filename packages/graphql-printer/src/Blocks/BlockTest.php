@@ -2,12 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use Mockery;
+
 use function mb_strlen;
 
 /**
@@ -19,7 +18,6 @@ class BlockTest extends TestCase {
     // =========================================================================
     public function testGetContent(): void {
         $settings = new TestSettings();
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $content  = 'content';
         $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
@@ -35,7 +33,6 @@ class BlockTest extends TestCase {
 
     public function testGetLength(): void {
         $settings = new TestSettings();
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $content  = 'content';
         $length   = mb_strlen($content);
         $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
@@ -54,8 +51,7 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsMultiline
      */
     public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
+        $block = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -72,7 +68,6 @@ class BlockTest extends TestCase {
      */
     public function testIsEmpty(bool $expected, string $content): void {
         $settings = new TestSettings();
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();

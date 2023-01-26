@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 use function rtrim;
 
@@ -16,7 +16,7 @@ use function rtrim;
  */
 class DefinitionList extends ListBlock {
     public function __construct(
-        PrinterSettings $settings,
+        Settings $settings,
         int $level,
         protected bool $root = false,
     ) {

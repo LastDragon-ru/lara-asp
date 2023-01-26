@@ -3,11 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+
 use function implode;
 
 /**
@@ -27,8 +26,7 @@ class DescriptionTest extends TestCase {
         int $used,
         ?string $description,
     ): void {
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $actual   = (string) (new Description($settings, $level, $used, $description));
+        $actual = (string) (new Description($settings, $level, $used, $description));
 
         self::assertEquals($expected, $actual);
 

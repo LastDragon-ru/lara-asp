@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+
 use function mb_strlen;
 
 /**
@@ -21,10 +21,9 @@ class PropertyBlockTest extends TestCase {
         $separator = ':';
         $content   = 'abc abcabc abcabc abcabc abc';
         $settings  = (new TestSettings())->setSpace($space);
-        $settings  = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
         $block     = new class($settings, $level, $used, $content) extends Block {
             public function __construct(
-                PrinterSettings $settings,
+                Settings $settings,
                 int $level,
                 int $used,
                 protected string $content,
@@ -38,7 +37,7 @@ class PropertyBlockTest extends TestCase {
         };
         $property  = new class($settings, $name, $block, $separator) extends PropertyBlock {
             public function __construct(
-                PrinterSettings $settings,
+                Settings $settings,
                 string $name,
                 Block $block,
                 private string $separator,

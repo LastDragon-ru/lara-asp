@@ -81,7 +81,7 @@ parameters:
         -
             message: "#^Parameter \\#2 \\$type of static method GraphQL\\\\Utils\\\\AST\\:\\:astFromValue\\(\\) expects GraphQL\\\\Type\\\\Definition\\\\InputType, GraphQL\\\\Type\\\\Definition\\\\Type given\\.$#"
             paths:
-                - packages/graphql/src/SchemaPrinter/Blocks/Types/InputValueDefinitionBlock.php
+                - packages/graphql-printer/src/Blocks/Types/InputValueDefinitionBlock.php
 
         # Caused by `@property` in Interfaces
         # https://github.com/phpstan/phpstan/issues/8501

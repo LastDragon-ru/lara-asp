@@ -3,12 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package;
 
 use Closure;
-use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
-use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 class TestSettings extends ImmutableSettings {
     protected string           $space                             = ' ';

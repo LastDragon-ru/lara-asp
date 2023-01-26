@@ -6,7 +6,7 @@ use Closure;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Stringable;
 
 use function mb_strlen;
@@ -32,7 +32,7 @@ abstract class Block implements Statistics, Stringable {
     private array $usedDirectives = [];
 
     public function __construct(
-        private PrinterSettings $settings,
+        private Settings $settings,
         private int $level = 0,
         private int $used = 0,
     ) {
@@ -41,7 +41,7 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
-    protected function getSettings(): PrinterSettings {
+    protected function getSettings(): Settings {
         return $this->settings;
     }
 
@@ -211,7 +211,7 @@ abstract class Block implements Statistics, Stringable {
 
     public function isDirectiveDefinitionAllowed(string $directive): bool {
         // Allowed?
-        if (!$this->isDirectiveAllowed($directive)) {
+        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive)) {
             return false;
         }
 

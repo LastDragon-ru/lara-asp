@@ -21,8 +21,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ObjectTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ScalarTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\SchemaDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UnionTypeDefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeUnsupported;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 
 /**
  * @internal
@@ -31,7 +31,7 @@ class DefinitionBlock extends Block implements NamedBlock {
     private Block $block;
 
     public function __construct(
-        PrinterSettings $settings,
+        Settings $settings,
         int $level,
         private Schema|Type|Directive $definition,
     ) {

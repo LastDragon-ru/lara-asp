@@ -16,7 +16,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\DefinitionList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -70,22 +69,23 @@ class SchemaPrinter implements SchemaPrinterContract {
 
         // Print
         $schema    = clone $schema;
-        $settings  = $this->getPrinterSettings($schema->getDirectives());
-        $block     = $this->getSchemaDefinition($settings, $schema);
-        $content   = $this->getDefinitionList($settings, true);
+        $resolver  = $this->getDirectiveResolver($schema);
+        $settings  = $this->getSettings();
+        $block     = $this->getSchemaDefinition($schema);
+        $content   = $this->getDefinitionList(true);
         $content[] = $block;
 
         if ($settings->isPrintUnusedDefinitions()) {
-            $content[] = $this->getTypeDefinitions($settings, $schema);
-            $content[] = $this->getDirectiveDefinitions($settings, $schema);
+            $content[] = $this->getTypeDefinitions($schema);
+            $content[] = $this->getDirectiveDefinitions($resolver, $schema);
         } else {
-            foreach ($this->getUsedDefinitions($settings, $schema, $block) as $definition) {
+            foreach ($this->getUsedDefinitions($resolver, $schema, $block) as $definition) {
                 $content[] = $definition;
             }
         }
 
         // Return
-        return $this->getPrintedSchema($settings, $schema, $content);
+        return $this->getPrintedSchema($resolver, $schema, $content);
     }
 
     public function printSchemaType(Schema $schema, Type|string $type): PrintedType {
@@ -100,14 +100,14 @@ class SchemaPrinter implements SchemaPrinterContract {
         }
 
         // Print
-        $settings  = $this->getPrinterSettings($schema->getDirectives());
-        $block     = $this->getDefinitionBlock($settings, $type);
-        $list      = $this->getDefinitionList($settings);
+        $resolver  = $this->getDirectiveResolver($schema);
+        $block     = $this->getDefinitionBlock($type);
+        $list      = $this->getDefinitionList();
         $list[]    = $block;
-        $content   = $this->getDefinitionList($settings, true);
+        $content   = $this->getDefinitionList(true);
         $content[] = $list;
 
-        foreach ($this->getUsedDefinitions($settings, $schema, $block) as $definition) {
+        foreach ($this->getUsedDefinitions($resolver, $schema, $block) as $definition) {
             $content[] = $definition;
         }
 
@@ -115,9 +115,8 @@ class SchemaPrinter implements SchemaPrinterContract {
     }
 
     public function printType(Type $type): PrintedType {
-        $settings  = $this->getPrinterSettings();
-        $content   = $this->getDefinitionList($settings, true);
-        $content[] = $this->getDefinitionBlock($settings, $type);
+        $content   = $this->getDefinitionList(true);
+        $content[] = $this->getDefinitionBlock($type);
         $printed   = new PrintedTypeImpl($content);
 
         return $printed;
@@ -126,12 +125,12 @@ class SchemaPrinter implements SchemaPrinterContract {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getPrintedSchema(PrinterSettings $settings, Schema $schema, Block $content): PrintedSchema {
-        return new PrintedSchemaImpl($settings->getResolver(), $schema, $content);
+    protected function getPrintedSchema(DirectiveResolver $resolver, Schema $schema, Block $content): PrintedSchema {
+        return new PrintedSchemaImpl($resolver, $schema, $content);
     }
 
-    protected function getSchemaDefinition(PrinterSettings $settings, Schema $schema): Block {
-        return $this->getDefinitionBlock($settings, $schema);
+    protected function getSchemaDefinition(Schema $schema): Block {
+        return $this->getDefinitionBlock($schema);
     }
 
     /**
@@ -139,12 +138,12 @@ class SchemaPrinter implements SchemaPrinterContract {
      *
      * @return ListBlock<Block>
      */
-    protected function getTypeDefinitions(PrinterSettings $settings, Schema $schema): ListBlock {
-        $blocks = $this->getDefinitionList($settings);
+    protected function getTypeDefinitions(Schema $schema): ListBlock {
+        $blocks = $this->getDefinitionList();
 
         foreach ($schema->getTypeMap() as $type) {
-            if ($settings->isTypeDefinitionAllowed($type)) {
-                $blocks[] = $this->getDefinitionBlock($settings, $type);
+            if ($blocks->isTypeDefinitionAllowed($type)) {
+                $blocks[] = $this->getDefinitionBlock($type);
             }
         }
 
@@ -156,16 +155,16 @@ class SchemaPrinter implements SchemaPrinterContract {
      *
      * @return ListBlock<Block>
      */
-    protected function getDirectiveDefinitions(PrinterSettings $settings, Schema $schema): ListBlock {
+    protected function getDirectiveDefinitions(DirectiveResolver $resolver, Schema $schema): ListBlock {
         // Included?
-        $blocks = $this->getDefinitionList($settings);
+        $blocks = $this->getDefinitionList();
 
-        if ($settings->isPrintDirectiveDefinitions()) {
-            $directives = $settings->getResolver()->getDefinitions();
+        if ($this->getSettings()->isPrintDirectiveDefinitions()) {
+            $directives = $resolver->getDefinitions();
 
             foreach ($directives as $directive) {
-                if ($settings->isDirectiveDefinitionAllowed($directive->name)) {
-                    $blocks[] = $this->getDefinitionBlock($settings, $directive);
+                if ($blocks->isDirectiveDefinitionAllowed($directive->name)) {
+                    $blocks[] = $this->getDefinitionBlock($directive);
                 }
             }
         }
@@ -174,39 +173,26 @@ class SchemaPrinter implements SchemaPrinterContract {
         return $blocks;
     }
 
-    /**
-     * @param array<GraphQLDirective> $directives
-     */
-    protected function getPrinterSettings(array $directives = []): PrinterSettings {
-        $resolver = new DirectiveResolver($this->registry, $this->locator, $this->converter, $directives);
-        $settings = new PrinterSettings($resolver, $this->getSettings());
-
-        return $settings;
-    }
-
     protected function getDefinitionBlock(
-        PrinterSettings $settings,
         Schema|Type|GraphQLDirective $definition,
     ): Block {
-        return new DefinitionBlock($settings, $this->getLevel(), $definition);
+        return new DefinitionBlock($this->getSettings(), $this->getLevel(), $definition);
     }
 
     /**
      * @return ListBlock<Block>
      */
-    protected function getDefinitionList(PrinterSettings $settings, bool $root = false): ListBlock {
-        return new DefinitionList($settings, $this->getLevel(), $root);
+    protected function getDefinitionList(bool $root = false): ListBlock {
+        return new DefinitionList($this->getSettings(), $this->getLevel(), $root);
     }
 
     /**
      * @return array<ListBlock<Block>>
      */
-    protected function getUsedDefinitions(PrinterSettings $settings, Schema $schema, Block $root): array {
-        $directivesDefinitions = $settings->isPrintDirectiveDefinitions();
-        $directivesResolver    = $settings->getResolver();
-        $directives            = $this->getDefinitionList($settings);
-        $types                 = $this->getDefinitionList($settings);
-        $stack                 = $root->getUsedDirectives() + $root->getUsedTypes();
+    protected function getUsedDefinitions(DirectiveResolver $resolver, Schema $schema, Block $root): array {
+        $directives = $this->getDefinitionList();
+        $types      = $this->getDefinitionList();
+        $stack      = $root->getUsedDirectives() + $root->getUsedTypes();
 
         while ($stack) {
             // Added?
@@ -220,20 +206,18 @@ class SchemaPrinter implements SchemaPrinterContract {
             $block = null;
 
             if (str_starts_with($name, '@')) {
-                if ($directivesDefinitions) {
-                    $directive = $directivesResolver->getDefinition(substr($name, 1));
-                    $printable = $settings->isDirectiveDefinitionAllowed($directive->name);
+                $directive = $resolver->getDefinition(substr($name, 1));
+                $printable = $root->isDirectiveDefinitionAllowed($directive->name);
 
-                    if ($printable) {
-                        $block             = $this->getDefinitionBlock($settings, $directive);
-                        $directives[$name] = $block;
-                    }
+                if ($printable) {
+                    $block             = $this->getDefinitionBlock($directive);
+                    $directives[$name] = $block;
                 }
             } else {
                 $type = $schema->getType($name);
 
-                if ($type && $settings->isTypeDefinitionAllowed($type)) {
-                    $block        = $this->getDefinitionBlock($settings, $type);
+                if ($type && $root->isTypeDefinitionAllowed($type)) {
+                    $block        = $this->getDefinitionBlock($type);
                     $types[$name] = $block;
                 }
             }
@@ -250,6 +234,10 @@ class SchemaPrinter implements SchemaPrinterContract {
             $types,
             $directives,
         ];
+    }
+
+    private function getDirectiveResolver(Schema $schema): DirectiveResolver {
+        return new DirectiveResolver($this->registry, $this->locator, $this->converter, $schema->getDirectives());
     }
     // </editor-fold>
 }

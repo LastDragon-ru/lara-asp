@@ -4,9 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumValueDefinition;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -27,8 +25,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
         int $used,
         EnumValueDefinition $type,
     ): void {
-        $settings = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);
-        $actual   = (string) (new EnumValueDefinitionBlock($settings, $level, $used, $type));
+        $actual = (string) (new EnumValueDefinitionBlock($settings, $level, $used, $type));
 
         Parser::enumValueDefinition($actual);
 
