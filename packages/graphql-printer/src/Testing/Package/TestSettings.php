@@ -47,7 +47,7 @@ class TestSettings extends ImmutableSettings {
     }
 
     /**
-     * @param DirectiveFilter|Closure(GraphQLDirective|LighthouseDirective,bool):bool|null $value
+     * @param DirectiveFilter|Closure(string,bool):bool|null $value
      */
     public function setDirectiveFilter(DirectiveFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
@@ -58,7 +58,7 @@ class TestSettings extends ImmutableSettings {
     }
 
     /**
-     * @param DirectiveFilter|Closure(GraphQLDirective|LighthouseDirective,bool):bool|null $value
+     * @param DirectiveFilter|Closure(string,bool):bool|null $value
      */
     public function setDirectiveDefinitionFilter(DirectiveFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
@@ -89,12 +89,12 @@ class TestSettings extends ImmutableSettings {
     }
 
     /**
-     * @param Closure(GraphQLDirective|LighthouseDirective,bool):bool $closure
+     * @param Closure(string, bool):bool $closure
      */
     protected function makeDirectiveFilter(Closure $closure): DirectiveFilter {
         return new class($closure) implements DirectiveFilter {
             /**
-             * @param Closure(GraphQLDirective|LighthouseDirective,bool):bool $filter
+             * @param Closure(string, bool):bool $filter
              */
             public function __construct(
                 protected Closure $filter,
@@ -102,10 +102,7 @@ class TestSettings extends ImmutableSettings {
                 // empty
             }
 
-            public function isAllowedDirective(
-                GraphQLDirective|LighthouseDirective $directive,
-                bool $isStandard,
-            ): bool {
+            public function isAllowedDirective(string $directive, bool $isStandard): bool {
                 return ($this->filter)($directive, $isStandard);
             }
         };

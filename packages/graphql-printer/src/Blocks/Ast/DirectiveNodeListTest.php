@@ -186,9 +186,8 @@ class DirectiveNodeListTest extends TestCase {
                 <<<'STRING'
                 @a(a: 123)
                 STRING,
-                $settings->setDirectiveFilter(static function (GraphQLDirective|LighthouseDirective $directive): bool {
-                    return $directive instanceof GraphQLDirective
-                        && $directive->name === 'a';
+                $settings->setDirectiveFilter(static function (string $directive): bool {
+                    return $directive === 'a';
                 }),
                 0,
                 0,

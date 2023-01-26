@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use Closure;
+use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\PrinterSettings;
 use Stringable;
@@ -174,6 +176,58 @@ abstract class Block implements Statistics, Stringable {
         $this->usedDirectives[$directive] = $directive;
 
         return $this;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Types">
+    // =========================================================================
+    public function isTypeDefinitionAllowed(Type $type): bool {
+        // Allowed?
+        $filter    = $this->getSettings()->getTypeDefinitionFilter();
+        $isBuiltIn = $this->isTypeBuiltIn($type);
+        $isAllowed = $isBuiltIn
+            ? ($filter !== null && $filter->isAllowedType($type, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedType($type, $isBuiltIn));
+
+        // Return
+        return $isAllowed;
+    }
+
+    private function isTypeBuiltIn(Type $type): bool {
+        return Type::isBuiltInType($type);
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Directives">
+    // =========================================================================
+    public function isDirectiveAllowed(string $directive): bool {
+        $filter    = $this->getSettings()->getDirectiveFilter();
+        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+        $isAllowed = $filter === null
+            || $filter->isAllowedDirective($directive, $isBuiltIn);
+
+        return $isAllowed;
+    }
+
+    public function isDirectiveDefinitionAllowed(string $directive): bool {
+        // Allowed?
+        if (!$this->isDirectiveAllowed($directive)) {
+            return false;
+        }
+
+        // Definition?
+        $filter    = $this->getSettings()->getDirectiveDefinitionFilter();
+        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+        $isAllowed = $isBuiltIn
+            ? ($filter !== null && $filter->isAllowedDirective($directive, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedDirective($directive, $isBuiltIn));
+
+        // Return
+        return $isAllowed;
+    }
+
+    private function isDirectiveBuiltIn(string $directive): bool {
+        return isset(GraphQLDirective::getInternalDirectives()[$directive]);
     }
     // </editor-fold>
 }

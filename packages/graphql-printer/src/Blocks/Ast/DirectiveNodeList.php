@@ -57,7 +57,7 @@ class DirectiveNodeList extends ListBlock {
 
     protected function isValidBlock(Block $value): bool {
         return parent::isValidBlock($value)
-            && $this->getSettings()->isDirectiveAllowed($value->getNode()->name->value);
+            && $this->isDirectiveAllowed($value->getNode()->name->value);
     }
 
     private function block(DirectiveNode $directive,): DirectiveNodeBlock {

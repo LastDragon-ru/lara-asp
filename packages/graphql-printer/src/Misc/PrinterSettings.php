@@ -2,14 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
 
-use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
-use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 /**
  * @internal
@@ -50,16 +48,11 @@ class PrinterSettings implements Settings {
 
     // <editor-fold desc="Directives">
     // =========================================================================
-    public function getDirective(DirectiveNode $node): GraphQLDirective|LighthouseDirective {
-        return $this->resolver->getInstance($node->name->value);
-    }
-
     public function isDirectiveAllowed(string $directive): bool {
         $filter    = $this->getDirectiveFilter();
-        $resolver  = $this->getResolver();
         $isBuiltIn = $this->isDirectiveBuiltIn($directive);
         $isAllowed = $filter === null
-            || $filter->isAllowedDirective($resolver->getInstance($directive), $isBuiltIn);
+            || $filter->isAllowedDirective($directive, $isBuiltIn);
 
         return $isAllowed;
     }
@@ -72,11 +65,10 @@ class PrinterSettings implements Settings {
 
         // Definition?
         $filter    = $this->getDirectiveDefinitionFilter();
-        $resolver  = $this->getResolver();
         $isBuiltIn = $this->isDirectiveBuiltIn($directive);
         $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedDirective($resolver->getInstance($directive), $isBuiltIn))
-            : ($filter === null || $filter->isAllowedDirective($resolver->getInstance($directive), $isBuiltIn));
+            ? ($filter !== null && $filter->isAllowedDirective($directive, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedDirective($directive, $isBuiltIn));
 
         // Return
         return $isAllowed;

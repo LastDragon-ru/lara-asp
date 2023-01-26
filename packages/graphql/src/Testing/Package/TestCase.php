@@ -35,9 +35,11 @@ class TestCase extends PackageTestCase {
     }
 
     protected function getGraphQLSchemaPrinter(Settings $settings = null): SchemaPrinter {
-        return $this->app->make(SchemaPrinter::class)->setSettings(
-            $settings ?? (new TestSettings())->setDirectiveDefinitionFilter(new LighthouseDirectiveFilter()),
-        );
+        $settings = $settings ?? (new TestSettings())
+            ->setDirectiveDefinitionFilter($this->app->make(LighthouseDirectiveFilter::class));
+        $printer  = $this->app->make(SchemaPrinter::class)->setSettings($settings);
+
+        return $printer;
     }
 
     protected function getGraphQLArgument(string $type, mixed $value, SplFileInfo|string $schema = null): Argument {
