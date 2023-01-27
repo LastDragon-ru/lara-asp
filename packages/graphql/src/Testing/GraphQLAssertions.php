@@ -4,8 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
@@ -33,8 +32,8 @@ trait GraphQLAssertions {
      * Compares two GraphQL schemas.
      */
     public function assertGraphQLSchemaEquals(
-        GraphQLExpectedSchema|PrintedSchema|Schema|SplFileInfo|string $expected,
-        PrintedSchema|Schema|SplFileInfo|string $schema,
+        GraphQLExpectedSchema|Result|Schema|SplFileInfo|string $expected,
+        Result|Schema|SplFileInfo|string $schema,
         string $message = '',
     ): void {
         // GraphQL
@@ -46,7 +45,7 @@ trait GraphQLAssertions {
             $output   = $output->getSchema();
         }
 
-        if ($output instanceof PrintedSchema || $output instanceof Schema) {
+        if ($output instanceof Result || $output instanceof Schema) {
             $output = (string) $this->printGraphQLSchema($output, $settings);
         } else {
             $output = Args::content($output);
@@ -83,8 +82,8 @@ trait GraphQLAssertions {
      * Compares two GraphQL types (full).
      */
     public function assertGraphQLSchemaTypeEquals(
-        GraphQLExpectedType|PrintedType|Type|SplFileInfo|string $expected,
-        PrintedType|Type|string $type,
+        GraphQLExpectedType|Result|Type|SplFileInfo|string $expected,
+        Result|Type|string $type,
         Schema|SplFileInfo|string $schema = null,
         string $message = '',
     ): void {
@@ -106,7 +105,7 @@ trait GraphQLAssertions {
             $output   = $output->getType();
         }
 
-        if ($output instanceof PrintedType || $output instanceof Type) {
+        if ($output instanceof Result || $output instanceof Type) {
             $output = (string) $this->printGraphQLSchemaType($schema, $output, $settings);
         } else {
             $output = Args::content($output);
@@ -128,8 +127,8 @@ trait GraphQLAssertions {
      * Compares two GraphQL types.
      */
     public function assertGraphQLTypeEquals(
-        GraphQLExpectedType|PrintedType|Type|SplFileInfo|string $expected,
-        PrintedType|Type $type,
+        GraphQLExpectedType|Result|Type|SplFileInfo|string $expected,
+        Result|Type $type,
         string $message = '',
     ): void {
         // GraphQL
@@ -141,7 +140,7 @@ trait GraphQLAssertions {
             $output   = $output->getType();
         }
 
-        if ($output instanceof PrintedType || $output instanceof Type) {
+        if ($output instanceof Result || $output instanceof Type) {
             $output = (string) $this->printGraphQLType($output, $settings);
         } else {
             $output = Args::content($output);
@@ -217,10 +216,10 @@ trait GraphQLAssertions {
     }
 
     protected function printGraphQLSchema(
-        PrintedSchema|Schema|SplFileInfo|string $schema,
+        Result|Schema|SplFileInfo|string $schema,
         Settings $settings = null,
-    ): PrintedSchema {
-        if ($schema instanceof PrintedSchema) {
+    ): Result {
+        if ($schema instanceof Result) {
             return $schema;
         }
 
@@ -237,22 +236,22 @@ trait GraphQLAssertions {
 
     protected function printGraphQLSchemaType(
         Schema $schema,
-        PrintedType|Type|string $type,
+        Result|Type|string $type,
         Settings $settings = null,
-    ): PrintedType {
+    ): Result {
         return $type instanceof Type || is_string($type)
             ? $this->getGraphQLSchemaPrinter($settings)->printSchemaType($schema, $type)
             : $type;
     }
 
-    protected function printDefaultGraphQLSchema(Settings $settings = null): PrintedSchema {
+    protected function printDefaultGraphQLSchema(Settings $settings = null): Result {
         $schema  = $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
         $printed = $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
 
         return $printed;
     }
 
-    protected function printGraphQLType(PrintedType|Type $type, Settings $settings = null): PrintedType {
+    protected function printGraphQLType(Result|Type $type, Settings $settings = null): Result {
         return $type instanceof Type
             ? $this->getGraphQLSchemaPrinter($settings)->printType($type)
             : $type;

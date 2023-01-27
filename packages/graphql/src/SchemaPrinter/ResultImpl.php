@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 
 /**
  * @internal
  */
-abstract class Printed implements Statistics {
+class ResultImpl implements Result {
     public function __construct(
         protected Block $block,
     ) {

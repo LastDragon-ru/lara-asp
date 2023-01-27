@@ -5,8 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Exceptions\TypeNotFound;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
@@ -63,7 +62,7 @@ class SchemaPrinter implements SchemaPrinterContract {
 
     // <editor-fold desc="Printer">
     // =========================================================================
-    public function printSchema(Schema $schema): PrintedSchema {
+    public function printSchema(Schema $schema): Result {
         // todo(graphql): directives in description for schema
         //      https://github.com/webonyx/graphql-php/issues/1027
 
@@ -85,10 +84,10 @@ class SchemaPrinter implements SchemaPrinterContract {
         }
 
         // Return
-        return $this->getPrintedSchema($resolver, $schema, $content);
+        return new ResultImpl($content);
     }
 
-    public function printSchemaType(Schema $schema, Type|string $type): PrintedType {
+    public function printSchemaType(Schema $schema, Type|string $type): Result {
         // Type
         if (is_string($type)) {
             $name = $type;
@@ -111,13 +110,13 @@ class SchemaPrinter implements SchemaPrinterContract {
             $content[] = $definition;
         }
 
-        return new PrintedTypeImpl($content);
+        return new ResultImpl($content);
     }
 
-    public function printType(Type $type): PrintedType {
+    public function printType(Type $type): Result {
         $content   = $this->getDefinitionList(true);
         $content[] = $this->getDefinitionBlock($type);
-        $printed   = new PrintedTypeImpl($content);
+        $printed   = new ResultImpl($content);
 
         return $printed;
     }
@@ -125,10 +124,6 @@ class SchemaPrinter implements SchemaPrinterContract {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getPrintedSchema(DirectiveResolver $resolver, Schema $schema, Block $content): PrintedSchema {
-        return new PrintedSchemaImpl($resolver, $schema, $content);
-    }
-
     protected function getSchemaDefinition(Schema $schema): Block {
         return $this->getDefinitionBlock($schema);
     }
