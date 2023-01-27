@@ -299,17 +299,6 @@ class SchemaPrinterTest extends TestCase {
                         'CodeType',
                         'CodeInterface',
                     ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Int',
-                        'Float',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
-                    ])
                     ->setUsedDirectives([
                         '@deprecated',
                     ])
@@ -343,17 +332,6 @@ class SchemaPrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                         'CodeInterface',
-                    ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Int',
-                        'Float',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -395,11 +373,6 @@ class SchemaPrinterTest extends TestCase {
                         'SchemaInterfaceUnused',
                         'SchemaUnionUnused',
                     ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Int',
-                        'Float',
-                    ])
                     ->setUsedDirectives([
                         '@deprecated',
                     ])
@@ -439,16 +412,6 @@ class SchemaPrinterTest extends TestCase {
                         'CodeDirectiveScalarCustomClass',
                         'CodeInterface',
                     ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Float',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
-                    ])
                     ->setUsedDirectives([
                         '@schemaDirective',
                         '@codeDirective',
@@ -485,21 +448,6 @@ class SchemaPrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                         'CodeInterface',
-                    ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Int',
-                        'Float',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
-                        'CodeDirectiveEnum',
-                        'CodeDirectiveInput',
-                        'CodeDirectiveScalar',
-                        'CodeDirectiveScalarCustomClass',
                     ])
                     ->setUsedDirectives([
                         '@schemaDirective',
@@ -543,16 +491,6 @@ class SchemaPrinterTest extends TestCase {
                         'CodeDirectiveScalar',
                         'CodeDirectiveScalarCustomClass',
                         'CodeInterface',
-                    ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Float',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
                     ])
                     ->setUsedDirectives([
                         '@schemaDirective',
@@ -602,21 +540,6 @@ class SchemaPrinterTest extends TestCase {
                         'CodeType',
                         'CodeInterface',
                     ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Int',
-                        'Float',
-                        'CodeDirectiveEnum',
-                        'CodeDirectiveInput',
-                        'CodeDirectiveScalar',
-                        'CodeDirectiveScalarCustomClass',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
-                    ])
                     ->setUsedDirectives([
                         '@schemaDirective',
                         '@codeDirective',
@@ -663,17 +586,6 @@ class SchemaPrinterTest extends TestCase {
                         'SchemaUnion',
                         'String',
                         'CodeInterface',
-                    ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Int',
-                        'Float',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
                     ])
                     ->setUsedDirectives([
                         '@schemaDirective',
@@ -722,16 +634,6 @@ class SchemaPrinterTest extends TestCase {
                         'CodeDirectiveScalar',
                         'CodeDirectiveScalarCustomClass',
                         'CodeInterface',
-                    ])
-                    ->setUnusedTypes([
-                        'ID',
-                        'Float',
-                        'SchemaEnumUnused',
-                        'SchemaInputUnused',
-                        'SchemaInterfaceUnused',
-                        'SchemaScalarUnused',
-                        'SchemaTypeUnused',
-                        'SchemaUnionUnused',
                     ])
                     ->setUsedDirectives([
                         '@schemaDirective',

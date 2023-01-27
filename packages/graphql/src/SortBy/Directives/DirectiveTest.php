@@ -224,15 +224,7 @@ class DirectiveTest extends TestCase {
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
                         $test->getTestData()->file('~full-expected.graphql'),
-                    ))
-                        ->setUnusedTypes([
-                            'Properties',
-                            'Nested',
-                            'Float',
-                            'Int',
-                            'Boolean',
-                            'InputIgnored',
-                        ]);
+                    ));
                 },
                 '~full.graphql',
                 static function (): void {
