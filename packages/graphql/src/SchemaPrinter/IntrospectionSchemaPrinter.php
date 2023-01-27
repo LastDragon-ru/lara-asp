@@ -7,21 +7,21 @@ use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\DefaultSettings;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
 
 /**
  * Introspection schema printer.
  *
  * Following settings has no effects:
  * - {@see Settings::getTypeDefinitionFilter()}
- * - {@see \LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings::getDirectiveFilter()}
- * - {@see \LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings::getDirectiveDefinitionFilter()}
- * - {@see \LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings::isPrintUnusedDefinitions()}
- * - {@see \LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings::isPrintDirectiveDefinitions()}
+ * - {@see Settings::getDirectiveFilter}
+ * - {@see Settings::getDirectiveDefinitionFilter}
+ * - {@see Settings::isPrintUnusedDefinitions}
+ * - {@see Settings::isPrintDirectiveDefinitions}
  */
 class IntrospectionSchemaPrinter extends SchemaPrinter {
     public function setSettings(?Settings $settings): static {

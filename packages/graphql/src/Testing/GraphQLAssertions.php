@@ -6,9 +6,9 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedSchema;
 use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\PrintedType;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
@@ -280,8 +280,8 @@ trait GraphQLAssertions {
             : $type;
     }
 
-    protected function getGraphQLSchemaPrinter(Settings $settings = null): SchemaPrinter {
-        return $this->app->make(SchemaPrinter::class)->setSettings($settings ?? new TestSettings());
+    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
+        return $this->app->make(Printer::class)->setSettings($settings ?? new TestSettings());
     }
 
     protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {

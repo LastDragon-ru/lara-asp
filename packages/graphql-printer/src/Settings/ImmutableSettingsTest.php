@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Settings;
 
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use Mockery;
 use ReflectionClass;
 use ReflectionMethod;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings\ImmutableSettings
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings
  */
 class ImmutableSettingsTest extends TestCase {
     public function testCreateFrom(): void {

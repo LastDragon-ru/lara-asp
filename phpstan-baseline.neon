@@ -51,12 +51,7 @@ parameters:
 			path: packages/graphql/src/Provider.php
 
 		-
-			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SchemaPrinter\\\\Misc\\\\DirectiveResolver\\:\\:\\$definitions \\(array\\<string, GraphQL\\\\Type\\\\Definition\\\\Directive\\>\\) does not accept array\\<int\\|string, GraphQL\\\\Type\\\\Definition\\\\Directive\\>\\.$#"
-			count: 1
-			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
-
-		-
-			message: "#^Using nullsafe property access \"\\?\\-\\>definitions\" on left side of \\?\\? is unnecessary\\. Use \\-\\> instead\\.$#"
+			message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\:\\:\\$name\\.$#"
 			count: 1
 			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
 

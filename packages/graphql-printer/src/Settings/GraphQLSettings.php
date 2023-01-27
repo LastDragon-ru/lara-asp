@@ -1,9 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Settings;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Settings;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Filters\GraphQLDirectiveFilter;
 
 /**
  * These settings close as possible to {@see \GraphQL\Utils\SchemaPrinter}.

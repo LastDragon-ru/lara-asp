@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 use Closure;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use Stringable;
 
 use function mb_strlen;

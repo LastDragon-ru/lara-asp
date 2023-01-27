@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts;
 
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use Stringable;
 
 interface PrintedType extends Statistics, Stringable {
