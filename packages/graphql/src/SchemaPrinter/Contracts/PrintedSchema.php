@@ -6,8 +6,5 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use Stringable;
 
 interface PrintedSchema extends Statistics, Stringable {
-    /**
-     * @return array<string, string>
-     */
-    public function getUnusedDirectives(): array;
+    // empty
 }

@@ -63,17 +63,6 @@ trait GraphQLAssertions {
 
         // Expectation
         $this->assertGraphQLExpectation($expected, $actual);
-
-        // Unused directives
-        $unusedDirectives = $expected->getUnusedDirectives();
-
-        if ($unusedDirectives !== null) {
-            self::assertEquals(
-                array_combine($unusedDirectives, $unusedDirectives),
-                $actual->getUnusedDirectives(),
-                'Unused Directives not match.',
-            );
-        }
     }
 
     /**

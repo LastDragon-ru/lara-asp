@@ -301,12 +301,6 @@ class SchemaPrinterTest extends TestCase {
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirective',
-                        '@schemaDirectiveUnused',
                     ]),
                 null,
                 0,
@@ -335,12 +329,6 @@ class SchemaPrinterTest extends TestCase {
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirective',
-                        '@schemaDirectiveUnused',
                     ]),
                 new DefaultSettings(),
                 0,
@@ -375,12 +363,6 @@ class SchemaPrinterTest extends TestCase {
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirective',
-                        '@schemaDirectiveUnused',
                     ]),
                 new GraphQLSettings(),
                 0,
@@ -418,11 +400,6 @@ class SchemaPrinterTest extends TestCase {
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirectiveUnused',
                     ]),
                 new TestSettings(),
                 0,
@@ -455,11 +432,6 @@ class SchemaPrinterTest extends TestCase {
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirectiveUnused',
                     ]),
                 (new TestSettings())
                     ->setPrintDirectiveDefinitions(false),
@@ -498,11 +470,6 @@ class SchemaPrinterTest extends TestCase {
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirectiveUnused',
                     ]),
                 (new TestSettings())
                     ->setNormalizeSchema(false)
@@ -546,11 +513,6 @@ class SchemaPrinterTest extends TestCase {
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirectiveUnused',
                     ]),
                 (new TestSettings())
                     ->setDirectiveDefinitionFilter(
@@ -593,11 +555,6 @@ class SchemaPrinterTest extends TestCase {
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirectiveUnused',
                     ]),
                 (new TestSettings())
                     ->setTypeDefinitionFilter(
@@ -641,11 +598,6 @@ class SchemaPrinterTest extends TestCase {
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ])
-                    ->setUnusedDirectives([
-                        '@include',
-                        '@skip',
-                        '@schemaDirectiveUnused',
                     ]),
                 (new TestSettings())
                     ->setTypeDefinitionFilter(static fn (): bool => true)
