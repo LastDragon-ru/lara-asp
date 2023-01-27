@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 
 /**
  * @internal

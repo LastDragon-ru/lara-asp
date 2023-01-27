@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
