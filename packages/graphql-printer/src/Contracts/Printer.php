@@ -19,4 +19,8 @@ interface Printer {
     public function getSettings(): Settings;
 
     public function setSettings(?Settings $settings): static;
+
+    public function getDirectiveResolver(): ?DirectiveResolver;
+
+    public function setDirectiveResolver(?DirectiveResolver $directiveResolver): static;
 }

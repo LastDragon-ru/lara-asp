@@ -8,7 +8,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Exceptions\DirectiveDefinitionNotFound;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver as DirectiveResolverContract;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
 use Nuwave\Lighthouse\Schema\Factories\DirectiveFactory;
@@ -32,7 +32,7 @@ use function is_string;
  *
  * @internal
  */
-class DirectiveResolver {
+class DirectiveResolver implements DirectiveResolverContract {
     protected DirectiveFactory $factory;
 
     /**
@@ -45,25 +45,16 @@ class DirectiveResolver {
      */
     protected array $definitions;
 
-    /**
-     * @param array<GraphQLDirective> $directives
-     */
     public function __construct(
         protected TypeRegistry $registry,
         protected DirectiveLocator $locator,
         protected ExecutableTypeNodeConverter $converter,
-        array $directives = [],
     ) {
-        $this->factory     = new DirectiveFactory($this->converter);
-        $this->instances   = [];
-        $this->definitions = [];
-
-        foreach ($directives as $directive) {
-            $this->definitions[$directive->name] = $directive;
-        }
+        $this->factory   = new DirectiveFactory($this->converter);
+        $this->instances = [];
     }
 
-    public function getDefinition(string $name): GraphQLDirective {
+    public function getDefinition(string $name): ?GraphQLDirective {
         $directive = $this->definitions[$name] ?? null;
 
         if (!$directive) {
@@ -120,8 +111,6 @@ class DirectiveResolver {
             if ($node) {
                 $directive                = $this->factory->handle($node);
                 $this->definitions[$name] = $directive;
-            } else {
-                throw new DirectiveDefinitionNotFound($name);
             }
         }
 
@@ -146,11 +135,11 @@ class DirectiveResolver {
         $directives = $this->definitions;
 
         foreach ($this->instances as $name => $instance) {
-            $directives[$name] ??= $this->getDefinition($name);
-        }
+            $definition = $this->getDefinition($name);
 
-        foreach (GraphQLDirective::getInternalDirectives() as $directive) {
-            $directives[$directive->name] ??= $directive;
+            if ($definition) {
+                $directives[$name] = $definition;
+            }
         }
 
         return $directives;

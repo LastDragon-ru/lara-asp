@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
@@ -43,7 +42,7 @@ class IntrospectionSchemaPrinter extends SchemaPrinter {
         return $blocks;
     }
 
-    protected function getDirectiveDefinitions(DirectiveResolver $resolver, Schema $schema): ListBlock {
+    protected function getDirectiveDefinitions(Schema $schema): ListBlock {
         $blocks     = $this->getDefinitionList();
         $directives = $schema->getDirectives();
 
