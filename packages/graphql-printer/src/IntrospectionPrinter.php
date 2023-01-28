@@ -1,10 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
+use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
@@ -20,7 +21,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
  * - {@see Settings::isPrintUnusedDefinitions}
  * - {@see Settings::isPrintDirectiveDefinitions}
  */
-class IntrospectionSchemaPrinter extends SchemaPrinter {
+class IntrospectionPrinter extends SchemaPrinter {
     public function setSettings(?Settings $settings): static {
         return parent::setSettings(
             ImmutableSettings::createFrom($settings ?? new DefaultSettings())

@@ -1,18 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\GraphQLSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\IntrospectionSchemaPrinter
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\IntrospectionPrinter
  */
-class IntrospectionSchemaPrinterTest extends TestCase {
+class IntrospectionPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -20,7 +20,7 @@ class IntrospectionSchemaPrinterTest extends TestCase {
      */
     public function testPrint(string $expected, Settings $settings, int $level): void {
         $expected = $this->getTestData()->content($expected);
-        $printer  = $this->app->make(IntrospectionSchemaPrinter::class)->setSettings($settings)->setLevel($level);
+        $printer  = (new IntrospectionPrinter())->setSettings($settings)->setLevel($level);
         $schema   = new Schema([]);
         $actual   = $printer->printSchema($schema);
 
