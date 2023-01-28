@@ -1,9 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Testing;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
 
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
@@ -12,7 +11,7 @@ class GraphQLExpectedType extends GraphQLExpected {
      * @inheritDoc
      */
     public function __construct(
-        protected Result|Type|SplFileInfo|string $type,
+        protected Type|SplFileInfo|string $type,
         ?array $usedTypes = null,
         ?array $usedDirectives = null,
         ?Settings $settings = null,
@@ -20,7 +19,7 @@ class GraphQLExpectedType extends GraphQLExpected {
         parent::__construct($usedTypes, $usedDirectives, $settings);
     }
 
-    public function getType(): Result|Type|SplFileInfo|string {
+    public function getType(): Type|SplFileInfo|string {
         return $this->type;
     }
 }
