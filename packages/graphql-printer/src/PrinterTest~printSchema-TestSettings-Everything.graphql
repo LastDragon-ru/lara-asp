@@ -1,0 +1,189 @@
+"""
+Enum description.
+"""
+enum Enum
+@directive(
+    location: "enum"
+)
+{
+    """
+    Enum value description
+    """
+    A
+
+    B
+    @directive(
+        location: "enum value"
+    )
+
+    C
+}
+
+"""
+Input description.
+"""
+input InputA
+@directive(
+    location: "input"
+)
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    c: [Float!]!
+    @directive(
+        location: "field"
+    )
+}
+
+interface InterfaceC {
+    a: Int
+    b: [String!]
+    c: [Float!]!
+}
+
+"""
+The `Float` scalar type represents signed double-precision fractional
+values as specified by
+[IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).
+"""
+scalar Float
+
+"""
+The `Int` scalar type represents non-fractional signed whole numeric
+values. Int can represent values between -(2^31) and 2^31 - 1.
+"""
+scalar Int
+
+"""
+Scalar description.
+"""
+scalar Scalar
+@directive(
+    location: "scalar"
+)
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar String
+
+type Mutation {
+    mutate(
+        a: InputA
+
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+    ): [TypeB!]
+}
+
+type Query {
+    enum(
+        enum: Enum = A
+    ): TypeB
+
+    scalar: Scalar
+
+    type(
+        a: InputA
+
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+    ): TypeA!
+
+    union: Union
+}
+
+type Subscription {
+    subscribe: TypeC
+}
+
+"""
+Type description.
+"""
+type TypeA
+implements
+    & InterfaceC
+@directive(
+    location: "type"
+)
+{
+    a: Int
+    @deprecated
+
+    """
+    Field description.
+    """
+    b: [String!]
+
+    c: [Float!]!
+}
+
+type TypeB {
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+type TypeC {
+    c: [Float!]!
+}
+
+"""
+Union description.
+"""
+union Union
+@directive(
+    location: "union"
+)
+=
+    | TypeB
+    | TypeC
+
+"""
+Marks an element of a GraphQL schema as no longer supported.
+"""
+directive @deprecated(
+    """
+    Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax (as specified by [CommonMark](https://commonmark.org/).
+    """
+    reason: String = "No longer supported"
+)
+on
+    | ENUM_VALUE
+    | FIELD_DEFINITION
+
+"""
+Directive description
+"""
+directive @directive(
+    location: String
+)
+repeatable on
+    | ARGUMENT_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | FIELD
+    | FIELD_DEFINITION
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | INTERFACE
+    | MUTATION
+    | OBJECT
+    | QUERY
+    | SCALAR
+    | SCHEMA
+    | SUBSCRIPTION
+    | UNION

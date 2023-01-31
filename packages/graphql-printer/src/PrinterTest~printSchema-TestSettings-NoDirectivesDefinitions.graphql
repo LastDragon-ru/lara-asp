@@ -1,0 +1,130 @@
+"""
+Enum description.
+"""
+enum Enum
+@directive(
+    location: "enum"
+)
+{
+    """
+    Enum value description
+    """
+    A
+
+    B
+    @directive(
+        location: "enum value"
+    )
+
+    C
+}
+
+"""
+Input description.
+"""
+input InputA
+@directive(
+    location: "input"
+)
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    c: [Float!]!
+    @directive(
+        location: "field"
+    )
+}
+
+interface InterfaceC {
+    a: Int
+    b: [String!]
+    c: [Float!]!
+}
+
+"""
+Scalar description.
+"""
+scalar Scalar
+@directive(
+    location: "scalar"
+)
+
+type Mutation {
+    mutate(
+        a: InputA
+
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+    ): [TypeB!]
+}
+
+type Query {
+    enum(
+        enum: Enum = A
+    ): TypeB
+
+    scalar: Scalar
+
+    type(
+        a: InputA
+
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+    ): TypeA!
+
+    union: Union
+}
+
+type Subscription {
+    subscribe: TypeC
+}
+
+"""
+Type description.
+"""
+type TypeA
+implements
+    & InterfaceC
+@directive(
+    location: "type"
+)
+{
+    a: Int
+    @deprecated
+
+    """
+    Field description.
+    """
+    b: [String!]
+
+    c: [Float!]!
+}
+
+type TypeB {
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+type TypeC {
+    c: [Float!]!
+}
+
+"""
+Union description.
+"""
+union Union
+@directive(
+    location: "union"
+)
+=
+    | TypeB
+    | TypeC

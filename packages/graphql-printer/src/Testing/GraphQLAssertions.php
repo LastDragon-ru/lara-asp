@@ -6,11 +6,11 @@ use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\TestCase;
@@ -210,8 +210,8 @@ trait GraphQLAssertions {
         return $this->getGraphQLSchemaPrinter($settings)->printType($type);
     }
 
-    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
-        return new SchemaPrinter($settings ?? new TestSettings());
+    protected function getGraphQLSchemaPrinter(Settings $settings = null): PrinterContract {
+        return new Printer($settings ?? new TestSettings());
     }
     // </editor-fold>
 }

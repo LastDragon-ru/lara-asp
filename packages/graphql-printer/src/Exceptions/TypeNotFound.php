@@ -1,12 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Exceptions;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions;
 
+use LastDragon_ru\LaraASP\GraphQLPrinter\PackageException;
 use Throwable;
 
 use function sprintf;
 
-class TypeNotFound extends Exception {
+class TypeNotFound extends PackageException {
     public function __construct(
         protected string $type,
         Throwable $previous = null,

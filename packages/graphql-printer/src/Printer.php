@@ -1,12 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Exceptions\DirectiveDefinitionNotFound;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Exceptions\TypeNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\DefinitionBlock;
@@ -15,15 +13,17 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\ResultImpl;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
+use function array_merge;
 use function array_pop;
 use function is_string;
 use function str_starts_with;
 use function substr;
 
-class SchemaPrinter implements SchemaPrinterContract {
+class Printer implements SchemaPrinterContract {
     protected ?DirectiveResolver $directiveResolver;
     protected Settings           $settings;
     protected int                $level;
@@ -160,15 +160,14 @@ class SchemaPrinter implements SchemaPrinterContract {
         $blocks = $this->getDefinitionList();
 
         if ($this->getSettings()->isPrintDirectiveDefinitions()) {
-            $directives = (array) $this->getDirectiveResolver()?->getDefinitions();
-
-            foreach (GraphQLDirective::getInternalDirectives() as $directive) {
-                $directives[$directive->name] ??= $directive;
-            }
+            $directives = array_merge(
+                (array) $this->getDirectiveResolver()?->getDefinitions(),
+                $schema->getDirectives(),
+            );
 
             foreach ($directives as $directive) {
-                if ($blocks->isDirectiveDefinitionAllowed($directive->name)) {
-                    $blocks[] = $this->getDefinitionBlock($directive);
+                if (!isset($blocks[$directive->name]) && $blocks->isDirectiveDefinitionAllowed($directive->name)) {
+                    $blocks[$directive->name] = $this->getDefinitionBlock($directive);
                 }
             }
         }
