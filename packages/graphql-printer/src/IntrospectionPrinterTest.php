@@ -36,17 +36,17 @@ class IntrospectionPrinterTest extends TestCase {
     public function dataProviderPrint(): array {
         return [
             GraphQLSettings::class         => [
-                '~graphql-settings.graphql',
+                '~GraphQLSettings.graphql',
                 new GraphQLSettings(),
                 0,
             ],
             TestSettings::class            => [
-                '~test-settings.graphql',
+                '~TestSettings.graphql',
                 new TestSettings(),
                 0,
             ],
             TestSettings::class.' (level)' => [
-                '~test-settings-level.graphql',
+                '~TestSettings-level.graphql',
                 new TestSettings(),
                 1,
             ],
