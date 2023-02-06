@@ -90,9 +90,9 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerSchemaPrinter(): void {
-        $this->app->bind(SettingsContract::class, DefaultSettings::class);
-        $this->app->bind(SchemaPrinterContract::class, Printer::class);
-        $this->app->bind(DirectiveResolverContract::class, DirectiveResolver::class);
+        $this->app->bindIf(SettingsContract::class, DefaultSettings::class);
+        $this->app->bindIf(SchemaPrinterContract::class, Printer::class);
+        $this->app->bindIf(DirectiveResolverContract::class, DirectiveResolver::class);
     }
 
     protected function getName(): string {
