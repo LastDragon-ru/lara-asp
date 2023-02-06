@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SchemaPrinter;
+namespace LastDragon_ru\LaraASP\GraphQL\Printer;
 
 use Exception;
 use GraphQL\Language\Parser;
@@ -12,6 +12,7 @@ use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\GraphQLSettings;
@@ -27,9 +28,9 @@ use function str_starts_with;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Printer
  */
-class SchemaPrinterTest extends TestCase {
+class PrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -136,7 +137,7 @@ class SchemaPrinterTest extends TestCase {
         $registry->register($codeInput);
 
         // Test
-        $printer = $this->app->make(SchemaPrinter::class)->setSettings($settings)->setLevel($level);
+        $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
         $schema  = $this->getGraphQLSchema($this->getTestData()->file('~printSchema-schema.graphql'));
         $actual  = $printer->printSchema($schema);
 
@@ -252,7 +253,7 @@ class SchemaPrinterTest extends TestCase {
         $registry->register($codeInput);
 
         // Test
-        $printer = $this->app->make(SchemaPrinter::class)->setSettings($settings)->setLevel($level);
+        $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
         $schema  = $this->getGraphQLSchema($this->getTestData()->file('~printSchemaType-schema.graphql'));
         $actual  = $printer->printSchemaType($schema, $type);
 
@@ -263,7 +264,7 @@ class SchemaPrinterTest extends TestCase {
      * @dataProvider dataProviderPrintType
      */
     public function testPrintType(GraphQLExpectedType $expected, ?Settings $settings, int $level, Type $type): void {
-        $printer = $this->app->make(SchemaPrinter::class)->setSettings($settings)->setLevel($level);
+        $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
         $actual  = $printer->printType($type);
 
         $this->assertGraphQLTypeEquals($expected, $actual);
@@ -279,7 +280,7 @@ class SchemaPrinterTest extends TestCase {
         return [
             'null'                                             => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-default-settings.graphql'),
+                    $this->getTestData()->file('~printSchema-DefaultSettings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -307,7 +308,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             DefaultSettings::class                             => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-default-settings.graphql'),
+                    $this->getTestData()->file('~printSchema-DefaultSettings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -335,7 +336,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             GraphQLSettings::class                             => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-graphql-settings.graphql'),
+                    $this->getTestData()->file('~printSchema-GraphQLSettings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -369,7 +370,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class                                => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-test-settings.graphql'),
+                    $this->getTestData()->file('~printSchema-TestSettings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',
@@ -406,7 +407,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (no directives definitions)' => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-test-settings-no-directives-definitions.graphql'),
+                    $this->getTestData()->file('~printSchema-TestSettings-NoDirectivesDefinitions.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -439,7 +440,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (no normalization)'          => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-test-settings-no-normalization.graphql'),
+                    $this->getTestData()->file('~printSchema-TestSettings-NoNormalization.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',
@@ -487,7 +488,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (DirectiveDefinitionFilter)' => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-test-settings-directive-definition-filter.graphql'),
+                    $this->getTestData()->file('~printSchema-TestSettings-DirectiveDefinitionFilter.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -525,7 +526,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (TypeDefinitionFilter)'      => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-test-settings-type-definition-filter.graphql'),
+                    $this->getTestData()->file('~printSchema-TestSettings-TypeDefinitionFilter.graphql'),
                 ))
                     ->setUsedTypes([
                         'Boolean',
@@ -567,7 +568,7 @@ class SchemaPrinterTest extends TestCase {
             ],
             TestSettings::class.' (everything)'                => [
                 (new GraphQLExpectedSchema(
-                    $this->getTestData()->file('~printSchema-test-settings-everything.graphql'),
+                    $this->getTestData()->file('~printSchema-TestSettings-Everything.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',

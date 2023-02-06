@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver as ScoutFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scout\DefaultFieldResolver as ScoutDefaultFieldResolver;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Misc\DirectiveResolver;
+use LastDragon_ru\LaraASP\GraphQL\Printer\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators as SearchByOperators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
