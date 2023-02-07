@@ -24,6 +24,7 @@
     "nuwave/lighthouse": "^5.68.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
+    "lastdragon-ru/lara-asp-graphql": "self.version",
     "phpdocumentor/reflection-docblock": "^5.2"
   },
   "require-dev": {
