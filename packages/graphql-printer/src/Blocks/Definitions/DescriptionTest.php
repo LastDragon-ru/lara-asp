@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -11,7 +11,7 @@ use function implode;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\Description
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\Description
  */
 class DescriptionTest extends TestCase {
     // <editor-fold desc="Tests">

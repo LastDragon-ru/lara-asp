@@ -1,7 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\StringBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 use function preg_replace;
