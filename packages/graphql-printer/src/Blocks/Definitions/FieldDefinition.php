@@ -1,22 +1,27 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
-use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ArgumentsDefinitionList;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 /**
  * @internal
  *
- * @extends DefinitionBlock<FieldDefinition>
+ * @extends DefinitionBlock<GraphQLFieldDefinition>
  */
-class FieldDefinitionBlock extends DefinitionBlock {
+#[GraphQLDefinition(GraphQLFieldDefinition::class)]
+class FieldDefinition extends DefinitionBlock {
     public function __construct(
         Settings $settings,
         int $level,
         int $used,
-        FieldDefinition $definition,
+        GraphQLFieldDefinition $definition,
     ) {
         parent::__construct($settings, $level, $used, $definition);
     }

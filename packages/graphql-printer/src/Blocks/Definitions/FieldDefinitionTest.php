@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
@@ -14,9 +14,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\FieldDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\FieldDefinition
  */
-class FieldDefinitionBlockTest extends TestCase {
+class FieldDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -27,9 +27,9 @@ class FieldDefinitionBlockTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        FieldDefinition $definition,
+        GraphQLFieldDefinition $definition,
     ): void {
-        $actual = (string) (new FieldDefinitionBlock($settings, $level, $used, $definition));
+        $actual = (string) (new FieldDefinition($settings, $level, $used, $definition));
 
         Parser::fieldDefinition($actual);
 
@@ -38,7 +38,7 @@ class FieldDefinitionBlockTest extends TestCase {
 
     public function testStatistics(): void {
         $settings   = new TestSettings();
-        $definition = FieldDefinition::create([
+        $definition = GraphQLFieldDefinition::create([
             'name'    => 'A',
             'type'    => new NonNull(
                 new ObjectType([
@@ -47,7 +47,7 @@ class FieldDefinitionBlockTest extends TestCase {
             ),
             'astNode' => Parser::fieldDefinition('a: A @a'),
         ]);
-        $block      = new FieldDefinitionBlock($settings, 0, 0, $definition);
+        $block      = new FieldDefinition($settings, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
@@ -58,7 +58,7 @@ class FieldDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, FieldDefinition}>
+     * @return array<string,array{string, Settings, int, int, GraphQLFieldDefinition}>
      */
     public function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -78,7 +78,7 @@ class FieldDefinitionBlockTest extends TestCase {
                     ->setPrintDirectives(true),
                 0,
                 0,
-                FieldDefinition::create([
+                GraphQLFieldDefinition::create([
                     'name'        => 'test',
                     'type'        => new NonNull(
                         new ObjectType([
@@ -99,7 +99,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 $settings,
                 0,
                 0,
-                FieldDefinition::create([
+                GraphQLFieldDefinition::create([
                     'name'        => 'test',
                     'type'        => new NonNull(
                         new ObjectType([
@@ -134,7 +134,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 $settings,
                 0,
                 0,
-                FieldDefinition::create([
+                GraphQLFieldDefinition::create([
                     'name' => 'test',
                     'type' => new NonNull(
                         new ObjectType([
@@ -160,7 +160,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 $settings->setNormalizeArguments(true),
                 0,
                 0,
-                FieldDefinition::create([
+                GraphQLFieldDefinition::create([
                     'name' => 'test',
                     'type' => new NonNull(
                         new ObjectType([
@@ -187,7 +187,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 $settings->setAlwaysMultilineArguments(true),
                 0,
                 0,
-                FieldDefinition::create([
+                GraphQLFieldDefinition::create([
                     'name' => 'test',
                     'type' => new NonNull(
                         new ObjectType([
@@ -214,7 +214,7 @@ class FieldDefinitionBlockTest extends TestCase {
                 $settings->setNormalizeArguments(true),
                 1,
                 120,
-                FieldDefinition::create([
+                GraphQLFieldDefinition::create([
                     'name' => 'test',
                     'type' => new NonNull(
                         new ObjectType([

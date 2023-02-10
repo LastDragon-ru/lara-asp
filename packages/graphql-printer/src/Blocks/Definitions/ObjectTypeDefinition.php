@@ -1,16 +1,19 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\ObjectType;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 /**
  * @internal
  *
  * @extends TypeDefinitionBlock<ObjectType>
  */
-class ObjectTypeDefinitionBlock extends TypeDefinitionBlock {
+#[GraphQLDefinition(ObjectType::class)]
+class ObjectTypeDefinition extends TypeDefinitionBlock {
     public function __construct(
         Settings $settings,
         int $level,

@@ -13,11 +13,11 @@ use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\EnumTypeDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InputObjectTypeDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InterfaceTypeDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DirectiveDefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputObjectTypeDefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InterfaceTypeDefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ObjectTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ScalarTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\SchemaDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UnionTypeDefinitionBlock;
@@ -67,14 +67,14 @@ class DefinitionBlock extends Block implements NamedBlock {
         $block = null;
 
         if ($definition instanceof ObjectType) {
-            $block = new ObjectTypeDefinitionBlock(
+            $block = new ObjectTypeDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,
             );
         } elseif ($definition instanceof InputObjectType) {
-            $block = new InputObjectTypeDefinitionBlock(
+            $block = new InputObjectTypeDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -88,7 +88,7 @@ class DefinitionBlock extends Block implements NamedBlock {
                 $definition,
             );
         } elseif ($definition instanceof InterfaceType) {
-            $block = new InterfaceTypeDefinitionBlock(
+            $block = new InterfaceTypeDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),

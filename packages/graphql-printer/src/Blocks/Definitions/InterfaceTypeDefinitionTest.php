@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InterfaceType;
@@ -12,9 +12,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InterfaceTypeDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InterfaceTypeDefinition
  */
-class InterfaceTypeDefinitionBlockTest extends TestCase {
+class InterfaceTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -27,7 +27,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
         int $used,
         InterfaceType $definition,
     ): void {
-        $actual = (string) (new InterfaceTypeDefinitionBlock($settings, $level, $used, $definition));
+        $actual = (string) (new InterfaceTypeDefinition($settings, $level, $used, $definition));
 
         Parser::interfaceTypeDefinition($actual);
 
@@ -62,7 +62,7 @@ class InterfaceTypeDefinitionBlockTest extends TestCase {
             ],
             'astNode'    => Parser::interfaceTypeDefinition('interface A @a'),
         ]);
-        $block      = new InterfaceTypeDefinitionBlock($settings, 0, 0, $definition);
+        $block      = new InterfaceTypeDefinition($settings, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());

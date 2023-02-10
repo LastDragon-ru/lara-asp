@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
@@ -11,9 +11,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputObjectTypeDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InputObjectTypeDefinition
  */
-class InputObjectTypeDefinitionBlockTest extends TestCase {
+class InputObjectTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -26,7 +26,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
         int $used,
         InputObjectType $definition,
     ): void {
-        $actual = (string) (new InputObjectTypeDefinitionBlock(
+        $actual = (string) (new InputObjectTypeDefinition(
             $settings,
             $level,
             $used,
@@ -53,7 +53,7 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
             ],
             'astNode' => Parser::inputObjectTypeDefinition('input A @b'),
         ]);
-        $block      = new InputObjectTypeDefinitionBlock($settings, 0, 0, $definition);
+        $block      = new InputObjectTypeDefinition($settings, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());

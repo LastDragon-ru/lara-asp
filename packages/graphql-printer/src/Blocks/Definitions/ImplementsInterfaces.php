@@ -1,15 +1,17 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\InterfaceType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 
 /**
  * @internal
  * @extends UsageList<TypeBlock, InterfaceType>
  */
-class ImplementsInterfacesList extends UsageList {
+class ImplementsInterfaces extends UsageList {
     protected function block(mixed $item): Block {
         return new TypeBlock(
             $this->getSettings(),

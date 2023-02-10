@@ -1,10 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputFieldsDefinitionList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function mb_strlen;
 
@@ -13,7 +16,8 @@ use function mb_strlen;
  *
  * @extends DefinitionBlock<InputObjectType>
  */
-class InputObjectTypeDefinitionBlock extends DefinitionBlock {
+#[GraphQLDefinition(InputObjectType::class)]
+class InputObjectTypeDefinition extends DefinitionBlock {
     public function __construct(
         Settings $settings,
         int $level,

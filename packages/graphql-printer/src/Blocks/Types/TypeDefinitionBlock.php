@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\FieldsDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ImplementsInterfaces;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 use function mb_strlen;
@@ -33,7 +35,7 @@ abstract class TypeDefinitionBlock extends DefinitionBlock {
         $definition = $this->getDefinition();
         $space      = $this->space();
         $interfaces = $this->addUsed(
-            new ImplementsInterfacesList(
+            new ImplementsInterfaces(
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $used + mb_strlen($space),
@@ -57,7 +59,7 @@ abstract class TypeDefinitionBlock extends DefinitionBlock {
     protected function fields(int $used): Block|string|null {
         $definition = $this->getDefinition();
         $space      = $this->space();
-        $fields     = new FieldsDefinitionList(
+        $fields     = new FieldsDefinition(
             $this->getSettings(),
             $this->getLevel(),
             $used + mb_strlen($space),

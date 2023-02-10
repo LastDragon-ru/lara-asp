@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InterfaceType;
@@ -12,9 +12,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ObjectTypeDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ObjectTypeDefinition
  */
-class ObjectTypeDefinitionBlockTest extends TestCase {
+class ObjectTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -27,7 +27,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
         int $used,
         ObjectType $definition,
     ): void {
-        $actual = (string) (new ObjectTypeDefinitionBlock($settings, $level, $used, $definition));
+        $actual = (string) (new ObjectTypeDefinition($settings, $level, $used, $definition));
 
         Parser::objectTypeDefinition($actual);
 
@@ -62,7 +62,7 @@ class ObjectTypeDefinitionBlockTest extends TestCase {
             ],
             'astNode'    => Parser::objectTypeDefinition('type A @a'),
         ]);
-        $block      = new ObjectTypeDefinitionBlock($settings, 0, 0, $definition);
+        $block      = new ObjectTypeDefinition($settings, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
