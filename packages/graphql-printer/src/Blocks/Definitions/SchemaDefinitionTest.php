@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
@@ -13,9 +13,11 @@ use function str_starts_with;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\SchemaDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\SchemaDefinition
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\RootOperationTypeDefinition
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\RootOperationTypesDefinition
  */
-class SchemaDefinitionBlockTest extends TestCase {
+class SchemaDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -28,7 +30,7 @@ class SchemaDefinitionBlockTest extends TestCase {
         int $used,
         Schema $schema,
     ): void {
-        $actual = (string) (new SchemaDefinitionBlock($settings, $level, $used, $schema));
+        $actual = (string) (new SchemaDefinition($settings, $level, $used, $schema));
 
         if ($expected && !str_starts_with($actual, '"""')) {
             // https://github.com/webonyx/graphql-php/issues/1027

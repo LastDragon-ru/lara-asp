@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ObjectBlockList;
@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ObjectBlockList;
  * @template TBlock of Block
  * @extends ObjectBlockList<TBlock>
  */
-class RootOperationTypesDefinitionList extends ObjectBlockList {
+class RootOperationTypesDefinition extends ObjectBlockList {
     protected function isWrapped(): bool {
         return true;
     }

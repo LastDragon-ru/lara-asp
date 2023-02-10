@@ -18,9 +18,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InputObjectTypeDefin
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InterfaceTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ScalarTypeDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\SchemaDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\UnionTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\SchemaDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeUnsupported;
 
@@ -116,7 +116,7 @@ class DefinitionBlock extends Block implements NamedBlock {
                 $definition,
             );
         } elseif ($definition instanceof Schema) {
-            $block = new SchemaDefinitionBlock(
+            $block = new SchemaDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),

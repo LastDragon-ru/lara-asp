@@ -1,11 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function array_filter;
 use function count;
@@ -18,7 +20,8 @@ use const ARRAY_FILTER_USE_BOTH;
  *
  * @extends DefinitionBlock<Schema>
  */
-class SchemaDefinitionBlock extends DefinitionBlock {
+#[GraphQLDefinition(Schema::class)]
+class SchemaDefinition extends DefinitionBlock {
     public function __construct(
         Settings $settings,
         int $level,
@@ -49,7 +52,7 @@ class SchemaDefinitionBlock extends DefinitionBlock {
     protected function fields(int $used): Block|string|null {
         $definition = $this->getDefinition();
         $space      = $this->space();
-        $fields     = new RootOperationTypesDefinitionList(
+        $fields     = new RootOperationTypesDefinition(
             $this->getSettings(),
             $this->getLevel(),
             $used + mb_strlen($space),
@@ -64,7 +67,7 @@ class SchemaDefinitionBlock extends DefinitionBlock {
             [$operation, $type] = $config;
 
             if ($type) {
-                $fields[] = new RootOperationTypeDefinitionBlock(
+                $fields[] = new RootOperationTypeDefinition(
                     $this->getSettings(),
                     $this->getLevel() + 1,
                     $this->getUsed(),
