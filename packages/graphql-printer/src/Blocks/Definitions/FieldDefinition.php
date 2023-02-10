@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ArgumentsDefinitionList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -42,7 +41,7 @@ class FieldDefinition extends DefinitionBlock {
             ),
         );
         $args       = $this->addUsed(
-            new ArgumentsDefinitionList(
+            new ArgumentsDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),

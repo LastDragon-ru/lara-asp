@@ -1,9 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\FieldArgument;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputValueDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Traversable;
 
@@ -11,7 +12,7 @@ use Traversable;
  * @internal
  * @extends ListBlock<InputValueDefinitionBlock>
  */
-class ArgumentsDefinitionList extends ListBlock {
+class ArgumentsDefinition extends ListBlock {
     /**
      * @param Traversable<FieldArgument>|array<FieldArgument> $arguments
      */

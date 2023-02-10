@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 /**
  * @internal
  * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\FieldDefinition
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ArgumentsDefinition
  */
 class FieldDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">

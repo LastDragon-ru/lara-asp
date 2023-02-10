@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 /**
  * @internal
  * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DirectiveDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ArgumentsDefinition
  */
 class DirectiveDefinitionBlockTest extends TestCase {
     // <editor-fold desc="Tests">

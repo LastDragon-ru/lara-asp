@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ArgumentsDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 use function mb_strlen;
@@ -39,7 +40,7 @@ class DirectiveDefinitionBlock extends DefinitionBlock {
         $repeatable  = 'repeatable';
         $used        = $used + mb_strlen($repeatable) + 2 * mb_strlen($space);
         $args        = $this->addUsed(
-            new ArgumentsDefinitionList(
+            new ArgumentsDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $used,
