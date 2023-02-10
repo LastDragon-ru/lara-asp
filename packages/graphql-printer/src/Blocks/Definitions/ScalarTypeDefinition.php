@@ -1,9 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\ScalarType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 /**
@@ -11,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
  *
  * @extends DefinitionBlock<ScalarType>
  */
-class ScalarTypeDefinitionBlock extends DefinitionBlock {
+class ScalarTypeDefinition extends DefinitionBlock {
     public function __construct(
         Settings $settings,
         int $level,

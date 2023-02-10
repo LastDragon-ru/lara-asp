@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
@@ -11,9 +11,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ScalarTypeDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ScalarTypeDefinition
  */
-class ScalarTypeDefinitionBlockTest extends TestCase {
+class ScalarTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -26,7 +26,7 @@ class ScalarTypeDefinitionBlockTest extends TestCase {
         int $used,
         ScalarType $type,
     ): void {
-        $actual = (string) (new ScalarTypeDefinitionBlock($settings, $level, $used, $type));
+        $actual = (string) (new ScalarTypeDefinition($settings, $level, $used, $type));
 
         Parser::scalarTypeDefinition($actual);
 

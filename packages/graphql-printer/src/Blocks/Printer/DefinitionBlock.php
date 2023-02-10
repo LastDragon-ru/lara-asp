@@ -17,10 +17,10 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\EnumTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InputObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InterfaceTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ObjectTypeDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ScalarTypeDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\UnionTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ScalarTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\SchemaDefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UnionTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeUnsupported;
 
@@ -81,7 +81,7 @@ class DefinitionBlock extends Block implements NamedBlock {
                 $definition,
             );
         } elseif ($definition instanceof ScalarType) {
-            $block = new ScalarTypeDefinitionBlock(
+            $block = new ScalarTypeDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
@@ -95,7 +95,7 @@ class DefinitionBlock extends Block implements NamedBlock {
                 $definition,
             );
         } elseif ($definition instanceof UnionType) {
-            $block = new UnionTypeDefinitionBlock(
+            $block = new UnionTypeDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
