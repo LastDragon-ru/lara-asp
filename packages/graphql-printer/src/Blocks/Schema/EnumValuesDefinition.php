@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
+use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ObjectBlockList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Traversable;
@@ -12,7 +13,7 @@ use Traversable;
  */
 class EnumValuesDefinition extends ObjectBlockList {
     /**
-     * @param Traversable<EnumValueDefinition>|array<EnumValueDefinition> $values
+     * @param Traversable<GraphQLEnumValueDefinition>|array<GraphQLEnumValueDefinition> $values
      */
     public function __construct(
         Settings $settings,

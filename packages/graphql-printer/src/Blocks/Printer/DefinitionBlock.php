@@ -12,6 +12,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\DirectiveDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\EnumTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\InputObjectTypeDefinition;
@@ -20,7 +21,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\ObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\ScalarTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\SchemaDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\UnionTypeDefinition;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeUnsupported;
 
