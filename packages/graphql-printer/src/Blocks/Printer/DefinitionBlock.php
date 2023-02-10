@@ -12,9 +12,9 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\EnumTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DirectiveDefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\EnumTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputObjectTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InterfaceTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ObjectTypeDefinitionBlock;
@@ -102,7 +102,7 @@ class DefinitionBlock extends Block implements NamedBlock {
                 $definition,
             );
         } elseif ($definition instanceof EnumType) {
-            $block = new EnumTypeDefinitionBlock(
+            $block = new EnumTypeDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),

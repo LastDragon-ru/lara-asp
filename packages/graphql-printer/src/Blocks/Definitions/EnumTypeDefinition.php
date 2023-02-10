@@ -1,10 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\EnumType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function mb_strlen;
 
@@ -13,7 +15,8 @@ use function mb_strlen;
  *
  * @extends DefinitionBlock<EnumType>
  */
-class EnumTypeDefinitionBlock extends DefinitionBlock {
+#[GraphQLDefinition(EnumType::class)]
+class EnumTypeDefinition extends DefinitionBlock {
     public function __construct(
         Settings $settings,
         int $level,
@@ -34,7 +37,7 @@ class EnumTypeDefinitionBlock extends DefinitionBlock {
     protected function fields(int $used): Block|string|null {
         $space  = $this->space();
         $values = $this->addUsed(
-            new EnumValuesDefinitionList(
+            new EnumValuesDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $used + mb_strlen($space),

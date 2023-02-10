@@ -1,17 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
-use GraphQL\Type\Definition\EnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ObjectBlockList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Traversable;
 
 /**
  * @internal
- * @extends ObjectBlockList<EnumValueDefinitionBlock>
+ * @extends ObjectBlockList<EnumValueDefinition>
  */
-class EnumValuesDefinitionList extends ObjectBlockList {
+class EnumValuesDefinition extends ObjectBlockList {
     /**
      * @param Traversable<EnumValueDefinition>|array<EnumValueDefinition> $values
      */
@@ -24,7 +23,7 @@ class EnumValuesDefinitionList extends ObjectBlockList {
         parent::__construct($settings, $level, $used);
 
         foreach ($values as $value) {
-            $this[$value->name] = new EnumValueDefinitionBlock(
+            $this[$value->name] = new EnumValueDefinition(
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $this->getUsed(),

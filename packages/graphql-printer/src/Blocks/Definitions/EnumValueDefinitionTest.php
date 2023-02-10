@@ -1,18 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\EnumValueDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\EnumValueDefinition
  */
-class EnumValueDefinitionBlockTest extends TestCase {
+class EnumValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -23,9 +23,9 @@ class EnumValueDefinitionBlockTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        EnumValueDefinition $type,
+        GraphQLEnumValueDefinition $type,
     ): void {
-        $actual = (string) (new EnumValueDefinitionBlock($settings, $level, $used, $type));
+        $actual = (string) (new EnumValueDefinition($settings, $level, $used, $type));
 
         Parser::enumValueDefinition($actual);
 
@@ -36,7 +36,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, EnumValueDefinition}>
+     * @return array<string,array{string, Settings, int, int, GraphQLEnumValueDefinition}>
      */
     public function dataProviderToString(): array {
         $settings = new TestSettings();
@@ -49,7 +49,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
                 $settings,
                 0,
                 0,
-                new EnumValueDefinition([
+                new GraphQLEnumValueDefinition([
                     'name'  => 'A',
                     'value' => 'A',
                 ]),
@@ -61,7 +61,7 @@ class EnumValueDefinitionBlockTest extends TestCase {
                 $settings,
                 1,
                 0,
-                new EnumValueDefinition([
+                new GraphQLEnumValueDefinition([
                     'name'  => 'A',
                     'value' => 'A',
                 ]),

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use Closure;
 use GraphQL\Language\Parser;
@@ -11,10 +11,10 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\EnumTypeDefinitionBlock
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\EnumValuesDefinitionList
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\EnumTypeDefinition
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\EnumValuesDefinition
  */
-class EnumTypeDefinitionBlockTest extends TestCase {
+class EnumTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -33,7 +33,7 @@ class EnumTypeDefinitionBlockTest extends TestCase {
             $type = $type();
         }
 
-        $actual = (string) (new EnumTypeDefinitionBlock($settings, $level, $used, $type));
+        $actual = (string) (new EnumTypeDefinition($settings, $level, $used, $type));
 
         Parser::enumTypeDefinition($actual);
 
