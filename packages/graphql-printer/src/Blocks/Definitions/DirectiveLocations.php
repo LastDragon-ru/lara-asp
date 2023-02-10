@@ -1,16 +1,17 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 
 /**
  * @internal
- * @extends UsageList<DirectiveLocationBlock, string>
+ * @extends UsageList<DirectiveLocation, string>
  */
-class DirectiveLocationsList extends UsageList {
+class DirectiveLocations extends UsageList {
     protected function block(mixed $item): Block {
-        return new DirectiveLocationBlock(
+        return new DirectiveLocation(
             $this->getSettings(),
             $this->getLevel() + 1,
             $this->getUsed(),

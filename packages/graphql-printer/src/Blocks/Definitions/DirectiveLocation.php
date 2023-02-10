@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 /**
  * @internal
  */
-class DirectiveLocationBlock extends Block implements NamedBlock {
+class DirectiveLocation extends Block implements NamedBlock {
     public function __construct(
         Settings $settings,
         int $level,

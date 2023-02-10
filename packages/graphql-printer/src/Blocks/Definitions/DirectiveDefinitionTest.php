@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\DirectiveLocation;
 use GraphQL\Language\Parser;
@@ -13,10 +13,12 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DirectiveDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\DirectiveDefinition
  * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ArgumentsDefinition
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\DirectiveLocations
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\DirectiveLocation
  */
-class DirectiveDefinitionBlockTest extends TestCase {
+class DirectiveDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -29,7 +31,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
         int $used,
         Directive $definition,
     ): void {
-        $actual = (string) (new DirectiveDefinitionBlock($settings, $level, $used, $definition));
+        $actual = (string) (new DirectiveDefinition($settings, $level, $used, $definition));
 
         Parser::directiveDefinition($actual);
 
@@ -49,7 +51,7 @@ class DirectiveDefinitionBlockTest extends TestCase {
                 DirectiveLocation::FIELD,
             ],
         ]);
-        $block      = new DirectiveDefinitionBlock($settings, 0, 0, $definition);
+        $block      = new DirectiveDefinition($settings, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());

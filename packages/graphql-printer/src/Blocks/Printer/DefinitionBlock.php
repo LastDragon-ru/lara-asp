@@ -12,12 +12,12 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\DirectiveDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\EnumTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InputObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InterfaceTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\ObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DirectiveDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ScalarTypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\SchemaDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UnionTypeDefinitionBlock;
@@ -109,7 +109,7 @@ class DefinitionBlock extends Block implements NamedBlock {
                 $definition,
             );
         } elseif ($definition instanceof Directive) {
-            $block = new DirectiveDefinitionBlock(
+            $block = new DirectiveDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),
