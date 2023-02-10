@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputFieldsDefinitionList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
@@ -39,7 +38,7 @@ class InputObjectTypeDefinition extends DefinitionBlock {
         $definition = $this->getDefinition();
         $space      = $this->space();
         $fields     = $this->addUsed(
-            new InputFieldsDefinitionList(
+            new InputFieldsDefinition(
                 $this->getSettings(),
                 $this->getLevel(),
                 $used + mb_strlen($space),

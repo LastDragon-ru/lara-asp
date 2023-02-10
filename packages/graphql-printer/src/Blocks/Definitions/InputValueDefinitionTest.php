@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldArgument;
@@ -14,9 +14,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputValueDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InputValueDefinition
  */
-class InputValueDefinitionBlockTest extends TestCase {
+class InputValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -29,7 +29,7 @@ class InputValueDefinitionBlockTest extends TestCase {
         int $used,
         FieldArgument $definition,
     ): void {
-        $actual = (string) (new InputValueDefinitionBlock($settings, $level, $used, $definition));
+        $actual = (string) (new InputValueDefinition($settings, $level, $used, $definition));
 
         Parser::inputValueDefinition($actual);
 
@@ -48,7 +48,7 @@ class InputValueDefinitionBlockTest extends TestCase {
             'astNode' => Parser::inputValueDefinition('test: Test! @a'),
         ]);
 
-        $block = new InputValueDefinitionBlock($settings, 0, 0, $definition);
+        $block = new InputValueDefinition($settings, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());

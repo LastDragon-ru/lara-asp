@@ -4,13 +4,12 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\FieldArgument;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputValueDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Traversable;
 
 /**
  * @internal
- * @extends ListBlock<InputValueDefinitionBlock>
+ * @extends ListBlock<InputValueDefinition>
  */
 class ArgumentsDefinition extends ListBlock {
     /**
@@ -25,7 +24,7 @@ class ArgumentsDefinition extends ListBlock {
         parent::__construct($settings, $level, $used);
 
         foreach ($arguments as $argument) {
-            $this[$argument->name] = new InputValueDefinitionBlock(
+            $this[$argument->name] = new InputValueDefinition(
                 $this->getSettings(),
                 $this->getLevel() + 1,
                 $this->getUsed(),

@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 /**
  * @internal
  * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InputObjectTypeDefinition
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\InputFieldsDefinition
  */
 class InputObjectTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">

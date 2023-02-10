@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Type\Definition\FieldArgument;
@@ -8,6 +8,8 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast\ValueNodeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 use function mb_strlen;
@@ -17,7 +19,7 @@ use function mb_strlen;
  *
  * @extends DefinitionBlock<FieldArgument|InputObjectField>
  */
-class InputValueDefinitionBlock extends DefinitionBlock {
+class InputValueDefinition extends DefinitionBlock {
     public function __construct(
         Settings $settings,
         int $level,
