@@ -1,20 +1,20 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\Type as GraphQLType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\Type
  */
-class TypeBlockTest extends TestCase {
+class TypeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -25,9 +25,9 @@ class TypeBlockTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        Type $type,
+        GraphQLType $type,
     ): void {
-        $actual = (string) (new TypeBlock($settings, $level, $used, $type));
+        $actual = (string) (new Type($settings, $level, $used, $type));
 
         self::assertEquals($expected, $actual);
     }
@@ -39,7 +39,7 @@ class TypeBlockTest extends TestCase {
             ]),
         );
         $settings = new TestSettings();
-        $block    = new TypeBlock($settings, 0, 0, $node);
+        $block    = new Type($settings, 0, 0, $node);
         $type     = $node->getWrappedType(true)->name;
 
         self::assertNotEmpty((string) $block);
@@ -51,7 +51,7 @@ class TypeBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, Type}>
+     * @return array<string,array{string, Settings, int, int, GraphQLType}>
      */
     public function dataProviderToString(): array {
         $settings = new TestSettings();

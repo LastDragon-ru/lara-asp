@@ -3,12 +3,13 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Type\Definition\ObjectType;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 /**
  * @internal
  */
-class RootOperationTypeDefinitionBlock extends TypeBlock {
+class RootOperationTypeDefinitionBlock extends Type {
     public function __construct(
         Settings $settings,
         int $level,

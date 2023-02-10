@@ -4,16 +4,15 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
 use GraphQL\Type\Definition\InterfaceType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 
 /**
  * @internal
- * @extends UsageList<TypeBlock, InterfaceType>
+ * @extends UsageList<Type, InterfaceType>
  */
 class ImplementsInterfaces extends UsageList {
     protected function block(mixed $item): Block {
-        return new TypeBlock(
+        return new Type(
             $this->getSettings(),
             $this->getLevel() + 1,
             $this->getUsed(),

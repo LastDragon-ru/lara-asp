@@ -9,7 +9,6 @@ use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast\ValueNodeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 use function mb_strlen;
@@ -37,7 +36,7 @@ class InputValueDefinition extends DefinitionBlock {
         $definition = $this->getDefinition();
         $space      = $this->space();
         $type       = $this->addUsed(
-            new TypeBlock(
+            new Type(
                 $this->getSettings(),
                 $this->getLevel(),
                 $this->getUsed(),

@@ -1,22 +1,24 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Definitions;
 
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 /**
  * @internal
  */
-class TypeBlock extends Block implements NamedBlock {
+#[GraphQLDefinition(GraphQLType::class)]
+class Type extends Block implements NamedBlock {
     public function __construct(
         Settings $settings,
         int $level,
         int $used,
-        private Type $definition,
+        private GraphQLType $definition,
     ) {
         parent::__construct($settings, $level, $used);
     }
@@ -31,7 +33,7 @@ class TypeBlock extends Block implements NamedBlock {
         return $type->name;
     }
 
-    protected function getType(): Type {
+    protected function getType(): GraphQLType {
         return $this->definition;
     }
 
