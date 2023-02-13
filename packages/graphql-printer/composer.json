@@ -23,7 +23,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5.0",
-    "lastdragon-ru/lara-asp-testing": "self.version"
+    "lastdragon-ru/lara-asp-testing": "self.version",
+    "mockery/mockery": "^1.4.2"
   },
   "autoload": {
     "psr-4": {
