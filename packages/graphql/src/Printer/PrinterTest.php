@@ -559,9 +559,9 @@ class PrinterTest extends TestCase {
                     ]),
                 (new TestSettings())
                     ->setTypeDefinitionFilter(
-                        static function (Type $type, bool $isStandard): bool {
+                        static function (string $type, bool $isStandard): bool {
                             return $isStandard === false
-                                && !str_starts_with($type->name, 'Code');
+                                && !str_starts_with($type, 'Code');
                         },
                     ),
                 0,

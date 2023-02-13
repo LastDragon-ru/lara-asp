@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package;
 
 use Closure;
-use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
@@ -34,7 +33,7 @@ class TestSettings extends ImmutableSettings {
     protected ?DirectiveFilter $directiveDefinitionFilter         = null;
 
     /**
-     * @param TypeFilter|Closure(Type,bool):bool|null $value
+     * @param TypeFilter|Closure(string,bool):bool|null $value
      */
     public function setTypeDefinitionFilter(TypeFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
@@ -67,12 +66,12 @@ class TestSettings extends ImmutableSettings {
     }
 
     /**
-     * @param Closure(Type,bool):bool $closure
+     * @param Closure(string,bool):bool $closure
      */
     protected function makeTypeFilter(Closure $closure): TypeFilter {
         return new class($closure) implements TypeFilter {
             /**
-             * @param Closure(Type,bool):bool $filter
+             * @param Closure(string,bool):bool $filter
              */
             public function __construct(
                 protected Closure $filter,
@@ -80,7 +79,7 @@ class TestSettings extends ImmutableSettings {
                 // empty
             }
 
-            public function isAllowedType(Type $type, bool $isStandard): bool {
+            public function isAllowedType(string $type, bool $isStandard): bool {
                 return ($this->filter)($type, $isStandard);
             }
         };

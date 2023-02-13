@@ -183,11 +183,12 @@ abstract class Block implements Statistics, Stringable {
     // =========================================================================
     public function isTypeDefinitionAllowed(Type $type): bool {
         // Allowed?
+        $name      = $type->name;
         $filter    = $this->getSettings()->getTypeDefinitionFilter();
         $isBuiltIn = $this->isTypeBuiltIn($type);
         $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedType($type, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedType($type, $isBuiltIn));
+            ? ($filter !== null && $filter->isAllowedType($name, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedType($name, $isBuiltIn));
 
         // Return
         return $isAllowed;
