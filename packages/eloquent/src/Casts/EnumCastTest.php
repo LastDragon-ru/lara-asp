@@ -51,7 +51,7 @@ class EnumCastTest extends TestCase {
             // empty
         };
 
-        self::assertEquals($expected, $cast->set($model, $key, $value, $attrs));
+        self::assertEquals($expected, $cast->set($model, $key, $value, $attrs)); // @phpstan-ignore-line
     }
     // </editor-fold>
 
