@@ -16,14 +16,15 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
-use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
+
 use function config;
 use function is_array;
 
@@ -224,15 +225,7 @@ class DirectiveTest extends TestCase {
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
                         $test->getTestData()->file('~full-expected.graphql'),
-                    ))
-                        ->setUnusedTypes([
-                            'Properties',
-                            'Nested',
-                            'Float',
-                            'Int',
-                            'Boolean',
-                            'InputIgnored',
-                        ]);
+                    ));
                 },
                 '~full.graphql',
                 static function (): void {

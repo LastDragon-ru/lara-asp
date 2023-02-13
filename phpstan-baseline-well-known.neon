@@ -81,15 +81,11 @@ parameters:
         -
             message: "#^Parameter \\#2 \\$type of static method GraphQL\\\\Utils\\\\AST\\:\\:astFromValue\\(\\) expects GraphQL\\\\Type\\\\Definition\\\\InputType, GraphQL\\\\Type\\\\Definition\\\\Type given\\.$#"
             paths:
-                - packages/graphql/src/SchemaPrinter/Blocks/Types/InputValueDefinitionBlock.php
+                - packages/graphql-printer/src/Blocks/Schema/InputValueDefinition.php
 
         # Caused by `@property` in Interfaces
         # https://github.com/phpstan/phpstan/issues/8501
         # https://github.com/webonyx/graphql-php/pull/1255
-        -
-            message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode::\\$name\\.$#"
-            paths:
-                - packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
         -
             message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\FieldDefinitionNode\\|GraphQL\\\\Language\\\\AST\\\\InputValueDefinitionNode\\|GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\|GraphQL\\\\Type\\\\Definition\\\\FieldDefinition\\|GraphQL\\\\Type\\\\Definition\\\\InputObjectField\\|GraphQL\\\\Type\\\\Definition\\\\Type::\\$name\\.$#"
             paths:

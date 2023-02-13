@@ -24,12 +24,13 @@
     "nuwave/lighthouse": "^5.68.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
+    "lastdragon-ru/lara-asp-graphql-printer": "self.version",
     "phpdocumentor/reflection-docblock": "^5.2"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
     "laravel/scout": "^9.2.1",
-    "mockery/mockery": "^1.4",
+    "mockery/mockery": "^1.4.2",
     "phpunit/phpunit": "^9.5.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "orchestra/testbench": "^6.9.0|^7.0.0"

@@ -412,15 +412,24 @@ class Comment extends Model {
 
 ```
 
-# `SchemaPrinter` & Testing Assertions
+# Printer
 
-[`SchemaPrinter`](./src/SchemaPrinter/Contracts/SchemaPrinter.php) allow you to print GraphQL Schema in hightly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are unused in the Schema. To check all options please see [`Settings`](./src/SchemaPrinter/Contracts/Settings.php). See also [tests](./src/SchemaPrinter/SchemaPrinterTest.php) for usage examples.
+The package provides bindings for [`Printer`](../graphql-printer/README.md) so you can simply use:
 
-There are also few great [GraphQL Assertions](./src/Testing/GraphQLAssertions.php):
+```php
+<?php declare(strict_types = 1);
+
+use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
+use Nuwave\Lighthouse\Schema\SchemaBuilder;
+
+$schema  = Container::getInstance()->make(SchemaBuilder::class)->schema();
+$printer = Container::getInstance()->make(Printer::class);
+$printed = $printer->printSchema($schema);
+```
+
+There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertions.php).
 
 | Name                               | Description              |
 |------------------------------------|--------------------------|
 | `assertDefaultGraphQLSchemaEquals` | Compares default schema. |
-| `assertGraphQLSchemaTypeEquals`    | Compares schema type.    |
-| `assertGraphQLSchemaEquals`        | Compares any schemas.    |
-| `assertGraphQLTypeEquals`          | Compares any types.      |

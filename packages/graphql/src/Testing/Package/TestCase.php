@@ -4,13 +4,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\SchemaPrinter;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\LighthouseDirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\TestSettings;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
@@ -34,10 +34,12 @@ class TestCase extends PackageTestCase {
         return parent::getContainer();
     }
 
-    protected function getGraphQLSchemaPrinter(Settings $settings = null): SchemaPrinter {
-        return $this->app->make(SchemaPrinter::class)->setSettings(
-            $settings ?? (new TestSettings())->setDirectiveDefinitionFilter(new LighthouseDirectiveFilter()),
-        );
+    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
+        $settings ??= (new TestSettings())
+            ->setDirectiveDefinitionFilter($this->app->make(LighthouseDirectiveFilter::class));
+        $printer    = $this->app->make(Printer::class)->setSettings($settings);
+
+        return $printer;
     }
 
     protected function getGraphQLArgument(string $type, mixed $value, SplFileInfo|string $schema = null): Argument {
