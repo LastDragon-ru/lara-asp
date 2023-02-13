@@ -55,7 +55,7 @@
     "symfony/http-foundation": "^5.2.0|^6.0.0",
     "symfony/mime": "^5.3.0|^6.0.0",
     "symfony/psr-http-message-bridge": "^2.0.0",
-    "webonyx/graphql-php": "^14.11.9|^15.0.1"
+    "webonyx/graphql-php": "^14.11.9"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
