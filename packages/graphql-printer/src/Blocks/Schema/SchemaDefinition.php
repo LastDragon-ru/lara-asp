@@ -58,9 +58,9 @@ class SchemaDefinition extends DefinitionBlock {
             $used + mb_strlen($space),
         );
         $types      = [
-            [OperationType::query(), $definition->getQueryType()],
-            [OperationType::mutation(), $definition->getMutationType()],
-            [OperationType::subscription(), $definition->getSubscriptionType()],
+            ['query', $definition->getQueryType()],
+            ['mutation', $definition->getMutationType()],
+            ['subscription', $definition->getSubscriptionType()],
         ];
 
         foreach ($types as $config) {

@@ -13,13 +13,13 @@ class RootOperationTypeDefinition extends Type {
         Settings $settings,
         int $level,
         int $used,
-        private OperationType $operation,
+        private string $operation,
         ObjectType $type,
     ) {
         parent::__construct($settings, $level, $used, $type);
     }
 
-    public function getOperation(): OperationType {
+    public function getOperation(): string {
         return $this->operation;
     }
 
