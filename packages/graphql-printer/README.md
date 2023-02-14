@@ -6,6 +6,12 @@
 
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema.
 
+# Installation
+
+```shell
+composer require lastdragon-ru/lara-asp-graphql-printer
+```
+
 ## Usage
 
 ```php
@@ -31,7 +37,7 @@ Please see:
 
 ## Laravel/Lighthouse
 
-It is highly recommended to use [`graphql`](../graphql/README.md#Printer) package to use the `Printer` within the Laravel/Lighthouse application.
+It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#Printer) package to use the `Printer` within the Laravel/Lighthouse application.
 
 ## Testing Assertions
 
