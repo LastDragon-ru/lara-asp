@@ -70,17 +70,17 @@ abstract class AstManipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================}
-    public function isPlaceholder(Node|InputObjectField|string $node): bool {
+    public function isPlaceholder(Node|InputObjectField|FieldArgument|string $node): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
         return $this->getNodeTypeName($node) === '_';
     }
 
     public function isNullable(
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $node,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|FieldArgument $node,
     ): bool {
         $isNullable = true;
 
-        if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
+        if ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof FieldArgument) {
             $isNullable = !($node->getType() instanceof NonNull);
         } else {
             $isNullable = !($node->type instanceof NonNullTypeNode);
@@ -90,11 +90,11 @@ abstract class AstManipulator {
     }
 
     public function isList(
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode|Type $node,
     ): bool {
         $type = null;
 
-        if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
+        if ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof FieldArgument) {
             $type = $node->getType();
 
             if ($type instanceof NonNull) {
@@ -144,7 +144,7 @@ abstract class AstManipulator {
     }
 
     public function getTypeDefinitionNode(
-        Node|InputObjectField|FieldDefinition|string $node,
+        Node|InputObjectField|FieldDefinition|FieldArgument|string $node,
     ): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
         $types      = $this->getTypes();
@@ -225,7 +225,7 @@ abstract class AstManipulator {
      * @return (T&Directive)|null
      */
     public function getNodeDirective(
-        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|FieldArgument $node,
         string $class,
         ?Closure $callback = null,
     ): ?Directive {
@@ -243,7 +243,7 @@ abstract class AstManipulator {
      * @return Collection<int, T&Directive>
      */
     public function getNodeDirectives(
-        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition $node,
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|FieldArgument $node,
         string $class,
         ?Closure $callback = null,
     ): Collection {
@@ -273,11 +273,11 @@ abstract class AstManipulator {
     }
 
     public function getNodeTypeName(
-        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode|string $node,
+        Node|Type|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode|string $node,
     ): string {
         $name = null;
 
-        if ($node instanceof Type || $node instanceof InputObjectField || $node instanceof FieldDefinition) {
+        if ($node instanceof Type || $node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof FieldArgument) {
             $type = $node instanceof Type ? $node : $node->getType();
 
             if ($type instanceof WrappingType) {
@@ -297,7 +297,7 @@ abstract class AstManipulator {
     }
 
     public function getNodeName(
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type $node,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|FieldArgument|Type $node,
     ): string {
         // fixme(graphql-php): in v15 the `TypeDefinitionNode::getName()` should be used instead.
         $name = $node->name;
