@@ -6,7 +6,7 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
-class TypeNode extends DefinitionNode {
+class ObjectNode extends DefinitionNode {
     public function __construct(
         Manipulator $manipulator,
         private ObjectTypeDefinitionNode|ObjectType $typeDefinition,

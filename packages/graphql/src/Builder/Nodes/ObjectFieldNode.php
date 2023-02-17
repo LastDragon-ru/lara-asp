@@ -8,7 +8,7 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
-class TypeFieldNode extends DefinitionNode {
+class ObjectFieldNode extends DefinitionNode {
     public function __construct(
         Manipulator $manipulator,
         private ObjectTypeDefinitionNode|ObjectType $typeDefinition,
