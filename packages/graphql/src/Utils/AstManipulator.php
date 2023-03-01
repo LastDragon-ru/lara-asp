@@ -76,17 +76,20 @@ abstract class AstManipulator {
     }
 
     public function isNullable(
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|FieldArgument $node,
+        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode|Type $node,
     ): bool {
-        $isNullable = true;
+        $type = null;
 
         if ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof FieldArgument) {
-            $isNullable = !($node->getType() instanceof NonNull);
+            $type = $node->getType();
+        } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
+            $type = $node->type;
         } else {
-            $isNullable = !($node->type instanceof NonNullTypeNode);
+            // empty
         }
 
-        return $isNullable;
+        return !($type instanceof NonNull)
+            && !($type instanceof NonNullTypeNode);
     }
 
     public function isList(
