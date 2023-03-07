@@ -2,28 +2,26 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use Stringable;
 
 use function is_string;
 
 /**
- * @template TType of TypeDefinitionNode|TypeNode|Type
- * @template TSource of TypeSource<TypeDefinitionNode|TypeNode|Type>|null
+ * @template TType of TypeDefinitionNode|(Node&TypeNode)|Type
  */
-class TypeSource implements Stringable {
+class Source implements TypeSource {
     /**
-     * @param TType   $type
-     * @param TSource $source
+     * @param TType $type
      */
     public function __construct(
         private Manipulator $manipulator,
-        private TypeDefinitionNode|TypeNode|Type $type,
-        private ?TypeSource $source = null,
+        private TypeDefinitionNode|Node|Type $type,
     ) {
         // empty
     }
@@ -40,11 +38,11 @@ class TypeSource implements Stringable {
     /**
      * @return TType
      */
-    public function getType(): TypeDefinitionNode|TypeNode|Type {
+    public function getType(): TypeDefinitionNode|Node|Type {
         return $this->type;
     }
 
-    public function getName(): string {
+    public function getTypeName(): string {
         return $this->getManipulator()->getNodeTypeName($this->getType());
     }
 
@@ -60,26 +58,10 @@ class TypeSource implements Stringable {
         return $this->getManipulator()->getNodeTypeFullName($this->getType());
     }
 
-    /**
-     * @return TSource
-     */
-    public function getSource(): ?TypeSource {
-        return $this->source;
-    }
-
-    /**
-     * @template T of TypeDefinitionNode|TypeNode|Type
-     *
-     * @param T|string $type
-     *
-     * @return ($type is string ? TypeSource<TypeNode, TType> : TypeSource<T, TType>)
-     */
-    public function getDerivative(TypeDefinitionNode|TypeNode|Type|string $type): TypeSource {
-        if (is_string($type)) {
-            $type = Parser::typeReference($type);
-        }
-
-        return new TypeSource($this->getManipulator(), $type, $this);
+    public function create(TypeDefinitionNode|Node|Type|string $type): TypeSource {
+        return is_string($type)
+            ? new Source($this->getManipulator(), Parser::typeReference($type))
+            : new Source($this->getManipulator(), $type);
     }
     // </editor-fold>
 }
