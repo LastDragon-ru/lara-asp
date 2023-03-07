@@ -16,6 +16,7 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
@@ -70,13 +71,15 @@ abstract class AstManipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================}
-    public function isPlaceholder(Node|InputObjectField|FieldArgument|string $node): bool {
+    public function isPlaceholder(
+        Node|Type|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode|string $node,
+    ): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
         return $this->getNodeTypeName($node) === '_';
     }
 
     public function isNullable(
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode|Type $node,
+        Node|Type|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode $node,
     ): bool {
         $type = null;
 
@@ -93,7 +96,7 @@ abstract class AstManipulator {
     }
 
     public function isList(
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode|Type $node,
+        Node|Type|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode $node,
     ): bool {
         $type = null;
 
@@ -118,7 +121,7 @@ abstract class AstManipulator {
     }
 
     public function isUnion(
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
+        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
     ): bool {
         $type = null;
 
