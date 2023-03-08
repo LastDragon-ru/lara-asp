@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
@@ -24,8 +25,8 @@ class In extends BaseOperator {
         return 'Within a set of values.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
-        return "[{$type}!]";
+    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
+        return "[{$type->getTypeName()}!]";
     }
 
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {

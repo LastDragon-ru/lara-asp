@@ -6,6 +6,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 
@@ -14,19 +15,18 @@ class Flag implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
         return Directive::Name.'TypeFlag';
     }
 
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?string $type,
-        ?bool $nullable,
+        ?TypeSource $type,
     ): ?TypeDefinitionNode {
         $node = null;
 
-        if ($type === null && $nullable === null) {
+        if ($type === null) {
             $node = Parser::enumTypeDefinition(
             /** @lang GraphQL */
                 <<<GRAPHQL

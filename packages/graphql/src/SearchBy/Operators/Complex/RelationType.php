@@ -8,7 +8,9 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
@@ -18,32 +20,31 @@ class RelationType implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
-        $directiveName = Directive::Name;
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
+        $typeName      = $type?->getTypeName();
         $builderName   = $builder->getName();
         $operatorName  = Str::studly(Relation::getName());
+        $directiveName = Directive::Name;
 
-        return "{$directiveName}{$builderName}Complex{$operatorName}{$type}";
+        return "{$directiveName}{$builderName}Complex{$operatorName}{$typeName}";
     }
 
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?string $type,
-        ?bool $nullable,
+        ?TypeSource $type,
     ): ?TypeDefinitionNode {
         if (!$type) {
             return null;
         }
 
-        $count    = $manipulator->getType(Scalar::class, Type::INT, false);
-        $where    = $manipulator->getType(Condition::class, $type, $nullable);
-        $typeName = $manipulator->getNodeTypeFullName($type);
+        $count = $manipulator->getType(Scalar::class, new Source($manipulator, Type::int()));
+        $where = $manipulator->getType(Condition::class, $type);
 
         return Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Conditions for the related objects (`has()`/`doesntHave()`) for `{$typeName}`.
+            Conditions for the related objects (`has()`/`doesntHave()`) for `{$type}`.
 
             See also:
             * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence

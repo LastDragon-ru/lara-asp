@@ -2,13 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
-use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Clause;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -39,19 +38,17 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     protected function getArgDefinitionType(
         Manipulator $manipulator,
         DocumentAST $document,
-        InputValueDefinitionNode $argument,
-        FieldDefinitionNode $field,
+        ObjectFieldArgumentSource $argument,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
             $manipulator,
             $document,
             $argument,
-            $field,
             Clause::class,
         );
 
         if (!$type) {
-            throw new FailedToCreateSortClause($argument->name->value);
+            throw new FailedToCreateSortClause($argument);
         }
 
         return $type;

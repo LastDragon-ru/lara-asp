@@ -8,6 +8,7 @@ use Hamcrest\Core\IsNot;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -175,7 +176,7 @@ abstract class OperatorsTest__Operator implements Operator {
         throw new Exception('Should not be called');
     }
 
-    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
         throw new Exception('Should not be called');
     }
 

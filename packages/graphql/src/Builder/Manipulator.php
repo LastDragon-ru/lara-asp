@@ -5,16 +5,15 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\FieldDefinition;
-use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
@@ -31,11 +30,8 @@ use function array_map;
 use function array_values;
 use function count;
 use function implode;
-use function is_object;
 use function mb_strlen;
 use function mb_substr;
-
-// @phpcs:disable Generic.Files.LineLength.TooLong
 
 class Manipulator extends AstManipulator implements TypeProvider {
     /**
@@ -61,9 +57,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="TypeProvider">
     // =========================================================================
-    public function getType(string $definition, ?string $type, ?bool $nullable): string {
+    public function getType(string $definition, ?TypeSource $type = null): string {
         // Exists?
-        $name = $definition::getTypeName($this->getBuilderInfo(), $type, $nullable);
+        $name = $definition::getTypeName($this, $this->getBuilderInfo(), $type);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
@@ -74,10 +70,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Create new
         $instance = Container::getInstance()->make($definition);
-        $node     = $instance->getTypeDefinitionNode($this, $name, $type, $nullable);
+        $node     = $instance->getTypeDefinitionNode($this, $name, $type);
 
         if (!$node) {
-            throw new TypeDefinitionImpossibleToCreateType($definition, $type, $nullable);
+            throw new TypeDefinitionImpossibleToCreateType($definition, $type);
         }
 
         if ($name !== $this->getNodeName($node)) {
@@ -115,17 +111,17 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * Method doesn't check Builder!
      */
-    public function hasTypeOperators(string $scope, string $type): bool {
-        return (bool) ($this->operators[$scope] ?? null)?->hasOperators($type);
+    public function hasTypeOperators(string $scope, TypeSource $type): bool {
+        return (bool) ($this->operators[$scope] ?? null)?->hasOperators($type->getTypeName());
     }
 
     /**
      * @return list<Operator>
      */
-    public function getTypeOperators(string $scope, string $type, bool $nullable): array {
+    public function getTypeOperators(string $scope, TypeSource $type): array {
         $operators = $this->operators[$scope] ?? null;
-        $operators = $operators && $operators->hasOperators($type)
-            ? $operators->getOperators($type, $nullable)
+        $operators = $operators && $operators->hasOperators($type->getTypeName())
+            ? $operators->getOperators($type->getTypeName(), (bool) $type->isNullable())
             : [];
         $operators = array_filter($operators, function (Operator $operator): bool {
             return $operator->isBuilderSupported($this->getBuilderInfo()->getBuilder());
@@ -137,13 +133,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     public function getOperatorField(
         Operator $operator,
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type|string $type,
+        TypeSource $type,
         ?string $field,
-        ?bool $nullable,
         ?string $description = null,
     ): string {
-        $type        = is_object($type) ? $this->getNodeName($type) : $type;
-        $type        = $operator->getFieldType($this, $type, $nullable);
+        $type        = $operator->getFieldType($this, $type);
         $field       = $field ?: $operator::getName();
         $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
         $directive   = $directive instanceof DirectiveNode
@@ -163,15 +157,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @param array<Operator> $operators
      */
-    public function getOperatorsFields(
-        array $operators,
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type|string $type,
-    ): string {
+    public function getOperatorsFields(array $operators, TypeSource $type): string {
         return implode(
             "\n",
             array_map(
                 function (Operator $operator) use ($type): string {
-                    return $this->getOperatorField($operator, $type, null, null);
+                    return $this->getOperatorField($operator, $type, null);
                 },
                 $operators,
             ),
@@ -212,7 +203,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $this->removeTypeDefinition($name);
     }
 
-    public function getPlaceholderTypeDefinitionNode(FieldDefinitionNode $field): TypeDefinitionNode|Type|null {
+    public function getPlaceholderTypeDefinitionNode(
+        FieldDefinitionNode|FieldDefinition $field,
+    ): TypeDefinitionNode|Type|null {
         $node     = null;
         $paginate = $this->getNodeDirective($field, PaginateDirective::class);
 

@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
@@ -397,8 +398,8 @@ class DirectiveTest extends TestCase {
                             return 'custom';
                         }
 
-                        public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
-                            return $provider->getType(static::class, Type::INT, $nullable);
+                        public function getFieldType(TypeProvider $provider, TypeSource $type): string {
+                            return $provider->getType(static::class, $type->create(Type::int()));
                         }
 
                         public function getFieldDescription(): string {
@@ -427,18 +428,20 @@ class DirectiveTest extends TestCase {
                         }
 
                         public static function getTypeName(
+                            Manipulator $manipulator,
                             BuilderInfo $builder,
-                            ?string $type,
-                            ?bool $nullable,
+                            ?TypeSource $type,
                         ): string {
-                            return Directive::Name.'ComplexCustom'.Str::studly($type ?? '');
+                            $directiveName = Directive::Name;
+                            $typeName      = Str::studly($type?->getTypeName() ?? '');
+
+                            return "{$directiveName}ComplexCustom{$typeName}";
                         }
 
                         public function getTypeDefinitionNode(
                             Manipulator $manipulator,
                             string $name,
-                            ?string $type,
-                            ?bool $nullable,
+                            ?TypeSource $type,
                         ): ?TypeDefinitionNode {
                             return Parser::inputObjectTypeDefinition(
                                 <<<DEF

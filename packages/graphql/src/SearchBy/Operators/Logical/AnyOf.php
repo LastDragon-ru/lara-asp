@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 
 /**
  * @internal Must not be used directly.
@@ -16,8 +17,8 @@ class AnyOf extends Logical {
         return 'Any of the conditions must be true.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
-        return "[{$type}!]";
+    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
+        return "[{$type->getTypeName()}!]";
     }
 
     protected function getBoolean(): string {

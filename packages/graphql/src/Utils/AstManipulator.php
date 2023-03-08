@@ -16,7 +16,6 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
-use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
@@ -44,6 +43,8 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function array_merge;
 use function trim;
+
+// @phpcs:disable Generic.Files.LineLength.TooLong
 
 abstract class AstManipulator {
     public function __construct(
@@ -150,7 +151,7 @@ abstract class AstManipulator {
     }
 
     public function getTypeDefinitionNode(
-        Node|InputObjectField|FieldDefinition|FieldArgument|string $node,
+        Node|Type|InputObjectField|FieldDefinition|FieldArgument|string $node,
     ): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
         $types      = $this->getTypes();

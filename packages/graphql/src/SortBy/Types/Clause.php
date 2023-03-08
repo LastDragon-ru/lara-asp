@@ -2,19 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
 
-use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use GraphQL\Language\AST\TypeDefinitionNode;
-use GraphQL\Type\Definition\FieldDefinition;
-use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
@@ -24,11 +23,12 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
 
 class Clause extends InputObject {
-    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
+        $typeName      = $type?->getTypeName();
 
-        return "{$directiveName}{$builderName}Clause{$type}";
+        return "{$directiveName}{$builderName}Clause{$typeName}";
     }
 
     protected function getScope(): string {
@@ -38,13 +38,9 @@ class Clause extends InputObject {
     protected function getTypeDescription(
         Manipulator $manipulator,
         string $name,
-        string $type,
-        bool $nullable = null,
+        ObjectSource|InputSource $node,
     ): string {
-        $typeName    = $manipulator->getNodeTypeFullName($type);
-        $description = "Sort clause for `{$typeName}` (only one property allowed at a time).";
-
-        return $description;
+        return "Sort clause for `{$node}` (only one property allowed at a time).";
     }
 
     /**
@@ -53,28 +49,35 @@ class Clause extends InputObject {
     protected function getTypeOperators(
         Manipulator $manipulator,
         string $name,
-        string $type,
-        ?bool $nullable,
+        InputSource|ObjectSource $node,
     ): array {
-        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false);
+        return $manipulator->getTypeOperators($this->getScope(), $node->create(Operators::Extra));
     }
 
-    protected function isConvertable(
+    protected function isFieldConvertable(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
+        InputFieldSource|ObjectFieldSource $field,
     ): bool {
         // Parent?
-        if (!parent::isConvertable($manipulator, $node)) {
+        if (!parent::isFieldConvertable($manipulator, $field)) {
             return false;
         }
 
-        // Convertable?
-        if ($manipulator->isList($node)) {
+        // List?
+        if ($field->isList()) {
             return false;
         }
 
         // Ignored?
-        if ($node instanceof Ignored || $manipulator->getNodeDirective($node, Ignored::class) !== null) {
+        if ($manipulator->getTypeDefinitionNode($field->getType()) instanceof Ignored) {
+            return false;
+        }
+
+        if ($manipulator->getNodeDirective($field->getObject(), Ignored::class) !== null) {
+            return false;
+        }
+
+        if ($manipulator->getNodeDirective($field->getField(), Ignored::class) !== null) {
             return false;
         }
 
@@ -87,34 +90,31 @@ class Clause extends InputObject {
      */
     protected function getFieldOperator(
         Manipulator $manipulator,
-        FieldDefinition|InputValueDefinitionNode|InputObjectField|FieldDefinitionNode $field,
-        Type|TypeDefinitionNode $fieldType,
-        ?bool $fieldNullable,
+        InputFieldSource|ObjectFieldSource $field,
     ): ?array {
-        $type     = $manipulator->getNodeName($fieldType);
-        $operator = null;
-        $isNested = $fieldType instanceof InputObjectTypeDefinitionNode
+        $source    = $field;
+        $operator  = null;
+        $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
+        $isNested  = $fieldType instanceof InputObjectTypeDefinitionNode
             || $fieldType instanceof ObjectTypeDefinitionNode
             || $fieldType instanceof InputObjectType
             || $fieldType instanceof ObjectType;
 
         if ($isNested) {
-            $operator = $this->getObjectDefaultOperator($manipulator, $field, $fieldType, $fieldNullable);
+            $operator = $this->getObjectDefaultOperator($manipulator, $field);
         } else {
-            $type     = $manipulator->getType(Direction::class, null, null);
+            $source   = $field->create($manipulator->getType(Direction::class, $field));
             $operator = $manipulator->getOperator($this->getScope(), Field::class);
         }
 
-        return [$operator, $type];
+        return [$operator, $source];
     }
 
     protected function getObjectDefaultOperator(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
-        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $fieldType,
-        ?bool $fieldNullable,
+        InputFieldSource|ObjectFieldSource $field,
     ): OperatorContract {
-        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $fieldType, $fieldNullable)
+        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field)
             ?? $manipulator->getOperator($this->getScope(), Property::class);
     }
 }

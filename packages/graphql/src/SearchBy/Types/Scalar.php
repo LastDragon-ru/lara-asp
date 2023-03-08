@@ -6,7 +6,9 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 
 class Scalar implements TypeDefinition {
@@ -14,12 +16,13 @@ class Scalar implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
-        $isNull        = $nullable ? 'OrNull' : '';
+        $typeName      = $type?->getTypeName();
+        $nullable      = $type?->isNullable() ? 'OrNull' : '';
 
-        return "{$directiveName}{$builderName}Scalar{$type}{$isNull}";
+        return "{$directiveName}{$builderName}Scalar{$typeName}{$nullable}";
     }
 
     /**
@@ -28,18 +31,16 @@ class Scalar implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?string $type,
-        ?bool $nullable,
+        ?TypeSource $type,
     ): ?TypeDefinitionNode {
         // Type?
-        if (!$type) {
+        if (!($type instanceof ObjectFieldSource)) {
             return null;
         }
 
         // Operators
         $scope     = Directive::class;
-        $nullable  = (bool) $nullable;
-        $operators = $manipulator->getTypeOperators($scope, $type, $nullable);
+        $operators = $manipulator->getTypeOperators($scope, $type);
 
         if (!$operators) {
             return null;
@@ -47,7 +48,7 @@ class Scalar implements TypeDefinition {
 
         // Definition
         $content    = $manipulator->getOperatorsFields($operators, $type);
-        $typeName   = $manipulator->getNodeTypeFullName($type).($nullable ? '' : '!');
+        $typeName   = $manipulator->getNodeTypeFullName($type->getType()).($type->isNullable() ? '' : '!');
         $definition = Parser::inputObjectTypeDefinition(
             <<<DEF
             """

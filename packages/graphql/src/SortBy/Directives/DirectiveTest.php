@@ -149,7 +149,7 @@ class DirectiveTest extends TestCase {
             ],
         ]);
 
-        self::expectExceptionObject(new TypeDefinitionImpossibleToCreateType(Clause::class, 'TestType', true));
+        self::expectExceptionObject(new TypeDefinitionImpossibleToCreateType(Clause::class, 'TestType'));
 
         $registry = $this->app->make(TypeRegistry::class);
         $registry->register($type);

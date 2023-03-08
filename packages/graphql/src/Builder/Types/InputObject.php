@@ -2,25 +2,25 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
-use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\FieldDefinition;
-use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 
 use function count;
+use function trim;
 
 abstract class InputObject implements TypeDefinition {
     public function __construct() {
@@ -32,8 +32,7 @@ abstract class InputObject implements TypeDefinition {
     abstract protected function getTypeDescription(
         Manipulator $manipulator,
         string $name,
-        string $type,
-        bool $nullable = null,
+        InputSource|ObjectSource $node,
     ): string;
 
     /**
@@ -42,28 +41,16 @@ abstract class InputObject implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?string $type,
-        ?bool $nullable,
+        ?TypeSource $node,
     ): ?TypeDefinitionNode {
         // Type?
-        if (!$type) {
-            return null;
-        }
-
-        // Supported?
-        $node        = $manipulator->getTypeDefinitionNode($type);
-        $isSupported = $node instanceof InputObjectTypeDefinitionNode
-            || $node instanceof ObjectTypeDefinitionNode
-            || $node instanceof InputObjectType
-            || $node instanceof ObjectType;
-
-        if (!$isSupported) {
+        if (!($node instanceof InputSource) && !($node instanceof ObjectSource)) {
             return null;
         }
 
         // Logical
-        $description = $this->getTypeDescription($manipulator, $name, $type, $nullable);
-        $operators   = $this->getTypeOperators($manipulator, $name, $type, $nullable);
+        $description = $this->getTypeDescription($manipulator, $name, $node);
+        $operators   = $this->getTypeOperators($manipulator, $name, $node);
         $definition  = Parser::inputObjectTypeDefinition(
             <<<DEF
             """
@@ -75,22 +62,18 @@ abstract class InputObject implements TypeDefinition {
                 """
                 dummy: ID
 
-                {$manipulator->getOperatorsFields($operators, $name)}
+                {$manipulator->getOperatorsFields($operators, $node)}
             }
             DEF,
         );
 
         // Add searchable fields
-        $fields = $node instanceof InputObjectType || $node instanceof ObjectType
-            ? $node->getFields()
-            : $node->fields;
+        $type   = $node->getType();
+        $fields = $type instanceof InputObjectType || $type instanceof ObjectType
+            ? $type->getFields()
+            : $type->fields;
 
         foreach ($fields as $field) {
-            // Convertable?
-            if (!$this->isConvertable($manipulator, $field)) {
-                continue;
-            }
-
             // Name should be unique (may conflict with Type's operators)
             $fieldName = $manipulator->getNodeName($field);
 
@@ -98,28 +81,15 @@ abstract class InputObject implements TypeDefinition {
                 throw new TypeDefinitionFieldAlreadyDefined($fieldName);
             }
 
-            // Determine type
-            $fieldType     = $manipulator->getNodeTypeName($field);
-            $fieldNullable = $manipulator->isNullable($field);
-            $fieldTypeNode = null;
+            // Field & Type
+            $fieldSource = $node->getField($field);
 
-            try {
-                $fieldTypeNode = $manipulator->getTypeDefinitionNode($field);
-            } catch (TypeDefinitionUnknown $exception) {
-                if ($manipulator->hasTypeOperators($this->getScope(), $fieldType)) {
-                    $fieldTypeNode = $manipulator->getScalarTypeDefinitionNode($fieldType);
-                } else {
-                    throw $exception;
-                }
-            }
-
-            // Convertable?
-            if (!$this->isConvertable($manipulator, $fieldTypeNode)) {
+            if (!$this->isFieldConvertable($manipulator, $fieldSource)) {
                 continue;
             }
 
             // Add
-            $fieldDefinition = $this->getFieldDefinition($manipulator, $field, $fieldTypeNode, $fieldNullable);
+            $fieldDefinition = $this->getFieldDefinition($manipulator, $fieldSource);
 
             if ($fieldDefinition) {
                 $definition->fields[] = $fieldDefinition;
@@ -144,23 +114,22 @@ abstract class InputObject implements TypeDefinition {
     protected function getTypeOperators(
         Manipulator $manipulator,
         string $name,
-        string $type,
-        ?bool $nullable,
+        InputSource|ObjectSource $node,
     ): array {
         return [];
     }
 
-    protected function isConvertable(
+    protected function isFieldConvertable(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
+        InputFieldSource|ObjectFieldSource $field,
     ): bool {
         // Union?
-        if ($manipulator->isUnion($node)) {
+        if ($manipulator->isUnion($field->getType())) {
             return false;
         }
 
         // Resolver?
-        if ($manipulator->getNodeDirective($node, FieldResolver::class)) {
+        if ($manipulator->getNodeDirective($field->getField(), FieldResolver::class)) {
             return false;
         }
 
@@ -170,32 +139,27 @@ abstract class InputObject implements TypeDefinition {
 
     protected function getFieldDefinition(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
-        TypeDefinitionNode|Type $fieldType,
-        ?bool $fieldNullable,
+        InputFieldSource|ObjectFieldSource $field,
     ): InputValueDefinitionNode|null {
-        $name              = $manipulator->getNodeName($field);
-        $builder           = $manipulator->getBuilderInfo()->getBuilder();
-        [$operator, $type] = $this->getFieldOperator($manipulator, $field, $fieldType, $fieldNullable) ?? [null, null];
+        [$operator, $type] = $this->getFieldOperator($manipulator, $field) ?? [null, null];
 
-        if (!$type || !$operator || !$operator->isBuilderSupported($builder)) {
+        if (!$type || !$operator || !$operator->isBuilderSupported($manipulator->getBuilderInfo()->getBuilder())) {
             return null;
         }
 
-        $fieldDescription = $this->getFieldDescription($manipulator, $field, $fieldType, $fieldNullable);
-        $fieldDefinition  = $manipulator->getOperatorField($operator, $type, $name, $fieldNullable, $fieldDescription);
+        $fieldName       = $manipulator->getNodeName($field->getField());
+        $fieldDesc       = $this->getFieldDescription($manipulator, $field);
+        $fieldDefinition = $manipulator->getOperatorField($operator, $type, $fieldName, $fieldDesc);
 
         return Parser::inputValueDefinition($fieldDefinition);
     }
 
     /**
-     * @return array{Operator, string}|null
+     * @return array{Operator, TypeSource}|null
      */
     abstract protected function getFieldOperator(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
-        TypeDefinitionNode|Type $fieldType,
-        ?bool $fieldNullable,
+        InputFieldSource|ObjectFieldSource $field,
     ): ?array;
 
     /**
@@ -208,14 +172,12 @@ abstract class InputObject implements TypeDefinition {
     protected function getFieldDirectiveOperator(
         string $directive,
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
-        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $fieldType,
-        ?bool $fieldNullable,
+        InputFieldSource|ObjectFieldSource $field,
     ): ?Operator {
         // Directive?
         $operator = null;
         $builder  = $manipulator->getBuilderInfo()->getBuilder();
-        $nodes    = [$field, $fieldType];
+        $nodes    = [$field->getField(), $manipulator->getTypeDefinitionNode($field->getType())];
 
         foreach ($nodes as $node) {
             $operator = $manipulator->getNodeDirective(
@@ -237,18 +199,16 @@ abstract class InputObject implements TypeDefinition {
 
     protected function getFieldDescription(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
-        TypeDefinitionNode|Type $fieldType,
-        ?bool $fieldNullable,
+        ObjectFieldSource|InputFieldSource $field,
     ): string|null {
-        $description = null;
+        $description = $field->getField()->description;
 
-        if ($field instanceof InputValueDefinitionNode) {
-            $description = $field->description->value ?? null;
-        } elseif ($field instanceof InputObjectField) {
-            $description = $field->description;
-        } else {
-            // empty
+        if ($description instanceof StringValueNode) {
+            $description = $description->value;
+        }
+
+        if ($description) {
+            $description = trim($description) ?: null;
         }
 
         return $description;

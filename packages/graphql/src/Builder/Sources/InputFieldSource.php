@@ -6,7 +6,7 @@ use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeNode;
-use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -17,19 +17,19 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 class InputFieldSource extends Source {
     public function __construct(
         Manipulator $manipulator,
-        private InputObjectTypeDefinitionNode|InputObjectType $input,
-        private InputValueDefinitionNode|FieldDefinition $field,
+        private InputObjectTypeDefinitionNode|InputObjectType $object,
+        private InputValueDefinitionNode|InputObjectField $field,
     ) {
-        parent::__construct($manipulator, $field instanceof FieldDefinition ? $field->getType() : $field->type);
+        parent::__construct($manipulator, $field instanceof InputObjectField ? $field->getType() : $field->type);
     }
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
-    public function getInput(): InputObjectTypeDefinitionNode|InputObjectType {
-        return $this->input;
+    public function getObject(): InputObjectTypeDefinitionNode|InputObjectType {
+        return $this->object;
     }
 
-    public function getField(): InputValueDefinitionNode|FieldDefinition {
+    public function getField(): InputValueDefinitionNode|InputObjectField {
         return $this->field;
     }
     // </editor-fold>
@@ -39,7 +39,7 @@ class InputFieldSource extends Source {
     public function __toString(): string {
         $manipulator = $this->getManipulator();
         $field       = $manipulator->getNodeName($this->getField());
-        $type        = $manipulator->getNodeTypeFullName($this->getInput());
+        $type        = $manipulator->getNodeTypeFullName($this->getObject());
 
         return "{$type} { {$field} }";
     }
