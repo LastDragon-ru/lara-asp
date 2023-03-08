@@ -23,10 +23,10 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
 
 class Clause extends InputObject {
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
-        $typeName      = $type?->getTypeName();
+        $typeName      = $source?->getTypeName();
 
         return "{$directiveName}{$builderName}Clause{$typeName}";
     }

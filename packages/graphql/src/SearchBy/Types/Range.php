@@ -15,8 +15,8 @@ class Range implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
-        $typeName      = $type?->getTypeName();
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
+        $typeName      = $source?->getTypeName();
         $directiveName = Directive::Name;
 
         return "{$directiveName}TypeRange{$typeName}";
@@ -25,17 +25,17 @@ class Range implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $type,
+        ?TypeSource $source,
     ): ?TypeDefinitionNode {
         $node = null;
 
-        if ($type) {
+        if ($source) {
             $node = Parser::inputObjectTypeDefinition(
             /** @lang GraphQL */
                 <<<GRAPHQL
                 input {$name} {
-                    min: {$type->getTypeName()}!
-                    max: {$type->getTypeName()}!
+                    min: {$source->getTypeName()}!
+                    max: {$source->getTypeName()}!
                 }
                 GRAPHQL,
             );

@@ -20,8 +20,8 @@ class RelationType implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
-        $typeName      = $type?->getTypeName();
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
+        $typeName      = $source?->getTypeName();
         $builderName   = $builder->getName();
         $operatorName  = Str::studly(Relation::getName());
         $directiveName = Directive::Name;
@@ -32,19 +32,19 @@ class RelationType implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $type,
+        ?TypeSource $source,
     ): ?TypeDefinitionNode {
-        if (!$type) {
+        if (!$source) {
             return null;
         }
 
         $count = $manipulator->getType(Scalar::class, new Source($manipulator, Type::int()));
-        $where = $manipulator->getType(Condition::class, $type);
+        $where = $manipulator->getType(Condition::class, $source);
 
         return Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Conditions for the related objects (`has()`/`doesntHave()`) for `{$type}`.
+            Conditions for the related objects (`has()`/`doesntHave()`) for `{$source}`.
 
             See also:
             * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence

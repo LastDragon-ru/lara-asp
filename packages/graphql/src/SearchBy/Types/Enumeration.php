@@ -17,11 +17,11 @@ class Enumeration implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
-        $typeName      = $type?->getTypeName();
-        $nullable      = $type?->isNullable() ? 'OrNull' : '';
+        $typeName      = $source?->getTypeName();
+        $nullable      = $source?->isNullable() ? 'OrNull' : '';
 
         return "{$directiveName}{$builderName}Enum{$typeName}{$nullable}";
     }
@@ -32,26 +32,26 @@ class Enumeration implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $type,
+        ?TypeSource $source,
     ): ?TypeDefinitionNode {
         // Type?
-        if (!($type instanceof ObjectFieldSource)) {
+        if (!($source instanceof ObjectFieldSource)) {
             return null;
         }
 
         // Operators
         $scope     = Directive::class;
-        $operators = $manipulator->hasTypeOperators($scope, $type)
-            ? $manipulator->getTypeOperators($scope, $type)
-            : $manipulator->getTypeOperators($scope, $type->create(Operators::Enum));
+        $operators = $manipulator->hasTypeOperators($scope, $source)
+            ? $manipulator->getTypeOperators($scope, $source)
+            : $manipulator->getTypeOperators($scope, $source->create(Operators::Enum));
 
         if (!$operators) {
             return null;
         }
 
         // Definition
-        $content    = $manipulator->getOperatorsFields($operators, $type);
-        $typeName   = $manipulator->getNodeTypeFullName($type->getType());
+        $content    = $manipulator->getOperatorsFields($operators, $source);
+        $typeName   = $manipulator->getNodeTypeFullName($source->getType());
         $definition = Parser::inputObjectTypeDefinition(
             <<<DEF
             """

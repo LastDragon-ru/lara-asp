@@ -16,11 +16,11 @@ class Scalar implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $type): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
-        $typeName      = $type?->getTypeName();
-        $nullable      = $type?->isNullable() ? 'OrNull' : '';
+        $typeName      = $source?->getTypeName();
+        $nullable      = $source?->isNullable() ? 'OrNull' : '';
 
         return "{$directiveName}{$builderName}Scalar{$typeName}{$nullable}";
     }
@@ -31,24 +31,24 @@ class Scalar implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $type,
+        ?TypeSource $source,
     ): ?TypeDefinitionNode {
         // Type?
-        if (!($type instanceof ObjectFieldSource)) {
+        if (!($source instanceof ObjectFieldSource)) {
             return null;
         }
 
         // Operators
         $scope     = Directive::class;
-        $operators = $manipulator->getTypeOperators($scope, $type);
+        $operators = $manipulator->getTypeOperators($scope, $source);
 
         if (!$operators) {
             return null;
         }
 
         // Definition
-        $content    = $manipulator->getOperatorsFields($operators, $type);
-        $typeName   = $manipulator->getNodeTypeFullName($type->getType()).($type->isNullable() ? '' : '!');
+        $content    = $manipulator->getOperatorsFields($operators, $source);
+        $typeName   = $manipulator->getNodeTypeFullName($source->getType()).($source->isNullable() ? '' : '!');
         $definition = Parser::inputObjectTypeDefinition(
             <<<DEF
             """
