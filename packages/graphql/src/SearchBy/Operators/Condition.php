@@ -14,7 +14,7 @@ class Condition extends Property {
         return 'Condition';
     }
 
-    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
-        return $provider->getType(ConditionType::class, $type);
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $provider->getType(ConditionType::class, $source);
     }
 }

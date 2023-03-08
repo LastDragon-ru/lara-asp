@@ -14,8 +14,8 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 class Property extends PropertyDirective implements Operator {
     use DirectiveName;
 
-    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
-        return $provider->getType(Clause::class, $type);
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $provider->getType(Clause::class, $source);
     }
 
     public function getFieldDescription(): string {

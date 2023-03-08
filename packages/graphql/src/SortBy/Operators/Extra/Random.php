@@ -35,7 +35,7 @@ class Random extends BaseOperator {
         return 'By random';
     }
 
-    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $provider->getType(Flag::class);
     }
 

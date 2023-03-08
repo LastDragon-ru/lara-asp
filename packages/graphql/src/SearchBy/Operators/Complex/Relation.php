@@ -42,8 +42,8 @@ class Relation extends BaseOperator {
         return 'relation';
     }
 
-    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
-        return $provider->getType(RelationType::class, $type);
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $provider->getType(RelationType::class, $source);
     }
 
     public function getFieldDescription(): string {

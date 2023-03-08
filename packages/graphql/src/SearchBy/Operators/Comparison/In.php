@@ -25,8 +25,8 @@ class In extends BaseOperator {
         return 'Within a set of values.';
     }
 
-    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
-        return "[{$type->getTypeName()}!]";
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return "[{$source->getTypeName()}!]";
     }
 
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {

@@ -14,7 +14,7 @@ class Clause extends Property {
         return 'condition';
     }
 
-    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
-        return '['.$provider->getType(ClauseType::class, $type).'!]';
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return '['.$provider->getType(ClauseType::class, $source).'!]';
     }
 }

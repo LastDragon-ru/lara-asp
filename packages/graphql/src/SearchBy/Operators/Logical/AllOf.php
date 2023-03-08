@@ -24,8 +24,8 @@ class AllOf extends Logical {
         return 'All of the conditions must be true.';
     }
 
-    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
-        return "[{$type->getTypeName()}!]";
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return "[{$source->getTypeName()}!]";
     }
 
     protected function getBoolean(): string {

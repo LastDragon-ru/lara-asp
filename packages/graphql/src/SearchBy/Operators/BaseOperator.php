@@ -14,8 +14,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\DirectiveName;
 abstract class BaseOperator extends OperatorDirective implements Operator, Marker {
     use DirectiveName;
 
-    public function getFieldType(TypeProvider $provider, TypeSource $type): string {
-        return $type->getTypeName();
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $source->getTypeName();
     }
 
     public function isBuilderSupported(object $builder): bool {
