@@ -40,7 +40,7 @@ class Scalar implements TypeDefinition {
 
         // Operators
         $scope     = Directive::class;
-        $operators = $manipulator->getTypeOperators($scope, $source);
+        $operators = $manipulator->getTypeOperators($scope, $source->getTypeName(), (bool) $source->isNullable());
 
         if (!$operators) {
             return null;
@@ -48,7 +48,7 @@ class Scalar implements TypeDefinition {
 
         // Definition
         $content    = $manipulator->getOperatorsFields($operators, $source);
-        $typeName   = $manipulator->getNodeTypeFullName($source->getType()).($source->isNullable() ? '' : '!');
+        $typeName   = $source->getTypeName().($source->isNullable() ? '' : '!');
         $definition = Parser::inputObjectTypeDefinition(
             <<<DEF
             """

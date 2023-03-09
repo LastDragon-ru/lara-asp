@@ -111,17 +111,17 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * Method doesn't check Builder!
      */
-    public function hasTypeOperators(string $scope, TypeSource $type): bool {
-        return (bool) ($this->operators[$scope] ?? null)?->hasOperators($type->getTypeName());
+    public function hasTypeOperators(string $scope, string $type): bool {
+        return (bool) ($this->operators[$scope] ?? null)?->hasOperators($type);
     }
 
     /**
      * @return list<Operator>
      */
-    public function getTypeOperators(string $scope, TypeSource $type): array {
+    public function getTypeOperators(string $scope, string $type, bool $nullable = false): array {
         $operators = $this->operators[$scope] ?? null;
-        $operators = $operators && $operators->hasOperators($type->getTypeName())
-            ? $operators->getOperators($type->getTypeName(), (bool) $type->isNullable())
+        $operators = $operators && $operators->hasOperators($type)
+            ? $operators->getOperators($type, $nullable)
             : [];
         $operators = array_filter($operators, function (Operator $operator): bool {
             return $operator->isBuilderSupported($this->getBuilderInfo()->getBuilder());

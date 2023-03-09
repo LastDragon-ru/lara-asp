@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
 
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
@@ -14,6 +15,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
@@ -51,7 +53,7 @@ class Clause extends InputObject {
         string $name,
         InputSource|ObjectSource $node,
     ): array {
-        return $manipulator->getTypeOperators($this->getScope(), $node->create(Operators::Extra));
+        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra, (bool) $node->isNullable());
     }
 
     protected function isFieldConvertable(
@@ -103,7 +105,8 @@ class Clause extends InputObject {
         if ($isNested) {
             $operator = $this->getObjectDefaultOperator($manipulator, $field);
         } else {
-            $source   = $field->create($manipulator->getType(Direction::class, $field));
+            $type     = $manipulator->getType(Direction::class, $field);
+            $source   = new Source($manipulator, Parser::typeReference($type));
             $operator = $manipulator->getOperator($this->getScope(), Field::class);
         }
 

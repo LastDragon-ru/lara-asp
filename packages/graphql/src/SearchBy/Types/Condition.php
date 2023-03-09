@@ -6,6 +6,7 @@ use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
@@ -18,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
@@ -57,7 +59,7 @@ class Condition extends InputObject {
         string $name,
         InputSource|ObjectSource $node,
     ): array {
-        return $manipulator->getTypeOperators($this->getScope(), $node->create(Operators::Extra));
+        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra);
     }
 
     protected function isFieldConvertable(
@@ -118,7 +120,8 @@ class Condition extends InputObject {
         $source = $field;
 
         if (is_string($operator)) {
-            $source   = $field->create($manipulator->getType($operator, $field));
+            $type     = $manipulator->getType($operator, $field);
+            $source   = new Source($manipulator, Parser::typeReference($type));
             $operator = $manipulator->getOperator($this->getScope(), Property::class);
         }
 
@@ -138,7 +141,7 @@ class Condition extends InputObject {
 
         // Condition
         $builder   = $manipulator->getBuilderInfo()->getBuilder();
-        $operators = $manipulator->getTypeOperators($this->getScope(), $field->create(Operators::Condition));
+        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Condition);
         $condition = null;
 
         foreach ($operators as $operator) {

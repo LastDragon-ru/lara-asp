@@ -399,7 +399,7 @@ class DirectiveTest extends TestCase {
                         }
 
                         public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-                            return $provider->getType(static::class, $source->create(Type::int()));
+                            return $provider->getType(static::class, $source);
                         }
 
                         public function getFieldDescription(): string {

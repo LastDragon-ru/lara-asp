@@ -19,9 +19,4 @@ interface TypeSource extends Stringable {
     public function isNullable(): ?bool;
 
     public function isList(): ?bool;
-
-    /**
-     * @param TypeDefinitionNode|(Node&TypeNode)|Type|string $type
-     */
-    public function create(TypeDefinitionNode|Node|Type|string $type): TypeSource;
 }
