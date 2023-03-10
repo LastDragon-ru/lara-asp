@@ -54,11 +54,11 @@ class Source implements TypeSource {
         return $definition;
     }
 
-    public function isNullable(): ?bool {
+    public function isNullable(): bool {
         return $this->getManipulator()->isNullable($this->getType());
     }
 
-    public function isList(): ?bool {
+    public function isList(): bool {
         return $this->getManipulator()->isList($this->getType());
     }
 
