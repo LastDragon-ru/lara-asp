@@ -59,7 +59,7 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
-    "laravel/scout": "^9.2.1",
+    "laravel/scout": "^9.2.1|^10.0.0",
     "mockery/mockery": "^1.4.2",
     "nunomaduro/larastan": "2.4.0",
     "orchestra/testbench": "^6.9.0|^7.0.0|^8.0.0",
