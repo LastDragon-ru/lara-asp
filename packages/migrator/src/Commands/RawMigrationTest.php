@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
 use LastDragon_ru\LaraASP\Migrator\Package;
@@ -20,12 +22,19 @@ use function implode;
  */
 class RawMigrationTest extends TestCase {
     public function testHandle(): void {
-        // make:migration also call dump-autoload we no need this.
+        // make:migration may also call dump-autoload we are no need this.
         $composer = Mockery::mock(Composer::class);
-        $composer
-            ->shouldReceive('dumpAutoloads')
-            ->once()
-            ->andReturns();
+
+        if (InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=10.1.5')) {
+            $composer
+                ->shouldReceive('dumpAutoloads')
+                ->never();
+        } else {
+            $composer
+                ->shouldReceive('dumpAutoloads')
+                ->once()
+                ->andReturns();
+        }
 
         $this->override(Composer::class, static function () use ($composer) {
             return $composer;
