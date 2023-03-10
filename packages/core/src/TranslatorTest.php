@@ -5,12 +5,13 @@ namespace LastDragon_ru\LaraASP\Core;
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Core\Translator as PackageTranslator;
+use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
 
 /**
  * @internal
  * @covers \LastDragon_ru\LaraASP\Core\Translator
  *
- * @phpstan-import-type TranslationsFactory from \LastDragon_ru\LaraASP\Testing\Utils\WithTranslations
+ * @phpstan-import-type TranslationsFactory from WithTranslations
  */
 class TranslatorTest extends TestCase {
     // <editor-fold desc="Tests">
