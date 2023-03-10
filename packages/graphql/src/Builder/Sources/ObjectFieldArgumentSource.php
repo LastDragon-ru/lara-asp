@@ -4,9 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
@@ -14,7 +15,7 @@ use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
 /**
- * @extends Source<(Node&TypeNode)|Type>
+ * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
  */
 class ObjectFieldArgumentSource extends Source {
     public function __construct(

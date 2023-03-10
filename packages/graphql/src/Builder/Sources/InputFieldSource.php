@@ -4,15 +4,16 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\TypeNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
 /**
- * @extends Source<(Node&TypeNode)|Type>
+ * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
  */
 class InputFieldSource extends Source {
     public function __construct(

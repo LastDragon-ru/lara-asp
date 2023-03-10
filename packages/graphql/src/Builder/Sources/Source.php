@@ -2,15 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
-use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
 /**
- * @template TType of TypeDefinitionNode|(Node&TypeNode)|Type
+ * @template TType of TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type
  */
 class Source implements TypeSource {
     /**
@@ -35,7 +37,7 @@ class Source implements TypeSource {
     /**
      * @return TType
      */
-    public function getType(): TypeDefinitionNode|Node|Type {
+    public function getType(): TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type {
         return $this->type;
     }
 

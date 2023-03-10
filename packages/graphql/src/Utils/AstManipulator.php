@@ -133,7 +133,7 @@ abstract class AstManipulator {
 
         if ($node instanceof WrappingType) {
             $type = $node->getWrappedType(true);
-        } elseif (($node instanceof Node && $node instanceof TypeNode) || $node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
+        } elseif ($node instanceof Node) {
             try {
                 $type = $this->getTypeDefinitionNode($node);
             } catch (TypeDefinitionUnknown) {
