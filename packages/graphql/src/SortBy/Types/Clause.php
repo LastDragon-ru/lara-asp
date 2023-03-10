@@ -53,7 +53,7 @@ class Clause extends InputObject {
         string $name,
         InputSource|ObjectSource $node,
     ): array {
-        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra, (bool) $node->isNullable());
+        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra);
     }
 
     protected function isFieldConvertable(
@@ -70,16 +70,15 @@ class Clause extends InputObject {
             return false;
         }
 
-        // Ignored?
-        if ($manipulator->getTypeDefinitionNode($field->getType()) instanceof Ignored) {
-            return false;
-        }
-
-        if ($manipulator->getNodeDirective($field->getObject(), Ignored::class) !== null) {
-            return false;
-        }
-
+        // Ignored field?
         if ($manipulator->getNodeDirective($field->getField(), Ignored::class) !== null) {
+            return false;
+        }
+
+        // Ignored type?
+        $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
+
+        if ($fieldType instanceof Ignored || $manipulator->getNodeDirective($fieldType, Ignored::class) !== null) {
             return false;
         }
 
@@ -94,13 +93,13 @@ class Clause extends InputObject {
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource $field,
     ): ?array {
-        $source    = $field;
-        $operator  = null;
         $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
         $isNested  = $fieldType instanceof InputObjectTypeDefinitionNode
             || $fieldType instanceof ObjectTypeDefinitionNode
             || $fieldType instanceof InputObjectType
             || $fieldType instanceof ObjectType;
+        $operator  = null;
+        $source    = null;
 
         if ($isNested) {
             $operator = $this->getObjectDefaultOperator($manipulator, $field);

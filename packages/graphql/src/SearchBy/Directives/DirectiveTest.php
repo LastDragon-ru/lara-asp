@@ -449,7 +449,7 @@ class DirectiveTest extends TestCase {
                                 Custom operator
                                 """
                                 input {$name} {
-                                    custom: {$source}
+                                    custom: {$source?->getTypeName()}
                                 }
                                 DEF,
                             );

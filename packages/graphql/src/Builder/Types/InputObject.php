@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
@@ -43,12 +45,12 @@ abstract class InputObject implements TypeDefinition {
         string $name,
         ?TypeSource $node,
     ): ?TypeDefinitionNode {
-        // Type?
+        // Source?
         if (!($node instanceof InputSource) && !($node instanceof ObjectSource)) {
             return null;
         }
 
-        // Logical
+        // Type
         $description = $this->getTypeDescription($manipulator, $name, $node);
         $operators   = $this->getTypeOperators($manipulator, $name, $node);
         $definition  = Parser::inputObjectTypeDefinition(
@@ -143,7 +145,23 @@ abstract class InputObject implements TypeDefinition {
     ): InputValueDefinitionNode|null {
         [$operator, $type] = $this->getFieldOperator($manipulator, $field) ?? [null, null];
 
-        if (!$type || !$operator || !$operator->isBuilderSupported($manipulator->getBuilderInfo()->getBuilder())) {
+        if ($operator === null || !$operator->isBuilderSupported($manipulator->getBuilderInfo()->getBuilder())) {
+            return null;
+        }
+
+        if ($type === null) {
+            $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
+
+            if ($fieldType instanceof InputObjectTypeDefinitionNode || $fieldType instanceof InputObjectType) {
+                $type = new InputSource($manipulator, $fieldType);
+            } elseif ($fieldType instanceof ObjectTypeDefinitionNode || $fieldType instanceof ObjectType) {
+                $type = new ObjectSource($manipulator, $fieldType);
+            } else {
+                // empty
+            }
+        }
+
+        if ($type === null) {
             return null;
         }
 
@@ -155,7 +173,7 @@ abstract class InputObject implements TypeDefinition {
     }
 
     /**
-     * @return array{Operator, TypeSource}|null
+     * @return array{Operator, ?TypeSource}|null
      */
     abstract protected function getFieldOperator(
         Manipulator $manipulator,
@@ -201,7 +219,11 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         ObjectFieldSource|InputFieldSource $field,
     ): string|null {
-        $description = $field->getField()->description;
+        $description = null;
+
+        if ($field instanceof InputFieldSource) {
+            $description = $field->getField()->description;
+        }
 
         if ($description instanceof StringValueNode) {
             $description = $description->value;

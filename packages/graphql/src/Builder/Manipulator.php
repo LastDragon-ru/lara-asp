@@ -133,11 +133,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     public function getOperatorField(
         Operator $operator,
-        TypeSource $type,
+        TypeSource $source,
         ?string $field,
         ?string $description = null,
     ): string {
-        $type        = $operator->getFieldType($this, $type);
+        $type        = $operator->getFieldType($this, $source);
         $field       = $field ?: $operator::getName();
         $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
         $directive   = $directive instanceof DirectiveNode
@@ -157,12 +157,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @param array<Operator> $operators
      */
-    public function getOperatorsFields(array $operators, TypeSource $type): string {
+    public function getOperatorsFields(array $operators, TypeSource $source): string {
         return implode(
             "\n",
             array_map(
-                function (Operator $operator) use ($type): string {
-                    return $this->getOperatorField($operator, $type, null);
+                function (Operator $operator) use ($source): string {
+                    return $this->getOperatorField($operator, $source, null);
                 },
                 $operators,
             ),

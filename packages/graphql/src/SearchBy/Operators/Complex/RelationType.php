@@ -38,7 +38,7 @@ class RelationType implements TypeDefinition {
             return null;
         }
 
-        $count = $manipulator->getType(Scalar::class, new Source($manipulator, Type::int()));
+        $count = $manipulator->getType(Scalar::class, new Source($manipulator, Type::nonNull(Type::int())));
         $where = $manipulator->getType(Condition::class, $source);
 
         return Parser::inputObjectTypeDefinition(

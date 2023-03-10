@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
@@ -34,8 +33,8 @@ class Enumeration implements TypeDefinition {
         string $name,
         ?TypeSource $source,
     ): ?TypeDefinitionNode {
-        // Type?
-        if (!($source instanceof ObjectFieldSource)) {
+        // Source?
+        if (!$source) {
             return null;
         }
 

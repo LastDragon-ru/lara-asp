@@ -71,16 +71,15 @@ class Condition extends InputObject {
             return false;
         }
 
-        // Ignored?
-        if ($manipulator->getTypeDefinitionNode($field->getType()) instanceof Ignored) {
-            return false;
-        }
-
-        if ($manipulator->getNodeDirective($field->getObject(), Ignored::class) !== null) {
-            return false;
-        }
-
+        // Ignored field?
         if ($manipulator->getNodeDirective($field->getField(), Ignored::class) !== null) {
+            return false;
+        }
+
+        // Ignored type?
+        $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
+
+        if ($fieldType instanceof Ignored || $manipulator->getNodeDirective($fieldType, Ignored::class) !== null) {
             return false;
         }
 
@@ -99,17 +98,17 @@ class Condition extends InputObject {
         $operator  = match (true) {
             $fieldType instanceof ScalarTypeDefinitionNode,
                 $fieldType instanceof ScalarType
-            => Scalar::class,
+                    => Scalar::class,
             $fieldType instanceof EnumTypeDefinitionNode,
                 $fieldType instanceof EnumType
-            => Enumeration::class,
+                    => Enumeration::class,
             $fieldType instanceof InputObjectTypeDefinitionNode,
                 $fieldType instanceof ObjectTypeDefinitionNode,
                 $fieldType instanceof InputObjectType,
                 $fieldType instanceof ObjectType
-            => $this->getObjectDefaultOperator($manipulator, $field),
+                    => $this->getObjectDefaultOperator($manipulator, $field),
             default
-            => null,
+                    => null,
         };
 
         if (!$operator) {
@@ -117,7 +116,7 @@ class Condition extends InputObject {
         }
 
         // Create input
-        $source = $field;
+        $source = null;
 
         if (is_string($operator)) {
             $type     = $manipulator->getType($operator, $field);

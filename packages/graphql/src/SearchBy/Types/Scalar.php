@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 
 class Scalar implements TypeDefinition {
@@ -33,8 +32,8 @@ class Scalar implements TypeDefinition {
         string $name,
         ?TypeSource $source,
     ): ?TypeDefinitionNode {
-        // Type?
-        if (!($source instanceof ObjectFieldSource)) {
+        // Source?
+        if (!$source) {
             return null;
         }
 
@@ -48,7 +47,7 @@ class Scalar implements TypeDefinition {
 
         // Definition
         $content    = $manipulator->getOperatorsFields($operators, $source);
-        $typeName   = $source->getTypeName().($source->isNullable() ? '' : '!');
+        $typeName   = $manipulator->getNodeTypeFullName($source->getType()).($source->isNullable() ? '' : '!');
         $definition = Parser::inputObjectTypeDefinition(
             <<<DEF
             """

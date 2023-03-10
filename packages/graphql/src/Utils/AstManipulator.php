@@ -16,6 +16,7 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
@@ -88,6 +89,8 @@ abstract class AstManipulator {
             $type = $node->getType();
         } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
             $type = $node->type;
+        } elseif ($node instanceof TypeNode || $node instanceof Type) {
+            $type = $node;
         } else {
             // empty
         }
@@ -103,18 +106,20 @@ abstract class AstManipulator {
 
         if ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof FieldArgument) {
             $type = $node->getType();
-
-            if ($type instanceof NonNull) {
-                $type = $type->getWrappedType(false);
-            }
         } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
             $type = $node->type;
-
-            if ($type instanceof NonNullTypeNode) {
-                $type = $type->type;
-            }
+        } elseif ($node instanceof TypeNode || $node instanceof Type) {
+            $type = $node;
         } else {
             // empty
+        }
+
+        if ($type instanceof NonNull) {
+            $type = $type->getWrappedType(false);
+        }
+
+        if ($type instanceof NonNullTypeNode) {
+            $type = $type->type;
         }
 
         return $type instanceof ListOfType
@@ -128,7 +133,7 @@ abstract class AstManipulator {
 
         if ($node instanceof WrappingType) {
             $type = $node->getWrappedType(true);
-        } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
+        } elseif (($node instanceof Node && $node instanceof TypeNode) || $node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
             try {
                 $type = $this->getTypeDefinitionNode($node);
             } catch (TypeDefinitionUnknown) {
