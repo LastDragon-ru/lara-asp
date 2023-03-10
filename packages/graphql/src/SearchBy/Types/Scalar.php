@@ -15,11 +15,11 @@ class Scalar implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
-        $typeName      = $source?->getTypeName();
-        $nullable      = $source?->isNullable() ? 'OrNull' : '';
+        $typeName      = $source->getTypeName();
+        $nullable      = $source->isNullable() ? 'OrNull' : '';
 
         return "{$directiveName}{$builderName}Scalar{$typeName}{$nullable}";
     }
@@ -30,13 +30,8 @@ class Scalar implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $source,
+        TypeSource $source,
     ): ?TypeDefinitionNode {
-        // Source?
-        if (!$source) {
-            return null;
-        }
-
         // Operators
         $scope     = Directive::class;
         $operators = $manipulator->getTypeOperators($scope, $source->getTypeName(), $source->isNullable());

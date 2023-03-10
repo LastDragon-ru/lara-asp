@@ -430,10 +430,10 @@ class DirectiveTest extends TestCase {
                         public static function getTypeName(
                             Manipulator $manipulator,
                             BuilderInfo $builder,
-                            ?TypeSource $source,
+                            TypeSource $source,
                         ): string {
                             $directiveName = Directive::Name;
-                            $typeName      = Str::studly($source?->getTypeName() ?? '');
+                            $typeName      = Str::studly($source->getTypeName());
 
                             return "{$directiveName}ComplexCustom{$typeName}";
                         }
@@ -441,7 +441,7 @@ class DirectiveTest extends TestCase {
                         public function getTypeDefinitionNode(
                             Manipulator $manipulator,
                             string $name,
-                            ?TypeSource $source,
+                            TypeSource $source,
                         ): ?TypeDefinitionNode {
                             return Parser::inputObjectTypeDefinition(
                                 <<<DEF
@@ -449,7 +449,7 @@ class DirectiveTest extends TestCase {
                                 Custom operator
                                 """
                                 input {$name} {
-                                    custom: {$source?->getTypeName()}
+                                    custom: {$source->getTypeName()}
                                 }
                                 DEF,
                             );

@@ -16,11 +16,11 @@ class Enumeration implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
-        $typeName      = $source?->getTypeName();
-        $nullable      = $source?->isNullable() ? 'OrNull' : '';
+        $typeName      = $source->getTypeName();
+        $nullable      = $source->isNullable() ? 'OrNull' : '';
 
         return "{$directiveName}{$builderName}Enum{$typeName}{$nullable}";
     }
@@ -31,13 +31,8 @@ class Enumeration implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $source,
+        TypeSource $source,
     ): ?TypeDefinitionNode {
-        // Source?
-        if (!$source) {
-            return null;
-        }
-
         // Operators
         $scope     = Directive::class;
         $operators = $manipulator->hasTypeOperators($scope, $source->getTypeName())

@@ -31,7 +31,7 @@ class Field extends BaseOperator {
     }
 
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return $provider->getType(Direction::class);
+        return $provider->getType(Direction::class, $source);
     }
 
     public function getFieldDescription(): string {

@@ -19,8 +19,8 @@ class RelationType implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
-        $typeName      = $source?->getTypeName();
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+        $typeName      = $source->getTypeName();
         $builderName   = $builder->getName();
         $operatorName  = Str::studly(Relation::getName());
         $directiveName = Directive::Name;
@@ -31,12 +31,8 @@ class RelationType implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $source,
+        TypeSource $source,
     ): ?TypeDefinitionNode {
-        if (!$source) {
-            return null;
-        }
-
         $count = $manipulator->getType(Scalar::class, $manipulator->getTypeSource(Type::nonNull(Type::int())));
         $where = $manipulator->getType(Condition::class, $source);
 

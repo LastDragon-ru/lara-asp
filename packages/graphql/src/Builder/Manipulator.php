@@ -66,7 +66,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="TypeProvider">
     // =========================================================================
-    public function getType(string $definition, ?TypeSource $source = null): string {
+    public function getType(string $definition, TypeSource $source): string {
         // Exists?
         $name = $definition::getTypeName($this, $this->getBuilderInfo(), $source);
 

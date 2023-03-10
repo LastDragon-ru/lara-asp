@@ -15,14 +15,14 @@ class Flag implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         return Directive::Name.'TypeFlag';
     }
 
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $source,
+        TypeSource $source,
     ): ?TypeDefinitionNode {
         return Parser::enumTypeDefinition(
         /** @lang GraphQL */

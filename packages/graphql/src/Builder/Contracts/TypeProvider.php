@@ -12,7 +12,7 @@ interface TypeProvider {
     /**
      * @param class-string<TypeDefinition> $definition
      */
-    public function getType(string $definition, ?TypeSource $source = null): string;
+    public function getType(string $definition, TypeSource $source): string;
 
     public function getTypeSource(TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type $type): TypeSource;
 }

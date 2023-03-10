@@ -40,7 +40,7 @@ abstract class InputObject implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $source,
+        TypeSource $source,
     ): ?TypeDefinitionNode {
         // Source?
         if (!($source instanceof InputSource) && !($source instanceof ObjectSource)) {

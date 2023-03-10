@@ -30,8 +30,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use function is_string;
 
 class Condition extends InputObject {
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, ?TypeSource $source): string {
-        $typeName      = $source?->getTypeName();
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+        $typeName      = $source->getTypeName();
         $builderName   = $builder->getName();
         $directiveName = Directive::Name;
 
