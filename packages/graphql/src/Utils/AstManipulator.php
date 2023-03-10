@@ -18,7 +18,6 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
-use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
@@ -204,28 +203,6 @@ abstract class AstManipulator {
 
         // Remove
         unset($this->getDocument()->types[$name]);
-    }
-
-    public function getScalarTypeDefinitionNode(string $scalar): ScalarTypeDefinitionNode {
-        // It can be defined inside schema
-        $node = null;
-
-        try {
-            $node = $this->getTypeDefinitionNode($scalar);
-        } catch (TypeDefinitionUnknown) {
-            // empty
-        }
-
-        if (!$node) {
-            // or programmatically (and there is no definition...)
-            $node = Parser::scalarTypeDefinition("scalar {$scalar}");
-        } elseif (!($node instanceof ScalarTypeDefinitionNode)) {
-            throw new TypeDefinitionUnknown($scalar);
-        } else {
-            // empty
-        }
-
-        return $node;
     }
 
     /**

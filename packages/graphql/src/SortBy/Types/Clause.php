@@ -36,21 +36,19 @@ class Clause extends InputObject {
         return Directive::getScope();
     }
 
-    protected function getTypeDescription(
+    protected function getDescription(
         Manipulator $manipulator,
-        string $name,
-        ObjectSource|InputSource $node,
+        ObjectSource|InputSource $source,
     ): string {
-        return "Sort clause for `{$node}` (only one property allowed at a time).";
+        return "Sort clause for `{$source}` (only one property allowed at a time).";
     }
 
     /**
      * @inheritDoc
      */
-    protected function getTypeOperators(
+    protected function getOperators(
         Manipulator $manipulator,
-        string $name,
-        InputSource|ObjectSource $node,
+        InputSource|ObjectSource $source,
     ): array {
         return $manipulator->getTypeOperators($this->getScope(), Operators::Extra);
     }

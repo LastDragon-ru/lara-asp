@@ -29,10 +29,9 @@ abstract class InputObject implements TypeDefinition {
 
     abstract protected function getScope(): string;
 
-    abstract protected function getTypeDescription(
+    abstract protected function getDescription(
         Manipulator $manipulator,
-        string $name,
-        InputSource|ObjectSource $node,
+        InputSource|ObjectSource $source,
     ): string;
 
     /**
@@ -41,16 +40,16 @@ abstract class InputObject implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?TypeSource $node,
+        ?TypeSource $source,
     ): ?TypeDefinitionNode {
         // Source?
-        if (!($node instanceof InputSource) && !($node instanceof ObjectSource)) {
+        if (!($source instanceof InputSource) && !($source instanceof ObjectSource)) {
             return null;
         }
 
         // Type
-        $description = $this->getTypeDescription($manipulator, $name, $node);
-        $operators   = $this->getTypeOperators($manipulator, $name, $node);
+        $description = $this->getDescription($manipulator, $source);
+        $operators   = $this->getOperators($manipulator, $source);
         $definition  = Parser::inputObjectTypeDefinition(
             <<<DEF
             """
@@ -62,16 +61,16 @@ abstract class InputObject implements TypeDefinition {
                 """
                 dummy: ID
 
-                {$manipulator->getOperatorsFields($operators, $node)}
+                {$manipulator->getOperatorsFields($operators, $source)}
             }
             DEF,
         );
 
         // Add searchable fields
-        $type   = $node->getType();
-        $fields = $type instanceof InputObjectType || $type instanceof ObjectType
-            ? $type->getFields()
-            : $type->fields;
+        $object = $source->getType();
+        $fields = $object instanceof InputObjectType || $object instanceof ObjectType
+            ? $object->getFields()
+            : $object->fields;
 
         foreach ($fields as $field) {
             // Name should be unique (may conflict with Type's operators)
@@ -82,7 +81,7 @@ abstract class InputObject implements TypeDefinition {
             }
 
             // Field & Type
-            $fieldSource = $node->getField($field);
+            $fieldSource = $source->getField($field);
 
             if (!$this->isFieldConvertable($manipulator, $fieldSource)) {
                 continue;
@@ -111,10 +110,9 @@ abstract class InputObject implements TypeDefinition {
     /**
      * @return array<Operator>
      */
-    protected function getTypeOperators(
+    protected function getOperators(
         Manipulator $manipulator,
-        string $name,
-        InputSource|ObjectSource $node,
+        InputSource|ObjectSource $source,
     ): array {
         return [];
     }
