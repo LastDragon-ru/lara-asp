@@ -73,7 +73,7 @@ class Clause extends InputObject {
         }
 
         // Ignored type?
-        $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
+        $fieldType = $field->getTypeDefinition();
 
         if ($fieldType instanceof Ignored || $manipulator->getNodeDirective($fieldType, Ignored::class) !== null) {
             return false;
@@ -90,7 +90,7 @@ class Clause extends InputObject {
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource $field,
     ): ?array {
-        $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
+        $fieldType = $field->getTypeDefinition();
         $isNested  = $fieldType instanceof InputObjectTypeDefinitionNode
             || $fieldType instanceof ObjectTypeDefinitionNode
             || $fieldType instanceof InputObjectType

@@ -45,6 +45,15 @@ class Source implements TypeSource {
         return $this->getManipulator()->getNodeTypeName($this->getType());
     }
 
+    public function getTypeDefinition(): TypeDefinitionNode|Type {
+        $type       = $this->getType();
+        $definition = !($type instanceof TypeDefinitionNode)
+            ? $this->getManipulator()->getTypeDefinitionNode($type)
+            : $type;
+
+        return $definition;
+    }
+
     public function isNullable(): ?bool {
         return $this->getManipulator()->isNullable($this->getType());
     }

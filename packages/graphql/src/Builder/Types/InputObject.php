@@ -146,8 +146,7 @@ abstract class InputObject implements TypeDefinition {
         }
 
         if ($type === null) {
-            $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
-            $type      = $manipulator->getTypeSource($fieldType);
+            $type = $manipulator->getTypeSource($field->getTypeDefinition());
         }
 
         $fieldName       = $manipulator->getNodeName($field->getField());
@@ -180,7 +179,7 @@ abstract class InputObject implements TypeDefinition {
         // Directive?
         $operator = null;
         $builder  = $manipulator->getBuilderInfo()->getBuilder();
-        $nodes    = [$field->getField(), $manipulator->getTypeDefinitionNode($field->getType())];
+        $nodes    = [$field->getField(), $field->getTypeDefinition()];
 
         foreach ($nodes as $node) {
             $operator = $manipulator->getNodeDirective(

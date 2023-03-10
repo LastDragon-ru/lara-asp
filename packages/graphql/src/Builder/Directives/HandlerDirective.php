@@ -257,7 +257,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         $type       = null;
         $definition = $manipulator->isPlaceholder($argument->getArgument())
             ? $manipulator->getPlaceholderTypeDefinitionNode($argument->getField())
-            : $manipulator->getTypeDefinitionNode($argument->getArgument());
+            : $argument->getTypeDefinition();
 
         if ($definition) {
             $operator = $manipulator->getOperator(static::getScope(), $operator);

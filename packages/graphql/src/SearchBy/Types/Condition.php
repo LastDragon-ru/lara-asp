@@ -74,7 +74,7 @@ class Condition extends InputObject {
         }
 
         // Ignored type?
-        $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
+        $fieldType = $field->getTypeDefinition();
 
         if ($fieldType instanceof Ignored || $manipulator->getNodeDirective($fieldType, Ignored::class) !== null) {
             return false;
@@ -91,7 +91,7 @@ class Condition extends InputObject {
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource $field,
     ): ?array {
-        $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
+        $fieldType = $field->getTypeDefinition();
         $operator  = match (true) {
             $fieldType instanceof ScalarTypeDefinitionNode,
                 $fieldType instanceof ScalarType

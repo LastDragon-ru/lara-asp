@@ -14,6 +14,8 @@ interface TypeSource extends Stringable {
 
     public function getTypeName(): string;
 
+    public function getTypeDefinition(): TypeDefinitionNode|Type;
+
     public function isNullable(): ?bool;
 
     public function isList(): ?bool;
