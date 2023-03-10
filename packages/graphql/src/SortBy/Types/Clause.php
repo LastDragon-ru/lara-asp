@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
@@ -105,7 +104,7 @@ class Clause extends InputObject {
             $operator = $this->getObjectDefaultOperator($manipulator, $field);
         } else {
             $type     = $manipulator->getType(Direction::class, $field);
-            $source   = new Source($manipulator, Parser::typeReference($type));
+            $source   = $manipulator->getTypeSource(Parser::typeReference($type));
             $operator = $manipulator->getOperator($this->getScope(), Field::class);
         }
 

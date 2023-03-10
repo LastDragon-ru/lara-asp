@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
@@ -151,18 +149,7 @@ abstract class InputObject implements TypeDefinition {
 
         if ($type === null) {
             $fieldType = $manipulator->getTypeDefinitionNode($field->getType());
-
-            if ($fieldType instanceof InputObjectTypeDefinitionNode || $fieldType instanceof InputObjectType) {
-                $type = new InputSource($manipulator, $fieldType);
-            } elseif ($fieldType instanceof ObjectTypeDefinitionNode || $fieldType instanceof ObjectType) {
-                $type = new ObjectSource($manipulator, $fieldType);
-            } else {
-                // empty
-            }
-        }
-
-        if ($type === null) {
-            return null;
+            $type      = $manipulator->getTypeSource($fieldType);
         }
 
         $fieldName       = $manipulator->getNodeName($field->getField());

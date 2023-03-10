@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use Closure;
 use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
@@ -12,8 +11,6 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldArgument;
-use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -30,9 +27,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -259,28 +254,18 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         ObjectFieldArgumentSource $argument,
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
-        // Convert
         $type       = null;
-        $node       = null;
         $definition = $manipulator->isPlaceholder($argument->getArgument())
             ? $manipulator->getPlaceholderTypeDefinitionNode($argument->getField())
             : $manipulator->getTypeDefinitionNode($argument->getArgument());
 
-        if ($definition instanceof InputObjectTypeDefinitionNode || $definition instanceof InputObjectType) {
-            $node = new InputSource($manipulator, $definition);
-        } elseif ($definition instanceof ObjectTypeDefinitionNode || $definition instanceof ObjectType) {
-            $node = new ObjectSource($manipulator, $definition);
-        } else {
-            // empty
-        }
-
-        if ($node) {
+        if ($definition) {
             $operator = $manipulator->getOperator(static::getScope(), $operator);
+            $node     = $manipulator->getTypeSource($definition);
             $type     = $operator->getFieldType($manipulator, $node);
             $type     = Parser::typeReference($type);
         }
 
-        // Return
         return $type;
     }
 

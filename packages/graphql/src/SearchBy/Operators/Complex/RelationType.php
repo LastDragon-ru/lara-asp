@@ -10,7 +10,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
@@ -38,7 +37,7 @@ class RelationType implements TypeDefinition {
             return null;
         }
 
-        $count = $manipulator->getType(Scalar::class, new Source($manipulator, Type::nonNull(Type::int())));
+        $count = $manipulator->getType(Scalar::class, $manipulator->getTypeSource(Type::nonNull(Type::int())));
         $where = $manipulator->getType(Condition::class, $source);
 
         return Parser::inputObjectTypeDefinition(

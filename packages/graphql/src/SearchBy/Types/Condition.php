@@ -19,7 +19,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
@@ -120,7 +119,7 @@ class Condition extends InputObject {
 
         if (is_string($operator)) {
             $type     = $manipulator->getType($operator, $field);
-            $source   = new Source($manipulator, Parser::typeReference($type));
+            $source   = $manipulator->getTypeSource(Parser::typeReference($type));
             $operator = $manipulator->getOperator($this->getScope(), Property::class);
         }
 
