@@ -25,10 +25,9 @@ trait SaveOrThrow {
 
     /* @phpstan-ignore-next-line `Model::delete()` and `Pivot::::delete()` return different types. */
     public function delete(): bool|int|null {
-        /** @var bool|int|null $result */
         $result = parent::delete();
 
-        if ($result === false) {
+        if ($result === false) { // @phpstan-ignore-line
             throw new Exception('An unknown error occurred while deleting the model.');
         }
 

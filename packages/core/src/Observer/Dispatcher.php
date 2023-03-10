@@ -44,7 +44,6 @@ class Dispatcher implements Subject {
      */
     public function notify(mixed $context = null): static {
         foreach ($this->observers as $observer) {
-            /** @var Closure $observer */
             $observer($context);
         }
 

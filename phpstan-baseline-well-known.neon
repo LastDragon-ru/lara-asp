@@ -57,25 +57,6 @@ parameters:
                 - packages/testing/src/Package/TestCase.php
                 - packages/testing/src/TestCase.php
 
-        # False positive
-        # https://github.com/phpstan/phpstan/issues/5091
-        -
-            message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase::setTranslations\\(\\) has parameter \\$translations with no signature specified for callable\\.$#"
-            paths:
-                - packages/testing/src/Utils/WithTranslations.php
-        -
-            message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase::setTranslations\\(\\) has parameter \\$translations with no value type specified in iterable type array\\.$#"
-            paths:
-                - packages/testing/src/Utils/WithTranslations.php
-        -
-            message: "#^PHPDoc tag @param for parameter \\$translations with type LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\TranslationsFactory is not subtype of native type array\\|\\(callable\\)\\|null\\.$#"
-            paths:
-                - packages/testing/src/Utils/WithTranslations.php
-        -
-            message: "#^Parameter \\$translations of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase::setTranslations\\(\\) has invalid type LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\TranslationsFactory\\.$#"
-            paths:
-                - packages/testing/src/Utils/WithTranslations.php
-
         # Caused by invalid return type definition of GraphQL\Type\Definition\FieldArgument::getType()
         # and probably will be fixed by upsteam.
         -
@@ -90,3 +71,15 @@ parameters:
             message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\FieldDefinitionNode\\|GraphQL\\\\Language\\\\AST\\\\InputValueDefinitionNode\\|GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\|GraphQL\\\\Type\\\\Definition\\\\FieldDefinition\\|GraphQL\\\\Type\\\\Definition\\\\InputObjectField\\|GraphQL\\\\Type\\\\Definition\\\\Type::\\$name\\.$#"
             paths:
                 - packages/graphql/src/Utils/AstManipulator.php
+
+        # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
+        # https://github.com/phpstan/phpstan/issues/149
+        # https://github.com/phpstan/phpstan/issues/8904
+        -
+            message: "#^PHPDoc tag @var with type Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Mixins\\\\EloquentBuilderMixin\\)\\.$#"
+            paths:
+                - packages/eloquent/src/Mixins/EloquentBuilderMixin.php
+        -
+            message: "#^PHPDoc tag @var with type Illuminate\\\\Testing\\\\TestResponse is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\TestResponseMixin\\)\\.$#"
+            paths:
+                - packages/testing/src/Mixins/TestResponseMixin.php
