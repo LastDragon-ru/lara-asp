@@ -42,7 +42,7 @@ class Scalar implements TypeDefinition {
 
         // Definition
         $content    = $manipulator->getOperatorsFields($operators, $source);
-        $typeName   = $manipulator->getNodeTypeFullName($source->getType()).($source->isNullable() ? '' : '!');
+        $typeName   = $manipulator->getNodeTypeFullName($source->getType());
         $definition = Parser::inputObjectTypeDefinition(
             <<<DEF
             """

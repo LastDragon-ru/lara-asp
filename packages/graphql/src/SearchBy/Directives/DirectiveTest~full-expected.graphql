@@ -619,7 +619,7 @@ input SearchByEnumEnumAOrNull {
 }
 
 """
-Available operators for `scalar Boolean!` (only one operator allowed at a time).
+Available operators for `scalar Boolean` (only one operator allowed at a time).
 """
 input SearchByScalarBoolean {
     """
@@ -665,7 +665,7 @@ input SearchByScalarBooleanOrNull {
 }
 
 """
-Available operators for `scalar Date!` (only one operator allowed at a time).
+Available operators for `scalar Date` (only one operator allowed at a time).
 """
 input SearchByScalarDate {
     """
@@ -699,7 +699,7 @@ input SearchByScalarDateOrNull {
 }
 
 """
-Available operators for `scalar Float!` (only one operator allowed at a time).
+Available operators for `scalar Float` (only one operator allowed at a time).
 """
 input SearchByScalarFloat {
     """
@@ -841,7 +841,7 @@ input SearchByScalarFloatOrNull {
 }
 
 """
-Available operators for `scalar ID!` (only one operator allowed at a time).
+Available operators for `scalar ID` (only one operator allowed at a time).
 """
 input SearchByScalarID {
     """
@@ -911,7 +911,7 @@ input SearchByScalarIDOrNull {
 }
 
 """
-Available operators for `scalar Int!` (only one operator allowed at a time).
+Available operators for `scalar Int` (only one operator allowed at a time).
 """
 input SearchByScalarInt {
     """
@@ -1113,7 +1113,7 @@ input SearchByScalarIntOrNull {
 }
 
 """
-Available operators for `scalar String!` (only one operator allowed at a time).
+Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScalarString {
     """
@@ -1419,7 +1419,7 @@ input SearchByScoutEnumEnumAOrNull {
 }
 
 """
-Available operators for `scalar Boolean!` (only one operator allowed at a time).
+Available operators for `scalar Boolean` (only one operator allowed at a time).
 """
 input SearchByScoutScalarBoolean {
     """
@@ -1441,7 +1441,7 @@ input SearchByScoutScalarBooleanOrNull {
 }
 
 """
-Available operators for `scalar Date!` (only one operator allowed at a time).
+Available operators for `scalar Date` (only one operator allowed at a time).
 """
 input SearchByScoutScalarDate {
     """
@@ -1463,7 +1463,7 @@ input SearchByScoutScalarDateOrNull {
 }
 
 """
-Available operators for `scalar Float!` (only one operator allowed at a time).
+Available operators for `scalar Float` (only one operator allowed at a time).
 """
 input SearchByScoutScalarFloat {
     """
@@ -1497,7 +1497,7 @@ input SearchByScoutScalarFloatOrNull {
 }
 
 """
-Available operators for `scalar ID!` (only one operator allowed at a time).
+Available operators for `scalar ID` (only one operator allowed at a time).
 """
 input SearchByScoutScalarID {
     """
@@ -1531,7 +1531,7 @@ input SearchByScoutScalarIDOrNull {
 }
 
 """
-Available operators for `scalar Int!` (only one operator allowed at a time).
+Available operators for `scalar Int` (only one operator allowed at a time).
 """
 input SearchByScoutScalarInt {
     """
@@ -1565,7 +1565,7 @@ input SearchByScoutScalarIntOrNull {
 }
 
 """
-Available operators for `scalar String!` (only one operator allowed at a time).
+Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScoutScalarString {
     """

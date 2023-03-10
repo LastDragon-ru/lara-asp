@@ -111,7 +111,7 @@ input SearchByConditionProperties {
 }
 
 """
-Available operators for `scalar Int!` (only one operator allowed at a time).
+Available operators for `scalar Int` (only one operator allowed at a time).
 """
 input SearchByScalarInt {
     """
