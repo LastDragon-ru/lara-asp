@@ -20,10 +20,7 @@ use function substr_replace;
  * @see https://github.com/laravel/ideas/issues/1914
  */
 class EloquentModelComparator extends ObjectComparator {
-    /**
-     * @inheritDoc
-     */
-    public function accepts($expected, $actual) {
+    public function accepts(mixed $expected, mixed $actual): bool {
         return $expected instanceof Model
             && $actual instanceof Model;
     }
@@ -34,11 +31,11 @@ class EloquentModelComparator extends ObjectComparator {
      * @param array<mixed> $processed
      */
     public function assertEquals(
-        $expected,
-        $actual,
-        $delta = 0.0,
-        $canonicalize = false,
-        $ignoreCase = false,
+        mixed $expected,
+        mixed $actual,
+        float $delta = 0.0,
+        bool $canonicalize = false,
+        bool $ignoreCase = false,
         array &$processed = [],
     ): void {
         // If classes different we just call parent to fail
@@ -67,7 +64,6 @@ class EloquentModelComparator extends ObjectComparator {
                 $actual,
                 substr_replace($e->getExpectedAsString(), $expected::class.' Model', 0, 5),
                 substr_replace($e->getActualAsString(), $actual::class.' Model', 0, 5),
-                false,
                 'Failed asserting that two models are equal.',
             );
         }

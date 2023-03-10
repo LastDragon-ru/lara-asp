@@ -24,10 +24,7 @@ use const PREG_SET_ORDER;
  * Compares two {@link Query}.
  */
 class DatabaseQueryComparator extends ObjectComparator {
-    /**
-     * @inheritDoc
-     */
-    public function accepts($expected, $actual) {
+    public function accepts(mixed $expected, mixed $actual): bool {
         return $expected instanceof Query
             && $actual instanceof Query;
     }
@@ -38,11 +35,11 @@ class DatabaseQueryComparator extends ObjectComparator {
      * @param array<mixed> $processed
      */
     public function assertEquals(
-        $expected,
-        $actual,
-        $delta = 0.0,
-        $canonicalize = false,
-        $ignoreCase = false,
+        mixed $expected,
+        mixed $actual,
+        float $delta = 0.0,
+        bool $canonicalize = false,
+        bool $ignoreCase = false,
         array &$processed = [],
     ): void {
         // If classes different we just call parent to fail
@@ -69,7 +66,6 @@ class DatabaseQueryComparator extends ObjectComparator {
                 $normalizedActual,
                 $exception->getExpectedAsString(),
                 $exception->getActualAsString(),
-                false,
                 'Failed asserting that two database queries are equal.',
             );
         }

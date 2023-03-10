@@ -28,10 +28,7 @@ class ClosureConstraint extends Constraint {
         return $this->closure;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function matches($other): bool {
+    protected function matches(mixed $other): bool {
         return $this->getClosure()($other);
     }
 

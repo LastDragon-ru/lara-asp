@@ -42,10 +42,7 @@ class JsonMatchesFragment extends Constraint {
         return $result;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function matches($other): bool {
+    protected function matches(mixed $other): bool {
         $json    = Args::getJson($other, true);
         $matches = is_array($json) && Arr::has($json, $this->path);
 
