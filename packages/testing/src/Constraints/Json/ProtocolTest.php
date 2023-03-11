@@ -38,7 +38,7 @@ class ProtocolTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $file   = $this->getTempFile($content);
+        $file   = self::getTempFile($content);
         $uri    = Protocol::getUri($file, $parameters);
         $actual = (new Protocol())($uri);
 
