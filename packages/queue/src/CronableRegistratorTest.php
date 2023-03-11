@@ -166,7 +166,7 @@ class CronableRegistratorTest extends TestCase {
     /**
      * @return array<string, array{bool}>
      */
-    public function dataProviderRegister(): array {
+    public static function dataProviderRegister(): array {
         return [
             'enabled'  => [true],
             'disabled' => [false],

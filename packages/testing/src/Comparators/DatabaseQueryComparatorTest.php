@@ -80,7 +80,7 @@ class DatabaseQueryComparatorTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderAccepts(): array {
+    public static function dataProviderAccepts(): array {
         return [
             'query + query'  => [
                 true,
@@ -111,7 +111,7 @@ class DatabaseQueryComparatorTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderAssertEquals(): array {
+    public static function dataProviderAssertEquals(): array {
         $a = new Query(
             <<<'SQL'
             SELECT *

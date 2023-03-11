@@ -53,7 +53,7 @@ class DirectiveNodeListTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, ?array<DirectiveNode>, ?string}>
      */
-    public function dataProviderToString(): array {
+    public static function dataProviderToString(): array {
         $settings = (new TestSettings())
             ->setAlwaysMultilineArguments(false);
 

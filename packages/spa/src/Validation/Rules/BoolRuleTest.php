@@ -35,7 +35,7 @@ class BoolRuleTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderPasses(): array {
+    public static function dataProviderPasses(): array {
         return [
             'true'  => [true, true],
             'false' => [true, false],

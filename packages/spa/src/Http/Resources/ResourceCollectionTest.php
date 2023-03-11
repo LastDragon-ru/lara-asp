@@ -72,7 +72,7 @@ class ResourceCollectionTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderConstruct(): array {
+    public static function dataProviderConstruct(): array {
         return [
             'class'        => [
                 new InvalidArgumentException(sprintf(

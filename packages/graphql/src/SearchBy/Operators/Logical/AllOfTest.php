@@ -87,7 +87,7 @@ class AllOfTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCall(): array {
+    public static function dataProviderCall(): array {
         $factory = static function (self $test): Argument {
             return $test->getGraphQLArgument(
                 '[TestInput!]',
@@ -180,7 +180,7 @@ class AllOfTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCallScout(): array {
+    public static function dataProviderCallScout(): array {
         $factory = static function (self $test): Argument {
             return $test->getGraphQLArgument(
                 '[TestInput!]',

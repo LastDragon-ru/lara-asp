@@ -120,7 +120,7 @@ class OperatorsTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderSetOperators(): array {
+    public static function dataProviderSetOperators(): array {
         return [
             'ok'              => [true, 'scalar', [IsNot::class]],
             'unknown scalar'  => [

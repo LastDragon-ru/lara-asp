@@ -148,7 +148,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     /**
      * @return array<string,array{string}>
      */
-    public function dataProviderGetIteratorColumn(): array {
+    public static function dataProviderGetIteratorColumn(): array {
         return [
             'short'     => ['value'],
             'qualified' => ['test_objects.value'],
@@ -158,7 +158,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     /**
      * @return array<string,array{string, Closure(): Builder<TestObject>}>
      */
-    public function dataProviderGetDefaultColumn(): array {
+    public static function dataProviderGetDefaultColumn(): array {
         return [
             Builder::class => [
                 'test_objects.id',

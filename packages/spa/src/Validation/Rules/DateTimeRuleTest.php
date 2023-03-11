@@ -63,7 +63,7 @@ class DateTimeRuleTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderPasses(): array {
+    public static function dataProviderPasses(): array {
         return [
             'valid date'                => [false, '2102-12-01'],
             'invalid date'              => [false, '02-12-01'],
@@ -75,7 +75,7 @@ class DateTimeRuleTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderGetValue(): array {
+    public static function dataProviderGetValue(): array {
         return [
             'date'                          => [
                 [

@@ -53,7 +53,7 @@ class TypeTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, GraphQLType}>
      */
-    public function dataProviderToString(): array {
+    public static function dataProviderToString(): array {
         $settings = new TestSettings();
 
         return [

@@ -71,7 +71,7 @@ class BuilderTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderHandle(): array {
+    public static function dataProviderHandle(): array {
         return (new MergeDataProvider([
             'Both'     => (new CompositeDataProvider(
                 new EloquentBuilderDataProvider(),

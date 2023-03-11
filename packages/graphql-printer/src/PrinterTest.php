@@ -66,7 +66,7 @@ class PrinterTest extends TestCase {
     /**
      * @return array<string, array<mixed>>
      */
-    public function dataProviderPrintSchema(): array {
+    public static function dataProviderPrintSchema(): array {
         return [
             'null'                                             => [
                 (new GraphQLExpectedSchema(
@@ -348,7 +348,7 @@ class PrinterTest extends TestCase {
     /**
      * @return array<string, array<mixed>>
      */
-    public function dataProviderPrintSchemaType(): array {
+    public static function dataProviderPrintSchemaType(): array {
         return [
             UnionType::class => [
                 (new GraphQLExpectedType(
@@ -419,7 +419,7 @@ class PrinterTest extends TestCase {
     /**
      * @return array<string, array<mixed>>
      */
-    public function dataProviderPrintType(): array {
+    public static function dataProviderPrintType(): array {
         return [
             UnionType::class       => [
                 (new GraphQLExpectedType(

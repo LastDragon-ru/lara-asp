@@ -219,7 +219,7 @@ class DirectiveTest extends TestCase {
     /**
      * @return array<string,array{Closure(self): GraphQLExpectedSchema, string}>
      */
-    public function dataProviderManipulateArgDefinition(): array {
+    public static function dataProviderManipulateArgDefinition(): array {
         return [
             'full'    => [
                 static function (self $test): GraphQLExpectedSchema {
@@ -255,7 +255,7 @@ class DirectiveTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderHandleBuilder(): array {
+    public static function dataProviderHandleBuilder(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([

@@ -74,7 +74,7 @@ class ListBlockTest extends TestCase {
     /**
      * @return array<string,array<mixed>>
      */
-    public function dataProviderToString(): array {
+    public static function dataProviderToString(): array {
         $settings = new TestSettings();
 
         return (new MergeDataProvider([

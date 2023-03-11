@@ -107,7 +107,7 @@ class QueueableConfigTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderGetQueueClass(): array {
+    public static function dataProviderGetQueueClass(): array {
         return [
             [QueueableConfigTest_getQueueClass::class, QueueableConfigTest_getQueueClass::class],
             [QueueableConfigTest_getQueueClass::class, QueueableConfigTest_getQueueClass_Extending::class],
@@ -122,7 +122,7 @@ class QueueableConfigTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderConfig(): array {
+    public static function dataProviderConfig(): array {
         return [
             'empty'               => [
                 [

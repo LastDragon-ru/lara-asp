@@ -87,7 +87,7 @@ class HandlerDirectiveTest extends TestCase {
      *     Closure(DirectiveLocator): FieldDefinitionNode,
      *     }>
      */
-    public function dataProviderGetBuilderInfo(): array {
+    public static function dataProviderGetBuilderInfo(): array {
         return [
             'default'           => [
                 [

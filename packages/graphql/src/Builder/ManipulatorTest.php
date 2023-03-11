@@ -85,7 +85,7 @@ class ManipulatorTest extends TestCase {
     /**
      * @return array<string, array{?string,string}>
      */
-    public function dataProviderGetPlaceholderTypeDefinitionNode(): array {
+    public static function dataProviderGetPlaceholderTypeDefinitionNode(): array {
         return [
             'field nullable'              => [
                 'Test',

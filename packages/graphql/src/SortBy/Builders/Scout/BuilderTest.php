@@ -59,7 +59,7 @@ class BuilderTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderHandle(): array {
+    public static function dataProviderHandle(): array {
         return [
             'clause'               => [
                 [

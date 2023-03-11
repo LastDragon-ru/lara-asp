@@ -33,7 +33,7 @@ class IntrospectionPrinterTest extends TestCase {
     /**
      * @return array<string, array{string, Settings, int}>
      */
-    public function dataProviderPrint(): array {
+    public static function dataProviderPrint(): array {
         return [
             GraphQLSettings::class         => [
                 '~GraphQLSettings.graphql',

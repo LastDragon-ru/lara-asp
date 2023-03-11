@@ -43,7 +43,7 @@ class XmlMatchesSchemaTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderEvaluate(): array {
+    public static function dataProviderEvaluate(): array {
         return [
             'rng + dom = valid'    => [
                 true,
