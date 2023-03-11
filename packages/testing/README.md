@@ -56,13 +56,12 @@ abstract class TestCase extends BaseTestCase {
 
 This class extends standard `\Illuminate\Database\Eloquent\Factories\Factory`:
 
-- Fixes `wasRecentlyCreated` value, by default it will be `true`. In most cases, this is unwanted behavior. The factory will set it to `false` after creating the model;
-- Disables all model events while making/creating the instance.
+* Fixes `wasRecentlyCreated` value, by default it will be `true`. In most cases, this is unwanted behavior. The factory will set it to `false` after creating the model;
+* Disables all model events while making/creating the instance.
 
 ## [`\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog`](./src/Database/QueryLog/WithQueryLog.php)
 
 Enables query log for the test case.
-
 
 # Mixins
 
@@ -85,11 +84,11 @@ Enables query log for the test case.
 
 These assertions can be used without Laravel at all (#4).
 
-| Name                                                                     | Description                                           |
-|--------------------------------------------------------------------------|-------------------------------------------------------|
-| [`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L17)   | Asserts that JSON matches schema                      |
-| [`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L15)     | Asserts that XML matches schema (XSD or Relax NG).    |
-| [`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L14)    | Asserts that PSR Response satisfies given constraint. |
+| Name                                                                   | Description                                           |
+|------------------------------------------------------------------------|-------------------------------------------------------|
+| [`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L17) | Asserts that JSON matches schema                      |
+| [`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L15)   | Asserts that XML matches schema (XSD or Relax NG).    |
+| [`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L14)  | Asserts that PSR Response satisfies given constraint. |
 
 ## Laravel
 
@@ -116,12 +115,9 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \App\Http\Controllers\IndexController
+ * @covers \App\Http\Controllers\IndexController
  */
 class IndexControllerTest extends TestCase {
-    /**
-     * @covers ::index
-     */
     public function testIndex() {
         $this->get('/')
             ->assertOk()
@@ -202,12 +198,9 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \App\Http\Controllers\IndexController
+ * @covers \App\Http\Controllers\IndexController
  */
 class IndexControllerTest extends TestCase {
-    /**
-     * @covers ::index
-     */
     public function testIndex() {
         $this->get('/')->assertThat(new Response(
             new Ok(),
@@ -286,7 +279,6 @@ Process finished with exit code 1
 
 </details>
 
-
 ## Reusing the test code is problematic
 
 In most real applications you have multiple roles (eg `guest`, `user`, `admin`), guards, and policies. Very difficult to test all of them and usually you need create many `testRouteIsNotAvailableForGuest()`, `testRouteIsAvailableForAdminOnly()`, etc with a lot of boilerplate code. Also, often you cannot reuse that (boilerplate) code and must write it again and again. That is really annoying.
@@ -354,19 +346,13 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \App\Http\Controllers\IndexController
+ * @covers \App\Http\Controllers\IndexController
  */
 class IndexControllerTest extends TestCase {
-    /**
-     * @covers ::index
-     */
     public function testIndex() {
         $this->getJson('/')->assertThat(new ValidationErrorResponse());
     }
 
-    /**
-     * @covers ::index
-     */
     public function testTest() {
         $this->getJson('/test')->assertThat(new ValidationErrorResponse());
     }
@@ -384,12 +370,9 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \App\Http\Controllers\IndexController
+ * @covers \App\Http\Controllers\IndexController
  */
 class IndexControllerTest extends TestCase {
-    /**
-     * @covers ::index
-     */
     public function testIndex() {
         $this->getJson('/')
             ->assertStatus(422)
@@ -400,9 +383,6 @@ class IndexControllerTest extends TestCase {
             ]);
     }
 
-    /**
-     * @covers ::index
-     */
     public function testTest() {
         $this->getJson('/test')
             ->assertStatus(422)
@@ -416,7 +396,6 @@ class IndexControllerTest extends TestCase {
 ```
 
 Feel the difference 😉
-
 
 # PSR Response Testing
 
@@ -446,7 +425,7 @@ class ResponseInterfaceTest extends TestCase {
 }
 ```
 
-# Data Providers on steroids.
+# Data Providers on steroids
 
 There is another cool feature that allows us to test a lot of use cases without code duplication - the [`CompositeDataProvider`](./src/Providers/CompositeDataProvider.php). It's merging multiple provides into one in the following way:
 

@@ -14,7 +14,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseLeftShift
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseLeftShift
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -22,8 +22,6 @@ class BitwiseLeftShiftTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::call
-     *
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected

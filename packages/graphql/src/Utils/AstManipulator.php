@@ -247,28 +247,27 @@ abstract class AstManipulator {
         string $class,
         ?Closure $callback = null,
     ): Collection {
-        $directives = $node instanceof Node
-            ? $this->getDirectives()->associated($node)
-            : new Collection();
-        $directives = $directives->filter(static function (mixed $directive) use ($class, $callback): bool {
-            // Directive?
-            if (!($directive instanceof Directive)) {
-                return false;
-            }
+        /** @var Collection<int, T&Directive> $directives */
+        $directives = new Collection();
 
-            // Class?
-            if (!($directive instanceof $class)) {
-                return false;
-            }
+        if ($node instanceof Node) {
+            $associated = $this->getDirectives()->associated($node);
 
-            // Callback?
-            if ($callback && !$callback($directive)) {
-                return false;
-            }
+            foreach ($associated as $directive) {
+                // Class?
+                if (!($directive instanceof $class)) {
+                    continue;
+                }
 
-            // Ok
-            return true;
-        });
+                // Callback?
+                if ($callback && !$callback($directive)) {
+                    continue;
+                }
+
+                // Ok
+                $directives[] = $directive;
+            }
+        }
 
         return $directives;
     }

@@ -15,14 +15,12 @@ use function sprintf;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Resources\ResourceCollection
+ * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\ResourceCollection
  */
 class ResourceCollectionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__construct
-     *
      * @dataProvider dataProviderConstruct
      */
     public function testConstruct(bool|Exception $expected, string $class): void {
@@ -37,9 +35,6 @@ class ResourceCollectionTest extends TestCase {
         self::assertTrue($expected);
     }
 
-    /**
-     * @covers ::toResponse
-     */
     public function testToResponse(): void {
         $class    = get_class(new class(null) extends Resource {
             // empty

@@ -8,12 +8,9 @@ use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NumberResource
+ * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\NumberResource
  */
 class NumberResourceTest extends TestCase {
-    /**
-     * @covers ::toResponse
-     */
     public function testToResponse(): void {
         Route::get(__METHOD__, static function (): mixed {
             return new NumberResource(123);

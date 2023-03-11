@@ -12,14 +12,12 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumValueDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\EnumValueDefinitionBlock
  */
 class EnumValueDefinitionBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      */
     public function testToString(

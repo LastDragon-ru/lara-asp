@@ -28,14 +28,12 @@ use function str_starts_with;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\SchemaPrinter
  */
 class SchemaPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::printSchema
-     *
      * @dataProvider dataProviderPrintSchema
      */
     public function testPrintSchema(GraphQLExpectedSchema $expected, ?Settings $settings, int $level): void {
@@ -147,8 +145,6 @@ class SchemaPrinterTest extends TestCase {
     }
 
     /**
-     * @covers ::printSchemaType
-     *
      * @dataProvider dataProviderPrintSchemaType
      */
     public function testPrintSchemaType(
@@ -265,8 +261,6 @@ class SchemaPrinterTest extends TestCase {
     }
 
     /**
-     * @covers ::printType
-     *
      * @dataProvider dataProviderPrintType
      */
     public function testPrintType(GraphQLExpectedType $expected, ?Settings $settings, int $level, Type $type): void {

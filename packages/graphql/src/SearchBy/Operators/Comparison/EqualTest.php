@@ -19,7 +19,7 @@ use function implode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -27,8 +27,6 @@ class EqualTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::call
-     *
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected
@@ -52,8 +50,6 @@ class EqualTest extends TestCase {
     }
 
     /**
-     * @covers ::call
-     *
      * @dataProvider dataProviderCallScout
      *
      * @param array<string, mixed>          $expected

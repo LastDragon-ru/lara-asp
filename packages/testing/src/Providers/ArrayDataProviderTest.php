@@ -6,12 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider
+ * @covers \LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider
  */
 class ArrayDataProviderTest extends TestCase {
-    /**
-     * @covers ::getData
-     */
     public function testGetData(): void {
         $f = new ExpectedFinal('expected final');
         $a = [
@@ -26,9 +23,6 @@ class ArrayDataProviderTest extends TestCase {
         self::assertEquals($e, (new ArrayDataProvider($a))->getData());
     }
 
-    /**
-     * @covers ::getData
-     */
     public function testGetDataRaw(): void {
         $f = new ExpectedFinal('expected final');
         $a = [

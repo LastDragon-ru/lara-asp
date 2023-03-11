@@ -10,14 +10,12 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator
+ * @covers \LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator
  */
 class DatabaseQueryComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::accepts
-     *
      * @dataProvider dataProviderAccepts
      */
     public function testAccepts(bool $equals, mixed $expected, mixed $actual): void {
@@ -25,14 +23,12 @@ class DatabaseQueryComparatorTest extends TestCase {
     }
 
     /**
-     * @covers ::assertEquals
-     *
      * @dataProvider dataProviderAssertEquals
      */
     public function testAssertEquals(bool|string $equals, mixed $expected, mixed $actual): void {
         if ($equals !== true) {
             self::expectException(ComparisonFailure::class);
-            self::expectErrorMessageMatches($equals ?: '/Failed asserting that two database queries are equal/i');
+            self::expectExceptionMessageMatches($equals ?: '/Failed asserting that two database queries are equal/i');
         }
 
         $comparator = new DatabaseQueryComparator();
@@ -43,9 +39,6 @@ class DatabaseQueryComparatorTest extends TestCase {
         self::assertTrue($equals);
     }
 
-    /**
-     * @covers ::normalize
-     */
     public function testNormalize(): void {
         $comparator = new class() extends DatabaseQueryComparator {
             public function normalize(Query $query): Query {

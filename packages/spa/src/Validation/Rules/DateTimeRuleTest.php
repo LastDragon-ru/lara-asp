@@ -12,14 +12,12 @@ use function is_array;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Validation\Rules\DateTimeRule
+ * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\DateTimeRule
  */
 class DateTimeRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::passes
-     *
      * @dataProvider dataProviderPasses
      */
     public function testPasses(bool $expected, string $value): void {
@@ -29,9 +27,6 @@ class DateTimeRuleTest extends TestCase {
         self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
-    /**
-     * @covers ::message
-     */
     public function testMessage(): void {
         $translator = $this->app->make(Translator::class);
         $rule       = new DateTimeRule($translator);
@@ -40,8 +35,6 @@ class DateTimeRuleTest extends TestCase {
     }
 
     /**
-     * @covers ::getValue
-     *
      * @dataProvider dataProviderGetValue
      *
      * @param array{class: class-string<Throwable>, message: string}|string $expected

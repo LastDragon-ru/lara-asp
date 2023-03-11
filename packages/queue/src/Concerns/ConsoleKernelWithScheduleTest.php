@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\Concerns\ConsoleKernelWithSchedule
+ * @covers \LastDragon_ru\LaraASP\Queue\Concerns\ConsoleKernelWithSchedule
  */
 class ConsoleKernelWithScheduleTest extends TestCase {
     public function testImpl(): void {

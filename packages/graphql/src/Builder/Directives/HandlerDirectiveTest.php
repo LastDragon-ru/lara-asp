@@ -30,14 +30,12 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective
+ * @covers \LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective
  */
 class HandlerDirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::getBuilderInfo
-     *
      * @dataProvider dataProviderGetBuilderInfo
      *
      * @param array{name: string, builder: string}           $expected

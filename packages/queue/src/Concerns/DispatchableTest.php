@@ -10,12 +10,9 @@ use function sprintf;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\Concerns\Dispatchable
+ * @covers \LastDragon_ru\LaraASP\Queue\Concerns\Dispatchable
  */
 class DispatchableTest extends TestCase {
-    /**
-     * @covers ::dispatch
-     */
     public function testDispatchUninitializedInitializable(): void {
         $job = new class() implements Initializable {
             use Dispatchable;
@@ -25,9 +22,6 @@ class DispatchableTest extends TestCase {
 
         $job->dispatch();
     }
-    /**
-     * @covers ::run
-     */
     public function testRunUninitializedInitializable(): void {
         $job = new class() implements Initializable {
             use Dispatchable;

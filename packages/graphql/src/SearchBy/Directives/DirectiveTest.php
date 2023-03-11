@@ -62,7 +62,7 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
  */
 class DirectiveTest extends TestCase {
     use WithTestObject;
@@ -71,8 +71,6 @@ class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::manipulateArgDefinition
-     *
      * @dataProvider dataProviderManipulateArgDefinition
      *
      * @param Closure(static): GraphQLExpectedSchema $expected
@@ -93,18 +91,12 @@ class DirectiveTest extends TestCase {
         );
     }
 
-    /**
-     * @covers ::manipulateArgDefinition
-     */
     public function testManipulateArgDefinitionUnknownType(): void {
         self::expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
 
         $this->printGraphQLSchema($this->getTestData()->file('~unknown.graphql'));
     }
 
-    /**
-     * @covers ::manipulateArgDefinition
-     */
     public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {
         $enum    = new EnumType([
             'name'   => 'TestEnum',
@@ -175,8 +167,6 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @covers ::handleBuilder
-     *
      * @dataProvider dataProviderHandleBuilder
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
@@ -244,8 +234,6 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @covers ::handleBuilder
-     *
      * @dataProvider dataProviderHandleBuilder
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
@@ -289,8 +277,6 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @covers ::handleBuilder
-     *
      * @dataProvider dataProviderHandleScoutBuilder
      *
      * @param array<string, mixed>|Exception $expected

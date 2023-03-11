@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Testing\Http\Resources\PaginatedCollection
+ * @covers \LastDragon_ru\LaraASP\Spa\Testing\Http\Resources\PaginatedCollection
  */
 class PaginatedCollectionTest extends TestCase {
     // <editor-fold desc="Tests">

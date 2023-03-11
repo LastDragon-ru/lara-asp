@@ -14,7 +14,7 @@ use function array_merge;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator
+ * @covers \LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator
  */
 class ManipulatorTest extends TestCase {
     // <editor-fold desc="Prepare">
@@ -32,8 +32,6 @@ class ManipulatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::getPlaceholderTypeDefinitionNode
-     *
      * @dataProvider dataProviderGetPlaceholderTypeDefinitionNode
      */
     public function testGetPlaceholderTypeDefinitionNode(?string $expected, string $graphql): void {

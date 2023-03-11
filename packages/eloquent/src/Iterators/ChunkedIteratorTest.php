@@ -13,18 +13,12 @@ use function iterator_to_array;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator
+ * @covers \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator
  */
 class ChunkedIteratorTest extends TestCase {
     use WithTestObject;
     use WithQueryLog;
 
-    /**
-     * @covers ::getIterator
-     * @covers ::getOffset
-     * @covers ::getIndex
-     * @covers ::count
-     */
     public function testGetIterator(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
@@ -61,11 +55,6 @@ class ChunkedIteratorTest extends TestCase {
             ->once();
     }
 
-    /**
-     * @covers ::getIterator
-     * @covers ::getDefaultLimit
-     * @covers ::getDefaultOffset
-     */
     public function testGetIteratorDefaults(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
@@ -82,11 +71,6 @@ class ChunkedIteratorTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @covers ::getIterator
-     * @covers ::getDefaultLimit
-     * @covers ::getDefaultOffset
-     */
     public function testGetIteratorEloquentDefaults(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
@@ -103,9 +87,6 @@ class ChunkedIteratorTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @covers ::getIterator
-     */
     public function testGetIteratorUnion(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
@@ -125,11 +106,6 @@ class ChunkedIteratorTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @covers ::getIterator
-     * @covers ::getDefaultLimit
-     * @covers ::getDefaultOffset
-     */
     public function testGetIteratorUnionLimit(): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);

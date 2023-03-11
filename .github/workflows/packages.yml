@@ -28,10 +28,14 @@ jobs:
       # Dependencies
       - name: Install git-filter-repo
         run: sudo -H pip3 install git-filter-repo
+      - name: Detect SSH Key name
+        id: secret
+        run: |
+          echo "name=$(echo "${{ matrix.package }}" | sed 's/-/_/')" >> $GITHUB_OUTPUT
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh/
-          echo "${{ secrets[matrix.package] }}" > ~/.ssh/id_rsa
+          echo "${{ secrets[steps.secret.outputs.name] }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       # Checkout source repo

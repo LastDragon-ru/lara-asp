@@ -18,14 +18,11 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\Factory
+ * @covers \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\Factory
  */
 class EnumTypeTest extends TestCase {
     use MakesGraphQLRequests;
 
-    /**
-     * @covers ::getDefinition
-     */
     public function testGetDefinition(): void {
         $enum     = new EnumType(EnumTypeTest__Enum::class);
         $registry = $this->app->make(TypeRegistry::class);

@@ -12,6 +12,9 @@ use function is_null;
 use function is_string;
 use function sprintf;
 
+/**
+ * @implements CastsAttributes<?Enum, Enum|string|int|null>
+ */
 class EnumCast implements CastsAttributes {
     /**
      * @param class-string<Enum> $enum

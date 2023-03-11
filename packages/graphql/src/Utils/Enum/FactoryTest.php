@@ -7,14 +7,12 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\Factory
+ * @covers \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\Factory
  */
 class FactoryTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::getDefinition
-     *
      * @dataProvider dataProviderGetDefinition
      *
      * @param array<string,mixed> $expected

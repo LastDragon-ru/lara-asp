@@ -11,7 +11,7 @@ use function config;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Formatter\Formatter
+ * @covers \LastDragon_ru\LaraASP\Formatter\Formatter
  */
 class FormatterTest extends TestCase {
     protected Formatter $formatter;
@@ -33,9 +33,6 @@ class FormatterTest extends TestCase {
 
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::forLocale
-     */
     public function testForLocale(): void {
         $locale    = 'ru_RU';
         $formatter = $this->formatter->forLocale($locale);
@@ -46,9 +43,6 @@ class FormatterTest extends TestCase {
         self::assertEquals($locale, $formatter->forTimezone('Europe/Moscow')->getLocale());
     }
 
-    /**
-     * @covers ::forTimezone
-     */
     public function testForTimezone(): void {
         $timezone  = 'Europe/Moscow';
         $formatter = $this->formatter->forTimezone($timezone);
@@ -59,9 +53,6 @@ class FormatterTest extends TestCase {
         self::assertEquals($timezone, $formatter->forLocale('ru_RU')->getTimezone());
     }
 
-    /**
-     * @covers ::integer
-     */
     public function testInteger(): void {
         self::assertEquals('1', $this->formatter->integer(1.45));
         self::assertEquals('2', $this->formatter->integer(1.5));
@@ -70,18 +61,12 @@ class FormatterTest extends TestCase {
         self::assertEquals("1\u{00A0}000", $this->formatter->forLocale('ru_RU')->integer(1000));
     }
 
-    /**
-     * @covers ::decimal
-     */
     public function testDecimal(): void {
         self::assertEquals('1,000.00', $this->formatter->decimal(1000));
         self::assertEquals('1,000.99', $this->formatter->decimal(1000.99));
         self::assertEquals("1\u{00A0}000,99", $this->formatter->forLocale('ru_RU')->decimal(1000.99));
     }
 
-    /**
-     * @covers ::decimal
-     */
     public function testDecimalConfig(): void {
         config([
             Package::Name.'.options.'.Formatter::Decimal                          => 4,
@@ -96,24 +81,15 @@ class FormatterTest extends TestCase {
         self::assertEquals("1\u{00A0}000,0000", $this->formatter->forLocale('ru_RU')->decimal(1000.000099));
     }
 
-    /**
-     * @covers ::ordinal
-     */
     public function testOrdinal(): void {
         self::assertEquals('1st', $this->formatter->ordinal(1));
         self::assertEquals('10.', $this->formatter->forLocale('ru_RU')->ordinal(10));
     }
 
-    /**
-     * @covers ::string
-     */
     public function testString(): void {
         self::assertEquals('string', $this->formatter->string('   string   '));
     }
 
-    /**
-     * @covers ::spellout
-     */
     public function testSpellout(): void {
         self::assertEquals(
             'one thousand three hundred twenty-four point two five',
@@ -125,9 +101,6 @@ class FormatterTest extends TestCase {
         );
     }
 
-    /**
-     * @covers ::percent
-     */
     public function testPercent(): void {
         self::assertEquals('10%', $this->formatter->percent(10));
         self::assertEquals('25%', $this->formatter->percent(24.59));
@@ -135,9 +108,6 @@ class FormatterTest extends TestCase {
         self::assertEquals("56\u{00A0}%", $this->formatter->forLocale('ru_RU')->percent(56.09));
     }
 
-    /**
-     * @covers ::percent
-     */
     public function testPercentConfig(): void {
         config([
             Package::Name.'.options.'.Formatter::Percent => 2,
@@ -146,17 +116,11 @@ class FormatterTest extends TestCase {
         self::assertEquals('10.99%', $this->formatter->percent(10.99));
     }
 
-    /**
-     * @covers ::duration
-     */
     public function testDuration(): void {
         self::assertEquals('3:25:45', $this->formatter->duration(12_345));
         self::assertEquals("12\u{00A0}345", $this->formatter->forLocale('ru_RU')->duration(12_345));
     }
 
-    /**
-     * @covers ::time
-     */
     public function testTime(): void {
         $time = DateTime::createFromFormat('H:i:s', '23:24:59') ?: null;
 
@@ -164,9 +128,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('2:24 AM', $this->formatter->time($time, null, 'Europe/Moscow'));
     }
 
-    /**
-     * @covers ::time
-     */
     public function testTimeConfig(): void {
         config([
             Package::Name.'.options.'.Formatter::Time => IntlDateFormatter::MEDIUM,
@@ -177,9 +138,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('11:24:59 PM', $this->formatter->time($time));
     }
 
-    /**
-     * @covers ::time
-     */
     public function testTimeCustomFormat(): void {
         config([
             Package::Name.'.options.'.Formatter::Time        => 'custom',
@@ -193,9 +151,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('23:24:59.000', $this->formatter->time($time, 'custom2'));
     }
 
-    /**
-     * @covers ::date
-     */
     public function testDate(): void {
         $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
 
@@ -203,9 +158,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('5/13/05', $this->formatter->date($date, null, 'Europe/Moscow'));
     }
 
-    /**
-     * @covers ::date
-     */
     public function testDateConfig(): void {
         config([
             Package::Name.'.options.'.Formatter::Date => IntlDateFormatter::MEDIUM,
@@ -216,9 +168,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('May 12, 2005', $this->formatter->date($date));
     }
 
-    /**
-     * @covers ::date
-     */
     public function testDateCustomFormat(): void {
         config([
             Package::Name.'.options.'.Formatter::Date        => 'custom',
@@ -232,9 +181,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('12 May 2005', $this->formatter->date($date, 'custom2'));
     }
 
-    /**
-     * @covers ::datetime
-     */
     public function testDatetime(): void {
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
 
@@ -242,9 +188,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('5/13/05, 3:00 AM', $this->formatter->datetime($datetime, null, 'Europe/Moscow'));
     }
 
-    /**
-     * @covers ::datetime
-     */
     public function testDatetimeConfig(): void {
         config([
             Package::Name.'.options.'.Formatter::DateTime => IntlDateFormatter::MEDIUM,
@@ -255,9 +198,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('May 12, 2005, 11:00:00 PM', $this->formatter->datetime($datetime));
     }
 
-    /**
-     * @covers ::datetime
-     */
     public function testDatetimeCustomFormat(): void {
         config([
             Package::Name.'.options.'.Formatter::DateTime        => 'custom',
@@ -271,18 +211,12 @@ class FormatterTest extends TestCase {
         self::assertEquals('12 May 2005 || 23:00:00', $this->formatter->datetime($datetime, 'custom2'));
     }
 
-    /**
-     * @covers ::scientific
-     */
     public function testScientific(): void {
         self::assertEquals('1.00324234E1', $this->formatter->scientific(10.0324234));
         self::assertEquals('1.00324234E8', $this->formatter->scientific(100_324_234));
         self::assertEquals('-1,00324234E8', $this->formatter->forLocale('ru_RU')->scientific(-100_324_234));
     }
 
-    /**
-     * @covers ::secret
-     */
     public function testSecret(): void {
         self::assertEquals('', $this->formatter->secret(null));
         self::assertEquals('*', $this->formatter->secret('1'));
@@ -298,9 +232,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('******78901', $this->formatter->secret('12345678901'));
     }
 
-    /**
-     * @covers ::secret
-     */
     public function testSecretConfig(): void {
         config([
             Package::Name.'.options.'.Formatter::Secret => 3,
@@ -317,9 +248,6 @@ class FormatterTest extends TestCase {
         self::assertEquals('*****678', $this->formatter->secret('12345678'));
     }
 
-    /**
-     * @covers ::filesize
-     */
     public function testFilesize(): void {
         self::assertEquals('0 B', $this->formatter->filesize(null));
         self::assertEquals('0 B', $this->formatter->filesize(0));
@@ -327,18 +255,12 @@ class FormatterTest extends TestCase {
         self::assertEquals('10.33 MiB', $this->formatter->filesize(10 * 1024 * 1024 + 1024 * 334));
     }
 
-    /**
-     * @covers ::currency
-     */
     public function testCurrency(): void {
         self::assertEquals('$10.03', $this->formatter->currency(10.0324234));
         self::assertEquals("RUB\u{00A0}100,324,234.00", $this->formatter->currency(100_324_234, 'RUB'));
         self::assertEquals("100,99\u{00A0}₽", $this->formatter->forLocale('ru_RU')->currency(100.985, 'RUB'));
     }
 
-    /**
-     * @covers ::currency
-     */
     public function testCurrencyConfig(): void {
         config([
             Package::Name.'.options.'.Formatter::Currency => 'RUB',

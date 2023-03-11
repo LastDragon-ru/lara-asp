@@ -14,7 +14,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -22,8 +22,6 @@ class BetweenTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::call
-     *
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected

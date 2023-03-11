@@ -10,21 +10,15 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Response\Header
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Response\Header
  */
 class HeaderTest extends TestCase {
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
         self::assertFalse((new Header('Test'))->evaluate(new stdClass()));
     }
 
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluate(): void {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
@@ -36,9 +30,6 @@ class HeaderTest extends TestCase {
         self::assertFalse($constraint->evaluate($invalid2, '', true));
     }
 
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluateConstraints(): void {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
         $invalid    = (new Response())->withHeader('Content-Type', 'example/invalid');
@@ -50,18 +41,12 @@ class HeaderTest extends TestCase {
         self::assertFalse($constraint->evaluate($invalid2, '', true));
     }
 
-    /**
-     * @covers ::toString
-     */
     public function testToString(): void {
         $constraint = new Header('Content-Type');
 
         self::assertEquals('has Content-Type header', $constraint->toString());
     }
 
-    /**
-     * @covers ::toString
-     */
     public function testToStringConstraints(): void {
         $constraint = new Header('Content-Type', [new IsEqual('example/text')]);
 

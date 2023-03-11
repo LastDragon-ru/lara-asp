@@ -20,7 +20,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -28,9 +28,6 @@ class ContainsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::call
-     * @covers ::escape
-     *
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected

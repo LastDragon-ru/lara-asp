@@ -8,12 +8,9 @@ use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\ErrorResponse
+ * @covers \LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\ErrorResponse
  */
 class ErrorResponseTest extends TestCase {
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluate(): void {
         $response   = Factory::make($this->getJson(__FUNCTION__));
         $constraint = new ErrorResponse(new NotFound());

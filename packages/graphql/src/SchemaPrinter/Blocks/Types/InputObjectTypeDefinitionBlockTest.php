@@ -13,14 +13,12 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\InputObjectTypeDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\InputObjectTypeDefinitionBlock
  */
 class InputObjectTypeDefinitionBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      */
     public function testToString(
@@ -43,9 +41,6 @@ class InputObjectTypeDefinitionBlockTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @covers ::__toString
-     */
     public function testStatistics(): void {
         $settings   = new TestSettings();
         $settings   = new PrinterSettings($this->app->make(DirectiveResolver::class), $settings);

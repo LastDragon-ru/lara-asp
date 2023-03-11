@@ -21,7 +21,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -29,8 +29,6 @@ class FieldTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::call
-     *
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected

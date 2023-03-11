@@ -15,15 +15,12 @@ use Mockery\MockInterface;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\CronableRegistrator
+ * @covers \LastDragon_ru\LaraASP\Queue\CronableRegistrator
  */
 class CronableRegistratorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::register
-     * @covers ::dispatch
-     *
      * @dataProvider dataProviderRegister
      */
     public function testRegister(bool $enabled): void {
@@ -86,9 +83,6 @@ class CronableRegistratorTest extends TestCase {
         }
     }
 
-    /**
-     * @covers ::register
-     */
     public function testRegisterNotConsole(): void {
         $cronable = new class() implements Cronable {
             /**
@@ -117,9 +111,6 @@ class CronableRegistratorTest extends TestCase {
         $registrator->register($app, $schedule, $cronable::class);
     }
 
-    /**
-     * @covers ::register
-     */
     public function testRegisterNoCron(): void {
         $cronable = new class() implements Cronable {
             /**
@@ -142,9 +133,6 @@ class CronableRegistratorTest extends TestCase {
         $registrator->register($this->app, $schedule, $cronable::class);
     }
 
-    /**
-     * @covers ::register
-     */
     public function testRegisterCronIsNull(): void {
         $cronable = new class() implements Cronable {
             /**

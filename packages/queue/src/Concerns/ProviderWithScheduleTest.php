@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\Concerns\ProviderWithSchedule
+ * @covers \LastDragon_ru\LaraASP\Queue\Concerns\ProviderWithSchedule
  */
 class ProviderWithScheduleTest extends TestCase {
     public function testImpl(): void {

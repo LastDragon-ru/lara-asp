@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty
+ * @covers \LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty
  */
 class RefreshDatabaseIfEmptyTest extends TestCase {
     public function testImpl(): void {

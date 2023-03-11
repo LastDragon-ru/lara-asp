@@ -22,14 +22,12 @@ use function json_decode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Resources\Resource
+ * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\Resource
  */
 class ResourceTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__construct
-     *
      * @dataProvider dataProviderConstruct
      */
     public function testConstruct(bool|Exception $expected, mixed $value): void {
@@ -45,8 +43,6 @@ class ResourceTest extends TestCase {
     }
 
     /**
-     * @covers ::collection
-     *
      * @dataProvider dataProviderCollection
      *
      * @param class-string $expected
@@ -61,11 +57,6 @@ class ResourceTest extends TestCase {
     }
 
     /**
-     * @covers ::toArray
-     * @covers ::toResponse
-     * @covers ::response
-     * @covers ::mapResourceData
-     *
      * @dataProvider dataProviderMapResourceData
      *
      * @param array<mixed>|Exception $expected
@@ -104,9 +95,6 @@ class ResourceTest extends TestCase {
         ));
     }
 
-    /**
-     * @covers ::mapResourceData
-     */
     public function testMapResourceDataImplicitModel(): void {
         $model    = new class() extends Model {
             // empty
@@ -122,9 +110,6 @@ class ResourceTest extends TestCase {
         self::assertIsArray($resource->toArray(new Request()));
     }
 
-    /**
-     * @covers ::additional
-     */
     public function testAdditional(): void {
         $resource = new class(123) extends Resource {
             /**
@@ -142,9 +127,6 @@ class ResourceTest extends TestCase {
         ]);
     }
 
-    /**
-     * @covers ::with
-     */
     public function testWith(): void {
         $resource = new class(123) extends Resource {
             /**

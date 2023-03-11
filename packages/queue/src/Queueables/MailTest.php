@@ -13,14 +13,11 @@ use function sprintf;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\Queueables\Mail
+ * @covers \LastDragon_ru\LaraASP\Queue\Queueables\Mail
  */
 class MailTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::queue
-     */
     public function testQueueUninitializedInitializable(): void {
         self::expectExceptionObject($this->getException());
 

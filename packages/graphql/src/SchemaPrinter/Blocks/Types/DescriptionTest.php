@@ -13,14 +13,12 @@ use function implode;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\Description
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\Description
  */
 class DescriptionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      */
     public function testToString(

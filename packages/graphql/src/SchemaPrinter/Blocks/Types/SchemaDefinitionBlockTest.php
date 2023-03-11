@@ -15,14 +15,12 @@ use function str_starts_with;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\SchemaDefinitionBlock
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Blocks\Types\SchemaDefinitionBlock
  */
 class SchemaDefinitionBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__toString
-     *
      * @dataProvider dataProviderToString
      */
     public function testToString(

@@ -6,9 +6,8 @@
 
 This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
 
-:warning: | The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details.
-:---: | :---
-
+| :warning: | The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details. |
+|:---------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 
 # Installation
 
@@ -16,18 +15,17 @@ This package improves standard laravel migrations to add support for raw SQL fil
 composer require lastdragon-ru/lara-asp-migrator
 ```
 
-
 # Migrations
 
 To create migration just use the standard command
 
-```
+```shell
 php artisan lara-asp-migrator:raw-migration MyMigration
 ```
 
 It will create the following files in `database/migrations`:
 
-```
+```text
 2020_11_05_170802_my_migration.php
 2020_11_05_170802_my_migration~down.sql
 2020_11_05_170802_my_migration~up.sql
@@ -37,23 +35,22 @@ Usually, you just need to put your SQL into `~up.sql` and `~down.sql` 😇 Note 
 
 Another useful class is [`RawDataMigration`](./src/Migrations/RawDataMigration.php) that specially designed for cases when you want to insert data without altering the table(s). Unlike `RawMigration` it will apply migration only if the database is not empty (to fill empty database while fresh installation please use Seeders).
 
-
 # Seeders
 
 The Migrator uses a bit different approach compared to standard and provides a few different types of seeders:
 
-- [`SmartSeeder`](./src/Seeders/SmartSeeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
-- [`RawSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
+* [`SmartSeeder`](./src/Seeders/SmartSeeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
+* [`RawSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
 
 To create raw seeder just use standard command
 
-```
+```shell
 php artisan lara-asp-migrator:raw-seeder MySeeder
 ```
 
 It will create the following files in `database/seeders` (or `database/seeds/`):
 
-```
+```text
 MySeeder.php
 MySeeder.sql
 ```

@@ -20,7 +20,7 @@ use function config;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController
+ * @covers \LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController
  */
 class SpaControllerTest extends TestCase {
     // <editor-fold desc="Prepare">
@@ -40,8 +40,6 @@ class SpaControllerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::settings
-     *
      * @dataProvider dataProviderSettings
      *
      * @param array<mixed> $headers

@@ -10,14 +10,11 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule
+ * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule
  */
 class ResolverRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::passes
-     */
     public function testPasses(): void {
         $translator = $this->app->make(Translator::class);
         $router     = $this->app->make(Router::class);
@@ -34,9 +31,6 @@ class ResolverRuleTest extends TestCase {
         self::assertTrue($rule->passes('attribute', 'value'));
     }
 
-    /**
-     * @covers ::passes
-     */
     public function testPassesUnresolved(): void {
         $translator = $this->app->make(Translator::class);
         $router     = $this->app->make(Router::class);
@@ -53,9 +47,6 @@ class ResolverRuleTest extends TestCase {
         self::assertFalse($rule->passes('attribute', 'value'));
     }
 
-    /**
-     * @covers ::message
-     */
     public function testMessage(): void {
         $translator = $this->app->make(Translator::class);
         $router     = $this->app->make(Router::class);

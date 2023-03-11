@@ -10,14 +10,12 @@ use Mockery;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Iterators\IteratorImpl
+ * @covers \LastDragon_ru\LaraASP\Eloquent\Iterators\IteratorImpl
  */
 class IteratorImplTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::count
-     *
      * @dataProvider dataProviderCount
      */
     public function testCount(int $expected, ?int $limit, int $count): void {

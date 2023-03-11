@@ -14,7 +14,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseAnd
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseAnd
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -22,8 +22,6 @@ class BitwiseAndTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::call
-     *
      * @dataProvider dataProviderCall
      *
      * @param array{query: string, bindings: array<mixed>} $expected

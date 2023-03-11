@@ -9,21 +9,15 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentType
  */
 class ContentTypeTest extends TestCase {
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 
         self::assertFalse((new ContentType(''))->evaluate(new stdClass()));
     }
 
-    /**
-     * @covers ::evaluate
-     */
     public function testEvaluate(): void {
         $valid      = (new Response())->withHeader('Content-Type', 'example/text');
         $valid2     = (new Response())->withHeader('Content-Type', 'example/text;charset=utf-8');
@@ -35,9 +29,6 @@ class ContentTypeTest extends TestCase {
         self::assertFalse($constraint->evaluate($invalid, '', true));
     }
 
-    /**
-     * @covers ::toString
-     */
     public function testToString(): void {
         $constraint = new ContentType('example/text');
 

@@ -18,12 +18,9 @@ use function array_keys;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator
+ * @covers \LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator
  */
 class AstManipulatorTest extends TestCase {
-    /**
-     * @covers ::getNodeInterfaces
-     */
     public function testGetNodeInterfaces(): void {
         // Object
         $types       = $this->app->make(TypeRegistry::class);

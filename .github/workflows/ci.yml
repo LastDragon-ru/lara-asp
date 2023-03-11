@@ -31,7 +31,7 @@ jobs:
           ./vendor/bin/monorepo-builder validate
 
   phpcs:
-    name: Coding standards
+    name: PHP CodeSniffer
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -74,3 +74,17 @@ jobs:
       package: ${{ matrix.package }}
       packages-names: ${{ needs.settings.outputs.packages-names }}
       packages-directory: ${{ needs.settings.outputs.packages-directory }}
+
+  markdownlint:
+    name: Markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: ./.github/actions/npm
+      - name: Setup problem matcher
+        uses: xt0rted/markdownlint-problem-matcher@v2
+      - name: Execute
+        run: |
+          npx markdownlint-cli --ignore-path=.gitignore .

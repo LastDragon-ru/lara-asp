@@ -13,6 +13,8 @@ use LastDragon_ru\LaraASP\Eloquent\Casts\EnumCast;
 abstract class Enum extends BaseEnum implements Castable {
     /**
      * @param array<mixed> $arguments
+     *
+     * @return EnumCast
      */
     public static function castUsing(array $arguments): CastsAttributes {
         return new EnumCast(static::class);

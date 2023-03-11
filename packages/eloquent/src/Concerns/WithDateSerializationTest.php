@@ -11,12 +11,9 @@ use Mockery;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Eloquent\Concerns\WithDateSerialization
+ * @covers \LastDragon_ru\LaraASP\Eloquent\Concerns\WithDateSerialization
  */
 class WithDateSerializationTest extends TestCase {
-    /**
-     * @covers ::serializeDate
-     */
     public function testSerializeDate(): void {
         // Prepare
         $trait = new class() extends Model {

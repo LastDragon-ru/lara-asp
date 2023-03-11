@@ -9,14 +9,11 @@ use SplFileInfo;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentRelaxNgSchemaMatcher
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentRelaxNgSchemaMatcher
  */
 class DomDocumentRelaxNgSchemaMatcherTest extends TestCase {
     use WithTestData;
 
-    /**
-     * @covers ::isMatchesSchema
-     */
     public function testEvaluateValid(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $dom    = $this->getTestData(XmlMatchesSchemaTest::class)->dom('.xml');
@@ -25,9 +22,6 @@ class DomDocumentRelaxNgSchemaMatcherTest extends TestCase {
         self::assertTrue($c->isMatchesSchema($schema, $dom));
     }
 
-    /**
-     * @covers ::isMatchesSchema
-     */
     public function testEvaluateInvalid(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $dom    = $this->getTestData(XmlMatchesSchemaTest::class)->dom('.invalid.xml');
@@ -36,9 +30,6 @@ class DomDocumentRelaxNgSchemaMatcherTest extends TestCase {
         self::assertFalse($c->isMatchesSchema($schema, $dom));
     }
 
-    /**
-     * @covers ::isMatchesSchema
-     */
     public function testEvaluateNotDocument(): void {
         $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $c      = new DomDocumentRelaxNgSchemaMatcher();

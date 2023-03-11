@@ -7,14 +7,12 @@ use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Spa\Validation\Rules\StringRule
+ * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\StringRule
  */
 class StringRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::passes
-     *
      * @dataProvider dataProviderPasses
      */
     public function testPasses(bool $expected, mixed $value): void {
@@ -24,9 +22,6 @@ class StringRuleTest extends TestCase {
         self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
-    /**
-     * @covers ::message
-     */
     public function testMessage(): void {
         $translator = $this->app->make(Translator::class);
         $rule       = new StringRule($translator);

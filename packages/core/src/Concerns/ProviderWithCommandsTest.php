@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Concerns\ProviderWithCommands
+ * @covers \LastDragon_ru\LaraASP\Core\Concerns\ProviderWithCommands
  */
 class ProviderWithCommandsTest extends TestCase {
     public function testImpl(): void {

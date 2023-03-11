@@ -7,14 +7,12 @@ use SebastianBergmann\Comparator\ComparisonFailure;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Comparators\ScalarStrictComparator
+ * @covers \LastDragon_ru\LaraASP\Testing\Comparators\ScalarStrictComparator
  */
 class ScalarStrictComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::assertEquals
-     *
      * @dataProvider dataProviderAssertEquals
      */
     public function testAssertEquals(bool $equals, mixed $expected, mixed $actual): void {

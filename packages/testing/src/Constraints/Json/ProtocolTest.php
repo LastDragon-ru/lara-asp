@@ -21,7 +21,7 @@ use const PHP_OS_FAMILY;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Constraints\Json\Protocol
+ * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Json\Protocol
  */
 class ProtocolTest extends TestCase {
     use WithTempFile;
@@ -29,8 +29,6 @@ class ProtocolTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::__invoke
-     *
      * @dataProvider dataProviderInvoke
      *
      * @param array<string,string> $parameters
@@ -49,9 +47,6 @@ class ProtocolTest extends TestCase {
         self::assertNotNull(json_decode($actual));
     }
 
-    /**
-     * @covers ::getUri
-     */
     public function testGetUri(): void {
         $file   = new SplFileInfo(__FILE__);
         $host   = PHP_OS_FAMILY === 'Windows' ? 'windows.path' : 'unix.path';

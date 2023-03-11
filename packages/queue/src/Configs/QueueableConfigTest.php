@@ -18,13 +18,12 @@ use function config;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig
+ * @covers \LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig
  */
 class QueueableConfigTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::getQueueClass
      * @dataProvider dataProviderGetQueueClass
      *
      * @param class-string<ConfigurableQueueable> $class
@@ -44,7 +43,6 @@ class QueueableConfigTest extends TestCase {
     }
 
     /**
-     * @covers ::config
      * @dataProvider dataProviderConfig
      *
      * @param array<mixed>|Exception $expected

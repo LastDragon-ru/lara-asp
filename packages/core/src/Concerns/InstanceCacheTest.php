@@ -12,14 +12,11 @@ use function strtolower;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Core\Concerns\InstanceCache
+ * @covers \LastDragon_ru\LaraASP\Core\Concerns\InstanceCache
  */
 class InstanceCacheTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @covers ::instanceCacheGet
-     */
     public function testInstanceCacheGet(): void {
         $cache  = new InstanceCacheTest_Cache();
         $object = new stdClass();
@@ -33,9 +30,6 @@ class InstanceCacheTest extends TestCase {
         }));
     }
 
-    /**
-     * @covers ::instanceCacheHas
-     */
     public function testInstanceCacheHas(): void {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
@@ -47,9 +41,6 @@ class InstanceCacheTest extends TestCase {
         self::assertTrue($cache->instanceCacheHas($key));
     }
 
-    /**
-     * @covers ::instanceCacheSet
-     */
     public function testInstanceCacheSet(): void {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
@@ -59,9 +50,6 @@ class InstanceCacheTest extends TestCase {
         self::assertTrue($cache->instanceCacheHas($key));
     }
 
-    /**
-     * @covers ::instanceCacheUnset
-     */
     public function testInstanceCacheUnset(): void {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
@@ -72,9 +60,6 @@ class InstanceCacheTest extends TestCase {
         self::assertFalse($cache->instanceCacheHas($key));
     }
 
-    /**
-     * @covers ::instanceCacheClear
-     */
     public function testInstanceCacheClear(): void {
         $cache = new InstanceCacheTest_Cache();
         $key   = 'a';
@@ -88,7 +73,6 @@ class InstanceCacheTest extends TestCase {
     }
 
     /**
-     * @covers ::instanceCacheKey
      * @dataProvider dataProviderInstanceCacheKey
      */
     public function testInstanceCacheKey(string $expected, mixed $keys): void {

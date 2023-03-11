@@ -15,7 +15,7 @@ use function is_array;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder
+ * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
@@ -23,8 +23,6 @@ class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::handle
-     *
      * @dataProvider dataProviderHandle
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected

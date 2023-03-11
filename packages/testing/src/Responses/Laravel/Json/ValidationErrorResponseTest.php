@@ -10,14 +10,12 @@ use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 
 /**
  * @internal
- * @coversDefaultClass \LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\ValidationErrorResponse
+ * @covers \LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\ValidationErrorResponse
  */
 class ValidationErrorResponseTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @covers ::evaluate
-     *
      * @dataProvider dataProviderEvaluate
      *
      * @param array<string,string>      $rules
