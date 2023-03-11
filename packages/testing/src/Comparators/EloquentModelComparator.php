@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ObjectComparator;
 
+use function assert;
+use function is_bool;
+use function is_float;
 use function substr_replace;
 
 /**
@@ -33,11 +36,16 @@ class EloquentModelComparator extends ObjectComparator {
     public function assertEquals(
         mixed $expected,
         mixed $actual,
-        float $delta = 0.0,
-        bool $canonicalize = false,
-        bool $ignoreCase = false,
+        mixed $delta = 0.0,
+        mixed $canonicalize = false,
+        mixed $ignoreCase = false,
         array &$processed = [],
     ): void {
+        // todo(testing): Update method signature after PHPUnit v9.5 removal.
+        assert(is_float($delta));
+        assert(is_bool($canonicalize));
+        assert(is_bool($ignoreCase));
+
         // If classes different we just call parent to fail
         if (!($actual instanceof Model) || !($expected instanceof Model) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
@@ -60,11 +68,11 @@ class EloquentModelComparator extends ObjectComparator {
             );
         } catch (ComparisonFailure $e) {
             throw new ComparisonFailure(
-                $expected,
-                $actual,
-                substr_replace($e->getExpectedAsString(), $expected::class.' Model', 0, 5),
-                substr_replace($e->getActualAsString(), $actual::class.' Model', 0, 5),
-                'Failed asserting that two models are equal.',
+                expected        : $expected,
+                actual          : $actual,
+                expectedAsString: substr_replace($e->getExpectedAsString(), $expected::class.' Model', 0, 5),
+                actualAsString  : substr_replace($e->getActualAsString(), $actual::class.' Model', 0, 5),
+                message         : 'Failed asserting that two models are equal.',
             );
         }
     }
