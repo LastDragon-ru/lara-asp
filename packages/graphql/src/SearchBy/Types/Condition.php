@@ -3,22 +3,22 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
-use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
-use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\FieldDefinition;
-use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
-use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
@@ -30,52 +30,53 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 use function is_string;
 
 class Condition extends InputObject {
-    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
-        $directiveName = Directive::Name;
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+        $typeName      = $source->getTypeName();
         $builderName   = $builder->getName();
+        $directiveName = Directive::Name;
 
-        return "{$directiveName}{$builderName}Condition{$type}";
+        return "{$directiveName}{$builderName}Condition{$typeName}";
     }
 
     protected function getScope(): string {
         return Directive::getScope();
     }
 
-    protected function getTypeDescription(
+    protected function getDescription(
         Manipulator $manipulator,
-        string $name,
-        string $type,
-        bool $nullable = null,
+        ObjectSource|InputSource $source,
     ): string {
-        $typeName    = $manipulator->getNodeTypeFullName($type);
-        $description = "Available conditions for `{$typeName}` (only one property allowed at a time).";
-
-        return $description;
+        return "Available conditions for `{$source}` (only one property allowed at a time).";
     }
 
     /**
      * @inheritDoc
      */
-    protected function getTypeOperators(
+    protected function getOperators(
         Manipulator $manipulator,
-        string $name,
-        string $type,
-        ?bool $nullable,
+        InputSource|ObjectSource $source,
     ): array {
-        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra, false);
+        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra);
     }
 
-    protected function isConvertable(
+    protected function isFieldConvertable(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|TypeDefinitionNode|Type $node,
+        InputFieldSource|ObjectFieldSource $field,
     ): bool {
         // Parent?
-        if (!parent::isConvertable($manipulator, $node)) {
+        if (!parent::isFieldConvertable($manipulator, $field)) {
             return false;
         }
 
-        // Ignored?
-        if ($node instanceof Ignored || $manipulator->getNodeDirective($node, Ignored::class) !== null) {
+        // Ignored field?
+        if ($manipulator->getNodeDirective($field->getField(), Ignored::class) !== null) {
+            return false;
+        }
+
+        // Ignored type?
+        $fieldType = $field->getTypeDefinition();
+
+        if ($fieldType instanceof Ignored || $manipulator->getNodeDirective($fieldType, Ignored::class) !== null) {
             return false;
         }
 
@@ -88,11 +89,10 @@ class Condition extends InputObject {
      */
     protected function getFieldOperator(
         Manipulator $manipulator,
-        FieldDefinition|InputValueDefinitionNode|InputObjectField|FieldDefinitionNode $field,
-        Type|TypeDefinitionNode $fieldType,
-        ?bool $fieldNullable,
+        InputFieldSource|ObjectFieldSource $field,
     ): ?array {
-        $operator = match (true) {
+        $fieldType = $field->getTypeDefinition();
+        $operator  = match (true) {
             $fieldType instanceof ScalarTypeDefinitionNode,
                 $fieldType instanceof ScalarType
                     => Scalar::class,
@@ -103,40 +103,33 @@ class Condition extends InputObject {
                 $fieldType instanceof ObjectTypeDefinitionNode,
                 $fieldType instanceof InputObjectType,
                 $fieldType instanceof ObjectType
-                    => $this->getObjectDefaultOperator($manipulator, $field, $fieldType, $fieldNullable),
+                    => $this->getObjectDefaultOperator($manipulator, $field),
             default
                     => null,
         };
 
         if (!$operator) {
-            throw new NotImplemented($manipulator->getNodeTypeFullName($fieldType));
+            throw new NotImplemented($field);
         }
 
         // Create input
-        $type = $manipulator->getNodeName($fieldType);
+        $source = null;
 
         if (is_string($operator)) {
-            $type     = $manipulator->getType($operator, $type, $fieldNullable);
+            $type     = $manipulator->getType($operator, $field);
+            $source   = $manipulator->getTypeSource(Parser::typeReference($type));
             $operator = $manipulator->getOperator($this->getScope(), Property::class);
         }
 
-        return [$operator, $type];
+        return [$operator, $source];
     }
 
     protected function getObjectDefaultOperator(
         Manipulator $manipulator,
-        InputValueDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition $field,
-        InputObjectTypeDefinitionNode|ObjectTypeDefinitionNode|InputObjectType|ObjectType $fieldType,
-        ?bool $fieldNullable,
+        InputFieldSource|ObjectFieldSource $field,
     ): ?OperatorContract {
         // Directive?
-        $directive = parent::getFieldDirectiveOperator(
-            Operator::class,
-            $manipulator,
-            $field,
-            $fieldType,
-            $fieldNullable,
-        );
+        $directive = parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field);
 
         if ($directive) {
             return $directive;
@@ -144,7 +137,7 @@ class Condition extends InputObject {
 
         // Condition
         $builder   = $manipulator->getBuilderInfo()->getBuilder();
-        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Condition, false);
+        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Condition);
         $condition = null;
 
         foreach ($operators as $operator) {

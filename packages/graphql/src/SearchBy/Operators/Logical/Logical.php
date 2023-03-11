@@ -5,10 +5,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
@@ -17,6 +20,10 @@ use function count;
 use function is_array;
 
 abstract class Logical extends BaseOperator {
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $provider->getType(Condition::class, $source);
+    }
+
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

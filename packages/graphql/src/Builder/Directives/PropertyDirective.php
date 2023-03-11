@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
@@ -19,8 +20,8 @@ abstract class PropertyDirective extends OperatorDirective {
         return 'property';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
-        return $type;
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $source->getTypeName();
     }
 
     public function isBuilderSupported(object $builder): bool {

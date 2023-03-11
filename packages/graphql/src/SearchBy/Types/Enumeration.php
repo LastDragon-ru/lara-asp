@@ -6,6 +6,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
@@ -15,12 +16,13 @@ class Enumeration implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
-        $isNull        = $nullable ? 'OrNull' : '';
+        $typeName      = $source->getTypeName();
+        $nullable      = $source->isNullable() ? 'OrNull' : '';
 
-        return "{$directiveName}{$builderName}Enum{$type}{$isNull}";
+        return "{$directiveName}{$builderName}Enum{$typeName}{$nullable}";
     }
 
     /**
@@ -29,28 +31,21 @@ class Enumeration implements TypeDefinition {
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?string $type,
-        ?bool $nullable,
+        TypeSource $source,
     ): ?TypeDefinitionNode {
-        // Type?
-        if (!$type) {
-            return null;
-        }
-
         // Operators
         $scope     = Directive::class;
-        $nullable  = (bool) $nullable;
-        $operators = $manipulator->hasTypeOperators($scope, $type)
-            ? $manipulator->getTypeOperators($scope, $type, $nullable)
-            : $manipulator->getTypeOperators($scope, Operators::Enum, $nullable);
+        $operators = $manipulator->hasTypeOperators($scope, $source->getTypeName())
+            ? $manipulator->getTypeOperators($scope, $source->getTypeName(), $source->isNullable())
+            : $manipulator->getTypeOperators($scope, Operators::Enum, $source->isNullable());
 
         if (!$operators) {
             return null;
         }
 
         // Definition
-        $content    = $manipulator->getOperatorsFields($operators, $type);
-        $typeName   = $manipulator->getNodeTypeFullName($type);
+        $content    = $manipulator->getOperatorsFields($operators, $source);
+        $typeName   = $manipulator->getNodeTypeFullName($source->getType());
         $definition = Parser::inputObjectTypeDefinition(
             <<<DEF
             """

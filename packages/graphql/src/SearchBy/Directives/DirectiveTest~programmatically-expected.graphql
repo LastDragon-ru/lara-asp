@@ -185,7 +185,7 @@ input SearchByScalarBooleanOrNull {
 }
 
 """
-Available operators for `scalar Int!` (only one operator allowed at a time).
+Available operators for `scalar Int` (only one operator allowed at a time).
 """
 input SearchByScalarInt {
     """
@@ -280,7 +280,7 @@ input SearchByScalarInt {
 }
 
 """
-Available operators for `scalar String!` (only one operator allowed at a time).
+Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScalarString {
     """
