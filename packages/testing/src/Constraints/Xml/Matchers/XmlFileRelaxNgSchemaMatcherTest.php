@@ -15,23 +15,23 @@ class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
     use WithTestData;
 
     public function testEvaluateValid(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
-        $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.xml');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.rng');
+        $xml    = self::getTestData(XmlMatchesSchemaTest::class)->file('.xml');
         $c      = new XmlFileRelaxNgSchemaMatcher();
 
         self::assertTrue($c->isMatchesSchema($schema, $xml));
     }
 
     public function testEvaluateInvalid(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
-        $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.invalid.xml');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.rng');
+        $xml    = self::getTestData(XmlMatchesSchemaTest::class)->file('.invalid.xml');
         $c      = new XmlFileRelaxNgSchemaMatcher();
 
         self::assertFalse($c->isMatchesSchema($schema, $xml));
     }
 
     public function testEvaluateNotDocument(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $c      = new XmlFileRelaxNgSchemaMatcher();
 
         self::assertFalse($c->isMatchesSchema($schema, new DOMDocument()));

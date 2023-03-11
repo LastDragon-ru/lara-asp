@@ -26,7 +26,7 @@ class Response extends JsonResponse {
         JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $content = null,
     ) {
         if (is_string($resource)) {
-            $resource = new JsonSchemaFile($this->getTestData($resource)->file('.json'));
+            $resource = new JsonSchemaFile(self::getTestData($resource)->file('.json'));
         }
 
         parent::__construct($code, $resource, $content);

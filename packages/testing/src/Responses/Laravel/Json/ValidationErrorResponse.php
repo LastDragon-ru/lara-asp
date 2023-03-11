@@ -31,7 +31,7 @@ class ValidationErrorResponse extends Response {
             new UnprocessableEntity(),
             new JsonContentType(),
             new JsonBody(...array_filter([
-                new JsonMatchesSchema(new JsonSchemaFile($this->getTestData(self::class)->file('.json'))),
+                new JsonMatchesSchema(new JsonSchemaFile(self::getTestData(self::class)->file('.json'))),
                 $errors
                     ? new JsonMatchesSchema(new JsonSchemaValue($this->getErrorsSchema($errors)))
                     : null,

@@ -327,7 +327,7 @@ class ValidationErrorResponse extends Response {
             new UnprocessableEntity(),
             new JsonContentType(),
             new Body([
-                new JsonMatchesSchema(new JsonSchema($this->getTestData(self::class)->file('.json'))),
+                new JsonMatchesSchema(new JsonSchema(self::getTestData(self::class)->file('.json'))),
             ]),
         );
     }

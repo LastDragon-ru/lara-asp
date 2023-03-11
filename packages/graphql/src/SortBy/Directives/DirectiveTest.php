@@ -52,7 +52,7 @@ class DirectiveTest extends TestCase {
 
         self::assertGraphQLSchemaEquals(
             $expected($this),
-            $this->getTestData()->file($graphql),
+            self::getTestData()->file($graphql),
         );
     }
 
@@ -133,8 +133,8 @@ class DirectiveTest extends TestCase {
         $registry->register($i);
 
         self::assertGraphQLSchemaEquals(
-            $this->getTestData()->file('~registry-expected.graphql'),
-            $this->getTestData()->file('~registry.graphql'),
+            self::getTestData()->file('~registry-expected.graphql'),
+            self::getTestData()->file('~registry.graphql'),
         );
     }
 
@@ -224,7 +224,7 @@ class DirectiveTest extends TestCase {
             'full'    => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~full-expected.graphql'),
+                        $test::getTestData()->file('~full-expected.graphql'),
                     ));
                 },
                 '~full.graphql',
@@ -243,7 +243,7 @@ class DirectiveTest extends TestCase {
             'example' => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~example-expected.graphql'),
+                        $test::getTestData()->file('~example-expected.graphql'),
                     ));
                 },
                 '~example.graphql',

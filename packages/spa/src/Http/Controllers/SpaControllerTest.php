@@ -78,14 +78,14 @@ class SpaControllerTest extends TestCase {
                 'settings returned (default)' => [
                     new JsonResponse(
                         new Ok(),
-                        new JsonSchemaFile($this->getTestData()->file('.settings.default.json')),
+                        new JsonSchemaFile(self::getTestData()->file('.settings.default.json')),
                     ),
                     [],
                 ],
                 'settings returned (custom)'  => [
                     new JsonResponse(
                         new Ok(),
-                        new JsonSchemaFile($this->getTestData()->file('.settings.custom.json')),
+                        new JsonSchemaFile(self::getTestData()->file('.settings.custom.json')),
                     ),
                     [
                         'custom' => 'value',

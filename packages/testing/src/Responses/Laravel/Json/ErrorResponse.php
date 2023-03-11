@@ -18,7 +18,7 @@ class ErrorResponse extends Response {
             $statusCode,
             new JsonContentType(),
             new JsonBody(
-                new JsonMatchesSchema(new JsonSchemaFile($this->getTestData(self::class)->file('.json'))),
+                new JsonMatchesSchema(new JsonSchemaFile(self::getTestData(self::class)->file('.json'))),
             ),
         );
     }

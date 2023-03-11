@@ -15,23 +15,23 @@ class XmlFileXsdSchemaMatcherTest extends TestCase {
     use WithTestData;
 
     public function testEvaluateValid(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.xsd');
-        $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.xml');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.xsd');
+        $xml    = self::getTestData(XmlMatchesSchemaTest::class)->file('.xml');
         $c      = new XmlFileXsdSchemaMatcher();
 
         self::assertTrue($c->isMatchesSchema($schema, $xml));
     }
 
     public function testEvaluateInvalid(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.xsd');
-        $xml    = $this->getTestData(XmlMatchesSchemaTest::class)->file('.invalid.xml');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.xsd');
+        $xml    = self::getTestData(XmlMatchesSchemaTest::class)->file('.invalid.xml');
         $c      = new XmlFileXsdSchemaMatcher();
 
         self::assertFalse($c->isMatchesSchema($schema, $xml));
     }
 
     public function testEvaluateNotDocument(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $c      = new XmlFileXsdSchemaMatcher();
 
         self::assertFalse($c->isMatchesSchema($schema, new DOMDocument()));

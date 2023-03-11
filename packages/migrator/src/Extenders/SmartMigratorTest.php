@@ -35,7 +35,7 @@ class SmartMigratorTest extends TestCase {
 
     public function testMigrate(): void {
         // Prepare
-        $path         = $this->getTestData()->path('/named');
+        $path         = self::getTestData()->path('/named');
         $migrations   = [
             ['migration' => '2021_05_09_055650_raw_migration_a'],
             ['migration' => '2021_05_09_055655_raw_data_migration_a'],
@@ -58,7 +58,7 @@ class SmartMigratorTest extends TestCase {
             $expectedUp   = '9.21+up.txt';
             $expectedDown = '9.21+down.txt';
         } elseif (SmartMigrator::isAnonymousMigrationsSupported()) {
-            $path         = $this->getTestData()->path('/');
+            $path         = self::getTestData()->path('/');
             $migrations   = array_merge([
                 ['migration' => '2021_05_09_055650_anonymous'],
             ], $migrations);
@@ -99,7 +99,7 @@ class SmartMigratorTest extends TestCase {
         ]);
 
         self::assertEquals(
-            $this->prepare($this->getTestData()->content($expectedUp)),
+            $this->prepare(self::getTestData()->content($expectedUp)),
             $this->prepare($output->fetch()),
         );
 
@@ -109,7 +109,7 @@ class SmartMigratorTest extends TestCase {
         ]);
 
         self::assertEquals(
-            $this->prepare($this->getTestData()->content($expectedDown)),
+            $this->prepare(self::getTestData()->content($expectedDown)),
             $this->prepare($output->fetch()),
         );
     }

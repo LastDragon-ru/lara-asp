@@ -17,7 +17,7 @@ class AtomResponse extends Response {
             new Ok(),
             new AtomContentType(),
             new Body(
-                new XmlMatchesSchema($this->getTestData(self::class)->file('.rng')),
+                new XmlMatchesSchema(self::getTestData(self::class)->file('.rng')),
             ),
         );
     }

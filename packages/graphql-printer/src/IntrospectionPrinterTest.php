@@ -19,7 +19,7 @@ class IntrospectionPrinterTest extends TestCase {
      * @dataProvider dataProviderPrint
      */
     public function testPrint(string $expected, Settings $settings, int $level): void {
-        $expected = $this->getTestData()->content($expected);
+        $expected = self::getTestData()->content($expected);
         $printer  = (new IntrospectionPrinter())->setSettings($settings)->setLevel($level);
         $schema   = new Schema([]);
         $actual   = $printer->printSchema($schema);

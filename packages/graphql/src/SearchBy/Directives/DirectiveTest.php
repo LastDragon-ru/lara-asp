@@ -88,14 +88,14 @@ class DirectiveTest extends TestCase {
 
         self::assertGraphQLSchemaEquals(
             $expected($this),
-            $this->getTestData()->file($graphql),
+            self::getTestData()->file($graphql),
         );
     }
 
     public function testManipulateArgDefinitionUnknownType(): void {
         self::expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
 
-        $this->printGraphQLSchema($this->getTestData()->file('~unknown.graphql'));
+        $this->printGraphQLSchema(self::getTestData()->file('~unknown.graphql'));
     }
 
     public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {
@@ -162,8 +162,8 @@ class DirectiveTest extends TestCase {
         $registry->register($ignored);
 
         self::assertGraphQLSchemaEquals(
-            $this->getTestData()->file('~programmatically-expected.graphql'),
-            $this->getTestData()->file('~programmatically.graphql'),
+            self::getTestData()->file('~programmatically-expected.graphql'),
+            self::getTestData()->file('~programmatically.graphql'),
         );
     }
 
@@ -344,7 +344,7 @@ class DirectiveTest extends TestCase {
             'full'                           => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~full-expected.graphql'),
+                        $test::getTestData()->file('~full-expected.graphql'),
                     ));
                 },
                 '~full.graphql',
@@ -361,7 +361,7 @@ class DirectiveTest extends TestCase {
             'example'                        => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~example-expected.graphql'),
+                        $test::getTestData()->file('~example-expected.graphql'),
                     ));
                 },
                 '~example.graphql',
@@ -378,7 +378,7 @@ class DirectiveTest extends TestCase {
             'only used type should be added' => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~usedonly-expected.graphql'),
+                        $test::getTestData()->file('~usedonly-expected.graphql'),
                     ));
                 },
                 '~usedonly.graphql',
@@ -387,7 +387,7 @@ class DirectiveTest extends TestCase {
             'custom complex operators'       => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~custom-complex-operators-expected.graphql'),
+                        $test::getTestData()->file('~custom-complex-operators-expected.graphql'),
                     ));
                 },
                 '~custom-complex-operators.graphql',
