@@ -85,7 +85,7 @@ class BlockTest extends TestCase {
     /**
      * @return array<string, array{bool, \LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings, string}>
      */
-    public function dataProviderIsMultiline(): array {
+    public static function dataProviderIsMultiline(): array {
         $settings = new TestSettings();
 
         return [
@@ -110,7 +110,7 @@ class BlockTest extends TestCase {
     /**
      * @return array<string, array{bool, string}>
      */
-    public function dataProviderIsEmpty(): array {
+    public static function dataProviderIsEmpty(): array {
         return [
             'empty'     => [true, ''],
             'non empty' => [false, 'content'],

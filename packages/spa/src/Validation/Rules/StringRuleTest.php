@@ -35,7 +35,7 @@ class StringRuleTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderPasses(): array {
+    public static function dataProviderPasses(): array {
         return [
             'true'  => [false, true],
             'false' => [false, false],

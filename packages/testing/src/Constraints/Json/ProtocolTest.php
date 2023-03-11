@@ -74,7 +74,7 @@ class ProtocolTest extends TestCase {
     /**
      * @return array<string,array{string|Exception, string, array<string,string>}>
      */
-    public function dataProviderInvoke(): array {
+    public static function dataProviderInvoke(): array {
         return [
             'template without parameters'    => [
                 '{"a": "b"}',

@@ -60,7 +60,7 @@ class EnumCastTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderGet(): array {
+    public static function dataProviderGet(): array {
         return [
             'int'    => [
                 EnumCastTest_Enum::i(),
@@ -92,7 +92,7 @@ class EnumCastTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderSet(): array {
+    public static function dataProviderSet(): array {
         return [
             'self (int)'    => [
                 1,

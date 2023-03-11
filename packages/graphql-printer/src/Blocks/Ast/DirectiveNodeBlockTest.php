@@ -55,7 +55,7 @@ class DirectiveNodeBlockTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, DirectiveNode}>
      */
-    public function dataProviderToString(): array {
+    public static function dataProviderToString(): array {
         $settings = (new TestSettings())
             ->setNormalizeArguments(false)
             ->setAlwaysMultilineArguments(false);

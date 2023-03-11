@@ -64,7 +64,7 @@ class DirectiveDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, Directive}>
      */
-    public function dataProviderToString(): array {
+    public static function dataProviderToString(): array {
         $settings = (new TestSettings())
             ->setAlwaysMultilineArguments(false)
             ->setAlwaysMultilineDirectiveLocations(false);

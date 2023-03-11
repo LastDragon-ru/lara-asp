@@ -40,27 +40,18 @@ class JsonMatchesSchema extends Constraint {
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function matches($other): bool {
+    protected function matches(mixed $other): bool {
         $this->result = $this->getValidator()->validate($other, $this->schema->getSchema());
         $matches      = $this->result->isValid();
 
         return $matches;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function failureDescription($other): string {
+    protected function failureDescription(mixed $other): string {
         return "{$this->prettify($other)} {$this->toString()}";
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function additionalFailureDescription($other): string {
+    protected function additionalFailureDescription(mixed $other): string {
         $description = parent::additionalFailureDescription($other);
 
         if ($this->result) {

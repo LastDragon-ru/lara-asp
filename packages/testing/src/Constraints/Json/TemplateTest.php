@@ -37,7 +37,7 @@ class TemplateTest extends TestCase {
     /**
      * @return array<string,array{string|Exception, string, array<string,string>}>
      */
-    public function dataProviderBuild(): array {
+    public static function dataProviderBuild(): array {
         return [
             'template without parameters'    => [
                 '{"a": "b"}',

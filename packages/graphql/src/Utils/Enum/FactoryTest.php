@@ -28,7 +28,7 @@ class FactoryTest extends TestCase {
     /**
      * @return array<string, array{array<string,mixed>,class-string<Enum>}>
      */
-    public function dataProviderGetDefinition(): array {
+    public static function dataProviderGetDefinition(): array {
         return [
             FactoryTest__A::class => [
                 [

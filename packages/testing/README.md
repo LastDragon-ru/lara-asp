@@ -529,17 +529,17 @@ class ExampleTest extends TestCase {
 
     // <editor-fold desc="DataProvider">
     // =========================================================================
-    public function dataProviderGet(): array {
+    public static function dataProviderGet(): array {
         return (new CompositeDataProvider(
-            $this->getUserDataProvider(),
-            $this->getModelDataProvider(),
+            self::getUserDataProvider(),
+            self::getModelDataProvider(),
         ))->getData();
     }
 
-    public function dataProviderUpdate(): array {
+    public static function dataProviderUpdate(): array {
         return (new CompositeDataProvider(
-            $this->getUserDataProvider(),
-            $this->getModelDataProvider(),
+            self::getUserDataProvider(),
+            self::getModelDataProvider(),
             new ArrayDataProvider([
                 'no email'      => [
                     new ValidationErrorResponse(['email' => null]),
@@ -566,7 +566,7 @@ class ExampleTest extends TestCase {
 
     // <editor-fold desc="Shared">
     // =========================================================================
-    protected function getUserDataProvider(): DataProvider {
+    protected static function getUserDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'guest'         => [
                 new ExpectedFinal(new Unauthorized()),
@@ -581,7 +581,7 @@ class ExampleTest extends TestCase {
         ]);
     }
 
-    protected function getModelDataProvider(): DataProvider {
+    protected static function getModelDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'user not exists' => [
                 new ExpectedFinal(new NotFound()),

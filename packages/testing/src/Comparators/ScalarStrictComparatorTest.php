@@ -31,7 +31,7 @@ class ScalarStrictComparatorTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderAssertEquals(): array {
+    public static function dataProviderAssertEquals(): array {
         return [
             'int'         => [true, 1, 1],
             'bool'        => [true, true, true],

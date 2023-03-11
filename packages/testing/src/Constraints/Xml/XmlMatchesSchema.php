@@ -79,10 +79,7 @@ class XmlMatchesSchema extends Constraint {
         return $matches;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function additionalFailureDescription($other): string {
+    protected function additionalFailureDescription(mixed $other): string {
         $description = parent::additionalFailureDescription($other);
         $levels      = [
             LIBXML_ERR_WARNING => 'Warning',

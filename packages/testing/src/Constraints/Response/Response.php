@@ -76,10 +76,7 @@ class Response extends Constraint {
         return null;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function matches($other): bool {
+    protected function matches(mixed $other): bool {
         return true;
     }
 
@@ -89,10 +86,7 @@ class Response extends Constraint {
             : $this->failed->toString();
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function additionalFailureDescription($other, bool $root = true): string {
+    protected function additionalFailureDescription(mixed $other, bool $root = true): string {
         if (!$other instanceof ResponseInterface) {
             return '';
         }

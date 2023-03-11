@@ -85,7 +85,7 @@ class InTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCall(): array {
+    public static function dataProviderCall(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
@@ -116,7 +116,7 @@ class InTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCallScout(): array {
+    public static function dataProviderCallScout(): array {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([

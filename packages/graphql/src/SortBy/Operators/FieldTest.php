@@ -127,7 +127,7 @@ class FieldTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCall(): array {
+    public static function dataProviderCall(): array {
         $factory = static function (self $test): Argument {
             $schema   = (string) $test->printGraphQLSchema(
             /** @lang GraphQL */

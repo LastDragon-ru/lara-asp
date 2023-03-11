@@ -85,7 +85,7 @@ class InstanceCacheTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderInstanceCacheKey(): array {
+    public static function dataProviderInstanceCacheKey(): array {
         return [
             'string'                             => ['"string"', 'string'],
             'null'                               => ['null', null],

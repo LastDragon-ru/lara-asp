@@ -67,7 +67,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, InputObjectType}>
      */
-    public function dataProviderToString(): array {
+    public static function dataProviderToString(): array {
         $settings = (new TestSettings())
             ->setNormalizeFields(false);
 

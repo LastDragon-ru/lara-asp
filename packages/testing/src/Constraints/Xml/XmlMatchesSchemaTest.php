@@ -23,10 +23,7 @@ class XmlMatchesSchemaTest extends TestCase {
      */
     public function testEvaluate(bool|string $expected, SplFileInfo $schema, DOMDocument|SplFileInfo $xml): void {
         $constraint = new class($schema) extends XmlMatchesSchema {
-            /**
-             * @inheritDoc
-             */
-            public function additionalFailureDescription($other): string {
+            public function additionalFailureDescription(mixed $other): string {
                 return parent::additionalFailureDescription($other);
             }
         };
@@ -46,7 +43,7 @@ class XmlMatchesSchemaTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderEvaluate(): array {
+    public static function dataProviderEvaluate(): array {
         return [
             'rng + dom = valid'    => [
                 true,

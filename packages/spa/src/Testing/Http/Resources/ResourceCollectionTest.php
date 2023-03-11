@@ -42,7 +42,7 @@ class ResourceCollectionTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderSchema(): array {
+    public static function dataProviderSchema(): array {
         return [
             'object (invalid)'        => [
                 false,

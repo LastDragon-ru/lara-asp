@@ -61,7 +61,7 @@ class UnionTypeDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, UnionType}>
      */
-    public function dataProviderToString(): array {
+    public static function dataProviderToString(): array {
         $settings = (new TestSettings())
             ->setNormalizeUnions(false)
             ->setAlwaysMultilineUnions(false);

@@ -50,7 +50,7 @@ class NotBetweenTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCall(): array {
+    public static function dataProviderCall(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([

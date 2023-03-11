@@ -12,7 +12,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class RefreshDatabaseIfEmptyTest extends TestCase {
     public function testImpl(): void {
-        self::assertNotEmpty($this->app->make(RefreshDatabaseIfEmptyTest_Impl::class));
+        self::assertNotEmpty($this->app->make(RefreshDatabaseIfEmptyTest_Impl::class, [
+            'name' => 'test',
+        ]));
     }
 }
 

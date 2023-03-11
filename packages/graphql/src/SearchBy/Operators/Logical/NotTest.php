@@ -52,7 +52,7 @@ class NotTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCall(): array {
+    public static function dataProviderCall(): array {
         $factory = static function (self $test): Argument {
             return $test->getGraphQLArgument(
                 'TestInput',
