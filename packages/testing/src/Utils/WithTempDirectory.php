@@ -9,7 +9,7 @@ use function register_shutdown_function;
 use function sys_get_temp_dir;
 
 trait WithTempDirectory {
-    protected function getTempDirectory(): string {
+    public static function getTempDirectory(): string {
         $fs   = new Filesystem();
         $pkg  = Package::Name;
         $path = $fs->tempnam(sys_get_temp_dir(), $pkg);
