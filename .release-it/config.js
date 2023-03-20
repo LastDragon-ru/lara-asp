@@ -15,7 +15,7 @@ const types          = [
     {type: 'refactor', section: 'Code Refactoring', hidden: true},
     {type: 'test', section: 'Tests', hidden: true},
     {type: 'ci', section: 'Continuous Integration', hidden: true},
-    {type: release}
+    {type: release},
 ];
 
 module.exports = {
@@ -26,8 +26,21 @@ module.exports = {
         requireCommits: true,
     },
     github:  {
-        release: true,
-        draft:   true,
+        release:      true,
+        draft:        true,
+        releaseName:  '${(changelog.split("\\n", 1)[0] || "").replace(/^#+\\s+(.+?)$/, "$1")}',
+        releaseNotes: (context) => {
+            let changelog = context.changelog;
+            const lines   = changelog.split('\n');
+
+            if (lines.length > 1) {
+                const header = lines[0];
+                const body   = lines.slice(1).join('\n');
+                changelog    = `<!-- ${header} -->\n${body}`;
+            }
+
+            return changelog;
+        },
     },
     plugins: {
         '@release-it/bumper':                 {
@@ -43,7 +56,7 @@ module.exports = {
             writerOpts:        {
                 mainTemplate:  mainTemplate,
                 commitPartial: commitTemplate,
-                commitsSort: (a, b) => {
+                commitsSort:   (a, b) => {
                     return (a.scope || '').localeCompare(b.scope || '')
                         || a.subject.localeCompare(b.subject);
                 },
