@@ -8,15 +8,19 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
 interface TypeDefinition {
-    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string;
+    /**
+     * Returns the type name for given Builder and Source.
+     */
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string;
 
     /**
+     * Returns the type definition for given Source if possible. The name must be equal to `$name`.
+     *
      * @return (TypeDefinitionNode&Node)|null
      */
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?string $type,
-        ?bool $nullable,
+        TypeSource $source,
     ): ?TypeDefinitionNode;
 }

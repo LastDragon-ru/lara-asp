@@ -73,7 +73,7 @@ class ModelHelperTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderGetRelation(): array {
+    public static function dataProviderGetRelation(): array {
         // todo(eloquent): Add tests for Intersection Types (PHP 8.1)
         return (new CompositeDataProvider(
             new ArrayDataProvider([
@@ -118,7 +118,7 @@ class ModelHelperTest extends TestCase {
     /**
      * @return array<string, array{bool, Closure(): mixed}>
      */
-    public function dataProviderIsSoftDeletable(): array {
+    public static function dataProviderIsSoftDeletable(): array {
         return [
             'model'                 => [
                 false,

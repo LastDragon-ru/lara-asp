@@ -69,23 +69,23 @@ class SpaControllerTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderSettings(): array {
+    public static function dataProviderSettings(): array {
         return (new CompositeDataProvider(
-            $this->getEnabledDataProvider(),
-            $this->getPrefixDataProvider(),
-            $this->getAcceptDataProvider(),
+            self::getEnabledDataProvider(),
+            self::getPrefixDataProvider(),
+            self::getAcceptDataProvider(),
             new ArrayDataProvider([
                 'settings returned (default)' => [
                     new JsonResponse(
                         new Ok(),
-                        new JsonSchemaFile($this->getTestData()->file('.settings.default.json')),
+                        new JsonSchemaFile(self::getTestData()->file('.settings.default.json')),
                     ),
                     [],
                 ],
                 'settings returned (custom)'  => [
                     new JsonResponse(
                         new Ok(),
-                        new JsonSchemaFile($this->getTestData()->file('.settings.custom.json')),
+                        new JsonSchemaFile(self::getTestData()->file('.settings.custom.json')),
                     ),
                     [
                         'custom' => 'value',
@@ -95,7 +95,7 @@ class SpaControllerTest extends TestCase {
         ))->getData();
     }
 
-    protected function getEnabledDataProvider(): DataProvider {
+    protected static function getEnabledDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'disabled' => [
                 new ExpectedFinal(new NotFound()),
@@ -108,7 +108,7 @@ class SpaControllerTest extends TestCase {
         ]);
     }
 
-    protected function getPrefixDataProvider(): DataProvider {
+    protected static function getPrefixDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'without prefix' => [
                 new UnknownValue(),
@@ -121,7 +121,7 @@ class SpaControllerTest extends TestCase {
         ]);
     }
 
-    protected function getAcceptDataProvider(): DataProvider {
+    protected static function getAcceptDataProvider(): DataProvider {
         return new ArrayDataProvider([
             'accept html' => [
                 new UnknownValue(),

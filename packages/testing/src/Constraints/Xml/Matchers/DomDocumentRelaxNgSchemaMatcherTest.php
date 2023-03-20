@@ -15,23 +15,23 @@ class DomDocumentRelaxNgSchemaMatcherTest extends TestCase {
     use WithTestData;
 
     public function testEvaluateValid(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
-        $dom    = $this->getTestData(XmlMatchesSchemaTest::class)->dom('.xml');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.rng');
+        $dom    = self::getTestData(XmlMatchesSchemaTest::class)->dom('.xml');
         $c      = new DomDocumentRelaxNgSchemaMatcher();
 
         self::assertTrue($c->isMatchesSchema($schema, $dom));
     }
 
     public function testEvaluateInvalid(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
-        $dom    = $this->getTestData(XmlMatchesSchemaTest::class)->dom('.invalid.xml');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.rng');
+        $dom    = self::getTestData(XmlMatchesSchemaTest::class)->dom('.invalid.xml');
         $c      = new DomDocumentRelaxNgSchemaMatcher();
 
         self::assertFalse($c->isMatchesSchema($schema, $dom));
     }
 
     public function testEvaluateNotDocument(): void {
-        $schema = $this->getTestData(XmlMatchesSchemaTest::class)->file('.rng');
+        $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $c      = new DomDocumentRelaxNgSchemaMatcher();
 
         self::assertFalse($c->isMatchesSchema($schema, new SplFileInfo('tmp')));

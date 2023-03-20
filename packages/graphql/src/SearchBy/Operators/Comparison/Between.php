@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
@@ -22,8 +23,8 @@ class Between extends BaseOperator {
         return 'Within a range.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
-        return $provider->getType(Range::class, $type, $nullable);
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $provider->getType(Range::class, $source);
     }
 
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {

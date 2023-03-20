@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-         cacheResultFile=".phpunit/result.cache"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         cacheDirectory=".phpunit/result.cache"
          executionOrder="random"
          colors="true">
     <testsuites>
@@ -29,9 +29,11 @@
         <testsuite name="lastdragon-ru/lara-asp-graphql">
             <directory suffix="Test.php">./packages/graphql/src</directory>
         </testsuite>
+        <testsuite name="lastdragon-ru/lara-asp-graphql-printer">
+            <directory suffix="Test.php">./packages/graphql-printer/src</directory>
+        </testsuite>
     </testsuites>
-    <coverage processUncoveredFiles="true"
-              cacheDirectory=".phpunit/coverage.cache">
+    <coverage cacheDirectory=".phpunit/coverage.cache">
         <include>
             <directory suffix=".php">./packages/core/src</directory>
             <directory suffix=".php">./packages/migrator/src</directory>
@@ -41,6 +43,7 @@
             <directory suffix=".php">./packages/formatter/src</directory>
             <directory suffix=".php">./packages/spa/src</directory>
             <directory suffix=".php">./packages/graphql/src</directory>
+            <directory suffix=".php">./packages/graphql-printer/src</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./packages/core/src</directory>
@@ -51,6 +54,7 @@
             <directory suffix="Test.php">./packages/formatter/src</directory>
             <directory suffix="Test.php">./packages/spa/src</directory>
             <directory suffix="Test.php">./packages/graphql/src</directory>
+            <directory suffix="Test.php">./packages/graphql-printer/src</directory>
         </exclude>
     </coverage>
     <php>

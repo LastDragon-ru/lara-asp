@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
-use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
@@ -11,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -42,19 +41,17 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     protected function getArgDefinitionType(
         Manipulator $manipulator,
         DocumentAST $document,
-        InputValueDefinitionNode $argument,
-        FieldDefinitionNode $field,
+        ObjectFieldArgumentSource $argument,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
             $manipulator,
             $document,
             $argument,
-            $field,
             Condition::class,
         );
 
         if (!$type) {
-            throw new FailedToCreateSearchCondition($argument->name->value);
+            throw new FailedToCreateSearchCondition($argument);
         }
 
         return $type;

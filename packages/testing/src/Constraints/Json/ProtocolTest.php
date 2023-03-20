@@ -38,7 +38,7 @@ class ProtocolTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $file   = $this->getTempFile($content);
+        $file   = self::getTempFile($content);
         $uri    = Protocol::getUri($file, $parameters);
         $actual = (new Protocol())($uri);
 
@@ -74,7 +74,7 @@ class ProtocolTest extends TestCase {
     /**
      * @return array<string,array{string|Exception, string, array<string,string>}>
      */
-    public function dataProviderInvoke(): array {
+    public static function dataProviderInvoke(): array {
         return [
             'template without parameters'    => [
                 '{"a": "b"}',

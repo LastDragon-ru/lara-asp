@@ -5,8 +5,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 
 /**
@@ -23,8 +25,8 @@ class AllOf extends Logical {
         return 'All of the conditions must be true.';
     }
 
-    public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
-        return "[{$type}!]";
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return "[{$provider->getType(Condition::class, $source)}!]";
     }
 
     protected function getBoolean(): string {

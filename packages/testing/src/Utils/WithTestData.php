@@ -6,7 +6,7 @@ trait WithTestData {
     /**
      * @param class-string|null $class
      */
-    public function getTestData(string $class = null): TestData {
+    public static function getTestData(string $class = null): TestData {
         return new TestData($class ?? static::class);
     }
 }

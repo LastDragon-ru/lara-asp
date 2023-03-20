@@ -42,7 +42,7 @@ class ConfigMergerTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderMerge(): array {
+    public static function dataProviderMerge(): array {
         return [
             'array + array = ok'                    => [
                 [

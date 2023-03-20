@@ -31,6 +31,11 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
+			message: "#^Using nullsafe property access \"\\?\\-\\>directives\" on left side of \\?\\? is unnecessary\\. Use \\-\\> instead\\.$#"
+			count: 1
+			path: packages/graphql-printer/src/Blocks/Types/DefinitionBlock.php
+
+		-
 			message: "#^Unable to resolve the template type TClass in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
 			count: 1
 			path: packages/graphql/src/Builder/Manipulator.php
@@ -46,24 +51,14 @@ parameters:
 			path: packages/graphql/src/Builder/Property.php
 
 		-
+			message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\:\\:\\$name\\.$#"
+			count: 1
+			path: packages/graphql/src/Printer/DirectiveResolver.php
+
+		-
 			message: "#^Parameter \\#1 \\$enum of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\Enum\\\\EnumType constructor expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\Core\\\\Enum\\>, mixed given\\.$#"
 			count: 1
 			path: packages/graphql/src/Provider.php
-
-		-
-			message: "#^Using nullsafe property access \"\\?\\-\\>directives\" on left side of \\?\\? is unnecessary\\. Use \\-\\> instead\\.$#"
-			count: 1
-			path: packages/graphql/src/SchemaPrinter/Blocks/Types/DefinitionBlock.php
-
-		-
-			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SchemaPrinter\\\\Misc\\\\DirectiveResolver\\:\\:\\$definitions \\(array\\<string, GraphQL\\\\Type\\\\Definition\\\\Directive\\>\\) does not accept array\\<int\\|string, GraphQL\\\\Type\\\\Definition\\\\Directive\\>\\.$#"
-			count: 1
-			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
-
-		-
-			message: "#^Using nullsafe property access \"\\?\\-\\>definitions\" on left side of \\?\\? is unnecessary\\. Use \\-\\> instead\\.$#"
-			count: 1
-			path: packages/graphql/src/SchemaPrinter/Misc/DirectiveResolver.php
 
 		-
 			message: "#^Parameter \\#2 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:when\\(\\) expects \\(callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, string\\|null\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\)\\|null, Closure\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder, string\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"

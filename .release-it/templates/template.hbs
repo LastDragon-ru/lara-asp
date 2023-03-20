@@ -1,6 +1,16 @@
+## {{#if title}}{{title}}{{else}}Release v{{version}} ({{date}}){{/if}}
+
+{{#if breaking}}
+
 | ☣    | Breaking changes |
 |:-----:|:-----------------|
 
+{{/if}}
+{{#if description}}
+
+{{description}}
+
+{{/if}}
 {{#each commitGroups}}
 
 {{#if title}}
@@ -12,7 +22,6 @@
 {{> commit root=@root}}
 
 {{/each}}
-
 
 
 {{/each}}

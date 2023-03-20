@@ -61,7 +61,7 @@ class RelationTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCall(): array {
+    public static function dataProviderCall(): array {
         $graphql = <<<'GRAPHQL'
             input TestInput {
                 property: TestOperators

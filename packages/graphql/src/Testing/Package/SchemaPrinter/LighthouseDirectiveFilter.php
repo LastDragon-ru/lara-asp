@@ -2,18 +2,37 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter;
 
-use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use LastDragon_ru\LaraASP\GraphQL\SchemaPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
+use Nuwave\Lighthouse\Exceptions\DirectiveException;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
-use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 use function explode;
 use function str_starts_with;
 
 class LighthouseDirectiveFilter implements DirectiveFilter {
-    public function isAllowedDirective(GraphQLDirective|LighthouseDirective $directive, bool $isStandard): bool {
-        return $isStandard
-            || $directive instanceof GraphQLDirective
-            || !str_starts_with($directive::class, explode('\\', BaseDirective::class)[0]);
+    public function __construct(
+        protected DirectiveLocator $locator,
+    ) {
+        // empty
+    }
+
+    public function isAllowedDirective(string $directive, bool $isStandard): bool {
+        // Standard?
+        if ($isStandard) {
+            return true;
+        }
+
+        // Lighthouse?
+        $isLighthouse = false;
+
+        try {
+            $class        = $this->locator->resolve($directive);
+            $isLighthouse = str_starts_with($class, explode('\\', BaseDirective::class)[0]);
+        } catch (DirectiveException) {
+            // empty
+        }
+
+        return !$isLighthouse;
     }
 }

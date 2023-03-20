@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 use Closure;
 use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
@@ -15,6 +14,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Mockery;
@@ -61,8 +61,7 @@ class HandlerDirectiveTest extends TestCase {
             protected function getArgDefinitionType(
                 Manipulator $manipulator,
                 DocumentAST $document,
-                InputValueDefinitionNode $argument,
-                FieldDefinitionNode $field,
+                ObjectFieldArgumentSource $argument,
             ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
                 throw new Exception('should not be called.');
             }
@@ -88,7 +87,7 @@ class HandlerDirectiveTest extends TestCase {
      *     Closure(DirectiveLocator): FieldDefinitionNode,
      *     }>
      */
-    public function dataProviderGetBuilderInfo(): array {
+    public static function dataProviderGetBuilderInfo(): array {
         return [
             'default'           => [
                 [

@@ -4,10 +4,10 @@ The set provides best practices to make development more fun and classes/service
 
 # Requirements
 
-| Package | Version             |
-|---------|---------------------|
-| PHP     | `^8.0.0`            |
-| Laravel | `^8.22.1`, `^9.0.0` |
+| Package | Version                        |
+|---------|--------------------------------|
+| PHP     | `^8.0.0`                       |
+| Laravel | `^8.22.1`, `^9.0.0`, `^10.0.0` |
 
 # Installation
 
@@ -32,6 +32,12 @@ This package contains useful utilities and classes.
 This package provides highly powerful `@searchBy` and `@sortBy`  directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
 
 [Read more](packages/graphql/README.md).
+
+## GraphQL Printer
+
+Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema.
+
+[Read more](packages/graphql-printer/README.md).
 
 ## The Migrator
 

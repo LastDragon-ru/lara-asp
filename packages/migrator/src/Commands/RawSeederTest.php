@@ -16,7 +16,7 @@ class RawSeederTest extends TestCase {
     public function testHandle(): void {
         // Pre test
         $pkg    = Package::Name;
-        $path   = $this->getTempDirectory();
+        $path   = self::getTempDirectory();
         $finder = Finder::create()->in($path);
 
         self::assertCount(0, $finder->files());

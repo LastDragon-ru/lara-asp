@@ -47,7 +47,7 @@ class IteratorImplTest extends TestCase {
     /**
      * @return array<string, array{int, ?int, int}>
      */
-    public function dataProviderCount(): array {
+    public static function dataProviderCount(): array {
         return [
             'count only'    => [123, null, 123],
             'count invalid' => [0, null, -123],

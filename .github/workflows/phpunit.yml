@@ -63,13 +63,13 @@ jobs:
           echo "dependencies=$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)" >> $GITHUB_OUTPUT
 
           # Laravel
-          echo "laravel-versions=$(jq '.require."laravel/framework" | split("|") | sort' -c composer.json)" >> $GITHUB_OUTPUT
+          echo "laravel-versions=$(jq '.require."laravel/framework" // "null" | split("|") | sort' -c composer.json)" >> $GITHUB_OUTPUT
 
   run:
     # Only 28 characters are visible on UI :(
     name: >-
       P${{ matrix.php }}
-      L${{ matrix.laravel }}
+      ${{ matrix.laravel != 'null' && format('L{0}', matrix.laravel) || '' }}
       ${{ matrix.dependencies == 'locked' && '🔒' || (matrix.dependencies == 'highest' && '🡹' || '🡻') }}
       ${{ startsWith(matrix.os, 'windows') && '🆆' || (startsWith(matrix.os, 'macos') && '🅼' || '🆄') }}
 
@@ -138,6 +138,7 @@ jobs:
       # On Windows, the caret ^ is the escape character, so the version string
       # that contains ^ will be handled incorrectly
       - name: Install Laravel
+        if: ${{ matrix.laravel != 'null' }}
         shell: bash
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |

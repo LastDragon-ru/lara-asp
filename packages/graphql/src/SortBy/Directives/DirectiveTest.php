@@ -16,14 +16,15 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
-use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
+
 use function config;
 use function is_array;
 
@@ -51,7 +52,7 @@ class DirectiveTest extends TestCase {
 
         self::assertGraphQLSchemaEquals(
             $expected($this),
-            $this->getTestData()->file($graphql),
+            self::getTestData()->file($graphql),
         );
     }
 
@@ -132,8 +133,8 @@ class DirectiveTest extends TestCase {
         $registry->register($i);
 
         self::assertGraphQLSchemaEquals(
-            $this->getTestData()->file('~registry-expected.graphql'),
-            $this->getTestData()->file('~registry.graphql'),
+            self::getTestData()->file('~registry-expected.graphql'),
+            self::getTestData()->file('~registry.graphql'),
         );
     }
 
@@ -148,7 +149,7 @@ class DirectiveTest extends TestCase {
             ],
         ]);
 
-        self::expectExceptionObject(new TypeDefinitionImpossibleToCreateType(Clause::class, 'TestType', true));
+        self::expectExceptionObject(new TypeDefinitionImpossibleToCreateType(Clause::class, 'type TestType'));
 
         $registry = $this->app->make(TypeRegistry::class);
         $registry->register($type);
@@ -218,21 +219,13 @@ class DirectiveTest extends TestCase {
     /**
      * @return array<string,array{Closure(self): GraphQLExpectedSchema, string}>
      */
-    public function dataProviderManipulateArgDefinition(): array {
+    public static function dataProviderManipulateArgDefinition(): array {
         return [
             'full'    => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~full-expected.graphql'),
-                    ))
-                        ->setUnusedTypes([
-                            'Properties',
-                            'Nested',
-                            'Float',
-                            'Int',
-                            'Boolean',
-                            'InputIgnored',
-                        ]);
+                        $test::getTestData()->file('~full-expected.graphql'),
+                    ));
                 },
                 '~full.graphql',
                 static function (): void {
@@ -250,7 +243,7 @@ class DirectiveTest extends TestCase {
             'example' => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~example-expected.graphql'),
+                        $test::getTestData()->file('~example-expected.graphql'),
                     ));
                 },
                 '~example.graphql',
@@ -262,7 +255,7 @@ class DirectiveTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderHandleBuilder(): array {
+    public static function dataProviderHandleBuilder(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([

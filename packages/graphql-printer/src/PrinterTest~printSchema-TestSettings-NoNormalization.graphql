@@ -1,0 +1,151 @@
+type Subscription {
+    subscribe: TypeC
+}
+
+type TypeC {
+    c: [Float!]!
+}
+
+type Mutation {
+    mutate(
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+
+        a: InputA
+    ): [TypeB!]
+}
+
+"""
+Input description.
+"""
+input InputA
+@directive(
+    location: "input"
+)
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    c: [Float!]!
+    @directive(
+        location: "field"
+    )
+}
+
+type TypeB {
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+type Query {
+    type(
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+
+        a: InputA
+    ): TypeA!
+
+    enum(
+        enum: Enum = A
+    ): TypeB
+
+    union: Union
+    scalar: Scalar
+}
+
+"""
+Scalar description.
+"""
+scalar Scalar
+@directive(
+    location: "scalar"
+)
+
+"""
+Union description.
+"""
+union Union
+@directive(
+    location: "union"
+)
+= TypeB | TypeC
+
+"""
+Enum description.
+"""
+enum Enum
+@directive(
+    location: "enum"
+)
+{
+    """
+    Enum value description
+    """
+    A
+
+    C
+
+    B
+    @directive(
+        location: "enum value"
+    )
+}
+
+"""
+Type description.
+"""
+type TypeA implements InterfaceC
+@directive(
+    location: "type"
+)
+{
+    """
+    Field description.
+    """
+    b: [String!]
+
+    c: [Float!]!
+
+    a: Int
+    @deprecated
+}
+
+interface InterfaceC {
+    b: [String!]
+    c: [Float!]!
+    a: Int
+}
+
+"""
+Directive description
+"""
+directive @directive(
+    location: String
+)
+repeatable on
+    | QUERY
+    | MUTATION
+    | SUBSCRIPTION
+    | FIELD
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | SCHEMA
+    | SCALAR
+    | OBJECT
+    | FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | INTERFACE
+    | UNION
+    | ENUM
+    | ENUM_VALUE
+    | INPUT_OBJECT
+    | INPUT_FIELD_DEFINITION

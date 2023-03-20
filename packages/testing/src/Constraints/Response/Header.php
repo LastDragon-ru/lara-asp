@@ -23,10 +23,7 @@ class Header extends Response {
         return $this->name;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function matches($other): bool {
+    protected function matches(mixed $other): bool {
         return parent::matches($other)
             && $other instanceof ResponseInterface
             && $other->hasHeader($this->getName());

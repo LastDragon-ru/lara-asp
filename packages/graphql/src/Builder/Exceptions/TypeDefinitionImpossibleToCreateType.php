@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use Stringable;
 use Throwable;
 
 use function sprintf;
@@ -13,15 +14,14 @@ class TypeDefinitionImpossibleToCreateType extends BuilderException {
      */
     public function __construct(
         protected string $definition,
-        protected ?string $type,
-        protected ?bool $nullable,
+        protected Stringable|string|null $source,
         Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
                 'Definition `%s`: Impossible to create type for type `%s`.',
                 $this->definition,
-                ($this->type ?: 'null').($this->nullable ? '' : '!'),
+                $this->source ?: 'null',
             ),
             $previous,
         );
@@ -31,11 +31,7 @@ class TypeDefinitionImpossibleToCreateType extends BuilderException {
         return $this->definition;
     }
 
-    public function getType(): ?string {
-        return $this->type;
-    }
-
-    public function isNullable(): ?bool {
-        return $this->nullable;
+    public function getSource(): Stringable|string|null {
+        return $this->source;
     }
 }

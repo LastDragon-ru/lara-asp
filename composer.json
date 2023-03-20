@@ -54,7 +54,8 @@
     "symfony/finder": "^5.1.0|^6.0.0",
     "symfony/http-foundation": "^5.2.0|^6.0.0",
     "symfony/mime": "^5.3.0|^6.0.0",
-    "symfony/psr-http-message-bridge": "^2.0.0"
+    "symfony/psr-http-message-bridge": "^2.0.0",
+    "webonyx/graphql-php": "^14.11.9"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
@@ -66,7 +67,7 @@
     "phpstan/phpstan-mockery": "^1.0.0",
     "phpstan/phpstan-phpunit": "^1.0.0",
     "phpstan/phpstan-strict-rules": "^1.1.0",
-    "phpunit/phpunit": "^9.5.0",
+    "phpunit/phpunit": "^9.5.0|^10.0.15",
     "slevomat/coding-standard": "^8.6.2",
     "squizlabs/php_codesniffer": "^3.7.1",
     "symplify/monorepo-builder": "^11.0.0"
@@ -91,7 +92,8 @@
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
-      "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/"
+      "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/",
+      "LastDragon_ru\\LaraASP\\GraphQLPrinter\\": "packages/graphql-printer/src/"
     },
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
@@ -101,7 +103,8 @@
       "packages/eloquent/src/**Test.php",
       "packages/formatter/src/**Test.php",
       "packages/spa/src/**Test.php",
-      "packages/graphql/src/**Test.php"
+      "packages/graphql/src/**Test.php",
+      "packages/graphql-printer/src/**Test.php"
     ]
   },
   "autoload-dev": {
@@ -163,6 +166,7 @@
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",
     "lastdragon-ru/lara-asp-spa": "self.version",
-    "lastdragon-ru/lara-asp-graphql": "self.version"
+    "lastdragon-ru/lara-asp-graphql": "self.version",
+    "lastdragon-ru/lara-asp-graphql-printer": "self.version"
   }
 }

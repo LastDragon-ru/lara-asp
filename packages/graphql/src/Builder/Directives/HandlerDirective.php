@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use Closure;
 use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
@@ -12,8 +11,6 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldArgument;
-use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -212,12 +210,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Argument
-        $argDefinition->type = $this->getArgDefinitionType(
-            $manipulator,
-            $documentAST,
-            $argDefinition,
-            $parentField,
-        );
+        $argInfo             = new ObjectFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+        $argDefinition->type = $this->getArgDefinitionType($manipulator, $documentAST, $argInfo);
 
         // Interfaces
         $interfaces   = $manipulator->getNodeInterfaces($parentType);
@@ -248,8 +242,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     abstract protected function getArgDefinitionType(
         Manipulator $manipulator,
         DocumentAST $document,
-        InputValueDefinitionNode $argument,
-        FieldDefinitionNode $field,
+        ObjectFieldArgumentSource $argument,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode;
 
     /**
@@ -258,28 +251,21 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     protected function getArgumentTypeDefinitionNode(
         Manipulator $manipulator,
         DocumentAST $document,
-        InputValueDefinitionNode $argument,
-        FieldDefinitionNode $field,
+        ObjectFieldArgumentSource $argument,
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
-        // Convert
-        $type        = null;
-        $definition  = $manipulator->isPlaceholder($argument)
-            ? $manipulator->getPlaceholderTypeDefinitionNode($field)
-            : $manipulator->getTypeDefinitionNode($argument);
-        $isSupported = $definition instanceof InputObjectTypeDefinitionNode
-            || $definition instanceof ObjectTypeDefinitionNode
-            || $definition instanceof InputObjectType
-            || $definition instanceof ObjectType;
+        $type       = null;
+        $definition = $manipulator->isPlaceholder($argument->getArgument())
+            ? $manipulator->getPlaceholderTypeDefinitionNode($argument->getField())
+            : $argument->getTypeDefinition();
 
-        if ($isSupported) {
+        if ($definition) {
             $operator = $manipulator->getOperator(static::getScope(), $operator);
-            $name     = $manipulator->getNodeTypeName($definition);
-            $type     = $operator->getFieldType($manipulator, $name, $manipulator->isNullable($argument));
+            $node     = $manipulator->getTypeSource($definition);
+            $type     = $operator->getFieldType($manipulator, $node);
             $type     = Parser::typeReference($type);
         }
 
-        // Return
         return $type;
     }
 

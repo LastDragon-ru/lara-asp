@@ -71,7 +71,7 @@ class TranslatorTest extends TestCase {
     /**
      * @return array<string,array{string, TranslationsFactory, array<string>|string, array<string,string>, ?string}>
      */
-    public function dataProviderGet(): array {
+    public static function dataProviderGet(): array {
         return [
             'no translation'                     => [
                 'default',
@@ -133,7 +133,7 @@ class TranslatorTest extends TestCase {
     /**
      * @return array<string,array{string,TranslationsFactory,array<string>|string,int,array<string,string>,?string}>
      */
-    public function dataProviderChoice(): array {
+    public static function dataProviderChoice(): array {
         return [
             'no translation'                     => [
                 'default',

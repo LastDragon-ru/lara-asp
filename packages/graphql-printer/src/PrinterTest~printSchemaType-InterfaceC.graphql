@@ -1,0 +1,5 @@
+    interface InterfaceC {
+        a: Int
+        b: [String!]
+        c: [Float!]!
+    }

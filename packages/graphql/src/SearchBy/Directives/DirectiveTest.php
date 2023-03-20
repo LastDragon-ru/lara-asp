@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
@@ -31,13 +32,13 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Model;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
@@ -87,14 +88,14 @@ class DirectiveTest extends TestCase {
 
         self::assertGraphQLSchemaEquals(
             $expected($this),
-            $this->getTestData()->file($graphql),
+            self::getTestData()->file($graphql),
         );
     }
 
     public function testManipulateArgDefinitionUnknownType(): void {
         self::expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
 
-        $this->printGraphQLSchema($this->getTestData()->file('~unknown.graphql'));
+        $this->printGraphQLSchema(self::getTestData()->file('~unknown.graphql'));
     }
 
     public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {
@@ -161,8 +162,8 @@ class DirectiveTest extends TestCase {
         $registry->register($ignored);
 
         self::assertGraphQLSchemaEquals(
-            $this->getTestData()->file('~programmatically-expected.graphql'),
-            $this->getTestData()->file('~programmatically.graphql'),
+            self::getTestData()->file('~programmatically-expected.graphql'),
+            self::getTestData()->file('~programmatically.graphql'),
         );
     }
 
@@ -338,21 +339,13 @@ class DirectiveTest extends TestCase {
     /**
      * @return array<string,array{Closure(self): GraphQLExpectedSchema, string}>
      */
-    public function dataProviderManipulateArgDefinition(): array {
+    public static function dataProviderManipulateArgDefinition(): array {
         return [
             'full'                           => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~full-expected.graphql'),
-                    ))
-                        ->setUnusedTypes([
-                            'InputA',
-                            'NestedA',
-                            'NestedB',
-                            'NestedC',
-                            'InputB',
-                            'InputIgnored',
-                        ]);
+                        $test::getTestData()->file('~full-expected.graphql'),
+                    ));
                 },
                 '~full.graphql',
                 static function (TestCase $test): void {
@@ -368,7 +361,7 @@ class DirectiveTest extends TestCase {
             'example'                        => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~example-expected.graphql'),
+                        $test::getTestData()->file('~example-expected.graphql'),
                     ));
                 },
                 '~example.graphql',
@@ -385,14 +378,8 @@ class DirectiveTest extends TestCase {
             'only used type should be added' => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~usedonly-expected.graphql'),
-                    ))
-                        ->setUnusedTypes([
-                            'Properties',
-                            'Float',
-                            'Int',
-                            'Boolean',
-                        ]);
+                        $test::getTestData()->file('~usedonly-expected.graphql'),
+                    ));
                 },
                 '~usedonly.graphql',
                 null,
@@ -400,7 +387,7 @@ class DirectiveTest extends TestCase {
             'custom complex operators'       => [
                 static function (self $test): GraphQLExpectedSchema {
                     return (new GraphQLExpectedSchema(
-                        $test->getTestData()->file('~custom-complex-operators-expected.graphql'),
+                        $test::getTestData()->file('~custom-complex-operators-expected.graphql'),
                     ));
                 },
                 '~custom-complex-operators.graphql',
@@ -411,8 +398,8 @@ class DirectiveTest extends TestCase {
                             return 'custom';
                         }
 
-                        public function getFieldType(TypeProvider $provider, string $type, ?bool $nullable): string {
-                            return $provider->getType(static::class, Type::INT, $nullable);
+                        public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+                            return $provider->getType(static::class, $provider->getTypeSource(Type::int()));
                         }
 
                         public function getFieldDescription(): string {
@@ -441,18 +428,20 @@ class DirectiveTest extends TestCase {
                         }
 
                         public static function getTypeName(
+                            Manipulator $manipulator,
                             BuilderInfo $builder,
-                            ?string $type,
-                            ?bool $nullable,
+                            TypeSource $source,
                         ): string {
-                            return Directive::Name.'ComplexCustom'.Str::studly($type ?? '');
+                            $directiveName = Directive::Name;
+                            $typeName      = Str::studly($source->getTypeName());
+
+                            return "{$directiveName}ComplexCustom{$typeName}";
                         }
 
                         public function getTypeDefinitionNode(
                             Manipulator $manipulator,
                             string $name,
-                            ?string $type,
-                            ?bool $nullable,
+                            TypeSource $source,
                         ): ?TypeDefinitionNode {
                             return Parser::inputObjectTypeDefinition(
                                 <<<DEF
@@ -460,7 +449,7 @@ class DirectiveTest extends TestCase {
                                 Custom operator
                                 """
                                 input {$name} {
-                                    custom: {$type}
+                                    custom: {$source->getTypeName()}
                                 }
                                 DEF,
                             );
@@ -476,7 +465,7 @@ class DirectiveTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderHandleBuilder(): array {
+    public static function dataProviderHandleBuilder(): array {
         return (new MergeDataProvider([
             'Both'     => new CompositeDataProvider(
                 new BuilderDataProvider(),
@@ -657,7 +646,7 @@ class DirectiveTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderHandleScoutBuilder(): array {
+    public static function dataProviderHandleScoutBuilder(): array {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([

@@ -1,0 +1,94 @@
+"""
+Enum description.
+"""
+enum Enum {
+    """
+    Enum value description
+    """
+    A
+
+    B
+    C
+}
+
+"""
+Input description.
+"""
+input InputA {
+    """
+    Field description.
+    """
+    a: Int
+
+    c: [Float!]!
+}
+
+interface InterfaceC {
+    a: Int
+    b: [String!]
+    c: [Float!]!
+}
+
+"""
+Scalar description.
+"""
+scalar Scalar
+
+type Mutation {
+    mutate(
+        a: InputA
+        scalar: Int! = 123
+    ): [TypeB!]
+}
+
+type Query {
+    enum(
+        enum: Enum = A
+    ): TypeB
+
+    scalar: Scalar
+
+    type(
+        a: InputA
+        scalar: Int! = 123
+    ): TypeA!
+
+    union: Union
+}
+
+type Subscription {
+    subscribe: TypeC
+}
+
+"""
+Type description.
+"""
+type TypeA
+implements
+    & InterfaceC
+{
+    a: Int
+    @deprecated
+
+    """
+    Field description.
+    """
+    b: [String!]
+
+    c: [Float!]!
+}
+
+type TypeB {
+    b: [String!]
+}
+
+type TypeC {
+    c: [Float!]!
+}
+
+"""
+Union description.
+"""
+union Union =
+    | TypeB
+    | TypeC

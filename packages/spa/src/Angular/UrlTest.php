@@ -44,7 +44,7 @@ class UrlTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderConstruct(): array {
+    public static function dataProviderConstruct(): array {
         return [
             'url without params'  => [[], 'http://example.com/path?:id=1'],
             'url with params'     => [['to', 'id'], 'http://example.com/path/:to/item/:id'],
@@ -56,7 +56,7 @@ class UrlTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderBuild(): array {
+    public static function dataProviderBuild(): array {
         return [
             'url without params without data'       => ['http://example.com/path', 'http://example.com/path', []],
             'url without params with data'          => [

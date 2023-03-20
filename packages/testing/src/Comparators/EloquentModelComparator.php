@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ObjectComparator;
 
+use function assert;
+use function is_bool;
+use function is_float;
 use function substr_replace;
 
 /**
@@ -20,10 +23,7 @@ use function substr_replace;
  * @see https://github.com/laravel/ideas/issues/1914
  */
 class EloquentModelComparator extends ObjectComparator {
-    /**
-     * @inheritDoc
-     */
-    public function accepts($expected, $actual) {
+    public function accepts(mixed $expected, mixed $actual): bool {
         return $expected instanceof Model
             && $actual instanceof Model;
     }
@@ -34,13 +34,18 @@ class EloquentModelComparator extends ObjectComparator {
      * @param array<mixed> $processed
      */
     public function assertEquals(
-        $expected,
-        $actual,
-        $delta = 0.0,
-        $canonicalize = false,
-        $ignoreCase = false,
+        mixed $expected,
+        mixed $actual,
+        mixed $delta = 0.0,
+        mixed $canonicalize = false,
+        mixed $ignoreCase = false,
         array &$processed = [],
     ): void {
+        // todo(testing): Update method signature after PHPUnit v9.5 removal.
+        assert(is_float($delta));
+        assert(is_bool($canonicalize));
+        assert(is_bool($ignoreCase));
+
         // If classes different we just call parent to fail
         if (!($actual instanceof Model) || !($expected instanceof Model) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
@@ -63,12 +68,11 @@ class EloquentModelComparator extends ObjectComparator {
             );
         } catch (ComparisonFailure $e) {
             throw new ComparisonFailure(
-                $expected,
-                $actual,
-                substr_replace($e->getExpectedAsString(), $expected::class.' Model', 0, 5),
-                substr_replace($e->getActualAsString(), $actual::class.' Model', 0, 5),
-                false,
-                'Failed asserting that two models are equal.',
+                expected        : $expected,
+                actual          : $actual,
+                expectedAsString: substr_replace($e->getExpectedAsString(), $expected::class.' Model', 0, 5),
+                actualAsString  : substr_replace($e->getActualAsString(), $actual::class.' Model', 0, 5),
+                message         : 'Failed asserting that two models are equal.',
             );
         }
     }

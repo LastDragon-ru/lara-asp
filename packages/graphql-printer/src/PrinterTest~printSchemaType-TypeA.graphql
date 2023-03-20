@@ -1,0 +1,52 @@
+"""
+Type description.
+"""
+type TypeA
+implements
+    & InterfaceC
+@directive(
+    location: "type"
+)
+{
+    a: Int
+    @deprecated
+
+    """
+    Field description.
+    """
+    b: [String!]
+
+    c: [Float!]!
+}
+
+interface InterfaceC {
+    a: Int
+    b: [String!]
+    c: [Float!]!
+}
+
+"""
+Directive description
+"""
+directive @directive(
+    location: String
+)
+repeatable on
+    | ARGUMENT_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | FIELD
+    | FIELD_DEFINITION
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | INTERFACE
+    | MUTATION
+    | OBJECT
+    | QUERY
+    | SCALAR
+    | SCHEMA
+    | SUBSCRIPTION
+    | UNION

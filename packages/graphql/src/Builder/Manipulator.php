@@ -5,20 +5,28 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\FieldDefinition;
-use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidTypeName;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Pagination\PaginationType;
@@ -31,11 +39,8 @@ use function array_map;
 use function array_values;
 use function count;
 use function implode;
-use function is_object;
 use function mb_strlen;
 use function mb_substr;
-
-// @phpcs:disable Generic.Files.LineLength.TooLong
 
 class Manipulator extends AstManipulator implements TypeProvider {
     /**
@@ -61,9 +66,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="TypeProvider">
     // =========================================================================
-    public function getType(string $definition, ?string $type, ?bool $nullable): string {
+    public function getType(string $definition, TypeSource $source): string {
         // Exists?
-        $name = $definition::getTypeName($this->getBuilderInfo(), $type, $nullable);
+        $name = $definition::getTypeName($this, $this->getBuilderInfo(), $source);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
@@ -74,10 +79,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Create new
         $instance = Container::getInstance()->make($definition);
-        $node     = $instance->getTypeDefinitionNode($this, $name, $type, $nullable);
+        $node     = $instance->getTypeDefinitionNode($this, $name, $source);
 
         if (!$node) {
-            throw new TypeDefinitionImpossibleToCreateType($definition, $type, $nullable);
+            throw new TypeDefinitionImpossibleToCreateType($definition, $source);
         }
 
         if ($name !== $this->getNodeName($node)) {
@@ -90,6 +95,22 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Return
         return $name;
+    }
+
+    public function getTypeSource(
+        TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type $type,
+    ): TypeSource {
+        $source = null;
+
+        if ($type instanceof InputObjectTypeDefinitionNode || $type instanceof InputObjectType) {
+            $source = new InputSource($this, $type);
+        } elseif ($type instanceof ObjectTypeDefinitionNode || $type instanceof ObjectType) {
+            $source = new ObjectSource($this, $type);
+        } else {
+            $source = new Source($this, $type);
+        }
+
+        return $source;
     }
     // </editor-fold>
 
@@ -122,7 +143,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @return list<Operator>
      */
-    public function getTypeOperators(string $scope, string $type, bool $nullable): array {
+    public function getTypeOperators(string $scope, string $type, bool $nullable = false): array {
         $operators = $this->operators[$scope] ?? null;
         $operators = $operators && $operators->hasOperators($type)
             ? $operators->getOperators($type, $nullable)
@@ -137,13 +158,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     public function getOperatorField(
         Operator $operator,
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type|string $type,
+        TypeSource $source,
         ?string $field,
-        ?bool $nullable,
         ?string $description = null,
     ): string {
-        $type        = is_object($type) ? $this->getNodeName($type) : $type;
-        $type        = $operator->getFieldType($this, $type, $nullable);
+        $type        = $operator->getFieldType($this, $source);
         $field       = $field ?: $operator::getName();
         $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
         $directive   = $directive instanceof DirectiveNode
@@ -163,15 +182,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @param array<Operator> $operators
      */
-    public function getOperatorsFields(
-        array $operators,
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Type|string $type,
-    ): string {
+    public function getOperatorsFields(array $operators, TypeSource $source): string {
         return implode(
             "\n",
             array_map(
-                function (Operator $operator) use ($type): string {
-                    return $this->getOperatorField($operator, $type, null, null);
+                function (Operator $operator) use ($source): string {
+                    return $this->getOperatorField($operator, $source, null);
                 },
                 $operators,
             ),
@@ -212,7 +228,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $this->removeTypeDefinition($name);
     }
 
-    public function getPlaceholderTypeDefinitionNode(FieldDefinitionNode $field): TypeDefinitionNode|Type|null {
+    public function getPlaceholderTypeDefinitionNode(
+        FieldDefinitionNode|FieldDefinition $field,
+    ): TypeDefinitionNode|Type|null {
         $node     = null;
         $paginate = $this->getNodeDirective($field, PaginateDirective::class);
 

@@ -19,9 +19,9 @@ class ResourceCollection extends JsonSchemaWrapper {
         JsonSchemaWrapper|JsonSchemaFile|SplFileInfo|string $schema,
     ) {
         if (is_string($schema)) {
-            $schema = $this->getTestData($schema)->file('.json');
+            $schema = self::getTestData($schema)->file('.json');
         }
 
-        parent::__construct($schema, $this->getTestData()->file('.json'));
+        parent::__construct($schema, self::getTestData()->file('.json'));
     }
 }

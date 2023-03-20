@@ -23,10 +23,7 @@ class XmlMatchesSchemaTest extends TestCase {
      */
     public function testEvaluate(bool|string $expected, SplFileInfo $schema, DOMDocument|SplFileInfo $xml): void {
         $constraint = new class($schema) extends XmlMatchesSchema {
-            /**
-             * @inheritDoc
-             */
-            public function additionalFailureDescription($other): string {
+            public function additionalFailureDescription(mixed $other): string {
                 return parent::additionalFailureDescription($other);
             }
         };
@@ -46,47 +43,47 @@ class XmlMatchesSchemaTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderEvaluate(): array {
+    public static function dataProviderEvaluate(): array {
         return [
             'rng + dom = valid'    => [
                 true,
-                $this->getTestData()->file('.rng'),
-                $this->getTestData()->dom('.xml'),
+                self::getTestData()->file('.rng'),
+                self::getTestData()->dom('.xml'),
             ],
             'rng + dom = invalid'  => [
                 'Error #38: Did not expect element a there',
-                $this->getTestData()->file('.rng'),
-                $this->getTestData()->dom('.invalid.xml'),
+                self::getTestData()->file('.rng'),
+                self::getTestData()->dom('.invalid.xml'),
             ],
             'xsd + dom = valid'    => [
                 true,
-                $this->getTestData()->file('.xsd'),
-                $this->getTestData()->dom('.xml'),
+                self::getTestData()->file('.xsd'),
+                self::getTestData()->dom('.xml'),
             ],
             'xsd + dom = invalid'  => [
                 "Error #1871: Element 'a': This element is not expected. Expected is ( child )",
-                $this->getTestData()->file('.xsd'),
-                $this->getTestData()->dom('.invalid.xml'),
+                self::getTestData()->file('.xsd'),
+                self::getTestData()->dom('.invalid.xml'),
             ],
             'rng + file = valid'   => [
                 true,
-                $this->getTestData()->file('.rng'),
-                $this->getTestData()->file('.xml'),
+                self::getTestData()->file('.rng'),
+                self::getTestData()->file('.xml'),
             ],
             'rng + file = invalid' => [
                 'Error #38: Did not expect element a there',
-                $this->getTestData()->file('.rng'),
-                $this->getTestData()->file('.invalid.xml'),
+                self::getTestData()->file('.rng'),
+                self::getTestData()->file('.invalid.xml'),
             ],
             'xsd + file = valid'   => [
                 true,
-                $this->getTestData()->file('.xsd'),
-                $this->getTestData()->file('.xml'),
+                self::getTestData()->file('.xsd'),
+                self::getTestData()->file('.xml'),
             ],
             'xsd + file = invalid' => [
                 "Error #1871: Element 'a': This element is not expected. Expected is ( child )",
-                $this->getTestData()->file('.xsd'),
-                $this->getTestData()->file('.invalid.xml'),
+                self::getTestData()->file('.xsd'),
+                self::getTestData()->file('.invalid.xml'),
             ],
         ];
     }

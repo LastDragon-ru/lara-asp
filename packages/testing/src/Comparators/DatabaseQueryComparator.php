@@ -12,6 +12,9 @@ use function array_column;
 use function array_flip;
 use function array_unique;
 use function array_values;
+use function assert;
+use function is_bool;
+use function is_float;
 use function natsort;
 use function preg_match_all;
 use function str_replace;
@@ -24,10 +27,7 @@ use const PREG_SET_ORDER;
  * Compares two {@link Query}.
  */
 class DatabaseQueryComparator extends ObjectComparator {
-    /**
-     * @inheritDoc
-     */
-    public function accepts($expected, $actual) {
+    public function accepts(mixed $expected, mixed $actual): bool {
         return $expected instanceof Query
             && $actual instanceof Query;
     }
@@ -38,13 +38,18 @@ class DatabaseQueryComparator extends ObjectComparator {
      * @param array<mixed> $processed
      */
     public function assertEquals(
-        $expected,
-        $actual,
-        $delta = 0.0,
-        $canonicalize = false,
-        $ignoreCase = false,
+        mixed $expected,
+        mixed $actual,
+        mixed $delta = 0.0,
+        mixed $canonicalize = false,
+        mixed $ignoreCase = false,
         array &$processed = [],
     ): void {
+        // todo(testing): Update method signature after PHPUnit v9.5 removal.
+        assert(is_float($delta));
+        assert(is_bool($canonicalize));
+        assert(is_bool($ignoreCase));
+
         // If classes different we just call parent to fail
         if (!($actual instanceof Query) || !($expected instanceof Query) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
@@ -65,12 +70,11 @@ class DatabaseQueryComparator extends ObjectComparator {
             );
         } catch (ComparisonFailure $exception) {
             throw new ComparisonFailure(
-                $normalizedExpected,
-                $normalizedActual,
-                $exception->getExpectedAsString(),
-                $exception->getActualAsString(),
-                false,
-                'Failed asserting that two database queries are equal.',
+                expected        : $normalizedExpected,
+                actual          : $normalizedActual,
+                expectedAsString: $exception->getExpectedAsString(),
+                actualAsString  : $exception->getActualAsString(),
+                message         : 'Failed asserting that two database queries are equal.',
             );
         }
     }

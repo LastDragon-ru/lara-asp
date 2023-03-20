@@ -148,7 +148,7 @@ class ResourceTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderConstruct(): array {
+    public static function dataProviderConstruct(): array {
         return [
             'scalar'    => [true, 123],
             'array'     => [true, [1, 2, 3]],
@@ -170,7 +170,7 @@ class ResourceTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderCollection(): array {
+    public static function dataProviderCollection(): array {
         return [
             'scalar'    => [
                 ResourceCollection::class,
@@ -209,7 +209,7 @@ class ResourceTest extends TestCase {
     /**
      * @return array<mixed>
      */
-    public function dataProviderMapResourceData(): array {
+    public static function dataProviderMapResourceData(): array {
         $date   = new DateTimeImmutable();
         $format = 'Y-m-d H:i:s.v';
 

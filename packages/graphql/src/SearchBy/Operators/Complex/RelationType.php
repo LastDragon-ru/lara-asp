@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
@@ -18,32 +19,27 @@ class RelationType implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(BuilderInfo $builder, ?string $type, ?bool $nullable): string {
-        $directiveName = Directive::Name;
+    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+        $typeName      = $source->getTypeName();
         $builderName   = $builder->getName();
         $operatorName  = Str::studly(Relation::getName());
+        $directiveName = Directive::Name;
 
-        return "{$directiveName}{$builderName}Complex{$operatorName}{$type}";
+        return "{$directiveName}{$builderName}Complex{$operatorName}{$typeName}";
     }
 
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
-        ?string $type,
-        ?bool $nullable,
+        TypeSource $source,
     ): ?TypeDefinitionNode {
-        if (!$type) {
-            return null;
-        }
-
-        $count    = $manipulator->getType(Scalar::class, Type::INT, false);
-        $where    = $manipulator->getType(Condition::class, $type, $nullable);
-        $typeName = $manipulator->getNodeTypeFullName($type);
+        $count = $manipulator->getType(Scalar::class, $manipulator->getTypeSource(Type::nonNull(Type::int())));
+        $where = $manipulator->getType(Condition::class, $source);
 
         return Parser::inputObjectTypeDefinition(
             <<<DEF
             """
-            Conditions for the related objects (`has()`/`doesntHave()`) for `{$typeName}`.
+            Conditions for the related objects (`has()`/`doesntHave()`) for `{$source}`.
 
             See also:
             * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence

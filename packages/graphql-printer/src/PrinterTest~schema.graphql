@@ -1,0 +1,176 @@
+# Based on https://github.com/graphql/graphql-spec/blob/84ec33914393bb46e49e5d7a7fb05e0626daa7a8/spec/Appendix%20B%20--%20Grammar%20Summary.md
+
+# """
+# Schema description is not supported by graphql-php yet.
+# -> https://github.com/webonyx/graphql-php/issues/1027
+#
+# Schema extensions is not supported in v14
+# -> https://github.com/webonyx/graphql-php/commit/0bd57173c08e73847ed2eb227ef33c156922349b
+# -> fixme(graphql-php): Available in v15.
+#
+# The `extend ...` and `extend ... @directive` not supported (yet?)
+# -> fixme(graphql-php): Check & Fix in v15.
+# """
+# schema @directive(location: "schema") {
+#     query: Query
+# }
+#
+# extend schema @directive(location: "extend") {
+#     mutation: Mutation
+# }
+#
+# extend schema @directive(location: "extend")
+
+type Query {
+    type(scalar: Int! = 123 @directive(location: "argument"), a: InputA): TypeA!
+    enum(enum: Enum = A): TypeB
+    union: Union
+    scalar: Scalar
+}
+
+type Mutation {
+    mutate(scalar: Int! = 123 @directive(location: "argument"), a: InputA): [TypeB!]
+}
+
+type Subscription {
+    subscribe: TypeC
+}
+
+"""
+Scalar description.
+"""
+scalar Scalar @directive(location: "scalar")
+
+extend scalar Scalar @directive(location: "extend")
+
+scalar ScalarUnused
+
+"""
+Enum description.
+"""
+enum Enum @directive(location: "enum") {
+    "Enum value description"
+    A
+    C
+    B @directive(location: "enum value")
+}
+
+extend enum Enum @directive(location: "extend")
+
+enum EnumUnused {
+    A
+    C
+    B
+}
+
+"""
+Interface description.
+"""
+interface InterfaceA @directive(location: "interface") {
+    a: Int
+}
+
+interface InterfaceB implements InterfaceA {
+    """
+    Field description.
+    """
+    a: Int
+    b: [String!] @directive(location: "field")
+}
+
+interface InterfaceC {
+    b: [String!]
+    c: [Float!]!
+    a: Int
+}
+
+extend interface InterfaceA @directive(location: "extend")
+
+extend interface InterfaceC implements InterfaceA & InterfaceB
+
+interface InterfaceUnused {
+    a: Int
+}
+
+"""
+Type description.
+"""
+
+type TypeA implements InterfaceC @directive(location: "type") {
+    "Field description."
+    b: [String!]
+    c: [Float!]!
+    a: Int @deprecated
+}
+
+type TypeB {
+    b: [String!] @directive(location: "field")
+}
+
+type TypeC {
+    c: [Float!]!
+}
+
+extend type TypeA @directive(location: "extend")
+
+extend type TypeA implements InterfaceB {
+    b: [String!] @directive(location: "extend")
+}
+
+interface TypeUnused {
+    a: Int
+}
+
+"""
+Union description.
+"""
+union Union @directive(location: "union") = TypeB | TypeC
+
+extend union Union @directive(location: "extend")
+
+extend union Union = TypeA
+
+union UnionUnused = TypeA | TypeB
+
+"""
+Input description.
+"""
+input InputA @directive(location: "input") {
+    "Field description."
+    a: Int
+    c: [Float!]! @directive(location: "field")
+}
+
+extend input InputA @directive(location: "extend")
+
+extend input InputA {
+    b: [String!] @directive(location: "extend")
+}
+
+input InputUnused {
+    a: Int
+}
+
+"Directive description"
+directive @directive(location: String) repeatable on
+    | QUERY
+    | MUTATION
+    | SUBSCRIPTION
+    | FIELD
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+#    | VARIABLE_DEFINITION // fixme(graphql-php): Available in v15.
+    | SCHEMA
+    | SCALAR
+    | OBJECT
+    | FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | INTERFACE
+    | UNION
+    | ENUM
+    | ENUM_VALUE
+    | INPUT_OBJECT
+    | INPUT_FIELD_DEFINITION
+
+directive @directiveUnused on SCHEMA

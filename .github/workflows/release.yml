@@ -46,7 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run release -- --github.releaseName="$(git log -1 --pretty=%s)"
+          npm run release
 
       - name: Congratulations
         run: |
