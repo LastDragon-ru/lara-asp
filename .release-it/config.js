@@ -3,6 +3,7 @@ const path = require('path');
 
 const mainTemplate   = fs.readFileSync(path.resolve(__dirname, './templates/template.hbs')).toString();
 const commitTemplate = fs.readFileSync(path.resolve(__dirname, './templates/commit.hbs')).toString();
+const release        = 'release';
 const types          = [
     {type: 'feat', section: 'Features'},
     {type: 'feature', section: 'Features'},
@@ -14,6 +15,7 @@ const types          = [
     {type: 'refactor', section: 'Code Refactoring', hidden: true},
     {type: 'test', section: 'Tests', hidden: true},
     {type: 'ci', section: 'Continuous Integration', hidden: true},
+    {type: release}
 ];
 
 module.exports = {
@@ -46,6 +48,15 @@ module.exports = {
                         || a.subject.localeCompare(b.subject);
                 },
                 transform:     (commit, context) => {
+                    // Release?
+                    // todo(release-it): Only the top commit should be used.
+                    if (commit.type === release) {
+                        context.title       = commit.subject;
+                        context.description = commit.release || commit.body;
+
+                        return null;
+                    }
+
                     // Type?
                     const breaking = commit.notes.length > 0;
                     const type     = types.find(t => t.type === commit.type);
