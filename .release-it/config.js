@@ -75,8 +75,9 @@ module.exports = {
                     commit.scope = commit.scope === '*' ? null : commit.scope;
 
                     // Custom
-                    commit.breaking = breaking;
-                    commit.related  = [...new Set([
+                    context.breaking = context.breaking || breaking;
+                    commit.breaking  = breaking;
+                    commit.related   = [...new Set([
                         ...commit.references.map((r) => `${r.prefix}${r.issue}`),
                         commit.hash,
                     ])].sort();
