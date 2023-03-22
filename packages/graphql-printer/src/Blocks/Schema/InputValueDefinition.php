@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use GraphQL\Language\AST\NullValueNode;
-use GraphQL\Type\Definition\FieldArgument;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast\ValueNodeBlock;
@@ -16,14 +16,14 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends DefinitionBlock<FieldArgument|InputObjectField>
+ * @extends DefinitionBlock<Argument|InputObjectField>
  */
 class InputValueDefinition extends DefinitionBlock {
     public function __construct(
         Settings $settings,
         int $level,
         int $used,
-        FieldArgument|InputObjectField $definition,
+        Argument|InputObjectField $definition,
     ) {
         parent::__construct($settings, $level, $used, $definition);
     }

@@ -47,9 +47,14 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 'b' => [
                     'name'    => 'b',
                     'type'    => new InputObjectType([
-                        'name' => 'B',
+                        'name'   => 'B',
+                        'fields' => [
+                            'field' => [
+                                'type' => Type::string(),
+                            ],
+                        ],
                     ]),
-                    'astNode' => Parser::fieldDefinition('b: B @a'),
+                    'astNode' => Parser::inputValueDefinition('b: B @a'),
                 ],
             ],
             'astNode' => Parser::inputObjectTypeDefinition('input A @b'),
@@ -86,6 +91,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 0,
                 new InputObjectType([
                     'name'        => 'Test',
+                    'fields'      => [],
                     'astNode'     => Parser::inputObjectTypeDefinition('input Test @a'),
                     'description' => 'Description',
                 ]),
@@ -116,23 +122,35 @@ class InputObjectTypeDefinitionTest extends TestCase {
                     'astNode'     => Parser::inputObjectTypeDefinition('input Test @a'),
                     'description' => 'Description',
                     'fields'      => [
-                        [
-                            'name' => 'c',
+                        'c' => [
                             'type' => new InputObjectType([
-                                'name' => 'C',
+                                'name'   => 'C',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                         ],
-                        [
-                            'name'        => 'b',
+                        'b' => [
                             'type'        => new InputObjectType([
-                                'name' => 'B',
+                                'name'   => 'B',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'description' => 'Description',
                         ],
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => new InputObjectType([
-                                'name' => 'A',
+                                'name'   => 'A',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                         ],
                     ],
@@ -150,8 +168,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 new InputObjectType([
                     'name'   => 'Test',
                     'fields' => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
@@ -169,8 +186,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 new InputObjectType([
                     'name'   => 'Test',
                     'fields' => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],

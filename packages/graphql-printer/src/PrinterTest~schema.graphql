@@ -114,7 +114,7 @@ type TypeC {
 extend type TypeA @directive(location: "extend")
 
 extend type TypeA implements InterfaceB {
-    b: [String!] @directive(location: "extend")
+    d: [String!] @directive(location: "extend")
 }
 
 interface TypeUnused {
@@ -160,7 +160,7 @@ directive @directive(location: String) repeatable on
     | FRAGMENT_DEFINITION
     | FRAGMENT_SPREAD
     | INLINE_FRAGMENT
-#    | VARIABLE_DEFINITION // fixme(graphql-php): Available in v15.
+    | VARIABLE_DEFINITION
     | SCHEMA
     | SCALAR
     | OBJECT

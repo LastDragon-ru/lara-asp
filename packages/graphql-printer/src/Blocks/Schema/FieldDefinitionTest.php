@@ -39,11 +39,14 @@ class FieldDefinitionTest extends TestCase {
 
     public function testStatistics(): void {
         $settings   = new TestSettings();
-        $definition = GraphQLFieldDefinition::create([
+        $definition = new GraphQLFieldDefinition([
             'name'    => 'A',
             'type'    => new NonNull(
                 new ObjectType([
-                    'name' => 'A',
+                    'name'   => 'A',
+                    'fields' => function () use (&$definition): array {
+                        return [$definition];
+                    },
                 ]),
             ),
             'astNode' => Parser::fieldDefinition('a: A @a'),
@@ -65,6 +68,14 @@ class FieldDefinitionTest extends TestCase {
         $settings = (new TestSettings())
             ->setNormalizeArguments(false)
             ->setAlwaysMultilineArguments(false);
+        $object   = new ObjectType([
+            'name'   => 'Test',
+            'fields' => [
+                'field' => [
+                    'type' => Type::int(),
+                ],
+            ],
+        ]);
 
         return [
             'without args'               => [
@@ -79,13 +90,9 @@ class FieldDefinitionTest extends TestCase {
                     ->setPrintDirectives(true),
                 0,
                 0,
-                GraphQLFieldDefinition::create([
+                new GraphQLFieldDefinition([
                     'name'        => 'test',
-                    'type'        => new NonNull(
-                        new ObjectType([
-                            'name' => 'Test',
-                        ]),
-                    ),
+                    'type'        => new NonNull($object),
                     'astNode'     => Parser::fieldDefinition('test: Test! @a'),
                     'description' => 'Description',
                 ]),
@@ -100,13 +107,9 @@ class FieldDefinitionTest extends TestCase {
                 $settings,
                 0,
                 0,
-                GraphQLFieldDefinition::create([
+                new GraphQLFieldDefinition([
                     'name'        => 'test',
-                    'type'        => new NonNull(
-                        new ObjectType([
-                            'name' => 'Test',
-                        ]),
-                    ),
+                    'type'        => new NonNull($object),
                     'args'        => [
                         'a' => [
                             'type'         => new ListOfType(new NonNull(Type::string())),
@@ -135,13 +138,9 @@ class FieldDefinitionTest extends TestCase {
                 $settings,
                 0,
                 0,
-                GraphQLFieldDefinition::create([
+                new GraphQLFieldDefinition([
                     'name' => 'test',
-                    'type' => new NonNull(
-                        new ObjectType([
-                            'name' => 'Test',
-                        ]),
-                    ),
+                    'type' => new NonNull($object),
                     'args' => [
                         'b' => [
                             'type' => Type::int(),
@@ -161,13 +160,9 @@ class FieldDefinitionTest extends TestCase {
                 $settings->setNormalizeArguments(true),
                 0,
                 0,
-                GraphQLFieldDefinition::create([
+                new GraphQLFieldDefinition([
                     'name' => 'test',
-                    'type' => new NonNull(
-                        new ObjectType([
-                            'name' => 'Test',
-                        ]),
-                    ),
+                    'type' => new NonNull($object),
                     'args' => [
                         'b' => [
                             'type' => Type::int(),
@@ -188,13 +183,9 @@ class FieldDefinitionTest extends TestCase {
                 $settings->setAlwaysMultilineArguments(true),
                 0,
                 0,
-                GraphQLFieldDefinition::create([
+                new GraphQLFieldDefinition([
                     'name' => 'test',
-                    'type' => new NonNull(
-                        new ObjectType([
-                            'name' => 'Test',
-                        ]),
-                    ),
+                    'type' => new NonNull($object),
                     'args' => [
                         'b' => [
                             'type' => Type::int(),
@@ -215,13 +206,9 @@ class FieldDefinitionTest extends TestCase {
                 $settings->setNormalizeArguments(true),
                 1,
                 120,
-                GraphQLFieldDefinition::create([
+                new GraphQLFieldDefinition([
                     'name' => 'test',
-                    'type' => new NonNull(
-                        new ObjectType([
-                            'name' => 'Test',
-                        ]),
-                    ),
+                    'type' => new NonNull($object),
                     'args' => [
                         'b' => [
                             'type' => Type::int(),

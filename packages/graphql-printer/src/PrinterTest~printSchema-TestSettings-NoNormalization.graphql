@@ -34,6 +34,11 @@ input InputA
     @directive(
         location: "field"
     )
+
+    b: [String!]
+    @directive(
+        location: "extend"
+    )
 }
 
 type TypeB {
@@ -76,7 +81,7 @@ union Union
 @directive(
     location: "union"
 )
-= TypeB | TypeC
+= TypeB | TypeC | TypeA
 
 """
 Enum description.
@@ -102,7 +107,7 @@ enum Enum
 """
 Type description.
 """
-type TypeA implements InterfaceC
+type TypeA implements InterfaceC & InterfaceB
 @directive(
     location: "type"
 )
@@ -116,9 +121,37 @@ type TypeA implements InterfaceC
 
     a: Int
     @deprecated
+
+    d: [String!]
+    @directive(
+        location: "extend"
+    )
 }
 
-interface InterfaceC {
+interface InterfaceB implements InterfaceA {
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+"""
+Interface description.
+"""
+interface InterfaceA
+@directive(
+    location: "interface"
+)
+{
+    a: Int
+}
+
+interface InterfaceC implements InterfaceA & InterfaceB {
     b: [String!]
     c: [Float!]!
     a: Int
@@ -138,6 +171,7 @@ repeatable on
     | FRAGMENT_DEFINITION
     | FRAGMENT_SPREAD
     | INLINE_FRAGMENT
+    | VARIABLE_DEFINITION
     | SCHEMA
     | SCALAR
     | OBJECT

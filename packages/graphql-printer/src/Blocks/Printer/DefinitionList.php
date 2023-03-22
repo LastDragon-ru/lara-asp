@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
 
 use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
@@ -57,8 +58,8 @@ class DefinitionList extends ListBlock {
         if ($block instanceof DefinitionBlock) {
             $definition = $block->getDefinition();
 
-            if ($definition instanceof Type) {
-                $this->addUsedType($definition->name);
+            if ($definition instanceof NamedType) {
+                $this->addUsedType($definition->name());
             } elseif ($definition instanceof Directive) {
                 $this->addUsedDirective("@{$definition->name}");
             } else {

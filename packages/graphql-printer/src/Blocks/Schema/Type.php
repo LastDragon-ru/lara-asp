@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
@@ -12,7 +13,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 /**
  * @internal
  */
-#[GraphQLDefinition(GraphQLType::class)]
+#[GraphQLDefinition(NamedType::class)]
+#[GraphQLDefinition(WrappingType::class)]
 class Type extends Block implements NamedBlock {
     public function __construct(
         Settings $settings,
@@ -24,13 +26,20 @@ class Type extends Block implements NamedBlock {
     }
 
     public function getName(): string {
+        $name = null;
         $type = $this->getType();
 
         if ($type instanceof WrappingType) {
-            $type = $type->getWrappedType(true);
+            $type = $type->getInnermostType();
         }
 
-        return $type->name;
+        if ($type instanceof NamedType) {
+            $name = $type->name();
+        }
+
+        assert($name !== null);
+
+        return $name;
     }
 
     protected function getType(): GraphQLType {

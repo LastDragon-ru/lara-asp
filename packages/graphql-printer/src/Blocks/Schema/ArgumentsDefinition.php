@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
-use GraphQL\Type\Definition\FieldArgument;
+use GraphQL\Type\Definition\Argument;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Traversable;
@@ -13,7 +13,7 @@ use Traversable;
  */
 class ArgumentsDefinition extends ListBlock {
     /**
-     * @param Traversable<FieldArgument>|array<FieldArgument> $arguments
+     * @param Traversable<Argument>|array<Argument> $arguments
      */
     public function __construct(
         Settings $settings,

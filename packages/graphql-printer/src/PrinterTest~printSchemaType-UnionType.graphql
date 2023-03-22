@@ -1,7 +1,37 @@
 union Union =
     | TypeA
 
-interface InterfaceC {
+"""
+Interface description.
+"""
+interface InterfaceA
+@directive(
+    location: "interface"
+)
+{
+    a: Int
+}
+
+interface InterfaceB
+implements
+    & InterfaceA
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+interface InterfaceC
+implements
+    & InterfaceA
+    & InterfaceB
+{
     a: Int
     b: [String!]
     c: [Float!]!
@@ -12,6 +42,7 @@ Type description.
 """
 type TypeA
 implements
+    & InterfaceB
     & InterfaceC
 @directive(
     location: "type"
@@ -26,6 +57,11 @@ implements
     b: [String!]
 
     c: [Float!]!
+
+    d: [String!]
+    @directive(
+        location: "extend"
+    )
 }
 
 """
@@ -53,3 +89,4 @@ repeatable on
     | SCHEMA
     | SUBSCRIPTION
     | UNION
+    | VARIABLE_DEFINITION

@@ -35,12 +35,17 @@ class TypeTest extends TestCase {
     public function testStatistics(): void {
         $node     = new NonNull(
             new ObjectType([
-                'name' => 'Test',
+                'name'   => 'Test',
+                'fields' => [
+                    'field' => [
+                        'type' => GraphQLType::string(),
+                    ],
+                ],
             ]),
         );
         $settings = new TestSettings();
         $block    = new Type($settings, 0, 0, $node);
-        $type     = $node->getWrappedType(true)->name;
+        $type     = $node->getInnermostType()->name();
 
         self::assertNotEmpty((string) $block);
         self::assertEquals([$type => $type], $block->getUsedTypes());
@@ -55,6 +60,14 @@ class TypeTest extends TestCase {
      */
     public static function dataProviderToString(): array {
         $settings = new TestSettings();
+        $object   = new ObjectType([
+            'name'   => 'Test',
+            'fields' => [
+                'field' => [
+                    'type' => GraphQLType::string(),
+                ],
+            ],
+        ]);
 
         return [
             'object'        => [
@@ -62,33 +75,21 @@ class TypeTest extends TestCase {
                 $settings,
                 0,
                 0,
-                new ObjectType([
-                    'name' => 'Test',
-                ]),
+                $object,
             ],
             'non null'      => [
                 'Test!',
                 $settings,
                 0,
                 0,
-                new NonNull(
-                    new ObjectType([
-                        'name' => 'Test',
-                    ]),
-                ),
+                new NonNull($object),
             ],
             'non null list' => [
                 '[Test]!',
                 $settings,
                 0,
                 0,
-                new NonNull(
-                    new ListOfType(
-                        new ObjectType([
-                            'name' => 'Test',
-                        ]),
-                    ),
-                ),
+                new NonNull(new ListOfType($object)),
             ],
         ];
     }

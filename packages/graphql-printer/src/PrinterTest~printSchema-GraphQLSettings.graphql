@@ -27,6 +27,7 @@ input InputA {
   a: Int
 
   c: [Float!]!
+  b: [String!]
 }
 
 input InputUnused {
@@ -49,7 +50,7 @@ interface InterfaceB implements InterfaceA {
   b: [String!]
 }
 
-interface InterfaceC {
+interface InterfaceC implements InterfaceA & InterfaceB {
   b: [String!]
   c: [Float!]!
   a: Int
@@ -88,7 +89,7 @@ type Subscription {
 """
 Type description.
 """
-type TypeA implements InterfaceC {
+type TypeA implements InterfaceC & InterfaceB {
   """
   Field description.
   """
@@ -98,6 +99,8 @@ type TypeA implements InterfaceC {
 
   a: Int
   @deprecated
+
+  d: [String!]
 }
 
 type TypeB {
@@ -111,6 +114,6 @@ type TypeC {
 """
 Union description.
 """
-union Union = TypeB | TypeC
+union Union = TypeB | TypeC | TypeA
 
 union UnionUnused = TypeA | TypeB

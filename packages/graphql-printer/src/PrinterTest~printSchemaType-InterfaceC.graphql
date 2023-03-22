@@ -1,5 +1,62 @@
-    interface InterfaceC {
+    interface InterfaceC
+    implements
+        & InterfaceA
+        & InterfaceB
+    {
         a: Int
         b: [String!]
         c: [Float!]!
     }
+
+    """
+    Interface description.
+    """
+    interface InterfaceA
+    @directive(
+        location: "interface"
+    )
+    {
+        a: Int
+    }
+
+    interface InterfaceB
+    implements
+        & InterfaceA
+    {
+        """
+        Field description.
+        """
+        a: Int
+
+        b: [String!]
+        @directive(
+            location: "field"
+        )
+    }
+
+    """
+    Directive description
+    """
+    directive @directive(
+        location: String
+    )
+    repeatable on
+        | ARGUMENT_DEFINITION
+        | ENUM
+        | ENUM_VALUE
+        | FIELD
+        | FIELD_DEFINITION
+        | FRAGMENT_DEFINITION
+        | FRAGMENT_SPREAD
+        | INLINE_FRAGMENT
+        | INPUT_FIELD_DEFINITION
+        | INPUT_OBJECT
+        | INTERFACE
+        | MUTATION
+        | OBJECT
+        | QUERY
+        | SCALAR
+        | SCHEMA
+        | SUBSCRIPTION
+        | UNION
+        | VARIABLE_DEFINITION
