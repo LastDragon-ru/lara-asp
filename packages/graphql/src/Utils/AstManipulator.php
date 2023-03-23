@@ -294,8 +294,6 @@ abstract class AstManipulator {
     public function getNodeName(
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|Type $node,
     ): string {
-        // fixme(graphql-php): in v15 the `TypeDefinitionNode::getName()` should be used instead.
-
         if ($node instanceof TypeDefinitionNode) {
             $node = $node->getName();
         } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {

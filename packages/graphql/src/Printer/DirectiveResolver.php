@@ -14,9 +14,6 @@ use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
 use Nuwave\Lighthouse\Schema\Factories\DirectiveFactory;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
-use function assert;
-use function is_string;
-
 /**
  * Class helps us to search defined directives and convert AST nodes into
  * `Directive` instances.
@@ -63,11 +60,8 @@ class DirectiveResolver implements DirectiveResolverContract {
                 if ($definition instanceof DirectiveDefinitionNode) {
                     $node = $definition;
                 } elseif ($definition instanceof TypeDefinitionNode) {
-                    // fixme(graphql-php): in v15 the `TypeDefinitionNode::getName()` should be used instead.
-                    $name = $definition->name->value;
+                    $name = $definition->getName()->value;
                     $type = null;
-
-                    assert(is_string($name));
 
                     if (!$this->registry->has($name)) {
                         if ($definition instanceof ScalarTypeDefinitionNode) {

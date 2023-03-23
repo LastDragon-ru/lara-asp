@@ -46,11 +46,6 @@ parameters:
 			path: packages/graphql/src/Builder/Property.php
 
 		-
-			message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\:\\:\\$name\\.$#"
-			count: 1
-			path: packages/graphql/src/Printer/DirectiveResolver.php
-
-		-
 			message: "#^Parameter \\#1 \\$enum of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\Enum\\\\EnumType constructor expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\Core\\\\Enum\\>, mixed given\\.$#"
 			count: 1
 			path: packages/graphql/src/Provider.php
