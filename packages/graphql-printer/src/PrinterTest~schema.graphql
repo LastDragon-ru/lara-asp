@@ -4,7 +4,7 @@
 # Schema description is not supported by graphql-php yet.
 # -> https://github.com/webonyx/graphql-php/issues/1027
 #
-# Schema extensions is not supported in v14
+# Schema extensions is not supported in v15 yet
 # -> https://github.com/webonyx/graphql-php/commit/0bd57173c08e73847ed2eb227ef33c156922349b
 # -> fixme(graphql-php): Available in v15.
 #
@@ -20,6 +20,10 @@
 # }
 #
 # extend schema @directive(location: "extend")
+#
+# extend schema {
+#     subscription: Subscription
+# }
 
 type Query {
     type(scalar: Int! = 123 @directive(location: "argument"), a: InputA): TypeA!
