@@ -31,11 +31,6 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Using nullsafe property access \"\\?\\-\\>directives\" on left side of \\?\\? is unnecessary\\. Use \\-\\> instead\\.$#"
-			count: 1
-			path: packages/graphql-printer/src/Blocks/Types/DefinitionBlock.php
-
-		-
 			message: "#^Unable to resolve the template type TClass in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
 			count: 1
 			path: packages/graphql/src/Builder/Manipulator.php

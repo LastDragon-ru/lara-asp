@@ -58,8 +58,7 @@ class PrinterTest extends TestCase {
             'astNode'     => Parser::interfaceTypeDefinition('interface CodeInterface @codeDirective'),
             'description' => 'Description',
             'fields'      => [
-                [
-                    'name' => 'a',
+                'a' => [
                     'type' => Type::nonNull(Type::boolean()),
                 ],
             ],
@@ -69,8 +68,7 @@ class PrinterTest extends TestCase {
             'astNode'     => Parser::objectTypeDefinition('type CodeType @schemaDirective'),
             'description' => 'Description',
             'fields'      => [
-                [
-                    'name' => 'a',
+                'a' => [
                     'type' => Type::boolean(),
                 ],
             ],
@@ -86,8 +84,7 @@ class PrinterTest extends TestCase {
             'astNode'     => Parser::inputObjectTypeDefinition('input InputObjectType @schemaDirective'),
             'description' => 'Description',
             'fields'      => [
-                [
-                    'name' => 'a',
+                'a' => [
                     'type' => Type::boolean(),
                 ],
             ],
@@ -185,8 +182,7 @@ class PrinterTest extends TestCase {
             'astNode'     => Parser::objectTypeDefinition('type CodeType @schemaDirective'),
             'description' => 'Description',
             'fields'      => [
-                [
-                    'name' => 'a',
+                'a' => [
                     'type' => Type::boolean(),
                 ],
             ],
@@ -202,8 +198,7 @@ class PrinterTest extends TestCase {
             'astNode'     => Parser::inputObjectTypeDefinition('input InputObjectType @schemaDirective'),
             'description' => 'Description',
             'fields'      => [
-                [
-                    'name' => 'a',
+                'a' => [
                     'type' => Type::boolean(),
                 ],
             ],
@@ -633,7 +628,12 @@ class PrinterTest extends TestCase {
                     'name'  => 'CodeUnion',
                     'types' => [
                         new ObjectType([
-                            'name' => 'CodeType',
+                            'name'   => 'CodeType',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
                         ]),
                     ],
                 ]),
@@ -712,7 +712,12 @@ class PrinterTest extends TestCase {
                     'name'  => 'CodeUnion',
                     'types' => [
                         new ObjectType([
-                            'name' => 'CodeType',
+                            'name'   => 'CodeType',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
                         ]),
                     ],
                 ]),
@@ -746,8 +751,7 @@ class PrinterTest extends TestCase {
                     'astNode'     => Parser::inputObjectTypeDefinition('input InputObjectType @schemaDirective'),
                     'description' => 'Description',
                     'fields'      => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::boolean(),
                         ],
                     ],

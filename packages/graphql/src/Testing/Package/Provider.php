@@ -12,7 +12,8 @@ class Provider extends ServiceProvider {
         $this->callAfterResolving(
             Repository::class,
             static function (Repository $config): void {
-                $config->set('lighthouse.schema.register', __DIR__.'/schema.graphql');
+                $config->set('lighthouse.schema_path', __DIR__.'/schema.graphql');
+                $config->set('lighthouse.guards', null);
             },
         );
     }

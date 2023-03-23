@@ -8,6 +8,7 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Events\Dispatcher as EventsDispatcher;
 use Illuminate\Support\Arr;
+use LastDragon_ru\LaraASP\Testing\Utils\WithTempDirectory;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\ASTCache;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -18,12 +19,16 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use function spl_object_hash;
 
 class SchemaBuilderWrapper extends SchemaBuilder {
+    use WithTempDirectory;
+
     protected ?SchemaBuilder $current = null;
 
     /**
      * @var array<class-string, object>
      */
     protected array $singletons = [];
+
+    private string $directory;
 
     /**
      * @noinspection             PhpMissingParentConstructorInspection
@@ -33,6 +38,10 @@ class SchemaBuilderWrapper extends SchemaBuilder {
         protected SchemaBuilder $builder,
     ) {
         // no need to call parent
+    }
+
+    protected function getDirectory(): string {
+        return $this->directory ??= static::getTempDirectory();
     }
 
     protected function getSchemaBuilder(): SchemaBuilder {
@@ -59,10 +68,10 @@ class SchemaBuilderWrapper extends SchemaBuilder {
 
         if ($provider) {
             $config = $container->make(ConfigContract::class)->all();
+            $path   = $this->getDirectory().'/'.spl_object_hash($provider).'.php';
 
-            Arr::set($config, 'lighthouse.cache.key', spl_object_hash($provider));
-            Arr::set($config, 'lighthouse.cache.enable', true);
-            Arr::set($config, 'lighthouse.cache.version', 1); // cache
+            Arr::set($config, 'lighthouse.schema_cache.enable', true);
+            Arr::set($config, 'lighthouse.schema_cache.path', $path);
 
             $types      = $container->make(TypeRegistry::class);
             $dispatcher = $container->make(EventsDispatcher::class);
