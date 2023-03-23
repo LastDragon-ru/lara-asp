@@ -9,8 +9,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver as DirectiveResolverContract;
+use Nuwave\Lighthouse\Schema\AST\ExecutableTypeNodeConverter;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
 use Nuwave\Lighthouse\Schema\Factories\DirectiveFactory;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
