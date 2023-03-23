@@ -8,6 +8,9 @@ interface InterfaceA
 @directive(
     location: "interface"
 )
+@directive(
+    location: "extend"
+)
 {
     a: Int
 }
@@ -46,6 +49,9 @@ implements
     & InterfaceC
 @directive(
     location: "type"
+)
+@directive(
+    location: "extend"
 )
 {
     a: Int

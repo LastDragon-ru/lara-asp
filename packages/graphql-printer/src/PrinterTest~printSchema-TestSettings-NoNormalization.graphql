@@ -24,6 +24,9 @@ input InputA
 @directive(
     location: "input"
 )
+@directive(
+    location: "extend"
+)
 {
     """
     Field description.
@@ -73,6 +76,9 @@ scalar Scalar
 @directive(
     location: "scalar"
 )
+@directive(
+    location: "extend"
+)
 
 """
 Union description.
@@ -80,6 +86,9 @@ Union description.
 union Union
 @directive(
     location: "union"
+)
+@directive(
+    location: "extend"
 )
 = TypeB | TypeC | TypeA
 
@@ -89,6 +98,9 @@ Enum description.
 enum Enum
 @directive(
     location: "enum"
+)
+@directive(
+    location: "extend"
 )
 {
     """
@@ -110,6 +122,9 @@ Type description.
 type TypeA implements InterfaceC & InterfaceB
 @directive(
     location: "type"
+)
+@directive(
+    location: "extend"
 )
 {
     """
@@ -146,6 +161,9 @@ Interface description.
 interface InterfaceA
 @directive(
     location: "interface"
+)
+@directive(
+    location: "extend"
 )
 {
     a: Int

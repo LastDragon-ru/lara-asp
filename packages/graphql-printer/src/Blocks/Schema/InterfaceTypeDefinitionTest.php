@@ -105,16 +105,22 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 """
                 interface Test
                 @a
+                @b
+                @c
                 STRING,
                 $settings
                     ->setPrintDirectives(true),
                 0,
                 0,
                 new InterfaceType([
-                    'name'        => 'Test',
-                    'fields'      => [],
-                    'astNode'     => Parser::interfaceTypeDefinition('interface Test @a'),
-                    'description' => 'Description',
+                    'name'              => 'Test',
+                    'fields'            => [],
+                    'astNode'           => Parser::interfaceTypeDefinition('interface Test @a'),
+                    'description'       => 'Description',
+                    'extensionASTNodes' => [
+                        Parser::interfaceTypeExtension('extend interface Test @b'),
+                        Parser::interfaceTypeExtension('extend interface Test @c'),
+                    ],
                 ]),
             ],
             'description + directives + fields'           => [

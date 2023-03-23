@@ -5,6 +5,9 @@ enum Enum
 @directive(
     location: "enum"
 )
+@directive(
+    location: "extend"
+)
 {
     """
     Enum value description
@@ -25,6 +28,9 @@ Input description.
 input InputA
 @directive(
     location: "input"
+)
+@directive(
+    location: "extend"
 )
 {
     """
@@ -49,6 +55,9 @@ Interface description.
 interface InterfaceA
 @directive(
     location: "interface"
+)
+@directive(
+    location: "extend"
 )
 {
     a: Int
@@ -85,6 +94,9 @@ Scalar description.
 scalar Scalar
 @directive(
     location: "scalar"
+)
+@directive(
+    location: "extend"
 )
 
 type Mutation {
@@ -127,6 +139,9 @@ implements
 @directive(
     location: "type"
 )
+@directive(
+    location: "extend"
+)
 {
     a: Int
     @deprecated
@@ -161,6 +176,9 @@ Union description.
 union Union
 @directive(
     location: "union"
+)
+@directive(
+    location: "extend"
 )
 =
     | TypeA

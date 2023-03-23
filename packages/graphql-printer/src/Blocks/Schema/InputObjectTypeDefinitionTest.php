@@ -84,16 +84,22 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 """
                 input Test
                 @a
+                @b
+                @c
                 STRING,
                 $settings
                     ->setPrintDirectives(true),
                 0,
                 0,
                 new InputObjectType([
-                    'name'        => 'Test',
-                    'fields'      => [],
-                    'astNode'     => Parser::inputObjectTypeDefinition('input Test @a'),
-                    'description' => 'Description',
+                    'name'              => 'Test',
+                    'fields'            => [],
+                    'astNode'           => Parser::inputObjectTypeDefinition('input Test @a'),
+                    'description'       => 'Description',
+                    'extensionASTNodes' => [
+                        Parser::inputObjectTypeExtension('extend input Test @b'),
+                        Parser::inputObjectTypeExtension('extend input Test @c'),
+                    ],
                 ]),
             ],
             'description + directives + fields' => [

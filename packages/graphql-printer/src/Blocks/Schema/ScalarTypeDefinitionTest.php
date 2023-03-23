@@ -56,6 +56,25 @@ class ScalarTypeDefinitionTest extends TestCase {
                     'name' => 'Test',
                 ]),
             ],
+            'scalar + directives'     => [
+                <<<'STRING'
+                scalar Test
+                @a
+                @b
+                @c
+                STRING,
+                $settings->setPrintDirectives(true),
+                0,
+                0,
+                new CustomScalarType([
+                    'name'              => 'Test',
+                    'astNode'           => Parser::scalarTypeDefinition('scalar Test @a'),
+                    'extensionASTNodes' => [
+                        Parser::scalarTypeExtension('extend scalar Test @b'),
+                        Parser::scalarTypeExtension('extend scalar Test @c'),
+                    ],
+                ]),
+            ],
             'indent'                  => [
                 <<<'STRING'
                 """

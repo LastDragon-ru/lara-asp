@@ -67,6 +67,8 @@ class SchemaDefinitionTest extends TestCase {
                 <<<'STRING'
                 schema
                 @a
+                @b
+                @c
                 {
                     query: Query
                     mutation: Mutation
@@ -78,14 +80,18 @@ class SchemaDefinitionTest extends TestCase {
                 0,
                 0,
                 new Schema([
-                    'query'        => new ObjectType(['name' => 'Query', 'fields' => []]),
-                    'mutation'     => new ObjectType(['name' => 'Mutation', 'fields' => []]),
-                    'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
-                    'astNode'      => Parser::schemaDefinition(
+                    'query'             => new ObjectType(['name' => 'Query', 'fields' => []]),
+                    'mutation'          => new ObjectType(['name' => 'Mutation', 'fields' => []]),
+                    'subscription'      => new ObjectType(['name' => 'Subscription', 'fields' => []]),
+                    'astNode'           => Parser::schemaDefinition(
                         <<<'STRING'
                         schema @a { query: Query }
                         STRING,
                     ),
+                    'extensionASTNodes' => [
+                        Parser::schemaTypeExtension('extend schema @b'),
+                        Parser::schemaTypeExtension('extend schema @c'),
+                    ],
                 ]),
             ],
             'non standard names'             => [

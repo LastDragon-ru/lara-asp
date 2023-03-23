@@ -8,6 +8,9 @@ implements
 @directive(
     location: "type"
 )
+@directive(
+    location: "extend"
+)
 {
     a: Int
     @deprecated
@@ -31,6 +34,9 @@ Interface description.
 interface InterfaceA
 @directive(
     location: "interface"
+)
+@directive(
+    location: "extend"
 )
 {
     a: Int

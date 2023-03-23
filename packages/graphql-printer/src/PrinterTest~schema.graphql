@@ -6,10 +6,6 @@
 #
 # Schema extensions is not supported in v15 yet
 # -> https://github.com/webonyx/graphql-php/commit/0bd57173c08e73847ed2eb227ef33c156922349b
-# -> fixme(graphql-php): Available in v15.
-#
-# The `extend ...` and `extend ... @directive` not supported (yet?)
-# -> fixme(graphql-php): Check & Fix in v15.
 # """
 # schema @directive(location: "schema") {
 #     query: Query

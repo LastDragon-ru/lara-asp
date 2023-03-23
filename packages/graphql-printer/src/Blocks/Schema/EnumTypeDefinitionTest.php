@@ -103,6 +103,8 @@ class EnumTypeDefinitionTest extends TestCase {
                 <<<'STRING'
                 enum Test
                 @a
+                @b
+                @c
                 {
                     A
                 }
@@ -111,13 +113,17 @@ class EnumTypeDefinitionTest extends TestCase {
                 0,
                 0,
                 new EnumType([
-                    'name'    => 'Test',
-                    'values'  => ['A'],
-                    'astNode' => Parser::enumTypeDefinition(
+                    'name'              => 'Test',
+                    'values'            => ['A'],
+                    'astNode'           => Parser::enumTypeDefinition(
                         <<<'STRING'
                         enum Test @a { A }
                         STRING,
                     ),
+                    'extensionASTNodes' => [
+                        Parser::enumTypeExtension('extend enum Test @b'),
+                        Parser::enumTypeExtension('extend enum Test @c'),
+                    ],
                 ]),
             ],
         ];

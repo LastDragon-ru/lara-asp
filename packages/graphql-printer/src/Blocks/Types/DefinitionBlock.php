@@ -162,20 +162,30 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
      * @return NodeList<DirectiveNode>
      */
     protected function getDefinitionDirectives(): NodeList {
+        // Prepare
+        $directives = new NodeList([]);
+        $definition = $this->getDefinition();
+
         // Unfortunately directives exists only in AST :(
         // https://github.com/webonyx/graphql-php/issues/588
-        $definition = $this->getDefinition();
-        $astNode    = property_exists($definition, 'astNode')
+        $astNode = property_exists($definition, 'astNode')
             ? $definition->astNode
             : null;
-        $directives = $astNode->directives ?? null;
 
-        if ($directives === null) {
-            /** @var NodeList<DirectiveNode> $empty */
-            $empty      = new NodeList([]);
-            $directives = $empty;
+        if ($astNode) {
+            $directives = $directives->merge($astNode->directives ?? []);
         }
 
+        // Extensions nodes can also add directives
+        $astExtensionNodes = property_exists($definition, 'extensionASTNodes')
+            ? $definition->extensionASTNodes
+            : [];
+
+        foreach ($astExtensionNodes ?: [] as $astExtensionNode) {
+            $directives = $directives->merge($astExtensionNode->directives ?? []);
+        }
+
+        // Return
         return $directives;
     }
 }

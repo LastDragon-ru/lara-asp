@@ -15,6 +15,9 @@
     @directive(
         location: "interface"
     )
+    @directive(
+        location: "extend"
+    )
     {
         a: Int
     }

@@ -105,16 +105,22 @@ class ObjectTypeDefinitionTest extends TestCase {
                 """
                 type Test
                 @a
+                @b
+                @c
                 STRING,
                 $settings
                     ->setPrintDirectives(true),
                 0,
                 0,
                 new ObjectType([
-                    'name'        => 'Test',
-                    'fields'      => [],
-                    'astNode'     => Parser::objectTypeDefinition('type Test @a'),
-                    'description' => 'Description',
+                    'name'              => 'Test',
+                    'fields'            => [],
+                    'astNode'           => Parser::objectTypeDefinition('type Test @a'),
+                    'description'       => 'Description',
+                    'extensionASTNodes' => [
+                        Parser::objectTypeExtension('extend type Test @b'),
+                        Parser::objectTypeExtension('extend type Test @c'),
+                    ],
                 ]),
             ],
             'description + directives + fields'           => [

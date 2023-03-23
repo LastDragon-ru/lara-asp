@@ -211,23 +211,29 @@ class UnionTypeDefinitionTest extends TestCase {
                 <<<'STRING'
                 union Test
                 @a
+                @b
+                @c
                 = C | B | A
                 STRING,
                 $settings,
                 0,
                 0,
                 new UnionType([
-                    'name'    => 'Test',
-                    'types'   => [
+                    'name'              => 'Test',
+                    'types'             => [
                         $c,
                         $b,
                         $a,
                     ],
-                    'astNode' => Parser::unionTypeDefinition(
+                    'astNode'           => Parser::unionTypeDefinition(
                         <<<'STRING'
                         union Test @a = A | B | C
                         STRING,
                     ),
+                    'extensionASTNodes' => [
+                        Parser::unionTypeExtension('extend union Test @b'),
+                        Parser::unionTypeExtension('extend union Test @c'),
+                    ],
                 ]),
             ],
             'directives + multiline'        => [
