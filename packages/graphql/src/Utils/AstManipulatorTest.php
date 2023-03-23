@@ -46,42 +46,34 @@ class AstManipulatorTest extends TestCase {
             'document'    => $document,
             'builderInfo' => $builder,
         ]);
+        $interface   = new InterfaceType([
+            'name'       => 'InterfaceC',
+            'interfaces' => [
+                static function (): InterfaceType {
+                    return new InterfaceType([
+                        'name'   => 'InterfaceD',
+                        'fields' => [
+                            'id' => [
+                                'type' => Type::nonNull(Type::id()),
+                            ],
+                        ],
+                    ]);
+                },
+            ],
+            'fields'     => [
+                'id' => [
+                    'type' => Type::nonNull(Type::id()),
+                ],
+            ],
+        ]);
 
+        $types->register($interface);
         $types->register(
             new ObjectType([
                 'name'       => 'ObjectB',
-                'interfaces' => [
-                    static function () use ($types): Type {
-                        return $types->get('InterfaceC');
-                    },
-                ],
+                'interfaces' => [$interface],
                 'fields'     => [
-                    [
-                        'name' => 'id',
-                        'type' => Type::nonNull(Type::id()),
-                    ],
-                ],
-            ]),
-        );
-        $types->register(
-            new InterfaceType([
-                'name'       => 'InterfaceC',
-                'interfaces' => [
-                    static function (): InterfaceType {
-                        return new InterfaceType([
-                            'name'   => 'InterfaceD',
-                            'fields' => [
-                                [
-                                    'name' => 'id',
-                                    'type' => Type::nonNull(Type::id()),
-                                ],
-                            ],
-                        ]);
-                    },
-                ],
-                'fields'     => [
-                    [
-                        'name' => 'id',
+                    'id' => [
                         'type' => Type::nonNull(Type::id()),
                     ],
                 ],

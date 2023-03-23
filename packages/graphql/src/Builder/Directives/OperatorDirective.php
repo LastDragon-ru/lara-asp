@@ -20,6 +20,6 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
     }
 
     public function getFieldDirective(): ?DirectiveNode {
-        return $this->directiveNode;
+        return $this->directiveNode ?? null;
     }
 }

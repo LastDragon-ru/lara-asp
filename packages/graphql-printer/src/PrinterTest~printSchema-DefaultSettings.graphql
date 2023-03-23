@@ -20,10 +20,34 @@ input InputA {
     """
     a: Int
 
+    b: [String!]
     c: [Float!]!
 }
 
-interface InterfaceC {
+"""
+Interface description.
+"""
+interface InterfaceA {
+    a: Int
+}
+
+interface InterfaceB
+implements
+    & InterfaceA
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+}
+
+interface InterfaceC
+implements
+    & InterfaceA
+    & InterfaceB
+{
     a: Int
     b: [String!]
     c: [Float!]!
@@ -65,6 +89,7 @@ Type description.
 """
 type TypeA
 implements
+    & InterfaceB
     & InterfaceC
 {
     a: Int
@@ -76,6 +101,7 @@ implements
     b: [String!]
 
     c: [Float!]!
+    d: [String!]
 }
 
 type TypeB {
@@ -90,5 +116,6 @@ type TypeC {
 Union description.
 """
 union Union =
+    | TypeA
     | TypeB
     | TypeC

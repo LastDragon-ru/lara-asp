@@ -8,7 +8,7 @@ use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use GraphQL\Type\Definition\FieldArgument;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -22,9 +22,9 @@ class ObjectFieldArgumentSource extends Source {
         Manipulator $manipulator,
         private ObjectTypeDefinitionNode|ObjectType $object,
         private FieldDefinitionNode|FieldDefinition $field,
-        private InputValueDefinitionNode|FieldArgument $argument,
+        private InputValueDefinitionNode|Argument $argument,
     ) {
-        parent::__construct($manipulator, $argument instanceof FieldArgument ? $argument->getType() : $argument->type);
+        parent::__construct($manipulator, $argument instanceof Argument ? $argument->getType() : $argument->type);
     }
 
     // <editor-fold desc="Getters / Setters">
@@ -37,7 +37,7 @@ class ObjectFieldArgumentSource extends Source {
         return $this->field;
     }
 
-    public function getArgument(): InputValueDefinitionNode|FieldArgument {
+    public function getArgument(): InputValueDefinitionNode|Argument {
         return $this->argument;
     }
     // </editor-fold>

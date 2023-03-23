@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
+use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthousTestingServiceProvider;
 use SplFileInfo;
 
 class TestCase extends PackageTestCase {
@@ -27,6 +28,7 @@ class TestCase extends PackageTestCase {
             Provider::class,
             TestProvider::class,
             LighthouseServiceProvider::class,
+            LighthousTestingServiceProvider::class,
         ];
     }
 

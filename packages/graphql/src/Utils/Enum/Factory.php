@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Utils\Enum;
 
+use GraphQL\Type\Definition\EnumType;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Core\Enum;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -11,8 +12,11 @@ use ReflectionMethod;
 use function trim;
 
 /**
- * @internal {@see \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType}
  * @deprecated Please use native PHP enums
+ *
+ * @phpstan-import-type EnumTypeConfig from EnumType
+ *
+ * @internal {@see \LastDragon_ru\LaraASP\GraphQL\Utils\Enum\EnumType}
  */
 class Factory extends Enum {
     /**
@@ -20,7 +24,7 @@ class Factory extends Enum {
      *
      * @param class-string<Enum> $enum
      *
-     * @return array<string,mixed>
+     * @return EnumTypeConfig
      */
     public static function getDefinition(string $enum, ?string $name = null): array {
         $class      = new ReflectionClass($enum);

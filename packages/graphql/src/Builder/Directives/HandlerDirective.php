@@ -5,17 +5,17 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 use Closure;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\FieldArgument;
+use GraphQL\Type\Definition\Argument;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -37,15 +37,16 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
-use Nuwave\Lighthouse\Support\Utils;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionNamedType;
 
 use function array_keys;
+use function array_map;
 use function count;
 use function is_a;
 use function is_array;
+use function reset;
 
 abstract class HandlerDirective extends BaseDirective implements Handler {
     public function __construct(
@@ -152,25 +153,30 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Operator & Value
-        /** @var Operator|null $op */
-        $op     = null;
-        $value  = null;
-        $filter = Utils::instanceofMatcher(Operator::class);
+        $op    = null;
+        $value = null;
 
         foreach ($operator->arguments as $name => $argument) {
-            /** @var Collection<int, Operator> $operators */
-            $operators = $argument->directives->filter($filter);
-            $property  = $property->getChild($name);
-            $value     = $argument;
-            $op        = $operators->first();
+            $operators = [];
+
+            foreach ($argument->directives as $directive) {
+                if ($directive instanceof Operator) {
+                    $operators[] = $directive;
+                }
+            }
+
+            $property = $property->getChild($name);
+            $value    = $argument;
+            $op       = reset($operators);
 
             if (count($operators) > 1) {
                 throw new ConditionTooManyOperators(
-                    $operators
-                        ->map(static function (Operator $operator): string {
+                    array_map(
+                        static function (Operator $operator): string {
                             return $operator::getName();
-                        })
-                        ->all(),
+                        },
+                        $operators,
+                    ),
                 );
             }
         }
@@ -196,8 +202,13 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         DocumentAST &$documentAST,
         InputValueDefinitionNode &$argDefinition,
         FieldDefinitionNode &$parentField,
-        ObjectTypeDefinitionNode &$parentType,
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
+        // Interface?
+        if ($parentType instanceof InterfaceTypeDefinitionNode) {
+            throw new NotImplemented(InterfaceTypeDefinitionNode::class);
+        }
+
         // Converted?
         /** @var Manipulator $manipulator */
         $manipulator = Container::getInstance()->make(Manipulator::class, [
@@ -226,7 +237,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
             if ($argument instanceof InputValueDefinitionNode) {
                 $argument->type = $argDefinition->type;
-            } elseif ($argument instanceof FieldArgument) {
+            } elseif ($argument instanceof Argument) {
                 throw new NotImplemented($argument::class);
             } else {
                 // ignore

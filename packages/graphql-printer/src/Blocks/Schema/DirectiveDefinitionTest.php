@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 use GraphQL\Language\DirectiveLocation;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -44,7 +44,14 @@ class DirectiveDefinitionTest extends TestCase {
             'name'      => 'A',
             'args'      => [
                 'a' => [
-                    'type' => new ObjectType(['name' => 'B']),
+                    'type' => new InputObjectType([
+                        'name'   => 'B',
+                        'fields' => [
+                            'b' => [
+                                'type' => Type::string(),
+                            ],
+                        ],
+                    ]),
                 ],
             ],
             'locations' => [

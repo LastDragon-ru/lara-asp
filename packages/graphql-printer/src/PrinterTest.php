@@ -79,6 +79,8 @@ class PrinterTest extends TestCase {
                         'Int',
                         'Float',
                         'InputA',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                         'Scalar',
                         'TypeB',
@@ -105,6 +107,8 @@ class PrinterTest extends TestCase {
                         'Int',
                         'Float',
                         'InputA',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                         'Scalar',
                         'TypeB',
@@ -165,6 +169,8 @@ class PrinterTest extends TestCase {
                         'Enum',
                         'Float',
                         'InputA',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                         'Scalar',
                         'TypeB',
@@ -192,6 +198,8 @@ class PrinterTest extends TestCase {
                         'Int',
                         'Float',
                         'InputA',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                         'Scalar',
                         'TypeB',
@@ -227,6 +235,8 @@ class PrinterTest extends TestCase {
                         'Enum',
                         'Union',
                         'Scalar',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                     ])
                     ->setUsedDirectives([
@@ -258,6 +268,8 @@ class PrinterTest extends TestCase {
                         'Int',
                         'Float',
                         'InputA',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                         'Scalar',
                         'TypeB',
@@ -290,6 +302,8 @@ class PrinterTest extends TestCase {
                         'Int',
                         'Float',
                         'InputA',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                         'Scalar',
                         'TypeB',
@@ -322,6 +336,8 @@ class PrinterTest extends TestCase {
                         'Int',
                         'Float',
                         'InputA',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                         'Scalar',
                         'TypeB',
@@ -356,6 +372,8 @@ class PrinterTest extends TestCase {
                 ))
                     ->setUsedTypes([
                         'String',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                         'Int',
                         'Float',
@@ -372,7 +390,12 @@ class PrinterTest extends TestCase {
                     'name'  => 'Union',
                     'types' => [
                         new ObjectType([
-                            'name' => 'TypeA',
+                            'name'   => 'TypeA',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
                         ]),
                     ],
                 ]),
@@ -387,6 +410,8 @@ class PrinterTest extends TestCase {
                         'Int',
                         'Float',
                         'TypeA',
+                        'InterfaceA',
+                        'InterfaceB',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -404,10 +429,12 @@ class PrinterTest extends TestCase {
                         'String',
                         'Int',
                         'Float',
+                        'InterfaceA',
+                        'InterfaceB',
                         'InterfaceC',
                     ])
                     ->setUsedDirectives([
-                        // empty
+                        '@directive',
                     ]),
                 new TestSettings(),
                 1,
@@ -443,7 +470,12 @@ class PrinterTest extends TestCase {
                     'name'  => 'CodeUnion',
                     'types' => [
                         new ObjectType([
-                            'name' => 'CodeType',
+                            'name'   => 'CodeType',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
                         ]),
                     ],
                 ]),
