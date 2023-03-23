@@ -37,7 +37,6 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
-use Nuwave\Lighthouse\Support\Utils;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionNamedType;
@@ -154,10 +153,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Operator & Value
-        /** @var Operator|null $op */
-        $op     = null;
-        $value  = null;
-        $filter = Utils::instanceofMatcher(Operator::class);
+        $op    = null;
+        $value = null;
 
         foreach ($operator->arguments as $name => $argument) {
             $operators = [];
@@ -179,7 +176,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
                             return $operator::getName();
                         },
                         $operators,
-                    )
+                    ),
                 );
             }
         }

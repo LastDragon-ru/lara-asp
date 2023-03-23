@@ -44,7 +44,7 @@ class FieldDefinitionTest extends TestCase {
             'type'    => new NonNull(
                 new ObjectType([
                     'name'   => 'A',
-                    'fields' => function () use (&$definition): array {
+                    'fields' => static function () use (&$definition): array {
                         return [$definition];
                     },
                 ]),

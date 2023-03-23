@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
 
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\NamedType;
-use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
