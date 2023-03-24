@@ -28,7 +28,7 @@ input InputA {
     idScalar: ID
     idScalarNotNull: ID!
     intScalar: Int
-    inScalarNotNull: Int!
+    intScalarNotNull: Int!
     floatScalar: Float
     floatScalarNotNull: Float!
     stringScalar: String
@@ -100,7 +100,7 @@ type Object {
     idScalar: ID
     idScalarNotNull: ID!
     intScalar: Int
-    inScalarNotNull: Int!
+    intScalarNotNull: Int!
     floatScalar: Float
     floatScalarNotNull: Float!
     stringScalar: String

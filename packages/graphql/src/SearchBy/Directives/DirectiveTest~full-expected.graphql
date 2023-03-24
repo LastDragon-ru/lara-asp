@@ -220,13 +220,13 @@ input SearchByConditionInputA {
     """
     Property condition.
     """
-    inScalarNotNull: SearchByScalarInt
+    intScalar: SearchByScalarIntOrNull
     @searchByOperatorProperty
 
     """
     Property condition.
     """
-    intScalar: SearchByScalarIntOrNull
+    intScalarNotNull: SearchByScalarInt
     @searchByOperatorProperty
 
     """
@@ -473,13 +473,13 @@ input SearchByConditionObject {
     """
     Property condition.
     """
-    inScalarNotNull: SearchByScalarInt
+    intScalar: SearchByScalarIntOrNull
     @searchByOperatorProperty
 
     """
     Property condition.
     """
-    intScalar: SearchByScalarIntOrNull
+    intScalarNotNull: SearchByScalarInt
     @searchByOperatorProperty
 
     """
@@ -1327,13 +1327,13 @@ input SearchByScoutConditionInputA {
     """
     Property condition.
     """
-    inScalarNotNull: SearchByScoutScalarInt
+    intScalar: SearchByScoutScalarIntOrNull
     @searchByOperatorProperty
 
     """
     Property condition.
     """
-    intScalar: SearchByScoutScalarIntOrNull
+    intScalarNotNull: SearchByScoutScalarInt
     @searchByOperatorProperty
 
     """
@@ -1670,8 +1670,8 @@ type Object {
     ignoredType: ObjectIgnored
     ignoredTypeList: [ObjectIgnored!]!
     ignoredTypeNonNull: ObjectIgnored!
-    inScalarNotNull: Int!
     intScalar: Int
+    intScalarNotNull: Int!
     nested: ObjectNested
     nestedNotNull: ObjectNested!
 
