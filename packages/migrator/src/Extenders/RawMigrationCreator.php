@@ -33,11 +33,7 @@ class RawMigrationCreator extends MigrationCreator {
         $path = $this->customStubPath.'/migration.stub';
 
         if (!$this->files->exists($path)) {
-            if ($this->isAnonymousMigrationsSupported()) {
-                $path = __DIR__.'/../../stubs/migration-anonymous.stub';
-            } else {
-                $path = __DIR__.'/../../stubs/migration.stub';
-            }
+            $path = __DIR__.'/../../stubs/migration.stub';
         }
 
         return $this->files->get($path);
@@ -58,10 +54,6 @@ class RawMigrationCreator extends MigrationCreator {
             "{$dir}/{$name}~up.sql",
             "{$dir}/{$name}~down.sql",
         ];
-    }
-
-    protected function isAnonymousMigrationsSupported(): bool {
-        return SmartMigrator::isAnonymousMigrationsSupported();
     }
     // </editor-fold>
 }

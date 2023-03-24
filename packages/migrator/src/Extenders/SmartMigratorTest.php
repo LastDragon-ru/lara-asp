@@ -12,7 +12,6 @@ use Mockery;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 use function array_map;
-use function array_merge;
 use function explode;
 use function get_class;
 use function implode;
@@ -35,17 +34,18 @@ class SmartMigratorTest extends TestCase {
 
     public function testMigrate(): void {
         // Prepare
-        $path         = self::getTestData()->path('/named');
+        $path         = self::getTestData()->path('/migrations');
         $migrations   = [
             ['migration' => '2021_05_09_055650_raw_migration_a'],
             ['migration' => '2021_05_09_055655_raw_data_migration_a'],
             ['migration' => '2021_05_09_055655_raw_migration_b'],
+            ['migration' => '2021_05_09_055650_anonymous'],
         ];
-        $expectedUp   = '8.22+up.txt';
-        $expectedDown = '8.22+down.txt';
+        $expectedUp   = '9.0+up.txt';
+        $expectedDown = '9.0+down.txt';
 
         if (InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=9.26.0')) {
-            # Since v9.25.0 commands output was slightly changed
+            # Since v9.26.0 commands output was slightly changed
             #
             # https://github.com/laravel/framework/pull/43769
             $expectedUp   = '9.26+up.txt';
@@ -57,13 +57,6 @@ class SmartMigratorTest extends TestCase {
             # https://github.com/laravel/framework/pull/43065
             $expectedUp   = '9.21+up.txt';
             $expectedDown = '9.21+down.txt';
-        } elseif (SmartMigrator::isAnonymousMigrationsSupported()) {
-            $path         = self::getTestData()->path('/');
-            $migrations   = array_merge([
-                ['migration' => '2021_05_09_055650_anonymous'],
-            ], $migrations);
-            $expectedUp   = '8.40+up.txt';
-            $expectedDown = '8.40+down.txt';
         } else {
             // empty
         }

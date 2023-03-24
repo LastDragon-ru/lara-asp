@@ -24,7 +24,7 @@
     "ext-intl": "*",
     "ext-json": "*",
     "composer/semver": "^3.2",
-    "laravel/framework": "^8.22.1|^9.0.0|^10.0.0",
+    "laravel/framework": "^9.0.0|^10.0.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "symfony/filesystem": "^5.2.0|^6.0.0",
     "symfony/finder": "^5.1.0|^6.0.0",
