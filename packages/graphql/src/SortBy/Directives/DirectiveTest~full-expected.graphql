@@ -388,6 +388,14 @@ type Object {
     enumEnumIgnoredNotNull: EnumIgnored!
     enumIgnored: EnumIgnored
     enumNotNull: Value!
+
+    """
+    Should be ignored
+    """
+    fieldWithArguments(
+        arg: Int
+    ): Boolean
+
     idScalar: ID
     idScalarNotNull: ID!
 

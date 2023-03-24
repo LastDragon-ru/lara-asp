@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
@@ -121,6 +122,22 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource $field,
     ): bool {
+        // Args? (in general case we don't know how they should be converted)
+        if ($field instanceof ObjectFieldSource) {
+            $node = $field->getField();
+            $args = false;
+
+            if ($node instanceof FieldDefinitionNode) {
+                $args = $node->arguments->count() > 0;
+            } else {
+                $args = count($node->args) > 0;
+            }
+
+            if ($args) {
+                return false;
+            }
+        }
+
         // Union?
         if ($manipulator->isUnion($field->getType())) {
             return false;

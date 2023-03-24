@@ -132,6 +132,9 @@ type Object {
 
     "Description should NOT be used."
     description: ID
+
+    "Should be ignored"
+    fieldWithArguments(arg: Int): Boolean
 }
 
 type ObjectNested {
