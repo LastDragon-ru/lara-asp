@@ -1,6 +1,0 @@
-Rolling back: 2021_05_09_055650_raw_migration_a
-RawMigrationA: DROP TABLE IF EXISTS `migrator_raw_migration_a`;
-
-Rolling back: 2021_05_09_055655_raw_data_migration_a
-Rolling back: 2021_05_09_055655_raw_migration_b
-RawMigrationB: DROP TABLE IF EXISTS `migrator_raw_migration_b`;
