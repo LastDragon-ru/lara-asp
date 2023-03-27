@@ -7,6 +7,7 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Clause;
@@ -38,7 +39,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     protected function getArgDefinitionType(
         Manipulator $manipulator,
         DocumentAST $document,
-        ObjectFieldArgumentSource $argument,
+        ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
             $manipulator,

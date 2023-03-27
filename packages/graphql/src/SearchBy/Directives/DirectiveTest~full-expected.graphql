@@ -514,6 +514,137 @@ input SearchByConditionObject {
 }
 
 """
+Available conditions for `interface ObjectInterface` (only one property allowed at a time).
+"""
+input SearchByConditionObjectInterface {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionObjectInterface!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionObjectInterface!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScalarBooleanOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScalarBoolean
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalar: SearchByScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarList: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarNonNull: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    description: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enum: SearchByEnumEnumAOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByEnumEnumA
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScalarFloatOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScalarFloat
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalar: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalar: SearchByScalarIntOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalarNotNull: SearchByScalarInt
+    @searchByOperatorProperty
+
+    """
+    Relationship condition.
+    """
+    nested: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    nestedNotNull: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Not.
+    """
+    not: SearchByConditionObjectInterface
+    @searchByOperatorNot
+
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScalarStringOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScalarString
+    @searchByOperatorProperty
+}
+
+"""
 Available conditions for `type ObjectNested` (only one property allowed at a time).
 """
 input SearchByConditionObjectNested {
@@ -1611,6 +1742,7 @@ input SearchByTypeRangeInt {
 interface A
 implements
     & C
+    & F
 {
     a(
         where: SearchByConditionInputA
@@ -1629,6 +1761,68 @@ interface C {
     ): ID!
 }
 
+interface F {
+    f(
+        where: SearchByConditionObject
+        @searchBy
+    ): Object!
+}
+
+interface ObjectInterface {
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    customScalar: Date
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+
+    """
+    Description should NOT be used.
+    """
+    description: ID
+
+    enum: EnumA
+    enumEnumIgnoredNotNull: EnumIgnored!
+    enumIgnored: EnumIgnored
+    enumNotNull: EnumA!
+
+    """
+    Should be ignored
+    """
+    fieldWithArguments(
+        arg: Int
+    ): Boolean
+
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: String
+    @searchByIgnored
+
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    intScalar: Int
+    intScalarNotNull: Int!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: Float
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    stringScalar: String
+    stringScalarNotNull: String!
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+}
+
 scalar Date
 @scalar(
     class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
@@ -1640,7 +1834,10 @@ scalar DateIgnored
 )
 @searchByIgnored
 
-type Object {
+type Object
+implements
+    & ObjectInterface
+{
     booleanScalar: Boolean
     booleanScalarNotNull: Boolean!
     customScalar: Date
@@ -1746,6 +1943,12 @@ implements
 
     f(
         where: SearchByConditionObject
+        @searchBy
+    ): Object!
+    @all
+
+    g(
+        where: SearchByConditionObjectInterface
         @searchBy
     ): Object!
     @all

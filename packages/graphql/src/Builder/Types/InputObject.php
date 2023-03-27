@@ -2,13 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
-use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -16,6 +14,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionFieldAlreadyD
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
@@ -32,7 +32,7 @@ abstract class InputObject implements TypeDefinition {
 
     abstract protected function getDescription(
         Manipulator $manipulator,
-        InputSource|ObjectSource $source,
+        InputSource|ObjectSource|InterfaceSource $source,
     ): string;
 
     /**
@@ -44,7 +44,9 @@ abstract class InputObject implements TypeDefinition {
         TypeSource $source,
     ): ?TypeDefinitionNode {
         // Source?
-        if (!($source instanceof InputSource) && !($source instanceof ObjectSource)) {
+        if (
+            !($source instanceof InterfaceSource || $source instanceof ObjectSource || $source instanceof InputSource)
+        ) {
             return null;
         }
 
@@ -69,7 +71,7 @@ abstract class InputObject implements TypeDefinition {
 
         // Add searchable fields
         $object = $source->getType();
-        $fields = $object instanceof InputObjectType || $object instanceof ObjectType
+        $fields = $object instanceof Type
             ? $object->getFields()
             : $object->fields;
 
@@ -113,29 +115,18 @@ abstract class InputObject implements TypeDefinition {
      */
     protected function getOperators(
         Manipulator $manipulator,
-        InputSource|ObjectSource $source,
+        InputSource|ObjectSource|InterfaceSource $source,
     ): array {
         return [];
     }
 
     protected function isFieldConvertable(
         Manipulator $manipulator,
-        InputFieldSource|ObjectFieldSource $field,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
     ): bool {
         // Args? (in general case we don't know how they should be converted)
-        if ($field instanceof ObjectFieldSource) {
-            $node = $field->getField();
-            $args = false;
-
-            if ($node instanceof FieldDefinitionNode) {
-                $args = $node->arguments->count() > 0;
-            } else {
-                $args = count($node->args) > 0;
-            }
-
-            if ($args) {
-                return false;
-            }
+        if ($field->hasArguments()) {
+            return false;
         }
 
         // Union?
@@ -154,7 +145,7 @@ abstract class InputObject implements TypeDefinition {
 
     protected function getFieldDefinition(
         Manipulator $manipulator,
-        InputFieldSource|ObjectFieldSource $field,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
     ): InputValueDefinitionNode|null {
         [$operator, $type] = $this->getFieldOperator($manipulator, $field) ?? [null, null];
 
@@ -178,7 +169,7 @@ abstract class InputObject implements TypeDefinition {
      */
     abstract protected function getFieldOperator(
         Manipulator $manipulator,
-        InputFieldSource|ObjectFieldSource $field,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
     ): ?array;
 
     /**
@@ -191,7 +182,7 @@ abstract class InputObject implements TypeDefinition {
     protected function getFieldDirectiveOperator(
         string $directive,
         Manipulator $manipulator,
-        InputFieldSource|ObjectFieldSource $field,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
     ): ?Operator {
         // Directive?
         $operator = null;
@@ -218,7 +209,7 @@ abstract class InputObject implements TypeDefinition {
 
     protected function getFieldDescription(
         Manipulator $manipulator,
-        ObjectFieldSource|InputFieldSource $field,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
     ): string|null {
         $description = null;
 

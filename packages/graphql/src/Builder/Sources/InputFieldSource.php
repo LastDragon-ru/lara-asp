@@ -36,5 +36,9 @@ class InputFieldSource extends Source {
     public function getField(): InputValueDefinitionNode|InputObjectField {
         return $this->field;
     }
+
+    public function hasArguments(): bool {
+        return false;
+    }
     // </editor-fold>
 }
