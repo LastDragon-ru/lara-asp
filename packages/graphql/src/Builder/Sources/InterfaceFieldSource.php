@@ -11,11 +11,14 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\Field;
 
 /**
  * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
  */
 class InterfaceFieldSource extends Source {
+    use Field;
+
     public function __construct(
         Manipulator $manipulator,
         private InterfaceTypeDefinitionNode|InterfaceType $object,
@@ -32,17 +35,6 @@ class InterfaceFieldSource extends Source {
 
     public function getField(): FieldDefinition|FieldDefinitionNode {
         return $this->field;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="TypeSource">
-    // =========================================================================
-    public function __toString(): string {
-        $manipulator = $this->getManipulator();
-        $field       = $manipulator->getNodeName($this->getField());
-        $type        = $manipulator->getNodeTypeFullName($this->getObject());
-
-        return "{$type} { {$field} }";
     }
     // </editor-fold>
 }
