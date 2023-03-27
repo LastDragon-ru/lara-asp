@@ -11,11 +11,14 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\Field;
 
 /**
  * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
  */
 class InputFieldSource extends Source {
+    use Field;
+
     public function __construct(
         Manipulator $manipulator,
         private InputObjectTypeDefinitionNode|InputObjectType $object,
@@ -33,16 +36,9 @@ class InputFieldSource extends Source {
     public function getField(): InputValueDefinitionNode|InputObjectField {
         return $this->field;
     }
-    // </editor-fold>
 
-    // <editor-fold desc="TypeSource">
-    // =========================================================================
-    public function __toString(): string {
-        $manipulator = $this->getManipulator();
-        $field       = $manipulator->getNodeName($this->getField());
-        $type        = $manipulator->getNodeTypeFullName($this->getObject());
-
-        return "{$type} { {$field} }";
+    public function hasArguments(): bool {
+        return false;
     }
     // </editor-fold>
 }

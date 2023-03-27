@@ -110,6 +110,71 @@ input SortByClauseObject {
 }
 
 """
+Sort clause for `interface ObjectInterface` (only one property allowed at a time).
+"""
+input SortByClauseObjectInterface {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    description: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enum: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    nested: SortByClauseObjectNested
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    nestedNotNull: SortByClauseObjectNested
+    @sortByOperatorProperty
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+}
+
+"""
 Sort clause for `type ObjectNested` (only one property allowed at a time).
 """
 input SortByClauseObjectNested {
@@ -347,9 +412,57 @@ implements
     ): ID!
 }
 
+interface ObjectInterface {
+    customScalar: Date
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+
+    """
+    Description should NOT be used.
+    """
+    description: ID
+
+    enum: Value
+    enumEnumIgnoredNotNull: EnumIgnored!
+    enumIgnored: EnumIgnored
+    enumNotNull: Value!
+
+    """
+    Should be ignored
+    """
+    fieldWithArguments(
+        arg: Int
+    ): Boolean
+
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: ID!
+    @sortByIgnored
+
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: ID!
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+}
+
 interface Placeholder {
     placeholder(
         order: [SortByClauseObject!]
+        @sortBy
     ): Object!
 }
 
@@ -371,7 +484,10 @@ scalar DateIgnored
 )
 @sortByIgnored
 
-type Object {
+type Object
+implements
+    & ObjectInterface
+{
     customScalar: Date
     customScalarIgnored: DateIgnored
     customScalarIgnoredList: [DateIgnored!]!
@@ -438,6 +554,12 @@ implements
         order: [SortByClauseProperties!]
         @sortBy
     ): ID!
+    @all
+
+    interface(
+        order: [SortByClauseObjectInterface!]
+        @sortBy
+    ): Object!
     @all
 
     placeholder(

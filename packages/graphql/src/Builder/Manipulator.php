@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
+use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
@@ -14,6 +15,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
@@ -25,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
@@ -106,6 +109,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
             $source = new InputSource($this, $type);
         } elseif ($type instanceof ObjectTypeDefinitionNode || $type instanceof ObjectType) {
             $source = new ObjectSource($this, $type);
+        } elseif ($type instanceof InterfaceTypeDefinitionNode || $type instanceof InterfaceType) {
+            $source = new InterfaceSource($this, $type);
         } else {
             $source = new Source($this, $type);
         }

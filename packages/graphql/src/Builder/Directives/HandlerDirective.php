@@ -11,7 +11,6 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\Argument;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +26,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
@@ -204,11 +204,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
-        // Interface?
-        if ($parentType instanceof InterfaceTypeDefinitionNode) {
-            throw new NotImplemented(InterfaceTypeDefinitionNode::class);
-        }
-
         // Converted?
         /** @var Manipulator $manipulator */
         $manipulator = Container::getInstance()->make(Manipulator::class, [
@@ -221,7 +216,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Argument
-        $argInfo             = new ObjectFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+        $argInfo             = $parentType instanceof InterfaceTypeDefinitionNode
+            ? new InterfaceFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition)
+            : new ObjectFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
         $argDefinition->type = $this->getArgDefinitionType($manipulator, $documentAST, $argInfo);
 
         // Interfaces
@@ -230,17 +227,30 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         $argumentName = $manipulator->getNodeName($argDefinition);
 
         foreach ($interfaces as $interface) {
-            $field    = $manipulator->getNodeField($interface, $fieldName);
-            $argument = $field
-                ? $manipulator->getNodeAttribute($field, $argumentName)
-                : null;
+            // Field?
+            $field = $manipulator->getNodeField($interface, $fieldName);
 
+            if (!$field) {
+                continue;
+            }
+
+            // Argument?
+            $argument = $manipulator->getNodeAttribute($field, $argumentName);
+
+            if ($argument === null) {
+                continue;
+            }
+
+            // Directive? (no need to update type here)
+            if ($manipulator->getNodeDirective($argument, self::class) !== null) {
+                continue;
+            }
+
+            // Update
             if ($argument instanceof InputValueDefinitionNode) {
                 $argument->type = $argDefinition->type;
-            } elseif ($argument instanceof Argument) {
-                throw new NotImplemented($argument::class);
             } else {
-                // ignore
+                throw new NotImplemented($argument::class);
             }
         }
     }
@@ -253,7 +263,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     abstract protected function getArgDefinitionType(
         Manipulator $manipulator,
         DocumentAST $document,
-        ObjectFieldArgumentSource $argument,
+        ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode;
 
     /**
@@ -262,7 +272,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     protected function getArgumentTypeDefinitionNode(
         Manipulator $manipulator,
         DocumentAST $document,
-        ObjectFieldArgumentSource $argument,
+        ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         $type       = null;

@@ -14,6 +14,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
@@ -61,7 +62,7 @@ class HandlerDirectiveTest extends TestCase {
             protected function getArgDefinitionType(
                 Manipulator $manipulator,
                 DocumentAST $document,
-                ObjectFieldArgumentSource $argument,
+                ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
             ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
                 throw new Exception('should not be called.');
             }

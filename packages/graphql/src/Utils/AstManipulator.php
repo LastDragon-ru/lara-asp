@@ -326,6 +326,8 @@ abstract class AstManipulator {
             $prefix = 'input';
         } elseif ($node instanceof ObjectTypeDefinitionNode || $node instanceof ObjectType) {
             $prefix = 'type';
+        } elseif ($node instanceof InterfaceTypeDefinitionNode || $node instanceof InterfaceType) {
+            $prefix = 'interface';
         } elseif ($node instanceof ScalarTypeDefinitionNode || $node instanceof ScalarType) {
             $prefix = 'scalar';
         } elseif ($node instanceof EnumTypeDefinitionNode || $node instanceof EnumType) {
