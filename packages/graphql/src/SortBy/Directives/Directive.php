@@ -33,7 +33,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     // <editor-fold desc="Manipulate">
     // =========================================================================
     protected function isTypeName(string $name): bool {
-        return str_starts_with($name, Directive::Name);
+        return str_starts_with($name, self::Name);
     }
 
     protected function getArgDefinitionType(

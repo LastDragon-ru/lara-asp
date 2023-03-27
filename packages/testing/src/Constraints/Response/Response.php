@@ -94,7 +94,7 @@ class Response extends Constraint {
         $description = [];
 
         if ($this->failed) {
-            $description[] = $this->failed instanceof Response
+            $description[] = $this->failed instanceof self
                 ? $this->failed->additionalFailureDescription($other, false)
                 : $this->failed->additionalFailureDescription($other);
         }

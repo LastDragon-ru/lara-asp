@@ -47,28 +47,28 @@ class Operators extends BuilderOperators {
      */
     protected array $operators = [
         // Standard types
-        Operators::ID        => [
+        self::ID        => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        Operators::Int       => [
-            Operators::Number,
+        self::Int       => [
+            self::Number,
             BitwiseOr::class,
             BitwiseXor::class,
             BitwiseAnd::class,
             BitwiseLeftShift::class,
             BitwiseRightShift::class,
         ],
-        Operators::Float     => [
-            Operators::Number,
+        self::Float     => [
+            self::Number,
         ],
-        Operators::Boolean   => [
+        self::Boolean   => [
             Equal::class,
             NotEqual::class,
         ],
-        Operators::String    => [
+        self::String    => [
             Equal::class,
             NotEqual::class,
             Like::class,
@@ -81,7 +81,7 @@ class Operators extends BuilderOperators {
         ],
 
         // Special types
-        Operators::Number    => [
+        self::Number    => [
             Equal::class,
             NotEqual::class,
             LessThan::class,
@@ -93,22 +93,22 @@ class Operators extends BuilderOperators {
             Between::class,
             NotBetween::class,
         ],
-        Operators::Enum      => [
+        self::Enum      => [
             Equal::class,
             NotEqual::class,
             In::class,
             NotIn::class,
         ],
-        Operators::Null      => [
+        self::Null      => [
             IsNull::class,
             IsNotNull::class,
         ],
-        Operators::Extra     => [
+        self::Extra     => [
             AllOf::class,
             AnyOf::class,
             Not::class,
         ],
-        Operators::Condition => [
+        self::Condition => [
             Relation::class,
             Condition::class,
         ],
