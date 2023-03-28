@@ -31,16 +31,6 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Unable to resolve the template type TClass in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
-			count: 1
-			path: packages/graphql/src/Builder/Manipulator.php
-
-		-
-			message: "#^Unable to resolve the template type TInterface in call to method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\)$#"
-			count: 1
-			path: packages/graphql/src/Builder/Manipulator.php
-
-		-
 			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Builder\\\\Property\\:\\:\\$path \\(array\\<int, string\\>\\) does not accept array\\<int\\|string, string\\>\\.$#"
 			count: 1
 			path: packages/graphql/src/Builder/Property.php

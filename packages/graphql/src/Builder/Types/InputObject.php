@@ -42,7 +42,7 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         string $name,
         TypeSource $source,
-    ): ?TypeDefinitionNode {
+    ): TypeDefinitionNode|Type|null {
         // Source?
         if (
             !($source instanceof InterfaceSource || $source instanceof ObjectSource || $source instanceof InputSource)

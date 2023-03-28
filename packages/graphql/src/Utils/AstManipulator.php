@@ -179,21 +179,26 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template TInterface of TypeDefinitionNode
-     * @template TClass of Node
+     * @template TDefinition of (TypeDefinitionNode&Node)|(Type&NamedType)
      *
-     * @param TInterface&TClass $definition
+     * @param TDefinition $definition
      *
-     * @return TInterface&TClass
+     * @return TDefinition
      */
-    public function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
+    public function addTypeDefinition(TypeDefinitionNode|Type $definition): TypeDefinitionNode|Type {
         $name = $this->getNodeName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
             throw new TypeDefinitionAlreadyDefined($name);
         }
 
-        $this->getDocument()->setTypeDefinition($definition);
+        if ($definition instanceof TypeDefinitionNode && $definition instanceof Node) {
+            $this->getDocument()->setTypeDefinition($definition);
+        } elseif ($definition instanceof Type) {
+            $this->getTypes()->register($definition);
+        } else {
+            // empty
+        }
 
         return $definition;
     }

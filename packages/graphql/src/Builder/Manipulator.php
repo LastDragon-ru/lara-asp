@@ -20,6 +20,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
@@ -80,9 +81,15 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Fake
         $this->addFakeTypeDefinition($name);
 
-        // Create new
+        // Instance (phpstan is not so smart yet...)
         $instance = Container::getInstance()->make($definition);
-        $node     = $instance->getTypeDefinitionNode($this, $name, $source);
+
+        if (!($instance instanceof TypeDefinition)) {
+            throw new TypeDefinitionImpossibleToCreateType($definition, $source);
+        }
+
+        // Create new
+        $node = $instance->getTypeDefinitionNode($this, $name, $source);
 
         if (!$node) {
             throw new TypeDefinitionImpossibleToCreateType($definition, $source);

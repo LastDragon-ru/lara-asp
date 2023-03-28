@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -31,7 +32,7 @@ class Scalar implements TypeDefinition {
         Manipulator $manipulator,
         string $name,
         TypeSource $source,
-    ): ?TypeDefinitionNode {
+    ): TypeDefinitionNode|Type|null {
         // Operators
         $scope     = Directive::class;
         $operators = $manipulator->getTypeOperators($scope, $source->getTypeName(), $source->isNullable());

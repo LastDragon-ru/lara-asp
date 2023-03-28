@@ -442,7 +442,7 @@ class DirectiveTest extends TestCase {
                             Manipulator $manipulator,
                             string $name,
                             TypeSource $source,
-                        ): ?TypeDefinitionNode {
+                        ): TypeDefinitionNode|Type|null {
                             return Parser::inputObjectTypeDefinition(
                                 <<<DEF
                                 """
