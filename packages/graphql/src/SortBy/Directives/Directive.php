@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Clause;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -29,6 +30,13 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
             directive @sortBy on ARGUMENT_DEFINITION
         GRAPHQL;
     }
+
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
+    public static function getScope(): string {
+        return Scope::class;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Manipulate">
     // =========================================================================

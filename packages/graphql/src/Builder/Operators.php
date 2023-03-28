@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
 use function array_map;
@@ -42,6 +43,9 @@ abstract class Operators {
         }
     }
 
+    /**
+     * @return class-string<Scope>
+     */
     abstract public function getScope(): string;
 
     /**

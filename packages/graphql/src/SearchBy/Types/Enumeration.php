@@ -35,7 +35,7 @@ class Enumeration implements TypeDefinition {
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
         // Operators
-        $scope     = Directive::class;
+        $scope     = Directive::getScope();
         $operators = $manipulator->hasTypeOperators($scope, $source->getTypeName())
             ? $manipulator->getTypeOperators($scope, $source->getTypeName(), $source->isNullable())
             : $manipulator->getTypeOperators($scope, Operators::Enum, $source->isNullable());

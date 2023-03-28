@@ -20,6 +20,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -48,7 +49,7 @@ use function mb_substr;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     /**
-     * @var array<string, Operators>
+     * @var array<class-string<Scope>, Operators>
      */
     private array $operators = [];
 
@@ -137,7 +138,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @template T of Operator
      *
-     * @param class-string<T> $operator
+     * @param class-string<Scope> $scope
+     * @param class-string<T>     $operator
      *
      * @return T
      */
@@ -147,12 +149,16 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     /**
      * Method doesn't check Builder!
+     *
+     * @param class-string<Scope> $scope
      */
     public function hasTypeOperators(string $scope, string $type): bool {
         return (bool) ($this->operators[$scope] ?? null)?->hasOperators($type);
     }
 
     /**
+     * @param class-string<Scope> $scope
+     *
      * @return list<Operator>
      */
     public function getTypeOperators(string $scope, string $type, bool $nullable = false): array {

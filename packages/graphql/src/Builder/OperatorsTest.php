@@ -7,6 +7,7 @@ use GraphQL\Language\AST\DirectiveNode;
 use Hamcrest\Core\IsNot;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
@@ -32,7 +33,7 @@ class OperatorsTest extends TestCase {
             ];
 
             public function getScope(): string {
-                return __METHOD__;
+                return Scope::class;
             }
         };
 
@@ -52,7 +53,7 @@ class OperatorsTest extends TestCase {
 
         $operators = new class() extends Operators {
             public function getScope(): string {
-                return __METHOD__;
+                return Scope::class;
             }
         };
 
@@ -66,7 +67,7 @@ class OperatorsTest extends TestCase {
         $alias     = 'alias';
         $operators = new class() extends Operators {
             public function getScope(): string {
-                return __METHOD__;
+                return Scope::class;
             }
         };
 
@@ -105,7 +106,7 @@ class OperatorsTest extends TestCase {
     public function testGetOperatorsUnknownType(): void {
         $operators = new class() extends Operators {
             public function getScope(): string {
-                return __METHOD__;
+                return Scope::class;
             }
         };
 
