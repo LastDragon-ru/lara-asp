@@ -31,7 +31,11 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 
+use function array_merge;
+use function array_unique;
 use function is_string;
+
+use const SORT_REGULAR;
 
 class Condition extends InputObject {
     public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
@@ -60,7 +64,13 @@ class Condition extends InputObject {
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
     ): array {
-        return $manipulator->getTypeOperators($this->getScope(), Operators::Extra);
+        return array_unique(
+            array_merge(
+                parent::getOperators($manipulator, $source),
+                $manipulator->getTypeOperators($this->getScope(), Operators::Extra),
+            ),
+            SORT_REGULAR,
+        );
     }
 
     protected function isFieldConvertable(
