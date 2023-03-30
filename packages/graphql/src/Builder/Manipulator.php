@@ -39,7 +39,6 @@ use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
-use function array_filter;
 use function array_map;
 use function array_values;
 use function count;
@@ -162,16 +161,37 @@ class Manipulator extends AstManipulator implements TypeProvider {
      * @return list<Operator>
      */
     public function getTypeOperators(string $scope, string $type, bool $nullable = false): array {
-        $operators = $this->operators[$scope] ?? null;
-        $operators = $operators && $operators->hasOperators($type)
-            ? $operators->getOperators($type, $nullable)
-            : [];
-        $operators = array_filter($operators, function (Operator $operator): bool {
-            return $operator->isBuilderSupported($this->getBuilderInfo()->getBuilder());
-        });
-        $operators = array_values($operators);
+        // Provider?
+        $provider = $this->operators[$scope] ?? null;
 
-        return $operators;
+        if (!$provider) {
+            return [];
+        }
+
+        // Operators
+        $unique    = [];
+        $builder   = $this->getBuilderInfo()->getBuilder();
+        $operators = [
+            ...($provider->hasOperators($type) ? $provider->getOperators($type) : []),
+            ...($nullable && $provider->hasOperators(Operators::Null) ? $provider->getOperators(Operators::Null) : []),
+        ];
+
+        foreach ($operators as $operator) {
+            if (isset($unique[$operator::class])) {
+                continue;
+            }
+
+            if (!$operator->isBuilderSupported($builder)) {
+                continue;
+            }
+
+            $unique[$operator::class] = $operator;
+        }
+
+        $unique = array_values($unique);
+
+        // Return
+        return $unique;
     }
 
     public function getOperatorField(

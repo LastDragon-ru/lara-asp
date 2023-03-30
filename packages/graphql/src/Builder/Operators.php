@@ -11,13 +11,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 use function array_map;
 use function array_merge;
 use function array_pop;
-use function array_push;
 use function array_unique;
-use function array_values;
 use function is_a;
 use function sort;
-
-use const SORT_REGULAR;
 
 abstract class Operators {
     public const ID      = Type::ID;
@@ -73,7 +69,7 @@ abstract class Operators {
     /**
      * @return array<Operator>
      */
-    public function getOperators(string $type, bool $nullable): array {
+    public function getOperators(string $type): array {
         // Is known?
         if (!$this->hasOperators($type)) {
             throw new TypeUnknown($this->getScope(), $type);
@@ -99,14 +95,6 @@ abstract class Operators {
         $operators = array_map(function (string $operator): Operator {
             return $this->getOperator($operator);
         }, array_unique($operators));
-
-        // Add `null` for nullable
-        if ($nullable && $this->hasOperators(static::Null)) {
-            array_push($operators, ...$this->getOperators(static::Null, false));
-        }
-
-        // Cleanup
-        $operators = array_values(array_unique($operators, SORT_REGULAR));
 
         // Return
         return $operators;

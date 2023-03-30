@@ -76,30 +76,14 @@ class OperatorsTest extends TestCase {
             OperatorsTest__OperatorA::class,
         ]);
         $operators->setOperators($alias, [$type]);
-        $operators->setOperators(Operators::Null, [
-            OperatorsTest__OperatorB::class,
-            OperatorsTest__OperatorC::class,
-        ]);
 
         self::assertEquals(
             [OperatorsTest__OperatorA::class],
-            $this->toClassNames($operators->getOperators($type, false)),
+            $this->toClassNames($operators->getOperators($type)),
         );
         self::assertEquals(
-            [
-                OperatorsTest__OperatorA::class,
-                OperatorsTest__OperatorB::class,
-                OperatorsTest__OperatorC::class,
-            ],
-            $this->toClassNames($operators->getOperators($type, true)),
-        );
-        self::assertEquals(
-            $operators->getOperators($type, false),
-            $operators->getOperators($alias, false),
-        );
-        self::assertEquals(
-            $operators->getOperators($type, true),
-            $operators->getOperators($alias, true),
+            $operators->getOperators($type),
+            $operators->getOperators($alias),
         );
     }
 
@@ -112,7 +96,7 @@ class OperatorsTest extends TestCase {
 
         self::expectExceptionObject(new TypeUnknown($operators->getScope(), 'unknown'));
 
-        $operators->getOperators('unknown', false);
+        $operators->getOperators('unknown');
     }
     // </editor-fold>
 

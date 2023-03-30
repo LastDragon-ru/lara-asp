@@ -3,12 +3,15 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Type\Definition\ObjectType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use stdClass;
 
 use function array_merge;
 
@@ -77,6 +80,96 @@ class ManipulatorTest extends TestCase {
         } else {
             self::assertNull($type);
         }
+    }
+
+    public function testGetTypeOperators(): void {
+        // Prepare
+        $scope       = new class() implements Scope {
+            // empty;
+        };
+        $builder     = new stdClass();
+        $document    = Mockery::mock(DocumentAST::class);
+        $manipulator = $this->app->make(Manipulator::class, [
+            'document'    => $document,
+            'builderInfo' => new BuilderInfo($builder::class, $builder),
+        ]);
+
+        // Operators
+        $a = Mockery::mock(
+            new class() {
+                // Mock class name should be unique
+            },
+            Operator::class,
+        );
+        $a
+            ->shouldReceive('isBuilderSupported')
+            ->with($builder)
+            ->atLeast()
+            ->once()
+            ->andReturn(true);
+
+        $b = Mockery::mock(
+            new class() {
+                // Mock class name should be unique
+            },
+            Operator::class,
+        );
+        $b
+            ->shouldReceive('isBuilderSupported')
+            ->with($builder)
+            ->atLeast()
+            ->once()
+            ->andReturn(false);
+
+        $c = Mockery::mock(
+            new class() {
+                // Mock class name should be unique
+            },
+            Operator::class,
+        );
+        $c
+            ->shouldReceive('isBuilderSupported')
+            ->with($builder)
+            ->atLeast()
+            ->once()
+            ->andReturn(true);
+
+        $operators = Mockery::mock(Operators::class);
+        $operators
+            ->shouldReceive('getScope')
+            ->once()
+            ->andReturn($scope::class);
+        $operators
+            ->shouldReceive('hasOperators')
+            ->with(Operators::ID)
+            ->atLeast()
+            ->once()
+            ->andReturn(true);
+        $operators
+            ->shouldReceive('getOperators')
+            ->with(Operators::ID)
+            ->atLeast()
+            ->once()
+            ->andReturn([$a, $b]);
+        $operators
+            ->shouldReceive('getOperators')
+            ->with(Operators::Null)
+            ->atLeast()
+            ->once()
+            ->andReturn([$b, $c]);
+        $operators
+            ->shouldReceive('hasOperators')
+            ->with(Operators::Null)
+            ->atLeast()
+            ->once()
+            ->andReturn(true);
+
+        $manipulator->addOperators($operators);
+
+        // Test
+        self::assertEquals([$a], $manipulator->getTypeOperators($scope::class, Operators::ID, false));
+        self::assertEquals([$a, $c], $manipulator->getTypeOperators($scope::class, Operators::ID, true));
+        self::assertEquals([], $manipulator->getTypeOperators(Scope::class, Operators::ID));
     }
     // </editor-fold>
 

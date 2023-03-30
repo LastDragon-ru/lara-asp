@@ -33,7 +33,7 @@ class OperatorsTest extends TestCase {
                 Random::class,
             ],
             $this->toClassNames(
-                $operators->getOperators(Operators::Extra, false),
+                $operators->getOperators(Operators::Extra),
             ),
         );
     }
