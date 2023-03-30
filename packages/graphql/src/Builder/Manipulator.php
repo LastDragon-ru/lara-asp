@@ -156,12 +156,27 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
-        if (!$provider || !$provider->hasOperators($type)) {
+        if (!$provider) {
             return [];
         }
 
         // Operators
-        $operators = $provider->getOperators($type);
+        $operators = [];
+
+        if ($this->isTypeDefinitionExists($type)) {
+            $node       = $this->getTypeDefinitionNode($type);
+            $directives = $this->getNodeDirectives($node, Operator::class);
+
+            foreach ($directives as $directive) {
+                if ($directive instanceof $scope) {
+                    $operators[] = $directive;
+                }
+            }
+        }
+
+        if (!$operators && $provider->hasOperators($type)) {
+            array_push($operators, ...$provider->getOperators($type));
+        }
 
         if ($operators && $nullable && $provider->hasOperators(Operators::Null)) {
             array_push($operators, ...$provider->getOperators(Operators::Null));

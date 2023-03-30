@@ -3,16 +3,23 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Type\Definition\ObjectType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Pagination\PaginationServiceProvider;
+use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use stdClass;
 
+use function array_map;
 use function array_merge;
 
 /**
@@ -83,93 +90,86 @@ class ManipulatorTest extends TestCase {
     }
 
     public function testGetTypeOperators(): void {
-        // Prepare
-        $scope       = new class() implements Scope {
+        // Schema
+        $this->useGraphQLSchema(
+            <<<'GRAPHQL'
+            scalar TestScalar @aOperator @bOperator @cOperator
+
+            type Query {
+                test: Int @all
+            }
+            GRAPHQL,
+        );
+
+        // Operators
+        $scope     = new class() implements Scope {
             // empty;
         };
-        $builder     = new stdClass();
-        $document    = Mockery::mock(DocumentAST::class);
+        $builder   = new stdClass();
+        $aOperator = ManipulatorTest_OperatorA::class;
+        $bOperator = ManipulatorTest_OperatorB::class;
+        $cOperator = ManipulatorTest_OperatorC::class;
+
+        // Directives
+        $directives = $this->app->make(DirectiveLocator::class);
+
+        $directives->setResolved('aOperator', $aOperator);
+        $directives->setResolved('bOperator', $bOperator);
+        $directives->setResolved('cOperator', $cOperator);
+
+        // Manipulator
+        $document    = $this->app->make(ASTBuilder::class)->documentAST();
+        $operators   = new class() extends Operators {
+            public function getScope(): string {
+                return Scope::class;
+            }
+        };
         $manipulator = $this->app->make(Manipulator::class, [
             'document'    => $document,
             'builderInfo' => new BuilderInfo($builder::class, $builder),
         ]);
 
-        // Operators
-        $a = Mockery::mock(
-            new class() {
-                // Mock class name should be unique
-            },
-            Operator::class,
-        );
-        $a
-            ->shouldReceive('isBuilderSupported')
-            ->with($builder)
-            ->atLeast()
-            ->once()
-            ->andReturn(true);
-
-        $b = Mockery::mock(
-            new class() {
-                // Mock class name should be unique
-            },
-            Operator::class,
-        );
-        $b
-            ->shouldReceive('isBuilderSupported')
-            ->with($builder)
-            ->atLeast()
-            ->once()
-            ->andReturn(false);
-
-        $c = Mockery::mock(
-            new class() {
-                // Mock class name should be unique
-            },
-            Operator::class,
-        );
-        $c
-            ->shouldReceive('isBuilderSupported')
-            ->with($builder)
-            ->atLeast()
-            ->once()
-            ->andReturn(true);
-
-        $operators = Mockery::mock(Operators::class);
-        $operators
-            ->shouldReceive('getScope')
-            ->once()
-            ->andReturn($scope::class);
-        $operators
-            ->shouldReceive('hasOperators')
-            ->with(Operators::ID)
-            ->atLeast()
-            ->once()
-            ->andReturn(true);
-        $operators
-            ->shouldReceive('getOperators')
-            ->with(Operators::ID)
-            ->atLeast()
-            ->once()
-            ->andReturn([$a, $b]);
-        $operators
-            ->shouldReceive('getOperators')
-            ->with(Operators::Null)
-            ->atLeast()
-            ->once()
-            ->andReturn([$b, $c]);
-        $operators
-            ->shouldReceive('hasOperators')
-            ->with(Operators::Null)
-            ->atLeast()
-            ->once()
-            ->andReturn(true);
+        $operators->setOperators(Operators::ID, [
+            $aOperator,
+            $bOperator,
+        ]);
+        $operators->setOperators(Operators::Null, [
+            $bOperator,
+            $cOperator,
+        ]);
 
         $manipulator->addOperators($operators);
 
         // Test
-        self::assertEquals([$a], $manipulator->getTypeOperators($scope::class, Operators::ID, false));
-        self::assertEquals([$a, $c], $manipulator->getTypeOperators($scope::class, Operators::ID, true));
-        self::assertEquals([], $manipulator->getTypeOperators(Scope::class, Operators::ID));
+        $map = static function (Operator $operator): string {
+            return $operator::class;
+        };
+
+        self::assertEquals(
+            [
+                $aOperator,
+            ],
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, false)),
+        );
+        self::assertEquals(
+            [
+                $aOperator,
+                $cOperator,
+            ],
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, true)),
+        );
+        self::assertEquals(
+            [
+                // empty (another scope)
+            ],
+            array_map($map, $manipulator->getTypeOperators($scope::class, Operators::ID)),
+        );
+        self::assertEquals(
+            [
+                $aOperator,
+            ],
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestScalar')),
+        );
     }
     // </editor-fold>
 
@@ -273,4 +273,97 @@ class ManipulatorTest extends TestCase {
         ];
     }
     //</editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, Scope {
+    public static function getDirectiveName(): string {
+        return 'aOperator';
+    }
+
+    public static function getName(): string {
+        return 'a';
+    }
+
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $source->getTypeName();
+    }
+
+    public function getFieldDescription(): string {
+        return '';
+    }
+
+    public function isBuilderSupported(object $builder): bool {
+        return $builder instanceof stdClass;
+    }
+
+    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+        return $builder;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
+    public static function getDirectiveName(): string {
+        return 'bOperator';
+    }
+
+    public static function getName(): string {
+        return 'b';
+    }
+
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $source->getTypeName();
+    }
+
+    public function getFieldDescription(): string {
+        return '';
+    }
+
+    public function isBuilderSupported(object $builder): bool {
+        return false;
+    }
+
+    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+        return $builder;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
+    public static function getDirectiveName(): string {
+        return 'cOperator';
+    }
+
+    public static function getName(): string {
+        return 'c';
+    }
+
+    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+        return $source->getTypeName();
+    }
+
+    public function getFieldDescription(): string {
+        return '';
+    }
+
+    public function isBuilderSupported(object $builder): bool {
+        return $builder instanceof stdClass;
+    }
+
+    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+        return $builder;
+    }
 }
