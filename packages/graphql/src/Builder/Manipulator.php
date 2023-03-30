@@ -40,6 +40,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_map;
+use function array_push;
 use function array_values;
 use function count;
 use function implode;
@@ -147,15 +148,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * Method doesn't check Builder!
-     *
-     * @param class-string<Scope> $scope
-     */
-    public function hasTypeOperators(string $scope, string $type): bool {
-        return (bool) ($this->operators[$scope] ?? null)?->hasOperators($type);
-    }
-
-    /**
      * @param class-string<Scope> $scope
      *
      * @return list<Operator>
@@ -164,17 +156,20 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
-        if (!$provider) {
+        if (!$provider || !$provider->hasOperators($type)) {
             return [];
         }
 
         // Operators
-        $unique    = [];
-        $builder   = $this->getBuilderInfo()->getBuilder();
-        $operators = [
-            ...($provider->hasOperators($type) ? $provider->getOperators($type) : []),
-            ...($nullable && $provider->hasOperators(Operators::Null) ? $provider->getOperators(Operators::Null) : []),
-        ];
+        $operators = $provider->getOperators($type);
+
+        if ($operators && $nullable && $provider->hasOperators(Operators::Null)) {
+            array_push($operators, ...$provider->getOperators(Operators::Null));
+        }
+
+        // Unique
+        $builder = $this->getBuilderInfo()->getBuilder();
+        $unique  = [];
 
         foreach ($operators as $operator) {
             if (isset($unique[$operator::class])) {
