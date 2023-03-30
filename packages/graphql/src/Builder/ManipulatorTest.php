@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -94,6 +95,7 @@ class ManipulatorTest extends TestCase {
         $this->useGraphQLSchema(
             <<<'GRAPHQL'
             scalar TestScalar @aOperator @bOperator @cOperator
+            scalar TestOperators @operators(type: "TestScalar")
 
             type Query {
                 test: Int @all
@@ -113,6 +115,7 @@ class ManipulatorTest extends TestCase {
         // Directives
         $directives = $this->app->make(DirectiveLocator::class);
 
+        $directives->setResolved('operators', ManipulatorTest_Operators::class);
         $directives->setResolved('aOperator', $aOperator);
         $directives->setResolved('bOperator', $bOperator);
         $directives->setResolved('cOperator', $cOperator);
@@ -169,6 +172,12 @@ class ManipulatorTest extends TestCase {
                 $aOperator,
             ],
             array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestScalar')),
+        );
+        self::assertEquals(
+            [
+                $aOperator,
+            ],
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestOperators')),
         );
     }
     // </editor-fold>
@@ -277,6 +286,16 @@ class ManipulatorTest extends TestCase {
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ManipulatorTest_Operators extends OperatorsDirective implements Scope {
+    protected static function getDirectiveName(): string {
+        return '@operators';
+    }
+}
 
 /**
  * @internal

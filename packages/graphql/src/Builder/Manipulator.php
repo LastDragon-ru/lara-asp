@@ -24,6 +24,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
@@ -165,11 +166,15 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         if ($this->isTypeDefinitionExists($type)) {
             $node       = $this->getTypeDefinitionNode($type);
-            $directives = $this->getNodeDirectives($node, Operator::class);
+            $directives = $this->getNodeDirectives($node, $scope);
 
             foreach ($directives as $directive) {
-                if ($directive instanceof $scope) {
+                if ($directive instanceof OperatorsDirective) {
+                    array_push($operators, ...$directive->getOperators($this, $scope));
+                } elseif ($directive instanceof Operator) {
                     $operators[] = $directive;
+                } else {
+                    // empty
                 }
             }
         }
