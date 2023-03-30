@@ -21,7 +21,6 @@ abstract class Operators {
     public const Float   = Type::FLOAT;
     public const String  = Type::STRING;
     public const Boolean = Type::BOOLEAN;
-    public const Null    = 'Null';
 
     /**
      * Determines default operators available for each type.
