@@ -611,13 +611,19 @@ on
 
 directive @sortByOperatorField
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @sortByOperatorProperty
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @sortByOperatorRandom
 on
+    | ENUM
     | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
+    | SCALAR

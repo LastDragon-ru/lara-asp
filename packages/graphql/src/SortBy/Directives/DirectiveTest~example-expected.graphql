@@ -96,8 +96,12 @@ on
 
 directive @sortByOperatorField
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @sortByOperatorProperty
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
