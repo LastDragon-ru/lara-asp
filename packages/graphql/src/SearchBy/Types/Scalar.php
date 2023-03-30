@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
 class Scalar implements TypeDefinition {
     public function __construct() {
@@ -35,7 +36,8 @@ class Scalar implements TypeDefinition {
     ): TypeDefinitionNode|Type|null {
         // Operators
         $scope     = Directive::getScope();
-        $operators = $manipulator->getTypeOperators($scope, $source->getTypeName(), $source->isNullable());
+        $extras    = $source->isNullable() ? [Operators::Null] : [];
+        $operators = $manipulator->getTypeOperators($scope, $source->getTypeName(), ...$extras);
 
         if (!$operators) {
             return null;

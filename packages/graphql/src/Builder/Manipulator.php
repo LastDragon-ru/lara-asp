@@ -152,7 +152,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
      *
      * @return list<Operator>
      */
-    public function getTypeOperators(string $scope, string $type, bool $nullable = false): array {
+    public function getTypeOperators(string $scope, string $type, string ...$extras): array {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
@@ -178,8 +178,13 @@ class Manipulator extends AstManipulator implements TypeProvider {
             array_push($operators, ...$provider->getOperators($type));
         }
 
-        if ($operators && $nullable && $provider->hasOperators(Operators::Null)) {
-            array_push($operators, ...$provider->getOperators(Operators::Null));
+        if (!$operators) {
+            return [];
+        }
+
+        // Extra
+        foreach ($extras as $extra) {
+            array_push($operators, ...$this->getTypeOperators($scope, $extra));
         }
 
         // Unique

@@ -133,7 +133,7 @@ class ManipulatorTest extends TestCase {
             $aOperator,
             $bOperator,
         ]);
-        $operators->setOperators(Operators::Null, [
+        $operators->setOperators(Operators::Int, [
             $bOperator,
             $cOperator,
         ]);
@@ -149,14 +149,14 @@ class ManipulatorTest extends TestCase {
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, false)),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID)),
         );
         self::assertEquals(
             [
                 $aOperator,
                 $cOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, true)),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, Operators::Int)),
         );
         self::assertEquals(
             [
