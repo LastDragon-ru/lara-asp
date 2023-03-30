@@ -59,7 +59,8 @@ input InputA {
     customScalarNonNull: Date!
     customScalarIgnored: DateIgnored
     customScalarIgnoredList: [DateIgnored!]!
-    customScalarIgnoredNonNull: DateIgnored!
+    customScalarIgnoredNonNull: DateIgnored
+    customScalarOperators: ScalarCustom
 
     "Description should be used."
     description: ID
@@ -92,6 +93,12 @@ scalar Date
 scalar DateIgnored
 @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 @searchByIgnored
+
+scalar ScalarCustom
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+@searchByOperators(type: "Boolean")
+@searchByOperatorLessThan
+@searchByOperatorLessThanOrEqual
 
 enum EnumA {
     one
@@ -135,6 +142,7 @@ interface ObjectInterface {
     customScalarIgnored: DateIgnored
     customScalarIgnoredList: [DateIgnored!]!
     customScalarIgnoredNonNull: DateIgnored!
+    customScalarOperators: ScalarCustom
 
     "Description should NOT be used."
     description: ID
@@ -176,6 +184,7 @@ type Object implements ObjectInterface{
     customScalarIgnored: DateIgnored
     customScalarIgnoredList: [DateIgnored!]!
     customScalarIgnoredNonNull: DateIgnored!
+    customScalarOperators: ScalarCustom
 
     "Description should NOT be used."
     description: ID

@@ -176,6 +176,12 @@ input SearchByConditionInputA {
     @searchByOperatorProperty
 
     """
+    Property condition.
+    """
+    customScalarOperators: SearchByScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
     Description should be used.
     """
     description: SearchByScalarIDOrNull
@@ -431,6 +437,12 @@ input SearchByConditionObject {
     """
     Property condition.
     """
+    customScalarOperators: SearchByScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
     description: SearchByScalarIDOrNull
     @searchByOperatorProperty
 
@@ -557,6 +569,12 @@ input SearchByConditionObjectInterface {
     Property condition.
     """
     customScalarNonNull: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarOperators: SearchByScalarScalarCustomOrNull
     @searchByOperatorProperty
 
     """
@@ -1244,6 +1262,47 @@ input SearchByScalarIntOrNull {
 }
 
 """
+Available operators for `scalar ScalarCustom` (only one operator allowed at a time).
+"""
+input SearchByScalarScalarCustomOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ScalarCustom
+    @searchByOperatorEqual
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+
+    """
+    Less than (`<`).
+    """
+    lessThan: ScalarCustom
+    @searchByOperatorLessThan
+
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: ScalarCustom
+    @searchByOperatorLessThanOrEqual
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ScalarCustom
+    @searchByOperatorNotEqual
+}
+
+"""
 Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScalarString {
@@ -1411,6 +1470,12 @@ input SearchByScoutConditionInputA {
     Property condition.
     """
     customScalarNonNull: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarOperators: SearchByScoutScalarScalarCustomOrNull
     @searchByOperatorProperty
 
     """
@@ -1696,6 +1761,17 @@ input SearchByScoutScalarIntOrNull {
 }
 
 """
+Available operators for `scalar ScalarCustom` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarScalarCustomOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ScalarCustom
+    @searchByOperatorEqual
+}
+
+"""
 Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScoutScalarString {
@@ -1777,6 +1853,7 @@ interface ObjectInterface {
     customScalarIgnoredNonNull: DateIgnored!
     customScalarList: [Date!]!
     customScalarNonNull: Date!
+    customScalarOperators: ScalarCustom
 
     """
     Description should NOT be used.
@@ -1834,6 +1911,16 @@ scalar DateIgnored
 )
 @searchByIgnored
 
+scalar ScalarCustom
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@searchByOperators(
+    type: "Boolean"
+)
+@searchByOperatorLessThan
+@searchByOperatorLessThanOrEqual
+
 type Object
 implements
     & ObjectInterface
@@ -1846,6 +1933,7 @@ implements
     customScalarIgnoredNonNull: DateIgnored!
     customScalarList: [Date!]!
     customScalarNonNull: Date!
+    customScalarOperators: ScalarCustom
 
     """
     Description should NOT be used.
@@ -2144,4 +2232,11 @@ directive @searchByOperatorStartsWith
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperators(
+    type: String!
+)
+on
+    | ENUM
     | SCALAR
