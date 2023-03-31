@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -32,6 +33,13 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
             directive @searchBy on ARGUMENT_DEFINITION
         GRAPHQL;
     }
+
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
+    public static function getScope(): string {
+        return Scope::class;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Manipulate">
     // =========================================================================

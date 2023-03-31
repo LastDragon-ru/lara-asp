@@ -12,6 +12,11 @@ use function implode;
  * @mixin Operator
  */
 trait DirectiveName {
+    /**
+     * Must be a valid GraphQL Object Field name.
+     */
+    abstract public static function getName(): string;
+
     public static function getDirectiveName(): string {
         return implode('', [
             '@',

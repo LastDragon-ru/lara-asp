@@ -7,6 +7,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract
 /**
  * Marks that operator is related to `@searchBy` directive.
  */
-interface Operator extends OperatorContract {
+interface Operator extends OperatorContract, Scope {
     // empty
 }

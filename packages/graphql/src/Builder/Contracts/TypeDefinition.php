@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Type\Definition\NamedType;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 
@@ -16,11 +18,11 @@ interface TypeDefinition {
     /**
      * Returns the type definition for given Source if possible. The name must be equal to `$name`.
      *
-     * @return (TypeDefinitionNode&Node)|null
+     * @return (TypeDefinitionNode&Node)|(Type&NamedType)|null
      */
     public function getTypeDefinitionNode(
         Manipulator $manipulator,
         string $name,
         TypeSource $source,
-    ): ?TypeDefinitionNode;
+    ): TypeDefinitionNode|Type|null;
 }

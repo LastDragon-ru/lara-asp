@@ -37,10 +37,11 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 use function config;
 
 class Operators extends BuilderOperators {
-    public const Extra     = 'Extra';
-    public const Number    = 'Number';
-    public const Enum      = 'Enum';
-    public const Condition = 'Condition';
+    public const Null      = Directive::Name.'Null';
+    public const Extra     = Directive::Name.'Extra';
+    public const Number    = Directive::Name.'Number';
+    public const Enum      = Directive::Name.'Enum';
+    public const Condition = Directive::Name.'Condition';
 
     /**
      * @inheritDoc

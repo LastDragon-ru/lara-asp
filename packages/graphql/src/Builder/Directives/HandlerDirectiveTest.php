@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
@@ -49,6 +50,10 @@ class HandlerDirectiveTest extends TestCase {
         $directive  = new class($argFactory, $directives) extends HandlerDirective {
             public static function definition(): string {
                 throw new Exception('should not be called.');
+            }
+
+            public static function getScope(): string {
+                return Scope::class;
             }
 
             public function getBuilderInfo(FieldDefinitionNode $field): BuilderInfo {

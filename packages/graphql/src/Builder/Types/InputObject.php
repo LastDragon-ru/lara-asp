@@ -8,6 +8,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionFieldAlreadyDefined;
@@ -28,6 +29,9 @@ abstract class InputObject implements TypeDefinition {
         // empty
     }
 
+    /**
+     * @return class-string<Scope>
+     */
     abstract protected function getScope(): string;
 
     abstract protected function getDescription(
@@ -42,7 +46,7 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         string $name,
         TypeSource $source,
-    ): ?TypeDefinitionNode {
+    ): TypeDefinitionNode|Type|null {
         // Source?
         if (
             !($source instanceof InterfaceSource || $source instanceof ObjectSource || $source instanceof InputSource)

@@ -33,7 +33,6 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
-use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -44,6 +43,7 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function array_merge;
 use function assert;
+use function reset;
 use function trim;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
@@ -179,21 +179,26 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template TInterface of TypeDefinitionNode
-     * @template TClass of Node
+     * @template TDefinition of (TypeDefinitionNode&Node)|(Type&NamedType)
      *
-     * @param TInterface&TClass $definition
+     * @param TDefinition $definition
      *
-     * @return TInterface&TClass
+     * @return TDefinition
      */
-    public function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
+    public function addTypeDefinition(TypeDefinitionNode|Type $definition): TypeDefinitionNode|Type {
         $name = $this->getNodeName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
             throw new TypeDefinitionAlreadyDefined($name);
         }
 
-        $this->getDocument()->setTypeDefinition($definition);
+        if ($definition instanceof TypeDefinitionNode && $definition instanceof Node) {
+            $this->getDocument()->setTypeDefinition($definition);
+        } elseif ($definition instanceof Type) {
+            $this->getTypes()->register($definition);
+        } else {
+            // empty
+        }
 
         return $definition;
     }
@@ -222,7 +227,10 @@ abstract class AstManipulator {
     ): ?Directive {
         // todo(graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         // todo(graphql): Should we throw an error if $node has multiple directives?
-        return $this->getNodeDirectives($node, $class, $callback)->first();
+        $directives = $this->getNodeDirectives($node, $class, $callback);
+        $directive  = reset($directives) ?: null;
+
+        return $directive;
     }
 
     /**
@@ -231,17 +239,24 @@ abstract class AstManipulator {
      * @param class-string<T>       $class
      * @param Closure(T): bool|null $callback
      *
-     * @return Collection<int, T&Directive>
+     * @return list<T&Directive>
      */
     public function getNodeDirectives(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
         string $class,
         ?Closure $callback = null,
-    ): Collection {
-        /** @var Collection<int, T&Directive> $directives */
-        $directives = new Collection();
+    ): array {
+        $directives = [];
 
-        if ($node instanceof Node) {
+        if ($node instanceof NamedType) {
+            if ($node->astNode()) {
+                $directives = $this->getNodeDirectives($node->astNode(), $class, $callback);
+            } else {
+                foreach ($node->extensionASTNodes() as $extensionNode) {
+                    $directives = array_merge($directives, $this->getNodeDirectives($extensionNode, $class, $callback));
+                }
+            }
+        } elseif ($node instanceof Node) {
             $associated = $this->getDirectives()->associated($node);
 
             foreach ($associated as $directive) {
@@ -258,6 +273,8 @@ abstract class AstManipulator {
                 // Ok
                 $directives[] = $directive;
             }
+        } else {
+            // empty
         }
 
         return $directives;

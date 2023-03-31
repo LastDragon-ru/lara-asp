@@ -10,12 +10,11 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use function config;
 
 class Operators extends BuilderOperators {
-    public const Extra = 'Extra';
+    public const Extra = Directive::Name.'Extra';
 
     public function __construct() {
         /** @var array<string,array<class-string<BuilderOperator>|string>> $operators */
         $operators = (array) config(Package::Name.'.sort_by.operators');
-
 
         parent::__construct($operators);
     }
