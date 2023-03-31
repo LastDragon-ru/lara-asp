@@ -248,7 +248,15 @@ abstract class AstManipulator {
     ): array {
         $directives = [];
 
-        if ($node instanceof Node) {
+        if ($node instanceof NamedType) {
+            if ($node->astNode()) {
+                $directives = $this->getNodeDirectives($node->astNode(), $class, $callback);
+            } else {
+                foreach ($node->extensionASTNodes() as $extensionNode) {
+                    $directives = array_merge($directives, $this->getNodeDirectives($extensionNode, $class, $callback));
+                }
+            }
+        } elseif ($node instanceof Node) {
             $associated = $this->getDirectives()->associated($node);
 
             foreach ($associated as $directive) {
@@ -265,6 +273,8 @@ abstract class AstManipulator {
                 // Ok
                 $directives[] = $directive;
             }
+        } else {
+            // empty
         }
 
         return $directives;
