@@ -1,7 +1,5 @@
 <?php declare(strict_types = 1);
 
-use LastDragon_ru\LaraASP\Core\Enum as CoreEnum;
-use LastDragon_ru\LaraASP\Eloquent\Enum as EloquentEnum;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 
 /**
@@ -15,8 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *      },
  *      sort_by: array{
  *          operators: array<string, array<string|class-string<Operator>>>
- *      },
- *      enums: array<class-string<CoreEnum>>
+ *      }
  *      } $settings
  */
 $settings = [
@@ -52,19 +49,6 @@ $settings = [
         'operators' => [
             // empty
         ],
-    ],
-
-    /**
-     * These enums will be registered automatically. You can use key to specify
-     * enum name.
-     *
-     * @deprecated Consider using native PHP enums.
-     *
-     * @see        CoreEnum
-     * @see        EloquentEnum
-     */
-    'enums'     => [
-        // empty,
     ],
 ];
 

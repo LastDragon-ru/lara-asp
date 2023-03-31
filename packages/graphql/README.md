@@ -202,8 +202,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  * @var array{
  *      search_by: array{
  *          operators: array<string, array<string|class-string<Operator>>>
- *      },
- *      enums: array<class-string<CoreEnum>>
+ *      }
  *      } $settings
  */
 $settings = [
