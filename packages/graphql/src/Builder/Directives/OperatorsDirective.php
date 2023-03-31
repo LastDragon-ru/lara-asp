@@ -23,6 +23,9 @@ abstract class OperatorsDirective extends BaseDirective {
         $locations = implode(' | ', static::getDirectiveLocations());
 
         return /** @lang GraphQL */ <<<GRAPHQL
+            """
+            Extends the list of operators by the operators from the specified `type`.
+            """
             directive {$name}(type: String!) on {$locations}
         GRAPHQL;
     }

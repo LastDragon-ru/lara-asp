@@ -2234,6 +2234,9 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+"""
+Extends the list of operators by the operators from the specified `type`.
+"""
 directive @searchByOperators(
     type: String!
 )
