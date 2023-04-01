@@ -173,7 +173,7 @@ abstract class OperatorsTest__Operator implements Operator {
         throw new Exception('Should not be called');
     }
 
-    public function isBuilderSupported(object $builder): bool {
+    public function isBuilderSupported(string $builder): bool {
         throw new Exception('Should not be called');
     }
 

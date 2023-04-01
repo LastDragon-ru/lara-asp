@@ -24,7 +24,7 @@ abstract class PropertyDirective extends OperatorDirective {
         return $source->getTypeName();
     }
 
-    public function isBuilderSupported(object $builder): bool {
+    public function isBuilderSupported(string $builder): bool {
         return true;
     }
 

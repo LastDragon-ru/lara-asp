@@ -11,6 +11,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator as Marker;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\DirectiveName;
 
+use function is_a;
+
 abstract class BaseOperator extends OperatorDirective implements Operator, Marker {
     use DirectiveName;
 
@@ -18,8 +20,8 @@ abstract class BaseOperator extends OperatorDirective implements Operator, Marke
         return $source->getTypeName();
     }
 
-    public function isBuilderSupported(object $builder): bool {
-        return $builder instanceof EloquentBuilder
-            || $builder instanceof QueryBuilder;
+    public function isBuilderSupported(string $builder): bool {
+        return is_a($builder, EloquentBuilder::class, true)
+            || is_a($builder, QueryBuilder::class, true);
     }
 }

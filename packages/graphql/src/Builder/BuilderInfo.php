@@ -3,9 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 class BuilderInfo {
+    /**
+     * @param class-string $builder
+     */
     public function __construct(
         protected string $name,
-        protected object $builder,
+        protected string $builder,
     ) {
         // empty
     }
@@ -14,7 +17,10 @@ class BuilderInfo {
         return $this->name;
     }
 
-    public function getBuilder(): object {
+    /**
+     * @return class-string
+     */
+    public function getBuilder(): string {
         return $this->builder;
     }
 }

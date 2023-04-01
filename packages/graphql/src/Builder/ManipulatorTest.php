@@ -22,6 +22,7 @@ use stdClass;
 
 use function array_map;
 use function array_merge;
+use function is_a;
 
 /**
  * @internal
@@ -129,7 +130,7 @@ class ManipulatorTest extends TestCase {
         };
         $manipulator = $this->app->make(Manipulator::class, [
             'document'    => $document,
-            'builderInfo' => new BuilderInfo($builder::class, $builder),
+            'builderInfo' => new BuilderInfo($builder::class, $builder::class),
         ]);
 
         $operators->setOperators(Operators::ID, [
@@ -318,8 +319,8 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
         return '';
     }
 
-    public function isBuilderSupported(object $builder): bool {
-        return $builder instanceof stdClass;
+    public function isBuilderSupported(string $builder): bool {
+        return is_a($builder, stdClass::class, true);
     }
 
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
@@ -348,7 +349,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
         return '';
     }
 
-    public function isBuilderSupported(object $builder): bool {
+    public function isBuilderSupported(string $builder): bool {
         return false;
     }
 
@@ -378,8 +379,8 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
         return '';
     }
 
-    public function isBuilderSupported(object $builder): bool {
-        return $builder instanceof stdClass;
+    public function isBuilderSupported(string $builder): bool {
+        return is_a($builder, stdClass::class, true);
     }
 
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {

@@ -18,6 +18,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
 use function array_merge;
+use function is_a;
 use function reset;
 
 class Relation extends BaseOperator {
@@ -53,8 +54,8 @@ class Relation extends BaseOperator {
         return 'Relationship condition.';
     }
 
-    public function isBuilderSupported(object $builder): bool {
-        return $builder instanceof EloquentBuilder;
+    public function isBuilderSupported(string $builder): bool {
+        return is_a($builder, EloquentBuilder::class, true);
     }
 
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {

@@ -11,6 +11,8 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Traits\DirectiveName;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 
+use function is_a;
+
 class Property extends PropertyDirective implements Operator {
     use DirectiveName;
 
@@ -22,8 +24,8 @@ class Property extends PropertyDirective implements Operator {
         return 'Property clause.';
     }
 
-    public function isBuilderSupported(object $builder): bool {
-        return $builder instanceof EloquentBuilder
-            || $builder instanceof ScoutBuilder;
+    public function isBuilderSupported(string $builder): bool {
+        return is_a($builder, EloquentBuilder::class, true)
+            || is_a($builder, ScoutBuilder::class, true);
     }
 }

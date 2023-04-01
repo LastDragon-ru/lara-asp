@@ -79,7 +79,7 @@ class HandlerDirectiveTest extends TestCase {
             $expected,
             [
                 'name'    => $actual->getName(),
-                'builder' => $actual->getBuilder()::class,
+                'builder' => $actual->getBuilder(),
             ],
         );
     }

@@ -28,7 +28,7 @@ class AstManipulatorTest extends TestCase {
     public function testGetNodeInterfaces(): void {
         // Object
         $types       = $this->app->make(TypeRegistry::class);
-        $builder     = new BuilderInfo(__METHOD__, new stdClass());
+        $builder     = new BuilderInfo(__METHOD__, stdClass::class);
         $document    = DocumentAST::fromSource(
         /** @lang GraphQL */
             <<<'GRAPHQL'
@@ -173,7 +173,7 @@ class AstManipulatorTest extends TestCase {
         $map         = static function (Directive $directive): string {
             return $directive::class;
         };
-        $builder     = new BuilderInfo(__METHOD__, new stdClass());
+        $builder     = new BuilderInfo(__METHOD__, stdClass::class);
         $manipulator = $this->app->make(Manipulator::class, [
             'document'    => $this->app->make(ASTBuilder::class)->documentAST(),
             'builderInfo' => $builder,

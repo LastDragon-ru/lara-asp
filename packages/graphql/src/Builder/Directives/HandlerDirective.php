@@ -24,7 +24,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
@@ -38,7 +37,6 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
-use ReflectionClass;
 use ReflectionFunction;
 use ReflectionNamedType;
 
@@ -188,11 +186,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             throw new ConditionEmpty();
         }
 
-        // Supported?
-        if (!$op->isBuilderSupported($builder)) {
-            throw new OperatorUnsupportedBuilder($op, $builder);
-        }
-
         // Return
         return $op->call($this, $builder, $property, $value);
     }
@@ -305,11 +298,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         if ($scout) {
-            $builder = (new ReflectionClass(ScoutBuilder::class))->newInstanceWithoutConstructor();
-            $name    = 'Scout';
-            $info    = new BuilderInfo($name, $builder);
-
-            return $info;
+            return new BuilderInfo('Scout', ScoutBuilder::class);
         }
 
         // Query?
@@ -325,20 +314,12 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             $type = $type instanceof ReflectionNamedType ? $type->getName() : null;
 
             if ($type && is_a($type, QueryBuilder::class, true)) {
-                $builder = (new ReflectionClass($type))->newInstanceWithoutConstructor();
-                $name    = 'Query';
-                $info    = new BuilderInfo($name, $builder);
-
-                return $info;
+                return new BuilderInfo('Query', $type);
             }
         }
 
         // Eloquent (default)
-        $builder = (new ReflectionClass(EloquentBuilder::class))->newInstanceWithoutConstructor();
-        $name    = '';
-        $info    = new BuilderInfo($name, $builder);
-
-        return $info;
+        return new BuilderInfo('', EloquentBuilder::class);
     }
     // </editor-fold>
 }
