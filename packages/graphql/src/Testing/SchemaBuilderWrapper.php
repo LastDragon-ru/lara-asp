@@ -3,11 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Type\Schema;
-use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Events\Dispatcher as EventsDispatcher;
-use Illuminate\Support\Arr;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\ASTCache;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -58,16 +55,10 @@ class SchemaBuilderWrapper extends SchemaBuilder {
         $builder = null;
 
         if ($provider) {
-            $config = $container->make(ConfigContract::class)->all();
-
-            Arr::set($config, 'lighthouse.cache.key', spl_object_hash($provider));
-            Arr::set($config, 'lighthouse.cache.enable', true);
-            Arr::set($config, 'lighthouse.cache.version', 1); // cache
-
             $types      = $container->make(TypeRegistry::class);
             $dispatcher = $container->make(EventsDispatcher::class);
             $directives = $container->make(DirectiveLocator::class);
-            $astCache   = new ASTCache(new Repository($config));
+            $astCache   = $container->make(SchemaCache::class, ['key' => spl_object_hash($provider)]);
             $astBuilder = new ASTBuilder($directives, $provider, $dispatcher, $astCache);
             $builder    = new SchemaBuilder($types, $astBuilder);
 

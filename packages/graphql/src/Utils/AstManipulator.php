@@ -18,21 +18,21 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\HasFieldsType;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\TypeWithFields;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
-use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -42,6 +42,8 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function array_merge;
+use function assert;
+use function reset;
 use function trim;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
@@ -73,18 +75,18 @@ abstract class AstManipulator {
     // <editor-fold desc="AST Helpers">
     // =========================================================================}
     public function isPlaceholder(
-        Node|Type|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode|string $node,
+        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
     ): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
         return $this->getNodeTypeName($node) === '_';
     }
 
     public function isNullable(
-        Node|Type|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode $node,
+        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode $node,
     ): bool {
         $type = null;
 
-        if ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof FieldArgument) {
+        if ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
             $type = $node->getType();
         } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
             $type = $node->type;
@@ -99,11 +101,11 @@ abstract class AstManipulator {
     }
 
     public function isList(
-        Node|Type|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode $node,
+        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode $node,
     ): bool {
         $type = null;
 
-        if ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof FieldArgument) {
+        if ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
             $type = $node->getType();
         } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
             $type = $node->type;
@@ -114,7 +116,7 @@ abstract class AstManipulator {
         }
 
         if ($type instanceof NonNull) {
-            $type = $type->getWrappedType(false);
+            $type = $type->getWrappedType();
         }
 
         if ($type instanceof NonNullTypeNode) {
@@ -131,7 +133,7 @@ abstract class AstManipulator {
         $type = null;
 
         if ($node instanceof WrappingType) {
-            $type = $node->getWrappedType(true);
+            $type = $node->getInnermostType();
         } elseif ($node instanceof Node) {
             try {
                 $type = $this->getTypeDefinitionNode($node);
@@ -155,7 +157,7 @@ abstract class AstManipulator {
     }
 
     public function getTypeDefinitionNode(
-        Node|Type|InputObjectField|FieldDefinition|FieldArgument|string $node,
+        Node|Type|InputObjectField|FieldDefinition|Argument|string $node,
     ): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
         $types      = $this->getTypes();
@@ -177,21 +179,26 @@ abstract class AstManipulator {
     }
 
     /**
-     * @template TInterface of TypeDefinitionNode
-     * @template TClass of Node
+     * @template TDefinition of (TypeDefinitionNode&Node)|(Type&NamedType)
      *
-     * @param TInterface&TClass $definition
+     * @param TDefinition $definition
      *
-     * @return TInterface&TClass
+     * @return TDefinition
      */
-    public function addTypeDefinition(TypeDefinitionNode $definition): TypeDefinitionNode {
+    public function addTypeDefinition(TypeDefinitionNode|Type $definition): TypeDefinitionNode|Type {
         $name = $this->getNodeName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
             throw new TypeDefinitionAlreadyDefined($name);
         }
 
-        $this->getDocument()->setTypeDefinition($definition);
+        if ($definition instanceof TypeDefinitionNode && $definition instanceof Node) {
+            $this->getDocument()->setTypeDefinition($definition);
+        } elseif ($definition instanceof Type) {
+            $this->getTypes()->register($definition);
+        } else {
+            // empty
+        }
 
         return $definition;
     }
@@ -214,13 +221,16 @@ abstract class AstManipulator {
      * @return (T&Directive)|null
      */
     public function getNodeDirective(
-        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|FieldArgument $node,
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
         string $class,
         ?Closure $callback = null,
     ): ?Directive {
         // todo(graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         // todo(graphql): Should we throw an error if $node has multiple directives?
-        return $this->getNodeDirectives($node, $class, $callback)->first();
+        $directives = $this->getNodeDirectives($node, $class, $callback);
+        $directive  = reset($directives) ?: null;
+
+        return $directive;
     }
 
     /**
@@ -229,17 +239,24 @@ abstract class AstManipulator {
      * @param class-string<T>       $class
      * @param Closure(T): bool|null $callback
      *
-     * @return Collection<int, T&Directive>
+     * @return list<T&Directive>
      */
     public function getNodeDirectives(
-        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|FieldArgument $node,
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
         string $class,
         ?Closure $callback = null,
-    ): Collection {
-        /** @var Collection<int, T&Directive> $directives */
-        $directives = new Collection();
+    ): array {
+        $directives = [];
 
-        if ($node instanceof Node) {
+        if ($node instanceof NamedType) {
+            if ($node->astNode()) {
+                $directives = $this->getNodeDirectives($node->astNode(), $class, $callback);
+            } else {
+                foreach ($node->extensionASTNodes() as $extensionNode) {
+                    $directives = array_merge($directives, $this->getNodeDirectives($extensionNode, $class, $callback));
+                }
+            }
+        } elseif ($node instanceof Node) {
             $associated = $this->getDirectives()->associated($node);
 
             foreach ($associated as $directive) {
@@ -256,23 +273,27 @@ abstract class AstManipulator {
                 // Ok
                 $directives[] = $directive;
             }
+        } else {
+            // empty
         }
 
         return $directives;
     }
 
     public function getNodeTypeName(
-        Node|Type|InputObjectField|FieldDefinition|FieldArgument|TypeDefinitionNode|string $node,
+        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
     ): string {
         $name = null;
 
-        if ($node instanceof Type || $node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof FieldArgument) {
+        if ($node instanceof Type || $node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
             $type = $node instanceof Type ? $node : $node->getType();
 
             if ($type instanceof WrappingType) {
-                $name = $type->getWrappedType(true)->name;
-            } else {
-                $name = $type->name;
+                $type = $type->getInnermostType();
+            }
+
+            if ($type instanceof NamedType) {
+                $name = $type->name();
             }
         } elseif ($node instanceof TypeDefinitionNode) {
             $name = $this->getNodeName($node);
@@ -282,17 +303,30 @@ abstract class AstManipulator {
             $name = $node;
         }
 
+        assert($name !== null);
+
         return $name;
     }
 
     public function getNodeName(
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|FieldArgument|Type $node,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|Type $node,
     ): string {
-        // fixme(graphql-php): in v15 the `TypeDefinitionNode::getName()` should be used instead.
-        $name = $node->name;
+        if ($node instanceof TypeDefinitionNode) {
+            $node = $node->getName();
+        } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
+            $node = $node->name;
+        } else {
+            // empty
+        }
 
-        if ($name instanceof NameNode) {
-            $name = $name->value;
+        $name = null;
+
+        if ($node instanceof NameNode) {
+            $name = $node->value;
+        } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
+            $name = $node->name;
+        } else {
+            $name = $this->getNodeTypeName($node);
         }
 
         return $name;
@@ -309,6 +343,8 @@ abstract class AstManipulator {
             $prefix = 'input';
         } elseif ($node instanceof ObjectTypeDefinitionNode || $node instanceof ObjectType) {
             $prefix = 'type';
+        } elseif ($node instanceof InterfaceTypeDefinitionNode || $node instanceof InterfaceType) {
+            $prefix = 'interface';
         } elseif ($node instanceof ScalarTypeDefinitionNode || $node instanceof ScalarType) {
             $prefix = 'scalar';
         } elseif ($node instanceof EnumTypeDefinitionNode || $node instanceof EnumType) {
@@ -355,12 +391,12 @@ abstract class AstManipulator {
     }
 
     public function getNodeField(
-        InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|TypeWithFields $node,
+        InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|HasFieldsType $node,
         string $name,
     ): FieldDefinitionNode|FieldDefinition|null {
         $field = null;
 
-        if ($node instanceof TypeWithFields) {
+        if ($node instanceof HasFieldsType) {
             $field = $node->hasField($name) ? $node->getField($name) : null;
         } else {
             foreach ($node->fields as $nodeField) {
@@ -377,7 +413,7 @@ abstract class AstManipulator {
     public function getNodeAttribute(
         FieldDefinitionNode|FieldDefinition $node,
         string $name,
-    ): InputValueDefinitionNode|FieldArgument|null {
+    ): InputValueDefinitionNode|Argument|null {
         $attribute = null;
 
         if ($node instanceof FieldDefinition) {

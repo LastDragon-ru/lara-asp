@@ -6,6 +6,8 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 
+use function is_a;
+
 /**
  * @mixin Property
  */
@@ -20,8 +22,8 @@ trait ScoutSupport {
         return $this->fieldResolver;
     }
 
-    public function isBuilderSupported(object $builder): bool {
+    public function isBuilderSupported(string $builder): bool {
         return parent::isBuilderSupported($builder)
-            || $builder instanceof ScoutBuilder;
+            || is_a($builder, ScoutBuilder::class, true);
     }
 }

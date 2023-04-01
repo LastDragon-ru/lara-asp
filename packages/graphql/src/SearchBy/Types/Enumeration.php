@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -32,12 +33,12 @@ class Enumeration implements TypeDefinition {
         Manipulator $manipulator,
         string $name,
         TypeSource $source,
-    ): ?TypeDefinitionNode {
+    ): TypeDefinitionNode|Type|null {
         // Operators
-        $scope     = Directive::class;
-        $operators = $manipulator->hasTypeOperators($scope, $source->getTypeName())
-            ? $manipulator->getTypeOperators($scope, $source->getTypeName(), $source->isNullable())
-            : $manipulator->getTypeOperators($scope, Operators::Enum, $source->isNullable());
+        $scope     = Directive::getScope();
+        $extras    = $source->isNullable() ? [Operators::Null] : [];
+        $operators = $manipulator->getTypeOperators($scope, $source->getTypeName(), ...$extras)
+            ?: $manipulator->getTypeOperators($scope, Operators::Enum, ...$extras);
 
         if (!$operators) {
             return null;

@@ -9,12 +9,14 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Traits\DirectiveName;
 
+use function is_a;
+
 abstract class BaseOperator extends OperatorDirective implements Operator {
     use DirectiveName;
 
-    public function isBuilderSupported(object $builder): bool {
-        return $builder instanceof EloquentBuilder
-            || $builder instanceof QueryBuilder
-            || $builder instanceof ScoutBuilder;
+    public function isBuilderSupported(string $builder): bool {
+        return is_a($builder, EloquentBuilder::class, true)
+            || is_a($builder, QueryBuilder::class, true)
+            || is_a($builder, ScoutBuilder::class, true);
     }
 }

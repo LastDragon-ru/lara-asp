@@ -42,12 +42,22 @@ class ObjectTypeDefinitionTest extends TestCase {
                 'b' => [
                     'name'    => 'b',
                     'type'    => new ObjectType([
-                        'name' => 'B',
+                        'name'   => 'B',
+                        'fields' => [
+                            'field' => [
+                                'type' => Type::string(),
+                            ],
+                        ],
                     ]),
                     'args'    => [
                         'c' => [
                             'type'    => new ObjectType([
-                                'name' => 'C',
+                                'name'   => 'C',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'astNode' => Parser::inputValueDefinition('c: C @c'),
                         ],
@@ -57,7 +67,12 @@ class ObjectTypeDefinitionTest extends TestCase {
             ],
             'interfaces' => [
                 new InterfaceType([
-                    'name' => 'D',
+                    'name'   => 'D',
+                    'fields' => [
+                        'field' => [
+                            'type' => Type::string(),
+                        ],
+                    ],
                 ]),
             ],
             'astNode'    => Parser::objectTypeDefinition('type A @a'),
@@ -90,15 +105,22 @@ class ObjectTypeDefinitionTest extends TestCase {
                 """
                 type Test
                 @a
+                @b
+                @c
                 STRING,
                 $settings
                     ->setPrintDirectives(true),
                 0,
                 0,
                 new ObjectType([
-                    'name'        => 'Test',
-                    'astNode'     => Parser::objectTypeDefinition('type Test @a'),
-                    'description' => 'Description',
+                    'name'              => 'Test',
+                    'fields'            => [],
+                    'astNode'           => Parser::objectTypeDefinition('type Test @a'),
+                    'description'       => 'Description',
+                    'extensionASTNodes' => [
+                        Parser::objectTypeExtension('extend type Test @b'),
+                        Parser::objectTypeExtension('extend type Test @c'),
+                    ],
                 ]),
             ],
             'description + directives + fields'           => [
@@ -130,13 +152,23 @@ class ObjectTypeDefinitionTest extends TestCase {
                         [
                             'name' => 'c',
                             'type' => new ObjectType([
-                                'name' => 'C',
+                                'name'   => 'C',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                         ],
                         [
                             'name'        => 'b',
                             'type'        => new ObjectType([
-                                'name' => 'B',
+                                'name'   => 'B',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'args'        => [
                                 'b' => [
@@ -148,7 +180,12 @@ class ObjectTypeDefinitionTest extends TestCase {
                         [
                             'name' => 'a',
                             'type' => new ObjectType([
-                                'name' => 'A',
+                                'name'   => 'A',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'args' => [
                                 'a' => [
@@ -171,8 +208,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 new ObjectType([
                     'name'   => 'Test',
                     'fields' => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
@@ -193,14 +229,27 @@ class ObjectTypeDefinitionTest extends TestCase {
                     'name'       => 'Test',
                     'astNode'    => Parser::objectTypeDefinition('type Test @a'),
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new ObjectType(['name' => 'B']),
-                        new ObjectType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -222,14 +271,27 @@ class ObjectTypeDefinitionTest extends TestCase {
                     'name'       => 'Test',
                     'astNode'    => Parser::objectTypeDefinition('type Test @a'),
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new ObjectType(['name' => 'B']),
-                        new ObjectType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -249,14 +311,27 @@ class ObjectTypeDefinitionTest extends TestCase {
                 new ObjectType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new ObjectType(['name' => 'B']),
-                        new ObjectType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -272,14 +347,27 @@ class ObjectTypeDefinitionTest extends TestCase {
                 new ObjectType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new ObjectType(['name' => 'B']),
-                        new ObjectType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -299,14 +387,27 @@ class ObjectTypeDefinitionTest extends TestCase {
                 new ObjectType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new ObjectType(['name' => 'B']),
-                        new ObjectType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -326,14 +427,27 @@ class ObjectTypeDefinitionTest extends TestCase {
                 new ObjectType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new ObjectType(['name' => 'B']),
-                        new ObjectType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -353,13 +467,19 @@ class ObjectTypeDefinitionTest extends TestCase {
                 new ObjectType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new ObjectType(['name' => 'B']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -384,10 +504,14 @@ class ObjectTypeDefinitionTest extends TestCase {
                 new ObjectType([
                     'name'   => 'Test',
                     'fields' => [
-                        [
-                            'name'        => 'b',
+                        'b' => [
                             'type'        => new ObjectType([
-                                'name' => 'B',
+                                'name'   => 'B',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'args'        => [
                                 'b' => [
@@ -396,10 +520,14 @@ class ObjectTypeDefinitionTest extends TestCase {
                             ],
                             'description' => 'Description',
                         ],
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => new ObjectType([
-                                'name' => 'A',
+                                'name'   => 'A',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'args' => [
                                 'a' => [

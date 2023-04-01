@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use Closure;
+use GraphQL\Language\DirectiveLocation;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -16,6 +17,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property as PropertyOperato
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
+use function array_merge;
+use function is_a;
 use function reset;
 
 class Relation extends BaseOperator {
@@ -27,12 +30,13 @@ class Relation extends BaseOperator {
 
     // <editor-fold desc="Directive">
     // =========================================================================
-    public static function definition(): string {
-        $name = static::getDirectiveName();
-
-        return /** @lang GraphQL */ <<<GRAPHQL
-            directive {$name} on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
-        GRAPHQL;
+    /**
+     * @inheritDoc
+     */
+    protected static function getDirectiveLocations(): array {
+        return array_merge(parent::getDirectiveLocations(), [
+            DirectiveLocation::FIELD_DEFINITION,
+        ]);
     }
     // </editor-fold>
 
@@ -50,8 +54,8 @@ class Relation extends BaseOperator {
         return 'Relationship condition.';
     }
 
-    public function isBuilderSupported(object $builder): bool {
-        return $builder instanceof EloquentBuilder;
+    public function isBuilderSupported(string $builder): bool {
+        return is_a($builder, EloquentBuilder::class, true);
     }
 
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {

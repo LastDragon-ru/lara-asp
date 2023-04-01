@@ -42,12 +42,22 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 'b' => [
                     'name'    => 'b',
                     'type'    => new ObjectType([
-                        'name' => 'B',
+                        'name'   => 'B',
+                        'fields' => [
+                            'field' => [
+                                'type' => Type::string(),
+                            ],
+                        ],
                     ]),
                     'args'    => [
                         'c' => [
                             'type'    => new ObjectType([
-                                'name' => 'C',
+                                'name'   => 'C',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'astNode' => Parser::inputValueDefinition('c: C @c'),
                         ],
@@ -57,7 +67,12 @@ class InterfaceTypeDefinitionTest extends TestCase {
             ],
             'interfaces' => [
                 new InterfaceType([
-                    'name' => 'D',
+                    'name'   => 'D',
+                    'fields' => [
+                        'field' => [
+                            'type' => Type::string(),
+                        ],
+                    ],
                 ]),
             ],
             'astNode'    => Parser::interfaceTypeDefinition('interface A @a'),
@@ -90,15 +105,22 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 """
                 interface Test
                 @a
+                @b
+                @c
                 STRING,
                 $settings
                     ->setPrintDirectives(true),
                 0,
                 0,
                 new InterfaceType([
-                    'name'        => 'Test',
-                    'astNode'     => Parser::interfaceTypeDefinition('interface Test @a'),
-                    'description' => 'Description',
+                    'name'              => 'Test',
+                    'fields'            => [],
+                    'astNode'           => Parser::interfaceTypeDefinition('interface Test @a'),
+                    'description'       => 'Description',
+                    'extensionASTNodes' => [
+                        Parser::interfaceTypeExtension('extend interface Test @b'),
+                        Parser::interfaceTypeExtension('extend interface Test @c'),
+                    ],
                 ]),
             ],
             'description + directives + fields'           => [
@@ -130,17 +152,32 @@ class InterfaceTypeDefinitionTest extends TestCase {
                         [
                             'name' => 'c',
                             'type' => new ObjectType([
-                                'name' => 'C',
+                                'name'   => 'C',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                         ],
                         [
                             'name'        => 'b',
                             'type'        => new ObjectType([
-                                'name' => 'B',
+                                'name'   => 'B',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'args'        => [
                                 'b' => [
-                                    'type' => Type::int(),
+                                    'type'   => Type::int(),
+                                    'fields' => [
+                                        'field' => [
+                                            'type' => Type::string(),
+                                        ],
+                                    ],
                                 ],
                             ],
                             'description' => 'Description',
@@ -148,7 +185,12 @@ class InterfaceTypeDefinitionTest extends TestCase {
                         [
                             'name' => 'a',
                             'type' => new ObjectType([
-                                'name' => 'A',
+                                'name'   => 'A',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'args' => [
                                 'a' => [
@@ -171,8 +213,7 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 new InterfaceType([
                     'name'   => 'Test',
                     'fields' => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
@@ -193,14 +234,27 @@ class InterfaceTypeDefinitionTest extends TestCase {
                     'name'       => 'Test',
                     'astNode'    => Parser::interfaceTypeDefinition('interface Test @a'),
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new InterfaceType(['name' => 'B']),
-                        new InterfaceType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -222,14 +276,27 @@ class InterfaceTypeDefinitionTest extends TestCase {
                     'name'       => 'Test',
                     'astNode'    => Parser::interfaceTypeDefinition('interface Test @a'),
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new InterfaceType(['name' => 'B']),
-                        new InterfaceType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -249,14 +316,28 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 new InterfaceType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
+                        'a' => [
                             'name' => 'a',
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new InterfaceType(['name' => 'B']),
-                        new InterfaceType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -272,14 +353,27 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 new InterfaceType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new InterfaceType(['name' => 'B']),
-                        new InterfaceType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -299,14 +393,27 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 new InterfaceType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new InterfaceType(['name' => 'B']),
-                        new InterfaceType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -326,14 +433,27 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 new InterfaceType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new InterfaceType(['name' => 'B']),
-                        new InterfaceType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'B',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -353,13 +473,19 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 new InterfaceType([
                     'name'       => 'Test',
                     'fields'     => [
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => Type::string(),
                         ],
                     ],
                     'interfaces' => [
-                        new InterfaceType(['name' => 'A']),
+                        new InterfaceType([
+                            'name'   => 'A',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
+                        ]),
                     ],
                 ]),
             ],
@@ -384,10 +510,14 @@ class InterfaceTypeDefinitionTest extends TestCase {
                 new InterfaceType([
                     'name'   => 'Test',
                     'fields' => [
-                        [
-                            'name'        => 'b',
+                        'b' => [
                             'type'        => new ObjectType([
-                                'name' => 'B',
+                                'name'   => 'B',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'args'        => [
                                 'b' => [
@@ -396,10 +526,14 @@ class InterfaceTypeDefinitionTest extends TestCase {
                             ],
                             'description' => 'Description',
                         ],
-                        [
-                            'name' => 'a',
+                        'a' => [
                             'type' => new ObjectType([
-                                'name' => 'A',
+                                'name'   => 'A',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
                             ]),
                             'args' => [
                                 'a' => [

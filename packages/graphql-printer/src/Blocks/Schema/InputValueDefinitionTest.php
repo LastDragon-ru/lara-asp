@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\FieldArgument;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
@@ -27,7 +27,7 @@ class InputValueDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        FieldArgument $definition,
+        Argument $definition,
     ): void {
         $actual = (string) (new InputValueDefinition($settings, $level, $used, $definition));
 
@@ -38,11 +38,16 @@ class InputValueDefinitionTest extends TestCase {
 
     public function testStatistics(): void {
         $settings   = new TestSettings();
-        $definition = new FieldArgument([
+        $definition = new Argument([
             'name'    => 'a',
             'type'    => new NonNull(
                 new ObjectType([
-                    'name' => 'A',
+                    'name'   => 'A',
+                    'fields' => [
+                        'field' => [
+                            'type' => Type::string(),
+                        ],
+                    ],
                 ]),
             ),
             'astNode' => Parser::inputValueDefinition('test: Test! @a'),
@@ -59,7 +64,7 @@ class InputValueDefinitionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, FieldArgument}>
+     * @return array<string,array{string, Settings, int, int, Argument}>
      */
     public static function dataProviderToString(): array {
         $settings = new TestSettings();
@@ -77,11 +82,16 @@ class InputValueDefinitionTest extends TestCase {
                     ->setPrintDirectives(true),
                 0,
                 0,
-                new FieldArgument([
+                new Argument([
                     'name'        => 'test',
                     'type'        => new NonNull(
                         new ObjectType([
-                            'name' => 'Test',
+                            'name'   => 'Test',
+                            'fields' => [
+                                'field' => [
+                                    'type' => Type::string(),
+                                ],
+                            ],
                         ]),
                     ),
                     'astNode'     => Parser::inputValueDefinition('test: Test! @a'),
@@ -98,7 +108,7 @@ class InputValueDefinitionTest extends TestCase {
                 $settings,
                 0,
                 0,
-                new FieldArgument([
+                new Argument([
                     'name'         => 'test',
                     'type'         => new ListOfType(new NonNull(Type::string())),
                     'defaultValue' => [
@@ -119,7 +129,7 @@ class InputValueDefinitionTest extends TestCase {
                 $settings,
                 0,
                 120,
-                new FieldArgument([
+                new Argument([
                     'name'         => 'test',
                     'type'         => new ListOfType(new NonNull(Type::string())),
                     'defaultValue' => [
@@ -140,7 +150,7 @@ class InputValueDefinitionTest extends TestCase {
                 $settings,
                 1,
                 70,
-                new FieldArgument([
+                new Argument([
                     'name'         => 'test',
                     'type'         => new ListOfType(new NonNull(Type::string())),
                     'defaultValue' => [

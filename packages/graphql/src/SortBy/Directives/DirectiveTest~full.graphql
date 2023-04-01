@@ -8,6 +8,8 @@ type Query implements Eloquent & Scout {
     scout(search: String @search, order: Properties @sortBy): ID! @all
 
     placeholder(order: _ @sortBy): Object! @all
+
+    interface(order: ObjectInterface @sortBy): Object! @all
 }
 
 interface Eloquent implements Placeholder {
@@ -15,11 +17,11 @@ interface Eloquent implements Placeholder {
 }
 
 interface Scout {
-    scout(search: String, order: Properties): ID!
+    scout(search: String, order: TypeDoesntMatter): ID!
 }
 
 interface Placeholder {
-    placeholder(order: _): Object!
+    placeholder(order: _ @sortBy): Object! @all
 }
 
 input Properties {
@@ -74,7 +76,7 @@ enum EnumIgnored @sortByIgnored {
     one
 }
 
-type Object {
+interface ObjectInterface {
     idScalar: ID
     idScalarNotNull: ID!
     nested: ObjectNested
@@ -102,6 +104,42 @@ type Object {
 
     "Description should NOT be used."
     description: ID
+
+    "Should be ignored"
+    fieldWithArguments(arg: Int): Boolean
+}
+
+type Object implements ObjectInterface {
+    idScalar: ID
+    idScalarNotNull: ID!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+    enum: Value
+    enumNotNull: Value!
+    enumIgnored: EnumIgnored
+    enumEnumIgnoredNotNull: EnumIgnored!
+    ignored: ID! @sortByIgnored
+    resolver: ID! @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    customScalar: Date
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+
+    "Description should NOT be used."
+    description: ID
+
+    "Should be ignored"
+    fieldWithArguments(arg: Int): Boolean
 }
 
 type ObjectNested {

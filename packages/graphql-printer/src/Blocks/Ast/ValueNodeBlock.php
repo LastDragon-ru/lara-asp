@@ -39,7 +39,7 @@ class ValueNodeBlock extends Block {
             $content = new ListValueList($settings, $level, $used);
 
             foreach ($this->node->values as $value) {
-                $content[] = new ValueNodeBlock($settings, $level + 1, $used, $value);
+                $content[] = new self($settings, $level + 1, $used, $value);
             }
         } elseif ($this->node instanceof ObjectValueNode) {
             $content = new ObjectValueList($settings, $level, $used);
@@ -49,7 +49,7 @@ class ValueNodeBlock extends Block {
                 $content[$name] = new PropertyBlock(
                     $settings,
                     $name,
-                    new ValueNodeBlock(
+                    new self(
                         $settings,
                         $level + 1 + (int) ($field->value instanceof StringValueNode),
                         $used,

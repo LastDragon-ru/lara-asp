@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use Closure;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
@@ -182,20 +183,21 @@ abstract class Block implements Statistics, Stringable {
     // <editor-fold desc="Types">
     // =========================================================================
     public function isTypeDefinitionAllowed(Type $type): bool {
+        // Named?
+        if (!($type instanceof NamedType)) {
+            return false;
+        }
+
         // Allowed?
-        $name      = $type->name;
+        $name      = $type->name();
         $filter    = $this->getSettings()->getTypeDefinitionFilter();
-        $isBuiltIn = $this->isTypeBuiltIn($type);
+        $isBuiltIn = $type->isBuiltInType();
         $isAllowed = $isBuiltIn
             ? ($filter !== null && $filter->isAllowedType($name, $isBuiltIn))
             : ($filter === null || $filter->isAllowedType($name, $isBuiltIn));
 
         // Return
         return $isAllowed;
-    }
-
-    private function isTypeBuiltIn(Type $type): bool {
-        return Type::isBuiltInType($type);
     }
     // </editor-fold>
 

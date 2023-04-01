@@ -5,18 +5,15 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
 use function array_map;
 use function array_merge;
 use function array_pop;
-use function array_push;
 use function array_unique;
-use function array_values;
 use function is_a;
 use function sort;
-
-use const SORT_REGULAR;
 
 abstract class Operators {
     public const ID      = Type::ID;
@@ -24,7 +21,6 @@ abstract class Operators {
     public const Float   = Type::FLOAT;
     public const String  = Type::STRING;
     public const Boolean = Type::BOOLEAN;
-    public const Null    = 'Null';
 
     /**
      * Determines default operators available for each type.
@@ -42,6 +38,9 @@ abstract class Operators {
         }
     }
 
+    /**
+     * @return class-string<Scope>
+     */
     abstract public function getScope(): string;
 
     /**
@@ -69,7 +68,7 @@ abstract class Operators {
     /**
      * @return array<Operator>
      */
-    public function getOperators(string $type, bool $nullable): array {
+    public function getOperators(string $type): array {
         // Is known?
         if (!$this->hasOperators($type)) {
             throw new TypeUnknown($this->getScope(), $type);
@@ -95,14 +94,6 @@ abstract class Operators {
         $operators = array_map(function (string $operator): Operator {
             return $this->getOperator($operator);
         }, array_unique($operators));
-
-        // Add `null` for nullable
-        if ($nullable && $this->hasOperators(static::Null)) {
-            array_push($operators, ...$this->getOperators(static::Null, false));
-        }
-
-        // Cleanup
-        $operators = array_values(array_unique($operators, SORT_REGULAR));
 
         // Return
         return $operators;

@@ -32,7 +32,7 @@ class RelationType implements TypeDefinition {
         Manipulator $manipulator,
         string $name,
         TypeSource $source,
-    ): ?TypeDefinitionNode {
+    ): TypeDefinitionNode|Type|null {
         $count = $manipulator->getType(Scalar::class, $manipulator->getTypeSource(Type::nonNull(Type::int())));
         $where = $manipulator->getType(Condition::class, $source);
 

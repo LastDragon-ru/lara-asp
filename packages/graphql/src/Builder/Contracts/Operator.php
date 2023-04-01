@@ -25,7 +25,10 @@ interface Operator extends Directive {
 
     public function getFieldDirective(): ?DirectiveNode;
 
-    public function isBuilderSupported(object $builder): bool;
+    /**
+     * @param class-string $builder
+     */
+    public function isBuilderSupported(string $builder): bool;
 
     /**
      * @template TBuilder of object

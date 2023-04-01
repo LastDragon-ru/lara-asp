@@ -103,52 +103,78 @@ on
 
 directive @searchByOperatorAllOf
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorAnyOf
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorContains
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorEndsWith
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorEqual
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorIn
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorLike
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNot
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNotEqual
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNotIn
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNotLike
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorProperty
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorStartsWith
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR

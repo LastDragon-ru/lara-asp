@@ -151,9 +151,9 @@ In some cases, you need to provide options to alter GraphQL's execution behavior
 type __Directive {
   name: String!
   description: String
-  args: [__InputValue!]!
   isRepeatable: Boolean!
   locations: [__DirectiveLocation!]!
+  args: [__InputValue!]!
 }
 
 """
@@ -244,7 +244,7 @@ Marks an element of a GraphQL schema as no longer supported.
 """
 directive @deprecated(
   """
-  Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax (as specified by [CommonMark](https://commonmark.org/).
+  Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).
   """
   reason: String = "No longer supported"
 )

@@ -5,6 +5,9 @@ enum Enum
 @directive(
     location: "enum"
 )
+@directive(
+    location: "extend"
+)
 {
     """
     Enum value description
@@ -26,11 +29,19 @@ input InputA
 @directive(
     location: "input"
 )
+@directive(
+    location: "extend"
+)
 {
     """
     Field description.
     """
     a: Int
+
+    b: [String!]
+    @directive(
+        location: "extend"
+    )
 
     c: [Float!]!
     @directive(
@@ -38,7 +49,40 @@ input InputA
     )
 }
 
-interface InterfaceC {
+"""
+Interface description.
+"""
+interface InterfaceA
+@directive(
+    location: "interface"
+)
+@directive(
+    location: "extend"
+)
+{
+    a: Int
+}
+
+interface InterfaceB
+implements
+    & InterfaceA
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+interface InterfaceC
+implements
+    & InterfaceA
+    & InterfaceB
+{
     a: Int
     b: [String!]
     c: [Float!]!
@@ -50,6 +94,9 @@ Scalar description.
 scalar Scalar
 @directive(
     location: "scalar"
+)
+@directive(
+    location: "extend"
 )
 
 type Mutation {
@@ -91,9 +138,13 @@ Type description.
 """
 type TypeA
 implements
+    & InterfaceB
     & InterfaceC
 @directive(
     location: "type"
+)
+@directive(
+    location: "extend"
 )
 {
     a: Int
@@ -105,6 +156,11 @@ implements
     b: [String!]
 
     c: [Float!]!
+
+    d: [String!]
+    @directive(
+        location: "extend"
+    )
 }
 
 type TypeB {
@@ -125,7 +181,11 @@ union Union
 @directive(
     location: "union"
 )
+@directive(
+    location: "extend"
+)
 =
+    | TypeA
     | TypeB
     | TypeC
 
@@ -154,3 +214,4 @@ repeatable on
     | SCHEMA
     | SUBSCRIPTION
     | UNION
+    | VARIABLE_DEFINITION

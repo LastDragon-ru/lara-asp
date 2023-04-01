@@ -253,7 +253,7 @@ class DirectiveTest extends TestCase {
         /** @lang GraphQL */
             <<<'GRAPHQL'
             type Query {
-                test(input: Test @searchBy): String! @mock
+                test(input: Test @searchBy): String! @all
             }
 
             input Test {
@@ -442,7 +442,7 @@ class DirectiveTest extends TestCase {
                             Manipulator $manipulator,
                             string $name,
                             TypeSource $source,
-                        ): ?TypeDefinitionNode {
+                        ): TypeDefinitionNode|Type|null {
                             return Parser::inputObjectTypeDefinition(
                                 <<<DEF
                                 """

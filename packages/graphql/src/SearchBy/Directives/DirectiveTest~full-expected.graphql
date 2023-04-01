@@ -176,6 +176,12 @@ input SearchByConditionInputA {
     @searchByOperatorProperty
 
     """
+    Property condition.
+    """
+    customScalarOperators: SearchByScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
     Description should be used.
     """
     description: SearchByScalarIDOrNull
@@ -220,13 +226,13 @@ input SearchByConditionInputA {
     """
     Property condition.
     """
-    inScalarNotNull: SearchByScalarInt
+    intScalar: SearchByScalarIntOrNull
     @searchByOperatorProperty
 
     """
     Property condition.
     """
-    intScalar: SearchByScalarIntOrNull
+    intScalarNotNull: SearchByScalarInt
     @searchByOperatorProperty
 
     """
@@ -431,6 +437,12 @@ input SearchByConditionObject {
     """
     Property condition.
     """
+    customScalarOperators: SearchByScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
     description: SearchByScalarIDOrNull
     @searchByOperatorProperty
 
@@ -473,13 +485,13 @@ input SearchByConditionObject {
     """
     Property condition.
     """
-    inScalarNotNull: SearchByScalarInt
+    intScalar: SearchByScalarIntOrNull
     @searchByOperatorProperty
 
     """
     Property condition.
     """
-    intScalar: SearchByScalarIntOrNull
+    intScalarNotNull: SearchByScalarInt
     @searchByOperatorProperty
 
     """
@@ -498,6 +510,143 @@ input SearchByConditionObject {
     Not.
     """
     not: SearchByConditionObject
+    @searchByOperatorNot
+
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScalarStringOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScalarString
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `interface ObjectInterface` (only one property allowed at a time).
+"""
+input SearchByConditionObjectInterface {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionObjectInterface!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionObjectInterface!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScalarBooleanOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScalarBoolean
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalar: SearchByScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarList: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarNonNull: SearchByScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarOperators: SearchByScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    description: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enum: SearchByEnumEnumAOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByEnumEnumA
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScalarFloatOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScalarFloat
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalar: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalar: SearchByScalarIntOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalarNotNull: SearchByScalarInt
+    @searchByOperatorProperty
+
+    """
+    Relationship condition.
+    """
+    nested: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    nestedNotNull: SearchByComplexRelationObjectNested
+    @searchByOperatorRelation
+
+    """
+    Not.
+    """
+    not: SearchByConditionObjectInterface
     @searchByOperatorNot
 
     """
@@ -1113,6 +1262,47 @@ input SearchByScalarIntOrNull {
 }
 
 """
+Available operators for `scalar ScalarCustom` (only one operator allowed at a time).
+"""
+input SearchByScalarScalarCustomOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ScalarCustom
+    @searchByOperatorEqual
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+
+    """
+    Less than (`<`).
+    """
+    lessThan: ScalarCustom
+    @searchByOperatorLessThan
+
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: ScalarCustom
+    @searchByOperatorLessThanOrEqual
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ScalarCustom
+    @searchByOperatorNotEqual
+}
+
+"""
 Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScalarString {
@@ -1283,6 +1473,12 @@ input SearchByScoutConditionInputA {
     @searchByOperatorProperty
 
     """
+    Property condition.
+    """
+    customScalarOperators: SearchByScoutScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
     Description should be used.
     """
     description: SearchByScoutScalarIDOrNull
@@ -1327,13 +1523,13 @@ input SearchByScoutConditionInputA {
     """
     Property condition.
     """
-    inScalarNotNull: SearchByScoutScalarInt
+    intScalar: SearchByScoutScalarIntOrNull
     @searchByOperatorProperty
 
     """
     Property condition.
     """
-    intScalar: SearchByScoutScalarIntOrNull
+    intScalarNotNull: SearchByScoutScalarInt
     @searchByOperatorProperty
 
     """
@@ -1565,6 +1761,17 @@ input SearchByScoutScalarIntOrNull {
 }
 
 """
+Available operators for `scalar ScalarCustom` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarScalarCustomOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ScalarCustom
+    @searchByOperatorEqual
+}
+
+"""
 Available operators for `scalar String` (only one operator allowed at a time).
 """
 input SearchByScoutScalarString {
@@ -1611,6 +1818,7 @@ input SearchByTypeRangeInt {
 interface A
 implements
     & C
+    & F
 {
     a(
         where: SearchByConditionInputA
@@ -1629,18 +1837,15 @@ interface C {
     ): ID!
 }
 
-scalar Date
-@scalar(
-    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
-)
+interface F {
+    f(
+        where: SearchByConditionObject
+        @searchBy
+    ): Object!
+    @all
+}
 
-scalar DateIgnored
-@scalar(
-    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
-)
-@searchByIgnored
-
-type Object {
+interface ObjectInterface {
     booleanScalar: Boolean
     booleanScalarNotNull: Boolean!
     customScalar: Date
@@ -1649,6 +1854,7 @@ type Object {
     customScalarIgnoredNonNull: DateIgnored!
     customScalarList: [Date!]!
     customScalarNonNull: Date!
+    customScalarOperators: ScalarCustom
 
     """
     Description should NOT be used.
@@ -1659,6 +1865,14 @@ type Object {
     enumEnumIgnoredNotNull: EnumIgnored!
     enumIgnored: EnumIgnored
     enumNotNull: EnumA!
+
+    """
+    Should be ignored
+    """
+    fieldWithArguments(
+        arg: Int
+    ): Boolean
+
     floatScalar: Float
     floatScalarNotNull: Float!
     idScalar: ID
@@ -1670,8 +1884,88 @@ type Object {
     ignoredType: ObjectIgnored
     ignoredTypeList: [ObjectIgnored!]!
     ignoredTypeNonNull: ObjectIgnored!
-    inScalarNotNull: Int!
     intScalar: Int
+    intScalarNotNull: Int!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: Float
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    stringScalar: String
+    stringScalarNotNull: String!
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+}
+
+scalar Date
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+
+scalar DateIgnored
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@searchByIgnored
+
+scalar ScalarCustom
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@searchByOperators(
+    type: "Boolean"
+)
+@searchByOperatorLessThan
+@searchByOperatorLessThanOrEqual
+
+type Object
+implements
+    & ObjectInterface
+{
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    customScalar: Date
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarOperators: ScalarCustom
+
+    """
+    Description should NOT be used.
+    """
+    description: ID
+
+    enum: EnumA
+    enumEnumIgnoredNotNull: EnumIgnored!
+    enumIgnored: EnumIgnored
+    enumNotNull: EnumA!
+
+    """
+    Should be ignored
+    """
+    fieldWithArguments(
+        arg: Int
+    ): Boolean
+
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: String
+    @searchByIgnored
+
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    intScalar: Int
+    intScalarNotNull: Int!
     nested: ObjectNested
     nestedNotNull: ObjectNested!
 
@@ -1741,6 +2035,12 @@ implements
         @searchBy
     ): Object!
     @all
+
+    g(
+        where: SearchByConditionObjectInterface
+        @searchBy
+    ): Object!
+    @all
 }
 
 union ObjectUnion =
@@ -1768,113 +2068,179 @@ on
 
 directive @searchByOperatorAllOf
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorAnyOf
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorBetween
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorBitwiseAnd
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorBitwiseLeftShift
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorBitwiseOr
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorBitwiseRightShift
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorBitwiseXor
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorCondition
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorContains
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorEndsWith
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorEqual
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorGreaterThan
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorGreaterThanOrEqual
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorIn
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorIsNotNull
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorIsNull
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorLessThan
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorLessThanOrEqual
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorLike
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNot
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNotBetween
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNotEqual
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNotIn
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorNotLike
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorProperty
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorRelation
 on
+    | ENUM
     | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
+    | SCALAR
 
 directive @searchByOperatorStartsWith
 on
+    | ENUM
     | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Extends the list of operators by the operators from the specified `type`.
+"""
+directive @searchByOperators(
+    type: String!
+)
+on
+    | ENUM
+    | SCALAR

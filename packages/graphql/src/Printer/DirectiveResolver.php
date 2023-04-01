@@ -9,13 +9,10 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver as DirectiveResolverContract;
+use Nuwave\Lighthouse\Schema\AST\ExecutableTypeNodeConverter;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Schema\ExecutableTypeNodeConverter;
 use Nuwave\Lighthouse\Schema\Factories\DirectiveFactory;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
-
-use function assert;
-use function is_string;
 
 /**
  * Class helps us to search defined directives and convert AST nodes into
@@ -63,11 +60,8 @@ class DirectiveResolver implements DirectiveResolverContract {
                 if ($definition instanceof DirectiveDefinitionNode) {
                     $node = $definition;
                 } elseif ($definition instanceof TypeDefinitionNode) {
-                    // fixme(graphql-php): in v15 the `TypeDefinitionNode::getName()` should be used instead.
-                    $name = $definition->name->value;
+                    $name = $definition->getName()->value;
                     $type = null;
-
-                    assert(is_string($name));
 
                     if (!$this->registry->has($name)) {
                         if ($definition instanceof ScalarTypeDefinitionNode) {

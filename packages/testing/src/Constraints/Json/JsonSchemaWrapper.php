@@ -14,7 +14,7 @@ class JsonSchemaWrapper implements JsonSchema {
      * @param array<string,string> $rootParameters
      */
     public function __construct(
-        JsonSchemaWrapper|JsonSchemaFile|SplFileInfo $schema,
+        self|JsonSchemaFile|SplFileInfo $schema,
         SplFileInfo $rootSchema,
         array $rootParameters = [],
     ) {

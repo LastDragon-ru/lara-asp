@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -39,10 +40,20 @@ class UnionTypeDefinitionTest extends TestCase {
             'name'    => 'Test',
             'types'   => [
                 new ObjectType([
-                    'name' => 'A',
+                    'name'   => 'A',
+                    'fields' => [
+                        'field' => [
+                            'type' => GraphQLType::string(),
+                        ],
+                    ],
                 ]),
                 new ObjectType([
-                    'name' => 'B',
+                    'name'   => 'B',
+                    'fields' => [
+                        'field' => [
+                            'type' => GraphQLType::string(),
+                        ],
+                    ],
                 ]),
             ],
             'astNode' => Parser::unionTypeDefinition('union Test @a = A | B'),
@@ -65,6 +76,30 @@ class UnionTypeDefinitionTest extends TestCase {
         $settings = (new TestSettings())
             ->setNormalizeUnions(false)
             ->setAlwaysMultilineUnions(false);
+        $a        = new ObjectType([
+            'name'   => 'A',
+            'fields' => [
+                'field' => [
+                    'type' => GraphQLType::string(),
+                ],
+            ],
+        ]);
+        $b        = new ObjectType([
+            'name'   => 'B',
+            'fields' => [
+                'field' => [
+                    'type' => GraphQLType::string(),
+                ],
+            ],
+        ]);
+        $c        = new ObjectType([
+            'name'   => 'C',
+            'fields' => [
+                'field' => [
+                    'type' => GraphQLType::string(),
+                ],
+            ],
+        ]);
 
         return [
             'single-line'                   => [
@@ -77,15 +112,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 new UnionType([
                     'name'  => 'Test',
                     'types' => [
-                        new ObjectType([
-                            'name' => 'C',
-                        ]),
-                        new ObjectType([
-                            'name' => 'B',
-                        ]),
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                        $c,
+                        $b,
+                        $a,
                     ],
                 ]),
             ],
@@ -102,15 +131,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 new UnionType([
                     'name'  => 'Test',
                     'types' => [
-                        new ObjectType([
-                            'name' => 'C',
-                        ]),
-                        new ObjectType([
-                            'name' => 'B',
-                        ]),
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                        $c,
+                        $b,
+                        $a,
                     ],
                 ]),
             ],
@@ -124,15 +147,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 new UnionType([
                     'name'  => 'Test',
                     'types' => [
-                        new ObjectType([
-                            'name' => 'C',
-                        ]),
-                        new ObjectType([
-                            'name' => 'B',
-                        ]),
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                        $c,
+                        $b,
+                        $a,
                     ],
                 ]),
             ],
@@ -149,15 +166,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 new UnionType([
                     'name'  => 'Test',
                     'types' => [
-                        new ObjectType([
-                            'name' => 'C',
-                        ]),
-                        new ObjectType([
-                            'name' => 'B',
-                        ]),
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                        $c,
+                        $b,
+                        $a,
                     ],
                 ]),
             ],
@@ -171,15 +182,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 new UnionType([
                     'name'  => 'Test',
                     'types' => [
-                        new ObjectType([
-                            'name' => 'C',
-                        ]),
-                        new ObjectType([
-                            'name' => 'B',
-                        ]),
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                        $c,
+                        $b,
+                        $a,
                     ],
                 ]),
             ],
@@ -196,15 +201,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 new UnionType([
                     'name'  => 'Test',
                     'types' => [
-                        new ObjectType([
-                            'name' => 'C',
-                        ]),
-                        new ObjectType([
-                            'name' => 'B',
-                        ]),
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                        $c,
+                        $b,
+                        $a,
                     ],
                 ]),
             ],
@@ -212,29 +211,29 @@ class UnionTypeDefinitionTest extends TestCase {
                 <<<'STRING'
                 union Test
                 @a
+                @b
+                @c
                 = C | B | A
                 STRING,
                 $settings,
                 0,
                 0,
                 new UnionType([
-                    'name'    => 'Test',
-                    'types'   => [
-                        new ObjectType([
-                            'name' => 'C',
-                        ]),
-                        new ObjectType([
-                            'name' => 'B',
-                        ]),
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                    'name'              => 'Test',
+                    'types'             => [
+                        $c,
+                        $b,
+                        $a,
                     ],
-                    'astNode' => Parser::unionTypeDefinition(
+                    'astNode'           => Parser::unionTypeDefinition(
                         <<<'STRING'
                         union Test @a = A | B | C
                         STRING,
                     ),
+                    'extensionASTNodes' => [
+                        Parser::unionTypeExtension('extend union Test @b'),
+                        Parser::unionTypeExtension('extend union Test @c'),
+                    ],
                 ]),
             ],
             'directives + multiline'        => [
@@ -252,15 +251,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 new UnionType([
                     'name'    => 'Test',
                     'types'   => [
-                        new ObjectType([
-                            'name' => 'C',
-                        ]),
-                        new ObjectType([
-                            'name' => 'B',
-                        ]),
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                        $c,
+                        $b,
+                        $a,
                     ],
                     'astNode' => Parser::unionTypeDefinition(
                         <<<'STRING'
@@ -280,9 +273,7 @@ class UnionTypeDefinitionTest extends TestCase {
                 new UnionType([
                     'name'  => 'Test',
                     'types' => [
-                        new ObjectType([
-                            'name' => 'A',
-                        ]),
+                        $a,
                     ],
                 ]),
             ],

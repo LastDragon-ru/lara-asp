@@ -5,19 +5,20 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use Stringable;
 
 use function array_slice;
+use function array_values;
 use function end;
 use function implode;
 
 class Property implements Stringable {
     /**
-     * @var array<int, string>
+     * @var list<string>
      */
     protected array $path;
 
     final public function __construct(
         string ...$path,
     ) {
-        $this->path = $path;
+        $this->path = array_values($path);
     }
 
     public function getName(): string {

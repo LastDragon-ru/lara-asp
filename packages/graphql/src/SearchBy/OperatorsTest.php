@@ -38,7 +38,7 @@ class OperatorsTest extends TestCase {
                 Equal::class,
             ],
             $this->toClassNames(
-                $operators->getOperators(Operators::ID, false),
+                $operators->getOperators(Operators::ID),
             ),
         );
     }

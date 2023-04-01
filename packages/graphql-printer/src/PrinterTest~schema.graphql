@@ -4,12 +4,8 @@
 # Schema description is not supported by graphql-php yet.
 # -> https://github.com/webonyx/graphql-php/issues/1027
 #
-# Schema extensions is not supported in v14
+# Schema extensions is not supported in v15 yet
 # -> https://github.com/webonyx/graphql-php/commit/0bd57173c08e73847ed2eb227ef33c156922349b
-# -> fixme(graphql-php): Available in v15.
-#
-# The `extend ...` and `extend ... @directive` not supported (yet?)
-# -> fixme(graphql-php): Check & Fix in v15.
 # """
 # schema @directive(location: "schema") {
 #     query: Query
@@ -20,6 +16,10 @@
 # }
 #
 # extend schema @directive(location: "extend")
+#
+# extend schema {
+#     subscription: Subscription
+# }
 
 type Query {
     type(scalar: Int! = 123 @directive(location: "argument"), a: InputA): TypeA!
@@ -114,7 +114,7 @@ type TypeC {
 extend type TypeA @directive(location: "extend")
 
 extend type TypeA implements InterfaceB {
-    b: [String!] @directive(location: "extend")
+    d: [String!] @directive(location: "extend")
 }
 
 interface TypeUnused {
@@ -160,7 +160,7 @@ directive @directive(location: String) repeatable on
     | FRAGMENT_DEFINITION
     | FRAGMENT_SPREAD
     | INLINE_FRAGMENT
-#    | VARIABLE_DEFINITION // fixme(graphql-php): Available in v15.
+    | VARIABLE_DEFINITION
     | SCHEMA
     | SCALAR
     | OBJECT
