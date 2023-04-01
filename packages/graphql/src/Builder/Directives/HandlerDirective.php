@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
-use Closure;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
@@ -12,9 +11,11 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -36,9 +37,12 @@ use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Nuwave\Lighthouse\Schema\Directives\BuilderDirective;
+use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use ReflectionFunction;
 use ReflectionNamedType;
+use stdClass;
 
 use function array_keys;
 use function array_map;
@@ -301,25 +305,78 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             return new BuilderInfo('Scout', ScoutBuilder::class);
         }
 
-        // Query?
-        $argument  = 'builder';
+        // Builder?
         $directive = $directives->associatedOfType($field, AllDirective::class)->first()
-            ?? $directives->associatedOfType($field, PaginateDirective::class)->first();
-        $resolver  = $directive instanceof BaseDirective && $directive->directiveHasArgument($argument)
-            ? $directive->getResolverFromArgument($argument)
-            : null;
+            ?? $directives->associatedOfType($field, PaginateDirective::class)->first()
+            ?? $directives->associatedOfType($field, BuilderDirective::class)->first()
+            ?? $directives->associatedOfType($field, RelationDirective::class)->first();
 
-        if ($resolver instanceof Closure) {
-            $type = (new ReflectionFunction($resolver))->getReturnType();
-            $type = $type instanceof ReflectionNamedType ? $type->getName() : null;
+        if ($directive) {
+            $info = null;
+            $type = null;
+
+            if ($directive instanceof PaginateDirective) {
+                $type = $this->getBuilderType($directive, [
+                    'resolver' => Paginator::class,
+                    'builder'  => null,
+                ]);
+            } elseif ($directive instanceof AllDirective) {
+                $type = $this->getBuilderType($directive, [
+                    'builder' => null,
+                ]);
+            } elseif ($directive instanceof BuilderDirective) {
+                $type = $this->getBuilderType($directive, [
+                    'method' => null,
+                ]);
+            } else {
+                // empty
+            }
 
             if ($type && is_a($type, QueryBuilder::class, true)) {
-                return new BuilderInfo('Query', $type);
+                $info = new BuilderInfo('Query', QueryBuilder::class);
+            } elseif ($type && is_a($type, Paginator::class, true)) {
+                $info = new BuilderInfo('Paginator', Paginator::class);
+            } else {
+                $info = new BuilderInfo('', EloquentBuilder::class);
+            }
+
+            return $info;
+        }
+
+        // Collection?
+        $type = $field->type instanceof NonNullTypeNode
+            ? $field->type->type
+            : $field->type;
+        $info = $type instanceof ListTypeNode
+            ? new BuilderInfo('Collection', Collection::class)
+            : new BuilderInfo('Object', stdClass::class);
+
+        return $info;
+    }
+
+    /**
+     * @param array<string, ?class-string> $arguments
+     */
+    private function getBuilderType(BaseDirective $directive, array $arguments): ?string {
+        $type = null;
+
+        foreach ($arguments as $argument => $class) {
+            if ($directive->directiveHasArgument($argument)) {
+                $resolver = $directive->getResolverFromArgument($argument);
+                $type     = $class;
+
+                if (!$type) {
+                    $type = (new ReflectionFunction($resolver))->getReturnType();
+                    $type = $type instanceof ReflectionNamedType
+                        ? $type->getName()
+                        : null;
+                }
+
+                break;
             }
         }
 
-        // Eloquent (default)
-        return new BuilderInfo('', EloquentBuilder::class);
+        return $type;
     }
     // </editor-fold>
 }

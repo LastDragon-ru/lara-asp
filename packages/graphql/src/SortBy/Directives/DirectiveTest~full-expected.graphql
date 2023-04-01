@@ -464,6 +464,7 @@ interface Placeholder {
         order: [SortByClauseObject!]
         @sortBy
     ): Object!
+    @all
 }
 
 interface Scout {

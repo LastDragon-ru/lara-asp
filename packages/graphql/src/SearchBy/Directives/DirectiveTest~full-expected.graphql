@@ -1842,6 +1842,7 @@ interface F {
         where: SearchByConditionObject
         @searchBy
     ): Object!
+    @all
 }
 
 interface ObjectInterface {

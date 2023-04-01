@@ -189,7 +189,7 @@ class DirectiveTest extends TestCase {
         /** @lang GraphQL */
             <<<'GRAPHQL'
             type Query {
-                test(input: Test @sortBy): String! @mock
+                test(input: Test @sortBy): String! @all
             }
 
             input Test {

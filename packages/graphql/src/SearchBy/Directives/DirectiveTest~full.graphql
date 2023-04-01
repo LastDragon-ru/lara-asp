@@ -27,7 +27,7 @@ interface C {
 }
 
 interface F {
-    f(where: _ @searchBy): Object!
+    f(where: _ @searchBy): Object! @all
 }
 
 input InputA {

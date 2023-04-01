@@ -21,7 +21,7 @@ interface Scout {
 }
 
 interface Placeholder {
-    placeholder(order: _ @sortBy): Object!
+    placeholder(order: _ @sortBy): Object! @all
 }
 
 input Properties {
