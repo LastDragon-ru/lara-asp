@@ -11,16 +11,17 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
@@ -31,6 +32,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -38,14 +40,17 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\Directives\BuilderDirective;
+use Nuwave\Lighthouse\Schema\Directives\FindDirective;
+use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 use ReflectionFunction;
 use ReflectionNamedType;
-use stdClass;
 
 use function array_keys;
 use function array_map;
+use function class_exists;
 use function count;
 use function is_a;
 use function is_array;
@@ -203,11 +208,23 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
+        // Builder
+        $builder = $this->getBuilderInfo($parentField);
+
+        if (!$builder) {
+            $manipulator = Container::getInstance()->make(AstManipulator::class, [
+                'document' => $documentAST,
+            ]);
+            $argSource   = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+
+            throw new BuilderUnknown($argSource);
+        }
+
         // Converted?
         /** @var Manipulator $manipulator */
         $manipulator = Container::getInstance()->make(Manipulator::class, [
             'document'    => $documentAST,
-            'builderInfo' => $this->getBuilderInfo($parentField),
+            'builderInfo' => $builder,
         ]);
 
         if ($this->isTypeName($manipulator->getNodeTypeName($argDefinition))) {
@@ -215,10 +232,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Argument
-        $argInfo             = $parentType instanceof InterfaceTypeDefinitionNode
-            ? new InterfaceFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition)
-            : new ObjectFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
-        $argDefinition->type = $this->getArgDefinitionType($manipulator, $documentAST, $argInfo);
+        $argSource           = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+        $argDefinition->type = $this->getArgDefinitionType($manipulator, $documentAST, $argSource);
 
         // Interfaces
         $interfaces   = $manipulator->getNodeInterfaces($parentType);
@@ -289,10 +304,19 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         return $type;
     }
 
-    protected function getBuilderInfo(FieldDefinitionNode $field): BuilderInfo {
-        // Scout?
-        $scout      = false;
+    protected function getBuilderInfo(FieldDefinitionNode $field): ?BuilderInfo {
+        // Provider?
         $directives = $this->getDirectives();
+        $provider   = $directives->associated($field)->first(static function (Directive $directive): bool {
+            return $directive instanceof BuilderInfoProvider;
+        });
+
+        if ($provider instanceof BuilderInfoProvider) {
+            return $this->getBuilderInfoInstance($provider);
+        }
+
+        // Scout?
+        $scout = false;
 
         foreach ($field->arguments as $argument) {
             if ($directives->associatedOfType($argument, SearchDirective::class)->isNotEmpty()) {
@@ -302,74 +326,53 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         if ($scout) {
-            return new BuilderInfo('Scout', ScoutBuilder::class);
+            return $this->getBuilderInfoInstance(ScoutBuilder::class);
         }
 
         // Builder?
         $directive = $directives->associatedOfType($field, AllDirective::class)->first()
             ?? $directives->associatedOfType($field, PaginateDirective::class)->first()
             ?? $directives->associatedOfType($field, BuilderDirective::class)->first()
-            ?? $directives->associatedOfType($field, RelationDirective::class)->first();
+            ?? $directives->associatedOfType($field, RelationDirective::class)->first()
+            ?? $directives->associatedOfType($field, FirstDirective::class)->first()
+            ?? $directives->associatedOfType($field, FindDirective::class)->first();
 
         if ($directive) {
-            $info = null;
             $type = null;
 
             if ($directive instanceof PaginateDirective) {
-                $type = $this->getBuilderType($directive, [
-                    'resolver' => Paginator::class,
-                    'builder'  => null,
-                ]);
+                $type = $this->getBuilderType($directive, 'builder');
             } elseif ($directive instanceof AllDirective) {
-                $type = $this->getBuilderType($directive, [
-                    'builder' => null,
-                ]);
+                $type = $this->getBuilderType($directive, 'builder');
             } elseif ($directive instanceof BuilderDirective) {
-                $type = $this->getBuilderType($directive, [
-                    'method' => null,
-                ]);
+                $type = $this->getBuilderType($directive, 'method');
             } else {
                 // empty
             }
 
-            if ($type && is_a($type, QueryBuilder::class, true)) {
-                $info = new BuilderInfo('Query', QueryBuilder::class);
-            } elseif ($type && is_a($type, Paginator::class, true)) {
-                $info = new BuilderInfo('Paginator', Paginator::class);
-            } else {
-                $info = new BuilderInfo('', EloquentBuilder::class);
-            }
-
-            return $info;
+            return $this->getBuilderInfoInstance($type ?? EloquentBuilder::class);
         }
 
-        // Collection?
-        $type = $field->type instanceof NonNullTypeNode
-            ? $field->type->type
-            : $field->type;
-        $info = $type instanceof ListTypeNode
-            ? new BuilderInfo('Collection', Collection::class)
-            : new BuilderInfo('Object', stdClass::class);
-
-        return $info;
+        // Unknown
+        return null;
     }
 
     /**
-     * @param array<string, ?class-string> $arguments
+     * @return class-string|null
      */
-    private function getBuilderType(BaseDirective $directive, array $arguments): ?string {
+    private function getBuilderType(BaseDirective $directive, string ...$arguments): ?string {
         $type = null;
 
-        foreach ($arguments as $argument => $class) {
+        foreach ($arguments as $argument) {
             if ($directive->directiveHasArgument($argument)) {
                 $resolver = $directive->getResolverFromArgument($argument);
-                $type     = $class;
+                $return   = (new ReflectionFunction($resolver))->getReturnType();
+                $return   = $return instanceof ReflectionNamedType
+                    ? $return->getName()
+                    : null;
 
-                if (!$type) {
-                    $type = (new ReflectionFunction($resolver))->getReturnType();
-                    $type = $type instanceof ReflectionNamedType
-                        ? $type->getName()
-                        : null;
+                if ($return && class_exists($return)) {
+                    $type = $return;
                 }
 
                 break;
@@ -377,6 +380,29 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         return $type;
+    }
+
+    private function getBuilderInfoInstance(BuilderInfoProvider|BuilderInfo|string $type): ?BuilderInfo {
+        return match (true) {
+            $type instanceof BuilderInfo              => $type,
+            $type instanceof BuilderInfoProvider      => $this->getBuilderInfoInstance($type->getBuilderInfo()),
+            is_a($type, EloquentBuilder::class, true) => new BuilderInfo('', EloquentBuilder::class),
+            is_a($type, ScoutBuilder::class, true)    => new BuilderInfo('Scout', ScoutBuilder::class),
+            is_a($type, QueryBuilder::class, true)    => new BuilderInfo('Query', QueryBuilder::class),
+            is_a($type, Collection::class, true)      => new BuilderInfo('Collection', Collection::class),
+            default                                   => null,
+        };
+    }
+
+    private function getFieldArgumentSource(
+        AstManipulator $manipulator,
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
+        FieldDefinitionNode $field,
+        InputValueDefinitionNode $argument,
+    ): ObjectFieldArgumentSource|InterfaceFieldArgumentSource {
+        return $type instanceof InterfaceTypeDefinitionNode
+            ? new InterfaceFieldArgumentSource($manipulator, $type, $field, $argument)
+            : new ObjectFieldArgumentSource($manipulator, $type, $field, $argument);
     }
     // </editor-fold>
 }

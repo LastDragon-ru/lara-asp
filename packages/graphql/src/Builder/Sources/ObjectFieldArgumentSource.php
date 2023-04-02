@@ -12,8 +12,8 @@ use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\FieldArgument;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
  * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
@@ -22,7 +22,7 @@ class ObjectFieldArgumentSource extends Source {
     use FieldArgument;
 
     public function __construct(
-        Manipulator $manipulator,
+        AstManipulator $manipulator,
         private ObjectTypeDefinitionNode|ObjectType $object,
         private FieldDefinitionNode|FieldDefinition $field,
         private InputValueDefinitionNode|Argument $argument,
