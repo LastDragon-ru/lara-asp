@@ -19,7 +19,7 @@ class TypeDefinitionImpossibleToCreateType extends BuilderException {
     ) {
         parent::__construct(
             sprintf(
-                'Definition `%s`: Impossible to create type for type `%s`.',
+                'Definition `%s`: Impossible to create type for `%s`.',
                 $this->definition,
                 $this->source ?: 'null',
             ),
