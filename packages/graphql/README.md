@@ -443,7 +443,7 @@ class Comment extends Model {
 
 # Builder type detection
 
-Directives like `@searchBy`/`@sortBy` may have a unique set of operators for each type of Builder (Eloquent/Scout/etc). Detection of the current Builder works fine for standard Lighthouse directives like `@all`, `@paginated`, `@search`, etc in most cases (in others cases you probably just need to check/specify proper type hint the same as for relations). But if you implement custom directives which internally enhance the Builder (like standard directives do), you may get `BuilderUnknown` because the proper/expected builder type was not detected. In this case, your directive should implement [`BuilderInfoProvider`](./src/Builder/Contracts/BuilderInfoProvider.php) interface and to specify the builder type explicitly.
+Directives like `@searchBy`/`@sortBy` may have a unique set of operators for each type of Builder (Eloquent/Scout/etc). Detection of the current Builder works fine for standard Lighthouse directives like `@all`, `@paginated`, `@search`, etc in most cases (in others cases you probably just need to check/specify proper type hint the same as for relations). But if you implement custom directives which internally enhance the Builder (like standard directives do), you may get `BuilderUnknown` error because the proper/expected builder type was not detected. In this case, your directive should implement [`BuilderInfoProvider`](./src/Builder/Contracts/BuilderInfoProvider.php) interface and to specify the builder type explicitly.
 
 ```php
 <?php declare(strict_types = 1);
