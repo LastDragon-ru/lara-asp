@@ -10,8 +10,8 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\Field;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
  * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
@@ -20,7 +20,7 @@ class InputFieldSource extends Source {
     use Field;
 
     public function __construct(
-        Manipulator $manipulator,
+        AstManipulator $manipulator,
         private InputObjectTypeDefinitionNode|InputObjectType $object,
         private InputValueDefinitionNode|InputObjectField $field,
     ) {

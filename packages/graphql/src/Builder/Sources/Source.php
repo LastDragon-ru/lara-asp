@@ -9,7 +9,7 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
  * @template TType of TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type
@@ -19,7 +19,7 @@ class Source implements TypeSource {
      * @param TType $type
      */
     public function __construct(
-        private Manipulator $manipulator,
+        private AstManipulator $manipulator,
         private TypeDefinitionNode|Node|Type $type,
     ) {
         // empty
@@ -27,7 +27,7 @@ class Source implements TypeSource {
 
     // <editor-fold desc="Getter / Setter">
     // =========================================================================
-    protected function getManipulator(): Manipulator {
+    protected function getManipulator(): AstManipulator {
         return $this->manipulator;
     }
     // </editor-fold>
