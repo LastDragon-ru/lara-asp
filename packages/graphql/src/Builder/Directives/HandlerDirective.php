@@ -32,6 +32,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -211,7 +212,12 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         $builder = $this->getBuilderInfo($parentField);
 
         if (!$builder) {
-            throw new BuilderUnknown('');
+            $manipulator = Container::getInstance()->make(AstManipulator::class, [
+                'document' => $documentAST,
+            ]);
+            $argSource   = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+
+            throw new BuilderUnknown($argSource);
         }
 
         // Converted?
@@ -226,10 +232,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Argument
-        $argInfo             = $parentType instanceof InterfaceTypeDefinitionNode
-            ? new InterfaceFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition)
-            : new ObjectFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
-        $argDefinition->type = $this->getArgDefinitionType($manipulator, $documentAST, $argInfo);
+        $argSource           = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+        $argDefinition->type = $this->getArgDefinitionType($manipulator, $documentAST, $argSource);
 
         // Interfaces
         $interfaces   = $manipulator->getNodeInterfaces($parentType);
@@ -388,6 +392,17 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             is_a($type, Collection::class, true)      => new BuilderInfo('Collection', Collection::class),
             default                                   => null,
         };
+    }
+
+    private function getFieldArgumentSource(
+        AstManipulator $manipulator,
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
+        FieldDefinitionNode $field,
+        InputValueDefinitionNode $argument,
+    ): ObjectFieldArgumentSource|InterfaceFieldArgumentSource {
+        return $type instanceof InterfaceTypeDefinitionNode
+            ? new InterfaceFieldArgumentSource($manipulator, $type, $field, $argument)
+            : new ObjectFieldArgumentSource($manipulator, $type, $field, $argument);
     }
     // </editor-fold>
 }
