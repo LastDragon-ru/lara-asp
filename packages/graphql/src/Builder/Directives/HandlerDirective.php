@@ -37,12 +37,15 @@ use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\AggregateDirective;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\Directives\BuilderDirective;
+use Nuwave\Lighthouse\Schema\Directives\CountDirective;
 use Nuwave\Lighthouse\Schema\Directives\FindDirective;
 use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
+use Nuwave\Lighthouse\Schema\Directives\WithRelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use ReflectionFunction;
@@ -330,12 +333,17 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Builder?
-        $directive = $directives->associatedOfType($field, AllDirective::class)->first()
-            ?? $directives->associatedOfType($field, PaginateDirective::class)->first()
-            ?? $directives->associatedOfType($field, BuilderDirective::class)->first()
-            ?? $directives->associatedOfType($field, RelationDirective::class)->first()
-            ?? $directives->associatedOfType($field, FirstDirective::class)->first()
-            ?? $directives->associatedOfType($field, FindDirective::class)->first();
+        $directive = $directives->associated($field)->first(static function (Directive $directive): bool {
+            return $directive instanceof AllDirective
+                || $directive instanceof PaginateDirective
+                || $directive instanceof BuilderDirective
+                || $directive instanceof RelationDirective
+                || $directive instanceof FirstDirective
+                || $directive instanceof FindDirective
+                || $directive instanceof CountDirective
+                || $directive instanceof AggregateDirective
+                || $directive instanceof WithRelationDirective;
+        });
 
         if ($directive) {
             $type = null;
@@ -343,6 +351,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             if ($directive instanceof PaginateDirective) {
                 $type = $this->getBuilderType($directive, 'builder');
             } elseif ($directive instanceof AllDirective) {
+                $type = $this->getBuilderType($directive, 'builder');
+            } elseif ($directive instanceof AggregateDirective) {
                 $type = $this->getBuilderType($directive, 'builder');
             } elseif ($directive instanceof BuilderDirective) {
                 $type = $this->getBuilderType($directive, 'method');

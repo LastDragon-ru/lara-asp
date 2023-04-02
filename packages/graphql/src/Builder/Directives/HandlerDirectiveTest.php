@@ -24,7 +24,9 @@ use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\AggregateDirective;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
+use Nuwave\Lighthouse\Schema\Directives\CountDirective;
 use Nuwave\Lighthouse\Schema\Directives\FindDirective;
 use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
@@ -259,6 +261,46 @@ class HandlerDirectiveTest extends TestCase {
                     $directives->setResolved('first', FirstDirective::class);
 
                     $field = Parser::fieldDefinition('field: String @first');
+
+                    return $field;
+                },
+            ],
+            '@count'                                     => [
+                [
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved('count', CountDirective::class);
+
+                    $field = Parser::fieldDefinition('field: String @count');
+
+                    return $field;
+                },
+            ],
+            '@aggregate'                                 => [
+                [
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved('aggregate', AggregateDirective::class);
+
+                    $field = Parser::fieldDefinition('field: String @aggregate');
+
+                    return $field;
+                },
+            ],
+            '@aggregate(query)'                          => [
+                [
+                    'name'    => 'Query',
+                    'builder' => QueryBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved('aggregate', AggregateDirective::class);
+
+                    $class = json_encode(HandlerDirectiveTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
+                    $field = Parser::fieldDefinition("field: String @aggregate(builder: {$class})");
 
                     return $field;
                 },
