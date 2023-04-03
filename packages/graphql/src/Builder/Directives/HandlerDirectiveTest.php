@@ -9,12 +9,11 @@ use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\Parser;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
@@ -25,10 +24,14 @@ use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\AggregateDirective;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
+use Nuwave\Lighthouse\Schema\Directives\CountDirective;
+use Nuwave\Lighthouse\Schema\Directives\FindDirective;
+use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
-use stdClass;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function json_encode;
 
@@ -60,7 +63,7 @@ class HandlerDirectiveTest extends TestCase {
                 return Scope::class;
             }
 
-            public function getBuilderInfo(FieldDefinitionNode $field): BuilderInfo {
+            public function getBuilderInfo(FieldDefinitionNode $field): ?BuilderInfo {
                 return parent::getBuilderInfo($field);
             }
 
@@ -82,8 +85,8 @@ class HandlerDirectiveTest extends TestCase {
         self::assertEquals(
             $expected,
             [
-                'name'    => $actual->getName(),
-                'builder' => $actual->getBuilder(),
+                'name'    => $actual?->getName(),
+                'builder' => $actual?->getBuilder(),
             ],
         );
     }
@@ -93,40 +96,22 @@ class HandlerDirectiveTest extends TestCase {
     // =========================================================================
     /**
      * @return array<string, array{
-     *     array{name: string, builder: string},
+     *     array{name: string, builder: string}|array{name: null, builder: null},
      *     Closure(DirectiveLocator): FieldDefinitionNode,
      *     }>
      */
     public static function dataProviderGetBuilderInfo(): array {
         return [
-            'default(object)'         => [
+            'unknown'                                    => [
                 [
-                    'name'    => 'Object',
-                    'builder' => stdClass::class,
+                    'name'    => null,
+                    'builder' => null,
                 ],
                 static function (): FieldDefinitionNode {
                     return Parser::fieldDefinition('field: String');
                 },
             ],
-            'default([object])'       => [
-                [
-                    'name'    => 'Collection',
-                    'builder' => Collection::class,
-                ],
-                static function (): FieldDefinitionNode {
-                    return Parser::fieldDefinition('field: [String]');
-                },
-            ],
-            'default([object]!)'      => [
-                [
-                    'name'    => 'Collection',
-                    'builder' => Collection::class,
-                ],
-                static function (): FieldDefinitionNode {
-                    return Parser::fieldDefinition('field: [String]!');
-                },
-            ],
-            '@search'                 => [
+            '@search'                                    => [
                 [
                     'name'    => 'Scout',
                     'builder' => ScoutBuilder::class,
@@ -137,7 +122,7 @@ class HandlerDirectiveTest extends TestCase {
                     return Parser::fieldDefinition('field(search: String @search): String');
                 },
             ],
-            '@all'                    => [
+            '@all'                                       => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -148,7 +133,7 @@ class HandlerDirectiveTest extends TestCase {
                     return Parser::fieldDefinition('field: String @all');
                 },
             ],
-            '@all(query)'             => [
+            '@all(query)'                                => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -162,7 +147,7 @@ class HandlerDirectiveTest extends TestCase {
                     return $field;
                 },
             ],
-            '@all(custom query)'      => [
+            '@all(custom query)'                         => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -176,7 +161,7 @@ class HandlerDirectiveTest extends TestCase {
                     return $field;
                 },
             ],
-            '@paginate'               => [
+            '@paginate'                                  => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -187,10 +172,10 @@ class HandlerDirectiveTest extends TestCase {
                     return Parser::fieldDefinition('field: String @paginate');
                 },
             ],
-            '@paginate(resolver)'     => [
+            '@paginate(resolver)'                        => [
                 [
-                    'name'    => 'Paginator',
-                    'builder' => Paginator::class,
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
                 ],
                 static function (DirectiveLocator $directives): FieldDefinitionNode {
                     $directives->setResolved('paginate', PaginateDirective::class);
@@ -201,7 +186,7 @@ class HandlerDirectiveTest extends TestCase {
                     return $field;
                 },
             ],
-            '@paginate(query)'        => [
+            '@paginate(query)'                           => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -215,7 +200,7 @@ class HandlerDirectiveTest extends TestCase {
                     return $field;
                 },
             ],
-            '@paginate(custom query)' => [
+            '@paginate(custom query)'                    => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -229,7 +214,7 @@ class HandlerDirectiveTest extends TestCase {
                     return $field;
                 },
             ],
-            '@relation'               => [
+            '@relation'                                  => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -250,6 +235,130 @@ class HandlerDirectiveTest extends TestCase {
                     );
 
                     $field = Parser::fieldDefinition('field: String @relation');
+
+                    return $field;
+                },
+            ],
+            '@find'                                      => [
+                [
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved('find', FindDirective::class);
+
+                    $field = Parser::fieldDefinition('field: String @find');
+
+                    return $field;
+                },
+            ],
+            '@first'                                     => [
+                [
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved('first', FirstDirective::class);
+
+                    $field = Parser::fieldDefinition('field: String @first');
+
+                    return $field;
+                },
+            ],
+            '@count'                                     => [
+                [
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved('count', CountDirective::class);
+
+                    $field = Parser::fieldDefinition('field: String @count');
+
+                    return $field;
+                },
+            ],
+            '@aggregate'                                 => [
+                [
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved('aggregate', AggregateDirective::class);
+
+                    $field = Parser::fieldDefinition('field: String @aggregate');
+
+                    return $field;
+                },
+            ],
+            '@aggregate(query)'                          => [
+                [
+                    'name'    => 'Query',
+                    'builder' => QueryBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved('aggregate', AggregateDirective::class);
+
+                    $class = json_encode(HandlerDirectiveTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
+                    $field = Parser::fieldDefinition("field: String @aggregate(builder: {$class})");
+
+                    return $field;
+                },
+            ],
+            BuilderInfoProvider::class                   => [
+                [
+                    'name'    => 'Custom',
+                    'builder' => BuilderInfoProvider::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved(
+                        'custom',
+                        (new class () implements Directive, BuilderInfoProvider {
+                            /** @noinspection PhpMissingParentConstructorInspection */
+                            public function __construct() {
+                                // empty
+                            }
+
+                            public static function definition(): string {
+                                throw new Exception('should not be called.');
+                            }
+
+                            public function getBuilderInfo(): BuilderInfo|string {
+                                return new BuilderInfo('Custom', BuilderInfoProvider::class);
+                            }
+                        })::class,
+                    );
+
+                    $field = Parser::fieldDefinition('field: String @custom');
+
+                    return $field;
+                },
+            ],
+            BuilderInfoProvider::class.' (class-string)' => [
+                [
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved(
+                        'custom',
+                        (new class () implements Directive, BuilderInfoProvider {
+                            /** @noinspection PhpMissingParentConstructorInspection */
+                            public function __construct() {
+                                // empty
+                            }
+
+                            public static function definition(): string {
+                                throw new Exception('should not be called.');
+                            }
+
+                            public function getBuilderInfo(): BuilderInfo|string {
+                                return EloquentBuilder::class;
+                            }
+                        })::class,
+                    );
+
+                    $field = Parser::fieldDefinition('field: String @custom');
 
                     return $field;
                 },

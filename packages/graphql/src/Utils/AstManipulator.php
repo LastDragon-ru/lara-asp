@@ -48,7 +48,7 @@ use function trim;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
-abstract class AstManipulator {
+class AstManipulator {
     public function __construct(
         private DirectiveLocator $directives,
         private DocumentAST $document,

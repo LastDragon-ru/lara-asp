@@ -10,8 +10,8 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\Field;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
  * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
@@ -20,7 +20,7 @@ class ObjectFieldSource extends Source {
     use Field;
 
     public function __construct(
-        Manipulator $manipulator,
+        AstManipulator $manipulator,
         private ObjectTypeDefinitionNode|ObjectType $object,
         private FieldDefinitionNode|FieldDefinition $field,
     ) {
