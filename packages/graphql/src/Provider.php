@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators as SearchByOperators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver as DirectiveResolverContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings as SettingsContract;
@@ -52,6 +53,12 @@ class Provider extends ServiceProvider {
             RegisterDirectiveNamespaces::class,
             static function (): string {
                 return implode('\\', array_slice(explode('\\', SortByDirective::class), 0, -1));
+            },
+        );
+        $dispatcher->listen(
+            RegisterDirectiveNamespaces::class,
+            static function (): string {
+                return implode('\\', array_slice(explode('\\', StreamDirective::class), 0, -1));
             },
         );
     }

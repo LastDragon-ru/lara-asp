@@ -14,6 +14,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *      sort_by: array{
  *          operators: array<string, list<string|class-string<Operator>>>,
  *      },
+ *      stream: array{
+ *          searchable: bool,
+ *          sortable: bool,
+ *          chunk: int<1, max>
+ *      }
  *      } $settings
  */
 $settings = [
@@ -55,6 +60,18 @@ $settings = [
         'operators' => [
             // empty
         ],
+    ],
+
+    /**
+     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective @stream} directive.
+     */
+    'stream'    => [
+        /**
+         * Defaults.
+         */
+        'searchable' => true,
+        'sortable'   => true,
+        'chunk'      => 25,
     ],
 ];
 
