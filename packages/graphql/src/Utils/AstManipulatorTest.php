@@ -2,14 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
+use Exception;
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -23,6 +27,7 @@ use stdClass;
 
 use function array_keys;
 use function array_map;
+use function is_string;
 
 /**
  * @internal
@@ -256,7 +261,7 @@ class AstManipulatorTest extends TestCase {
         );
 
         // Argument
-        $argument = $manipulator->getNodeArgument($field, 'arg');
+        $argument = $manipulator->getArgument($field, 'arg');
         $expected = [
             AstManipulatorTest_ADirective::class,
             AstManipulatorTest_CDirective::class,
@@ -285,6 +290,30 @@ class AstManipulatorTest extends TestCase {
             ),
         );
     }
+
+    /**
+     * @dataProvider dataProviderAddArgument
+     */
+    public function testAddArgument(
+        Exception|string $expected,
+        FieldDefinitionNode|FieldDefinition $node,
+        string $name,
+        string $type,
+        mixed $default,
+        ?string $description,
+    ): void {
+        if ($expected instanceof Exception) {
+            self::expectExceptionObject($expected);
+        }
+
+        $manipulator = $this->getManipulator();
+
+        $manipulator->addArgument($node, $name, $type, $default, $description);
+
+        if (is_string($expected)) {
+            $this->assertGraphQLPrintableEquals($expected, $node);
+        }
+    }
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -298,6 +327,97 @@ class AstManipulatorTest extends TestCase {
         ]);
 
         return $manipulator;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string, array{
+     *      Exception|string,
+     *      FieldDefinitionNode|FieldDefinition,
+     *      string,
+     *      string,
+     *      mixed,
+     *      ?string,
+     *      }>
+     */
+    public static function dataProviderAddArgument(): array {
+        return [
+            'argument exists'                          => [
+                new ArgumentAlreadyDefined('argument'),
+                Parser::fieldDefinition('field(argument: String): String'),
+                'argument',
+                'Boolean',
+                null,
+                null,
+            ],
+            'argument without description and default' => [
+                <<<'GraphQL'
+                field(
+                    a: String
+                    b: Boolean
+                ): String
+                GraphQL,
+                Parser::fieldDefinition('field(a: String): String'),
+                'b',
+                'Boolean',
+                null,
+                null,
+            ],
+            'argument without description'             => [
+                <<<'GraphQL'
+                field(
+                    argument: String = "String value"
+                ): String
+                GraphQL,
+                Parser::fieldDefinition('field: String'),
+                'argument',
+                'String',
+                'String value',
+                null,
+            ],
+            'argument'                                 => [
+                <<<'GraphQL'
+                field(
+                    """
+                    Description \"""
+                    "multiline"
+                    with \\ \n
+                    """
+                    argument: Int = 123
+                ): String
+                GraphQL,
+                Parser::fieldDefinition('field: String'),
+                'argument',
+                'Int',
+                123,
+                <<<'DESCRIPTION'
+                Description """
+                "multiline"
+                with \\ \n
+                DESCRIPTION,
+            ],
+            'FieldDefinition'                          => [
+                <<<'GraphQL'
+                field(
+                    argument: [String!] = ["a", "b", "c"]
+                ): String
+                GraphQL,
+                new FieldDefinition([
+                    'name' => 'field',
+                    'type' => static fn () => Type::string(),
+                ]),
+                'argument',
+                '[String!]',
+                [
+                    'a',
+                    'b',
+                    'c',
+                ],
+                null,
+            ],
+        ];
     }
     // </editor-fold>
 }

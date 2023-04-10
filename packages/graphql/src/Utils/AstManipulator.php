@@ -19,23 +19,29 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
+use GraphQL\Language\BlockString;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\HasFieldsType;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NullableType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeUnexpected;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -45,8 +51,12 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function array_merge;
 use function assert;
+use function is_string;
+use function json_encode;
 use function reset;
 use function trim;
+
+use const JSON_THROW_ON_ERROR;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
@@ -447,7 +457,7 @@ class AstManipulator {
         return $field;
     }
 
-    public function getNodeArgument(
+    public function getArgument(
         FieldDefinitionNode|FieldDefinition $node,
         string $name,
     ): InputValueDefinitionNode|Argument|null {
@@ -479,6 +489,73 @@ class AstManipulator {
         }
 
         return $node;
+    }
+
+    public function addArgument(
+        FieldDefinitionNode|FieldDefinition $node,
+        string $name,
+        string $type,
+        mixed $default = null,
+        string $description = null,
+    ): InputValueDefinitionNode|Argument {
+        // Added?
+        if ($this->getArgument($node, $name)) {
+            throw new ArgumentAlreadyDefined($name);
+        }
+
+        // Add
+        if ($node instanceof FieldDefinitionNode) {
+            $definition = ''
+                .($description ? BlockString::print($description) : '')
+                ."{$name}: {$type}"
+                .($default !== null ? ' = '.json_encode($default, JSON_THROW_ON_ERROR) : '');
+            $argument   = Parser::inputValueDefinition($definition);
+
+            $node->arguments[] = $argument;
+        } else {
+            $argument = new Argument([
+                'name'         => $name,
+                'type'         => $this->getType($type, InputType::class),
+                'description'  => $description,
+                'defaultValue' => $default,
+            ]);
+
+            $node->args[] = $argument;
+        }
+
+        return $argument;
+    }
+
+    /**
+     * @template T
+     *
+     * @param (TypeNode&Node)|string $name
+     * @param class-string<T>        $expected
+     *
+     * @return Type&T
+     */
+    private function getType(TypeNode|string $name, string $expected): Type {
+        // todo(graphql): Is there a better way to get Type?
+        $type = null;
+        $node = is_string($name) ? Parser::typeReference($name) : $name;
+
+        if ($node instanceof ListTypeNode) {
+            $type = Type::listOf($this->getType($node->type, Type::class));
+        } elseif ($node instanceof NonNullTypeNode) {
+            $type = Type::nonNull($this->getType($node->type, NullableType::class));
+        } else {
+            $type = $this->getTypeDefinition($node);
+
+            if ($type instanceof Node) {
+                $type = $this->getTypes()->handle($type);
+            }
+        }
+
+        if (!($type instanceof $expected)) {
+            throw new TypeUnexpected($name, $expected);
+        }
+
+        return $type;
     }
     //</editor-fold>
 }
