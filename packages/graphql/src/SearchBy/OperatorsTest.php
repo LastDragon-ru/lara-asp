@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use LastDragon_ru\LaraASP\GraphQL\Package;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 
 use function config;
@@ -20,10 +20,10 @@ class OperatorsTest extends TestCase {
         config([
             Package::Name.'.search_by.operators' => [
                 Operators::ID  => [
-                    Equal::class,
+                    SearchByOperatorEqualDirective::class,
                 ],
                 Operators::Int => [
-                    NotEqual::class,
+                    SearchByOperatorNotEqualDirective::class,
                 ],
             ],
         ]);
@@ -35,7 +35,7 @@ class OperatorsTest extends TestCase {
         self::assertFalse($operators->hasOperators('unknown'));
         self::assertEquals(
             [
-                Equal::class,
+                SearchByOperatorEqualDirective::class,
             ],
             $this->toClassNames(
                 $operators->getOperators(Operators::ID),

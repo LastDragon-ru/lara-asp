@@ -13,8 +13,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProp
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -234,7 +234,7 @@ class DirectiveTest extends TestCase {
                     config([
                         "{$package}.sort_by.operators" => [
                             Operators::Extra => [
-                                Random::class,
+                                SortByOperatorRandomDirective::class,
                             ],
                         ],
                     ]);
@@ -349,7 +349,7 @@ class DirectiveTest extends TestCase {
                         config([
                             "{$package}.sort_by.operators" => [
                                 Operators::Extra => [
-                                    Random::class,
+                                    SortByOperatorRandomDirective::class,
                                 ],
                             ],
                         ]);

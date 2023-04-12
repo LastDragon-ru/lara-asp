@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits;
 
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
 
 use function is_a;
 
 /**
- * @mixin Property
+ * @mixin SearchByOperatorPropertyDirective
  */
 trait ScoutSupport {
     public function __construct(

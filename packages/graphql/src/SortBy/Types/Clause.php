@@ -22,10 +22,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorPropertyDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Property;
 
 use function array_merge;
 use function array_unique;
@@ -120,7 +120,7 @@ class Clause extends InputObject {
         } else {
             $type     = $manipulator->getType(Direction::class, $field);
             $source   = $manipulator->getTypeSource(Parser::typeReference($type));
-            $operator = $manipulator->getOperator($this->getScope(), Field::class);
+            $operator = $manipulator->getOperator($this->getScope(), SortByOperatorFieldDirective::class);
         }
 
         return [$operator, $source];
@@ -131,6 +131,6 @@ class Clause extends InputObject {
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
     ): OperatorContract {
         return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field)
-            ?? $manipulator->getOperator($this->getScope(), Property::class);
+            ?? $manipulator->getOperator($this->getScope(), SortByOperatorPropertyDirective::class);
     }
 }

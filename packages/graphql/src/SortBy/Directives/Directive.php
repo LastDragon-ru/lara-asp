@@ -10,8 +10,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Scope;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorClauseDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Clause;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
@@ -53,7 +53,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
             $manipulator,
             $document,
             $argument,
-            Clause::class,
+            SortByOperatorClauseDirective::class,
         );
 
         if (!$type) {

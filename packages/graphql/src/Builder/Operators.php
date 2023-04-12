@@ -10,10 +10,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
 use function array_map;
 use function array_merge;
-use function array_pop;
+use function array_shift;
 use function array_unique;
 use function is_a;
-use function sort;
 
 abstract class Operators {
     public const ID      = Type::ID;
@@ -79,7 +78,7 @@ abstract class Operators {
         $operators = [];
 
         do {
-            $operator = array_pop($extends);
+            $operator = array_shift($extends);
 
             if (!is_a($operator, Operator::class, true)) {
                 $extends = array_merge($extends, $this->operators[$operator] ?? []);
@@ -87,8 +86,6 @@ abstract class Operators {
                 $operators[] = $operator;
             }
         } while ($extends);
-
-        sort($operators);
 
         // Create Instances
         $operators = array_map(function (string $operator): Operator {

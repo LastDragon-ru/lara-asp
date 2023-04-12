@@ -193,6 +193,8 @@ The package also defines a few own types in addition to the standard GraphQL typ
 <?php declare(strict_types = 1);
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 
 /**
  * -----------------------------------------------------------------------------
@@ -221,8 +223,8 @@ $settings = [
         'operators' => [
             // You can define a list of operators for each type
             'Date'     => [
-                Equal::class,
-                Between::class,
+                SearchByOperatorEqualDirective::class,
+                SearchByOperatorBetweenDirective::class,
                 MyCustomOperator::class,
             ],
 
@@ -343,7 +345,7 @@ It is also possible to sort records in random order, but it is not enabled by de
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra\Random;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 
 /**
  * -----------------------------------------------------------------------------
@@ -371,7 +373,7 @@ $settings = [
          */
         'operators' => [
             SortByOperators::Extra => [
-                Random::class,
+                SortByOperatorRandomDirective::class,
             ],
         ],
     ],

@@ -222,10 +222,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
     ): string {
         $type        = $operator->getFieldType($this, $source);
         $field       = $field ?: $operator::getName();
-        $directive   = $operator->getFieldDirective() ?? $operator::getDirectiveName();
+        $directive   = $operator->getFieldDirective();
         $directive   = $directive instanceof DirectiveNode
             ? Printer::doPrint($directive)
-            : $directive;
+            : '@'.DirectiveLocator::directiveName($operator::class);
         $description = $description ?: $operator->getFieldDescription();
 
         return <<<DEF

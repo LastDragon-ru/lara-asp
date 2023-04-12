@@ -27,9 +27,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property;
 
 use function array_merge;
 use function array_unique;
@@ -134,7 +134,7 @@ class Condition extends InputObject {
         if (is_string($operator)) {
             $type     = $manipulator->getType($operator, $field);
             $source   = $manipulator->getTypeSource(Parser::typeReference($type));
-            $operator = $manipulator->getOperator($this->getScope(), Property::class);
+            $operator = $manipulator->getOperator($this->getScope(), SearchByOperatorPropertyDirective::class);
         }
 
         return [$operator, $source];
