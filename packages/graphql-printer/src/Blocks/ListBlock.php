@@ -205,13 +205,6 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     protected function analyze(Block $block): Block {
         return $this->addUsed($block);
     }
-
-    /**
-     * @param TBlock $value
-     */
-    protected function isValidBlock(Block $value): bool {
-        return !$value->isEmpty();
-    }
     // </editor-fold>
 
     // <editor-fold desc="ArrayAccess">
@@ -237,7 +230,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
      * @param TBlock          $value
      */
     public function offsetSet(mixed $offset, mixed $value): void {
-        if (!$this->isValidBlock($value)) {
+        if ($value->isEmpty()) {
             return;
         }
 

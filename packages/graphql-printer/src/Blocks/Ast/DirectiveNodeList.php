@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use Traversable;
@@ -53,11 +52,6 @@ class DirectiveNodeList extends ListBlock {
 
     protected function isAlwaysMultiline(): bool {
         return true;
-    }
-
-    protected function isValidBlock(Block $value): bool {
-        return parent::isValidBlock($value)
-            && $this->isDirectiveAllowed($value->getNode()->name->value);
     }
 
     private function block(DirectiveNode $directive,): DirectiveNodeBlock {

@@ -31,6 +31,11 @@ class DirectiveNodeBlock extends Block implements NamedBlock {
     }
 
     protected function content(): string {
+        // Print?
+        if (!$this->isDirectiveAllowed($this->getNode()->name->value)) {
+            return '';
+        }
+
         // Convert
         $node = $this->getNode();
         $name = $this->getName();
