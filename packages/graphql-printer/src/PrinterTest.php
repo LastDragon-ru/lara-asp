@@ -68,34 +68,6 @@ class PrinterTest extends TestCase {
      */
     public static function dataProviderPrintSchema(): array {
         return [
-            'null'                                             => [
-                (new GraphQLExpectedSchema(
-                    self::getTestData()->file('~printSchema-DefaultSettings.graphql'),
-                ))
-                    ->setUsedTypes([
-                        'Query',
-                        'String',
-                        'Enum',
-                        'Int',
-                        'Float',
-                        'InputA',
-                        'InterfaceA',
-                        'InterfaceB',
-                        'InterfaceC',
-                        'Scalar',
-                        'TypeB',
-                        'Mutation',
-                        'TypeA',
-                        'Union',
-                        'TypeC',
-                        'Subscription',
-                    ])
-                    ->setUsedDirectives([
-                        '@deprecated',
-                    ]),
-                null,
-                0,
-            ],
             DefaultSettings::class                             => [
                 (new GraphQLExpectedSchema(
                     self::getTestData()->file('~printSchema-DefaultSettings.graphql'),
@@ -117,6 +89,8 @@ class PrinterTest extends TestCase {
                         'Union',
                         'TypeC',
                         'Subscription',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -151,6 +125,8 @@ class PrinterTest extends TestCase {
                         'TypeC',
                         'Subscription',
                         'UnionUnused',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -179,6 +155,8 @@ class PrinterTest extends TestCase {
                         'Union',
                         'TypeC',
                         'Subscription',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -208,6 +186,8 @@ class PrinterTest extends TestCase {
                         'Union',
                         'TypeC',
                         'Subscription',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -238,6 +218,8 @@ class PrinterTest extends TestCase {
                         'InterfaceA',
                         'InterfaceB',
                         'InterfaceC',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -278,6 +260,8 @@ class PrinterTest extends TestCase {
                         'Union',
                         'TypeC',
                         'Subscription',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -311,6 +295,8 @@ class PrinterTest extends TestCase {
                         'TypeA',
                         'Union',
                         'TypeC',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -347,6 +333,8 @@ class PrinterTest extends TestCase {
                         'TypeC',
                         'Subscription',
                         'String',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -379,6 +367,8 @@ class PrinterTest extends TestCase {
                         'Float',
                         'TypeA',
                         'Union',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -412,6 +402,8 @@ class PrinterTest extends TestCase {
                         'TypeA',
                         'InterfaceA',
                         'InterfaceB',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
@@ -432,6 +424,8 @@ class PrinterTest extends TestCase {
                         'InterfaceA',
                         'InterfaceB',
                         'InterfaceC',
+                        'InputHidden',
+                        'TypeHidden',
                     ])
                     ->setUsedDirectives([
                         '@directive',

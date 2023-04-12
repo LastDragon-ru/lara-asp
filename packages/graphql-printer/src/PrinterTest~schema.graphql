@@ -22,10 +22,11 @@
 # }
 
 type Query {
-    type(scalar: Int! = 123 @directive(location: "argument"), a: InputA): TypeA!
-    enum(enum: Enum = A): TypeB
+    type(scalar: Int! = 123 @directive(location: "argument", hidden: null), a: InputA): TypeA!
+    enum(enum: Enum = A, hidden: [InputHidden!]!): TypeB
     union: Union
     scalar: Scalar
+    hidden(scalar: Int! = 123): TypeHidden
 }
 
 type Mutation {
@@ -82,6 +83,8 @@ interface InterfaceC {
     b: [String!]
     c: [Float!]!
     a: Int
+    d: TypeHidden!
+    e(a: Int, b: InputHidden): Int
 }
 
 extend interface InterfaceA @directive(location: "extend")
@@ -117,7 +120,11 @@ extend type TypeA implements InterfaceB {
     d: [String!] @directive(location: "extend")
 }
 
-interface TypeUnused {
+type TypeUnused {
+    a: Int
+}
+
+type TypeHidden {
     a: Int
 }
 
@@ -151,8 +158,12 @@ input InputUnused {
     a: Int
 }
 
+input InputHidden {
+    a: Int
+}
+
 "Directive description"
-directive @directive(location: String) repeatable on
+directive @directive(location: String, hidden: InputHidden) repeatable on
     | QUERY
     | MUTATION
     | SUBSCRIPTION
