@@ -26,6 +26,7 @@ class DefaultSettings extends GraphQLSettings {
     protected bool             $alwaysMultilineArguments          = true;
     protected bool             $alwaysMultilineInterfaces         = true;
     protected bool             $alwaysMultilineDirectiveLocations = true;
+    protected ?TypeFilter      $typeFilter                        = null;
     protected ?TypeFilter      $typeDefinitionFilter              = null;
     protected ?DirectiveFilter $directiveFilter                   = null;
     protected ?DirectiveFilter $directiveDefinitionFilter         = null;

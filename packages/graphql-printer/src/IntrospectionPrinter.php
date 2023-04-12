@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
  * Introspection schema printer.
  *
  * Following settings has no effects:
+ * - {@see Settings::getTypeFilter()}
  * - {@see Settings::getTypeDefinitionFilter()}
  * - {@see Settings::getDirectiveFilter}
  * - {@see Settings::getDirectiveDefinitionFilter}
@@ -27,6 +28,7 @@ class IntrospectionPrinter extends Printer {
                 ->setPrintUnusedDefinitions(true)
                 ->setPrintDirectiveDefinitions(true)
                 ->setTypeDefinitionFilter(null)
+                ->setTypeFilter(null)
                 ->setDirectiveDefinitionFilter(null)
                 ->setDirectiveFilter(null),
         );
