@@ -28,6 +28,7 @@ module.exports = {
     github:  {
         release:      true,
         draft:        true,
+        comments:     false,
         releaseName:  '${(changelog.split("\\n", 1)[0] || "").replace(/^#+\\s+(.+?)$/, "$1")}',
         releaseNotes: (context) => {
             let changelog = context.changelog;
