@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use Closure;
+use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
@@ -212,18 +213,19 @@ abstract class Block implements Statistics, Stringable {
         return $isAllowed;
     }
 
-    public function isDirectiveDefinitionAllowed(string $directive): bool {
+    public function isDirectiveDefinitionAllowed(Directive $directive): bool {
         // Allowed?
-        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive)) {
+        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive->name)) {
             return false;
         }
 
         // Definition?
+        $name      = $directive->name;
         $filter    = $this->getSettings()->getDirectiveDefinitionFilter();
-        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+        $isBuiltIn = $this->isDirectiveBuiltIn($name);
         $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedDirective($directive, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedDirective($directive, $isBuiltIn));
+            ? ($filter !== null && $filter->isAllowedDirective($name, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedDirective($name, $isBuiltIn));
 
         // Return
         return $isAllowed;

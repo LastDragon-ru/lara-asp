@@ -141,10 +141,8 @@ class Printer implements SchemaPrinterContract {
     protected function getTypeDefinitions(Schema $schema): ListBlock {
         $blocks = $this->getDefinitionList();
 
-        foreach ($schema->getTypeMap() as $type) {
-            if ($blocks->isTypeDefinitionAllowed($type)) {
-                $blocks[] = $this->getDefinitionBlock($type);
-            }
+        foreach ($schema->getTypeMap() as $name => $type) {
+            $blocks[$name] = $this->getDefinitionBlock($type);
         }
 
         return $blocks;
@@ -166,7 +164,7 @@ class Printer implements SchemaPrinterContract {
             );
 
             foreach ($directives as $directive) {
-                if (!isset($blocks[$directive->name]) && $blocks->isDirectiveDefinitionAllowed($directive->name)) {
+                if (!isset($blocks[$directive->name])) {
                     $blocks[$directive->name] = $this->getDefinitionBlock($directive);
                 }
             }
@@ -195,12 +193,13 @@ class Printer implements SchemaPrinterContract {
     protected function getUsedDefinitions(Schema $schema, Block $root): array {
         $directiveDefinitions = [];
         $directiveResolver    = null;
-        $directives           = $this->getDefinitionList();
+        $directives           = null;
         $types                = $this->getDefinitionList();
         $stack                = $root->getUsedDirectives() + $root->getUsedTypes();
 
         if ($this->getSettings()->isPrintDirectiveDefinitions()) {
             $directiveResolver = $this->getDirectiveResolver();
+            $directives        = $this->getDefinitionList();
 
             foreach ($schema->getDirectives() as $directive) {
                 $directiveDefinitions[$directive->name] = $directive;
@@ -219,10 +218,8 @@ class Printer implements SchemaPrinterContract {
             $block = null;
 
             if (str_starts_with($name, '@')) {
-                $directive = substr($name, 1);
-                $printable = $root->isDirectiveDefinitionAllowed($directive);
-
-                if ($printable) {
+                if ($directives) {
+                    $directive = substr($name, 1);
                     $directive = $directiveDefinitions[$directive]
                         ?? $directiveResolver?->getDefinition($directive);
 
@@ -236,7 +233,7 @@ class Printer implements SchemaPrinterContract {
             } else {
                 $type = $schema->getType($name);
 
-                if ($type && $root->isTypeDefinitionAllowed($type)) {
+                if ($type) {
                     $block        = $this->getDefinitionBlock($type);
                     $types[$name] = $block;
                 }
@@ -250,10 +247,9 @@ class Printer implements SchemaPrinterContract {
             }
         }
 
-        return [
-            $types,
-            $directives,
-        ];
+        return $directives
+            ? [$types, $directives]
+            : [$types];
     }
     // </editor-fold>
 }

@@ -29,7 +29,9 @@ class InterfaceTypeDefinitionTest extends TestCase {
     ): void {
         $actual = (string) (new InterfaceTypeDefinition($settings, $level, $used, $definition));
 
-        Parser::interfaceTypeDefinition($actual);
+        if ($expected) {
+            Parser::interfaceTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -542,6 +544,17 @@ class InterfaceTypeDefinitionTest extends TestCase {
                             ],
                         ],
                     ],
+                ]),
+            ],
+            'filter'                                      => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new InterfaceType([
+                    'name'   => 'Test',
+                    'fields' => [],
                 ]),
             ],
         ];

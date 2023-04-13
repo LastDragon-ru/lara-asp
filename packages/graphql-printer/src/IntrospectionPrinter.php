@@ -7,6 +7,7 @@ use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Filters\IntrospectionFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
 
@@ -23,22 +24,25 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
  */
 class IntrospectionPrinter extends Printer {
     public function setSettings(?Settings $settings): static {
+        $settings ??= new DefaultSettings();
+        $filter     = new IntrospectionFilter();
+
         return parent::setSettings(
-            ImmutableSettings::createFrom($settings ?? new DefaultSettings())
+            ImmutableSettings::createFrom($settings)
                 ->setPrintUnusedDefinitions(true)
                 ->setPrintDirectiveDefinitions(true)
-                ->setTypeDefinitionFilter(null)
-                ->setTypeFilter(null)
-                ->setDirectiveDefinitionFilter(null)
-                ->setDirectiveFilter(null),
+                ->setTypeDefinitionFilter($filter)
+                ->setTypeFilter($filter)
+                ->setDirectiveDefinitionFilter($filter)
+                ->setDirectiveFilter($filter),
         );
     }
 
     protected function getTypeDefinitions(Schema $schema): ListBlock {
         $blocks = $this->getDefinitionList();
 
-        foreach (Introspection::getTypes() as $type) {
-            $blocks[] = $this->getDefinitionBlock($type);
+        foreach (Introspection::getTypes() as $name => $type) {
+            $blocks[$name] = $this->getDefinitionBlock($type);
         }
 
         return $blocks;
@@ -50,7 +54,7 @@ class IntrospectionPrinter extends Printer {
 
         foreach ($directives as $directive) {
             if (Directive::isSpecifiedDirective($directive)) {
-                $blocks[] = $this->getDefinitionBlock($directive);
+                $blocks[$directive->name] = $this->getDefinitionBlock($directive);
             }
         }
 

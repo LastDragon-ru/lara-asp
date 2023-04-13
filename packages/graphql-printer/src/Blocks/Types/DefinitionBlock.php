@@ -65,6 +65,12 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
     }
 
     protected function content(): string {
+        // Allowed?
+        if (!$this->isDefinitionAllowed()) {
+            return '';
+        }
+
+        // Process
         $eol         = $this->eol();
         $space       = $this->space();
         $indent      = $this->indent();
@@ -156,6 +162,17 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             $this->getUsed(),
             $description,
         );
+    }
+
+    protected function isDefinitionAllowed(): bool {
+        $definition = $this->getDefinition();
+        $allowed    = match (true) {
+            $definition instanceof Type      => $this->isTypeDefinitionAllowed($definition),
+            $definition instanceof Directive => $this->isDirectiveDefinitionAllowed($definition),
+            default                          => true,
+        };
+
+        return $allowed;
     }
 
     /**

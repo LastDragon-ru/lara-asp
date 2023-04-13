@@ -34,7 +34,9 @@ class InputObjectTypeDefinitionTest extends TestCase {
             $definition,
         ));
 
-        Parser::inputObjectTypeDefinition($actual);
+        if ($expected) {
+            Parser::inputObjectTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -196,6 +198,17 @@ class InputObjectTypeDefinitionTest extends TestCase {
                             'type' => Type::string(),
                         ],
                     ],
+                ]),
+            ],
+            'filter'                            => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new InputObjectType([
+                    'name'   => 'Test',
+                    'fields' => [],
                 ]),
             ],
         ];

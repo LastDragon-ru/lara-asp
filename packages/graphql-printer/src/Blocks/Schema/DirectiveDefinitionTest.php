@@ -33,7 +33,9 @@ class DirectiveDefinitionTest extends TestCase {
     ): void {
         $actual = (string) (new DirectiveDefinition($settings, $level, $used, $definition));
 
-        Parser::directiveDefinition($actual);
+        if ($expected) {
+            Parser::directiveDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -307,6 +309,19 @@ class DirectiveDefinitionTest extends TestCase {
                             'description' => 'Description',
                         ],
                     ],
+                    'locations' => [
+                        DirectiveLocation::ARGUMENT_DEFINITION,
+                    ],
+                ]),
+            ],
+            'filter'                     => [
+                '',
+                $settings
+                    ->setDirectiveDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new Directive([
+                    'name'      => 'test',
                     'locations' => [
                         DirectiveLocation::ARGUMENT_DEFINITION,
                     ],

@@ -35,7 +35,9 @@ class EnumTypeDefinitionTest extends TestCase {
 
         $actual = (string) (new EnumTypeDefinition($settings, $level, $used, $type));
 
-        Parser::enumTypeDefinition($actual);
+        if ($expected) {
+            Parser::enumTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -124,6 +126,17 @@ class EnumTypeDefinitionTest extends TestCase {
                         Parser::enumTypeExtension('extend enum Test @b'),
                         Parser::enumTypeExtension('extend enum Test @c'),
                     ],
+                ]),
+            ],
+            'filter'     => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new EnumType([
+                    'name'   => 'Test',
+                    'values' => ['A'],
                 ]),
             ],
         ];

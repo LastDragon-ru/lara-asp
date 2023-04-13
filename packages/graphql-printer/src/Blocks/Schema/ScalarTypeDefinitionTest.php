@@ -28,7 +28,9 @@ class ScalarTypeDefinitionTest extends TestCase {
     ): void {
         $actual = (string) (new ScalarTypeDefinition($settings, $level, $used, $type));
 
-        Parser::scalarTypeDefinition($actual);
+        if ($expected) {
+            Parser::scalarTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -117,6 +119,16 @@ class ScalarTypeDefinitionTest extends TestCase {
                         scalar Test @a(value: "very very long value") @b(value: "b")
                         STRING,
                     ),
+                ]),
+            ],
+            'filter'                  => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn() => false),
+                0,
+                0,
+                new CustomScalarType([
+                    'name' => 'Test',
                 ]),
             ],
         ];

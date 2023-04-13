@@ -30,7 +30,9 @@ class UnionTypeDefinitionTest extends TestCase {
     ): void {
         $actual = (string) (new UnionTypeDefinition($settings, $level, $used, $type));
 
-        Parser::unionTypeDefinition($actual);
+        if ($expected) {
+            Parser::unionTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -274,6 +276,19 @@ class UnionTypeDefinitionTest extends TestCase {
                     'name'  => 'Test',
                     'types' => [
                         $a,
+                    ],
+                ]),
+            ],
+            'filter'                        => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new UnionType([
+                    'name'  => 'Test',
+                    'types' => [
+                        $c,
                     ],
                 ]),
             ],

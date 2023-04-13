@@ -29,7 +29,9 @@ class ObjectTypeDefinitionTest extends TestCase {
     ): void {
         $actual = (string) (new ObjectTypeDefinition($settings, $level, $used, $definition));
 
-        Parser::objectTypeDefinition($actual);
+        if ($expected) {
+            Parser::objectTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -536,6 +538,17 @@ class ObjectTypeDefinitionTest extends TestCase {
                             ],
                         ],
                     ],
+                ]),
+            ],
+            'filter'                                      => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new ObjectType([
+                    'name'   => 'Test',
+                    'fields' => [],
                 ]),
             ],
         ];

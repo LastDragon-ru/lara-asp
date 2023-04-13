@@ -685,7 +685,7 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block b'),
                         new ListBlockTest__Block(false, ''),
                     ],
-                    2,
+                    5,
                 ],
             ]),
         ]))->getData();
