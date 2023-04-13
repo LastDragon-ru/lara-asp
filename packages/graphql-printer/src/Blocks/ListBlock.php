@@ -207,6 +207,14 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     protected function analyze(Block $block): Block {
         return $this->addUsed($block);
     }
+
+    protected function reset(): void {
+        foreach ($this->blocks as $block) {
+            $block->reset();
+        }
+
+        parent::reset();
+    }
     // </editor-fold>
 
     // <editor-fold desc="ArrayAccess">
@@ -238,7 +246,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
             $this->blocks[] = $value;
         }
 
-        $this->reset();
+        parent::reset();
     }
 
     /**
@@ -247,7 +255,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     public function offsetUnset(mixed $offset): void {
         unset($this->blocks[$offset]);
 
-        $this->reset();
+        parent::reset();
     }
     // </editor-fold>
 
