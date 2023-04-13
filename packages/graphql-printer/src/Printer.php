@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\ResultImpl;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
 use function array_merge;
