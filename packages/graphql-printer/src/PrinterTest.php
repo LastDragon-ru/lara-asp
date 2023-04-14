@@ -16,6 +16,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
+use function str_ends_with;
+
 /**
  * @internal
  * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Printer
@@ -68,6 +70,13 @@ class PrinterTest extends TestCase {
      */
     public static function dataProviderPrintSchema(): array {
         return [
+            'null'                                             => [
+                new GraphQLExpectedSchema(
+                    self::getTestData()->file('~printSchema-DefaultSettings.graphql'),
+                ),
+                null,
+                0,
+            ],
             DefaultSettings::class                             => [
                 (new GraphQLExpectedSchema(
                     self::getTestData()->file('~printSchema-DefaultSettings.graphql'),
@@ -307,6 +316,40 @@ class PrinterTest extends TestCase {
                         static function (string $type, bool $isStandard): bool {
                             return $isStandard === false
                                 && $type !== 'Subscription';
+                        },
+                    ),
+                0,
+            ],
+            TestSettings::class.' (TypeFilter)'                => [
+                (new GraphQLExpectedSchema(
+                    self::getTestData()->file('~printSchema-TestSettings-TypeFilter.graphql'),
+                ))
+                    ->setUsedTypes([
+                        'Query',
+                        'String',
+                        'Enum',
+                        'Int',
+                        'Float',
+                        'InputA',
+                        'InterfaceA',
+                        'InterfaceB',
+                        'InterfaceC',
+                        'Scalar',
+                        'TypeB',
+                        'Mutation',
+                        'TypeA',
+                        'Union',
+                        'TypeC',
+                        'Subscription',
+                    ])
+                    ->setUsedDirectives([
+                        '@deprecated',
+                        '@directive',
+                    ]),
+                (new TestSettings())
+                    ->setTypeFilter(
+                        static function (string $type, bool $isStandard): bool {
+                            return !str_ends_with($type, 'Hidden');
                         },
                     ),
                 0,

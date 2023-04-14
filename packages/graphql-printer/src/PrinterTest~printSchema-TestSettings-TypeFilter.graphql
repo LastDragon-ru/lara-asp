@@ -1,0 +1,221 @@
+"""
+Enum description.
+"""
+enum Enum
+@directive(
+    location: "enum"
+)
+@directive(
+    location: "extend"
+)
+{
+    """
+    Enum value description
+    """
+    A
+
+    B
+    @directive(
+        location: "enum value"
+    )
+
+    C
+}
+
+"""
+Input description.
+"""
+input InputA
+@directive(
+    location: "input"
+)
+@directive(
+    location: "extend"
+)
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "extend"
+    )
+
+    c: [Float!]!
+    @directive(
+        location: "field"
+    )
+}
+
+"""
+Interface description.
+"""
+interface InterfaceA
+@directive(
+    location: "interface"
+)
+@directive(
+    location: "extend"
+)
+{
+    a: Int
+}
+
+interface InterfaceB
+implements
+    & InterfaceA
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+interface InterfaceC
+implements
+    & InterfaceA
+    & InterfaceB
+{
+    a: Int
+    b: [String!]
+    c: [Float!]!
+
+    e(
+        a: Int
+    ): Int
+}
+
+"""
+Scalar description.
+"""
+scalar Scalar
+@directive(
+    location: "scalar"
+)
+@directive(
+    location: "extend"
+)
+
+type Mutation {
+    mutate(
+        a: InputA
+
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+    ): [TypeB!]
+}
+
+type Query {
+    enum(
+        enum: Enum = A
+    ): TypeB
+
+    scalar: Scalar
+
+    type(
+        a: InputA
+
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+    ): TypeA!
+
+    union: Union
+}
+
+type Subscription {
+    subscribe: TypeC
+}
+
+"""
+Type description.
+"""
+type TypeA
+implements
+    & InterfaceB
+    & InterfaceC
+@directive(
+    location: "type"
+)
+@directive(
+    location: "extend"
+)
+{
+    a: Int
+    @deprecated
+
+    """
+    Field description.
+    """
+    b: [String!]
+
+    c: [Float!]!
+
+    d: [String!]
+    @directive(
+        location: "extend"
+    )
+}
+
+type TypeB {
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+type TypeC {
+    c: [Float!]!
+}
+
+"""
+Union description.
+"""
+union Union
+@directive(
+    location: "union"
+)
+@directive(
+    location: "extend"
+)
+=
+    | TypeA
+    | TypeB
+    | TypeC
+
+"""
+Directive description
+"""
+directive @directive(
+    location: String
+)
+repeatable on
+    | ARGUMENT_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | FIELD
+    | FIELD_DEFINITION
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | INTERFACE
+    | MUTATION
+    | OBJECT
+    | QUERY
+    | SCALAR
+    | SCHEMA
+    | SUBSCRIPTION
+    | UNION
+    | VARIABLE_DEFINITION

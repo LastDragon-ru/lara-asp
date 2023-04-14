@@ -45,6 +45,7 @@ class DirectiveNodeBlock extends Block implements NamedBlock {
                 $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed() + $used,
+                $node,
                 $node->arguments,
             ),
         );

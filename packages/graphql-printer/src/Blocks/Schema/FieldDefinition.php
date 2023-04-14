@@ -24,6 +24,12 @@ class FieldDefinition extends DefinitionBlock {
         parent::__construct($context, $level, $used, $definition);
     }
 
+    protected function content(): string {
+        return $this->isTypeAllowed($this->getDefinition()->getType())
+            ? parent::content()
+            : '';
+    }
+
     protected function type(): string|null {
         return null;
     }
