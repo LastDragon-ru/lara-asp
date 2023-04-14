@@ -11,6 +11,7 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\FieldDefinition;
@@ -227,11 +228,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
             ? Printer::doPrint($directive)
             : '@'.DirectiveLocator::directiveName($operator::class);
         $description = $description ?: $operator->getFieldDescription();
+        $description = BlockString::print($description);
 
         return <<<DEF
-            """
             {$description}
-            """
             {$field}: {$type}
             {$directive}
         DEF;
