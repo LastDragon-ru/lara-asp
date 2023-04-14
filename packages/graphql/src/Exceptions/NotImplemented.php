@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Exceptions;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\SearchByException;
+use LastDragon_ru\LaraASP\GraphQL\PackageException;
 use Stringable;
 use Throwable;
 
 use function sprintf;
 
-class NotImplemented extends SearchByException {
+class NotImplemented extends PackageException {
     public function __construct(
         protected Stringable|string $feature,
         Throwable $previous = null,
