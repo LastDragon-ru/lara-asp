@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use Mockery;
@@ -17,9 +18,9 @@ class BlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testGetContent(): void {
-        $settings = new TestSettings();
-        $content  = 'content';
-        $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
+        $context = new Context(new TestSettings(), null, null);
+        $content = 'content';
+        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -32,10 +33,10 @@ class BlockTest extends TestCase {
     }
 
     public function testGetLength(): void {
-        $settings = new TestSettings();
-        $content  = 'content';
-        $length   = mb_strlen($content);
-        $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
+        $context = new Context(new TestSettings(), null, null);
+        $content = 'content';
+        $length  = mb_strlen($content);
+        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -51,7 +52,8 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsMultiline
      */
     public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
-        $block = Mockery::mock(BlockTest__Block::class, [$settings]);
+        $context = new Context($settings, null, null);
+        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
@@ -67,8 +69,8 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsEmpty
      */
     public function testIsEmpty(bool $expected, string $content): void {
-        $settings = new TestSettings();
-        $block    = Mockery::mock(BlockTest__Block::class, [$settings]);
+        $context = new Context(new TestSettings(), null, null);
+        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block

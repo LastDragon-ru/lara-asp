@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 /**
@@ -16,12 +16,18 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 #[GraphQLDefinition(GraphQLFieldDefinition::class)]
 class FieldDefinition extends DefinitionBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         GraphQLFieldDefinition $definition,
     ) {
-        parent::__construct($settings, $level, $used, $definition);
+        parent::__construct($context, $level, $used, $definition);
+    }
+
+    protected function content(): string {
+        return $this->isTypeAllowed($this->getDefinition()->getType())
+            ? parent::content()
+            : '';
     }
 
     protected function type(): string|null {
@@ -33,7 +39,7 @@ class FieldDefinition extends DefinitionBlock {
         $space      = $this->space();
         $type       = $this->addUsed(
             new Type(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition->getType(),
@@ -41,7 +47,7 @@ class FieldDefinition extends DefinitionBlock {
         );
         $args       = $this->addUsed(
             new ArgumentsDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition->args,

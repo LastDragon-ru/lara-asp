@@ -6,6 +6,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ScalarType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -26,9 +27,12 @@ class ScalarTypeDefinitionTest extends TestCase {
         int $used,
         ScalarType $type,
     ): void {
-        $actual = (string) (new ScalarTypeDefinition($settings, $level, $used, $type));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new ScalarTypeDefinition($context, $level, $used, $type));
 
-        Parser::scalarTypeDefinition($actual);
+        if ($expected) {
+            Parser::scalarTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -117,6 +121,16 @@ class ScalarTypeDefinitionTest extends TestCase {
                         scalar Test @a(value: "very very long value") @b(value: "b")
                         STRING,
                     ),
+                ]),
+            ],
+            'filter'                  => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn() => false),
+                0,
+                0,
+                new CustomScalarType([
+                    'name' => 'Test',
                 ]),
             ],
         ];

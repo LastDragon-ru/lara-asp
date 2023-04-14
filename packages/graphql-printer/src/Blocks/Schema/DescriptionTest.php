@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -26,7 +27,8 @@ class DescriptionTest extends TestCase {
         int $used,
         ?string $description,
     ): void {
-        $actual = (string) (new Description($settings, $level, $used, $description));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new Description($context, $level, $used, $description));
 
         self::assertEquals($expected, $actual);
 

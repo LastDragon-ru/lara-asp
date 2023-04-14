@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -27,15 +28,18 @@ class InterfaceTypeDefinitionTest extends TestCase {
         int $used,
         InterfaceType $definition,
     ): void {
-        $actual = (string) (new InterfaceTypeDefinition($settings, $level, $used, $definition));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new InterfaceTypeDefinition($context, $level, $used, $definition));
 
-        Parser::interfaceTypeDefinition($actual);
+        if ($expected) {
+            Parser::interfaceTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
 
     public function testStatistics(): void {
-        $settings   = new TestSettings();
+        $context    = new Context(new TestSettings(), null, null);
         $definition = new InterfaceType([
             'name'       => 'A',
             'fields'     => [
@@ -77,7 +81,7 @@ class InterfaceTypeDefinitionTest extends TestCase {
             ],
             'astNode'    => Parser::interfaceTypeDefinition('interface A @a'),
         ]);
-        $block      = new InterfaceTypeDefinition($settings, 0, 0, $definition);
+        $block      = new InterfaceTypeDefinition($context, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
@@ -542,6 +546,17 @@ class InterfaceTypeDefinitionTest extends TestCase {
                             ],
                         ],
                     ],
+                ]),
+            ],
+            'filter'                                      => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new InterfaceType([
+                    'name'   => 'Test',
+                    'fields' => [],
                 ]),
             ],
         ];

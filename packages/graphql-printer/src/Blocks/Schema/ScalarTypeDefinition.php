@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 use GraphQL\Type\Definition\ScalarType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
@@ -14,12 +14,12 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
  */
 class ScalarTypeDefinition extends DefinitionBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         ScalarType $definition,
     ) {
-        parent::__construct($settings, $level, $used, $definition);
+        parent::__construct($context, $level, $used, $definition);
     }
 
     protected function type(): string|null {

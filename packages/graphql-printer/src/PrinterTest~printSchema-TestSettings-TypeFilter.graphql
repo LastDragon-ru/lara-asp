@@ -49,10 +49,6 @@ input InputA
     )
 }
 
-input InputHidden {
-    a: Int
-}
-
 """
 Interface description.
 """
@@ -90,26 +86,11 @@ implements
     a: Int
     b: [String!]
     c: [Float!]!
-    d: TypeHidden!
 
     e(
         a: Int
-        b: InputHidden
     ): Int
 }
-
-"""
-The `Float` scalar type represents signed double-precision fractional
-values as specified by
-[IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).
-"""
-scalar Float
-
-"""
-The `Int` scalar type represents non-fractional signed whole numeric
-values. Int can represent values between -(2^31) and 2^31 - 1.
-"""
-scalar Int
 
 """
 Scalar description.
@@ -121,13 +102,6 @@ scalar Scalar
 @directive(
     location: "extend"
 )
-
-"""
-The `String` scalar type represents textual data, represented as UTF-8
-character sequences. The String type is most often used by GraphQL to
-represent free-form human-readable text.
-"""
-scalar String
 
 type Mutation {
     mutate(
@@ -143,12 +117,7 @@ type Mutation {
 type Query {
     enum(
         enum: Enum = A
-        hidden: [InputHidden!]!
     ): TypeB
-
-    hidden(
-        scalar: Int! = 123
-    ): TypeHidden
 
     scalar: Scalar
 
@@ -157,7 +126,6 @@ type Query {
 
         scalar: Int! = 123
         @directive(
-            hidden: null
             location: "argument"
         )
     ): TypeA!
@@ -210,10 +178,6 @@ type TypeC {
     c: [Float!]!
 }
 
-type TypeHidden {
-    a: Int
-}
-
 """
 Union description.
 """
@@ -230,23 +194,9 @@ union Union
     | TypeC
 
 """
-Marks an element of a GraphQL schema as no longer supported.
-"""
-directive @deprecated(
-    """
-    Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).
-    """
-    reason: String = "No longer supported"
-)
-on
-    | ENUM_VALUE
-    | FIELD_DEFINITION
-
-"""
 Directive description
 """
 directive @directive(
-    hidden: InputHidden
     location: String
 )
 repeatable on

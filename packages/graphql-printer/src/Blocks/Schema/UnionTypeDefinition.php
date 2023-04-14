@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function mb_strlen;
 
@@ -16,12 +16,12 @@ use function mb_strlen;
  */
 class UnionTypeDefinition extends DefinitionBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         UnionType $definition,
     ) {
-        parent::__construct($settings, $level, $used, $definition);
+        parent::__construct($context, $level, $used, $definition);
     }
 
     protected function type(): string|null {
@@ -37,7 +37,7 @@ class UnionTypeDefinition extends DefinitionBlock {
         $equal = "={$space}";
         $types = $this->addUsed(
             new UnionMemberTypes(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel() + 1,
                 $used + mb_strlen($equal),
                 $this->getDefinition()->getTypes(),

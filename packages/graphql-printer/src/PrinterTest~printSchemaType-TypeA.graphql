@@ -28,6 +28,10 @@ implements
     )
 }
 
+input InputHidden {
+    a: Int
+}
+
 """
 Interface description.
 """
@@ -65,12 +69,23 @@ implements
     a: Int
     b: [String!]
     c: [Float!]!
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
+}
+
+type TypeHidden {
+    a: Int
 }
 
 """
 Directive description
 """
 directive @directive(
+    hidden: InputHidden
     location: String
 )
 repeatable on

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -21,28 +21,29 @@ class PropertyBlockTest extends TestCase {
         $separator = ':';
         $content   = 'abc abcabc abcabc abcabc abc';
         $settings  = (new TestSettings())->setSpace($space);
-        $block     = new class($settings, $level, $used, $content) extends Block {
+        $context   = new Context($settings, null, null);
+        $block     = new class($context, $level, $used, $content) extends Block {
             public function __construct(
-                Settings $settings,
+                Context $context,
                 int $level,
                 int $used,
                 protected string $content,
             ) {
-                parent::__construct($settings, $level, $used);
+                parent::__construct($context, $level, $used);
             }
 
             protected function content(): string {
                 return $this->content;
             }
         };
-        $property  = new class($settings, $name, $block, $separator) extends PropertyBlock {
+        $property  = new class($context, $name, $block, $separator) extends PropertyBlock {
             public function __construct(
-                Settings $settings,
+                Context $context,
                 string $name,
                 Block $block,
                 private string $separator,
             ) {
-                parent::__construct($settings, $name, $block);
+                parent::__construct($context, $name, $block);
             }
 
             public function getUsed(): int {

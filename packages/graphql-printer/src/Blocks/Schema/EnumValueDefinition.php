@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 /**
@@ -15,12 +15,12 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 #[GraphQLDefinition(GraphQLEnumValueDefinition::class)]
 class EnumValueDefinition extends DefinitionBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         GraphQLEnumValueDefinition $value,
     ) {
-        parent::__construct($settings, $level, $used, $value);
+        parent::__construct($context, $level, $used, $value);
     }
 
     protected function type(): string|null {

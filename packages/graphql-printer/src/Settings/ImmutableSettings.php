@@ -28,6 +28,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $alwaysMultilineArguments;
     protected bool             $alwaysMultilineInterfaces;
     protected bool             $alwaysMultilineDirectiveLocations;
+    protected ?TypeFilter      $typeFilter;
     protected ?TypeFilter      $typeDefinitionFilter;
     protected ?DirectiveFilter $directiveFilter;
     protected ?DirectiveFilter $directiveDefinitionFilter;
@@ -246,6 +247,16 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    public function getTypeFilter(): ?TypeFilter {
+        return $this->typeFilter;
+    }
+
+    public function setTypeFilter(?TypeFilter $value): static {
+        return $this->set(static function (self $settings) use ($value): void {
+            $settings->typeFilter = $value;
+        });
+    }
+
     public function getTypeDefinitionFilter(): ?TypeFilter {
         return $this->typeDefinitionFilter;
     }
@@ -301,6 +312,7 @@ abstract class ImmutableSettings implements Settings {
             ->setAlwaysMultilineArguments($settings->isAlwaysMultilineArguments())
             ->setAlwaysMultilineInterfaces($settings->isAlwaysMultilineInterfaces())
             ->setAlwaysMultilineDirectiveLocations($settings->isAlwaysMultilineDirectiveLocations())
+            ->setTypeFilter($settings->getTypeFilter())
             ->setTypeDefinitionFilter($settings->getTypeDefinitionFilter())
             ->setDirectiveDefinitionFilter($settings->getDirectiveDefinitionFilter())
             ->setDirectiveFilter($settings->getDirectiveFilter());

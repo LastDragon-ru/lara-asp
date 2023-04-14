@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function array_filter;
@@ -23,12 +23,12 @@ use const ARRAY_FILTER_USE_BOTH;
 #[GraphQLDefinition(Schema::class)]
 class SchemaDefinition extends DefinitionBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         Schema $definition,
     ) {
-        parent::__construct($settings, $level, $used, $definition);
+        parent::__construct($context, $level, $used, $definition);
     }
 
     protected function type(): string|null {
@@ -53,7 +53,7 @@ class SchemaDefinition extends DefinitionBlock {
         $definition = $this->getDefinition();
         $space      = $this->space();
         $fields     = new RootOperationTypesDefinition(
-            $this->getSettings(),
+            $this->getContext(),
             $this->getLevel(),
             $used + mb_strlen($space),
         );
@@ -68,7 +68,7 @@ class SchemaDefinition extends DefinitionBlock {
 
             if ($type) {
                 $fields[] = new RootOperationTypeDefinition(
-                    $this->getSettings(),
+                    $this->getContext(),
                     $this->getLevel() + 1,
                     $this->getUsed(),
                     $operation,

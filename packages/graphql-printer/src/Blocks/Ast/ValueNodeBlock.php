@@ -11,7 +11,7 @@ use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\StringBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
@@ -21,36 +21,36 @@ class ValueNodeBlock extends Block {
      * @param ValueNode&Node $node
      */
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         protected ValueNode $node,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
     }
 
     protected function content(): string {
-        $content  = '';
-        $settings = $this->getSettings();
-        $level    = $this->getLevel();
-        $used     = $this->getUsed();
+        $content = '';
+        $context = $this->getContext();
+        $level   = $this->getLevel();
+        $used    = $this->getUsed();
 
         if ($this->node instanceof ListValueNode) {
-            $content = new ListValueList($settings, $level, $used);
+            $content = new ListValueList($context, $level, $used);
 
             foreach ($this->node->values as $value) {
-                $content[] = new self($settings, $level + 1, $used, $value);
+                $content[] = new self($context, $level + 1, $used, $value);
             }
         } elseif ($this->node instanceof ObjectValueNode) {
-            $content = new ObjectValueList($settings, $level, $used);
+            $content = new ObjectValueList($context, $level, $used);
 
             foreach ($this->node->fields as $field) {
                 $name           = $field->name->value;
                 $content[$name] = new PropertyBlock(
-                    $settings,
+                    $context,
                     $name,
                     new self(
-                        $settings,
+                        $context,
                         $level + 1 + (int) ($field->value instanceof StringValueNode),
                         $used,
                         $field->value,
@@ -59,7 +59,7 @@ class ValueNodeBlock extends Block {
             }
         } elseif ($this->node instanceof StringValueNode) {
             $content = $this->node->block
-                ? new StringBlock($settings, $level, 0, $this->node->value)
+                ? new StringBlock($context, $level, 0, $this->node->value)
                 : Printer::doPrint($this->node);
         } else {
             $content = Printer::doPrint($this->node);

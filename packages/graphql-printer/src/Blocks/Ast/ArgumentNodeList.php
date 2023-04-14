@@ -3,38 +3,36 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
 
 use GraphQL\Language\AST\ArgumentNode;
+use GraphQL\Language\AST\DirectiveNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Traversable;
 
 /**
  * @internal
- * @extends ListBlock<PropertyBlock<ValueNodeBlock>>
+ * @extends ListBlock<ArgumentNodeBlock>
  */
 class ArgumentNodeList extends ListBlock {
     /**
      * @param Traversable<ArgumentNode>|array<ArgumentNode> $arguments
      */
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
+        DirectiveNode $node,
         Traversable|array $arguments,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
 
         foreach ($arguments as $argument) {
             $name        = $argument->name->value;
-            $this[$name] = new PropertyBlock(
-                $this->getSettings(),
-                $name,
-                new ValueNodeBlock(
-                    $this->getSettings(),
-                    $this->getLevel() + 1,
-                    $this->getUsed(),
-                    $argument->value,
-                ),
+            $this[$name] = new ArgumentNodeBlock(
+                $this->getContext(),
+                $this->getLevel() + 1,
+                $this->getUsed(),
+                $node,
+                $argument,
             );
         }
     }

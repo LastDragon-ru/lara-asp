@@ -6,6 +6,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -27,20 +28,23 @@ class InputObjectTypeDefinitionTest extends TestCase {
         int $used,
         InputObjectType $definition,
     ): void {
-        $actual = (string) (new InputObjectTypeDefinition(
-            $settings,
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new InputObjectTypeDefinition(
+            $context,
             $level,
             $used,
             $definition,
         ));
 
-        Parser::inputObjectTypeDefinition($actual);
+        if ($expected) {
+            Parser::inputObjectTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
 
     public function testStatistics(): void {
-        $settings   = new TestSettings();
+        $context    = new Context(new TestSettings(), null, null);
         $definition = new InputObjectType([
             'name'    => 'A',
             'fields'  => [
@@ -59,7 +63,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
             ],
             'astNode' => Parser::inputObjectTypeDefinition('input A @b'),
         ]);
-        $block      = new InputObjectTypeDefinition($settings, 0, 0, $definition);
+        $block      = new InputObjectTypeDefinition($context, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());
@@ -196,6 +200,17 @@ class InputObjectTypeDefinitionTest extends TestCase {
                             'type' => Type::string(),
                         ],
                     ],
+                ]),
+            ],
+            'filter'                            => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new InputObjectType([
+                    'name'   => 'Test',
+                    'fields' => [],
                 ]),
             ],
         ];

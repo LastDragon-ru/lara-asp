@@ -6,6 +6,7 @@ use Closure;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -33,9 +34,12 @@ class EnumTypeDefinitionTest extends TestCase {
             $type = $type();
         }
 
-        $actual = (string) (new EnumTypeDefinition($settings, $level, $used, $type));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new EnumTypeDefinition($context, $level, $used, $type));
 
-        Parser::enumTypeDefinition($actual);
+        if ($expected) {
+            Parser::enumTypeDefinition($actual);
+        }
 
         self::assertEquals($expected, $actual);
     }
@@ -124,6 +128,17 @@ class EnumTypeDefinitionTest extends TestCase {
                         Parser::enumTypeExtension('extend enum Test @b'),
                         Parser::enumTypeExtension('extend enum Test @c'),
                     ],
+                ]),
+            ],
+            'filter'     => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                new EnumType([
+                    'name'   => 'Test',
+                    'values' => ['A'],
                 ]),
             ],
         ];
