@@ -21,8 +21,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\ObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\ScalarTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\SchemaDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\UnionTypeDefinition;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeUnsupported;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
@@ -31,11 +31,11 @@ class DefinitionBlock extends Block implements NamedBlock {
     private Block $block;
 
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         private Schema|Type|Directive $definition,
     ) {
-        parent::__construct($settings, $level);
+        parent::__construct($context, $level);
 
         $this->block = $this->getDefinitionBlock($definition);
     }
@@ -68,56 +68,56 @@ class DefinitionBlock extends Block implements NamedBlock {
 
         if ($definition instanceof ObjectType) {
             $block = new ObjectTypeDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,
             );
         } elseif ($definition instanceof InputObjectType) {
             $block = new InputObjectTypeDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,
             );
         } elseif ($definition instanceof ScalarType) {
             $block = new ScalarTypeDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,
             );
         } elseif ($definition instanceof InterfaceType) {
             $block = new InterfaceTypeDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,
             );
         } elseif ($definition instanceof UnionType) {
             $block = new UnionTypeDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,
             );
         } elseif ($definition instanceof EnumType) {
             $block = new EnumTypeDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,
             );
         } elseif ($definition instanceof Directive) {
             $block = new DirectiveDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,
             );
         } elseif ($definition instanceof Schema) {
             $block = new SchemaDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
                 $definition,

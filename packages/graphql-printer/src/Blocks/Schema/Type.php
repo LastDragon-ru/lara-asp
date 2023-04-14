@@ -7,7 +7,7 @@ use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function assert;
@@ -19,12 +19,12 @@ use function assert;
 #[GraphQLDefinition(WrappingType::class)]
 class Type extends Block implements NamedBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         private GraphQLType $definition,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
     }
 
     public function getName(): string {

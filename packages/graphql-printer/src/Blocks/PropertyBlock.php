@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
@@ -14,11 +14,11 @@ class PropertyBlock extends Block implements NamedBlock {
      * @param TBlock $block
      */
     public function __construct(
-        Settings $settings,
+        Context $context,
         private string $name,
         private Block $block,
     ) {
-        parent::__construct($settings, $block->getLevel(), $block->getUsed());
+        parent::__construct($context, $block->getLevel(), $block->getUsed());
     }
 
     public function getName(): string {

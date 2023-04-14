@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -31,7 +32,8 @@ class DirectiveDefinitionTest extends TestCase {
         int $used,
         Directive $definition,
     ): void {
-        $actual = (string) (new DirectiveDefinition($settings, $level, $used, $definition));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new DirectiveDefinition($context, $level, $used, $definition));
 
         if ($expected) {
             Parser::directiveDefinition($actual);
@@ -41,7 +43,7 @@ class DirectiveDefinitionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $settings   = new TestSettings();
+        $context    = new Context(new TestSettings(), null, null);
         $definition = new Directive([
             'name'      => 'A',
             'args'      => [
@@ -60,7 +62,7 @@ class DirectiveDefinitionTest extends TestCase {
                 DirectiveLocation::FIELD,
             ],
         ]);
-        $block      = new DirectiveDefinition($settings, 0, 0, $definition);
+        $block      = new DirectiveDefinition($context, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());

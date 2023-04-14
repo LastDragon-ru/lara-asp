@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function mb_strlen;
@@ -18,12 +18,12 @@ use function mb_strlen;
 #[GraphQLDefinition(Directive::class)]
 class DirectiveDefinition extends DefinitionBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         Directive $definition,
     ) {
-        parent::__construct($settings, $level, $used, $definition);
+        parent::__construct($context, $level, $used, $definition);
     }
 
     protected function type(): string|null {
@@ -43,7 +43,7 @@ class DirectiveDefinition extends DefinitionBlock {
         $used        = $used + mb_strlen($repeatable) + 2 * mb_strlen($space);
         $args        = $this->addUsed(
             new ArgumentsDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $used,
                 $definition->args,
@@ -51,7 +51,7 @@ class DirectiveDefinition extends DefinitionBlock {
         );
         $locations   = $this->addUsed(
             new DirectiveLocations(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel() + 1,
                 $used + $args->getLength(),
                 $definition->locations,

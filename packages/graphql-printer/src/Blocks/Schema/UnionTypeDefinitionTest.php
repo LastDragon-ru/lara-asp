@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -28,7 +29,8 @@ class UnionTypeDefinitionTest extends TestCase {
         int $used,
         UnionType $type,
     ): void {
-        $actual = (string) (new UnionTypeDefinition($settings, $level, $used, $type));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new UnionTypeDefinition($context, $level, $used, $type));
 
         if ($expected) {
             Parser::unionTypeDefinition($actual);
@@ -38,7 +40,7 @@ class UnionTypeDefinitionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $union    = new UnionType([
+        $union   = new UnionType([
             'name'    => 'Test',
             'types'   => [
                 new ObjectType([
@@ -60,8 +62,8 @@ class UnionTypeDefinitionTest extends TestCase {
             ],
             'astNode' => Parser::unionTypeDefinition('union Test @a = A | B'),
         ]);
-        $settings = new TestSettings();
-        $block    = new UnionTypeDefinition($settings, 0, 0, $union);
+        $context = new Context(new TestSettings(), null, null);
+        $block   = new UnionTypeDefinition($context, 0, 0, $union);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());

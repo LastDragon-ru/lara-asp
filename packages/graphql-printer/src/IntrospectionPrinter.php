@@ -2,12 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
-use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Filters\IntrospectionFilter;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\IntrospectionContext;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
 
@@ -38,26 +37,7 @@ class IntrospectionPrinter extends Printer {
         );
     }
 
-    protected function getTypeDefinitions(Schema $schema): ListBlock {
-        $blocks = $this->getDefinitionList();
-
-        foreach (Introspection::getTypes() as $name => $type) {
-            $blocks[$name] = $this->getDefinitionBlock($type);
-        }
-
-        return $blocks;
-    }
-
-    protected function getDirectiveDefinitions(Schema $schema): ListBlock {
-        $blocks     = $this->getDefinitionList();
-        $directives = $schema->getDirectives();
-
-        foreach ($directives as $directive) {
-            if (Directive::isSpecifiedDirective($directive)) {
-                $blocks[$directive->name] = $this->getDefinitionBlock($directive);
-            }
-        }
-
-        return $blocks;
+    protected function getContext(?Schema $schema): Context {
+        return new IntrospectionContext($this->getSettings(), $this->getDirectiveResolver(), $schema);
     }
 }

@@ -6,7 +6,7 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Traversable;
 
 use function json_encode;
@@ -20,13 +20,13 @@ class DirectiveNodeList extends ListBlock {
      * @param Traversable<DirectiveNode>|array<DirectiveNode> $directives
      */
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         Traversable|array|null $directives,
         string|null $deprecationReason = null,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
 
         $deprecated   = Directive::DEPRECATED_NAME;
         $directives ??= [];
@@ -56,7 +56,7 @@ class DirectiveNodeList extends ListBlock {
 
     private function block(DirectiveNode $directive,): DirectiveNodeBlock {
         return new DirectiveNodeBlock(
-            $this->getSettings(),
+            $this->getContext(),
             $this->getLevel(),
             $this->getUsed(),
             $directive,

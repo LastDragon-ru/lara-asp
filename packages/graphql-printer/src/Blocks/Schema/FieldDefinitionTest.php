@@ -9,6 +9,7 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -30,7 +31,8 @@ class FieldDefinitionTest extends TestCase {
         int $used,
         GraphQLFieldDefinition $definition,
     ): void {
-        $actual = (string) (new FieldDefinition($settings, $level, $used, $definition));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new FieldDefinition($context, $level, $used, $definition));
 
         Parser::fieldDefinition($actual);
 
@@ -38,7 +40,7 @@ class FieldDefinitionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $settings   = new TestSettings();
+        $context    = new Context(new TestSettings(), null, null);
         $definition = new GraphQLFieldDefinition([
             'name'    => 'A',
             'type'    => new NonNull(
@@ -51,7 +53,7 @@ class FieldDefinitionTest extends TestCase {
             ),
             'astNode' => Parser::fieldDefinition('a: A @a'),
         ]);
-        $block      = new FieldDefinition($settings, 0, 0, $definition);
+        $block      = new FieldDefinition($context, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());

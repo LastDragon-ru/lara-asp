@@ -9,6 +9,7 @@ use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Stringable;
 
 use function mb_strlen;
@@ -34,7 +35,7 @@ abstract class Block implements Statistics, Stringable {
     private array $usedDirectives = [];
 
     public function __construct(
-        private Settings $settings,
+        private Context $context,
         private int $level = 0,
         private int $used = 0,
     ) {
@@ -43,8 +44,12 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
+    protected function getContext(): Context {
+        return $this->context;
+    }
+
     protected function getSettings(): Settings {
-        return $this->settings;
+        return $this->getContext()->getSettings();
     }
 
     protected function getLevel(): int {

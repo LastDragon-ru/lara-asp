@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\StringBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function preg_replace;
 use function rtrim;
@@ -15,12 +15,12 @@ use function trim;
  */
 class Description extends StringBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         ?string $string,
     ) {
-        parent::__construct($settings, $level, $used, (string) $string);
+        parent::__construct($context, $level, $used, (string) $string);
     }
 
     protected function isNormalized(): bool {

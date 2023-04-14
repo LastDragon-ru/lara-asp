@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -36,8 +37,9 @@ class ListBlockTest extends TestCase {
         array $blocks,
         int $count,
     ): void {
-        $list = new ListBlockTest__ListBlock(
-            $settings,
+        $context = new Context($settings, null, null);
+        $list    = new ListBlockTest__ListBlock(
+            $context,
             $level,
             $used,
             $normalized,
@@ -57,12 +59,12 @@ class ListBlockTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $settings = new TestSettings();
-        $list     = new class($settings) extends ListBlock {
+        $context = new Context(new TestSettings(), null, null);
+        $list    = new class($context) extends ListBlock {
             // empty
         };
-        $list[]   = new ListBlockTest__StatisticsBlock(['ta'], ['da']);
-        $list[]   = new ListBlockTest__StatisticsBlock(['tb'], ['db']);
+        $list[]  = new ListBlockTest__StatisticsBlock(['ta'], ['da']);
+        $list[]  = new ListBlockTest__StatisticsBlock(['tb'], ['db']);
 
         self::assertEquals(['ta' => 'ta', 'tb' => 'tb'], $list->getUsedTypes());
         self::assertEquals(['da' => 'da', 'db' => 'db'], $list->getUsedDirectives());
@@ -704,7 +706,7 @@ class ListBlockTest extends TestCase {
  */
 class ListBlockTest__ListBlock extends ListBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         private bool $normalized,
@@ -714,7 +716,7 @@ class ListBlockTest__ListBlock extends ListBlock {
         private string $separator,
         private string $multilineSeparator,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
     }
 
     protected function isWrapped(): bool {

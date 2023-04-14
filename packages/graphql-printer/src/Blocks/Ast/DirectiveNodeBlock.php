@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
 use GraphQL\Language\AST\DirectiveNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function mb_strlen;
 
@@ -14,12 +14,12 @@ use function mb_strlen;
  */
 class DirectiveNodeBlock extends Block implements NamedBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         private DirectiveNode $node,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
     }
 
     public function getName(): string {
@@ -42,7 +42,7 @@ class DirectiveNodeBlock extends Block implements NamedBlock {
         $used = mb_strlen($name);
         $args = $this->addUsed(
             new ArgumentNodeList(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed() + $used,
                 $node->arguments,

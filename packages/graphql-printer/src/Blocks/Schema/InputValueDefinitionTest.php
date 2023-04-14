@@ -9,6 +9,7 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -29,7 +30,8 @@ class InputValueDefinitionTest extends TestCase {
         int $used,
         Argument $definition,
     ): void {
-        $actual = (string) (new InputValueDefinition($settings, $level, $used, $definition));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new InputValueDefinition($context, $level, $used, $definition));
 
         Parser::inputValueDefinition($actual);
 
@@ -37,7 +39,7 @@ class InputValueDefinitionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $settings   = new TestSettings();
+        $context    = new Context(new TestSettings(), null, null);
         $definition = new Argument([
             'name'    => 'a',
             'type'    => new NonNull(
@@ -53,7 +55,7 @@ class InputValueDefinitionTest extends TestCase {
             'astNode' => Parser::inputValueDefinition('test: Test! @a'),
         ]);
 
-        $block = new InputValueDefinition($settings, 0, 0, $definition);
+        $block = new InputValueDefinition($context, 0, 0, $definition);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());

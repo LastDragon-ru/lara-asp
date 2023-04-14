@@ -6,6 +6,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 
@@ -30,7 +31,8 @@ class SchemaDefinitionTest extends TestCase {
         int $used,
         Schema $schema,
     ): void {
-        $actual = (string) (new SchemaDefinition($settings, $level, $used, $schema));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new SchemaDefinition($context, $level, $used, $schema));
 
         if ($expected && !str_starts_with($actual, '"""')) {
             // https://github.com/webonyx/graphql-php/issues/1027
