@@ -71,11 +71,7 @@ class Printer implements SchemaPrinterContract {
     // <editor-fold desc="Printer">
     // =========================================================================
     public function printSchema(Schema $schema): Result {
-        // todo(graphql): directives in description for schema
-        //      https://github.com/webonyx/graphql-php/issues/1027
-
         // Print
-        $schema    = clone $schema;
         $context   = $this->getContext($schema);
         $block     = $this->getDefinitionBlock($context, $schema);
         $content   = $this->getDefinitionList($context, true);
