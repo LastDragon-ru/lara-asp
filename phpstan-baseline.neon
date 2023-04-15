@@ -41,6 +41,11 @@ parameters:
 			path: packages/graphql/src/SortBy/Builders/Eloquent/BuilderTest.php
 
 		-
+			message: "#^Parameter \\#2 \\$relationClass of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Exceptions\\\\RelationUnsupported constructor expects class\\-string\\<Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\>, 'LastDragon_ru\\\\\\\\LaraASP\\\\\\\\GraphQL\\\\\\\\Testing\\\\\\\\Package\\\\\\\\Models\\\\\\\\Relations\\\\\\\\Unsupported' given\\.$#"
+			count: 1
+			path: packages/graphql/src/SortBy/Builders/Eloquent/BuilderTest.php
+
+		-
 			message: "#^Parameter \\#1 \\$builder of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Query\\\\Builder\\:\\:handle\\(\\) expects Illuminate\\\\Database\\\\Query\\\\Builder, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder given\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Builders/Query/BuilderTest.php
