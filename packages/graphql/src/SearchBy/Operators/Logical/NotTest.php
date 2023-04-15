@@ -13,13 +13,14 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
+#[CoversClass(Not::class)]
 class NotTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

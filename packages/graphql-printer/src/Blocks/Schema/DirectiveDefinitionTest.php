@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
-use GraphQL\Language\DirectiveLocation;
+use GraphQL\Language\DirectiveLocation as GraphQLDirectiveLocation;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InputObjectType;
@@ -11,14 +11,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\DirectiveDefinition
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\ArgumentsDefinition
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\DirectiveLocations
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\DirectiveLocation
  */
+#[CoversClass(DirectiveDefinition::class)]
+#[CoversClass(ArgumentsDefinition::class)]
+#[CoversClass(DirectiveLocations::class)]
+#[CoversClass(DirectiveLocation::class)]
 class DirectiveDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -59,7 +60,7 @@ class DirectiveDefinitionTest extends TestCase {
                 ],
             ],
             'locations' => [
-                DirectiveLocation::FIELD,
+                GraphQLDirectiveLocation::FIELD,
             ],
         ]);
         $block      = new DirectiveDefinition($context, 0, 0, $definition);
@@ -95,8 +96,8 @@ class DirectiveDefinitionTest extends TestCase {
                     'name'        => 'test',
                     'description' => 'Description',
                     'locations'   => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
-                        DirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ENUM,
                     ],
                 ]),
             ],
@@ -110,8 +111,8 @@ class DirectiveDefinitionTest extends TestCase {
                 new Directive([
                     'name'         => 'test',
                     'locations'    => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
-                        DirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ENUM,
                     ],
                     'isRepeatable' => true,
                 ]),
@@ -131,8 +132,8 @@ class DirectiveDefinitionTest extends TestCase {
                         ],
                     ],
                     'locations'    => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
-                        DirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ENUM,
                     ],
                     'isRepeatable' => true,
                 ]),
@@ -157,8 +158,8 @@ class DirectiveDefinitionTest extends TestCase {
                         ],
                     ],
                     'locations'    => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
-                        DirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ENUM,
                     ],
                     'isRepeatable' => true,
                 ]),
@@ -183,8 +184,8 @@ class DirectiveDefinitionTest extends TestCase {
                         ],
                     ],
                     'locations' => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
-                        DirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ENUM,
                     ],
                 ]),
             ],
@@ -201,8 +202,8 @@ class DirectiveDefinitionTest extends TestCase {
                 new Directive([
                     'name'      => 'test',
                     'locations' => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
-                        DirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ENUM,
                     ],
                 ]),
             ],
@@ -226,8 +227,8 @@ class DirectiveDefinitionTest extends TestCase {
                         ],
                     ],
                     'locations' => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
-                        DirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ENUM,
                     ],
                 ]),
             ],
@@ -242,9 +243,9 @@ class DirectiveDefinitionTest extends TestCase {
                 new Directive([
                     'name'      => 'test',
                     'locations' => [
-                        DirectiveLocation::OBJECT,
-                        DirectiveLocation::ENUM,
-                        DirectiveLocation::INPUT_FIELD_DEFINITION,
+                        GraphQLDirectiveLocation::OBJECT,
+                        GraphQLDirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::INPUT_FIELD_DEFINITION,
                     ],
                 ]),
             ],
@@ -261,7 +262,7 @@ class DirectiveDefinitionTest extends TestCase {
                 new Directive([
                     'name'      => 'test',
                     'locations' => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
                     ],
                 ]),
             ],
@@ -285,7 +286,7 @@ class DirectiveDefinitionTest extends TestCase {
                         ],
                     ],
                     'locations' => [
-                        DirectiveLocation::ENUM,
+                        GraphQLDirectiveLocation::ENUM,
                     ],
                 ]),
             ],
@@ -312,7 +313,7 @@ class DirectiveDefinitionTest extends TestCase {
                         ],
                     ],
                     'locations' => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
                     ],
                 ]),
             ],
@@ -325,7 +326,7 @@ class DirectiveDefinitionTest extends TestCase {
                 new Directive([
                     'name'      => 'test',
                     'locations' => [
-                        DirectiveLocation::ARGUMENT_DEFINITION,
+                        GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
                     ],
                 ]),
             ],

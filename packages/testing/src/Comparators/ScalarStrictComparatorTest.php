@@ -2,13 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Comparator\ComparisonFailure;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Comparators\ScalarStrictComparator
  */
+#[CoversClass(ScalarStrictComparator::class)]
 class ScalarStrictComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

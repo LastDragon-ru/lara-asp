@@ -7,13 +7,14 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use Mockery;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function mb_strlen;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block
  */
+#[CoversClass(Block::class)]
 class BlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

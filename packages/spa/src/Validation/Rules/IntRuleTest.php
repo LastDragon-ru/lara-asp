@@ -4,14 +4,15 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use const INF;
 use const NAN;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\IntRule
  */
+#[CoversClass(IntRule::class)]
 class IntRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

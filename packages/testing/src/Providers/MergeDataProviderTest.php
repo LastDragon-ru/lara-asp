@@ -2,12 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider
  */
+#[CoversClass(MergeDataProvider::class)]
 class MergeDataProviderTest extends TestCase {
     public function testGetData(): void {
         $f = new ExpectedFinal('expected final');

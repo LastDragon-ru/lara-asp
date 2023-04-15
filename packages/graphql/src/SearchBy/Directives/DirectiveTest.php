@@ -52,6 +52,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function assert;
 use function config;
@@ -63,8 +64,8 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
  */
+#[CoversClass(Directive::class)]
 class DirectiveTest extends TestCase {
     use WithTestObject;
     use MakesGraphQLRequests;

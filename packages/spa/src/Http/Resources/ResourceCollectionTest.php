@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
 use function get_class;
@@ -15,8 +16,8 @@ use function sprintf;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\ResourceCollection
  */
+#[CoversClass(ResourceCollection::class)]
 class ResourceCollectionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

@@ -14,14 +14,15 @@ use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
+use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
 use function is_string;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Eloquent\ModelHelper
  */
+#[CoversClass(ModelHelper::class)]
 class ModelHelperTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

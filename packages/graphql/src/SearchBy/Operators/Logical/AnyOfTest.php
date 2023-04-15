@@ -13,13 +13,14 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
+#[CoversClass(AnyOf::class)]
 class AnyOfTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

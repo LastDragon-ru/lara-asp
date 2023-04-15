@@ -5,11 +5,12 @@ namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\ErrorResponse
  */
+#[CoversClass(ErrorResponse::class)]
 class ErrorResponseTest extends TestCase {
     public function testEvaluate(): void {
         $response   = Factory::make($this->getJson(__FUNCTION__));

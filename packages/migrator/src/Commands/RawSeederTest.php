@@ -5,13 +5,14 @@ namespace LastDragon_ru\LaraASP\Migrator\Commands;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Migrator\Package;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder
  */
+#[CoversClass(RawSeeder::class)]
 class RawSeederTest extends TestCase {
     public function testHandle(): void {
         // Pre test

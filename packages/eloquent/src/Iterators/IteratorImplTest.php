@@ -7,11 +7,12 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use Mockery;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Eloquent\Iterators\IteratorImpl
  */
+#[CoversClass(IteratorImpl::class)]
 class IteratorImplTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

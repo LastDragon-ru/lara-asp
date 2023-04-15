@@ -5,13 +5,14 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators
  */
+#[CoversClass(Operators::class)]
 class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

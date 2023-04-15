@@ -10,11 +10,12 @@ use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Eloquent\Mixins\EloquentBuilderMixin
  */
+#[CoversClass(EloquentBuilderMixin::class)]
 class EloquentBuilderMixinTest extends TestCase {
     use WithTestObject;
 

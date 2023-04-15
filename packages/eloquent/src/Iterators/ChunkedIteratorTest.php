@@ -8,13 +8,15 @@ use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
+use PHPUnit\Framework\Attributes\CoversClass;
+
 use function count;
 use function iterator_to_array;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator
  */
+#[CoversClass(ChunkedIterator::class)]
 class ChunkedIteratorTest extends TestCase {
     use WithTestObject;
     use WithQueryLog;

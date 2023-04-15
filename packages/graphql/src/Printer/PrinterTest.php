@@ -22,14 +22,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function in_array;
 use function str_starts_with;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Printer
  */
+#[CoversClass(Printer::class)]
 class PrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

@@ -27,15 +27,16 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function is_array;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
+#[CoversClass(Builder::class)]
 class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

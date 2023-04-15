@@ -8,13 +8,14 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function mb_strlen;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock
  */
+#[CoversClass(ListBlock::class)]
 class ListBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

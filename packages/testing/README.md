@@ -111,12 +111,13 @@ You never know why your test failed and need to debug it to find the reason. Rea
 
 namespace App\Http\Controllers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
 /**
  * @internal
- * @covers \App\Http\Controllers\IndexController
  */
+#[CoversClass(IndexController::class)]
 class IndexControllerTest extends TestCase {
     public function testIndex() {
         $this->get('/')
@@ -194,12 +195,13 @@ namespace App\Http\Controllers;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
 /**
  * @internal
- * @covers \App\Http\Controllers\IndexController
  */
+#[CoversClass(IndexController::class)]
 class IndexControllerTest extends TestCase {
     public function testIndex() {
         $this->get('/')->assertThat(new Response(
@@ -341,13 +343,14 @@ Finally, the test:
 
 namespace App\Http\Controllers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\Responses;
 use Tests\TestCase;
 
 /**
  * @internal
- * @covers \App\Http\Controllers\IndexController
  */
+#[CoversClass(IndexController::class)]
 class IndexControllerTest extends TestCase {
     public function testIndex() {
         $this->getJson('/')->assertThat(new ValidationErrorResponse());
@@ -366,12 +369,13 @@ The same test with default assertions may look something like this:
 
 namespace App\Http\Controllers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
 /**
  * @internal
- * @covers \App\Http\Controllers\IndexController
  */
+#[CoversClass(IndexController::class)]
 class IndexControllerTest extends TestCase {
     public function testIndex() {
         $this->getJson('/')

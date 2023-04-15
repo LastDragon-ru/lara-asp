@@ -9,6 +9,7 @@ use Illuminate\Support\Composer;
 use LastDragon_ru\LaraASP\Migrator\Package;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use Mockery;
+use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
@@ -18,8 +19,8 @@ use function implode;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Migrator\Commands\RawMigration
  */
+#[CoversClass(RawMigration::class)]
 class RawMigrationTest extends TestCase {
     public function testHandle(): void {
         // make:migration may also call dump-autoload we are no need this.

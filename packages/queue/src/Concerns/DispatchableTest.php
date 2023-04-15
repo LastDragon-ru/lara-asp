@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
 use LastDragon_ru\LaraASP\Queue\Contracts\Initializable;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -10,8 +11,8 @@ use function sprintf;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\Concerns\Dispatchable
  */
+#[CoversClass(Dispatchable::class)]
 class DispatchableTest extends TestCase {
     public function testDispatchUninitializedInitializable(): void {
         $job = new class() implements Initializable {

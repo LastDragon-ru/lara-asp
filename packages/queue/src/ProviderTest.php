@@ -2,13 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
+use AllowDynamicProperties;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\Provider
  */
+#[CoversClass(Provider::class)]
 class ProviderTest extends TestCase {
     public function testRegisterConfigurator(): void {
         $actual   = $this->app->make(ProviderTest_ConfigurableQueueable::class)->queue ?? null;
@@ -18,7 +20,6 @@ class ProviderTest extends TestCase {
     }
 }
 
-
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
 
@@ -26,6 +27,7 @@ class ProviderTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
+#[AllowDynamicProperties]
 class ProviderTest_ConfigurableQueueable implements ConfigurableQueueable {
     /**
      * @inheritDoc
@@ -36,5 +38,3 @@ class ProviderTest_ConfigurableQueueable implements ConfigurableQueueable {
         ];
     }
 }
-
-// @phpcs:enable

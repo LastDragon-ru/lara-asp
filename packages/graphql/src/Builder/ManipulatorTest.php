@@ -18,6 +18,7 @@ use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
 use function array_map;
@@ -26,8 +27,8 @@ use function is_a;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator
  */
+#[CoversClass(Manipulator::class)]
 class ManipulatorTest extends TestCase {
     // <editor-fold desc="Prepare">
     // =========================================================================

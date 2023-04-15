@@ -24,14 +24,15 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
 use function is_array;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive
  */
+#[CoversClass(Directive::class)]
 class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
