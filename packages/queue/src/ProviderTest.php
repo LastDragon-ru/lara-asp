@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
+use AllowDynamicProperties;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 
@@ -18,7 +19,6 @@ class ProviderTest extends TestCase {
     }
 }
 
-
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
 
@@ -26,6 +26,7 @@ class ProviderTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
+#[AllowDynamicProperties]
 class ProviderTest_ConfigurableQueueable implements ConfigurableQueueable {
     /**
      * @inheritDoc
@@ -36,5 +37,3 @@ class ProviderTest_ConfigurableQueueable implements ConfigurableQueueable {
         ];
     }
 }
-
-// @phpcs:enable

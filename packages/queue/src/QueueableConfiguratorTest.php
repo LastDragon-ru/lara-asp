@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Queue;
 
+use AllowDynamicProperties;
 use DateInterval;
 use Illuminate\Bus\Queueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
@@ -14,21 +15,7 @@ use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 class QueueableConfiguratorTest extends TestCase {
     public function testConfigure(): void {
         $configurator = $this->app->make(QueueableConfigurator::class);
-        $queueable    = new class() implements ConfigurableQueueable {
-            use Queueable;
-
-            public int $timeout       = 60;
-            public int $maxExceptions = 123;
-
-            /**
-             * @inheritDoc
-             */
-            public function getQueueConfig(): array {
-                return [
-                    'maxExceptions' => 345,
-                ];
-            }
-        };
+        $queueable    = new QueueableConfiguratorTest_ConfigurableQueueable();
 
         $this->setQueueableConfig($queueable, [
             'tries' => 123,
@@ -42,5 +29,29 @@ class QueueableConfiguratorTest extends TestCase {
         self::assertEquals(345, $queueable->maxExceptions ?? null);
         self::assertInstanceOf(DateInterval::class, $queueable->delay);
         self::assertEquals('2', $queueable->delay->format('%i'));
+    }
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+#[AllowDynamicProperties]
+class QueueableConfiguratorTest_ConfigurableQueueable implements ConfigurableQueueable {
+    use Queueable;
+
+    public int $timeout       = 60;
+    public int $maxExceptions = 123;
+
+    /**
+     * @inheritDoc
+     */
+    public function getQueueConfig(): array {
+        return [
+            'maxExceptions' => 345,
+        ];
     }
 }

@@ -20,7 +20,7 @@ class TestObjectFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'value' => $this->faker->word,
+            'value' => $this->faker->word(),
         ];
     }
 }
