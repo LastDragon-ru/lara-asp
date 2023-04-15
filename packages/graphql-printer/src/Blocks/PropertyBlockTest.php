@@ -5,13 +5,14 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function mb_strlen;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock
  */
+#[CoversClass(PropertyBlock::class)]
 class PropertyBlockTest extends TestCase {
     public function testToString(): void {
         $name      = 'name';

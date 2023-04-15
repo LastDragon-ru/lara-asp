@@ -6,12 +6,13 @@ use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule
  */
+#[CoversClass(ResolverRule::class)]
 class ResolverRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

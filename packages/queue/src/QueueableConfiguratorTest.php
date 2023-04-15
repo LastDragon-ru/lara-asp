@@ -7,11 +7,12 @@ use DateInterval;
 use Illuminate\Bus\Queueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\QueueableConfigurator
  */
+#[CoversClass(QueueableConfigurator::class)]
 class QueueableConfiguratorTest extends TestCase {
     public function testConfigure(): void {
         $configurator = $this->app->make(QueueableConfigurator::class);

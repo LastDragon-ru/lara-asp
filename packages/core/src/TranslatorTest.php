@@ -6,13 +6,14 @@ use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Core\Translator as PackageTranslator;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Core\Translator
  *
  * @phpstan-import-type TranslationsFactory from WithTranslations
  */
+#[CoversClass(Translator::class)]
 class TranslatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

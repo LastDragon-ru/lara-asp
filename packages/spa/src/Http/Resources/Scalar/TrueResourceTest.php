@@ -5,11 +5,12 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar;
 use Illuminate\Support\Facades\Route;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar\TrueResource
  */
+#[CoversClass(TrueResource::class)]
 class TrueResourceTest extends TestCase {
     public function testToResponse(): void {
         Route::get(__METHOD__, static function (): mixed {

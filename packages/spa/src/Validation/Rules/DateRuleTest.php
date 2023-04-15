@@ -6,11 +6,12 @@ use Exception;
 use Illuminate\Contracts\Translation\Translator;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\DateRule
  */
+#[CoversClass(DateRule::class)]
 class DateRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

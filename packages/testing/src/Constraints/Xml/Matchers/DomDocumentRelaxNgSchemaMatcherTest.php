@@ -4,13 +4,14 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchemaTest;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\DomDocumentRelaxNgSchemaMatcher
  */
+#[CoversClass(DomDocumentRelaxNgSchemaMatcher::class)]
 class DomDocumentRelaxNgSchemaMatcherTest extends TestCase {
     use WithTestData;
 

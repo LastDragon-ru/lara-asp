@@ -13,13 +13,14 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Job;
 use LastDragon_ru\LaraASP\Queue\Queueables\Listener;
 use LastDragon_ru\LaraASP\Queue\Queueables\Mail;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\Configs\QueueableConfig
  */
+#[CoversClass(QueueableConfig::class)]
 class QueueableConfigTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

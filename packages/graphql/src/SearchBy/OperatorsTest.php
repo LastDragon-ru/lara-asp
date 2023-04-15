@@ -6,13 +6,14 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators
  */
+#[CoversClass(Operators::class)]
 class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

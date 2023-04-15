@@ -9,12 +9,13 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\EnumTypeDefinition
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\EnumValuesDefinition
  */
+#[CoversClass(EnumTypeDefinition::class)]
+#[CoversClass(EnumValuesDefinition::class)]
 class EnumTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

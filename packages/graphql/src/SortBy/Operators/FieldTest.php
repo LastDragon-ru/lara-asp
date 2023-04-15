@@ -18,13 +18,14 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
 use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
+#[CoversClass(Field::class)]
 class FieldTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

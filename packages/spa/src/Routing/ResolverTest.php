@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Routing\Resolver
  */
+#[CoversClass(Resolver::class)]
 class ResolverTest extends TestCase {
     public function testGet(): void {
         $router   = $this->app->make(Router::class);

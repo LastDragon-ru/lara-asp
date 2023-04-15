@@ -12,11 +12,12 @@ use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 use LogicException;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\CronableRegistrator
  */
+#[CoversClass(CronableRegistrator::class)]
 class CronableRegistratorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

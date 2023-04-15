@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Date;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use Mockery;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Eloquent\Concerns\WithDateSerialization
  */
+#[CoversClass(WithDateSerialization::class)]
 class WithDateSerializationTest extends TestCase {
     public function testSerializeDate(): void {
         // Prepare

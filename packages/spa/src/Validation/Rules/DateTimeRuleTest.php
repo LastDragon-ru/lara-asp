@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 use Illuminate\Contracts\Translation\Translator;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Throwable;
 
 use function config;
@@ -12,8 +13,8 @@ use function is_array;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\DateTimeRule
  */
+#[CoversClass(DateTimeRule::class)]
 class DateTimeRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

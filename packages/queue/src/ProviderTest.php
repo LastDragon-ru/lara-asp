@@ -5,11 +5,12 @@ namespace LastDragon_ru\LaraASP\Queue;
 use AllowDynamicProperties;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\Provider
  */
+#[CoversClass(Provider::class)]
 class ProviderTest extends TestCase {
     public function testRegisterConfigurator(): void {
         $actual   = $this->app->make(ProviderTest_ConfigurableQueueable::class)->queue ?? null;

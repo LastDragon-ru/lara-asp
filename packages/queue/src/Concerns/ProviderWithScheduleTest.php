@@ -4,11 +4,12 @@ namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\Concerns\ProviderWithSchedule
  */
+#[CoversClass(ProviderWithSchedule::class)]
 class ProviderWithScheduleTest extends TestCase {
     public function testImpl(): void {
         self::assertNotEmpty($this->app->make(ProviderWithScheduleTest_Impl::class, [

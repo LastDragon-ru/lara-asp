@@ -5,11 +5,12 @@ namespace LastDragon_ru\LaraASP\Queue\Concerns;
 use Illuminate\Foundation\Console\Kernel;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\Concerns\ConsoleKernelWithSchedule
  */
+#[CoversClass(ConsoleKernelWithSchedule::class)]
 class ConsoleKernelWithScheduleTest extends TestCase {
     public function testImpl(): void {
         self::assertNotEmpty($this->app->make(ConsoleKernelWithScheduleTest_Impl::class));

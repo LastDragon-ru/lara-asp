@@ -15,13 +15,14 @@ use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController
  */
+#[CoversClass(SpaController::class)]
 class SpaControllerTest extends TestCase {
     // <editor-fold desc="Prepare">
     // =========================================================================

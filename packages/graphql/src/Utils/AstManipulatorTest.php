@@ -15,6 +15,7 @@ use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
+use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
 use function array_keys;
@@ -22,8 +23,8 @@ use function array_map;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator
  */
+#[CoversClass(AstManipulator::class)]
 class AstManipulatorTest extends TestCase {
     public function testGetNodeInterfaces(): void {
         // Object
