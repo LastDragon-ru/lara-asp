@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
 use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
@@ -14,6 +15,7 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -151,9 +153,11 @@ class AstManipulatorTest extends TestCase {
         // Types
         $types = $this->app->make(TypeRegistry::class);
 
-        $types->register(new CustomScalarType([
-            'name' => 'CustomScalar',
-        ]));
+        $types->register(
+            new CustomScalarType([
+                'name' => 'CustomScalar',
+            ]),
+        );
 
         // Directives
         $locator = $this->app->make(DirectiveLocator::class);
@@ -314,6 +318,38 @@ class AstManipulatorTest extends TestCase {
             $this->assertGraphQLPrintableEquals($expected, $node);
         }
     }
+
+    /**
+     * @dataProvider dataProviderAddDirective
+     *
+     * @param class-string<Directive> $directive
+     * @param array<string, mixed>    $arguments
+     */
+    public function testAddDirective(
+        Exception|string $expected,
+        FieldDefinitionNode|InputValueDefinitionNode|Argument $node,
+        string $directive,
+        array $arguments,
+    ): void {
+        if ($expected instanceof Exception) {
+            self::expectExceptionObject($expected);
+        }
+
+        $locator = $this->app->make(DirectiveLocator::class);
+
+        $locator->setResolved(
+            DirectiveLocator::directiveName($directive),
+            $directive,
+        );
+
+        $manipulator = $this->getManipulator();
+
+        $manipulator->addDirective($node, $directive, $arguments);
+
+        if (is_string($expected)) {
+            $this->assertGraphQLPrintableEquals($expected, $node);
+        }
+    }
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -419,6 +455,89 @@ class AstManipulatorTest extends TestCase {
             ],
         ];
     }
+
+    /**
+     * @return array<string, array{
+     *      Exception|string,
+     *      FieldDefinitionNode|InputValueDefinitionNode|Argument,
+     *      class-string<Directive>,
+     *      array<string, mixed>
+     *      }>
+     */
+    public static function dataProviderAddDirective(): array {
+        return [
+            'field: without arguments'          => [
+                <<<'GraphQL'
+                field: String
+                @astManipulatorTest_A
+                GraphQL,
+                Parser::fieldDefinition('field: String'),
+                AstManipulatorTest_ADirective::class,
+                [],
+            ],
+            'field: with arguments'             => [
+                <<<'GraphQL'
+                field: String
+                @astManipulatorTest_A(
+                    a: 123
+                    b: "b"
+                )
+                GraphQL,
+                Parser::fieldDefinition('field: String'),
+                AstManipulatorTest_ADirective::class,
+                [
+                    'a' => 123,
+                    'b' => 'b',
+                ],
+            ],
+            'input argument: without arguments' => [
+                <<<'GraphQL'
+                argument: String = 123
+                @astManipulatorTest_A
+                GraphQL,
+                Parser::inputValueDefinition('argument: String = 123'),
+                AstManipulatorTest_ADirective::class,
+                [],
+            ],
+            'input argument: with arguments'    => [
+                <<<'GraphQL'
+                argument: String
+                @astManipulatorTest_A(
+                    a: 123
+                    b: "b"
+                )
+                GraphQL,
+                Parser::inputValueDefinition('argument: String'),
+                AstManipulatorTest_ADirective::class,
+                [
+                    'a' => 123,
+                    'b' => 'b',
+                ],
+            ],
+            'astNode'                           => [
+                <<<'GraphQL'
+                argument: String
+                @astManipulatorTest_A
+                GraphQL,
+                new Argument([
+                    'name'    => 'argument',
+                    'type'    => static fn () => Type::string(),
+                    'astNode' => Parser::inputValueDefinition('argument: String'),
+                ]),
+                AstManipulatorTest_ADirective::class,
+                [],
+            ],
+            'no astNode'                        => [
+                new NotImplemented(Argument::class),
+                new Argument([
+                    'name' => 'argument',
+                    'type' => static fn () => Type::string(),
+                ]),
+                AstManipulatorTest_ADirective::class,
+                [],
+            ],
+        ];
+    }
     // </editor-fold>
 }
 
@@ -431,7 +550,7 @@ class AstManipulatorTest extends TestCase {
  */
 class AstManipulatorTest_ADirective implements Directive {
     public static function definition(): string {
-        return 'directive @astManipulatorTest_A on OBJECT | SCALAR';
+        return 'directive @astManipulatorTest_A(a: Int, b: String) on OBJECT | SCALAR';
     }
 }
 

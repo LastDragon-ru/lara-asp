@@ -39,6 +39,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeUnexpected;
@@ -524,6 +525,38 @@ class AstManipulator {
         }
 
         return $argument;
+    }
+
+    /**
+     * @param class-string<Directive> $directive
+     * @param array<string, mixed>    $arguments
+     */
+    public function addDirective(
+        FieldDefinitionNode|InputValueDefinitionNode|Argument $node,
+        string $directive,
+        array $arguments = [],
+    ): DirectiveNode {
+        // Not a Node?
+        if ($node instanceof Argument) {
+            // Unfortunately directives exists only in AST :(
+            // https://github.com/webonyx/graphql-php/issues/588
+            if ($node->astNode) {
+                return $this->addDirective($node->astNode, $directive, $arguments);
+            } else {
+                throw new NotImplemented($node::class);
+            }
+        }
+
+        // Add
+        $name               = DirectiveLocator::directiveName($directive);
+        $definition         = Parser::directive("@{$name}");
+        $node->directives[] = $definition;
+
+        foreach ($arguments as $argument => $value) {
+            $definition->arguments[] = Parser::argument($argument.': '.json_encode($value, JSON_THROW_ON_ERROR));
+        }
+
+        return $definition;
     }
 
     /**
