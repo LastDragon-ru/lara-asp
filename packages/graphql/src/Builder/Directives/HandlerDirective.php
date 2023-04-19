@@ -32,7 +32,6 @@ use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
-use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 
 use function array_map;
@@ -45,7 +44,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
     public function __construct(
         private ArgumentFactory $factory,
-        private DirectiveLocator $directives,
     ) {
         // empty
     }
@@ -59,10 +57,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
     protected function getFactory(): ArgumentFactory {
         return $this->factory;
-    }
-
-    protected function getDirectives(): DirectiveLocator {
-        return $this->directives;
     }
     // </editor-fold>
 

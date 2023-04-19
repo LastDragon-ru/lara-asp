@@ -45,19 +45,9 @@ class WithBuilderInfoTest extends TestCase {
     public function testGetBuilderInfo(array $expected, Closure $fieldFactory): void {
         $directives = $this->app->make(DirectiveLocator::class);
         $field      = $fieldFactory($directives);
-        $directive  = new class($directives) extends BaseDirective {
+        $directive  = new class() extends BaseDirective {
             use WithBuilderInfo {
                 getBuilderInfo as public;
-            }
-
-            public function __construct(
-                private DirectiveLocator $directives,
-            ) {
-                // empty
-            }
-
-            protected function getDirectives(): DirectiveLocator {
-                return $this->directives;
             }
 
             public static function definition(): string {

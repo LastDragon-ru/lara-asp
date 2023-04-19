@@ -38,8 +38,6 @@ use function is_a;
 trait WithBuilderInfo {
     use WithSource;
 
-    abstract protected function getDirectives(): DirectiveLocator;
-
     protected function getFieldArgumentBuilderInfo(
         DocumentAST $document,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
@@ -62,7 +60,7 @@ trait WithBuilderInfo {
 
     protected function getBuilderInfo(FieldDefinitionNode $field): ?BuilderInfo {
         // Provider?
-        $directives = $this->getDirectives();
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
         $provider   = $directives->associated($field)->first(static function (Directive $directive): bool {
             return $directive instanceof BuilderInfoProvider;
         });
