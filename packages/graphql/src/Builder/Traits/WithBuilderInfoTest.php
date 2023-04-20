@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Traits;
 use Closure;
 use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -37,14 +38,14 @@ class WithBuilderInfoTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderGetBuilderInfo
+     * @dataProvider dataProviderGetNodeBuilderInfo
      *
-     * @param array{name: string, builder: string}           $expected
-     * @param Closure(DirectiveLocator): FieldDefinitionNode $fieldFactory
+     * @param array{name: string, builder: string} $expected
+     * @param Closure(DirectiveLocator): Node      $nodeFactory
      */
-    public function testGetBuilderInfo(array $expected, Closure $fieldFactory): void {
+    public function testGetNodeBuilderInfo(array $expected, Closure $nodeFactory): void {
         $directives = $this->app->make(DirectiveLocator::class);
-        $field      = $fieldFactory($directives);
+        $node       = $nodeFactory($directives);
         $directive  = new class() extends BaseDirective {
             use WithBuilderInfo {
                 getBuilderInfo as public;
@@ -55,7 +56,7 @@ class WithBuilderInfoTest extends TestCase {
             }
         };
 
-        $actual = $directive->getBuilderInfo($field);
+        $actual = $directive->getBuilderInfo($node);
 
         self::assertEquals(
             $expected,
@@ -75,7 +76,7 @@ class WithBuilderInfoTest extends TestCase {
      *     Closure(DirectiveLocator): FieldDefinitionNode,
      *     }>
      */
-    public static function dataProviderGetBuilderInfo(): array {
+    public static function dataProviderGetNodeBuilderInfo(): array {
         return [
             'unknown'                                    => [
                 [

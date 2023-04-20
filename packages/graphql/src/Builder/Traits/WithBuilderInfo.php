@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Traits;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -58,10 +59,10 @@ trait WithBuilderInfo {
         return $builder;
     }
 
-    protected function getBuilderInfo(FieldDefinitionNode $field): ?BuilderInfo {
+    protected function getBuilderInfo(Node $node): ?BuilderInfo {
         // Provider?
         $directives = Container::getInstance()->make(DirectiveLocator::class);
-        $provider   = $directives->associated($field)->first(static function (Directive $directive): bool {
+        $provider   = $directives->associated($node)->first(static function (Directive $directive): bool {
             return $directive instanceof BuilderInfoProvider;
         });
 
@@ -72,10 +73,12 @@ trait WithBuilderInfo {
         // Scout?
         $scout = false;
 
-        foreach ($field->arguments as $argument) {
-            if ($directives->associatedOfType($argument, SearchDirective::class)->isNotEmpty()) {
-                $scout = true;
-                break;
+        if ($node instanceof FieldDefinitionNode) {
+            foreach ($node->arguments as $argument) {
+                if ($directives->associatedOfType($argument, SearchDirective::class)->isNotEmpty()) {
+                    $scout = true;
+                    break;
+                }
             }
         }
 
@@ -84,7 +87,7 @@ trait WithBuilderInfo {
         }
 
         // Builder?
-        $directive = $directives->associated($field)->first(static function (Directive $directive): bool {
+        $directive = $directives->associated($node)->first(static function (Directive $directive): bool {
             return $directive instanceof AllDirective
                 || $directive instanceof PaginateDirective
                 || $directive instanceof BuilderDirective
