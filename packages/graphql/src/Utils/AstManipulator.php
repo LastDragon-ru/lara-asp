@@ -410,24 +410,34 @@ class AstManipulator {
         return $field;
     }
 
+    /**
+     * @deprecated 4.1.0 Please use {@see static::getNodeArgument()} instead.
+     */
     public function getNodeAttribute(
         FieldDefinitionNode|FieldDefinition $node,
         string $name,
     ): InputValueDefinitionNode|Argument|null {
-        $attribute = null;
+        return $this->getNodeArgument($node, $name);
+    }
+
+    public function getNodeArgument(
+        FieldDefinitionNode|FieldDefinition $node,
+        string $name,
+    ): InputValueDefinitionNode|Argument|null {
+        $argument = null;
 
         if ($node instanceof FieldDefinition) {
-            $attribute = $node->getArg($name);
+            $argument = $node->getArg($name);
         } else {
             foreach ($node->arguments as $nodeArgument) {
                 if ($this->getNodeName($nodeArgument) === $name) {
-                    $attribute = $nodeArgument;
+                    $argument = $nodeArgument;
                     break;
                 }
             }
         }
 
-        return $attribute;
+        return $argument;
     }
     //</editor-fold>
 }
