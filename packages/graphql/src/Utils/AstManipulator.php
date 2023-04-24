@@ -273,6 +273,10 @@ class AstManipulator {
                 // Ok
                 $directives[] = $directive;
             }
+        } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
+            if ($node->astNode) {
+                $directives = $this->getNodeDirectives($node->astNode, $class, $callback);
+            }
         } else {
             // empty
         }

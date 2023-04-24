@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Type\Definition\Argument;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -11,6 +13,8 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\AllDirective;
+use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -148,7 +152,7 @@ class AstManipulatorTest extends TestCase {
             extend scalar CustomScalar @aDirective
 
             type Query {
-                test: Test @all
+                test(arg: String @aDirective @cDirective): Test @all @bDirective
             }
 
             type Test {
@@ -208,6 +212,68 @@ class AstManipulatorTest extends TestCase {
                 $map,
                 $manipulator->getNodeDirectives(
                     Type::int(),
+                    Directive::class,
+                ),
+            ),
+        );
+
+        // Field
+        $schema   = $this->app->make(SchemaBuilder::class)->schema();
+        $query    = $schema->getQueryType();
+        $field    = $manipulator->getNodeField($query, 'test');
+        $expected = [
+            AllDirective::class,
+            AstManipulatorTest_BDirective::class,
+        ];
+
+        self::assertInstanceOf(FieldDefinition::class, $field);
+        self::assertNotNull($field->astNode);
+        self::assertEquals(
+            $expected,
+            array_map(
+                $map,
+                $manipulator->getNodeDirectives(
+                    $field,
+                    Directive::class,
+                ),
+            ),
+        );
+        self::assertEquals(
+            $expected,
+            array_map(
+                $map,
+                $manipulator->getNodeDirectives(
+                    $field->astNode,
+                    Directive::class,
+                ),
+            ),
+        );
+
+        // Argument
+        $argument = $manipulator->getNodeArgument($field, 'arg');
+        $expected = [
+            AstManipulatorTest_ADirective::class,
+            AstManipulatorTest_CDirective::class,
+        ];
+
+        self::assertInstanceOf(Argument::class, $argument);
+        self::assertNotNull($argument->astNode);
+        self::assertEquals(
+            $expected,
+            array_map(
+                $map,
+                $manipulator->getNodeDirectives(
+                    $argument,
+                    Directive::class,
+                ),
+            ),
+        );
+        self::assertEquals(
+            $expected,
+            array_map(
+                $map,
+                $manipulator->getNodeDirectives(
+                    $argument->astNode,
                     Directive::class,
                 ),
             ),
