@@ -62,6 +62,8 @@ use const JSON_THROW_ON_ERROR;
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 class AstManipulator {
+    public const Placeholder = '_';
+
     public function __construct(
         private DirectiveLocator $directiveLocator,
         private DocumentAST $document,
@@ -94,7 +96,7 @@ class AstManipulator {
         Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
     ): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
-        return $this->getTypeName($node) === '_';
+        return $this->getTypeName($node) === static::Placeholder;
     }
 
     /**
