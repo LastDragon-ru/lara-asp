@@ -458,24 +458,38 @@ class AstManipulator {
         return $field;
     }
 
-    public function getArgument(
+    /**
+     * @param callable(InputValueDefinitionNode|Argument): bool $closure
+     */
+    public function findArgument(
         FieldDefinitionNode|FieldDefinition $node,
-        string $name,
+        callable $closure,
     ): InputValueDefinitionNode|Argument|null {
         $argument = null;
+        $args     = $node instanceof FieldDefinitionNode
+            ? $node->arguments
+            : $node->args;
 
-        if ($node instanceof FieldDefinition) {
-            $argument = $node->getArg($name);
-        } else {
-            foreach ($node->arguments as $nodeArgument) {
-                if ($this->getName($nodeArgument) === $name) {
-                    $argument = $nodeArgument;
-                    break;
-                }
+        foreach ($args as $arg) {
+            if ($closure($arg)) {
+                $argument = $arg;
+                break;
             }
         }
 
         return $argument;
+    }
+
+    public function getArgument(
+        FieldDefinitionNode|FieldDefinition $node,
+        string $name,
+    ): InputValueDefinitionNode|Argument|null {
+        return $this->findArgument(
+            $node,
+            function (InputValueDefinitionNode|Argument $argument) use ($name): bool {
+                return $this->getName($argument) === $name;
+            },
+        );
     }
 
     public function getDirectiveNode(Directive|DirectiveNode $directive): ?DirectiveNode {

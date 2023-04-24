@@ -319,6 +319,53 @@ class AstManipulatorTest extends TestCase {
         }
     }
 
+    public function testFindArgument(): void {
+        // Directives
+        $locator = $this->app->make(DirectiveLocator::class);
+
+        $locator->setResolved('aDirective', AstManipulatorTest_ADirective::class);
+
+        // Prepare
+        $manipulator = $this->getManipulator();
+        $node        = Parser::fieldDefinition('field(a: String, b: Int @aDirective): String');
+        $field       = new FieldDefinition([
+            'name'    => 'field',
+            'type'    => Type::string(),
+            'args'    => [
+                'a' => [
+                    'type'    => Type::string(),
+                    'astNode' => Parser::inputValueDefinition('a: String'),
+                ],
+                'b' => [
+                    'type'    => Type::int(),
+                    'astNode' => Parser::inputValueDefinition('b: Int @aDirective'),
+                ],
+            ],
+            'astNode' => $node,
+        ]);
+
+        // Test
+        $nodeArgument = $manipulator->findArgument(
+            $node,
+            static function (InputValueDefinitionNode|Argument $argument) use ($manipulator): bool {
+                return $manipulator->getDirective($argument, AstManipulatorTest_ADirective::class) !== null;
+            },
+        );
+
+        self::assertInstanceOf(InputValueDefinitionNode::class, $nodeArgument);
+        self::assertEquals('b', $nodeArgument->name->value);
+
+        $fieldArgument = $manipulator->findArgument(
+            $field,
+            static function (InputValueDefinitionNode|Argument $argument) use ($manipulator): bool {
+                return $manipulator->getDirective($argument, AstManipulatorTest_ADirective::class) !== null;
+            },
+        );
+
+        self::assertInstanceOf(Argument::class, $fieldArgument);
+        self::assertEquals('b', $fieldArgument->name);
+    }
+
     /**
      * @dataProvider dataProviderAddDirective
      *
@@ -350,7 +397,6 @@ class AstManipulatorTest extends TestCase {
             $this->assertGraphQLPrintableEquals($expected, $node);
         }
     }
-    // </editor-fold>
 
     // <editor-fold desc="Helpers">
     // =========================================================================
