@@ -34,7 +34,7 @@ abstract class Rule implements RuleContract {
                 return $key !== $value;
             });
 
-        return $translation;
+        return $translation ?? [];
     }
     // </editor-fold>
 

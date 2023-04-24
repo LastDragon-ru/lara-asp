@@ -111,16 +111,6 @@ parameters:
 			path: packages/spa/src/Validation/Rules/DateTimeRule.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Validation\\\\Rules\\\\Rule\\:\\:message\\(\\) should return array\\|string but returns mixed\\.$#"
-			count: 1
-			path: packages/spa/src/Validation/Rules/Rule.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<string,mixed\\>\\:\\:first\\(\\) expects \\(callable\\(mixed, string\\)\\: bool\\)\\|null, Closure\\(string, string\\)\\: bool given\\.$#"
-			count: 1
-			path: packages/spa/src/Validation/Rules/Rule.php
-
-		-
 			message: "#^Parameter \\#1 \\$query of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Comparators\\\\DatabaseQueryComparator\\:\\:normalize\\(\\) expects LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\QueryLog\\\\Query, mixed given\\.$#"
 			count: 2
 			path: packages/testing/src/Comparators/DatabaseQueryComparator.php
