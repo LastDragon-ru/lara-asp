@@ -13,15 +13,16 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvi
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function is_array;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
+#[CoversClass(Relation::class)]
 class RelationTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

@@ -4,12 +4,13 @@ namespace LastDragon_ru\LaraASP\Testing\Database;
 
 use Exception;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty
  */
+#[CoversClass(RefreshDatabaseIfEmpty::class)]
 class RefreshDatabaseIfEmptyTest extends TestCase {
     public function testImpl(): void {
         self::assertNotEmpty($this->app->make(RefreshDatabaseIfEmptyTest_Impl::class, [

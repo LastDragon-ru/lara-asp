@@ -9,11 +9,12 @@ use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Http\Request
  */
+#[CoversClass(Request::class)]
 class RequestTest extends TestCase {
     public function testValidated(): void {
         $router        = $this->app->make(Router::class);

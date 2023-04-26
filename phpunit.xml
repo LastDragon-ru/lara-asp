@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
-         cacheDirectory=".phpunit/result.cache"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
+         cacheDirectory=".phpunit/cache"
+         cacheResultFile=".phpunit/result.cache"
          executionOrder="random"
          colors="true">
     <testsuites>
@@ -33,7 +34,7 @@
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
         </testsuite>
     </testsuites>
-    <coverage cacheDirectory=".phpunit/coverage.cache">
+    <source>
         <include>
             <directory suffix=".php">./packages/core/src</directory>
             <directory suffix=".php">./packages/migrator/src</directory>
@@ -56,12 +57,14 @@
             <directory suffix="Test.php">./packages/graphql/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
         </exclude>
-    </coverage>
+    </source>
+    <coverage cacheDirectory=".phpunit/coverage.cache"/>
     <php>
-        <env name="COLUMNS" value="120"/>
-        <env name="APP_KEY" value="base64:p1DLhQxuhXUCcCJ/CIfo9xKR6zMgnNXDTVstMbkivEc="/>
-        <env name="APP_DEBUG" value="true"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
+        <env verbatim="true" name="COLUMNS" value="120"/>
+        <env verbatim="true" name="APP_KEY" value="base64:p1DLhQxuhXUCcCJ/CIfo9xKR6zMgnNXDTVstMbkivEc="/>
+        <env verbatim="true" name="APP_DEBUG" value="true"/>
+        <env verbatim="true" name="DB_CONNECTION" value="sqlite"/>
+        <env verbatim="true" name="DB_DATABASE" value=":memory:"/>
+        <env verbatim="true" name="TESTBENCH_CONVERT_DEPRECATIONS_TO_EXCEPTIONS" value="true"/>
     </php>
 </phpunit>

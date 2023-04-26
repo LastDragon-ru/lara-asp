@@ -92,6 +92,11 @@ interface Settings {
     public function getTypeDefinitionFilter(): ?TypeFilter;
 
     /**
+     * Used to determine should the type included in output or not.
+     */
+    public function getTypeFilter(): ?TypeFilter;
+
+    /**
      * Used to determine should the directive included in output or not.
      */
     public function getDirectiveFilter(): ?DirectiveFilter;

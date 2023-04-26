@@ -4,12 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Traits\DirectiveName;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause as ClauseType;
 
 class Clause extends Property {
-    use DirectiveName;
-
     public static function getName(): string {
         return 'condition';
     }

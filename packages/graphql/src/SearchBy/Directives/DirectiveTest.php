@@ -29,9 +29,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
@@ -52,6 +52,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function assert;
 use function config;
@@ -63,8 +64,8 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive
  */
+#[CoversClass(Directive::class)]
 class DirectiveTest extends TestCase {
     use WithTestObject;
     use MakesGraphQLRequests;
@@ -353,7 +354,7 @@ class DirectiveTest extends TestCase {
 
                     config([
                         "{$package}.search_by.operators.Date" => [
-                            Equal::class,
+                            SearchByOperatorEqualDirective::class,
                         ],
                     ]);
                 },
@@ -370,7 +371,7 @@ class DirectiveTest extends TestCase {
 
                     config([
                         "{$package}.search_by.operators.Date" => [
-                            Between::class,
+                            SearchByOperatorBetweenDirective::class,
                         ],
                     ]);
                 },
@@ -407,14 +408,12 @@ class DirectiveTest extends TestCase {
                         }
 
                         public static function getDirectiveName(): string {
-                            return '@customComplexOperator';
+                            throw new Exception('should not be called');
                         }
 
                         public static function definition(): string {
-                            $name = static::getDirectiveName();
-
-                            return /** @lang GraphQL */ <<<GRAPHQL
-                                directive {$name}(value: String) on INPUT_FIELD_DEFINITION
+                            return /** @lang GraphQL */ <<<'GRAPHQL'
+                                directive @customComplexOperator(value: String) on INPUT_FIELD_DEFINITION
                             GRAPHQL;
                         }
 

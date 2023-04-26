@@ -7,14 +7,15 @@ use Illuminate\Contracts\Mail\Factory as MailFactory;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use LastDragon_ru\LaraASP\Queue\Contracts\Initializable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
 
 use function sprintf;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Queue\Queueables\Mail
  */
+#[CoversClass(Mail::class)]
 class MailTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

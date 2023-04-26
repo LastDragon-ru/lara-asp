@@ -30,6 +30,10 @@ input InputA {
   b: [String!]
 }
 
+input InputHidden {
+  a: Int
+}
+
 input InputUnused {
   a: Int
 }
@@ -54,13 +58,15 @@ interface InterfaceC implements InterfaceA & InterfaceB {
   b: [String!]
   c: [Float!]!
   a: Int
+  d: TypeHidden!
+
+  e(
+    a: Int
+    b: InputHidden
+  ): Int
 }
 
 interface InterfaceUnused {
-  a: Int
-}
-
-interface TypeUnused {
   a: Int
 }
 
@@ -77,9 +83,10 @@ type Mutation {
 
 type Query {
   type(scalar: Int! = 123, a: InputA): TypeA!
-  enum(enum: Enum = A): TypeB
+  enum(enum: Enum = A, hidden: [InputHidden!]!): TypeB
   union: Union
   scalar: Scalar
+  hidden(scalar: Int! = 123): TypeHidden
 }
 
 type Subscription {
@@ -109,6 +116,14 @@ type TypeB {
 
 type TypeC {
   c: [Float!]!
+}
+
+type TypeHidden {
+  a: Int
+}
+
+type TypeUnused {
+  a: Int
 }
 
 """

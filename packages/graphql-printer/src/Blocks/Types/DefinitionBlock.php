@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\Description;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function mb_strlen;
 use function property_exists;
@@ -31,12 +31,12 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
      * @param TType $definition
      */
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         private Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema $definition,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
     }
 
     public function getName(): string {
@@ -65,6 +65,12 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
     }
 
     protected function content(): string {
+        // Allowed?
+        if (!$this->isDefinitionAllowed()) {
+            return '';
+        }
+
+        // Process
         $eol         = $this->eol();
         $space       = $this->space();
         $indent      = $this->indent();
@@ -123,7 +129,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
     protected function directives(int $level = null, int $used = null): DirectiveNodeList {
         $definition = $this->getDefinition();
         $directives = new DirectiveNodeList(
-            $this->getSettings(),
+            $this->getContext(),
             $level ?? $this->getLevel(),
             $used ?? $this->getUsed(),
             $this->getDefinitionDirectives(),
@@ -151,11 +157,22 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Return
         return new Description(
-            $this->getSettings(),
+            $this->getContext(),
             $this->getLevel(),
             $this->getUsed(),
             $description,
         );
+    }
+
+    protected function isDefinitionAllowed(): bool {
+        $definition = $this->getDefinition();
+        $allowed    = match (true) {
+            $definition instanceof Type      => $this->isTypeDefinitionAllowed($definition),
+            $definition instanceof Directive => $this->isDirectiveDefinitionAllowed($definition),
+            default                          => true,
+        };
+
+        return $allowed;
     }
 
     /**

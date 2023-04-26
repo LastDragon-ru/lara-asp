@@ -6,13 +6,15 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast\DirectiveNodeBlock
  */
+#[CoversClass(DirectiveNodeBlock::class)]
 class DirectiveNodeBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -26,8 +28,9 @@ class DirectiveNodeBlockTest extends TestCase {
         int $used,
         DirectiveNode $node,
     ): void {
-        $actual = (string) (new DirectiveNodeBlock($settings, $level, $used, $node));
-        $parsed = Parser::directive($actual);
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new DirectiveNodeBlock($context, $level, $used, $node));
+        $parsed  = Parser::directive($actual);
 
         self::assertEquals($expected, $actual);
 
@@ -40,9 +43,9 @@ class DirectiveNodeBlockTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $settings = new TestSettings();
-        $node     = Parser::directive('@test');
-        $block    = new DirectiveNodeBlock($settings, 0, 0, $node);
+        $context = new Context(new TestSettings(), null, null);
+        $node    = Parser::directive('@test');
+        $block   = new DirectiveNodeBlock($context, 0, 0, $node);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals([], $block->getUsedTypes());

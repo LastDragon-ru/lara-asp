@@ -5,34 +5,34 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorAllOfDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorAnyOfDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBitwiseAndDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBitwiseLeftShiftDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBitwiseOrDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBitwiseRightShiftDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBitwiseXorDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorConditionDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorContainsDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEndsWithDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorGreaterThanDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorGreaterThanOrEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorInDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorIsNotNullDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorIsNullDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorLessThanDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorLessThanOrEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorLikeDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotBetweenDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotInDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotLikeDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorRelationDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorStartsWithDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Between;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseAnd;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseLeftShift;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseOr;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseRightShift;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\BitwiseXor;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Contains;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\EndsWith;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Equal;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\GreaterThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNotNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\IsNull;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThan;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\LessThanOrEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\Like;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotBetween;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotEqual;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotIn;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\NotLike;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\StartsWith;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relation;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AnyOf;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\Not;
 
 use function config;
 
@@ -49,69 +49,69 @@ class Operators extends BuilderOperators {
     protected array $operators = [
         // Standard types
         self::ID        => [
-            Equal::class,
-            NotEqual::class,
-            In::class,
-            NotIn::class,
+            SearchByOperatorEqualDirective::class,
+            SearchByOperatorNotEqualDirective::class,
+            SearchByOperatorInDirective::class,
+            SearchByOperatorNotInDirective::class,
         ],
         self::Int       => [
             self::Number,
-            BitwiseOr::class,
-            BitwiseXor::class,
-            BitwiseAnd::class,
-            BitwiseLeftShift::class,
-            BitwiseRightShift::class,
+            SearchByOperatorBitwiseOrDirective::class,
+            SearchByOperatorBitwiseXorDirective::class,
+            SearchByOperatorBitwiseAndDirective::class,
+            SearchByOperatorBitwiseLeftShiftDirective::class,
+            SearchByOperatorBitwiseRightShiftDirective::class,
         ],
         self::Float     => [
             self::Number,
         ],
         self::Boolean   => [
-            Equal::class,
-            NotEqual::class,
+            SearchByOperatorEqualDirective::class,
+            SearchByOperatorNotEqualDirective::class,
         ],
         self::String    => [
-            Equal::class,
-            NotEqual::class,
-            Like::class,
-            NotLike::class,
-            In::class,
-            NotIn::class,
-            Contains::class,
-            StartsWith::class,
-            EndsWith::class,
+            SearchByOperatorEqualDirective::class,
+            SearchByOperatorNotEqualDirective::class,
+            SearchByOperatorLikeDirective::class,
+            SearchByOperatorNotLikeDirective::class,
+            SearchByOperatorInDirective::class,
+            SearchByOperatorNotInDirective::class,
+            SearchByOperatorContainsDirective::class,
+            SearchByOperatorStartsWithDirective::class,
+            SearchByOperatorEndsWithDirective::class,
         ],
 
         // Special types
         self::Number    => [
-            Equal::class,
-            NotEqual::class,
-            LessThan::class,
-            LessThanOrEqual::class,
-            GreaterThan::class,
-            GreaterThanOrEqual::class,
-            In::class,
-            NotIn::class,
-            Between::class,
-            NotBetween::class,
+            SearchByOperatorEqualDirective::class,
+            SearchByOperatorNotEqualDirective::class,
+            SearchByOperatorLessThanDirective::class,
+            SearchByOperatorLessThanOrEqualDirective::class,
+            SearchByOperatorGreaterThanDirective::class,
+            SearchByOperatorGreaterThanOrEqualDirective::class,
+            SearchByOperatorInDirective::class,
+            SearchByOperatorNotInDirective::class,
+            SearchByOperatorBetweenDirective::class,
+            SearchByOperatorNotBetweenDirective::class,
         ],
         self::Enum      => [
-            Equal::class,
-            NotEqual::class,
-            In::class,
-            NotIn::class,
+            SearchByOperatorEqualDirective::class,
+            SearchByOperatorNotEqualDirective::class,
+            SearchByOperatorInDirective::class,
+            SearchByOperatorNotInDirective::class,
         ],
         self::Null      => [
-            IsNull::class,
-            IsNotNull::class,
+            SearchByOperatorIsNullDirective::class,
+            SearchByOperatorIsNotNullDirective::class,
         ],
         self::Extra     => [
-            AllOf::class,
-            AnyOf::class,
-            Not::class,
+            SearchByOperatorAllOfDirective::class,
+            SearchByOperatorAnyOfDirective::class,
+            SearchByOperatorNotDirective::class,
         ],
         self::Condition => [
-            Relation::class,
-            Condition::class,
+            SearchByOperatorRelationDirective::class,
+            SearchByOperatorConditionDirective::class,
         ],
     ];
 

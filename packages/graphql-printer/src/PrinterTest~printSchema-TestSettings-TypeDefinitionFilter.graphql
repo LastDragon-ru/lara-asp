@@ -49,6 +49,10 @@ input InputA
     )
 }
 
+input InputHidden {
+    a: Int
+}
+
 """
 Interface description.
 """
@@ -86,6 +90,12 @@ implements
     a: Int
     b: [String!]
     c: [Float!]!
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
 }
 
 """
@@ -113,7 +123,12 @@ type Mutation {
 type Query {
     enum(
         enum: Enum = A
+        hidden: [InputHidden!]!
     ): TypeB
+
+    hidden(
+        scalar: Int! = 123
+    ): TypeHidden
 
     scalar: Scalar
 
@@ -122,6 +137,7 @@ type Query {
 
         scalar: Int! = 123
         @directive(
+            hidden: null
             location: "argument"
         )
     ): TypeA!
@@ -170,6 +186,10 @@ type TypeC {
     c: [Float!]!
 }
 
+type TypeHidden {
+    a: Int
+}
+
 """
 Union description.
 """
@@ -189,6 +209,7 @@ union Union
 Directive description
 """
 directive @directive(
+    hidden: InputHidden
     location: String
 )
 repeatable on

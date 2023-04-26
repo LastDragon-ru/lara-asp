@@ -5,12 +5,13 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchemaTest;
 use LastDragon_ru\LaraASP\Testing\Utils\TestData;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Assertions\XmlAssertions
  */
+#[CoversClass(XmlAssertions::class)]
 class XmlAssertionsTest extends TestCase {
     public function testAssertXmlMatchesSchema(): void {
         $data      = new TestData(XmlMatchesSchemaTest::class);

@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory as ResponseFactory;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\ValidationErrorResponse
  */
+#[CoversClass(ValidationErrorResponse::class)]
 class ValidationErrorResponseTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

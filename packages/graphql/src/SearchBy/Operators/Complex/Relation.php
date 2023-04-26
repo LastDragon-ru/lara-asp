@@ -11,9 +11,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Property as PropertyOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
@@ -23,7 +23,7 @@ use function reset;
 
 class Relation extends BaseOperator {
     public function __construct(
-        protected PropertyOperator $property,
+        protected SearchByOperatorPropertyDirective $property,
     ) {
         parent::__construct();
     }

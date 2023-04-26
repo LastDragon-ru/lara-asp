@@ -32,6 +32,7 @@ use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function json_encode;
 
@@ -39,8 +40,8 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective
  */
+#[CoversClass(HandlerDirective::class)]
 class HandlerDirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

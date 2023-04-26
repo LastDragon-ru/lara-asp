@@ -6,6 +6,7 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\DirectiveLocation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 
 use function implode;
@@ -17,12 +18,16 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
     }
 
     public static function definition(): string {
-        $name      = static::getDirectiveName();
+        $name      = static::getDirectiveName() ?: '@'.DirectiveLocator::directiveName(static::class);
         $locations = implode('|', static::getDirectiveLocations());
 
         return /** @lang GraphQL */ <<<GRAPHQL
             directive {$name} on {$locations}
         GRAPHQL;
+    }
+
+    public static function getDirectiveName(): string {
+        return '';
     }
 
     /**

@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\NamedType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function rtrim;
 
@@ -16,11 +16,11 @@ use function rtrim;
  */
 class DefinitionList extends ListBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         protected bool $root = false,
     ) {
-        parent::__construct($settings, $level);
+        parent::__construct($context, $level);
     }
 
     protected function isWrapped(): bool {

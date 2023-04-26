@@ -17,15 +17,16 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function implode;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical\AllOf
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
+#[CoversClass(AllOf::class)]
 class AllOfTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

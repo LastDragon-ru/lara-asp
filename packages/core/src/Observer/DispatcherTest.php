@@ -5,12 +5,13 @@ namespace LastDragon_ru\LaraASP\Core\Observer;
 use Closure;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use Mockery;
+use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Core\Observer\Dispatcher
  */
+#[CoversClass(Dispatcher::class)]
 class DispatcherTest extends TestCase {
     public function testSubject(): void {
         $spy      = Mockery::spy(static fn(stdClass $context) => null);

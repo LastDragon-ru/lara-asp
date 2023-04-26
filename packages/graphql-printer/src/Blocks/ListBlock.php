@@ -6,7 +6,7 @@ use ArrayAccess;
 use Countable;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 
-use function array_key_last;
+use function array_filter;
 use function count;
 use function mb_strlen;
 use function strnatcmp;
@@ -22,12 +22,6 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
      * @var array<int|string,TBlock>
      */
     private array $blocks = [];
-
-    /**
-     * @var array<int|string,bool>
-     */
-    private array $multiline = [];
-    private int   $length    = 0;
 
     // <editor-fold desc="Settings">
     // =========================================================================
@@ -64,24 +58,15 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     }
     // </editor-fold>
 
-    // <editor-fold desc="Block">
-    // =========================================================================
-    public function isEmpty(): bool {
-        return count($this->blocks) === 0 || parent::isEmpty();
-    }
-
-    public function isMultiline(): bool {
-        return count($this->multiline) > 0 || parent::isMultiline();
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Content">
     // =========================================================================
     /**
      * @return array<int|string,TBlock>
      */
     protected function getBlocks(): array {
-        $blocks = $this->blocks;
+        $blocks = array_filter($this->blocks, static function (Block $block): bool {
+            return !$block->isEmpty();
+        });
 
         if (count($blocks) > 0 && $this->isNormalized()) {
             usort($blocks, static function (Block $a, Block $b): int {
@@ -182,14 +167,31 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         string $separator,
     ): bool {
         // Always or Any multiline block?
-        if ($this->isAlwaysMultiline() || count($this->multiline) > 0) {
+        if ($this->isAlwaysMultiline()) {
+            return true;
+        }
+
+        // Any multiline block?
+        $length    = 0;
+        $multiline = false;
+
+        foreach ($blocks as $block) {
+            $length += $block->getLength();
+
+            if ($block->isMultiline()) {
+                $multiline = true;
+                break;
+            }
+        }
+
+        if ($multiline) {
             return true;
         }
 
         // Length?
         $count  = count($blocks);
         $length = $this->getUsed()
-            + $this->length
+            + $length
             + mb_strlen($suffix)
             + mb_strlen($prefix)
             + mb_strlen($separator) * ($count - 1);
@@ -206,11 +208,12 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         return $this->addUsed($block);
     }
 
-    /**
-     * @param TBlock $value
-     */
-    protected function isValidBlock(Block $value): bool {
-        return !$value->isEmpty();
+    protected function reset(): void {
+        foreach ($this->blocks as $block) {
+            $block->reset();
+        }
+
+        parent::reset();
     }
     // </editor-fold>
 
@@ -237,38 +240,22 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
      * @param TBlock          $value
      */
     public function offsetSet(mixed $offset, mixed $value): void {
-        if (!$this->isValidBlock($value)) {
-            return;
-        }
-
         if ($offset !== null) {
             $this->blocks[$offset] = $value;
         } else {
             $this->blocks[] = $value;
-            $offset         = array_key_last($this->blocks);
         }
 
-        $this->length += $value->getLength();
-
-        if ($value->isMultiline()) {
-            $this->multiline[$offset] = true;
-        }
-
-        $this->reset();
+        parent::reset();
     }
 
     /**
      * @param int|string $offset
      */
     public function offsetUnset(mixed $offset): void {
-        if (isset($this->blocks[$offset])) {
-            $this->length -= $this->blocks[$offset]->getLength();
-        }
-
         unset($this->blocks[$offset]);
-        unset($this->multiline[$offset]);
 
-        $this->reset();
+        parent::reset();
     }
     // </editor-fold>
 

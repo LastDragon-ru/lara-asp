@@ -5,12 +5,13 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers;
 use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchemaTest;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileXsdSchemaMatcher
  */
+#[CoversClass(XmlFileXsdSchemaMatcher::class)]
 class XmlFileXsdSchemaMatcherTest extends TestCase {
     use WithTestData;
 

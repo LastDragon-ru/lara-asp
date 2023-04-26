@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 use Illuminate\Contracts\Queue\QueueableEntity;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -12,8 +13,8 @@ use function strtolower;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Core\Concerns\InstanceCache
  */
+#[CoversClass(InstanceCache::class)]
 class InstanceCacheTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

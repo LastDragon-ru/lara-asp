@@ -4,11 +4,12 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Validation\Rules\StringRule
  */
+#[CoversClass(StringRule::class)]
 class StringRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

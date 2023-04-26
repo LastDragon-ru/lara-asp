@@ -252,7 +252,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             }
 
             // Argument?
-            $argument = $manipulator->getNodeAttribute($field, $argumentName);
+            $argument = $manipulator->getNodeArgument($field, $argumentName);
 
             if ($argument === null) {
                 continue;

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use GraphQL\Type\Definition\InputObjectField;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Traversable;
 
 /**
@@ -16,16 +16,16 @@ class InputFieldsDefinition extends ListBlock {
      * @param Traversable<InputObjectField>|array<InputObjectField> $fields
      */
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         Traversable|array $fields,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
 
         foreach ($fields as $field) {
             $this[$field->name] = new InputValueDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel() + 1,
                 $this->getUsed(),
                 $field,

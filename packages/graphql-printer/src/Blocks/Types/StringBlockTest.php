@@ -5,15 +5,17 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function implode;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\StringBlock
  */
+#[CoversClass(StringBlock::class)]
 class StringBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -27,8 +29,9 @@ class StringBlockTest extends TestCase {
         int $used,
         string $string,
     ): void {
-        $actual = (string) new StringBlock($settings, $level, $used, $string);
-        $parsed = Parser::valueLiteral($actual);
+        $context = new Context($settings, null, null);
+        $actual  = (string) new StringBlock($context, $level, $used, $string);
+        $parsed  = Parser::valueLiteral($actual);
 
         self::assertInstanceOf(StringValueNode::class, $parsed);
         self::assertEquals($expected, $actual);

@@ -5,13 +5,15 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\EnumValueDefinition
  */
+#[CoversClass(EnumValueDefinition::class)]
 class EnumValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -25,7 +27,8 @@ class EnumValueDefinitionTest extends TestCase {
         int $used,
         GraphQLEnumValueDefinition $type,
     ): void {
-        $actual = (string) (new EnumValueDefinition($settings, $level, $used, $type));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new EnumValueDefinition($context, $level, $used, $type));
 
         Parser::enumValueDefinition($actual);
 

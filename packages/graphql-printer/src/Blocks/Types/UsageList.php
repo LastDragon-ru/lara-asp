@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Traversable;
 
 use function mb_strlen;
@@ -20,13 +20,13 @@ abstract class UsageList extends ListBlock {
      * @param Traversable<TType>|array<TType> $items
      */
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         Traversable|array $items,
         protected bool $isAlwaysMultiline = false,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
 
         foreach ($items as $item) {
             $this[] = $this->block($item);

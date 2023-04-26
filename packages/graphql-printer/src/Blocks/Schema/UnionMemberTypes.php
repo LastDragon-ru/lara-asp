@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 class UnionMemberTypes extends UsageList {
     protected function block(mixed $item): Block {
         return new Type(
-            $this->getSettings(),
+            $this->getContext(),
             $this->getLevel() + 1,
             $this->getUsed(),
             $item,

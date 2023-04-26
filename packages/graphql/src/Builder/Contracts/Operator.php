@@ -16,6 +16,10 @@ interface Operator extends Directive {
 
     /**
      * Must start with `@` and be a valid GraphQL Directive name.
+     *
+     * @deprecated 4.1.0 Directive name will be determined by a class name same
+     *      as Lighthouse does. So the method is not needed anymore and will be
+     *      removed in the next major version.
      */
     public static function getDirectiveName(): string;
 

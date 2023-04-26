@@ -3,20 +3,20 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use GraphQL\Type\Definition\ObjectType;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
  */
 class RootOperationTypeDefinition extends Type {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         private string $operation,
         ObjectType $type,
     ) {
-        parent::__construct($settings, $level, $used, $type);
+        parent::__construct($context, $level, $used, $type);
     }
 
     public function getOperation(): string {

@@ -6,13 +6,14 @@ use DateTime;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use NumberFormatter;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Formatter\Formatter
  */
+#[CoversClass(Formatter::class)]
 class FormatterTest extends TestCase {
     protected Formatter $formatter;
 

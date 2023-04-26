@@ -12,8 +12,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Scope;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorConditionDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
@@ -56,7 +56,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
             $manipulator,
             $document,
             $argument,
-            Condition::class,
+            SearchByOperatorConditionDirective::class,
         );
 
         if (!$type) {

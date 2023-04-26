@@ -16,14 +16,15 @@ use JsonSerializable;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function get_class;
 use function json_decode;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\Resource
  */
+#[CoversClass(Resource::class)]
 class ResourceTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

@@ -15,15 +15,16 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function implode;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison\In
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
+#[CoversClass(In::class)]
 class InTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

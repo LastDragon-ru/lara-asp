@@ -6,18 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function get_class;
 use function json_decode;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedCollection
  */
+#[CoversClass(PaginatedCollection::class)]
+#[CoversClass(PaginatedResponse::class)]
 class PaginatedCollectionTest extends TestCase {
-    /**
-     * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedResponse
-     */
     public function testToResponseLengthAwarePaginator(): void {
         $total     = 123;
         $perPage   = 25;
@@ -64,9 +63,6 @@ class PaginatedCollectionTest extends TestCase {
         ));
     }
 
-    /**
-     * @covers \LastDragon_ru\LaraASP\Spa\Http\Resources\PaginatedResponse
-     */
     public function testToResponsePaginator(): void {
         $perPage   = 25;
         $current   = 2;

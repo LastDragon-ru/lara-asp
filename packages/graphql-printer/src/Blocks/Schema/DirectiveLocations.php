@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 class DirectiveLocations extends UsageList {
     protected function block(mixed $item): Block {
         return new DirectiveLocation(
-            $this->getSettings(),
+            $this->getContext(),
             $this->getLevel() + 1,
             $this->getUsed(),
             $item,

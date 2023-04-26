@@ -4,13 +4,14 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use GuzzleHttp\Psr7\Response;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Constraints\Response\MimeType
  */
+#[CoversClass(MimeType::class)]
 class MimeTypeTest extends TestCase {
     public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));

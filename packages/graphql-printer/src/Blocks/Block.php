@@ -3,11 +3,14 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use Closure;
+use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Stringable;
 
 use function mb_strlen;
@@ -33,7 +36,7 @@ abstract class Block implements Statistics, Stringable {
     private array $usedDirectives = [];
 
     public function __construct(
-        private Settings $settings,
+        private Context $context,
         private int $level = 0,
         private int $used = 0,
     ) {
@@ -42,8 +45,12 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
+    protected function getContext(): Context {
+        return $this->context;
+    }
+
     protected function getSettings(): Settings {
-        return $this->settings;
+        return $this->getContext()->getSettings();
     }
 
     protected function getLevel(): int {
@@ -182,9 +189,36 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    public function isTypeDefinitionAllowed(Type $type): bool {
+    public function isTypeAllowed(Type $type): bool {
+        // Filter?
+        $filter = $this->getSettings()->getTypeFilter();
+
+        if ($filter === null) {
+            return true;
+        }
+
+        // Wrapped?
+        if ($type instanceof WrappingType) {
+            $type = $type->getInnermostType();
+        }
+
         // Named?
         if (!($type instanceof NamedType)) {
+            return false;
+        }
+
+        // Allowed?
+        $name      = $type->name();
+        $isBuiltIn = $type->isBuiltInType();
+        $isAllowed = $filter->isAllowedType($name, $isBuiltIn);
+
+        // Return
+        return $isAllowed;
+    }
+
+    public function isTypeDefinitionAllowed(Type $type): bool {
+        // Allowed?
+        if (!($type instanceof NamedType) || !$this->isTypeAllowed($type)) {
             return false;
         }
 
@@ -204,26 +238,34 @@ abstract class Block implements Statistics, Stringable {
     // <editor-fold desc="Directives">
     // =========================================================================
     public function isDirectiveAllowed(string $directive): bool {
-        $filter    = $this->getSettings()->getDirectiveFilter();
-        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
-        $isAllowed = $filter === null
-            || $filter->isAllowedDirective($directive, $isBuiltIn);
+        // Filter?
+        $filter = $this->getSettings()->getDirectiveFilter();
 
+        if ($filter === null) {
+            return true;
+        }
+
+        // Allowed?
+        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+        $isAllowed = $filter->isAllowedDirective($directive, $isBuiltIn);
+
+        // Return
         return $isAllowed;
     }
 
-    public function isDirectiveDefinitionAllowed(string $directive): bool {
+    public function isDirectiveDefinitionAllowed(Directive $directive): bool {
         // Allowed?
-        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive)) {
+        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive->name)) {
             return false;
         }
 
         // Definition?
+        $name      = $directive->name;
         $filter    = $this->getSettings()->getDirectiveDefinitionFilter();
-        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+        $isBuiltIn = $this->isDirectiveBuiltIn($name);
         $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedDirective($directive, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedDirective($directive, $isBuiltIn));
+            ? ($filter !== null && $filter->isAllowedDirective($name, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedDirective($name, $isBuiltIn));
 
         // Return
         return $isAllowed;

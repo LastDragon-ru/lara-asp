@@ -4,19 +4,19 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
  */
 class DirectiveLocation extends Block implements NamedBlock {
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         private string $location,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
     }
 
     public function getName(): string {

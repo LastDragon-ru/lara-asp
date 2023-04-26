@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\Factory;
@@ -10,8 +11,8 @@ use stdClass;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator
  */
+#[CoversClass(DatabaseQueryComparator::class)]
 class DatabaseQueryComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

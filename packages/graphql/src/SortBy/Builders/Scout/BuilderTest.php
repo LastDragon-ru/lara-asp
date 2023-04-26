@@ -9,14 +9,15 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function implode;
 use function is_array;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder
  */
+#[CoversClass(Builder::class)]
 class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

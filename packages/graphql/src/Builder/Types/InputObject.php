@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -56,12 +57,11 @@ abstract class InputObject implements TypeDefinition {
 
         // Type
         $description = $this->getDescription($manipulator, $source);
+        $description = BlockString::print($description);
         $operators   = $this->getOperators($manipulator, $source);
         $definition  = Parser::inputObjectTypeDefinition(
             <<<DEF
-            """
             {$description}
-            """
             input {$name} {
                 """
                 If you see this probably something wrong. Please contact to developer.

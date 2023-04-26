@@ -7,8 +7,10 @@ use Composer\Semver\VersionParser;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Filesystem\Filesystem;
+use LastDragon_ru\LaraASP\Migrator\Provider;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use Mockery;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 use function array_map;
@@ -22,12 +24,10 @@ use function trim;
 
 /**
  * @internal
- * @covers \LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator
  */
+#[CoversClass(SmartMigrator::class)]
+#[CoversClass(Provider::class)]
 class SmartMigratorTest extends TestCase {
-    /**
-     * @covers \LastDragon_ru\LaraASP\Migrator\Provider
-     */
     public function testProvider(): void {
         self::assertEquals(SmartMigrator::class, get_class($this->app->make('migrator')));
     }

@@ -24,6 +24,10 @@ input InputA {
     c: [Float!]!
 }
 
+input InputHidden {
+    a: Int
+}
+
 """
 Interface description.
 """
@@ -51,6 +55,12 @@ implements
     a: Int
     b: [String!]
     c: [Float!]!
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
 }
 
 """
@@ -68,7 +78,12 @@ type Mutation {
 type Query {
     enum(
         enum: Enum = A
+        hidden: [InputHidden!]!
     ): TypeB
+
+    hidden(
+        scalar: Int! = 123
+    ): TypeHidden
 
     scalar: Scalar
 
@@ -110,6 +125,10 @@ type TypeB {
 
 type TypeC {
     c: [Float!]!
+}
+
+type TypeHidden {
+    a: Int
 }
 
 """

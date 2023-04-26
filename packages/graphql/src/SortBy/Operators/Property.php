@@ -8,14 +8,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Traits\DirectiveName;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 
 use function is_a;
 
 class Property extends PropertyDirective implements Operator {
-    use DirectiveName;
-
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $provider->getType(Clause::class, $source);
     }

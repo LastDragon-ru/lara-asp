@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Traversable;
 
 /**
@@ -16,16 +16,16 @@ class FieldsDefinition extends ListBlock {
      * @param Traversable<GraphQLFieldDefinition>|array<GraphQLFieldDefinition> $fields
      */
     public function __construct(
-        Settings $settings,
+        Context $context,
         int $level,
         int $used,
         Traversable|array $fields,
     ) {
-        parent::__construct($settings, $level, $used);
+        parent::__construct($context, $level, $used);
 
         foreach ($fields as $field) {
             $this[$field->name] = new FieldDefinition(
-                $this->getSettings(),
+                $this->getContext(),
                 $this->getLevel() + 1,
                 $this->getUsed(),
                 $field,
