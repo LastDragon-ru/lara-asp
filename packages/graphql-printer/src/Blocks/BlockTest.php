@@ -20,7 +20,9 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use ReflectionAttribute;
 use ReflectionClass;
 
+use function array_fill_keys;
 use function array_unique;
+use function array_values;
 use function dirname;
 use function mb_strlen;
 use function sort;
@@ -34,76 +36,19 @@ class BlockTest extends TestCase {
     // =========================================================================
     #[CoversNothing]
     public function testImplementation(): void {
-        // Actual
-        $invalidDefinitions = [];
-        $actualDefinitions  = [];
-        $actualMap          = ClassMapGenerator::createMap(__DIR__);
-
-        foreach ($actualMap as $name => $path) {
-            $class      = new ReflectionClass($name);
-            $attributes = $class->getAttributes(GraphQLDefinition::class, ReflectionAttribute::IS_INSTANCEOF);
-
-            if ($attributes) {
-                foreach ($attributes as $attribute) {
-                    $definition = $attribute->newInstance()->getClass();
-                    $instance   = new ReflectionClass($definition);
-
-                    if ($instance->isInstantiable()) {
-                        $actualDefinitions[] = $definition;
-                    } else {
-                        $invalidDefinitions[] = $definition;
-                    }
-                }
-            }
-        }
-
-        self::assertEquals([], $invalidDefinitions);
-        self::assertNotEmpty($actualDefinitions);
-
-        // Graphql
-        $expectedDefinitions = [
-            Schema::class,
-        ];
-        $expectedMap         = new ClassMapGenerator();
-        $ignored             = [
-            QueryPlan::class                 => true,
-            ResolveInfo::class               => true,
-            UnresolvedFieldDefinition::class => true,
-        ];
-        $targets             = [
+        $actualMap           = ClassMapGenerator::createMap(__DIR__);
+        $actualDefinitions   = $this->getSupportedClasses(GraphQLDefinition::class, $actualMap);
+        $expectedDefinitions = $this->getExpectedClasses(
             Type::class,
-        ];
-
-        foreach ($targets as $target) {
-            $path = (new ReflectionClass($target))->getFileName();
-
-            if ($path !== false) {
-                $expectedMap->scanPaths(dirname($path));
-            }
-        }
-
-        foreach ($expectedMap->getClassMap()->getMap() as $name => $path) {
-            if (isset($ignored[$name])) {
-                continue;
-            }
-
-            $class = new ReflectionClass($name);
-
-            if ((bool) $class->getAttributes(Attribute::class, ReflectionAttribute::IS_INSTANCEOF)) {
-                continue;
-            }
-
-            if ($class->isInstantiable()) {
-                $expectedDefinitions[] = $name;
-            }
-        }
-
-        // Test
-        $actualDefinitions   = array_unique($actualDefinitions);
-        $expectedDefinitions = array_unique($expectedDefinitions);
-
-        sort($actualDefinitions);
-        sort($expectedDefinitions);
+            [
+                Schema::class,
+            ],
+            [
+                QueryPlan::class,
+                ResolveInfo::class,
+                UnresolvedFieldDefinition::class,
+            ],
+        );
 
         self::assertEquals(
             $expectedDefinitions,
@@ -173,6 +118,84 @@ class BlockTest extends TestCase {
             ->andReturn($content);
 
         self::assertEquals($expected, $block->isEmpty());
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =========================================================================
+    /**
+     * @param class-string<GraphQLDefinition> $marker
+     * @param array<class-string, string>     $map
+     *
+     * @return list<class-string>
+     */
+    protected function getSupportedClasses(string $marker, array $map): array {
+        $invalid = [];
+        $valid   = [];
+
+        foreach ($map as $name => $path) {
+            $class      = new ReflectionClass($name);
+            $attributes = $class->getAttributes($marker, ReflectionAttribute::IS_INSTANCEOF);
+
+            foreach ($attributes as $attribute) {
+                $definition = $attribute->newInstance()->getClass();
+                $instance   = new ReflectionClass($definition);
+
+                if ($instance->isInstantiable()) {
+                    $valid[] = $definition;
+                } else {
+                    $invalid[] = $definition;
+                }
+            }
+        }
+
+        sort($valid);
+        sort($invalid);
+
+        $valid   = array_values(array_unique($valid));
+        $invalid = array_values(array_unique($invalid));
+
+        self::assertEquals([], $invalid);
+        self::assertNotEmpty($valid);
+
+        return $valid;
+    }
+
+    /**
+     * @param class-string       $target
+     * @param list<class-string> $classes
+     * @param list<class-string> $ignored
+     *
+     * @return list<class-string>
+     */
+    protected function getExpectedClasses(string $target, array $classes = [], array $ignored = []): array {
+        $ignored = array_fill_keys($ignored, true);
+        $file    = (new ReflectionClass($target))->getFileName();
+
+        self::assertIsString($file);
+
+        foreach (ClassMapGenerator::createMap(dirname($file)) as $name => $path) {
+            if (isset($ignored[$name])) {
+                continue;
+            }
+
+            $class = new ReflectionClass($name);
+
+            if ((bool) $class->getAttributes(Attribute::class, ReflectionAttribute::IS_INSTANCEOF)) {
+                continue;
+            }
+
+            if ($class->isInstantiable()) {
+                $classes[] = $name;
+            }
+        }
+
+        // Test
+        sort($classes);
+
+        $classes = array_values(array_unique($classes));
+
+        return $classes;
     }
     // </editor-fold>
 
