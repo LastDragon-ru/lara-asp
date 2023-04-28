@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\PhpEnumType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -16,6 +17,7 @@ use function mb_strlen;
  * @extends DefinitionBlock<EnumType>
  */
 #[GraphQLDefinition(EnumType::class)]
+#[GraphQLDefinition(PhpEnumType::class)]
 class EnumTypeDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,

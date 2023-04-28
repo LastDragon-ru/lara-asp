@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema;
 
+use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NamedType;
+use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
@@ -15,8 +17,8 @@ use function assert;
 /**
  * @internal
  */
-#[GraphQLDefinition(NamedType::class)]
-#[GraphQLDefinition(WrappingType::class)]
+#[GraphQLDefinition(ListOfType::class)]
+#[GraphQLDefinition(NonNull::class)]
 class Type extends Block implements NamedBlock {
     public function __construct(
         Context $context,

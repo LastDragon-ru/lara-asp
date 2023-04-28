@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast\ValueNodeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function mb_strlen;
 
@@ -18,6 +19,8 @@ use function mb_strlen;
  *
  * @extends DefinitionBlock<Argument|InputObjectField>
  */
+#[GraphQLDefinition(Argument::class)]
+#[GraphQLDefinition(InputObjectField::class)]
 class InputValueDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
