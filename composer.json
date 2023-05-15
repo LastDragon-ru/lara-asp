@@ -55,7 +55,7 @@
     "symfony/http-foundation": "^5.2.0|^6.0.0",
     "symfony/mime": "^5.3.0|^6.0.0",
     "symfony/psr-http-message-bridge": "^2.0.0",
-    "webonyx/graphql-php": "^15.2.4"
+    "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
@@ -63,12 +63,12 @@
     "mockery/mockery": "^1.4.2",
     "nunomaduro/larastan": "2.6.0",
     "orchestra/testbench": "^6.9.0|^7.0.0|^8.0.0",
-    "phpstan/phpstan": "1.10.14",
+    "phpstan/phpstan": "1.10.15",
     "phpstan/phpstan-mockery": "^1.0.0",
     "phpstan/phpstan-phpunit": "^1.0.0",
     "phpstan/phpstan-strict-rules": "^1.1.0",
     "phpunit/phpunit": "^9.5.0|^10.1.0",
-    "slevomat/coding-standard": "^8.11.0",
+    "slevomat/coding-standard": "^8.12.0",
     "squizlabs/php_codesniffer": "^3.7.1",
     "symplify/monorepo-builder": "^11.0.0"
   },

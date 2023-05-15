@@ -256,8 +256,10 @@ directive @deprecated(
     reason: String = "No longer supported"
 )
 on
+    | ARGUMENT_DEFINITION
     | ENUM_VALUE
     | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
 
 """
 Allows you to easily hook up a resolver for an endpoint.
