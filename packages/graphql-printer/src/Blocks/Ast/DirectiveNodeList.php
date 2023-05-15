@@ -31,9 +31,9 @@ class DirectiveNodeList extends ListBlock {
         $deprecated   = Directive::DEPRECATED_NAME;
         $directives ??= [];
 
-        if ($deprecationReason) {
+        if ($deprecationReason !== null) {
             // todo(graphql): Is there a better way to create directive node?
-            if ($deprecationReason !== Directive::DEFAULT_DEPRECATION_REASON) {
+            if ($deprecationReason !== Directive::DEFAULT_DEPRECATION_REASON && $deprecationReason !== '') {
                 $reason = json_encode($deprecationReason);
                 $this[] = $this->block(Parser::directive("@{$deprecated}(reason: {$reason})"));
             } else {
@@ -42,7 +42,7 @@ class DirectiveNodeList extends ListBlock {
         }
 
         foreach ($directives as $directive) {
-            if ($deprecationReason && $directive->name->value === $deprecated) {
+            if ($deprecationReason !== null && $directive->name->value === $deprecated) {
                 continue;
             }
 

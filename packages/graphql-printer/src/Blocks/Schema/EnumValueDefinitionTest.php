@@ -45,7 +45,7 @@ class EnumValueDefinitionTest extends TestCase {
         $settings = new TestSettings();
 
         return [
-            'value'  => [
+            'value'                     => [
                 <<<'STRING'
                 A
                 STRING,
@@ -57,7 +57,7 @@ class EnumValueDefinitionTest extends TestCase {
                     'value' => 'A',
                 ]),
             ],
-            'indent' => [
+            'indent'                    => [
                 <<<'STRING'
                 A
                 STRING,
@@ -67,6 +67,41 @@ class EnumValueDefinitionTest extends TestCase {
                 new GraphQLEnumValueDefinition([
                     'name'  => 'A',
                     'value' => 'A',
+                ]),
+            ],
+            'deprecationReason (empty)' => [
+                <<<'STRING'
+                A
+                @deprecated
+                STRING,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new GraphQLEnumValueDefinition([
+                    'name'              => 'A',
+                    'value'             => 'A',
+                    'deprecationReason' => '',
+                ]),
+            ],
+            'deprecationReason'         => [
+                <<<'STRING'
+                A
+                @deprecated(
+                    reason: "test"
+                )
+                STRING,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new GraphQLEnumValueDefinition([
+                    'name'              => 'A',
+                    'value'             => 'A',
+                    'deprecationReason' => 'test',
+                    'astNode'           => Parser::enumValueDefinition(
+                        'A @deprecated(reason: "should be ignored")',
+                    ),
                 ]),
             ],
         ];
