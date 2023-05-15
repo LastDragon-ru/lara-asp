@@ -170,7 +170,10 @@ type __EnumValue {
 Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.
 """
 type __Field {
-    args: [__InputValue!]!
+    args(
+        includeDeprecated: Boolean = false
+    ): [__InputValue!]!
+
     deprecationReason: String
     description: String
     isDeprecated: Boolean!
@@ -187,7 +190,9 @@ type __InputValue {
     """
     defaultValue: String
 
+    deprecationReason: String
     description: String
+    isDeprecated: Boolean!
     name: String!
     type: __Type!
 }
@@ -238,7 +243,10 @@ type __Type {
         includeDeprecated: Boolean = false
     ): [__Field!]
 
-    inputFields: [__InputValue!]
+    inputFields(
+        includeDeprecated: Boolean = false
+    ): [__InputValue!]
+
     interfaces: [__Type!]
     kind: __TypeKind!
     name: String
@@ -256,8 +264,10 @@ directive @deprecated(
     reason: String = "No longer supported"
 )
 on
+    | ARGUMENT_DEFINITION
     | ENUM_VALUE
     | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
 
 """
 Directs the executor to include this field or fragment only when the `if` argument is true.

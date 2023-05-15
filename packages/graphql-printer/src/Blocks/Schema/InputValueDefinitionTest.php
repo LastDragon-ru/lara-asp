@@ -73,7 +73,7 @@ class InputValueDefinitionTest extends TestCase {
         $settings = new TestSettings();
 
         return [
-            'without value'      => [
+            'without value'             => [
                 <<<'STRING'
                 """
                 Description
@@ -101,7 +101,7 @@ class InputValueDefinitionTest extends TestCase {
                     'description' => 'Description',
                 ]),
             ],
-            'with value (short)' => [
+            'with value (short)'        => [
                 <<<'STRING'
                 """
                 Description
@@ -120,7 +120,7 @@ class InputValueDefinitionTest extends TestCase {
                     'description'  => 'Description',
                 ]),
             ],
-            'with value (long)'  => [
+            'with value (long)'         => [
                 <<<'STRING'
                 """
                 Description
@@ -141,7 +141,7 @@ class InputValueDefinitionTest extends TestCase {
                     'description'  => 'Description',
                 ]),
             ],
-            'indent'             => [
+            'indent'                    => [
                 <<<'STRING'
                 """
                     Description
@@ -160,6 +160,41 @@ class InputValueDefinitionTest extends TestCase {
                         'aaaaaaaaaaaaaaaaaaaaaaaaaa',
                     ],
                     'description'  => 'Description',
+                ]),
+            ],
+            'deprecationReason (empty)' => [
+                <<<'STRING'
+                test: String
+                @deprecated
+                STRING,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new Argument([
+                    'name'              => 'test',
+                    'type'              => Type::string(),
+                    'deprecationReason' => '',
+                ]),
+            ],
+            'deprecationReason'         => [
+                <<<'STRING'
+                test: String
+                @deprecated(
+                    reason: "test"
+                )
+                STRING,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new Argument([
+                    'name'              => 'test',
+                    'type'              => Type::string(),
+                    'deprecationReason' => 'test',
+                    'astNode'           => Parser::inputValueDefinition(
+                        'test: Test! @deprecated(reason: "should be ignored")',
+                    ),
                 ]),
             ],
         ];

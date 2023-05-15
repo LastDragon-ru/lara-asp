@@ -222,6 +222,39 @@ class FieldDefinitionTest extends TestCase {
                     ],
                 ]),
             ],
+            'deprecationReason (empty)'  => [
+                <<<'STRING'
+                test: Test!
+                @deprecated
+                STRING,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new GraphQLFieldDefinition([
+                    'name'              => 'test',
+                    'type'              => new NonNull($object),
+                    'deprecationReason' => '',
+                ]),
+            ],
+            'deprecationReason'          => [
+                <<<'STRING'
+                test: Test!
+                @deprecated(reason: "test")
+                STRING,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new GraphQLFieldDefinition([
+                    'name'              => 'test',
+                    'type'              => new NonNull($object),
+                    'deprecationReason' => 'test',
+                    'astNode'           => Parser::fieldDefinition(
+                        'test: Test! @deprecated(reason: "should be ignored")',
+                    ),
+                ]),
+            ],
         ];
     }
     // </editor-fold>
