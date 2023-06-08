@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
 use Closure;
+use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
@@ -38,6 +39,7 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
@@ -236,14 +238,14 @@ class AstManipulator {
     /**
      * @template T
      *
-     * @param class-string<T>       $class
-     * @param Closure(T): bool|null $callback
+     * @param class-string<T>|null                                           $class
+     * @param Closure(($class is null ? Directive : T&Directive)): bool|null $callback
      *
-     * @return list<T&Directive>
+     * @return ($class is null ? list<Directive> : list<T&Directive>)
      */
     public function getNodeDirectives(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
-        string $class,
+        ?string $class = null,
         ?Closure $callback = null,
     ): array {
         $directives = [];
@@ -251,26 +253,26 @@ class AstManipulator {
         if ($node instanceof NamedType) {
             if ($node->astNode()) {
                 $directives = $this->getNodeDirectives($node->astNode(), $class, $callback);
-            } else {
-                foreach ($node->extensionASTNodes() as $extensionNode) {
-                    $directives = array_merge($directives, $this->getNodeDirectives($extensionNode, $class, $callback));
-                }
+            }
+
+            foreach ($node->extensionASTNodes() as $extensionNode) {
+                $directives = array_merge($directives, $this->getNodeDirectives($extensionNode, $class, $callback));
             }
         } elseif ($node instanceof Node) {
             $associated = $this->getDirectives()->associated($node);
 
             foreach ($associated as $directive) {
-            // Class?
-                if (!($directive instanceof $class)) {
+                // Class?
+                if ($class && !($directive instanceof $class)) {
                     continue;
                 }
 
-            // Callback?
+                // Callback?
                 if ($callback && !$callback($directive)) {
                     continue;
                 }
 
-            // Ok
+                // Ok
                 $directives[] = $directive;
             }
         } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
@@ -442,6 +444,20 @@ class AstManipulator {
         }
 
         return $argument;
+    }
+
+    public function getDirectiveNode(Directive|DirectiveNode $directive): ?DirectiveNode {
+        $node = null;
+
+        if ($directive instanceof BaseDirective) {
+            $node = $directive->directiveNode;
+        } elseif ($directive instanceof DirectiveNode) {
+            $node = $directive;
+        } else {
+            // empty
+        }
+
+        return $node;
     }
     //</editor-fold>
 }
