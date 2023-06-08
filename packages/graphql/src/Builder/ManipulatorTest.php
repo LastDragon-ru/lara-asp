@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
+use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -93,6 +94,33 @@ class ManipulatorTest extends TestCase {
     }
 
     public function testGetTypeOperators(): void {
+        // Operators
+        $scope     = new class() implements Scope {
+            // empty;
+        };
+        $builder   = new stdClass();
+        $aOperator = ManipulatorTest_OperatorA::class;
+        $bOperator = ManipulatorTest_OperatorB::class;
+        $cOperator = ManipulatorTest_OperatorC::class;
+
+        // Types
+        $types = $this->app->make(TypeRegistry::class);
+
+        $types->register(new CustomScalarType([
+            'name' => 'TestScalar',
+        ]));
+        $types->register(new CustomScalarType([
+            'name' => 'TestOperators',
+        ]));
+
+        // Directives
+        $directives = $this->app->make(DirectiveLocator::class);
+
+        $directives->setResolved('operators', ManipulatorTest_Operators::class);
+        $directives->setResolved('aOperator', $aOperator);
+        $directives->setResolved('bOperator', $bOperator);
+        $directives->setResolved('cOperator', $cOperator);
+
         // Schema
         $this->useGraphQLSchema(
             <<<'GRAPHQL'
@@ -104,23 +132,6 @@ class ManipulatorTest extends TestCase {
             }
             GRAPHQL,
         );
-
-        // Operators
-        $scope     = new class() implements Scope {
-            // empty;
-        };
-        $builder   = new stdClass();
-        $aOperator = ManipulatorTest_OperatorA::class;
-        $bOperator = ManipulatorTest_OperatorB::class;
-        $cOperator = ManipulatorTest_OperatorC::class;
-
-        // Directives
-        $directives = $this->app->make(DirectiveLocator::class);
-
-        $directives->setResolved('operators', ManipulatorTest_Operators::class);
-        $directives->setResolved('aOperator', $aOperator);
-        $directives->setResolved('bOperator', $bOperator);
-        $directives->setResolved('cOperator', $cOperator);
 
         // Manipulator
         $document    = $this->app->make(ASTBuilder::class)->documentAST();

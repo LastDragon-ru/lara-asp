@@ -260,17 +260,17 @@ class AstManipulator {
             $associated = $this->getDirectives()->associated($node);
 
             foreach ($associated as $directive) {
-                // Class?
+            // Class?
                 if (!($directive instanceof $class)) {
                     continue;
                 }
 
-                // Callback?
+            // Callback?
                 if ($callback && !$callback($directive)) {
                     continue;
                 }
 
-                // Ok
+            // Ok
                 $directives[] = $directive;
             }
         } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
