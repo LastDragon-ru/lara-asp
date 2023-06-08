@@ -81,6 +81,15 @@ input SortByClauseObject {
     """
     Property clause.
     """
+    fieldRenamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property clause.
+    """
     idScalar: SortByTypeDirection
     @sortByOperatorField
 
@@ -142,6 +151,15 @@ input SortByClauseObjectInterface {
     """
     enumNotNull: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    fieldRenamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "renamed"
+    )
 
     """
     Property clause.
@@ -234,6 +252,15 @@ input SortByClauseProperties {
     """
     Property clause.
     """
+    fieldRenamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property clause.
+    """
     idScalar: SortByTypeDirection
     @sortByOperatorField
 
@@ -295,6 +322,15 @@ input SortByQueryClauseProperties {
     """
     enumNotNull: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    fieldRenamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "renamed"
+    )
 
     """
     Property clause.
@@ -375,6 +411,15 @@ input SortByScoutClauseProperties {
     """
     Property clause.
     """
+    fieldRenamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property clause.
+    """
     idScalar: SortByTypeDirection
     @sortByOperatorField
 
@@ -429,6 +474,11 @@ interface ObjectInterface {
     enumEnumIgnoredNotNull: EnumIgnored!
     enumIgnored: EnumIgnored
     enumNotNull: Value!
+
+    fieldRenamed: ID
+    @rename(
+        attribute: "renamed"
+    )
 
     """
     Should be ignored
@@ -505,6 +555,11 @@ implements
     enumEnumIgnoredNotNull: EnumIgnored!
     enumIgnored: EnumIgnored
     enumNotNull: Value!
+
+    fieldRenamed: ID
+    @rename(
+        attribute: "renamed"
+    )
 
     """
     Should be ignored

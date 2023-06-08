@@ -45,6 +45,7 @@ use Nuwave\Lighthouse\Schema\Directives\CountDirective;
 use Nuwave\Lighthouse\Schema\Directives\FindDirective;
 use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
+use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Schema\Directives\WithRelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
@@ -174,6 +175,10 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             foreach ($argument->directives as $directive) {
                 if ($directive instanceof Operator) {
                     $operators[] = $directive;
+                }
+
+                if ($directive instanceof RenameDirective) {
+                    $name = $directive->attributeArgValue();
                 }
             }
 

@@ -21,6 +21,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 
@@ -260,6 +261,6 @@ abstract class InputObject implements TypeDefinition {
     }
 
     protected function isFieldDirectiveAllowed(Manipulator $manipulator, Directive $directive): bool {
-        return false;
+        return $directive instanceof RenameDirective;
     }
 }
