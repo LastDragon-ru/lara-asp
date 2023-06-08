@@ -195,7 +195,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 a: Int!
-                b: String
+                b: String @rename(attribute: "renamed")
             }
             GRAPHQL,
         );
@@ -327,7 +327,7 @@ class DirectiveTest extends TestCase {
                                 "tmp"
                             order by
                                 "a" asc,
-                                "b" desc,
+                                "renamed" desc,
                                 RANDOM()
                         SQL
                         ,

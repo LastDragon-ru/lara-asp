@@ -49,6 +49,8 @@ input Properties {
 
     "Description should be used."
     description: ID
+
+    fieldRenamed: ID @rename(attribute: "renamed")
 }
 
 input Nested {
@@ -107,6 +109,8 @@ interface ObjectInterface {
 
     "Should be ignored"
     fieldWithArguments(arg: Int): Boolean
+
+    fieldRenamed: ID @rename(attribute: "renamed")
 }
 
 type Object implements ObjectInterface {
@@ -140,6 +144,8 @@ type Object implements ObjectInterface {
 
     "Should be ignored"
     fieldWithArguments(arg: Int): Boolean
+
+    fieldRenamed: ID @rename(attribute: "renamed")
 }
 
 type ObjectNested {

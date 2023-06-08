@@ -311,7 +311,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 a: Int!
-                b: String
+                b: String @rename(attribute: "renamed")
                 c: Test
             }
             GRAPHQL,
@@ -703,7 +703,7 @@ class DirectiveTest extends TestCase {
                             'c.a' => 2,
                         ],
                         'whereIns' => [
-                            'b' => [1, 2, 3],
+                            'renamed' => [1, 2, 3],
                         ],
                     ],
                     [
@@ -736,7 +736,7 @@ class DirectiveTest extends TestCase {
                             'properties/c/a' => 2,
                         ],
                         'whereIns' => [
-                            'properties/b' => [1, 2, 3],
+                            'properties/renamed' => [1, 2, 3],
                         ],
                     ],
                     [

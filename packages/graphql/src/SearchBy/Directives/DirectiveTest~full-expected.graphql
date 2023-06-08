@@ -202,6 +202,15 @@ input SearchByConditionInputA {
     """
     Property condition.
     """
+    fieldRenamed: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property condition.
+    """
     floatScalar: SearchByScalarFloatOrNull
     @searchByOperatorProperty
 
@@ -461,6 +470,15 @@ input SearchByConditionObject {
     """
     Property condition.
     """
+    fieldRenamed: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property condition.
+    """
     floatScalar: SearchByScalarFloatOrNull
     @searchByOperatorProperty
 
@@ -594,6 +612,15 @@ input SearchByConditionObjectInterface {
     """
     enumNotNull: SearchByEnumEnumA
     @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    fieldRenamed: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "renamed"
+    )
 
     """
     Property condition.
@@ -1499,6 +1526,15 @@ input SearchByScoutConditionInputA {
     """
     Property condition.
     """
+    fieldRenamed: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property condition.
+    """
     floatScalar: SearchByScoutScalarFloatOrNull
     @searchByOperatorProperty
 
@@ -1866,6 +1902,11 @@ interface ObjectInterface {
     enumIgnored: EnumIgnored
     enumNotNull: EnumA!
 
+    fieldRenamed: ID
+    @rename(
+        attribute: "renamed"
+    )
+
     """
     Should be ignored
     """
@@ -1945,6 +1986,11 @@ implements
     enumEnumIgnoredNotNull: EnumIgnored!
     enumIgnored: EnumIgnored
     enumNotNull: EnumA!
+
+    fieldRenamed: ID
+    @rename(
+        attribute: "renamed"
+    )
 
     """
     Should be ignored
