@@ -27,6 +27,10 @@ interface Operator extends Directive {
 
     public function getFieldDescription(): string;
 
+    /**
+     * @deprecated 4.2.1 The actual `Directive` node will be used. So the method
+     *      is not needed anymore and will be removed in the next major version.
+     */
     public function getFieldDirective(): ?DirectiveNode;
 
     /**

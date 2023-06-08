@@ -261,6 +261,7 @@ abstract class InputObject implements TypeDefinition {
     }
 
     protected function isFieldDirectiveAllowed(Manipulator $manipulator, Directive $directive): bool {
-        return $directive instanceof RenameDirective;
+        return $directive instanceof Operator
+            || $directive instanceof RenameDirective;
     }
 }
