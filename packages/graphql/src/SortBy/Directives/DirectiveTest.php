@@ -8,6 +8,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
@@ -40,7 +42,7 @@ class DirectiveTest extends TestCase {
      * @dataProvider dataProviderManipulateArgDefinition
      *
      * @param Closure(static): GraphQLExpectedSchema $expected
-     * @param Closure(static): void                  $prepare
+     * @param Closure(static): void|null             $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
         $directives = $this->app->make(DirectiveLocator::class);
@@ -169,8 +171,8 @@ class DirectiveTest extends TestCase {
      * @dataProvider dataProviderHandleBuilder
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param Closure(static): object                                $builderFactory
-     * @param Closure(static): void                                  $prepare
+     * @param Closure(static): (QueryBuilder|EloquentBuilder<Model>) $builderFactory
+     * @param Closure(static): void|null                             $prepare
      */
     public function testHandleBuilder(
         array|Exception $expected,
