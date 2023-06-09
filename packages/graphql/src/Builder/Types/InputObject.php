@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
+use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
@@ -20,6 +21,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 
 use function count;
@@ -139,7 +142,9 @@ abstract class InputObject implements TypeDefinition {
         }
 
         // Resolver?
-        if ($manipulator->getNodeDirective($field->getField(), FieldResolver::class)) {
+        $resolver = $manipulator->getNodeDirective($field->getField(), FieldResolver::class);
+
+        if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $resolver)) {
             return false;
         }
 
@@ -163,7 +168,8 @@ abstract class InputObject implements TypeDefinition {
 
         $fieldName       = $manipulator->getNodeName($field->getField());
         $fieldDesc       = $this->getFieldDescription($manipulator, $field);
-        $fieldDefinition = $manipulator->getOperatorField($operator, $type, $fieldName, $fieldDesc);
+        $fieldDirectives = $this->getFieldDirectives($manipulator, $field);
+        $fieldDefinition = $manipulator->getOperatorField($operator, $type, $fieldName, $fieldDesc, $fieldDirectives);
 
         return Parser::inputValueDefinition($fieldDefinition);
     }
@@ -230,5 +236,32 @@ abstract class InputObject implements TypeDefinition {
         }
 
         return $description;
+    }
+
+    /**
+     * @return array<DirectiveNode>
+     */
+    protected function getFieldDirectives(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+    ): array {
+        $directives = [];
+
+        foreach ($manipulator->getNodeDirectives($field->getField()) as $directive) {
+            if ($this->isFieldDirectiveAllowed($manipulator, $directive)) {
+                $node = $manipulator->getDirectiveNode($directive);
+
+                if ($node) {
+                    $directives[] = $node;
+                }
+            }
+        }
+
+        return $directives;
+    }
+
+    protected function isFieldDirectiveAllowed(Manipulator $manipulator, Directive $directive): bool {
+        return $directive instanceof Operator
+            || $directive instanceof RenameDirective;
     }
 }

@@ -6,7 +6,7 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$translations of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase\\:\\:setTranslations\\(\\) expects array\\<string, array\\<string, string\\>\\>\\|\\(callable\\(LastDragon_ru\\\\LaraASP\\\\Core\\\\TranslatorTest, string, string\\)\\: array\\<string, array\\<string, string\\>\\>\\)\\|null, array\\<string, array\\<string, string\\>\\>\\|\\(callable\\(static\\(LastDragon_ru\\\\LaraASP\\\\Core\\\\TranslatorTest\\), string, string\\)\\: array\\<string, array\\<string, string\\>\\>\\)\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$translations of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase\\:\\:setTranslations\\(\\) expects array\\<string, array\\<string, string\\>\\>\\|\\(callable\\(LastDragon_ru\\\\LaraASP\\\\Core\\\\TranslatorTest, string, string\\)\\: array\\<string, array\\<string, string\\>\\>\\)\\|null, array\\<string, array\\<string, string\\>\\>\\|\\(callable\\(static, string, string\\)\\: array\\<string, array\\<string, string\\>\\>\\)\\|null given\\.$#"
 			count: 2
 			path: packages/core/src/TranslatorTest.php
 

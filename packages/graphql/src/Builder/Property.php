@@ -7,9 +7,12 @@ use Stringable;
 use function array_slice;
 use function array_values;
 use function end;
+use function explode;
 use function implode;
 
 class Property implements Stringable {
+    protected const Separator = '.';
+
     /**
      * @var list<string>
      */
@@ -33,7 +36,7 @@ class Property implements Stringable {
     }
 
     public function getChild(string $name): static {
-        return new static(...[...$this->path, $name]);
+        return new static(...$this->path, ...explode(static::Separator, $name));
     }
 
     public function getParent(): static {
@@ -44,6 +47,6 @@ class Property implements Stringable {
     }
 
     public function __toString(): string {
-        return implode('.', $this->path);
+        return implode(static::Separator, $this->path);
     }
 }

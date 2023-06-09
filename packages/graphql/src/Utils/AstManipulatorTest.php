@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Type\Definition\Argument;
+use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
@@ -143,6 +144,20 @@ class AstManipulatorTest extends TestCase {
     }
 
     public function testGetNodeDirectives(): void {
+        // Types
+        $types = $this->app->make(TypeRegistry::class);
+
+        $types->register(new CustomScalarType([
+            'name' => 'CustomScalar',
+        ]));
+
+        // Directives
+        $locator = $this->app->make(DirectiveLocator::class);
+
+        $locator->setResolved('aDirective', AstManipulatorTest_ADirective::class);
+        $locator->setResolved('bDirective', AstManipulatorTest_BDirective::class);
+        $locator->setResolved('cDirective', AstManipulatorTest_CDirective::class);
+
         // Schema
         $this->useGraphQLSchema(
         /** @lang GraphQL */
@@ -160,13 +175,6 @@ class AstManipulatorTest extends TestCase {
             }
             GRAPHQL,
         );
-
-        // Directives
-        $locator = $this->app->make(DirectiveLocator::class);
-
-        $locator->setResolved('aDirective', AstManipulatorTest_ADirective::class);
-        $locator->setResolved('bDirective', AstManipulatorTest_BDirective::class);
-        $locator->setResolved('cDirective', AstManipulatorTest_CDirective::class);
 
         // Prepare
         $map         = static function (Directive $directive): string {

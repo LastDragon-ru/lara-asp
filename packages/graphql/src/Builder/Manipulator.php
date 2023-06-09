@@ -43,6 +43,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 
 use function array_map;
 use function array_push;
+use function array_unshift;
 use function array_values;
 use function count;
 use function implode;
@@ -215,25 +216,50 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return $unique;
     }
 
+    /**
+     * @param array<DirectiveNode> $directives
+     */
     public function getOperatorField(
         Operator $operator,
         TypeSource $source,
         ?string $field,
         ?string $description = null,
+        array $directives = [],
     ): string {
+        // Operator already added?
+        $added   = false;
+        $locator = $this->getDirectives();
+
+        foreach ($directives as $directive) {
+            if ($locator->resolve($directive->name->value) === $operator::class) {
+                $added = true;
+                break;
+            }
+        }
+
+        if (!$added) {
+            array_unshift($directives, Parser::directive('@'.DirectiveLocator::directiveName($operator::class)));
+        }
+
+        // Definition
         $type        = $operator->getFieldType($this, $source);
         $field       = $field ?: $operator::getName();
-        $directive   = $operator->getFieldDirective();
-        $directive   = $directive instanceof DirectiveNode
-            ? Printer::doPrint($directive)
-            : '@'.DirectiveLocator::directiveName($operator::class);
+        $directives  = implode(
+            "\n",
+            array_map(
+                static function (DirectiveNode $node): string {
+                    return Printer::doPrint($node);
+                },
+                $directives,
+            ),
+        );
         $description = $description ?: $operator->getFieldDescription();
         $description = BlockString::print($description);
 
         return <<<DEF
             {$description}
             {$field}: {$type}
-            {$directive}
+            {$directives}
         DEF;
     }
 

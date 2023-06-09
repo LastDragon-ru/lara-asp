@@ -9,7 +9,9 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -76,7 +78,7 @@ class DirectiveTest extends TestCase {
      * @dataProvider dataProviderManipulateArgDefinition
      *
      * @param Closure(static): GraphQLExpectedSchema $expected
-     * @param Closure(static): void                  $prepare
+     * @param Closure(static): void|null             $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
         $directives = $this->app->make(DirectiveLocator::class);
@@ -238,8 +240,8 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderHandleBuilder
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param Closure(static): object                                $builderFactory
+     * @param array{query: string, bindings: array<mixed>}|Exception         $expected
+     * @param Closure(static): (QueryBuilder|EloquentBuilder<EloquentModel>) $builderFactory
      */
     public function testHandleBuilder(
         array|Exception $expected,
@@ -311,7 +313,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 a: Int!
-                b: String
+                b: String @rename(attribute: "renamed")
                 c: Test
             }
             GRAPHQL,
@@ -703,7 +705,7 @@ class DirectiveTest extends TestCase {
                             'c.a' => 2,
                         ],
                         'whereIns' => [
-                            'b' => [1, 2, 3],
+                            'renamed' => [1, 2, 3],
                         ],
                     ],
                     [
@@ -736,7 +738,7 @@ class DirectiveTest extends TestCase {
                             'properties/c/a' => 2,
                         ],
                         'whereIns' => [
-                            'properties/b' => [1, 2, 3],
+                            'properties/renamed' => [1, 2, 3],
                         ],
                     ],
                     [
