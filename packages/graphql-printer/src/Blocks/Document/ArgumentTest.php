@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\DirectiveNode;
@@ -18,8 +18,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(ArgumentNodeBlock::class)]
-class ArgumentNodeBlockTest extends TestCase {
+#[CoversClass(Argument::class)]
+class ArgumentTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -55,7 +55,7 @@ class ArgumentNodeBlockTest extends TestCase {
             }
         };
         $context  = new Context($settings, $resolver, null);
-        $actual   = (string) (new ArgumentNodeBlock($context, $level, $used, $directiveNode, $argumentNode));
+        $actual   = (string) (new Argument($context, $level, $used, $directiveNode, $argumentNode));
 
         if ($expected) {
             Parser::argument($actual);
@@ -68,7 +68,7 @@ class ArgumentNodeBlockTest extends TestCase {
         $context   = new Context(new TestSettings(), null, null);
         $directive = Parser::directive('@test');
         $argument  = Parser::argument('test: 123');
-        $block     = new ArgumentNodeBlock($context, 0, 0, $directive, $argument);
+        $block     = new Argument($context, 0, 0, $directive, $argument);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals([], $block->getUsedTypes());

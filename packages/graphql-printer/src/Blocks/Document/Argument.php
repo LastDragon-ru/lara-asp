@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\DirectiveNode;
@@ -8,11 +8,13 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
 /**
  * @internal
  */
-class ArgumentNodeBlock extends Block implements NamedBlock {
+#[GraphQLAstNode(ArgumentNode::class)]
+class Argument extends Block implements NamedBlock {
     public function __construct(
         Context $context,
         int $level,
@@ -64,7 +66,7 @@ class ArgumentNodeBlock extends Block implements NamedBlock {
             new PropertyBlock(
                 $this->getContext(),
                 $name,
-                new ValueNodeBlock(
+                new Value(
                     $this->getContext(),
                     $this->getLevel() + 1,
                     $this->getUsed(),

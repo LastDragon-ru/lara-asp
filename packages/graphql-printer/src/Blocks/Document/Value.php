@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ListValueNode;
 use GraphQL\Language\AST\Node;
@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 /**
  * @internal
  */
-class ValueNodeBlock extends Block {
+class Value extends Block {
     /**
      * @param ValueNode&Node $node
      */
@@ -36,13 +36,13 @@ class ValueNodeBlock extends Block {
         $used    = $this->getUsed();
 
         if ($this->node instanceof ListValueNode) {
-            $content = new ListValueList($context, $level, $used);
+            $content = new ListValue($context, $level, $used);
 
             foreach ($this->node->values as $value) {
                 $content[] = new self($context, $level + 1, $used, $value);
             }
         } elseif ($this->node instanceof ObjectValueNode) {
-            $content = new ObjectValueList($context, $level, $used);
+            $content = new ObjectValue($context, $level, $used);
 
             foreach ($this->node->fields as $field) {
                 $name           = $field->name->value;

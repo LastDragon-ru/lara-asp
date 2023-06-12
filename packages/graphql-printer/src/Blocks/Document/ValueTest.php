@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\BooleanValueNode;
 use GraphQL\Language\AST\EnumValueNode;
@@ -24,8 +24,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(ValueNodeBlock::class)]
-class ValueNodeTest extends TestCase {
+#[CoversClass(Value::class)]
+class ValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -41,7 +41,7 @@ class ValueNodeTest extends TestCase {
         ValueNode $node,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new ValueNodeBlock($context, $level, $used, $node));
+        $actual  = (string) (new Value($context, $level, $used, $node));
         $parsed  = Parser::valueLiteral($actual);
 
         self::assertEquals($expected, $actual);

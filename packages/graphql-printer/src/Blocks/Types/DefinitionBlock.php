@@ -12,9 +12,9 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast\DirectiveNodeList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Description;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
@@ -126,9 +126,9 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
     abstract protected function fields(int $used): Block|string|null;
 
-    protected function directives(int $level = null, int $used = null): DirectiveNodeList {
+    protected function directives(int $level = null, int $used = null): Directives {
         $definition = $this->getDefinition();
-        $directives = new DirectiveNodeList(
+        $directives = new Directives(
             $this->getContext(),
             $level ?? $this->getLevel(),
             $used ?? $this->getUsed(),

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
@@ -14,8 +14,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(DirectiveNodeList::class)]
-class DirectiveNodeListTest extends TestCase {
+#[CoversClass(Directives::class)]
+class DirectivesTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -32,7 +32,7 @@ class DirectiveNodeListTest extends TestCase {
         string $reason = null,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new DirectiveNodeList($context, $level, $used, $directives, $reason));
+        $actual  = (string) (new Directives($context, $level, $used, $directives, $reason));
 
         Parser::directives($actual);
 
@@ -44,7 +44,7 @@ class DirectiveNodeListTest extends TestCase {
         $b        = Parser::directive('@b');
         $settings = (new TestSettings())->setPrintDirectives(true);
         $context  = new Context($settings, null, null);
-        $block    = new DirectiveNodeList($context, 0, 0, [$a, $b]);
+        $block    = new Directives($context, 0, 0, [$a, $b]);
 
         self::assertNotEmpty((string) $block);
         self::assertEquals([], $block->getUsedTypes());

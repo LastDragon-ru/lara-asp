@@ -6,7 +6,6 @@ use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Utils\AST;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast\ValueNodeBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -57,7 +56,7 @@ class InputValueDefinition extends DefinitionBlock {
         if ($definition->defaultValueExists()) {
             $prefix = "{$body}{$space}={$space}";
             $value  = $this->addUsed(
-                new ValueNodeBlock(
+                new Value(
                     $this->getContext(),
                     $this->getLevel(),
                     $this->getUsed() + mb_strlen($prefix),

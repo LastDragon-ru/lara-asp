@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
  * @template TBlock of Block
  * @extends ListBlock<TBlock>
  */
-class ObjectValueList extends ListBlock {
+class ObjectValue extends ListBlock {
     protected function getPrefix(): string {
         return '{';
     }

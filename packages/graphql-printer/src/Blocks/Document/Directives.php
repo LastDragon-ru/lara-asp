@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Traversable;
@@ -13,9 +13,9 @@ use function json_encode;
 
 /**
  * @internal
- * @extends ListBlock<DirectiveNodeBlock>
+ * @extends ListBlock<Directive>
  */
-class DirectiveNodeList extends ListBlock {
+class Directives extends ListBlock {
     /**
      * @param Traversable<DirectiveNode>|array<DirectiveNode> $directives
      */
@@ -28,12 +28,12 @@ class DirectiveNodeList extends ListBlock {
     ) {
         parent::__construct($context, $level, $used);
 
-        $deprecated   = Directive::DEPRECATED_NAME;
+        $deprecated   = GraphQLDirective::DEPRECATED_NAME;
         $directives ??= [];
 
         if ($deprecationReason !== null) {
             // todo(graphql): Is there a better way to create directive node?
-            if ($deprecationReason !== Directive::DEFAULT_DEPRECATION_REASON && $deprecationReason !== '') {
+            if ($deprecationReason !== GraphQLDirective::DEFAULT_DEPRECATION_REASON && $deprecationReason !== '') {
                 $reason = json_encode($deprecationReason);
                 $this[] = $this->block(Parser::directive("@{$deprecated}(reason: {$reason})"));
             } else {
@@ -54,8 +54,8 @@ class DirectiveNodeList extends ListBlock {
         return true;
     }
 
-    private function block(DirectiveNode $directive,): DirectiveNodeBlock {
-        return new DirectiveNodeBlock(
+    private function block(DirectiveNode $directive,): Directive {
+        return new Directive(
             $this->getContext(),
             $this->getLevel(),
             $this->getUsed(),

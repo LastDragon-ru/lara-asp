@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Ast;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\DirectiveNode;
@@ -10,9 +10,9 @@ use Traversable;
 
 /**
  * @internal
- * @extends ListBlock<ArgumentNodeBlock>
+ * @extends ListBlock<Argument>
  */
-class ArgumentNodeList extends ListBlock {
+class Arguments extends ListBlock {
     /**
      * @param Traversable<ArgumentNode>|array<ArgumentNode> $arguments
      */
@@ -27,7 +27,7 @@ class ArgumentNodeList extends ListBlock {
 
         foreach ($arguments as $argument) {
             $name        = $argument->name->value;
-            $this[$name] = new ArgumentNodeBlock(
+            $this[$name] = new Argument(
                 $this->getContext(),
                 $this->getLevel() + 1,
                 $this->getUsed(),
