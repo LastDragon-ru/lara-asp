@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\FieldsDefinition;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Schema\ImplementsInterfaces;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\FieldsDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ImplementsInterfaces;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function mb_strlen;
