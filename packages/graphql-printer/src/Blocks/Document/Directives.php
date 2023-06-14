@@ -7,7 +7,6 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Traversable;
 
 use function json_encode;
 
@@ -17,13 +16,13 @@ use function json_encode;
  */
 class Directives extends ListBlock {
     /**
-     * @param Traversable<DirectiveNode>|array<DirectiveNode> $directives
+     * @param iterable<DirectiveNode>|null $directives
      */
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        Traversable|array|null $directives,
+        iterable|null $directives,
         string|null $deprecationReason = null,
     ) {
         parent::__construct($context, $level, $used);

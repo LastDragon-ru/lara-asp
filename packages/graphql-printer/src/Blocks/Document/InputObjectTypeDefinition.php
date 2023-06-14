@@ -2,10 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function mb_strlen;
@@ -13,15 +15,16 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends DefinitionBlock<InputObjectType>
+ * @extends DefinitionBlock<InputObjectTypeDefinitionNode|InputObjectType>
  */
+#[GraphQLAstNode(InputObjectTypeDefinitionNode::class)]
 #[GraphQLDefinition(InputObjectType::class)]
 class InputObjectTypeDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        InputObjectType $definition,
+        InputObjectTypeDefinitionNode|InputObjectType $definition,
     ) {
         parent::__construct($context, $level, $used, $definition);
     }
@@ -42,7 +45,9 @@ class InputObjectTypeDefinition extends DefinitionBlock {
                 $this->getContext(),
                 $this->getLevel(),
                 $used + mb_strlen($space),
-                $definition->getFields(),
+                $definition instanceof InputObjectTypeDefinitionNode
+                    ? $definition->fields
+                    : $definition->getFields(),
             ),
         );
 

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
-use Closure;
+use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -21,20 +21,14 @@ class EnumTypeDefinitionTest extends TestCase {
     // =========================================================================
     /**
      * @dataProvider dataProviderToString
-     *
-     * @param EnumType|Closure(): EnumType $type
      */
     public function testToString(
         string $expected,
         Settings $settings,
         int $level,
         int $used,
-        Closure|EnumType $type,
+        EnumTypeDefinitionNode|EnumType $type,
     ): void {
-        if ($type instanceof Closure) {
-            $type = $type();
-        }
-
         $context = new Context($settings, null, null);
         $actual  = (string) (new EnumTypeDefinition($context, $level, $used, $type));
 
@@ -44,12 +38,33 @@ class EnumTypeDefinitionTest extends TestCase {
 
         self::assertEquals($expected, $actual);
     }
+
+    public function testStatistics(): void {
+        $context    = new Context(new TestSettings(), null, null);
+        $definition = new EnumType([
+            'name'    => 'Test',
+            'values'  => ['A'],
+            'astNode' => Parser::enumTypeDefinition(
+                'enum Test @a { A }',
+            ),
+        ]);
+        $block      = new EnumTypeDefinition($context, 0, 0, $definition);
+
+        self::assertNotEmpty((string) $block);
+        self::assertEquals([], $block->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+
+        $ast = new EnumTypeDefinition($context, 0, 0, Parser::enumTypeDefinition((string) $block));
+
+        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
+        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, Closure():EnumType|EnumType}>
+     * @return array<string,array{string, Settings, int, int, EnumTypeDefinitionNode|EnumType}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -141,6 +156,21 @@ class EnumTypeDefinitionTest extends TestCase {
                     'name'   => 'Test',
                     'values' => ['A'],
                 ]),
+            ],
+            'ast'        => [
+                <<<'STRING'
+                enum Test
+                @a
+                {
+                    A
+                }
+                STRING,
+                $settings,
+                0,
+                0,
+                Parser::enumTypeDefinition(
+                    'enum Test @a { A }',
+                ),
             ],
         ];
     }

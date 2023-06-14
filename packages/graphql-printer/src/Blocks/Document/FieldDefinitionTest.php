@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
 use GraphQL\Type\Definition\ListOfType;
@@ -30,7 +31,7 @@ class FieldDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        GraphQLFieldDefinition $definition,
+        FieldDefinitionNode|GraphQLFieldDefinition $definition,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new FieldDefinition($context, $level, $used, $definition));
@@ -59,13 +60,18 @@ class FieldDefinitionTest extends TestCase {
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+
+        $ast = new FieldDefinition($context, 0, 0, Parser::fieldDefinition((string) $block));
+
+        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
+        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, GraphQLFieldDefinition}>
+     * @return array<string,array{string, Settings, int, int, FieldDefinitionNode|GraphQLFieldDefinition}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -254,6 +260,23 @@ class FieldDefinitionTest extends TestCase {
                         'test: Test! @deprecated(reason: "should be ignored")',
                     ),
                 ]),
+            ],
+            'ast'                        => [
+                <<<'STRING'
+                test(
+                    """
+                    Description
+                    """
+                    a: String! = "aaaaaaaaaaaaaaaaaaaaaaaaaa"
+                ): Test!
+                @a
+                STRING,
+                $settings,
+                0,
+                0,
+                Parser::fieldDefinition(
+                    'test("Description" a: String! = "aaaaaaaaaaaaaaaaaaaaaaaaaa"): Test! @a',
+                ),
             ],
         ];
     }

@@ -2,12 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\NameNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 
 /**
  * @internal
- * @extends UsageList<DirectiveLocation, string>
+ * @extends UsageList<DirectiveLocation, NameNode|string>
  */
 class DirectiveLocations extends UsageList {
     protected function block(mixed $item): Block {

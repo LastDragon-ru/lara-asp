@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
@@ -27,7 +28,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        InputObjectType $definition,
+        InputObjectTypeDefinitionNode|InputObjectType $definition,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new InputObjectTypeDefinition(
@@ -69,13 +70,18 @@ class InputObjectTypeDefinitionTest extends TestCase {
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
+
+        $ast = new InputObjectTypeDefinition($context, 0, 0, Parser::inputObjectTypeDefinition((string) $block));
+
+        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
+        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, InputObjectType}>
+     * @return array<string,array{string, Settings, int, int, InputObjectTypeDefinitionNode|InputObjectType}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -213,6 +219,25 @@ class InputObjectTypeDefinitionTest extends TestCase {
                     'name'   => 'Test',
                     'fields' => [],
                 ]),
+            ],
+            'ast'                               => [
+                <<<'STRING'
+                """
+                Description
+                """
+                input Test
+                @a
+                {
+                    a: String
+                }
+                STRING,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                Parser::inputObjectTypeDefinition(
+                    '"Description" input Test @a { a: String }',
+                ),
             ],
         ];
     }

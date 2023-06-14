@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Type\Definition\InputObjectField;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Traversable;
 
 /**
  * @internal
@@ -13,18 +13,21 @@ use Traversable;
  */
 class InputFieldsDefinition extends ListBlock {
     /**
-     * @param Traversable<InputObjectField>|array<InputObjectField> $fields
+     * @param iterable<InputValueDefinitionNode>|iterable<InputObjectField> $fields
      */
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        Traversable|array $fields,
+        iterable $fields,
     ) {
         parent::__construct($context, $level, $used);
 
         foreach ($fields as $field) {
-            $this[$field->name] = new InputValueDefinition(
+            $name        = $field instanceof InputValueDefinitionNode
+                ? $field->name->value
+                : $field->name;
+            $this[$name] = new InputValueDefinition(
                 $this->getContext(),
                 $this->getLevel() + 1,
                 $this->getUsed(),

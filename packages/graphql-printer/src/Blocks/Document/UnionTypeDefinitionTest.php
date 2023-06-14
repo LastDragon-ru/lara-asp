@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type as GraphQLType;
@@ -28,7 +29,7 @@ class UnionTypeDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        UnionType $type,
+        UnionTypeDefinitionNode|UnionType $type,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new UnionTypeDefinition($context, $level, $used, $type));
@@ -69,13 +70,18 @@ class UnionTypeDefinitionTest extends TestCase {
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+
+        $ast = new UnionTypeDefinition($context, 0, 0, Parser::unionTypeDefinition((string) $block));
+
+        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
+        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, UnionType}>
+     * @return array<string,array{string, Settings, int, int, UnionTypeDefinitionNode|UnionType}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -294,6 +300,22 @@ class UnionTypeDefinitionTest extends TestCase {
                         $c,
                     ],
                 ]),
+            ],
+            'ast'                           => [
+                <<<'STRING'
+                """
+                Description
+                """
+                union Test
+                @a
+                = C | B | A
+                STRING,
+                $settings,
+                0,
+                0,
+                Parser::unionTypeDefinition(
+                    '"Description" union Test @a = C | B | A',
+                ),
             ],
         ];
     }

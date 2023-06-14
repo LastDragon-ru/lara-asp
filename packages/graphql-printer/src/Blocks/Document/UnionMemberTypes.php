@@ -2,13 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 
 /**
  * @internal
- * @extends UsageList<Type, ObjectType>
+ * @extends UsageList<Type, NamedTypeNode|ObjectType>
  */
 class UnionMemberTypes extends UsageList {
     protected function block(mixed $item): Block {

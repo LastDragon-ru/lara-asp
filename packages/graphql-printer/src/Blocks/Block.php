@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use Closure;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\NamedType;
@@ -11,8 +13,11 @@ use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Stringable;
 
+use function array_key_exists;
+use function assert;
 use function mb_strlen;
 use function mb_strpos;
 use function str_repeat;
@@ -189,7 +194,10 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    public function isTypeAllowed(Type $type): bool {
+    /**
+     * @param (TypeNode&Node)|Type $type
+     */
+    public function isTypeAllowed(TypeNode|Type $type): bool {
         // Filter?
         $filter = $this->getSettings()->getTypeFilter();
 
@@ -197,19 +205,9 @@ abstract class Block implements Statistics, Stringable {
             return true;
         }
 
-        // Wrapped?
-        if ($type instanceof WrappingType) {
-            $type = $type->getInnermostType();
-        }
-
-        // Named?
-        if (!($type instanceof NamedType)) {
-            return false;
-        }
-
         // Allowed?
-        $name      = $type->name();
-        $isBuiltIn = $type->isBuiltInType();
+        $name      = $this->getTypeName($type);
+        $isBuiltIn = $this->isTypeBuiltIn($name);
         $isAllowed = $filter->isAllowedType($name, $isBuiltIn);
 
         // Return
@@ -232,6 +230,33 @@ abstract class Block implements Statistics, Stringable {
 
         // Return
         return $isAllowed;
+    }
+
+    /**
+     * @param (TypeNode&Node)|Type $type
+     */
+    protected function getTypeName(TypeNode|Type $type): string {
+        $name = null;
+
+        if ($type instanceof WrappingType) {
+            $type = $type->getInnermostType();
+        }
+
+        if ($type instanceof NamedType) {
+            $name = $type->name();
+        }
+
+        if ($type instanceof Node) {
+            $name = ASTHelper::getUnderlyingTypeName($type);
+        }
+
+        assert($name !== null);
+
+        return $name;
+    }
+
+    protected function isTypeBuiltIn(string $type): bool {
+        return array_key_exists($type, Type::builtInTypes());
     }
     // </editor-fold>
 

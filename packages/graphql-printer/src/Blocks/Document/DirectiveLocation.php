@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\NameNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -14,7 +15,7 @@ class DirectiveLocation extends Block implements NamedBlock {
         Context $context,
         int $level,
         int $used,
-        private string $location,
+        private NameNode|string $location,
     ) {
         parent::__construct($context, $level, $used);
     }
@@ -23,11 +24,13 @@ class DirectiveLocation extends Block implements NamedBlock {
         return $this->getLocation();
     }
 
-    protected function getLocation(): string {
-        return $this->location;
-    }
-
     protected function content(): string {
         return $this->getLocation();
+    }
+
+    private function getLocation(): string {
+        return $this->location instanceof NameNode
+            ? $this->location->value
+            : $this->location;
     }
 }

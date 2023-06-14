@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
@@ -14,7 +15,7 @@ class RootOperationTypeDefinition extends Type {
         int $level,
         int $used,
         private string $operation,
-        ObjectType $type,
+        NamedTypeNode|ObjectType $type,
     ) {
         parent::__construct($context, $level, $used, $type);
     }

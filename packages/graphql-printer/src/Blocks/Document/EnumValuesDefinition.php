@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ObjectBlockList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Traversable;
 
 /**
  * @internal
@@ -13,18 +13,21 @@ use Traversable;
  */
 class EnumValuesDefinition extends ObjectBlockList {
     /**
-     * @param Traversable<GraphQLEnumValueDefinition>|array<GraphQLEnumValueDefinition> $values
+     * @param iterable<EnumValueDefinitionNode>|iterable<GraphQLEnumValueDefinition> $values
      */
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        Traversable|array $values,
+        iterable $values,
     ) {
         parent::__construct($context, $level, $used);
 
         foreach ($values as $value) {
-            $this[$value->name] = new EnumValueDefinition(
+            $name        = $value instanceof EnumValueDefinitionNode
+                ? $value->name->value
+                : $value->name;
+            $this[$name] = new EnumValueDefinition(
                 $this->getContext(),
                 $this->getLevel() + 1,
                 $this->getUsed(),

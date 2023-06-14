@@ -6,7 +6,6 @@ use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\DirectiveNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Traversable;
 
 /**
  * @internal
@@ -14,14 +13,14 @@ use Traversable;
  */
 class Arguments extends ListBlock {
     /**
-     * @param Traversable<ArgumentNode>|array<ArgumentNode> $arguments
+     * @param iterable<ArgumentNode> $arguments
      */
     public function __construct(
         Context $context,
         int $level,
         int $used,
         DirectiveNode $node,
-        Traversable|array $arguments,
+        iterable $arguments,
     ) {
         parent::__construct($context, $level, $used);
 

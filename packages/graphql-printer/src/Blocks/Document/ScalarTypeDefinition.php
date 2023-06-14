@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Type\Definition\BooleanType;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\FloatType;
@@ -12,13 +13,15 @@ use GraphQL\Type\Definition\StringType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 /**
  * @internal
  *
- * @extends DefinitionBlock<ScalarType>
+ * @extends DefinitionBlock<ScalarTypeDefinitionNode|ScalarType>
  */
+#[GraphQLAstNode(ScalarTypeDefinitionNode::class)]
 #[GraphQLDefinition(BooleanType::class)]
 #[GraphQLDefinition(CustomScalarType::class)]
 #[GraphQLDefinition(FloatType::class)]
@@ -30,7 +33,7 @@ class ScalarTypeDefinition extends DefinitionBlock {
         Context $context,
         int $level,
         int $used,
-        ScalarType $definition,
+        ScalarTypeDefinitionNode|ScalarType $definition,
     ) {
         parent::__construct($context, $level, $used, $definition);
     }

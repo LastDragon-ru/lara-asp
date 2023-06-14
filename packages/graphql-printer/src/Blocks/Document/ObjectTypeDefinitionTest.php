@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
@@ -27,7 +28,7 @@ class ObjectTypeDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        ObjectType $definition,
+        ObjectTypeDefinitionNode|ObjectType $definition,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new ObjectTypeDefinition($context, $level, $used, $definition));
@@ -87,13 +88,18 @@ class ObjectTypeDefinitionTest extends TestCase {
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b', '@c' => '@c'], $block->getUsedDirectives());
+
+        $ast = new ObjectTypeDefinition($context, 0, 0, Parser::objectTypeDefinition((string) $block));
+
+        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
+        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, ObjectType}>
+     * @return array<string,array{string, Settings, int, int, ObjectTypeDefinitionNode|ObjectType}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -553,6 +559,24 @@ class ObjectTypeDefinitionTest extends TestCase {
                     'name'   => 'Test',
                     'fields' => [],
                 ]),
+            ],
+            'ast'                                         => [
+                <<<'STRING'
+                """
+                Description
+                """
+                type Test implements B & A
+                @a
+                {
+                    a: String
+                }
+                STRING,
+                $settings->setPrintDirectives(true),
+                0,
+                0,
+                Parser::objectTypeDefinition(
+                    '"Description" type Test implements B & A @a { a: String }',
+                ),
             ],
         ];
     }

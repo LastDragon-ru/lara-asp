@@ -2,10 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function mb_strlen;
@@ -13,15 +15,16 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends DefinitionBlock<UnionType>
+ * @extends DefinitionBlock<UnionTypeDefinitionNode|UnionType>
  */
+#[GraphQLAstNode(UnionTypeDefinitionNode::class)]
 #[GraphQLDefinition(UnionType::class)]
 class UnionTypeDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        UnionType $definition,
+        UnionTypeDefinitionNode|UnionType $definition,
     ) {
         parent::__construct($context, $level, $used, $definition);
     }
@@ -35,14 +38,17 @@ class UnionTypeDefinition extends DefinitionBlock {
     }
 
     protected function fields(int $used): Block|string|null {
-        $space = $this->space();
-        $equal = "={$space}";
-        $types = $this->addUsed(
+        $definition = $this->getDefinition();
+        $space      = $this->space();
+        $equal      = "={$space}";
+        $types      = $this->addUsed(
             new UnionMemberTypes(
                 $this->getContext(),
                 $this->getLevel() + 1,
                 $used + mb_strlen($equal),
-                $this->getDefinition()->getTypes(),
+                $definition instanceof UnionTypeDefinitionNode
+                    ? $definition->types
+                    : $definition->getTypes(),
             ),
         );
 

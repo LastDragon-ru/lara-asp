@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ScalarType;
@@ -26,7 +27,7 @@ class ScalarTypeDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        ScalarType $type,
+        ScalarTypeDefinitionNode|ScalarType $type,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new ScalarTypeDefinition($context, $level, $used, $type));
@@ -42,7 +43,7 @@ class ScalarTypeDefinitionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, ScalarType}>
+     * @return array<string,array{string, Settings, int, int, ScalarTypeDefinitionNode|ScalarType}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -127,12 +128,27 @@ class ScalarTypeDefinitionTest extends TestCase {
             'filter'                  => [
                 '',
                 $settings
-                    ->setTypeDefinitionFilter(static fn() => false),
+                    ->setTypeDefinitionFilter(static fn () => false),
                 0,
                 0,
                 new CustomScalarType([
                     'name' => 'Test',
                 ]),
+            ],
+            'ast'                     => [
+                <<<'STRING'
+                """
+                Description
+                """
+                scalar Test
+                @a
+                STRING,
+                $settings->setPrintDirectives(true),
+                0,
+                0,
+                Parser::scalarTypeDefinition(
+                    '"Description" scalar Test @a',
+                ),
             ],
         ];
     }

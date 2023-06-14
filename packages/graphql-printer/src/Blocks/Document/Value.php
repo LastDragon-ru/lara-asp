@@ -2,20 +2,38 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\BooleanValueNode;
+use GraphQL\Language\AST\EnumValueNode;
+use GraphQL\Language\AST\FloatValueNode;
+use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\ListValueNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\NullValueNode;
+use GraphQL\Language\AST\ObjectFieldNode;
 use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
+use GraphQL\Language\AST\VariableNode;
 use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\StringBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
 /**
  * @internal
  */
+#[GraphQLAstNode(VariableNode::class)]
+#[GraphQLAstNode(NullValueNode::class)]
+#[GraphQLAstNode(IntValueNode::class)]
+#[GraphQLAstNode(FloatValueNode::class)]
+#[GraphQLAstNode(StringValueNode::class)]
+#[GraphQLAstNode(BooleanValueNode::class)]
+#[GraphQLAstNode(EnumValueNode::class)]
+#[GraphQLAstNode(ListValueNode::class)]
+#[GraphQLAstNode(ObjectValueNode::class)]
+#[GraphQLAstNode(ObjectFieldNode::class)]
 class Value extends Block {
     /**
      * @param ValueNode&Node $node

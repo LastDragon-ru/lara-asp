@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
+use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
+use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
@@ -14,7 +16,7 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @template TType of InterfaceType|ObjectType
+ * @template TType of InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|InterfaceType|ObjectType
  *
  * @extends DefinitionBlock<TType>
  */
@@ -26,7 +28,7 @@ abstract class TypeDefinitionBlock extends DefinitionBlock {
         Context $context,
         int $level,
         int $used,
-        InterfaceType|ObjectType $definition,
+        InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|InterfaceType|ObjectType $definition,
     ) {
         parent::__construct($context, $level, $used, $definition);
     }
@@ -39,7 +41,9 @@ abstract class TypeDefinitionBlock extends DefinitionBlock {
                 $this->getContext(),
                 $this->getLevel() + 1,
                 $used + mb_strlen($space),
-                $definition->getInterfaces(),
+                $definition instanceof InterfaceTypeDefinitionNode || $definition instanceof ObjectTypeDefinitionNode
+                    ? $definition->interfaces
+                    : $definition->getInterfaces(),
             ),
         );
 
@@ -63,7 +67,9 @@ abstract class TypeDefinitionBlock extends DefinitionBlock {
             $this->getContext(),
             $this->getLevel(),
             $used + mb_strlen($space),
-            $definition->getFields(),
+            $definition instanceof InterfaceTypeDefinitionNode || $definition instanceof ObjectTypeDefinitionNode
+                ? $definition->fields
+                : $definition->getFields(),
         );
 
         return $this->addUsed($fields);

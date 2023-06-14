@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\ListOfType;
@@ -29,7 +30,7 @@ class InputValueDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        Argument $definition,
+        InputValueDefinitionNode|Argument $definition,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new InputValueDefinition($context, $level, $used, $definition));
@@ -61,13 +62,18 @@ class InputValueDefinitionTest extends TestCase {
         self::assertNotEmpty((string) $block);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+
+        $ast = new InputValueDefinition($context, 0, 0, Parser::inputValueDefinition((string) $block));
+
+        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
+        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, Argument}>
+     * @return array<string,array{string, Settings, int, int, InputValueDefinitionNode|Argument}>
      */
     public static function dataProviderToString(): array {
         $settings = new TestSettings();
@@ -196,6 +202,27 @@ class InputValueDefinitionTest extends TestCase {
                         'test: Test! @deprecated(reason: "should be ignored")',
                     ),
                 ]),
+            ],
+            'ast'                       => [
+                <<<'STRING'
+                """
+                Description
+                """
+                test: [String!] = [
+                    "aaaaaaaaaaaaaaaaaaaaaaaaaa"
+                ]
+                @directive
+                STRING,
+                $settings,
+                0,
+                120,
+                Parser::inputValueDefinition(
+                    <<<'STRING'
+                    "Description"
+                    test: [String!] = ["aaaaaaaaaaaaaaaaaaaaaaaaaa"]
+                    @directive
+                    STRING,
+                ),
             ],
         ];
     }

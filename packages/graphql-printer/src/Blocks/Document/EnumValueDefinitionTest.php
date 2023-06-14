@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -25,7 +26,7 @@ class EnumValueDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        GraphQLEnumValueDefinition $type,
+        EnumValueDefinitionNode|GraphQLEnumValueDefinition $type,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new EnumValueDefinition($context, $level, $used, $type));
@@ -39,7 +40,7 @@ class EnumValueDefinitionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, GraphQLEnumValueDefinition}>
+     * @return array<string,array{string, Settings, int, int, EnumValueDefinitionNode|GraphQLEnumValueDefinition}>
      */
     public static function dataProviderToString(): array {
         $settings = new TestSettings();
@@ -103,6 +104,15 @@ class EnumValueDefinitionTest extends TestCase {
                         'A @deprecated(reason: "should be ignored")',
                     ),
                 ]),
+            ],
+            'ast'                       => [
+                <<<'STRING'
+                A
+                STRING,
+                $settings,
+                0,
+                0,
+                Parser::enumValueDefinition('A'),
             ],
         ];
     }

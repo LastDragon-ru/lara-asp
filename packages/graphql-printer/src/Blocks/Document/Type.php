@@ -2,57 +2,61 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\TypeNode;
+use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type as GraphQLType;
-use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
-
-use function assert;
 
 /**
  * @internal
  */
+#[GraphQLAstNode(NamedTypeNode::class)]
+#[GraphQLAstNode(ListTypeNode::class)]
+#[GraphQLAstNode(NonNullTypeNode::class)]
 #[GraphQLDefinition(ListOfType::class)]
 #[GraphQLDefinition(NonNull::class)]
 class Type extends Block implements NamedBlock {
+    /**
+     * @param (TypeNode&Node)|GraphQLType $definition
+     */
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        private GraphQLType $definition,
+        private TypeNode|GraphQLType $definition,
     ) {
         parent::__construct($context, $level, $used);
     }
 
     public function getName(): string {
-        $name = null;
-        $type = $this->getType();
-
-        if ($type instanceof WrappingType) {
-            $type = $type->getInnermostType();
-        }
-
-        if ($type instanceof NamedType) {
-            $name = $type->name();
-        }
-
-        assert($name !== null);
-
-        return $name;
+        return $this->getTypeName($this->getDefinition());
     }
 
-    protected function getType(): GraphQLType {
+    /**
+     * @return (TypeNode&Node)|GraphQLType
+     */
+    protected function getDefinition(): TypeNode|GraphQLType {
         return $this->definition;
     }
 
     protected function content(): string {
+        $definition = $this->getDefinition();
+        $type       = $definition instanceof Node
+            ? Printer::doPrint($definition)
+            : (string) $definition;
+
         $this->addUsedType($this->getName());
 
-        return (string) $this->getType();
+        return $type;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
@@ -27,7 +28,7 @@ class InterfaceTypeDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        InterfaceType $definition,
+        InterfaceTypeDefinitionNode|InterfaceType $definition,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new InterfaceTypeDefinition($context, $level, $used, $definition));
@@ -87,13 +88,18 @@ class InterfaceTypeDefinitionTest extends TestCase {
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b', '@c' => '@c'], $block->getUsedDirectives());
+
+        $ast = new InterfaceTypeDefinition($context, 0, 0, Parser::interfaceTypeDefinition((string) $block));
+
+        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
+        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, InterfaceType}>
+     * @return array<string,array{string, Settings, int, int, InterfaceTypeDefinitionNode|InterfaceType}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -559,6 +565,24 @@ class InterfaceTypeDefinitionTest extends TestCase {
                     'name'   => 'Test',
                     'fields' => [],
                 ]),
+            ],
+            'ast'                                         => [
+                <<<'STRING'
+                """
+                Description
+                """
+                interface Test implements B & A
+                @a
+                {
+                    a: String
+                }
+                STRING,
+                $settings->setPrintDirectives(true),
+                0,
+                0,
+                Parser::interfaceTypeDefinition(
+                    '"Description" interface Test implements B & A @a { a: String }',
+                ),
             ],
         ];
     }

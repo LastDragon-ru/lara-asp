@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Language\DirectiveLocation as GraphQLDirectiveLocation;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
@@ -31,7 +32,7 @@ class DirectiveDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        Directive $definition,
+        DirectiveDefinitionNode|Directive $definition,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new DirectiveDefinition($context, $level, $used, $definition));
@@ -68,13 +69,18 @@ class DirectiveDefinitionTest extends TestCase {
         self::assertNotEmpty((string) $block);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
+
+        $ast = new DirectiveDefinition($context, 0, 0, Parser::directiveDefinition((string) $block));
+
+        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
+        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, Directive}>
+     * @return array<string,array{string, Settings, int, int, DirectiveDefinitionNode|Directive}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -329,6 +335,22 @@ class DirectiveDefinitionTest extends TestCase {
                         GraphQLDirectiveLocation::ARGUMENT_DEFINITION,
                     ],
                 ]),
+            ],
+            'ast'                        => [
+                <<<'STRING'
+                directive @test(
+                    a: String
+                )
+                repeatable on
+                    | ARGUMENT_DEFINITION
+                    | ENUM
+                STRING,
+                $settings,
+                0,
+                120,
+                Parser::directiveDefinition(
+                    'directive @test(a: String) repeatable on ARGUMENT_DEFINITION | ENUM',
+                ),
             ],
         ];
     }

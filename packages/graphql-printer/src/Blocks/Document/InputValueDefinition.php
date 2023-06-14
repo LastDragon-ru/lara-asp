@@ -2,13 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NullValueNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function mb_strlen;
@@ -16,8 +21,9 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends DefinitionBlock<Argument|InputObjectField>
+ * @extends DefinitionBlock<InputValueDefinitionNode|Argument|InputObjectField>
  */
+#[GraphQLAstNode(InputValueDefinitionNode::class)]
 #[GraphQLDefinition(Argument::class)]
 #[GraphQLDefinition(InputObjectField::class)]
 class InputValueDefinition extends DefinitionBlock {
@@ -25,13 +31,13 @@ class InputValueDefinition extends DefinitionBlock {
         Context $context,
         int $level,
         int $used,
-        Argument|InputObjectField $definition,
+        InputValueDefinitionNode|Argument|InputObjectField $definition,
     ) {
         parent::__construct($context, $level, $used, $definition);
     }
 
     protected function content(): string {
-        return $this->isTypeAllowed($this->getDefinition()->getType())
+        return $this->isTypeAllowed($this->getType())
             ? parent::content()
             : '';
     }
@@ -41,26 +47,37 @@ class InputValueDefinition extends DefinitionBlock {
     }
 
     protected function body(int $used): Block|string|null {
+        $type       = $this->getType();
+        $default    = null;
         $definition = $this->getDefinition();
-        $space      = $this->space();
-        $type       = $this->addUsed(
+
+        if ($definition instanceof InputValueDefinitionNode) {
+            $default = $definition->defaultValue;
+        } else {
+            $default = $definition->defaultValueExists()
+                ? (AST::astFromValue($definition->defaultValue, $definition->getType()) ?? new NullValueNode([]))
+                : null;
+        }
+
+        $space = $this->space();
+        $block = $this->addUsed(
             new Type(
                 $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
-                $definition->getType(),
+                $type,
             ),
         );
-        $body       = ":{$space}{$type}";
+        $body  = ":{$space}{$block}";
 
-        if ($definition->defaultValueExists()) {
+        if ($default !== null) {
             $prefix = "{$body}{$space}={$space}";
             $value  = $this->addUsed(
                 new Value(
                     $this->getContext(),
                     $this->getLevel(),
                     $this->getUsed() + mb_strlen($prefix),
-                    AST::astFromValue($definition->defaultValue, $definition->getType()) ?? new NullValueNode([]),
+                    $default,
                 ),
             );
             $body   = "{$prefix}{$value}";
@@ -71,5 +88,17 @@ class InputValueDefinition extends DefinitionBlock {
 
     protected function fields(int $used): Block|string|null {
         return null;
+    }
+
+    /**
+     * @return (TypeNode&Node)|GraphQLType
+     */
+    private function getType(): TypeNode|GraphQLType {
+        $definition = $this->getDefinition();
+        $type       = $definition instanceof InputValueDefinitionNode
+            ? $definition->type
+            : $definition->getType();
+
+        return $type;
     }
 }

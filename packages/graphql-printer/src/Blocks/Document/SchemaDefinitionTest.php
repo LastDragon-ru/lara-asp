@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
@@ -30,7 +31,7 @@ class SchemaDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        Schema $schema,
+        SchemaDefinitionNode|Schema $schema,
     ): void {
         $context = new Context($settings, null, null);
         $actual  = (string) (new SchemaDefinition($context, $level, $used, $schema));
@@ -47,7 +48,7 @@ class SchemaDefinitionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, Schema}>
+     * @return array<string,array{string, Settings, int, int, SchemaDefinitionNode|Schema}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -55,7 +56,7 @@ class SchemaDefinitionTest extends TestCase {
             ->setNormalizeFields(false);
 
         return [
-            'standard names'                 => [
+            'standard names'                      => [
                 '',
                 $settings,
                 0,
@@ -66,7 +67,7 @@ class SchemaDefinitionTest extends TestCase {
                     'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
                 ]),
             ],
-            'standard names with directives' => [
+            'standard names with directives'      => [
                 <<<'STRING'
                 schema
                 @a
@@ -97,7 +98,7 @@ class SchemaDefinitionTest extends TestCase {
                     ],
                 ]),
             ],
-            'non standard names'             => [
+            'non standard names'                  => [
                 <<<'STRING'
                 schema {
                     query: MyQuery
@@ -114,7 +115,7 @@ class SchemaDefinitionTest extends TestCase {
                     'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
                 ]),
             ],
-            'indent'                         => [
+            'indent'                              => [
                 <<<'STRING'
                 schema {
                         query: MyQuery
@@ -130,6 +131,66 @@ class SchemaDefinitionTest extends TestCase {
                     'mutation'     => new ObjectType(['name' => 'Mutation', 'fields' => []]),
                     'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
                 ]),
+            ],
+            'ast: standard names'                 => [
+                '',
+                $settings,
+                0,
+                0,
+                Parser::schemaDefinition(
+                    <<<'STRING'
+                    schema {
+                        query: Query
+                        mutation: Mutation
+                        subscription: Subscription
+                    }
+                    STRING,
+                ),
+            ],
+            'ast: standard names with directives' => [
+                <<<'STRING'
+                schema
+                @a
+                {
+                    query: Query
+                    mutation: Mutation
+                    subscription: Subscription
+                }
+                STRING,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                Parser::schemaDefinition(
+                    <<<'STRING'
+                    schema @a {
+                        query: Query
+                        mutation: Mutation
+                        subscription: Subscription
+                    }
+                    STRING,
+                ),
+            ],
+            'ast: non standard names'             => [
+                <<<'STRING'
+                schema {
+                    query: MyQuery
+                    mutation: Mutation
+                    subscription: Subscription
+                }
+                STRING,
+                $settings,
+                0,
+                0,
+                Parser::schemaDefinition(
+                    <<<'STRING'
+                    schema {
+                        query: MyQuery
+                        mutation: Mutation
+                        subscription: Subscription
+                    }
+                    STRING,
+                ),
             ],
         ];
     }

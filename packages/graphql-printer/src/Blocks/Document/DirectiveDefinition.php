@@ -2,10 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Type\Definition\Directive;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 use function mb_strlen;
@@ -13,15 +15,16 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @extends DefinitionBlock<Directive>
+ * @extends DefinitionBlock<DirectiveDefinitionNode|Directive>
  */
+#[GraphQLAstNode(DirectiveDefinitionNode::class)]
 #[GraphQLDefinition(Directive::class)]
 class DirectiveDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        Directive $definition,
+        DirectiveDefinitionNode|Directive $definition,
     ) {
         parent::__construct($context, $level, $used, $definition);
     }
@@ -46,7 +49,9 @@ class DirectiveDefinition extends DefinitionBlock {
                 $this->getContext(),
                 $this->getLevel(),
                 $used,
-                $definition->args,
+                $definition instanceof DirectiveDefinitionNode
+                    ? $definition->arguments
+                    : $definition->args,
             ),
         );
         $locations   = $this->addUsed(
@@ -67,7 +72,11 @@ class DirectiveDefinition extends DefinitionBlock {
             $content .= "{$space}";
         }
 
-        if ($definition->isRepeatable) {
+        $isRepeatable = $definition instanceof DirectiveDefinitionNode
+            ? $definition->repeatable
+            : $definition->isRepeatable;
+
+        if ($isRepeatable) {
             $content .= "{$repeatable}{$space}";
         }
 

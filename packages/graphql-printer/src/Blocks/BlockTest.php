@@ -5,6 +5,25 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 use Attribute;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use GraphQL\Language\AST\DefinitionNode;
+use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Language\AST\EnumTypeExtensionNode;
+use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\FragmentDefinitionNode;
+use GraphQL\Language\AST\FragmentSpreadNode;
+use GraphQL\Language\AST\InlineFragmentNode;
+use GraphQL\Language\AST\InputObjectTypeExtensionNode;
+use GraphQL\Language\AST\InterfaceTypeExtensionNode;
+use GraphQL\Language\AST\Location;
+use GraphQL\Language\AST\NameNode;
+use GraphQL\Language\AST\NodeKind;
+use GraphQL\Language\AST\NodeList;
+use GraphQL\Language\AST\ObjectTypeExtensionNode;
+use GraphQL\Language\AST\OperationDefinitionNode;
+use GraphQL\Language\AST\ScalarTypeExtensionNode;
+use GraphQL\Language\AST\SchemaExtensionNode;
+use GraphQL\Language\AST\SelectionSetNode;
+use GraphQL\Language\AST\UnionTypeExtensionNode;
+use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Definition\QueryPlan;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -41,7 +60,39 @@ class BlockTest extends TestCase {
     public function testImplementation(): void {
         $actualMap           = ClassMapGenerator::createMap(__DIR__);
         $actualNodes         = $this->getSupportedClasses(GraphQLAstNode::class, $actualMap);
-        $expectedNodes       = $this->getExpectedClasses(DefinitionNode::class);
+        $expectedNodes       = $this->getExpectedClasses(
+            DefinitionNode::class,
+            [],
+            [
+                // Not needed
+                Location::class,
+                NodeKind::class,
+                NodeList::class,
+                NameNode::class,
+
+                // todo(graphql-printer): not implemented
+                DocumentNode::class,
+
+                // fixme(graphql-printer): Extensions
+                SchemaExtensionNode::class,
+                ScalarTypeExtensionNode::class,
+                ObjectTypeExtensionNode::class,
+                InterfaceTypeExtensionNode::class,
+                UnionTypeExtensionNode::class,
+                EnumTypeExtensionNode::class,
+                InputObjectTypeExtensionNode::class,
+
+                // todo(graphql-printer): ExecutableDefinition support
+                //      https://github.com/LastDragon-ru/lara-asp/issues/72
+                VariableDefinitionNode::class,
+                SelectionSetNode::class,
+                FieldNode::class,
+                FragmentDefinitionNode::class,
+                FragmentSpreadNode::class,
+                InlineFragmentNode::class,
+                OperationDefinitionNode::class,
+            ],
+        );
         $actualDefinitions   = $this->getSupportedClasses(GraphQLDefinition::class, $actualMap);
         $expectedDefinitions = $this->getExpectedClasses(
             Type::class,
@@ -56,12 +107,12 @@ class BlockTest extends TestCase {
         );
 
         self::assertEquals(
-            $expectedDefinitions,
-            $actualDefinitions,
+            array_fill_keys($expectedDefinitions, true),
+            array_fill_keys($actualDefinitions, true),
         );
         self::assertEquals(
-            $expectedNodes,
-            $actualNodes,
+            array_fill_keys($expectedNodes, true),
+            array_fill_keys($actualNodes, true),
         );
     }
 

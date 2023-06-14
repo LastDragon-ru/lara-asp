@@ -3,7 +3,11 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\NameNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
+use GraphQL\Language\AST\SchemaDefinitionNode;
+use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
@@ -18,23 +22,26 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
+use function is_string;
 use function mb_strlen;
 use function property_exists;
+
+// @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
  * @internal
  *
- * @template TType of Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema
+ * @template TDefinition of Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema|SchemaDefinitionNode
  */
 abstract class DefinitionBlock extends Block implements NamedBlock {
     /**
-     * @param TType $definition
+     * @param TDefinition $definition
      */
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        private Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema $definition,
+        private Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema|SchemaDefinitionNode $definition,
     ) {
         parent::__construct($context, $level, $used);
     }
@@ -56,11 +63,11 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
     }
 
     /**
-     * @return TType
+     * @return TDefinition
      */
     protected function getDefinition(
         // empty
-    ): Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema {
+    ): Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema {
         return $this->definition;
     }
 
@@ -111,8 +118,14 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         if ($definition instanceof NamedType) {
             $name = $definition->name();
-        } elseif (!($definition instanceof Schema) && !($definition instanceof Type)) {
-            $name = $definition->name;
+        } elseif (property_exists($definition, 'name')) {
+            if ($definition->name instanceof NameNode) {
+                $name = $definition->name->value;
+            } elseif (is_string($definition->name)) {
+                $name = $definition->name;
+            } else {
+                // empty
+            }
         } else {
             // empty
         }
@@ -149,8 +162,14 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             // https://github.com/webonyx/graphql-php/issues/1027
         } elseif ($definition instanceof NamedType) {
             $description = $definition->description();
-        } elseif (!($definition instanceof Type)) {
-            $description = $definition->description;
+        } elseif (property_exists($definition, 'description')) {
+            if ($definition->description instanceof StringValueNode) {
+                $description = $definition->description->value;
+            } elseif (is_string($definition->description)) {
+                $description = $definition->description;
+            } else {
+                // empty
+            }
         } else {
             // empty
         }
@@ -185,9 +204,15 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Unfortunately directives exists only in AST :(
         // https://github.com/webonyx/graphql-php/issues/588
-        $astNode = property_exists($definition, 'astNode')
-            ? $definition->astNode
-            : null;
+        $astNode = null;
+
+        if ($definition instanceof Node) {
+            $astNode = $definition;
+        } elseif (property_exists($definition, 'astNode')) {
+            $astNode = $definition->astNode;
+        } else {
+            // empty
+        }
 
         if ($astNode) {
             $directives = $directives->merge($astNode->directives ?? []);

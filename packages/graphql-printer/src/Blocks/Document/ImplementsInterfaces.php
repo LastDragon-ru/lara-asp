@@ -2,13 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Type\Definition\InterfaceType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 
 /**
  * @internal
- * @extends UsageList<Type, InterfaceType>
+ * @extends UsageList<Type, NamedTypeNode|InterfaceType>
  */
 class ImplementsInterfaces extends UsageList {
     protected function block(mixed $item): Block {
