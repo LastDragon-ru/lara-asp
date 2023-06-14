@@ -310,11 +310,24 @@ class UnionTypeDefinitionTest extends TestCase {
                 @a
                 = C | B | A
                 STRING,
-                $settings,
+                $settings
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
                 0,
                 0,
                 Parser::unionTypeDefinition(
-                    '"Description" union Test @a = C | B | A',
+                    '"Description" union Test @a @b = C | B | A',
+                ),
+            ],
+            'ast + filter'                  => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                Parser::unionTypeDefinition(
+                    'union Test = C | B | A',
                 ),
             ],
         ];

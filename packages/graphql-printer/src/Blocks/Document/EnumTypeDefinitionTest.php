@@ -71,7 +71,7 @@ class EnumTypeDefinitionTest extends TestCase {
             ->setNormalizeEnums(false);
 
         return [
-            'enum'       => [
+            'enum'         => [
                 <<<'STRING'
                 enum Test {
                     C
@@ -87,7 +87,7 @@ class EnumTypeDefinitionTest extends TestCase {
                     'values' => ['C', 'B', 'A'],
                 ]),
             ],
-            'indent'     => [
+            'indent'       => [
                 <<<'STRING'
                 enum Test {
                         C
@@ -103,7 +103,7 @@ class EnumTypeDefinitionTest extends TestCase {
                     'values' => ['C', 'B', 'A'],
                 ]),
             ],
-            'normalized' => [
+            'normalized'   => [
                 <<<'STRING'
                 enum Test {
                     A
@@ -119,7 +119,7 @@ class EnumTypeDefinitionTest extends TestCase {
                     'values' => ['C', 'B', 'A'],
                 ]),
             ],
-            'directives' => [
+            'directives'   => [
                 <<<'STRING'
                 enum Test
                 @a
@@ -146,7 +146,7 @@ class EnumTypeDefinitionTest extends TestCase {
                     ],
                 ]),
             ],
-            'filter'     => [
+            'filter'       => [
                 '',
                 $settings
                     ->setTypeDefinitionFilter(static fn () => false),
@@ -157,7 +157,7 @@ class EnumTypeDefinitionTest extends TestCase {
                     'values' => ['A'],
                 ]),
             ],
-            'ast'        => [
+            'ast'          => [
                 <<<'STRING'
                 enum Test
                 @a
@@ -166,6 +166,16 @@ class EnumTypeDefinitionTest extends TestCase {
                 }
                 STRING,
                 $settings,
+                0,
+                0,
+                Parser::enumTypeDefinition(
+                    'enum Test @a { A }',
+                ),
+            ],
+            'ast + filter' => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
                 0,
                 0,
                 Parser::enumTypeDefinition(

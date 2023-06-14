@@ -352,6 +352,16 @@ class DirectiveDefinitionTest extends TestCase {
                     'directive @test(a: String) repeatable on ARGUMENT_DEFINITION | ENUM',
                 ),
             ],
+            'ast + filter'               => [
+                '',
+                $settings
+                    ->setDirectiveDefinitionFilter(static fn () => false),
+                0,
+                0,
+                Parser::directiveDefinition(
+                    'directive @test on ARGUMENT_DEFINITION',
+                ),
+            ],
         ];
     }
     // </editor-fold>

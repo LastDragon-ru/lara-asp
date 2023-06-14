@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use Closure;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
-use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
@@ -194,10 +194,7 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    /**
-     * @param (TypeNode&Node)|Type $type
-     */
-    public function isTypeAllowed(TypeNode|Type $type): bool {
+    public function isTypeAllowed(string $type): bool {
         // Filter?
         $filter = $this->getSettings()->getTypeFilter();
 
@@ -206,36 +203,34 @@ abstract class Block implements Statistics, Stringable {
         }
 
         // Allowed?
-        $name      = $this->getTypeName($type);
-        $isBuiltIn = $this->isTypeBuiltIn($name);
-        $isAllowed = $filter->isAllowedType($name, $isBuiltIn);
+        $isBuiltIn = $this->isTypeBuiltIn($type);
+        $isAllowed = $filter->isAllowedType($type, $isBuiltIn);
 
         // Return
         return $isAllowed;
     }
 
-    public function isTypeDefinitionAllowed(Type $type): bool {
+    public function isTypeDefinitionAllowed(string $type): bool {
         // Allowed?
-        if (!($type instanceof NamedType) || !$this->isTypeAllowed($type)) {
+        if (!$this->isTypeAllowed($type)) {
             return false;
         }
 
         // Allowed?
-        $name      = $type->name();
         $filter    = $this->getSettings()->getTypeDefinitionFilter();
-        $isBuiltIn = $type->isBuiltInType();
+        $isBuiltIn = $this->isTypeBuiltIn($type);
         $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedType($name, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedType($name, $isBuiltIn));
+            ? ($filter !== null && $filter->isAllowedType($type, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedType($type, $isBuiltIn));
 
         // Return
         return $isAllowed;
     }
 
     /**
-     * @param (TypeNode&Node)|Type $type
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type
      */
-    protected function getTypeName(TypeNode|Type $type): string {
+    protected function getTypeName(TypeDefinitionNode|TypeNode|Type $type): string {
         $name = null;
 
         if ($type instanceof WrappingType) {
@@ -246,8 +241,12 @@ abstract class Block implements Statistics, Stringable {
             $name = $type->name();
         }
 
-        if ($type instanceof Node) {
+        if ($type instanceof TypeDefinitionNode) {
+            $name = $type->getName()->value;
+        } elseif ($type instanceof Node) {
             $name = ASTHelper::getUnderlyingTypeName($type);
+        } else {
+            // empty
         }
 
         assert($name !== null);
@@ -278,19 +277,18 @@ abstract class Block implements Statistics, Stringable {
         return $isAllowed;
     }
 
-    public function isDirectiveDefinitionAllowed(Directive $directive): bool {
+    public function isDirectiveDefinitionAllowed(string $directive): bool {
         // Allowed?
-        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive->name)) {
+        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive)) {
             return false;
         }
 
         // Definition?
-        $name      = $directive->name;
         $filter    = $this->getSettings()->getDirectiveDefinitionFilter();
-        $isBuiltIn = $this->isDirectiveBuiltIn($name);
+        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
         $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedDirective($name, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedDirective($name, $isBuiltIn));
+            ? ($filter !== null && $filter->isAllowedDirective($directive, $isBuiltIn))
+            : ($filter === null || $filter->isAllowedDirective($directive, $isBuiltIn));
 
         // Return
         return $isAllowed;

@@ -54,7 +54,7 @@ class Argument extends Block implements NamedBlock {
                 }
             }
 
-            if ($type && !$this->isTypeAllowed($type)) {
+            if ($type && !$this->isTypeAllowed($this->getTypeName($type))) {
                 return '';
             }
         }

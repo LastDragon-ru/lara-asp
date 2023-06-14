@@ -2,12 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
+use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
@@ -186,9 +188,15 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
     protected function isDefinitionAllowed(): bool {
         $definition = $this->getDefinition();
         $allowed    = match (true) {
-            $definition instanceof Type      => $this->isTypeDefinitionAllowed($definition),
-            $definition instanceof Directive => $this->isDirectiveDefinitionAllowed($definition),
-            default                          => true,
+            $definition instanceof TypeDefinitionNode && $definition instanceof Node,
+            $definition instanceof Type
+                => $this->isTypeDefinitionAllowed($this->getTypeName($definition)),
+            $definition instanceof DirectiveDefinitionNode
+                => $this->isDirectiveDefinitionAllowed($definition->name->value),
+            $definition instanceof Directive
+                => $this->isDirectiveDefinitionAllowed($definition->name),
+            default
+                => true,
         };
 
         return $allowed;

@@ -37,7 +37,7 @@ class InputValueDefinition extends DefinitionBlock {
     }
 
     protected function content(): string {
-        return $this->isTypeAllowed($this->getType())
+        return $this->isTypeAllowed($this->getTypeName($this->getType()))
             ? parent::content()
             : '';
     }

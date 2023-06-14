@@ -571,11 +571,25 @@ class ObjectTypeDefinitionTest extends TestCase {
                     a: String
                 }
                 STRING,
-                $settings->setPrintDirectives(true),
+                $settings
+                    ->setPrintDirectives(true)
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
                 0,
                 0,
                 Parser::objectTypeDefinition(
-                    '"Description" type Test implements B & A @a { a: String }',
+                    '"Description" type Test implements B & A @a @b { a: String }',
+                ),
+            ],
+            'ast + filter'                                => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                Parser::objectTypeDefinition(
+                    'type Test { a: String }',
                 ),
             ],
         ];

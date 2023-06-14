@@ -232,11 +232,24 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 }
                 STRING,
                 $settings
-                    ->setPrintDirectives(true),
+                    ->setPrintDirectives(true)
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
                 0,
                 0,
                 Parser::inputObjectTypeDefinition(
-                    '"Description" input Test @a { a: String }',
+                    '"Description" input Test @a @b { a: String }',
+                ),
+            ],
+            'ast + filter'                      => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                Parser::inputObjectTypeDefinition(
+                    'input Test @a { a: String }',
                 ),
             ],
         ];

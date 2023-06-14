@@ -143,11 +143,25 @@ class ScalarTypeDefinitionTest extends TestCase {
                 scalar Test
                 @a
                 STRING,
-                $settings->setPrintDirectives(true),
+                $settings
+                    ->setPrintDirectives(true)
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
                 0,
                 0,
                 Parser::scalarTypeDefinition(
-                    '"Description" scalar Test @a',
+                    '"Description" scalar Test @a @b',
+                ),
+            ],
+            'ast + filter'            => [
+                '',
+                $settings
+                    ->setTypeDefinitionFilter(static fn () => false),
+                0,
+                0,
+                Parser::scalarTypeDefinition(
+                    'scalar Test',
                 ),
             ],
         ];
