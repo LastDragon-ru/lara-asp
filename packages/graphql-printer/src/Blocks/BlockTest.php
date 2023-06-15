@@ -10,7 +10,6 @@ use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\FragmentSpreadNode;
 use GraphQL\Language\AST\InlineFragmentNode;
-use GraphQL\Language\AST\InputObjectTypeExtensionNode;
 use GraphQL\Language\AST\Location;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\NodeKind;
@@ -66,9 +65,6 @@ class BlockTest extends TestCase {
 
                 // todo(graphql-printer): not implemented
                 DocumentNode::class,
-
-                // fixme(graphql-printer): Extensions
-                InputObjectTypeExtensionNode::class,
 
                 // todo(graphql-printer): ExecutableDefinition support
                 //      https://github.com/LastDragon-ru/lara-asp/issues/72
