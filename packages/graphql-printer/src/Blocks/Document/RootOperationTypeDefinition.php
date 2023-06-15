@@ -25,8 +25,12 @@ class RootOperationTypeDefinition extends Type {
     }
 
     protected function content(): string {
-        $content = parent::content();
-        $content = "{$this->getOperation()}:{$this->space()}{$content}";
+        $content = '';
+
+        if ($this->isTypeAllowed($this->getTypeName($this->getDefinition()))) {
+            $content = parent::content();
+            $content = "{$this->getOperation()}:{$this->space()}{$content}";
+        }
 
         return $content;
     }

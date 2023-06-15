@@ -132,6 +132,23 @@ class SchemaDefinitionTest extends TestCase {
                     'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
                 ]),
             ],
+            'filter'                              => [
+                <<<'STRING'
+                schema {
+                    query: MyQuery
+                }
+                STRING,
+                $settings
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'Mutation';
+                    }),
+                0,
+                0,
+                new Schema([
+                    'query'    => new ObjectType(['name' => 'MyQuery', 'fields' => []]),
+                    'mutation' => new ObjectType(['name' => 'Mutation', 'fields' => []]),
+                ]),
+            ],
             'ast: standard names'                 => [
                 '',
                 $settings,
@@ -188,6 +205,33 @@ class SchemaDefinitionTest extends TestCase {
                         query: MyQuery
                         mutation: Mutation
                         subscription: Subscription
+                    }
+                    STRING,
+                ),
+            ],
+            'ast: filter'                         => [
+                <<<'STRING'
+                schema
+                @a
+                {
+                    query: MyQuery
+                }
+                STRING,
+                $settings
+                    ->setPrintDirectives(true)
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'Mutation';
+                    })
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
+                0,
+                0,
+                Parser::schemaDefinition(
+                    <<<'STRING'
+                    schema @a @b {
+                        query: MyQuery
+                        mutation: Mutation
                     }
                     STRING,
                 ),
