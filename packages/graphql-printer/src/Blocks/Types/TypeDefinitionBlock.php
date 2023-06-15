@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
+use GraphQL\Language\AST\InterfaceTypeExtensionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeExtensionNode;
 use GraphQL\Type\Definition\InterfaceType;
@@ -19,7 +20,7 @@ use function mb_strlen;
 /**
  * @internal
  *
- * @template TType of InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|ObjectTypeExtensionNode|InterfaceType|ObjectType
+ * @template TType of InterfaceTypeDefinitionNode|InterfaceTypeExtensionNode|ObjectTypeDefinitionNode|ObjectTypeExtensionNode|InterfaceType|ObjectType
  *
  * @extends DefinitionBlock<TType>
  */
@@ -31,7 +32,7 @@ abstract class TypeDefinitionBlock extends DefinitionBlock {
         Context $context,
         int $level,
         int $used,
-        InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|ObjectTypeExtensionNode|InterfaceType|ObjectType $definition,
+        InterfaceTypeDefinitionNode|InterfaceTypeExtensionNode|ObjectTypeDefinitionNode|ObjectTypeExtensionNode|InterfaceType|ObjectType $definition,
     ) {
         parent::__construct($context, $level, $used, $definition);
     }
