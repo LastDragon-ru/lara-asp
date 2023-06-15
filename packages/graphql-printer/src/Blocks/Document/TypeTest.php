@@ -104,6 +104,14 @@ class TypeTest extends TestCase {
                 0,
                 new NonNull(new ListOfType($type)),
             ],
+            'filter'              => [
+                '',
+                $settings
+                    ->setTypeFilter(static fn () => false),
+                0,
+                0,
+                new NonNull(new ListOfType($type)),
+            ],
             'ast: object'         => [
                 'Test',
                 $settings,
@@ -121,6 +129,14 @@ class TypeTest extends TestCase {
             'ast: non null list'  => [
                 '[Test]!',
                 $settings,
+                0,
+                0,
+                Parser::typeReference('[Test]!'),
+            ],
+            'ast: filter'         => [
+                '',
+                $settings
+                    ->setTypeFilter(static fn () => false),
                 0,
                 0,
                 Parser::typeReference('[Test]!'),

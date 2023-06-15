@@ -51,11 +51,16 @@ class Type extends Block implements NamedBlock {
 
     protected function content(): string {
         $definition = $this->getDefinition();
-        $type       = $definition instanceof Node
-            ? Printer::doPrint($definition)
-            : (string) $definition;
+        $name       = $this->getName();
+        $type       = '';
 
-        $this->addUsedType($this->getName());
+        if ($this->isTypeAllowed($name)) {
+            $type = $definition instanceof Node
+                ? Printer::doPrint($definition)
+                : (string) $definition;
+
+            $this->addUsedType($name);
+        }
 
         return $type;
     }
