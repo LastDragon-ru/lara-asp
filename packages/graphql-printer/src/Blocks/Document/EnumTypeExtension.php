@@ -2,33 +2,28 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
-use GraphQL\Language\AST\EnumTypeDefinitionNode;
-use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\PhpEnumType;
+use GraphQL\Language\AST\EnumTypeExtensionNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\EnumDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
 /**
  * @internal
  *
- * @extends EnumDefinitionBlock<EnumTypeDefinitionNode|EnumType>
+ * @extends EnumDefinitionBlock<EnumTypeExtensionNode>
  */
-#[GraphQLAstNode(EnumTypeDefinitionNode::class)]
-#[GraphQLDefinition(EnumType::class)]
-#[GraphQLDefinition(PhpEnumType::class)]
-class EnumTypeDefinition extends EnumDefinitionBlock {
+#[GraphQLAstNode(EnumTypeExtensionNode::class)]
+class EnumTypeExtension extends EnumDefinitionBlock {
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        EnumTypeDefinitionNode|EnumType $definition,
+        EnumTypeExtensionNode $definition,
     ) {
         parent::__construct($context, $level, $used, $definition);
     }
 
     protected function type(): string {
-        return 'enum';
+        return 'extend enum';
     }
 }

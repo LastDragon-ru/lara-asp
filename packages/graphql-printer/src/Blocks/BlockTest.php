@@ -6,7 +6,6 @@ use Attribute;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use GraphQL\Language\AST\DefinitionNode;
 use GraphQL\Language\AST\DocumentNode;
-use GraphQL\Language\AST\EnumTypeExtensionNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\FragmentSpreadNode;
@@ -69,7 +68,6 @@ class BlockTest extends TestCase {
                 DocumentNode::class,
 
                 // fixme(graphql-printer): Extensions
-                EnumTypeExtensionNode::class,
                 InputObjectTypeExtensionNode::class,
 
                 // todo(graphql-printer): ExecutableDefinition support
