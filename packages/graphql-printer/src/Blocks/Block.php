@@ -3,7 +3,11 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use Closure;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
@@ -13,7 +17,6 @@ use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Stringable;
 
 use function array_key_exists;
@@ -239,12 +242,20 @@ abstract class Block implements Statistics, Stringable {
 
         if ($type instanceof NamedType) {
             $name = $type->name();
-        }
-
-        if ($type instanceof TypeDefinitionNode) {
+        } elseif ($type instanceof TypeDefinitionNode) {
             $name = $type->getName()->value;
         } elseif ($type instanceof Node) {
-            $name = ASTHelper::getUnderlyingTypeName($type);
+            $name = match (true) {
+                $type instanceof ListTypeNode,
+                $type instanceof NonNullTypeNode
+                    => $this->getTypeName($type->type),
+                $type instanceof NamedTypeNode
+                    => $this->getTypeName($type->name),
+                $type instanceof NameNode
+                    => $type->value,
+                default
+                    => null,
+            };
         } else {
             // empty
         }
