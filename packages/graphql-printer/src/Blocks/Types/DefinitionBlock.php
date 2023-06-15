@@ -10,6 +10,7 @@ use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeExtensionNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
@@ -191,6 +192,8 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             $definition instanceof TypeDefinitionNode && $definition instanceof Node,
             $definition instanceof Type
                 => $this->isTypeDefinitionAllowed($this->getTypeName($definition)),
+            $definition instanceof TypeExtensionNode
+                => $this->isTypeDefinitionAllowed($definition->getName()->value),
             $definition instanceof DirectiveDefinitionNode
                 => $this->isDirectiveDefinitionAllowed($definition->name->value),
             $definition instanceof Directive

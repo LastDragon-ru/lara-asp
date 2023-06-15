@@ -19,7 +19,6 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\AST\ObjectTypeExtensionNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Language\AST\ScalarTypeExtensionNode;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\UnionTypeExtensionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
@@ -73,7 +72,6 @@ class BlockTest extends TestCase {
                 DocumentNode::class,
 
                 // fixme(graphql-printer): Extensions
-                ScalarTypeExtensionNode::class,
                 ObjectTypeExtensionNode::class,
                 InterfaceTypeExtensionNode::class,
                 UnionTypeExtensionNode::class,
