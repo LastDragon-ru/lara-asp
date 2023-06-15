@@ -17,7 +17,6 @@ use GraphQL\Language\AST\Location;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\NodeList;
-use GraphQL\Language\AST\ObjectTypeExtensionNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\UnionTypeExtensionNode;
@@ -72,7 +71,6 @@ class BlockTest extends TestCase {
                 DocumentNode::class,
 
                 // fixme(graphql-printer): Extensions
-                ObjectTypeExtensionNode::class,
                 InterfaceTypeExtensionNode::class,
                 UnionTypeExtensionNode::class,
                 EnumTypeExtensionNode::class,
