@@ -7,8 +7,8 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\DefinitionList;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\PrintableBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\PrintableList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
@@ -174,14 +174,14 @@ class Printer implements SchemaPrinterContract {
         Context $context,
         Schema|Type|GraphQLDirective $definition,
     ): Block {
-        return new DefinitionBlock($context, $this->getLevel(), $definition);
+        return new PrintableBlock($context, $this->getLevel(), $definition);
     }
 
     /**
      * @return ListBlock<Block>
      */
     protected function getDefinitionList(Context $context, bool $root = false): ListBlock {
-        return new DefinitionList($context, $this->getLevel(), $root);
+        return new PrintableList($context, $this->getLevel(), $root);
     }
 
     /**

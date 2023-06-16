@@ -68,7 +68,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
  *
  * @template TDefinition of Node|GraphQLType|GraphQLDirective|GraphQLFieldDefinition|GraphQLArgument|GraphQLEnumValueDefinition|InputObjectField|Schema
  */
-class DefinitionBlock extends Block implements NamedBlock {
+class PrintableBlock extends Block implements NamedBlock {
     private Block $block;
 
     /**

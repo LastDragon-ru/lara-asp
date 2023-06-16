@@ -14,7 +14,7 @@ use function rtrim;
  * @internal
  * @extends ListBlock<Block>
  */
-class DefinitionList extends ListBlock {
+class PrintableList extends ListBlock {
     public function __construct(
         Context $context,
         int $level,
@@ -54,7 +54,7 @@ class DefinitionList extends ListBlock {
     protected function analyze(Block $block): Block {
         $block = $this->addUsed($block);
 
-        if ($block instanceof DefinitionBlock) {
+        if ($block instanceof PrintableBlock) {
             $definition = $block->getDefinition();
 
             if ($definition instanceof NamedType) {
