@@ -2,30 +2,26 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions;
 
-use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\PackageException;
 use Throwable;
 
 use function sprintf;
 
-/**
- * @deprecated 4.2.1 Please use {@link Unsupported} instead.
- */
-class TypeUnsupported extends PackageException {
+class Unsupported extends PackageException {
     public function __construct(
-        protected Type $type,
+        protected object $definition,
         Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Type `%s` is not (yet) supported.',
-                $this->type,
+                'The `%s` is not (yet) supported.',
+                $this->definition::class,
             ),
             $previous,
         );
     }
 
-    public function getType(): Type {
-        return $this->type;
+    public function getDefinition(): object {
+        return $this->definition;
     }
 }

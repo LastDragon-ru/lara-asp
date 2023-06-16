@@ -21,7 +21,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ScalarTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\SchemaDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\UnionTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeUnsupported;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
@@ -123,7 +123,7 @@ class DefinitionBlock extends Block implements NamedBlock {
                 $definition,
             );
         } else {
-            throw new TypeUnsupported($definition);
+            throw new Unsupported($definition);
         }
 
         return $block;
