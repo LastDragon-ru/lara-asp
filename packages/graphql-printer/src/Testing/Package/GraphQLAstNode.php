@@ -8,6 +8,6 @@ use Attribute;
  * @internal
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
-class GraphQLDefinition extends GraphQLMarker {
+class GraphQLAstNode extends GraphQLMarker {
     // empty
 }

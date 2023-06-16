@@ -22,6 +22,7 @@
     "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
+    "composer/class-map-generator": "^1.0",
     "phpunit/phpunit": "^9.5.0|^10.1.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.4.2"
