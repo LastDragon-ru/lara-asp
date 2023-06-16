@@ -33,7 +33,7 @@ class DirectiveDefinition extends DefinitionBlock {
         return 'directive';
     }
 
-    protected function name(): string {
+    public function name(): string {
         return '@'.parent::name();
     }
 

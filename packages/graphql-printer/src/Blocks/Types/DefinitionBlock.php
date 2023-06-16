@@ -115,7 +115,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $content;
     }
 
-    protected function name(): string {
+    public function name(): string {
         $definition = $this->getDefinition();
         $name       = '';
 

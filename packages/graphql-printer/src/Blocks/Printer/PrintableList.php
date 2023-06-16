@@ -2,10 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
 
-use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Definition\NamedType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\DirectiveDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function rtrim;
@@ -52,17 +53,21 @@ class PrintableList extends ListBlock {
     }
 
     protected function analyze(Block $block): Block {
-        $block = $this->addUsed($block);
+        $block = parent::analyze($block);
 
         if ($block instanceof PrintableBlock) {
-            $definition = $block->getDefinition();
+            $definition = $block->getBlock();
 
-            if ($definition instanceof NamedType) {
-                $this->addUsedType($definition->name());
-            } elseif ($definition instanceof Directive) {
-                $this->addUsedDirective("@{$definition->name}");
-            } else {
-                // empty
+            if ($definition instanceof DefinitionBlock && !($definition instanceof ExtensionDefinitionBlock)) {
+                $name = $definition->name();
+
+                if ($name) {
+                    if ($definition instanceof DirectiveDefinition) {
+                        $this->addUsedDirective($name);
+                    } else {
+                        $this->addUsedType($name);
+                    }
+                }
             }
         }
 

@@ -102,7 +102,7 @@ class PrintableBlock extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    protected function getBlock(): Block {
+    public function getBlock(): Block {
         return $this->block;
     }
 
