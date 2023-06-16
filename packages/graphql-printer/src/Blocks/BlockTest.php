@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 use Attribute;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use GraphQL\Language\AST\DefinitionNode;
-use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\FragmentSpreadNode;
@@ -62,9 +61,6 @@ class BlockTest extends TestCase {
                 NodeKind::class,
                 NodeList::class,
                 NameNode::class,
-
-                // todo(graphql-printer): not implemented
-                DocumentNode::class,
 
                 // todo(graphql-printer): ExecutableDefinition support
                 //      https://github.com/LastDragon-ru/lara-asp/issues/72
