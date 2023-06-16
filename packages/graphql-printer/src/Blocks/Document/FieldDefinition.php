@@ -6,6 +6,8 @@ use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
+use GraphQL\Type\Definition\InputType;
+use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
@@ -70,7 +72,7 @@ class FieldDefinition extends DefinitionBlock {
     }
 
     /**
-     * @return (TypeNode&Node)|GraphQLType
+     * @return (TypeNode&Node)|(GraphQLType&(OutputType|InputType))
      */
     private function getType(): TypeNode|GraphQLType {
         $definition = $this->getDefinition();

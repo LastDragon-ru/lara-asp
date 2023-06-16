@@ -8,6 +8,8 @@ use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\InputType;
+use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
@@ -91,7 +93,7 @@ class InputValueDefinition extends DefinitionBlock {
     }
 
     /**
-     * @return (TypeNode&Node)|GraphQLType
+     * @return (TypeNode&Node)|(GraphQLType&(OutputType|InputType))
      */
     private function getType(): TypeNode|GraphQLType {
         $definition = $this->getDefinition();

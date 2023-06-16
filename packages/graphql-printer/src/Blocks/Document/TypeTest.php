@@ -5,9 +5,11 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -25,7 +27,7 @@ class TypeTest extends TestCase {
     /**
      * @dataProvider dataProviderToString
      *
-     * @param (TypeNode&Node)|GraphQLType $type
+     * @param (TypeNode&Node)|(GraphQLType&(OutputType|InputType)) $type
      */
     public function testToString(
         string $expected,
@@ -69,7 +71,7 @@ class TypeTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, (TypeNode&Node)|GraphQLType}>
+     * @return array<string,array{string, Settings, int, int, (TypeNode&Node)|(GraphQLType&(OutputType|InputType))}>
      */
     public static function dataProviderToString(): array {
         $settings = new TestSettings();

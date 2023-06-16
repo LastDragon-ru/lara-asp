@@ -8,8 +8,10 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\Printer;
+use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
@@ -27,7 +29,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 #[GraphQLDefinition(NonNull::class)]
 class Type extends Block implements NamedBlock {
     /**
-     * @param (TypeNode&Node)|GraphQLType $definition
+     * @param (TypeNode&Node)|(GraphQLType&(OutputType|InputType)) $definition
      */
     public function __construct(
         Context $context,
@@ -43,7 +45,7 @@ class Type extends Block implements NamedBlock {
     }
 
     /**
-     * @return (TypeNode&Node)|GraphQLType
+     * @return (TypeNode&Node)|(GraphQLType&(OutputType|InputType))
      */
     protected function getDefinition(): TypeNode|GraphQLType {
         return $this->definition;
