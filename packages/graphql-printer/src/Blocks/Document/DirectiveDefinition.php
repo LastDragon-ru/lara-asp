@@ -38,13 +38,16 @@ class DirectiveDefinition extends DefinitionBlock {
     }
 
     protected function body(int $used): Block|string|null {
-        $definition  = $this->getDefinition();
-        $eol         = $this->eol();
-        $space       = $this->space();
-        $indent      = $this->indent();
-        $repeatable  = 'repeatable';
-        $used        = $used + mb_strlen($repeatable) + 2 * mb_strlen($space);
-        $args        = $this->addUsed(
+        $definition   = $this->getDefinition();
+        $eol          = $this->eol();
+        $space        = $this->space();
+        $indent       = $this->indent();
+        $repeatable   = 'repeatable';
+        $isRepeatable = $definition instanceof DirectiveDefinitionNode
+            ? $definition->repeatable
+            : $definition->isRepeatable;
+        $used         = $used + ($isRepeatable ? mb_strlen($repeatable) + 2 * mb_strlen($space) : mb_strlen($space));
+        $args         = $this->addUsed(
             new ArgumentsDefinition(
                 $this->getContext(),
                 $this->getLevel(),
@@ -54,7 +57,7 @@ class DirectiveDefinition extends DefinitionBlock {
                     : $definition->args,
             ),
         );
-        $locations   = $this->addUsed(
+        $locations    = $this->addUsed(
             new DirectiveLocations(
                 $this->getContext(),
                 $this->getLevel() + 1,
@@ -63,18 +66,14 @@ class DirectiveDefinition extends DefinitionBlock {
                 $args->isMultiline(),
             ),
         );
-        $isMultiline = $args->isMultiline() || $locations->isMultiline();
-        $content     = "{$args}";
+        $isMultiline  = $args->isMultiline() || $locations->isMultiline();
+        $content      = "{$args}";
 
         if ($isMultiline) {
             $content .= "{$eol}{$indent}";
         } else {
             $content .= "{$space}";
         }
-
-        $isRepeatable = $definition instanceof DirectiveDefinitionNode
-            ? $definition->repeatable
-            : $definition->isRepeatable;
 
         if ($isRepeatable) {
             $content .= "{$repeatable}{$space}";
