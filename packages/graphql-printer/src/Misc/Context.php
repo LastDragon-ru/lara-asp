@@ -17,6 +17,26 @@ use function array_merge;
  * @internal
  */
 class Context {
+    /**
+     * @var array<string, bool>
+     */
+    private array $allowedTypes = [];
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $allowedTypesDefinitions = [];
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $allowedDirectives = [];
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $allowedDirectivesDefinitions = [];
+
     public function __construct(
         protected Settings $settings,
         protected ?DirectiveResolver $directiveResolver,
@@ -54,33 +74,46 @@ class Context {
     }
 
     public function isTypeAllowed(string $type): bool {
-        // Filter?
-        $filter = $this->getSettings()->getTypeFilter();
-
-        if ($filter === null) {
-            return true;
+        // Cached?
+        if (isset($this->allowedTypes[$type])) {
+            return $this->allowedTypes[$type];
         }
 
         // Allowed?
-        $isBuiltIn = $this->isTypeBuiltIn($type);
-        $isAllowed = $filter->isAllowedType($type, $isBuiltIn);
+        $isAllowed = true;
+        $filter    = $this->getSettings()->getTypeFilter();
+
+        if ($filter !== null) {
+            $isBuiltIn = $this->isTypeBuiltIn($type);
+            $isAllowed = $filter->isAllowedType($type, $isBuiltIn);
+        }
+
+        // Cache
+        $this->allowedTypes[$type] = $isAllowed;
 
         // Return
         return $isAllowed;
     }
 
     public function isTypeDefinitionAllowed(string $type): bool {
-        // Allowed?
-        if (!$this->isTypeAllowed($type)) {
-            return false;
+        // Cached?
+        if (isset($this->allowedTypesDefinitions[$type])) {
+            return $this->allowedTypesDefinitions[$type];
         }
 
         // Allowed?
-        $filter    = $this->getSettings()->getTypeDefinitionFilter();
-        $isBuiltIn = $this->isTypeBuiltIn($type);
-        $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedType($type, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedType($type, $isBuiltIn));
+        $isAllowed = $this->isTypeAllowed($type);
+
+        if ($isAllowed) {
+            $filter    = $this->getSettings()->getTypeDefinitionFilter();
+            $isBuiltIn = $this->isTypeBuiltIn($type);
+            $isAllowed = $isBuiltIn
+                ? ($filter !== null && $filter->isAllowedType($type, $isBuiltIn))
+                : ($filter === null || $filter->isAllowedType($type, $isBuiltIn));
+        }
+
+        // Cache
+        $this->allowedTypesDefinitions[$type] = $isAllowed;
 
         // Return
         return $isAllowed;
@@ -109,33 +142,48 @@ class Context {
     }
 
     public function isDirectiveAllowed(string $directive): bool {
-        // Filter?
-        $filter = $this->getSettings()->getDirectiveFilter();
-
-        if ($filter === null) {
-            return true;
+        // Cached?
+        if (isset($this->allowedDirectives[$directive])) {
+            return $this->allowedDirectives[$directive];
         }
 
         // Allowed?
-        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
-        $isAllowed = $filter->isAllowedDirective($directive, $isBuiltIn);
+        $isAllowed = true;
+        $filter    = $this->getSettings()->getDirectiveFilter();
+
+        if ($filter !== null) {
+            $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+            $isAllowed = $filter->isAllowedDirective($directive, $isBuiltIn);
+        }
+
+        // Cache
+        $this->allowedDirectives[$directive] = $isAllowed;
 
         // Return
         return $isAllowed;
     }
 
     public function isDirectiveDefinitionAllowed(string $directive): bool {
-        // Allowed?
-        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive)) {
-            return false;
+        // Cached?
+        if (isset($this->allowedDirectivesDefinitions[$directive])) {
+            return $this->allowedDirectivesDefinitions[$directive];
         }
 
-        // Definition?
-        $filter    = $this->getSettings()->getDirectiveDefinitionFilter();
-        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
-        $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedDirective($directive, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedDirective($directive, $isBuiltIn));
+        // Allowed?
+        $settings  = $this->getSettings();
+        $isAllowed = $settings->isPrintDirectiveDefinitions()
+            && $this->isDirectiveAllowed($directive);
+
+        if ($isAllowed) {
+            $filter    = $settings->getDirectiveDefinitionFilter();
+            $isBuiltIn = $this->isDirectiveBuiltIn($directive);
+            $isAllowed = $isBuiltIn
+                ? ($filter !== null && $filter->isAllowedDirective($directive, $isBuiltIn))
+                : ($filter === null || $filter->isAllowedDirective($directive, $isBuiltIn));
+        }
+
+        // Cache
+        $this->allowedDirectivesDefinitions[$directive] = $isAllowed;
 
         // Return
         return $isAllowed;
