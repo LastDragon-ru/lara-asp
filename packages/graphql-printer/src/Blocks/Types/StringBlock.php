@@ -2,16 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
-use GraphQL\Language\AST\StringValueNode;
-use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
+use function json_encode;
 use function mb_strlen;
 use function preg_match;
 use function preg_replace;
 use function str_ends_with;
 use function str_replace;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
@@ -43,12 +44,7 @@ class StringBlock extends Block {
 
         // Whitespace only? (it cannot be rendered as BlockString)
         if (preg_match('/^\h+$/u', $content)) {
-            return Printer::doPrint(
-                new StringValueNode([
-                    'value' => $content,
-                    'block' => false,
-                ]),
-            );
+            return json_encode($content, JSON_THROW_ON_ERROR);
         }
 
         // Multiline?
