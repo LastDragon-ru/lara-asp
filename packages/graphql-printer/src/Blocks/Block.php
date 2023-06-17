@@ -10,7 +10,6 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
-use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\WrappingType;
@@ -19,7 +18,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Stringable;
 
-use function array_key_exists;
 use function assert;
 use function mb_strlen;
 use function mb_strpos;
@@ -198,36 +196,11 @@ abstract class Block implements Statistics, Stringable {
     // <editor-fold desc="Types">
     // =========================================================================
     public function isTypeAllowed(string $type): bool {
-        // Filter?
-        $filter = $this->getSettings()->getTypeFilter();
-
-        if ($filter === null) {
-            return true;
-        }
-
-        // Allowed?
-        $isBuiltIn = $this->isTypeBuiltIn($type);
-        $isAllowed = $filter->isAllowedType($type, $isBuiltIn);
-
-        // Return
-        return $isAllowed;
+        return $this->getContext()->isTypeAllowed($type);
     }
 
     public function isTypeDefinitionAllowed(string $type): bool {
-        // Allowed?
-        if (!$this->isTypeAllowed($type)) {
-            return false;
-        }
-
-        // Allowed?
-        $filter    = $this->getSettings()->getTypeDefinitionFilter();
-        $isBuiltIn = $this->isTypeBuiltIn($type);
-        $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedType($type, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedType($type, $isBuiltIn));
-
-        // Return
-        return $isAllowed;
+        return $this->getContext()->isTypeDefinitionAllowed($type);
     }
 
     /**
@@ -264,49 +237,16 @@ abstract class Block implements Statistics, Stringable {
 
         return $name;
     }
-
-    protected function isTypeBuiltIn(string $type): bool {
-        return array_key_exists($type, Type::builtInTypes());
-    }
     // </editor-fold>
 
     // <editor-fold desc="Directives">
     // =========================================================================
     public function isDirectiveAllowed(string $directive): bool {
-        // Filter?
-        $filter = $this->getSettings()->getDirectiveFilter();
-
-        if ($filter === null) {
-            return true;
-        }
-
-        // Allowed?
-        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
-        $isAllowed = $filter->isAllowedDirective($directive, $isBuiltIn);
-
-        // Return
-        return $isAllowed;
+        return $this->getContext()->isDirectiveAllowed($directive);
     }
 
     public function isDirectiveDefinitionAllowed(string $directive): bool {
-        // Allowed?
-        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive)) {
-            return false;
-        }
-
-        // Definition?
-        $filter    = $this->getSettings()->getDirectiveDefinitionFilter();
-        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
-        $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedDirective($directive, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedDirective($directive, $isBuiltIn));
-
-        // Return
-        return $isAllowed;
-    }
-
-    private function isDirectiveBuiltIn(string $directive): bool {
-        return isset(GraphQLDirective::getInternalDirectives()[$directive]);
+        return $this->getContext()->isDirectiveDefinitionAllowed($directive);
     }
     // </editor-fold>
 }
