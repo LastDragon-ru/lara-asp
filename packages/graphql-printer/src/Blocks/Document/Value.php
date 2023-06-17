@@ -24,7 +24,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 /**
  * @internal
  */
-#[GraphQLAstNode(NullValueNode::class)]
 #[GraphQLAstNode(IntValueNode::class)]
 #[GraphQLAstNode(FloatValueNode::class)]
 #[GraphQLAstNode(StringValueNode::class)]
@@ -78,6 +77,8 @@ class Value extends Block {
             $content = $this->node->block
                 ? new StringBlock($context, $level, 0, $this->node->value)
                 : Printer::doPrint($this->node);
+        } elseif ($this->node instanceof NullValueNode) {
+            $content = new NullValue($context, $level, 0, $this->node);
         } elseif ($this->node instanceof VariableNode) {
             $content = new Variable($context, $level, 0, $this->node);
         } else {
