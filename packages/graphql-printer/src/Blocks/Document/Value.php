@@ -13,11 +13,16 @@ use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\AST\VariableNode;
-use GraphQL\Language\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\StringBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+
+use function json_encode;
+use function property_exists;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
@@ -42,26 +47,29 @@ class Value extends Block {
     }
 
     protected function content(): string {
-        $content = '';
         $context = $this->getContext();
         $level   = $this->getLevel();
         $used    = $this->getUsed();
-
-        if ($this->node instanceof ListValueNode) {
-            $content = new ListValue($context, $level, $used, $this->node);
-        } elseif ($this->node instanceof ObjectValueNode) {
-            $content = new ObjectValue($context, $level, $used, $this->node);
-        } elseif ($this->node instanceof StringValueNode) {
-            $content = $this->node->block
-                ? new StringBlock($context, $level, 0, $this->node->value)
-                : Printer::doPrint($this->node);
-        } elseif ($this->node instanceof NullValueNode) {
-            $content = 'null';
-        } elseif ($this->node instanceof VariableNode) {
-            $content = new Variable($context, $level, 0, $this->node);
-        } else {
-            $content = Printer::doPrint($this->node);
-        }
+        $content = match (true) {
+            $this->node instanceof ListValueNode
+                => new ListValue($context, $level, $used, $this->node),
+            $this->node instanceof ObjectValueNode
+                => new ObjectValue($context, $level, $used, $this->node),
+            $this->node instanceof StringValueNode && $this->node->block
+                => new StringBlock($context, $level, 0, $this->node->value),
+            $this->node instanceof NullValueNode
+                => 'null',
+            $this->node instanceof IntValueNode,
+            $this->node instanceof FloatValueNode,
+            $this->node instanceof EnumValueNode
+                => $this->node->value,
+            $this->node instanceof VariableNode
+                => new Variable($context, $level, 0, $this->node),
+            property_exists($this->node, 'value')
+                => json_encode($this->node->value, JSON_THROW_ON_ERROR),
+            default
+                => throw new Unsupported($this->node),
+        };
 
         return (string) $this->addUsed($content);
     }
