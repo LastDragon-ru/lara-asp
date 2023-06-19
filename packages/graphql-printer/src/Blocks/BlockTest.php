@@ -15,7 +15,6 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\SelectionSetNode;
-use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Definition\QueryPlan;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -63,7 +62,6 @@ class BlockTest extends TestCase {
 
                 // todo(graphql-printer): ExecutableDefinition support
                 //      https://github.com/LastDragon-ru/lara-asp/issues/72
-                VariableDefinitionNode::class,
                 SelectionSetNode::class,
                 FieldNode::class,
                 FragmentDefinitionNode::class,

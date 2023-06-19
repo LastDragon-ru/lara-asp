@@ -25,6 +25,7 @@ use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\AST\UnionTypeExtensionNode;
 use GraphQL\Language\AST\ValueNode;
+use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Definition\Argument as GraphQLArgument;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\EnumType;
@@ -59,6 +60,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\UnionTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\UnionTypeExtension;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Value;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\VariableDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
@@ -124,6 +126,8 @@ class Factory {
                 => new Value($context, $definition),
             $definition instanceof DocumentNode
                 => new Document($context, $definition),
+            $definition instanceof VariableDefinitionNode
+                => new VariableDefinition($context, $definition),
             default
                 => throw new Unsupported($definition),
         };
