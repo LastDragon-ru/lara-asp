@@ -128,6 +128,37 @@ class DirectiveTest extends TestCase {
                 0,
                 Parser::directive('@directive(a: "a")'),
             ],
+            'arguments indent'                  => [
+                <<<'STRING'
+                @directive(
+                    a: [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaa"
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                    b: {
+                        a: "aaaaaaaaaaaaaaaaaaaaaaaaaa"
+                        b: [
+                            "aaaaaaaaaaaaaaaaaaaaaaaaaa"
+                        ]
+                    }
+                )
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(true),
+                0,
+                120,
+                Parser::directive(
+                    <<<'STRING'
+                    @directive(
+                        a: ["aaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaa"]
+                        b: {
+                            a: "aaaaaaaaaaaaaaaaaaaaaaaaaa"
+                            b: ["aaaaaaaaaaaaaaaaaaaaaaaaaa"]
+                        }
+                    )
+                    STRING,
+                ),
+            ],
         ];
     }
     // </editor-fold>

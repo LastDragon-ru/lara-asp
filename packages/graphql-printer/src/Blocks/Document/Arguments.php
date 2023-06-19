@@ -28,7 +28,7 @@ class Arguments extends ListBlock {
             $name        = $argument->name->value;
             $this[$name] = new Argument(
                 $this->getContext(),
-                $this->getLevel() + 1,
+                $this->getLevel(),
                 $this->getUsed(),
                 $node,
                 $argument,
