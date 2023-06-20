@@ -3,14 +3,17 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Printer;
 
 use GraphQL\Language\AST\DirectiveDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver as DirectiveResolverContract;
+use Nuwave\Lighthouse\Exceptions\DirectiveException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
 
 use function array_key_exists;
 
@@ -43,47 +46,23 @@ class DirectiveResolver implements DirectiveResolverContract {
     public function getDefinition(string $name): DirectiveDefinitionNode|GraphQLDirective|null {
         if (!array_key_exists($name, $this->definitions)) {
             // Definition can also contain types but seems these types are not
-            // added to the Schema. So we need to add them (or we will get
+            // added to the Schema. So we need to add them (or we may get
             // "DefinitionException : Lighthouse failed while trying to load
             // a type XXX" error)
             $directive = null;
-            $instance  = $this->locator->resolve($name);
-            $document  = Parser::parse($instance::definition());
+            $class     = $this->getDirectiveClass($name);
 
-            foreach ($document->definitions as $definition) {
-                if ($definition instanceof DirectiveDefinitionNode) {
-                    $directive = $definition;
-                } elseif ($definition instanceof TypeDefinitionNode) {
-                    $name = $definition->getName()->value;
-                    $type = null;
+            if ($class) {
+                $document = Parser::parse($class::definition());
 
-                    if (!$this->registry->has($name)) {
-                        if ($definition instanceof ScalarTypeDefinitionNode) {
-                            // Lighthouse trying to load class for each scalar
-                            // but some of them don't have `@scalar` and we will
-                            // get "DefinitionException : Failed to find class
-                            // extends GraphQL\Type\Definition\ScalarType" error.
-                            // To avoid this we use a fake scalar.
-                            //
-                            // Maybe there is a better way?
-
-                            $type = new CustomScalarType([
-                                'name'      => $name,
-                                'astNode'   => $definition,
-                                'serialize' => static function (): mixed {
-                                    return null;
-                                },
-                            ]);
-                        } else {
-                            $type = $this->registry->handle($definition);
-                        }
+                foreach ($document->definitions as $definition) {
+                    if ($definition instanceof DirectiveDefinitionNode) {
+                        $directive = $definition;
+                    } elseif ($definition instanceof TypeDefinitionNode) {
+                        $this->registerDirectiveType($definition);
+                    } else {
+                        // empty
                     }
-
-                    if ($type) {
-                        $this->registry->register($type);
-                    }
-                } else {
-                    // empty
                 }
             }
 
@@ -99,5 +78,50 @@ class DirectiveResolver implements DirectiveResolverContract {
      */
     public function getDefinitions(): array {
         return [];
+    }
+
+    /**
+     * @return class-string<LighthouseDirective>|null
+     */
+    private function getDirectiveClass(string $name): ?string {
+        try {
+            return $this->locator->resolve($name);
+        } catch (DirectiveException) {
+            return null;
+        }
+    }
+
+    /**
+     * @param TypeDefinitionNode&Node $definition
+     */
+    private function registerDirectiveType(TypeDefinitionNode $definition): void {
+        $name = $definition->getName()->value;
+        $type = null;
+
+        if (!$this->registry->has($name)) {
+            if ($definition instanceof ScalarTypeDefinitionNode) {
+                // Lighthouse trying to load class for each scalar
+                // but some of them don't have `@scalar` and we will
+                // get "DefinitionException : Failed to find class
+                // extends GraphQL\Type\Definition\ScalarType" error.
+                // To avoid this we use a fake scalar.
+                //
+                // Maybe there is a better way?
+
+                $type = new CustomScalarType([
+                    'name'      => $name,
+                    'astNode'   => $definition,
+                    'serialize' => static function (): mixed {
+                        return null;
+                    },
+                ]);
+            } else {
+                $type = $this->registry->handle($definition);
+            }
+        }
+
+        if ($type) {
+            $this->registry->register($type);
+        }
     }
 }
