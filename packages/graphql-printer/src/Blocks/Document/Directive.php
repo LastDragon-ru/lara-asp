@@ -2,7 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
@@ -62,7 +66,7 @@ class Directive extends Block implements NamedBlock {
     }
 
     /**
-     * @return array<string, Type>
+     * @return array<string, (TypeNode&Node)|Type>
      */
     private function getTypes(): array {
         // Arguments?
@@ -76,8 +80,16 @@ class Directive extends Block implements NamedBlock {
         $directive  = $this->getDefinition()->name->value;
         $definition = $this->getContext()->getDirective($directive);
 
-        foreach ($definition->args ?? [] as $arg) {
-            $types[$arg->name] = $arg->getType();
+        if ($definition instanceof DirectiveDefinitionNode) {
+            foreach ($definition->arguments as $argument) {
+                $types[$argument->name->value] = $argument->type;
+            }
+        } elseif ($definition instanceof GraphQLDirective) {
+            foreach ($definition->args as $arg) {
+                $types[$arg->name] = $arg->getType();
+            }
+        } else {
+            // empty
         }
 
         return $types;
