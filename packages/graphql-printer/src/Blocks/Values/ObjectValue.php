@@ -28,7 +28,7 @@ class ObjectValue extends ListBlock {
 
         foreach ($definition->fields as $field) {
             $name = $field->name->value;
-            $type = $this->getFieldType($this->type, $name);
+            $type = $this->getField($this->type, $name)?->getType();
 
             $this[$name] = new ObjectField(
                 $context,

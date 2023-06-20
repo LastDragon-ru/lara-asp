@@ -12,7 +12,9 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\HasFieldsType;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
@@ -261,25 +263,25 @@ class Context {
     }
     // </editor-fold>
 
-    // <editor-fold desc="Helpers">
+    // <editor-fold desc="Fields">
     // =========================================================================
     /**
      * @param (TypeNode&Node)|Type $object
      */
-    public function getFieldType(TypeNode|Type $object, string $field): ?Type {
-        $type       = null;
-        $name       = $this->getTypeName($object);
-        $definition = $this->getType($name);
+    public function getField(TypeNode|Type $object, string $name): InputObjectField|FieldDefinition|null {
+        $field      = null;
+        $type       = $this->getTypeName($object);
+        $definition = $this->getType($type);
 
         if ($definition instanceof HasFieldsType || $definition instanceof InputObjectType) {
-            $type = $definition->findField($field)?->getType();
+            $field = $definition->findField($name);
         }
 
-        if ($this->getSchema() && !$type) {
-            throw new FieldNotFound($name, $field);
+        if ($this->getSchema() && !$field) {
+            throw new FieldNotFound($type, $name);
         }
 
-        return $type;
+        return $field;
     }
     // </editor-fold>
 }

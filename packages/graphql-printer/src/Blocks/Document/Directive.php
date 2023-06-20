@@ -54,7 +54,7 @@ class Directive extends Block implements NamedBlock {
                 $this->getLevel(),
                 $this->getUsed() + $used,
                 $node->arguments,
-                $this->getTypes(),
+                $this->getArgumentsTypes(),
             ),
         );
 
@@ -68,7 +68,7 @@ class Directive extends Block implements NamedBlock {
     /**
      * @return array<string, (TypeNode&Node)|Type>
      */
-    private function getTypes(): array {
+    private function getArgumentsTypes(): array {
         // Arguments?
         if (count($this->getDefinition()->arguments) <= 0) {
             return [];

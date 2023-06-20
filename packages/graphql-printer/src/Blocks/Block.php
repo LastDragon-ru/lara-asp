@@ -6,6 +6,8 @@ use Closure;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
@@ -215,9 +217,9 @@ abstract class Block implements Statistics, Stringable {
     /**
      * @param (TypeNode&Node)|Type|null $object
      */
-    public function getFieldType(TypeNode|Type|null $object, string $field): ?Type {
+    public function getField(TypeNode|Type|null $object, string $field): InputObjectField|FieldDefinition|null {
         return $object
-            ? $this->getContext()->getFieldType($object, $field)
+            ? $this->getContext()->getField($object, $field)
             : null;
     }
     // </editor-fold>
