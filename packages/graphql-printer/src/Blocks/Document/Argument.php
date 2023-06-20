@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ArgumentNode;
-use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
@@ -19,8 +19,8 @@ class Argument extends Block implements NamedBlock {
         Context $context,
         int $level,
         int $used,
-        private DirectiveNode $node,
         private ArgumentNode $argument,
+        private ?Type $type = null,
     ) {
         parent::__construct($context, $level, $used);
     }
@@ -29,8 +29,8 @@ class Argument extends Block implements NamedBlock {
         return $this->getArgument()->name->value;
     }
 
-    public function getNode(): DirectiveNode {
-        return $this->node;
+    public function getType(): ?Type {
+        return $this->type;
     }
 
     public function getArgument(): ArgumentNode {
@@ -39,24 +39,8 @@ class Argument extends Block implements NamedBlock {
 
     protected function content(): string {
         // Print?
-        if ($this->getSettings()->getTypeFilter()) {
-            // AST Node doesn't contain type of argument, but it can be
-            // determined by directive definition.
-            $directive  = $this->getNode()->name->value;
-            $definition = $this->getContext()->getDirective($directive);
-            $name       = $this->getName();
-            $type       = null;
-
-            foreach ($definition->args ?? [] as $arg) {
-                if ($arg->name === $name) {
-                    $type = $arg->getType();
-                    break;
-                }
-            }
-
-            if ($type && !$this->isTypeAllowed($this->getTypeName($type))) {
-                return '';
-            }
+        if ($this->getType() && !$this->isTypeAllowed($this->getTypeName($this->getType()))) {
+            return '';
         }
 
         // Convert
