@@ -45,7 +45,7 @@ class ArgumentTest extends TestCase {
         $block    = new Argument($context, 0, 0, $argument, Type::int());
 
         self::assertNotEmpty((string) $block);
-        self::assertEquals([], $block->getUsedTypes());
+        self::assertEquals(['Int' => 'Int'], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
     }
     // </editor-fold>
@@ -59,7 +59,7 @@ class ArgumentTest extends TestCase {
         $settings = new TestSettings();
 
         return [
-            'directive: argument'              => [
+            'argument'          => [
                 <<<'STRING'
                 c: {
                         a: 123
@@ -71,7 +71,7 @@ class ArgumentTest extends TestCase {
                 Parser::argument('c: {a: 123}'),
                 null,
             ],
-            'directive: argument (level)'      => [
+            'argument (level)'  => [
                 <<<'STRING'
                 c: {
                             a: 123
@@ -83,7 +83,7 @@ class ArgumentTest extends TestCase {
                 Parser::argument('c: {a: 123}'),
                 null,
             ],
-            'directive: TypeFilter => false'   => [
+            'filter => false'   => [
                 '',
                 $settings
                     ->setTypeFilter(static fn (string $name) => $name !== Type::INT),
@@ -92,7 +92,7 @@ class ArgumentTest extends TestCase {
                 Parser::argument('a: 123'),
                 Type::int(),
             ],
-            'directive: TypeFilter => true'    => [
+            'filter => true'    => [
                 'b: "abc"',
                 $settings
                     ->setTypeFilter(static fn (string $name) => $name !== Type::INT),
@@ -101,7 +101,7 @@ class ArgumentTest extends TestCase {
                 Parser::argument('b: "abc"'),
                 Type::string(),
             ],
-            'directive: TypeFilter => unknown' => [
+            'filter => unknown' => [
                 'c: "abc"',
                 $settings
                     ->setTypeFilter(static fn (string $name) => $name !== Type::INT),

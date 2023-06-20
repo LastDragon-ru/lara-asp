@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ArgumentNode;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
@@ -15,12 +17,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
  */
 #[GraphQLAstNode(ArgumentNode::class)]
 class Argument extends Block implements NamedBlock {
+    /**
+     * @param (TypeNode&Node)|Type|null $type
+     */
     public function __construct(
         Context $context,
         int $level,
         int $used,
         private ArgumentNode $argument,
-        private ?Type $type = null,
+        private TypeNode|Type|null $type = null,
     ) {
         parent::__construct($context, $level, $used);
     }
@@ -29,7 +34,10 @@ class Argument extends Block implements NamedBlock {
         return $this->getArgument()->name->value;
     }
 
-    public function getType(): ?Type {
+    /**
+     * @return (TypeNode&Node)|Type|null
+     */
+    public function getType(): TypeNode|Type|null {
         return $this->type;
     }
 
@@ -39,7 +47,11 @@ class Argument extends Block implements NamedBlock {
 
     protected function content(): string {
         // Print?
-        if ($this->getType() && !$this->isTypeAllowed($this->getTypeName($this->getType()))) {
+        $type = $this->getType()
+            ? $this->getTypeName($this->getType())
+            : null;
+
+        if ($type && !$this->isTypeAllowed($type)) {
             return '';
         }
 
@@ -58,6 +70,11 @@ class Argument extends Block implements NamedBlock {
                 ),
             ),
         );
+
+        // Statistics
+        if ($type) {
+            $this->addUsedType($type);
+        }
 
         // Return
         return "{$property}";

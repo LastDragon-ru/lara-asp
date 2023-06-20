@@ -3,8 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\DirectiveLocation as GraphQLDirectiveLocation;
 use GraphQL\Language\Parser;
-use GraphQL\Language\Printer;
+use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -27,36 +31,82 @@ class DirectiveTest extends TestCase {
         int $level,
         int $used,
         DirectiveNode $node,
+        ?GraphQLDirective $directive,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (string) (new Directive($context, $level, $used, $node));
-        $parsed  = Parser::directive($actual);
+        $resolver = $directive ? $this->getDirectiveResolver($directive) : null;
+        $context  = new Context($settings, $resolver, null);
+        $actual   = (string) (new Directive($context, $level, $used, $node));
+
+        if ($expected) {
+            Parser::directive($actual);
+        }
 
         self::assertEquals($expected, $actual);
-
-        if (!$settings->isNormalizeArguments()) {
-            self::assertEquals(
-                Printer::doPrint($node),
-                Printer::doPrint($parsed),
-            );
-        }
     }
 
     public function testStatistics(): void {
-        $context = new Context(new TestSettings(), null, null);
-        $node    = Parser::directive('@test');
-        $block   = new Directive($context, 0, 0, $node);
+        $directive = new GraphQLDirective([
+            'name'      => 'test',
+            'args'      => [
+                'a' => [
+                    'type' => new InputObjectType([
+                        'name'   => 'A',
+                        'fields' => [
+                            'a' => [
+                                'type' => Type::string(),
+                            ],
+                        ],
+                    ]),
+                ],
+                'b' => [
+                    'type' => Type::string(),
+                ],
+            ],
+            'locations' => [
+                GraphQLDirectiveLocation::FIELD,
+            ],
+        ]);
+        $resolver  = $this->getDirectiveResolver($directive);
+        $context   = new Context(new TestSettings(), $resolver, null);
+        $node      = Parser::directive('@test(a: 123, b: "b")');
+        $block     = new Directive($context, 0, 0, $node);
 
         self::assertNotEmpty((string) $block);
-        self::assertEquals([], $block->getUsedTypes());
+        self::assertEquals(['A' => 'A', 'String' => 'String'], $block->getUsedTypes());
         self::assertEquals(['@test' => '@test'], $block->getUsedDirectives());
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =========================================================================
+    private function getDirectiveResolver(GraphQLDirective $directive): DirectiveResolver {
+        return new class($directive) implements DirectiveResolver {
+            public function __construct(
+                protected GraphQLDirective $directive,
+            ) {
+                // empty
+            }
+
+            public function getDefinition(string $name): ?GraphQLDirective {
+                return $this->directive->name === $name
+                    ? $this->directive
+                    : null;
+            }
+
+            /**
+             * @inheritDoc
+             */
+            public function getDefinitions(): array {
+                return [];
+            }
+        };
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DirectiveNode}>
+     * @return array<string,array{string, Settings, int, int, DirectiveNode, ?GraphQLDirective}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -70,6 +120,7 @@ class DirectiveTest extends TestCase {
                 0,
                 0,
                 Parser::directive('@directive'),
+                null,
             ],
             'without arguments (level)'         => [
                 '@directive',
@@ -77,6 +128,7 @@ class DirectiveTest extends TestCase {
                 0,
                 0,
                 Parser::directive('@directive'),
+                null,
             ],
             'with arguments (short)'            => [
                 '@directive(a: "a", b: "b")',
@@ -84,6 +136,7 @@ class DirectiveTest extends TestCase {
                 0,
                 0,
                 Parser::directive('@directive(a: "a", b: "b")'),
+                null,
             ],
             'with arguments (long)'             => [
                 <<<'STRING'
@@ -96,6 +149,7 @@ class DirectiveTest extends TestCase {
                 0,
                 120,
                 Parser::directive('@directive(b: "b", a: "a")'),
+                null,
             ],
             'with arguments (normalized)'       => [
                 '@directive(a: "a", b: "b")',
@@ -103,6 +157,7 @@ class DirectiveTest extends TestCase {
                 0,
                 0,
                 Parser::directive('@directive(b: "b", a: "a")'),
+                null,
             ],
             'with arguments (indent)'           => [
                 <<<'STRING'
@@ -115,6 +170,7 @@ class DirectiveTest extends TestCase {
                 1,
                 120,
                 Parser::directive('@directive(b: "b", a: "a")'),
+                null,
             ],
             'with arguments (always multiline)' => [
                 <<<'STRING'
@@ -127,6 +183,7 @@ class DirectiveTest extends TestCase {
                 0,
                 0,
                 Parser::directive('@directive(a: "a")'),
+                null,
             ],
             'arguments indent'                  => [
                 <<<'STRING'
@@ -158,6 +215,49 @@ class DirectiveTest extends TestCase {
                     )
                     STRING,
                 ),
+                null,
+            ],
+            'filter: directive'                 => [
+                '',
+                $settings
+                    ->setDirectiveFilter(static fn () => false),
+                0,
+                0,
+                Parser::directive(
+                    '@directive',
+                ),
+                null,
+            ],
+            'filter: type'                      => [
+                <<<'STRING'
+                @directive(
+                    a: 123
+                )
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(true)
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'String';
+                    }),
+                0,
+                0,
+                Parser::directive(
+                    '@directive(a: 123, b: "b")',
+                ),
+                new GraphQLDirective([
+                    'name'      => 'directive',
+                    'args'      => [
+                        'a' => [
+                            'type' => Type::int(),
+                        ],
+                        'b' => [
+                            'type' => Type::string(),
+                        ],
+                    ],
+                    'locations' => [
+                        GraphQLDirectiveLocation::FIELD,
+                    ],
+                ]),
             ],
         ];
     }

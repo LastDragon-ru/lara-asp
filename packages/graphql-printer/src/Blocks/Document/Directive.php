@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
+use function count;
 use function mb_strlen;
 
 /**
@@ -64,13 +65,13 @@ class Directive extends Block implements NamedBlock {
      * @return array<string, Type>
      */
     private function getTypes(): array {
-        // Types needed only if Filter defined
-        if (!$this->getSettings()->getTypeFilter()) {
+        // Arguments?
+        if (count($this->getDefinition()->arguments) <= 0) {
             return [];
         }
 
         // AST Node doesn't contain type of argument, but it can be
-        // determined by directive definition.
+        // determined by Directive definition.
         $types      = [];
         $directive  = $this->getDefinition()->name->value;
         $definition = $this->getContext()->getDirective($directive);
