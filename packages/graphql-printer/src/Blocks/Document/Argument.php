@@ -3,7 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ArgumentNode;
-use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
@@ -15,12 +17,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
  */
 #[GraphQLAstNode(ArgumentNode::class)]
 class Argument extends Block implements NamedBlock {
+    /**
+     * @param (TypeNode&Node)|Type|null $type
+     */
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        private DirectiveNode $node,
         private ArgumentNode $argument,
+        private TypeNode|Type|null $type = null,
     ) {
         parent::__construct($context, $level, $used);
     }
@@ -29,8 +34,11 @@ class Argument extends Block implements NamedBlock {
         return $this->getArgument()->name->value;
     }
 
-    public function getNode(): DirectiveNode {
-        return $this->node;
+    /**
+     * @return (TypeNode&Node)|Type|null
+     */
+    public function getType(): TypeNode|Type|null {
+        return $this->type;
     }
 
     public function getArgument(): ArgumentNode {
@@ -39,24 +47,12 @@ class Argument extends Block implements NamedBlock {
 
     protected function content(): string {
         // Print?
-        if ($this->getSettings()->getTypeFilter()) {
-            // AST Node doesn't contain type of argument, but it can be
-            // determined by directive definition.
-            $directive  = $this->getNode()->name->value;
-            $definition = $this->getContext()->getDirective($directive);
-            $name       = $this->getName();
-            $type       = null;
+        $type = $this->getType()
+            ? $this->getTypeName($this->getType())
+            : null;
 
-            foreach ($definition->args ?? [] as $arg) {
-                if ($arg->name === $name) {
-                    $type = $arg->getType();
-                    break;
-                }
-            }
-
-            if ($type && !$this->isTypeAllowed($this->getTypeName($type))) {
-                return '';
-            }
+        if ($type && !$this->isTypeAllowed($type)) {
+            return '';
         }
 
         // Convert
@@ -74,6 +70,11 @@ class Argument extends Block implements NamedBlock {
                 ),
             ),
         );
+
+        // Statistics
+        if ($type) {
+            $this->addUsedType($type);
+        }
 
         // Return
         return "{$property}";

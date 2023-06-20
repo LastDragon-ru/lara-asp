@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
+use GraphQL\Language\AST\DirectiveDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
@@ -160,8 +162,12 @@ class Printer implements SchemaPrinterContract {
 
         if ($context->getSettings()->isPrintDirectiveDefinitions()) {
             foreach ($context->getDirectives() as $directive) {
-                if (!isset($blocks[$directive->name])) {
-                    $blocks[$directive->name] = $this->getDefinitionBlock($context, $directive);
+                $name = $directive instanceof DirectiveDefinitionNode
+                    ? $directive->name->value
+                    : $directive->name;
+
+                if (!isset($blocks[$name])) {
+                    $blocks[$name] = $this->getDefinitionBlock($context, $directive);
                 }
             }
         }
@@ -172,7 +178,7 @@ class Printer implements SchemaPrinterContract {
 
     protected function getDefinitionBlock(
         Context $context,
-        Schema|Type|GraphQLDirective $definition,
+        Schema|Type|GraphQLDirective|Node $definition,
     ): Block {
         return new PrintableBlock($context, $this->getLevel(), $definition);
     }

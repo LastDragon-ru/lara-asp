@@ -3,12 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ArgumentNode;
-use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\DirectiveLocation;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -30,32 +26,11 @@ class ArgumentTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        Directive $directive,
-        DirectiveNode $directiveNode,
         ArgumentNode $argumentNode,
+        ?Type $argumentType,
     ): void {
-        $resolver = new class($directive) implements DirectiveResolver {
-            public function __construct(
-                private Directive $directive,
-            ) {
-                // empty
-            }
-
-            public function getDefinition(string $name): ?Directive {
-                return $this->directive->name === $name
-                    ? $this->directive
-                    : null;
-            }
-
-            /**
-             * @inheritDoc
-             */
-            public function getDefinitions(): array {
-                return [$this->directive];
-            }
-        };
-        $context  = new Context($settings, $resolver, null);
-        $actual   = (string) (new Argument($context, $level, $used, $directiveNode, $argumentNode));
+        $context = new Context($settings, null, null);
+        $actual  = (string) (new Argument($context, $level, $used, $argumentNode, $argumentType));
 
         if ($expected) {
             Parser::argument($actual);
@@ -65,13 +40,12 @@ class ArgumentTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $context   = new Context(new TestSettings(), null, null);
-        $directive = Parser::directive('@test');
-        $argument  = Parser::argument('test: 123');
-        $block     = new Argument($context, 0, 0, $directive, $argument);
+        $context  = new Context(new TestSettings(), null, null);
+        $argument = Parser::argument('test: 123');
+        $block    = new Argument($context, 0, 0, $argument, Type::int());
 
         self::assertNotEmpty((string) $block);
-        self::assertEquals([], $block->getUsedTypes());
+        self::assertEquals(['Int' => 'Int'], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
     }
     // </editor-fold>
@@ -79,29 +53,13 @@ class ArgumentTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, Directive, DirectiveNode, ArgumentNode}>
+     * @return array<string,array{string, Settings, int, int, ArgumentNode, ?Type}>
      */
     public static function dataProviderToString(): array {
-        $settings      = new TestSettings();
-        $directive     = new Directive([
-            'name'        => 'test',
-            'description' => 'Description',
-            'locations'   => [
-                DirectiveLocation::ARGUMENT_DEFINITION,
-            ],
-            'args'        => [
-                'a' => [
-                    'type' => Type::int(),
-                ],
-                'b' => [
-                    'type' => Type::string(),
-                ],
-            ],
-        ]);
-        $directiveNode = Parser::directive('@test');
+        $settings = new TestSettings();
 
         return [
-            'directive: argument'              => [
+            'argument'          => [
                 <<<'STRING'
                 c: {
                         a: 123
@@ -110,11 +68,10 @@ class ArgumentTest extends TestCase {
                 $settings,
                 0,
                 0,
-                $directive,
-                $directiveNode,
                 Parser::argument('c: {a: 123}'),
+                null,
             ],
-            'directive: argument (level)'      => [
+            'argument (level)'  => [
                 <<<'STRING'
                 c: {
                             a: 123
@@ -123,39 +80,35 @@ class ArgumentTest extends TestCase {
                 $settings,
                 1,
                 0,
-                $directive,
-                $directiveNode,
                 Parser::argument('c: {a: 123}'),
+                null,
             ],
-            'directive: TypeFilter => false'   => [
+            'filter => false'   => [
                 '',
                 $settings
                     ->setTypeFilter(static fn (string $name) => $name !== Type::INT),
                 0,
                 0,
-                $directive,
-                $directiveNode,
                 Parser::argument('a: 123'),
+                Type::int(),
             ],
-            'directive: TypeFilter => true'    => [
+            'filter => true'    => [
                 'b: "abc"',
                 $settings
                     ->setTypeFilter(static fn (string $name) => $name !== Type::INT),
                 0,
                 0,
-                $directive,
-                $directiveNode,
                 Parser::argument('b: "abc"'),
+                Type::string(),
             ],
-            'directive: TypeFilter => unknown' => [
+            'filter => unknown' => [
                 'c: "abc"',
                 $settings
                     ->setTypeFilter(static fn (string $name) => $name !== Type::INT),
                 0,
                 0,
-                $directive,
-                $directiveNode,
                 Parser::argument('c: "abc"'),
+                null,
             ],
         ];
     }

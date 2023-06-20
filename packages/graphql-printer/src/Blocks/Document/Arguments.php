@@ -3,7 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ArgumentNode;
-use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
@@ -13,14 +15,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
  */
 class Arguments extends ListBlock {
     /**
-     * @param iterable<ArgumentNode> $arguments
+     * @param iterable<ArgumentNode>              $arguments
+     * @param array<string, (TypeNode&Node)|Type> $types
      */
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        DirectiveNode $node,
         iterable $arguments,
+        array $types = null,
     ) {
         parent::__construct($context, $level, $used);
 
@@ -30,8 +33,8 @@ class Arguments extends ListBlock {
                 $this->getContext(),
                 $this->getLevel(),
                 $this->getUsed(),
-                $node,
                 $argument,
+                $types[$name] ?? null,
             );
         }
     }

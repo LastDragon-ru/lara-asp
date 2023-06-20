@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
 
+use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\NamedType;
@@ -127,7 +128,7 @@ class Context {
     // <editor-fold desc="Directives">
     // =========================================================================
     /**
-     * @return array<array-key, Directive>
+     * @return array<array-key, DirectiveDefinitionNode|Directive>
      */
     public function getDirectives(): array {
         return array_merge(
@@ -136,7 +137,7 @@ class Context {
         );
     }
 
-    public function getDirective(string $name): ?Directive {
+    public function getDirective(string $name): DirectiveDefinitionNode|Directive|null {
         return $this->getSchema()?->getDirective($name)
             ?? $this->getDirectiveResolver()?->getDefinition($name);
     }
