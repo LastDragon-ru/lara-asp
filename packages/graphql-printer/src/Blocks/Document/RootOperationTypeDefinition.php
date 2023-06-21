@@ -27,7 +27,7 @@ class RootOperationTypeDefinition extends Type {
     protected function content(): string {
         $content = '';
 
-        if ($this->isTypeAllowed($this->getTypeName($this->getDefinition()))) {
+        if ($this->isTypeAllowed($this->getDefinition())) {
             $content = parent::content();
             $content = "{$this->getOperation()}:{$this->space()}{$content}";
         }

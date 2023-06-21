@@ -1,7 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 
+use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -14,8 +15,8 @@ use function implode;
 /**
  * @internal
  */
-#[CoversClass(Description::class)]
-class DescriptionTest extends TestCase {
+#[CoversClass(StringValue::class)]
+class StringValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -26,77 +27,49 @@ class DescriptionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        ?string $description,
+        string $string,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new Description($context, $level, $used, $description));
+        $actual  = (string) new StringValue($context, $level, $used, $string);
+        $parsed  = Parser::valueLiteral($actual);
 
+        self::assertInstanceOf(StringValueNode::class, $parsed);
         self::assertEquals($expected, $actual);
-
-        if ($expected) {
-            Parser::valueLiteral($actual);
-        }
+        self::assertEquals($string, $parsed->value);
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, ?string}>
+     * @return array<string,array{string, Settings, int, int, string}>
      */
     public static function dataProviderToString(): array {
-        $settings = (new TestSettings())
-            ->setAlwaysMultilineArguments(false)
-            ->setNormalizeDescription(false);
+        $settings = new TestSettings();
 
         return [
-            'null'                                                     => [
-                '',
-                $settings,
-                0,
-                0,
-                null,
-            ],
-            'Prints an empty string'                                   => [
-                '',
+            'Prints an empty string'                => [
+                '""""""',
                 $settings,
                 0,
                 0,
                 '',
             ],
-            'Prints an empty string (normalized)'                      => [
-                '',
-                $settings->setNormalizeDescription(true),
-                0,
-                0,
-                '',
-            ],
-            'Prints an empty string with only whitespace'              => [
+            'Prints an string with only whitespace' => [
                 '" "',
                 $settings,
                 0,
                 0,
                 ' ',
             ],
-            'Prints an empty string with only whitespace (normalized)' => [
-                '',
-                $settings->setNormalizeDescription(true),
-                0,
-                0,
-                ' ',
-            ],
-            'One-line prints a short string'                           => [
-                <<<'STRING'
-                """
-                Short string
-                """
-                STRING,
+            'One-line prints a short string'        => [
+                '"""Short string"""',
                 $settings,
                 0,
                 0,
                 'Short string',
             ],
-            'One-line prints a long string'                            => [
+            'One-line prints a long string'         => [
                 <<<'STRING'
                 """
                 Long string
@@ -107,20 +80,16 @@ class DescriptionTest extends TestCase {
                 0,
                 'Long string',
             ],
-            'String is short (indent)'                                 => [
+            'String is short (indent)'              => [
                 <<<'STRING'
-                """
-                    string
-                    """
+                """string"""
                 STRING,
-                $settings
-                    ->setIndent('  ')
-                    ->setLineLength(2),
+                $settings->setLineLength(21),
                 2,
                 0,
                 'string',
             ],
-            'String is long (indent)'                                  => [
+            'String is long (indent)'               => [
                 <<<'STRING'
                 """
                     string
@@ -133,13 +102,11 @@ class DescriptionTest extends TestCase {
                 20,
                 'string',
             ],
-            'Multi-line string'                                        => [
+            'Multi-line string'                     => [
                 <<<'STRING'
                 """
                 aaa
                   bbb
-
-
 
                 ccc
                 """
@@ -151,32 +118,10 @@ class DescriptionTest extends TestCase {
                 aaa
                   bbb
 
-
-
                 ccc
                 STRING,
             ],
-            'Multi-line string (normalized)'                           => [
-                <<<'STRING'
-                """
-                aaa
-                  bbb
-
-                ccc
-                """
-                STRING,
-                $settings->setNormalizeDescription(true),
-                0,
-                0,
-                <<<'STRING'
-                aaa
-                  bbb
-
-
-                ccc
-                STRING,
-            ],
-            'Leading space'                                            => [
+            'Leading space'                         => [
                 <<<'STRING'
                 """  Leading space"""
                 STRING,
@@ -185,14 +130,21 @@ class DescriptionTest extends TestCase {
                 0,
                 '  Leading space',
             ],
-            'Leading tab'                                              => [
+            'Leading tab'                           => [
                 "\"\"\"\tLeading tab\"\"\"",
                 $settings,
                 0,
                 0,
                 "\tLeading tab",
             ],
-            'Trailing "'                                               => [
+            'Leading whitespace (single line)'      => [
+                "\"\"\"\tLeading tab\"\"\"",
+                $settings->setLineLength(1),
+                0,
+                0,
+                "\tLeading tab",
+            ],
+            'Trailing "'                            => [
                 <<<'STRING'
                 """
                 Trailing "
@@ -203,7 +155,7 @@ class DescriptionTest extends TestCase {
                 0,
                 'Trailing "',
             ],
-            'Leading whitespace and trailing "'                        => [
+            'Leading whitespace and trailing "'     => [
                 <<<'STRING'
                 """
                   Leading whitespace and trailing "
@@ -218,7 +170,7 @@ class DescriptionTest extends TestCase {
                 abc
                 STRING,
             ],
-            'Trailing backslash'                                       => [
+            'Trailing backslash'                    => [
                 <<<'STRING'
                 """
                 Trailing \\
@@ -229,18 +181,16 @@ class DescriptionTest extends TestCase {
                 0,
                 'Trailing \\\\',
             ],
-            'Escape wrapper'                                           => [
+            'Escape wrapper'                        => [
                 <<<'STRING'
-                """
-                String with \""" wrapper
-                """
+                """String with \""" wrapper"""
                 STRING,
                 $settings,
                 0,
                 0,
                 'String with """ wrapper',
             ],
-            'Indent'                                                   => [
+            'Indent'                                => [
                 implode(
                     "\n",
                     [
@@ -255,37 +205,6 @@ class DescriptionTest extends TestCase {
                     ],
                 ),
                 $settings->setIndent('  '),
-                2,
-                0,
-                implode(
-                    "\n",
-                    [
-                        '    aaa',
-                        '',
-                        '  bbb  ',
-                        'ccc    ',
-                        '  ',
-                        '  ddd  ',
-                    ],
-                ),
-            ],
-            'Indent (normalized)'                                      => [
-                implode(
-                    "\n",
-                    [
-                        '"""',
-                        '        aaa',
-                        '',
-                        '      bbb',
-                        '    ccc',
-                        '',
-                        '      ddd',
-                        '    """',
-                    ],
-                ),
-                $settings
-                    ->setIndent('  ')
-                    ->setNormalizeDescription(true),
                 2,
                 0,
                 implode(

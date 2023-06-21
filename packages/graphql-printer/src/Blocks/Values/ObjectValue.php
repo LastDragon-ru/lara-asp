@@ -1,41 +1,41 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 
-use GraphQL\Language\AST\ObjectFieldNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectValueNode;
-use GraphQL\Language\AST\StringValueNode;
+use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
 /**
  * @internal
- * @extends ListBlock<PropertyBlock<Value>>
+ * @extends ListBlock<ObjectField>
  */
-#[GraphQLAstNode(ObjectValueNode::class)]
-#[GraphQLAstNode(ObjectFieldNode::class)]
 class ObjectValue extends ListBlock {
+    /**
+     * @param (TypeNode&Node)|Type|null $type
+     */
     public function __construct(
         Context $context,
         int $level,
         int $used,
         ObjectValueNode $definition,
+        protected TypeNode|Type|null $type = null,
     ) {
         parent::__construct($context, $level, $used);
 
         foreach ($definition->fields as $field) {
-            $name        = $field->name->value;
-            $this[$name] = new PropertyBlock(
+            $name = $field->name->value;
+            $type = $this->getFieldType($this->type, $name);
+
+            $this[$name] = new ObjectField(
                 $context,
-                $name,
-                new Value(
-                    $context,
-                    $level + 1 + (int) ($field->value instanceof StringValueNode),
-                    $used,
-                    $field->value,
-                ),
+                $level,
+                $used,
+                $field,
+                $type,
             );
         }
     }

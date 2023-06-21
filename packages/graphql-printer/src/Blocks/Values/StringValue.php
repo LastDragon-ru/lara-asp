@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -17,7 +17,7 @@ use const JSON_THROW_ON_ERROR;
 /**
  * @internal
  */
-class StringBlock extends Block {
+class StringValue extends Block {
     public function __construct(
         Context $context,
         int $level,

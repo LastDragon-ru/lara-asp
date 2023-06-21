@@ -3,16 +3,28 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
 
 use GraphQL\Language\AST\DirectiveDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NameNode;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\HasFieldsType;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
 
 use function array_key_exists;
 use function array_merge;
+use function assert;
 
 /**
  * @internal
@@ -123,6 +135,41 @@ class Context {
     protected function isTypeBuiltIn(string $type): bool {
         return array_key_exists($type, Type::builtInTypes());
     }
+
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type
+     */
+    public function getTypeName(TypeDefinitionNode|TypeNode|Type $type): string {
+        $name = null;
+
+        if ($type instanceof WrappingType) {
+            $type = $type->getInnermostType();
+        }
+
+        if ($type instanceof NamedType) {
+            $name = $type->name();
+        } elseif ($type instanceof TypeDefinitionNode) {
+            $name = $type->getName()->value;
+        } elseif ($type instanceof Node) {
+            $name = match (true) {
+                $type instanceof ListTypeNode,
+                $type instanceof NonNullTypeNode
+                    => $this->getTypeName($type->type),
+                $type instanceof NamedTypeNode
+                    => $this->getTypeName($type->name),
+                $type instanceof NameNode
+                    => $type->value,
+                default
+                    => null,
+            };
+        } else {
+            // empty
+        }
+
+        assert($name !== null);
+
+        return $name;
+    }
     // </editor-fold>
 
     // <editor-fold desc="Directives">
@@ -192,6 +239,28 @@ class Context {
 
     protected function isDirectiveBuiltIn(string $directive): bool {
         return isset(GraphQLDirective::getInternalDirectives()[$directive]);
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =========================================================================
+    /**
+     * @param (TypeNode&Node)|Type $object
+     */
+    public function getFieldType(TypeNode|Type $object, string $field): ?Type {
+        $type       = null;
+        $name       = $this->getTypeName($object);
+        $definition = $this->getType($name);
+
+        if ($definition instanceof HasFieldsType || $definition instanceof InputObjectType) {
+            $type = $definition->findField($field)?->getType();
+        }
+
+        if ($this->getSchema() && !$type) {
+            throw new FieldNotFound($name, $field);
+        }
+
+        return $type;
     }
     // </editor-fold>
 }

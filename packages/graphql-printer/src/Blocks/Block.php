@@ -3,22 +3,16 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use Closure;
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
-use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Stringable;
 
-use function assert;
+use function is_object;
 use function mb_strlen;
 use function mb_strpos;
 use function str_repeat;
@@ -195,47 +189,36 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    public function isTypeAllowed(string $type): bool {
-        return $this->getContext()->isTypeAllowed($type);
-    }
-
-    public function isTypeDefinitionAllowed(string $type): bool {
-        return $this->getContext()->isTypeDefinitionAllowed($type);
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type
+     */
+    public function isTypeAllowed(TypeDefinitionNode|TypeNode|Type|string|null $type): bool {
+        return $type === null || $this->getContext()->isTypeAllowed($this->getTypeName($type));
     }
 
     /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type
      */
-    protected function getTypeName(TypeDefinitionNode|TypeNode|Type $type): string {
-        $name = null;
+    public function isTypeDefinitionAllowed(TypeDefinitionNode|TypeNode|Type|string|null $type): bool {
+        return $type === null || $this->getContext()->isTypeDefinitionAllowed($this->getTypeName($type));
+    }
 
-        if ($type instanceof WrappingType) {
-            $type = $type->getInnermostType();
-        }
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type
+     */
+    protected function getTypeName(TypeDefinitionNode|TypeNode|Type|string $type): string {
+        return is_object($type)
+            ? $this->getContext()->getTypeName($type)
+            : $type;
+    }
 
-        if ($type instanceof NamedType) {
-            $name = $type->name();
-        } elseif ($type instanceof TypeDefinitionNode) {
-            $name = $type->getName()->value;
-        } elseif ($type instanceof Node) {
-            $name = match (true) {
-                $type instanceof ListTypeNode,
-                $type instanceof NonNullTypeNode
-                    => $this->getTypeName($type->type),
-                $type instanceof NamedTypeNode
-                    => $this->getTypeName($type->name),
-                $type instanceof NameNode
-                    => $type->value,
-                default
-                    => null,
-            };
-        } else {
-            // empty
-        }
-
-        assert($name !== null);
-
-        return $name;
+    /**
+     * @param (TypeNode&Node)|Type|null $object
+     */
+    public function getFieldType(TypeNode|Type|null $object, string $field): ?Type {
+        return $object
+            ? $this->getContext()->getFieldType($object, $field)
+            : null;
     }
     // </editor-fold>
 

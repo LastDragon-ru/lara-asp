@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
-use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -15,8 +14,8 @@ use function implode;
 /**
  * @internal
  */
-#[CoversClass(StringBlock::class)]
-class StringBlockTest extends TestCase {
+#[CoversClass(DescriptionBlock::class)]
+class DescriptionBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -27,49 +26,77 @@ class StringBlockTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        string $string,
+        ?string $description,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) new StringBlock($context, $level, $used, $string);
-        $parsed  = Parser::valueLiteral($actual);
+        $actual  = (string) (new DescriptionBlock($context, $level, $used, $description));
 
-        self::assertInstanceOf(StringValueNode::class, $parsed);
         self::assertEquals($expected, $actual);
-        self::assertEquals($string, $parsed->value);
+
+        if ($expected) {
+            Parser::valueLiteral($actual);
+        }
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, string}>
+     * @return array<string,array{string, Settings, int, int, ?string}>
      */
     public static function dataProviderToString(): array {
-        $settings = new TestSettings();
+        $settings = (new TestSettings())
+            ->setAlwaysMultilineArguments(false)
+            ->setNormalizeDescription(false);
 
         return [
-            'Prints an empty string'                => [
-                '""""""',
+            'null'                                                     => [
+                '',
+                $settings,
+                0,
+                0,
+                null,
+            ],
+            'Prints an empty string'                                   => [
+                '',
                 $settings,
                 0,
                 0,
                 '',
             ],
-            'Prints an string with only whitespace' => [
+            'Prints an empty string (normalized)'                      => [
+                '',
+                $settings->setNormalizeDescription(true),
+                0,
+                0,
+                '',
+            ],
+            'Prints an empty string with only whitespace'              => [
                 '" "',
                 $settings,
                 0,
                 0,
                 ' ',
             ],
-            'One-line prints a short string'        => [
-                '"""Short string"""',
+            'Prints an empty string with only whitespace (normalized)' => [
+                '',
+                $settings->setNormalizeDescription(true),
+                0,
+                0,
+                ' ',
+            ],
+            'One-line prints a short string'                           => [
+                <<<'STRING'
+                """
+                Short string
+                """
+                STRING,
                 $settings,
                 0,
                 0,
                 'Short string',
             ],
-            'One-line prints a long string'         => [
+            'One-line prints a long string'                            => [
                 <<<'STRING'
                 """
                 Long string
@@ -80,16 +107,20 @@ class StringBlockTest extends TestCase {
                 0,
                 'Long string',
             ],
-            'String is short (indent)'              => [
+            'String is short (indent)'                                 => [
                 <<<'STRING'
-                """string"""
+                """
+                    string
+                    """
                 STRING,
-                $settings->setLineLength(21),
+                $settings
+                    ->setIndent('  ')
+                    ->setLineLength(2),
                 2,
                 0,
                 'string',
             ],
-            'String is long (indent)'               => [
+            'String is long (indent)'                                  => [
                 <<<'STRING'
                 """
                     string
@@ -102,11 +133,13 @@ class StringBlockTest extends TestCase {
                 20,
                 'string',
             ],
-            'Multi-line string'                     => [
+            'Multi-line string'                                        => [
                 <<<'STRING'
                 """
                 aaa
                   bbb
+
+
 
                 ccc
                 """
@@ -118,10 +151,32 @@ class StringBlockTest extends TestCase {
                 aaa
                   bbb
 
+
+
                 ccc
                 STRING,
             ],
-            'Leading space'                         => [
+            'Multi-line string (normalized)'                           => [
+                <<<'STRING'
+                """
+                aaa
+                  bbb
+
+                ccc
+                """
+                STRING,
+                $settings->setNormalizeDescription(true),
+                0,
+                0,
+                <<<'STRING'
+                aaa
+                  bbb
+
+
+                ccc
+                STRING,
+            ],
+            'Leading space'                                            => [
                 <<<'STRING'
                 """  Leading space"""
                 STRING,
@@ -130,21 +185,14 @@ class StringBlockTest extends TestCase {
                 0,
                 '  Leading space',
             ],
-            'Leading tab'                           => [
+            'Leading tab'                                              => [
                 "\"\"\"\tLeading tab\"\"\"",
                 $settings,
                 0,
                 0,
                 "\tLeading tab",
             ],
-            'Leading whitespace (single line)'      => [
-                "\"\"\"\tLeading tab\"\"\"",
-                $settings->setLineLength(1),
-                0,
-                0,
-                "\tLeading tab",
-            ],
-            'Trailing "'                            => [
+            'Trailing "'                                               => [
                 <<<'STRING'
                 """
                 Trailing "
@@ -155,7 +203,7 @@ class StringBlockTest extends TestCase {
                 0,
                 'Trailing "',
             ],
-            'Leading whitespace and trailing "'     => [
+            'Leading whitespace and trailing "'                        => [
                 <<<'STRING'
                 """
                   Leading whitespace and trailing "
@@ -170,7 +218,7 @@ class StringBlockTest extends TestCase {
                 abc
                 STRING,
             ],
-            'Trailing backslash'                    => [
+            'Trailing backslash'                                       => [
                 <<<'STRING'
                 """
                 Trailing \\
@@ -181,16 +229,18 @@ class StringBlockTest extends TestCase {
                 0,
                 'Trailing \\\\',
             ],
-            'Escape wrapper'                        => [
+            'Escape wrapper'                                           => [
                 <<<'STRING'
-                """String with \""" wrapper"""
+                """
+                String with \""" wrapper
+                """
                 STRING,
                 $settings,
                 0,
                 0,
                 'String with """ wrapper',
             ],
-            'Indent'                                => [
+            'Indent'                                                   => [
                 implode(
                     "\n",
                     [
@@ -205,6 +255,37 @@ class StringBlockTest extends TestCase {
                     ],
                 ),
                 $settings->setIndent('  '),
+                2,
+                0,
+                implode(
+                    "\n",
+                    [
+                        '    aaa',
+                        '',
+                        '  bbb  ',
+                        'ccc    ',
+                        '  ',
+                        '  ddd  ',
+                    ],
+                ),
+            ],
+            'Indent (normalized)'                                      => [
+                implode(
+                    "\n",
+                    [
+                        '"""',
+                        '        aaa',
+                        '',
+                        '      bbb',
+                        '    ccc',
+                        '',
+                        '      ddd',
+                        '    """',
+                    ],
+                ),
+                $settings
+                    ->setIndent('  ')
+                    ->setNormalizeDescription(true),
                 2,
                 0,
                 implode(
