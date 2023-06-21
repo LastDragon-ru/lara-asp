@@ -20,6 +20,7 @@ use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
 
 use function array_key_exists;
 use function array_merge;
@@ -265,13 +266,16 @@ class Context {
      */
     public function getFieldType(TypeNode|Type $object, string $field): ?Type {
         $type       = null;
-        $definition = $this->getType($this->getTypeName($object));
+        $name       = $this->getTypeName($object);
+        $definition = $this->getType($name);
 
         if ($definition instanceof HasFieldsType || $definition instanceof InputObjectType) {
             $type = $definition->findField($field)?->getType();
         }
 
-        // fixme: if schema and no type - throw
+        if ($this->getSchema() && !$type) {
+            throw new FieldNotFound($name, $field);
+        }
 
         return $type;
     }
