@@ -60,7 +60,7 @@ class Value extends Block {
 
     protected function content(): string {
         // Print?
-        if ($this->type && !$this->isTypeAllowed($this->getTypeName($this->type))) {
+        if (!$this->isTypeAllowed($this->type)) {
             return '';
         }
 

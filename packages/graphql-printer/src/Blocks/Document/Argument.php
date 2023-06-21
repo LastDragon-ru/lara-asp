@@ -31,33 +31,17 @@ class Argument extends Block implements NamedBlock {
     }
 
     public function getName(): string {
-        return $this->getArgument()->name->value;
-    }
-
-    /**
-     * @return (TypeNode&Node)|Type|null
-     */
-    public function getType(): TypeNode|Type|null {
-        return $this->type;
-    }
-
-    public function getArgument(): ArgumentNode {
-        return $this->argument;
+        return $this->argument->name->value;
     }
 
     protected function content(): string {
         // Print?
-        $type = $this->getType()
-            ? $this->getTypeName($this->getType())
-            : null;
-
-        if ($type && !$this->isTypeAllowed($type)) {
+        if (!$this->isTypeAllowed($this->type)) {
             return '';
         }
 
         // Convert
         $name     = $this->getName();
-        $argument = $this->getArgument();
         $property = $this->addUsed(
             new PropertyBlock(
                 $this->getContext(),
@@ -66,14 +50,14 @@ class Argument extends Block implements NamedBlock {
                     $this->getContext(),
                     $this->getLevel() + 1,
                     $this->getUsed(),
-                    $argument->value,
+                    $this->argument->value,
                 ),
             ),
         );
 
         // Statistics
-        if ($type) {
-            $this->addUsedType($type);
+        if ($this->type) {
+            $this->addUsedType($this->getTypeName($this->type));
         }
 
         // Return

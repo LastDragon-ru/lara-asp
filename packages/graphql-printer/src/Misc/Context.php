@@ -3,16 +3,26 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
 
 use GraphQL\Language\AST\DirectiveDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NameNode;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 
 use function array_key_exists;
 use function array_merge;
+use function assert;
+use function is_string;
 
 /**
  * @internal
@@ -74,7 +84,15 @@ class Context {
         return $this->getSchema()?->getType($name);
     }
 
-    public function isTypeAllowed(string $type): bool {
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type
+     */
+    public function isTypeAllowed(TypeDefinitionNode|TypeNode|Type|string $type): bool {
+        // Normalize
+        if (!is_string($type)) {
+            $type = $this->getTypeName($type);
+        }
+
         // Cached?
         if (isset($this->allowedTypes[$type])) {
             return $this->allowedTypes[$type];
@@ -96,7 +114,15 @@ class Context {
         return $isAllowed;
     }
 
-    public function isTypeDefinitionAllowed(string $type): bool {
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type
+     */
+    public function isTypeDefinitionAllowed(TypeDefinitionNode|TypeNode|Type|string $type): bool {
+        // Normalize
+        if (!is_string($type)) {
+            $type = $this->getTypeName($type);
+        }
+
         // Cached?
         if (isset($this->allowedTypesDefinitions[$type])) {
             return $this->allowedTypesDefinitions[$type];
@@ -122,6 +148,41 @@ class Context {
 
     protected function isTypeBuiltIn(string $type): bool {
         return array_key_exists($type, Type::builtInTypes());
+    }
+
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type
+     */
+    public function getTypeName(TypeDefinitionNode|TypeNode|Type $type): string {
+        $name = null;
+
+        if ($type instanceof WrappingType) {
+            $type = $type->getInnermostType();
+        }
+
+        if ($type instanceof NamedType) {
+            $name = $type->name();
+        } elseif ($type instanceof TypeDefinitionNode) {
+            $name = $type->getName()->value;
+        } elseif ($type instanceof Node) {
+            $name = match (true) {
+                $type instanceof ListTypeNode,
+                    $type instanceof NonNullTypeNode
+                => $this->getTypeName($type->type),
+                $type instanceof NamedTypeNode
+                => $this->getTypeName($type->name),
+                $type instanceof NameNode
+                => $type->value,
+                default
+                => null,
+            };
+        } else {
+            // empty
+        }
+
+        assert($name !== null);
+
+        return $name;
     }
     // </editor-fold>
 

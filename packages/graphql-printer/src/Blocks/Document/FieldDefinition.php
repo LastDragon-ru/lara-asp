@@ -33,7 +33,7 @@ class FieldDefinition extends DefinitionBlock {
     }
 
     protected function content(): string {
-        return $this->isTypeAllowed($this->getTypeName($this->getType()))
+        return $this->isTypeAllowed($this->getType())
             ? parent::content()
             : '';
     }

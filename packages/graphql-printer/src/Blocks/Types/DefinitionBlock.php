@@ -190,7 +190,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $allowed    = match (true) {
             $definition instanceof TypeDefinitionNode && $definition instanceof Node,
             $definition instanceof Type
-                => $this->isTypeDefinitionAllowed($this->getTypeName($definition)),
+                => $this->isTypeDefinitionAllowed($definition),
             $definition instanceof TypeExtensionNode
                 => $this->isTypeDefinitionAllowed($definition->getName()->value),
             $definition instanceof DirectiveDefinitionNode
