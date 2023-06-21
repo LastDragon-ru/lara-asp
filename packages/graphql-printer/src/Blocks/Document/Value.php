@@ -12,8 +12,10 @@ use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Language\AST\ObjectFieldNode;
 use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\StringValueNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\AST\VariableNode;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\ListValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\ObjectValue;
@@ -43,18 +45,26 @@ use const JSON_THROW_ON_ERROR;
 #[GraphQLAstNode(EnumValueNode::class)]
 class Value extends Block {
     /**
-     * @param ValueNode&Node $node
+     * @param ValueNode&Node            $node
+     * @param (TypeNode&Node)|Type|null $type
      */
     public function __construct(
         Context $context,
         int $level,
         int $used,
         protected ValueNode $node,
+        protected TypeNode|Type|null $type = null,
     ) {
         parent::__construct($context, $level, $used);
     }
 
     protected function content(): string {
+        // Print?
+        if ($this->type && !$this->isTypeAllowed($this->getTypeName($this->type))) {
+            return '';
+        }
+
+        // Convert
         $context = $this->getContext();
         $level   = $this->getLevel();
         $used    = $this->getUsed();
