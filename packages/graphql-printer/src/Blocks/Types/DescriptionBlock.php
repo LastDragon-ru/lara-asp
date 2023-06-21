@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\StringBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\StringValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function preg_replace;
@@ -13,7 +13,7 @@ use function trim;
 /**
  * @internal
  */
-class Description extends StringBlock {
+class DescriptionBlock extends StringValue {
     public function __construct(
         Context $context,
         int $level,

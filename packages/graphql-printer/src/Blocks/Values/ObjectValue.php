@@ -1,21 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 
-use GraphQL\Language\AST\ObjectFieldNode;
 use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\StringValueNode;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Value;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
 /**
  * @internal
  * @extends ListBlock<PropertyBlock<Value>>
  */
-#[GraphQLAstNode(ObjectValueNode::class)]
-#[GraphQLAstNode(ObjectFieldNode::class)]
 class ObjectValue extends ListBlock {
     public function __construct(
         Context $context,

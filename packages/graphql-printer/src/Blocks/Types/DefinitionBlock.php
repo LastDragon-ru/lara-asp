@@ -20,7 +20,6 @@ use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Description;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -155,7 +154,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $directives;
     }
 
-    protected function description(): ?Description {
+    protected function description(): ?Block {
         // Description
         $definition  = $this->getDefinition();
         $description = null;
@@ -178,7 +177,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         }
 
         // Return
-        return new Description(
+        return new DescriptionBlock(
             $this->getContext(),
             $this->getLevel(),
             $this->getUsed(),

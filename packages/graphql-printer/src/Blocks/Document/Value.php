@@ -9,12 +9,16 @@ use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\ListValueNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NullValueNode;
+use GraphQL\Language\AST\ObjectFieldNode;
 use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\AST\VariableNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\StringBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\ListValue;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\ObjectValue;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\StringValue;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\VariableValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
@@ -27,6 +31,10 @@ use const JSON_THROW_ON_ERROR;
 /**
  * @internal
  */
+#[GraphQLAstNode(VariableNode::class)]
+#[GraphQLAstNode(ObjectValueNode::class)]
+#[GraphQLAstNode(ObjectFieldNode::class)]
+#[GraphQLAstNode(ListValueNode::class)]
 #[GraphQLAstNode(NullValueNode::class)]
 #[GraphQLAstNode(IntValueNode::class)]
 #[GraphQLAstNode(FloatValueNode::class)]
@@ -56,7 +64,7 @@ class Value extends Block {
             $this->node instanceof ObjectValueNode
                 => new ObjectValue($context, $level, $used, $this->node),
             $this->node instanceof StringValueNode && $this->node->block
-                => new StringBlock($context, $level, 0, $this->node->value),
+                => new StringValue($context, $level, 0, $this->node->value),
             $this->node instanceof NullValueNode
                 => 'null',
             $this->node instanceof IntValueNode,
@@ -64,7 +72,7 @@ class Value extends Block {
             $this->node instanceof EnumValueNode
                 => $this->node->value,
             $this->node instanceof VariableNode
-                => new Variable($context, $level, 0, $this->node),
+                => new VariableValue($context, $level, 0, $this->node),
             property_exists($this->node, 'value')
                 => json_encode($this->node->value, JSON_THROW_ON_ERROR),
             default

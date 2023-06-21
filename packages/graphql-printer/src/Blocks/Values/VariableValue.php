@@ -1,18 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
+namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 
 use GraphQL\Language\AST\VariableNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
 /**
  * @internal
  */
-#[GraphQLAstNode(VariableNode::class)]
-class Variable extends Block implements NamedBlock {
+class VariableValue extends Block implements NamedBlock {
     public function __construct(
         Context $context,
         int $level,
