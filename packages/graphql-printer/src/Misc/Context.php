@@ -12,6 +12,8 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\HasFieldsType;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\WrappingType;
@@ -167,14 +169,14 @@ class Context {
         } elseif ($type instanceof Node) {
             $name = match (true) {
                 $type instanceof ListTypeNode,
-                    $type instanceof NonNullTypeNode
-                => $this->getTypeName($type->type),
+                $type instanceof NonNullTypeNode
+                    => $this->getTypeName($type->type),
                 $type instanceof NamedTypeNode
-                => $this->getTypeName($type->name),
+                    => $this->getTypeName($type->name),
                 $type instanceof NameNode
-                => $type->value,
+                    => $type->value,
                 default
-                => null,
+                    => null,
             };
         } else {
             // empty
@@ -253,6 +255,25 @@ class Context {
 
     protected function isDirectiveBuiltIn(string $directive): bool {
         return isset(GraphQLDirective::getInternalDirectives()[$directive]);
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =========================================================================
+    /**
+     * @param (TypeNode&Node)|Type $object
+     */
+    public function getFieldType(TypeNode|Type $object, string $field): ?Type {
+        $type       = null;
+        $definition = $this->getType($this->getTypeName($object));
+
+        if ($definition instanceof HasFieldsType || $definition instanceof InputObjectType) {
+            $type = $definition->findField($field)?->getType();
+        }
+
+        // fixme: if schema and no type - throw
+
+        return $type;
     }
     // </editor-fold>
 }

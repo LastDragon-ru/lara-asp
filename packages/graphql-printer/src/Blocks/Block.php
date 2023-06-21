@@ -208,6 +208,15 @@ abstract class Block implements Statistics, Stringable {
     protected function getTypeName(TypeDefinitionNode|TypeNode|Type $type): string {
         return $this->getContext()->getTypeName($type);
     }
+
+    /**
+     * @param (TypeNode&Node)|Type|null $object
+     */
+    public function getFieldType(TypeNode|Type|null $object, string $field): ?Type {
+        return $object
+            ? $this->getContext()->getFieldType($object, $field)
+            : null;
+    }
     // </editor-fold>
 
     // <editor-fold desc="Directives">

@@ -11,17 +11,21 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\StringValueNode;
-use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\AST\VariableNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
+use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
+
+use function assert;
 
 /**
  * @internal
@@ -33,8 +37,7 @@ class ValueTest extends TestCase {
     /**
      * @dataProvider dataProviderToString
      *
-     * @param ValueNode&Node            $node
-     * @param (TypeNode&Node)|Type|null $type
+     * @param ValueNode&Node $node
      */
     public function testToString(
         string $expected,
@@ -42,9 +45,10 @@ class ValueTest extends TestCase {
         int $level,
         int $used,
         ValueNode $node,
-        TypeNode|Type|null $type,
+        ?Schema $schema,
+        ?Type $type,
     ): void {
-        $context = new Context($settings, null, null);
+        $context = new Context($settings, null, $schema);
         $actual  = (string) (new Value($context, $level, $used, $node, $type));
         $parsed  = null;
 
@@ -54,7 +58,7 @@ class ValueTest extends TestCase {
 
         self::assertEquals($expected, $actual);
 
-        if ($parsed !== null && !$settings->isNormalizeArguments()) {
+        if ($parsed !== null && !$settings->isNormalizeArguments() && $settings->getTypeFilter() === null) {
             self::assertEquals(
                 Printer::doPrint($node),
                 Printer::doPrint($parsed),
@@ -66,11 +70,29 @@ class ValueTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, ValueNode&Node, TypeNode|Type|null}>
+     * @return array<string,array{string, Settings, int, int, ValueNode&Node, ?Schema, ?Type}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
             ->setNormalizeArguments(false);
+        $object   = new InputObjectType([
+            'name'   => 'A',
+            'fields' => [
+                'a' => [
+                    'type' => Type::string(),
+                ],
+                'b' => [
+                    'type' => Type::int(),
+                ],
+                'o' => [
+                    'type' => static function () use (&$object): InputObjectType {
+                        assert($object !== null);
+
+                        return $object;
+                    },
+                ],
+            ],
+        ]);
 
         return [
             NullValueNode::class                                  => [
@@ -80,6 +102,7 @@ class ValueTest extends TestCase {
                 0,
                 Parser::valueLiteral('null'),
                 null,
+                null,
             ],
             IntValueNode::class                                   => [
                 '123',
@@ -87,6 +110,7 @@ class ValueTest extends TestCase {
                 0,
                 0,
                 Parser::valueLiteral('123'),
+                null,
                 null,
             ],
             FloatValueNode::class                                 => [
@@ -96,6 +120,7 @@ class ValueTest extends TestCase {
                 0,
                 Parser::valueLiteral('123.45'),
                 null,
+                null,
             ],
             BooleanValueNode::class                               => [
                 'true',
@@ -103,6 +128,7 @@ class ValueTest extends TestCase {
                 0,
                 0,
                 Parser::valueLiteral('true'),
+                null,
                 null,
             ],
             StringValueNode::class                                => [
@@ -112,6 +138,7 @@ class ValueTest extends TestCase {
                 0,
                 Parser::valueLiteral('"true"'),
                 null,
+                null,
             ],
             EnumValueNode::class                                  => [
                 'Value',
@@ -119,6 +146,7 @@ class ValueTest extends TestCase {
                 0,
                 0,
                 Parser::valueLiteral('Value'),
+                null,
                 null,
             ],
             VariableNode::class                                   => [
@@ -128,6 +156,7 @@ class ValueTest extends TestCase {
                 0,
                 Parser::valueLiteral('$variable'),
                 null,
+                null,
             ],
             ListValueNode::class.' (short)'                       => [
                 '["a", "b", "c"]',
@@ -135,6 +164,7 @@ class ValueTest extends TestCase {
                 0,
                 0,
                 Parser::valueLiteral('["a", "b", "c"]'),
+                null,
                 null,
             ],
             ListValueNode::class.' (with block string)'           => [
@@ -162,6 +192,7 @@ class ValueTest extends TestCase {
                     STRING,
                 ),
                 null,
+                null,
             ],
             ListValueNode::class.' (with block string and level)' => [
                 <<<'STRING'
@@ -188,6 +219,7 @@ class ValueTest extends TestCase {
                     STRING,
                 ),
                 null,
+                null,
             ],
             ListValueNode::class.' (empty)'                       => [
                 <<<'STRING'
@@ -197,6 +229,7 @@ class ValueTest extends TestCase {
                 1,
                 0,
                 Parser::valueLiteral('[]'),
+                null,
                 null,
             ],
             ObjectValueNode::class                                => [
@@ -222,6 +255,7 @@ class ValueTest extends TestCase {
                 STRING,
                 ),
                 null,
+                null,
             ],
             ObjectValueNode::class.' (empty)'                     => [
                 <<<'STRING'
@@ -231,6 +265,7 @@ class ValueTest extends TestCase {
                 0,
                 0,
                 Parser::valueLiteral('{}'),
+                null,
                 null,
             ],
             ObjectValueNode::class.' (normalized)'                => [
@@ -252,6 +287,7 @@ class ValueTest extends TestCase {
                     }
                     STRING,
                 ),
+                null,
                 null,
             ],
             'all'                                                 => [
@@ -311,32 +347,92 @@ class ValueTest extends TestCase {
                 STRING,
                 ),
                 null,
+                null,
             ],
-            'filter'                                              => [
-                '',
+            'filter: '.ObjectValueNode::class                     => [
+                <<<'STRING'
+                {
+                    b: 123
+                    o: {
+                        b: 123
+                        o: {
+                            b: 123
+                        }
+                    }
+                }
+                STRING,
                 $settings
-                    ->setTypeFilter(static fn () => false),
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'String';
+                    }),
                 0,
                 0,
                 Parser::valueLiteral(
                     <<<'STRING'
                     {
-                        b: "b"
+                        b: 123
                         a: "a"
+                        o: {
+                            a: "a"
+                            b: 123
+                            o: {
+                                b: 123
+                                a: "a"
+                            }
+                        }
                     }
                     STRING,
                 ),
-                Type::int(),
+                new Schema([
+                    'query' => new ObjectType([
+                        'name'   => 'Query',
+                        'fields' => [
+                            'test' => [
+                                'type' => $object,
+                            ],
+                        ],
+                    ]),
+                ]),
+                $object,
             ],
-            'filter: no type'                                     => [
-                '"abc"',
+            'filter: '.ObjectValueNode::class.' (no schema)'      => [
+                <<<'STRING'
+                {
+                    b: 123
+                    a: "a"
+                    o: {
+                        a: true
+                        b: 123
+                        o: {
+                            b: 123
+                            a: "a"
+                        }
+                    }
+                }
+                STRING,
                 $settings
-                    ->setTypeFilter(static fn () => false),
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'String';
+                    }),
                 0,
                 0,
                 Parser::valueLiteral(
-                    '"abc"',
+                    <<<'STRING'
+                    {
+                        b: 123
+                        a: "a"
+                        o: {
+                            a: true
+                            b: 123
+                            o: {
+                                b: 123
+                                a: "a"
+                            }
+                        }
+                    }
+                    STRING,
                 ),
+                null,
                 null,
             ],
         ];

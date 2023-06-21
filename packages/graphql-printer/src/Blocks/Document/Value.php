@@ -59,12 +59,6 @@ class Value extends Block {
     }
 
     protected function content(): string {
-        // Print?
-        if (!$this->isTypeAllowed($this->type)) {
-            return '';
-        }
-
-        // Convert
         $context = $this->getContext();
         $level   = $this->getLevel();
         $used    = $this->getUsed();
@@ -72,7 +66,7 @@ class Value extends Block {
             $this->node instanceof ListValueNode
                 => new ListValue($context, $level, $used, $this->node),
             $this->node instanceof ObjectValueNode
-                => new ObjectValue($context, $level, $used, $this->node),
+                => new ObjectValue($context, $level, $used, $this->node, $this->type),
             $this->node instanceof StringValueNode && $this->node->block
                 => new StringValue($context, $level, 0, $this->node->value),
             $this->node instanceof NullValueNode
