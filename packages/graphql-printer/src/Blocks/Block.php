@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Stringable;
 
+use function is_object;
 use function mb_strlen;
 use function mb_strpos;
 use function str_repeat;
@@ -192,21 +193,23 @@ abstract class Block implements Statistics, Stringable {
      * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type
      */
     public function isTypeAllowed(TypeDefinitionNode|TypeNode|Type|string|null $type): bool {
-        return $type === null || $this->getContext()->isTypeAllowed($type);
+        return $type === null || $this->getContext()->isTypeAllowed($this->getTypeName($type));
     }
 
     /**
      * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type
      */
     public function isTypeDefinitionAllowed(TypeDefinitionNode|TypeNode|Type|string|null $type): bool {
-        return $type === null || $this->getContext()->isTypeDefinitionAllowed($type);
+        return $type === null || $this->getContext()->isTypeDefinitionAllowed($this->getTypeName($type));
     }
 
     /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type
      */
-    protected function getTypeName(TypeDefinitionNode|TypeNode|Type $type): string {
-        return $this->getContext()->getTypeName($type);
+    protected function getTypeName(TypeDefinitionNode|TypeNode|Type|string $type): string {
+        return is_object($type)
+            ? $this->getContext()->getTypeName($type)
+            : $type;
     }
 
     /**

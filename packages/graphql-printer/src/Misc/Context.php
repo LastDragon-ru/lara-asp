@@ -25,7 +25,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
 use function array_key_exists;
 use function array_merge;
 use function assert;
-use function is_string;
 
 /**
  * @internal
@@ -87,15 +86,7 @@ class Context {
         return $this->getSchema()?->getType($name);
     }
 
-    /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type
-     */
-    public function isTypeAllowed(TypeDefinitionNode|TypeNode|Type|string $type): bool {
-        // Normalize
-        if (!is_string($type)) {
-            $type = $this->getTypeName($type);
-        }
-
+    public function isTypeAllowed(string $type): bool {
         // Cached?
         if (isset($this->allowedTypes[$type])) {
             return $this->allowedTypes[$type];
@@ -117,15 +108,7 @@ class Context {
         return $isAllowed;
     }
 
-    /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type
-     */
-    public function isTypeDefinitionAllowed(TypeDefinitionNode|TypeNode|Type|string $type): bool {
-        // Normalize
-        if (!is_string($type)) {
-            $type = $this->getTypeName($type);
-        }
-
+    public function isTypeDefinitionAllowed(string $type): bool {
         // Cached?
         if (isset($this->allowedTypesDefinitions[$type])) {
             return $this->allowedTypesDefinitions[$type];
