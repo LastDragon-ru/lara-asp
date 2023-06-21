@@ -65,6 +65,16 @@ class ValueTest extends TestCase {
             );
         }
     }
+
+    public function testStatistics(): void {
+        $context = new Context(new TestSettings(), null, null);
+        $literal = Parser::valueLiteral('123');
+        $block   = new Value($context, 0, 0, $literal, Type::int());
+
+        self::assertNotEmpty((string) $block);
+        self::assertEquals(['Int' => 'Int'], $block->getUsedTypes());
+        self::assertEquals([], $block->getUsedDirectives());
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">

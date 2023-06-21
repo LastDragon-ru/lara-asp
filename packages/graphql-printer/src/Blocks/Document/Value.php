@@ -59,6 +59,7 @@ class Value extends Block {
     }
 
     protected function content(): string {
+        // Content
         $context = $this->getContext();
         $level   = $this->getLevel();
         $used    = $this->getUsed();
@@ -83,6 +84,12 @@ class Value extends Block {
                 => throw new Unsupported($this->node),
         };
 
+        // Statistics
+        if ($this->type) {
+            $this->addUsedType($this->getTypeName($this->type));
+        }
+
+        // Return
         return (string) $this->addUsed($content);
     }
 }
