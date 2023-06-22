@@ -6,6 +6,7 @@ use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -31,10 +32,11 @@ class SchemaDefinitionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        SchemaDefinitionNode|Schema $schema,
+        SchemaDefinitionNode|Schema $definition,
+        ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (string) (new SchemaDefinition($context, $level, $used, $schema));
+        $context = new Context($settings, null, $schema);
+        $actual  = (string) (new SchemaDefinition($context, $level, $used, $definition));
 
         if ($expected && !str_starts_with($actual, '"""')) {
             // https://github.com/webonyx/graphql-php/issues/1027
@@ -48,7 +50,7 @@ class SchemaDefinitionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, SchemaDefinitionNode|Schema}>
+     * @return array<string,array{string, Settings, int, int, SchemaDefinitionNode|Schema, ?Schema}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -66,6 +68,7 @@ class SchemaDefinitionTest extends TestCase {
                     'mutation'     => new ObjectType(['name' => 'Mutation', 'fields' => []]),
                     'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
                 ]),
+                null,
             ],
             'standard names with directives'      => [
                 <<<'STRING'
@@ -97,6 +100,7 @@ class SchemaDefinitionTest extends TestCase {
                         Parser::schemaTypeExtension('extend schema @c'),
                     ],
                 ]),
+                null,
             ],
             'non standard names'                  => [
                 <<<'STRING'
@@ -114,6 +118,7 @@ class SchemaDefinitionTest extends TestCase {
                     'mutation'     => new ObjectType(['name' => 'Mutation', 'fields' => []]),
                     'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
                 ]),
+                null,
             ],
             'indent'                              => [
                 <<<'STRING'
@@ -131,6 +136,26 @@ class SchemaDefinitionTest extends TestCase {
                     'mutation'     => new ObjectType(['name' => 'Mutation', 'fields' => []]),
                     'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
                 ]),
+                null,
+            ],
+            'filter (no schema)'                  => [
+                <<<'STRING'
+                schema {
+                    query: MyQuery
+                    mutation: Mutation
+                }
+                STRING,
+                $settings
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'Mutation';
+                    }),
+                0,
+                0,
+                new Schema([
+                    'query'    => new ObjectType(['name' => 'MyQuery', 'fields' => []]),
+                    'mutation' => new ObjectType(['name' => 'Mutation', 'fields' => []]),
+                ]),
+                null,
             ],
             'filter'                              => [
                 <<<'STRING'
@@ -148,6 +173,13 @@ class SchemaDefinitionTest extends TestCase {
                     'query'    => new ObjectType(['name' => 'MyQuery', 'fields' => []]),
                     'mutation' => new ObjectType(['name' => 'Mutation', 'fields' => []]),
                 ]),
+                BuildSchema::build(
+                    <<<'STRING'
+                    type MyQuery {
+                        a: Int
+                    }
+                    STRING,
+                ),
             ],
             'ast: standard names'                 => [
                 '',
@@ -163,6 +195,7 @@ class SchemaDefinitionTest extends TestCase {
                     }
                     STRING,
                 ),
+                null,
             ],
             'ast: standard names with directives' => [
                 <<<'STRING'
@@ -187,6 +220,7 @@ class SchemaDefinitionTest extends TestCase {
                     }
                     STRING,
                 ),
+                null,
             ],
             'ast: non standard names'             => [
                 <<<'STRING'
@@ -208,6 +242,36 @@ class SchemaDefinitionTest extends TestCase {
                     }
                     STRING,
                 ),
+                null,
+            ],
+            'ast: filter (no schema)'             => [
+                <<<'STRING'
+                schema
+                @a
+                {
+                    query: MyQuery
+                    mutation: Mutation
+                }
+                STRING,
+                $settings
+                    ->setPrintDirectives(true)
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'Mutation';
+                    })
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
+                0,
+                0,
+                Parser::schemaDefinition(
+                    <<<'STRING'
+                    schema @a @b {
+                        query: MyQuery
+                        mutation: Mutation
+                    }
+                    STRING,
+                ),
+                null,
             ],
             'ast: filter'                         => [
                 <<<'STRING'
@@ -232,6 +296,13 @@ class SchemaDefinitionTest extends TestCase {
                     schema @a @b {
                         query: MyQuery
                         mutation: Mutation
+                    }
+                    STRING,
+                ),
+                BuildSchema::build(
+                    <<<'STRING'
+                    type MyQuery {
+                        a: Int
                     }
                     STRING,
                 ),

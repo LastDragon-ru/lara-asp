@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\SchemaExtensionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -27,10 +29,11 @@ class SchemaExtensionTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        SchemaExtensionNode $schema,
+        SchemaExtensionNode $node,
+        ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (string) (new SchemaExtension($context, $level, $used, $schema));
+        $context = new Context($settings, null, $schema);
+        $actual  = (string) (new SchemaExtension($context, $level, $used, $node));
 
         if ($expected) {
             Parser::schemaTypeExtension($actual);
@@ -60,7 +63,7 @@ class SchemaExtensionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, SchemaExtensionNode}>
+     * @return array<string,array{string, Settings, int, int, SchemaExtensionNode, ?Schema}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -68,7 +71,7 @@ class SchemaExtensionTest extends TestCase {
             ->setNormalizeFields(false);
 
         return [
-            'without fields' => [
+            'without fields'     => [
                 <<<'STRING'
                 extend schema
                 @a
@@ -79,8 +82,9 @@ class SchemaExtensionTest extends TestCase {
                 Parser::schemaTypeExtension(
                     'extend schema @a',
                 ),
+                null,
             ],
-            'with fields'    => [
+            'with fields'        => [
                 <<<'STRING'
                 extend schema
                 @a
@@ -94,8 +98,9 @@ class SchemaExtensionTest extends TestCase {
                 Parser::schemaTypeExtension(
                     'extend schema @a { query: Query }',
                 ),
+                null,
             ],
-            'indent'         => [
+            'indent'             => [
                 <<<'STRING'
                 extend schema {
                         query: Query
@@ -107,8 +112,32 @@ class SchemaExtensionTest extends TestCase {
                 Parser::schemaTypeExtension(
                     'extend schema { query: Query }',
                 ),
+                null,
             ],
-            'filter'         => [
+            'filter (no schema)' => [
+                <<<'STRING'
+                extend schema
+                @a
+                {
+                    query: Query
+                    mutation: Mutation
+                }
+                STRING,
+                $settings
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'Mutation';
+                    })
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
+                0,
+                0,
+                Parser::schemaTypeExtension(
+                    'extend schema @a @b { query: Query, mutation: Mutation }',
+                ),
+                null,
+            ],
+            'filter'             => [
                 <<<'STRING'
                 extend schema
                 @a
@@ -127,6 +156,11 @@ class SchemaExtensionTest extends TestCase {
                 0,
                 Parser::schemaTypeExtension(
                     'extend schema @a @b { query: Query, mutation: Mutation }',
+                ),
+                BuildSchema::build(
+                    <<<'STRING'
+                    scalar A
+                    STRING,
                 ),
             ],
         ];

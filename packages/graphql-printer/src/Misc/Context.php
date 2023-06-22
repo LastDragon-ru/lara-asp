@@ -95,6 +95,11 @@ class Context {
     }
 
     public function isTypeAllowed(string $type): bool {
+        // Schema?
+        if (!$this->getSchema()) {
+            return true;
+        }
+
         // Cached?
         if (isset($this->allowedTypes[$type])) {
             return $this->allowedTypes[$type];

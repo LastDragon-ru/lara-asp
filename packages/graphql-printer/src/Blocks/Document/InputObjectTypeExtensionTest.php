@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\InputObjectTypeExtensionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -27,8 +29,9 @@ class InputObjectTypeExtensionTest extends TestCase {
         int $level,
         int $used,
         InputObjectTypeExtensionNode $definition,
+        ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, null);
+        $context = new Context($settings, null, $schema);
         $actual  = (string) (new InputObjectTypeExtension(
             $context,
             $level,
@@ -62,7 +65,7 @@ class InputObjectTypeExtensionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, InputObjectTypeExtensionNode}>
+     * @return array<string,array{string, Settings, int, int, InputObjectTypeExtensionNode, ?Schema}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -82,6 +85,7 @@ class InputObjectTypeExtensionTest extends TestCase {
                 Parser::inputObjectTypeExtension(
                     'extend input Test @b @a',
                 ),
+                null,
             ],
             'fields'              => [
                 <<<'STRING'
@@ -96,6 +100,7 @@ class InputObjectTypeExtensionTest extends TestCase {
                 Parser::inputObjectTypeExtension(
                     'extend input Test @a { a: String }',
                 ),
+                null,
             ],
             'fields + directives' => [
                 <<<'STRING'
@@ -111,6 +116,7 @@ class InputObjectTypeExtensionTest extends TestCase {
                 Parser::inputObjectTypeExtension(
                     'extend input Test @a { a: String }',
                 ),
+                null,
             ],
             'indent'              => [
                 <<<'STRING'
@@ -129,6 +135,7 @@ class InputObjectTypeExtensionTest extends TestCase {
                 Parser::inputObjectTypeExtension(
                     'extend input Test @a { "Description" a: String }',
                 ),
+                null,
             ],
             'filter: definition'  => [
                 '',
@@ -139,6 +146,31 @@ class InputObjectTypeExtensionTest extends TestCase {
                 Parser::inputObjectTypeExtension(
                     'extend input Test @a { a: String }',
                 ),
+                null,
+            ],
+            'filter (no schema)'  => [
+                <<<'STRING'
+                extend input Test
+                @a
+                {
+                    a: String
+                    b: B
+                }
+                STRING,
+                $settings
+                    ->setPrintDirectives(true)
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'B';
+                    })
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
+                0,
+                0,
+                Parser::inputObjectTypeExtension(
+                    'extend input Test @a @b { a: String, b: B }',
+                ),
+                null,
             ],
             'filter'              => [
                 <<<'STRING'
@@ -160,6 +192,11 @@ class InputObjectTypeExtensionTest extends TestCase {
                 0,
                 Parser::inputObjectTypeExtension(
                     'extend input Test @a @b { a: String, b: B }',
+                ),
+                BuildSchema::build(
+                    <<<'STRING'
+                    scalar B
+                    STRING,
                 ),
             ],
         ];

@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ObjectTypeExtensionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -26,8 +28,9 @@ class ObjectTypeExtensionTest extends TestCase {
         int $level,
         int $used,
         ObjectTypeExtensionNode $definition,
+        ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, null);
+        $context = new Context($settings, null, $schema);
         $actual  = (string) (new ObjectTypeExtension($context, $level, $used, $definition));
 
         if ($expected) {
@@ -62,7 +65,7 @@ class ObjectTypeExtensionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, ObjectTypeExtensionNode}>
+     * @return array<string,array{string, Settings, int, int, ObjectTypeExtensionNode, ?Schema}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -86,6 +89,7 @@ class ObjectTypeExtensionTest extends TestCase {
                 Parser::objectTypeExtension(
                     'extend type Test @a @b @c',
                 ),
+                null,
             ],
             'fields'                                      => [
                 <<<'STRING'
@@ -112,6 +116,7 @@ class ObjectTypeExtensionTest extends TestCase {
                     }
                     STRING,
                 ),
+                null,
             ],
             'implements'                                  => [
                 <<<'STRING'
@@ -124,6 +129,7 @@ class ObjectTypeExtensionTest extends TestCase {
                 Parser::objectTypeExtension(
                     'extend type Test implements B & A',
                 ),
+                null,
             ],
             'implements(multiline) + directives + fields' => [
                 <<<'STRING'
@@ -147,6 +153,7 @@ class ObjectTypeExtensionTest extends TestCase {
                     }
                     STRING,
                 ),
+                null,
             ],
             'indent'                                      => [
                 <<<'STRING'
@@ -167,6 +174,7 @@ class ObjectTypeExtensionTest extends TestCase {
                     }
                     STRING,
                 ),
+                null,
             ],
             'implements always multiline'                 => [
                 <<<'STRING'
@@ -181,6 +189,7 @@ class ObjectTypeExtensionTest extends TestCase {
                 Parser::objectTypeExtension(
                     'extend type Test implements B',
                 ),
+                null,
             ],
             'filter: definition'                          => [
                 '',
@@ -191,6 +200,35 @@ class ObjectTypeExtensionTest extends TestCase {
                 Parser::objectTypeExtension(
                     'extend type Test implements B',
                 ),
+                null,
+            ],
+            'filter: no schema'                           => [
+                <<<'STRING'
+                extend type Test implements B & A
+                @a
+                {
+                    a(b: B): A
+                    b: [B!]
+                }
+                STRING,
+                $settings
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'B';
+                    })
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
+                0,
+                0,
+                Parser::objectTypeExtension(
+                    <<<'STRING'
+                    extend type Test implements B & A @a @b {
+                        a(b: B): A
+                        b: [B!]
+                    }
+                    STRING,
+                ),
+                null,
             ],
             'filter'                                      => [
                 <<<'STRING'
@@ -212,9 +250,15 @@ class ObjectTypeExtensionTest extends TestCase {
                 Parser::objectTypeExtension(
                     <<<'STRING'
                     extend type Test implements B & A @a @b {
-                        a: A
+                        a(b: B): A
                         b: [B!]
                     }
+                    STRING,
+                ),
+                BuildSchema::build(
+                    <<<'STRING'
+                    scalar A
+                    scalar B
                     STRING,
                 ),
             ],

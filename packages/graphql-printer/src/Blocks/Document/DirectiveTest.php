@@ -8,6 +8,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -32,9 +34,10 @@ class DirectiveTest extends TestCase {
         int $used,
         DirectiveNode $node,
         ?GraphQLDirective $directive,
+        ?Schema $schema,
     ): void {
         $resolver = $directive ? $this->getDirectiveResolver($directive) : null;
-        $context  = new Context($settings, $resolver, null);
+        $context  = new Context($settings, $resolver, $schema);
         $actual   = (string) (new Directive($context, $level, $used, $node));
 
         if ($expected) {
@@ -106,7 +109,7 @@ class DirectiveTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DirectiveNode, ?GraphQLDirective}>
+     * @return array<string,array{string, Settings, int, int, DirectiveNode, ?GraphQLDirective, ?Schema}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -121,6 +124,7 @@ class DirectiveTest extends TestCase {
                 0,
                 Parser::directive('@directive'),
                 null,
+                null,
             ],
             'without arguments (level)'         => [
                 '@directive',
@@ -129,6 +133,7 @@ class DirectiveTest extends TestCase {
                 0,
                 Parser::directive('@directive'),
                 null,
+                null,
             ],
             'with arguments (short)'            => [
                 '@directive(a: "a", b: "b")',
@@ -136,6 +141,7 @@ class DirectiveTest extends TestCase {
                 0,
                 0,
                 Parser::directive('@directive(a: "a", b: "b")'),
+                null,
                 null,
             ],
             'with arguments (long)'             => [
@@ -150,6 +156,7 @@ class DirectiveTest extends TestCase {
                 120,
                 Parser::directive('@directive(b: "b", a: "a")'),
                 null,
+                null,
             ],
             'with arguments (normalized)'       => [
                 '@directive(a: "a", b: "b")',
@@ -157,6 +164,7 @@ class DirectiveTest extends TestCase {
                 0,
                 0,
                 Parser::directive('@directive(b: "b", a: "a")'),
+                null,
                 null,
             ],
             'with arguments (indent)'           => [
@@ -171,6 +179,7 @@ class DirectiveTest extends TestCase {
                 120,
                 Parser::directive('@directive(b: "b", a: "a")'),
                 null,
+                null,
             ],
             'with arguments (always multiline)' => [
                 <<<'STRING'
@@ -183,6 +192,7 @@ class DirectiveTest extends TestCase {
                 0,
                 0,
                 Parser::directive('@directive(a: "a")'),
+                null,
                 null,
             ],
             'arguments indent'                  => [
@@ -216,6 +226,7 @@ class DirectiveTest extends TestCase {
                     STRING,
                 ),
                 null,
+                null,
             ],
             'filter: directive'                 => [
                 '',
@@ -226,6 +237,40 @@ class DirectiveTest extends TestCase {
                 Parser::directive(
                     '@directive',
                 ),
+                null,
+                null,
+            ],
+            'filter: type (no schema)'          => [
+                <<<'STRING'
+                @directive(
+                    a: 123
+                    b: "b"
+                )
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(true)
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'String';
+                    }),
+                0,
+                0,
+                Parser::directive(
+                    '@directive(a: 123, b: "b")',
+                ),
+                new GraphQLDirective([
+                    'name'      => 'directive',
+                    'args'      => [
+                        'a' => [
+                            'type' => Type::int(),
+                        ],
+                        'b' => [
+                            'type' => Type::string(),
+                        ],
+                    ],
+                    'locations' => [
+                        GraphQLDirectiveLocation::FIELD,
+                    ],
+                ]),
                 null,
             ],
             'filter: type'                      => [
@@ -258,6 +303,12 @@ class DirectiveTest extends TestCase {
                         GraphQLDirectiveLocation::FIELD,
                     ],
                 ]),
+                BuildSchema::build(
+                    <<<'STRING'
+                    scalar A
+                    scalar B
+                    STRING,
+                ),
             ],
         ];
     }

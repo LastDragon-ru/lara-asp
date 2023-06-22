@@ -11,6 +11,8 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type as GraphQLType;
+use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -35,8 +37,9 @@ class TypeTest extends TestCase {
         int $level,
         int $used,
         TypeNode|GraphQLType $type,
+        ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, null);
+        $context = new Context($settings, null, $schema);
         $actual  = (string) (new Type($context, $level, $used, $type));
 
         self::assertEquals($expected, $actual);
@@ -71,7 +74,7 @@ class TypeTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, (TypeNode&Node)|(GraphQLType&(OutputType|InputType))}>
+     * @return array<string,array{string,Settings,int,int,(TypeNode&Node)|(GraphQLType&(OutputType|InputType)),?Schema}>
      */
     public static function dataProviderToString(): array {
         $settings = new TestSettings();
@@ -85,63 +88,97 @@ class TypeTest extends TestCase {
         ]);
 
         return [
-            'type: object'        => [
+            'type: object'            => [
                 'Test',
                 $settings,
                 0,
                 0,
                 $type,
+                null,
             ],
-            'type: non null'      => [
+            'type: non null'          => [
                 'Test!',
                 $settings,
                 0,
                 0,
                 new NonNull($type),
+                null,
             ],
-            'type: non null list' => [
+            'type: non null list'     => [
                 '[Test]!',
                 $settings,
                 0,
                 0,
                 new NonNull(new ListOfType($type)),
+                null,
             ],
-            'filter'              => [
+            'filter (no schema)'      => [
+                'Test',
+                $settings
+                    ->setTypeFilter(static fn () => false),
+                0,
+                0,
+                $type,
+                null,
+            ],
+            'filter'                  => [
                 '',
                 $settings
                     ->setTypeFilter(static fn () => false),
                 0,
                 0,
                 new NonNull(new ListOfType($type)),
+                BuildSchema::build(
+                    <<<'STRING'
+                    scalar Test
+                    STRING,
+                ),
             ],
-            'ast: object'         => [
+            'ast: object'             => [
                 'Test',
                 $settings,
                 0,
                 0,
                 Parser::typeReference('Test'),
+                null,
             ],
-            'ast: non null'       => [
+            'ast: non null'           => [
                 'Test!',
                 $settings,
                 0,
                 0,
                 Parser::typeReference('Test!'),
+                null,
             ],
-            'ast: non null list'  => [
+            'ast: non null list'      => [
                 '[Test]!',
                 $settings,
                 0,
                 0,
                 Parser::typeReference('[Test]!'),
+                null,
             ],
-            'ast: filter'         => [
+            'ast: filter (no schema)' => [
+                '[Test]!',
+                $settings
+                    ->setTypeFilter(static fn () => false),
+                0,
+                0,
+                Parser::typeReference('[Test]!'),
+                null,
+            ],
+            'ast: filter'             => [
                 '',
                 $settings
                     ->setTypeFilter(static fn () => false),
                 0,
                 0,
                 Parser::typeReference('[Test]!'),
+                BuildSchema::build(
+                    <<<'STRING'
+                    scalar Test
+                    STRING,
+                ),
             ],
         ];
     }

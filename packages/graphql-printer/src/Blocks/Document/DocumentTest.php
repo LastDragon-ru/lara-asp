@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -26,8 +28,9 @@ class DocumentTest extends TestCase {
         int $level,
         int $used,
         DocumentNode $document,
+        ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, null);
+        $context = new Context($settings, null, $schema);
         $actual  = (string) (new Document($context, $level, $used, $document));
 
         if ($expected) {
@@ -87,7 +90,7 @@ class DocumentTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, DocumentNode}>
+     * @return array<string,array{string, Settings, int, int, DocumentNode, ?Schema}>
      */
     public static function dataProviderToString(): array {
         $settings = (new TestSettings())
@@ -123,7 +126,7 @@ class DocumentTest extends TestCase {
         );
 
         return [
-            'default'    => [
+            'default'            => [
                 <<<'STRING'
                 type Query {
                     test: [Test]!
@@ -153,8 +156,9 @@ class DocumentTest extends TestCase {
                 0,
                 0,
                 $document,
+                null,
             ],
-            'normalized' => [
+            'normalized'         => [
                 <<<'STRING'
                 enum C {
                     A
@@ -195,8 +199,9 @@ class DocumentTest extends TestCase {
                 0,
                 0,
                 $document,
+                null,
             ],
-            'indent'     => [
+            'indent'             => [
                 <<<'STRING'
                 type Query {
                         test: [Test]!
@@ -226,8 +231,51 @@ class DocumentTest extends TestCase {
                 1,
                 0,
                 $document,
+                null,
             ],
-            'filter'     => [
+            'filter (no schema)' => [
+                <<<'STRING'
+                type Query {
+                    test: [Test]!
+                }
+
+                type Test {
+                    c: C!
+                    @c
+
+                    b: B
+                }
+
+                extend type Test
+                implements
+                    & B
+                    & A
+                @a
+                {
+                    a: String
+                    b: [B!]!
+                }
+
+                enum C {
+                    B
+                    C
+                    A
+                }
+                STRING,
+                $settings
+                    ->setPrintDirectives(true)
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'B';
+                    })
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
+                0,
+                0,
+                $document,
+                null,
+            ],
+            'filter'             => [
                 <<<'STRING'
                 type Query {
                     test: [Test]!
@@ -263,6 +311,11 @@ class DocumentTest extends TestCase {
                 0,
                 0,
                 $document,
+                BuildSchema::build(
+                    <<<'STRING'
+                    scalar B
+                    STRING,
+                ),
             ],
         ];
     }
