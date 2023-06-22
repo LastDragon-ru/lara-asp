@@ -42,12 +42,14 @@ class ObjectField extends Block implements NamedBlock {
         return (string) new PropertyBlock(
             $this->getContext(),
             $this->definition->name->value,
-            new Value(
-                $this->getContext(),
-                $this->getLevel() + 1 + (int) ($this->definition->value instanceof StringValueNode),
-                $this->getUsed(),
-                $this->definition->value,
-                $this->type,
+            $this->addUsed(
+                new Value(
+                    $this->getContext(),
+                    $this->getLevel() + 1 + (int) ($this->definition->value instanceof StringValueNode),
+                    $this->getUsed(),
+                    $this->definition->value,
+                    $this->type,
+                ),
             ),
         );
     }

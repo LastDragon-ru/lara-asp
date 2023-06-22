@@ -19,6 +19,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -74,6 +75,70 @@ class ValueTest extends TestCase {
         self::assertNotEmpty((string) $block);
         self::assertEquals(['Int' => 'Int'], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
+    }
+
+    public function testStatisticsObjectValue(): void {
+        $schema  = BuildSchema::build(
+            <<<'STRING'
+            type A {
+                a: Int
+                b: Boolean
+                c: C
+            }
+
+            type B {
+                b: String
+            }
+
+            type C {
+                a: Int
+                b: B!
+            }
+            STRING,
+        );
+        $context = new Context(new TestSettings(), null, $schema);
+        $literal = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
+        $block   = new Value($context, 0, 0, $literal, $schema->getType('A'));
+
+        self::assertNotEmpty((string) $block);
+        self::assertEquals(
+            [
+                'Int'     => 'Int',
+                'String'  => 'String',
+                'Boolean' => 'Boolean',
+                'A'       => 'A',
+                'B'       => 'B',
+                'C'       => 'C',
+            ],
+            $block->getUsedTypes(),
+        );
+        self::assertEmpty($block->getUsedDirectives());
+    }
+
+    public function testStatisticsObjectValueNoSchema(): void {
+        $context = new Context(new TestSettings(), null, null);
+        $literal = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
+        $block   = new Value(
+            $context,
+            0,
+            0,
+            $literal,
+            new InputObjectType([
+                'name'   => 'A',
+                'fields' => [
+                    // empty
+                ],
+            ]),
+        );
+
+        self::assertNotEmpty((string) $block);
+        self::assertEquals(
+            [
+                'A' => 'A',
+            ],
+            $block->getUsedTypes(),
+        );
+        self::assertEmpty($block->getUsedDirectives());
     }
     // </editor-fold>
 
