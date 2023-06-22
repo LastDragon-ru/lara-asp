@@ -20,7 +20,9 @@ use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
 
 use function array_key_exists;
 use function array_merge;
@@ -83,7 +85,13 @@ class Context {
      * @return (Type&NamedType)|null
      */
     public function getType(string $name): ?Type {
-        return $this->getSchema()?->getType($name);
+        $type = $this->getSchema()?->getType($name);
+
+        if (!$type && $this->getSchema()) {
+            throw new TypeNotFound($name);
+        }
+
+        return $type;
     }
 
     public function isTypeAllowed(string $type): bool {
@@ -185,8 +193,14 @@ class Context {
     }
 
     public function getDirective(string $name): DirectiveDefinitionNode|Directive|null {
-        return $this->getSchema()?->getDirective($name)
+        $directive = $this->getSchema()?->getDirective($name)
             ?? $this->getDirectiveResolver()?->getDefinition($name);
+
+        if (!$directive && $this->getSchema()) {
+            throw new DirectiveDefinitionNotFound($name);
+        }
+
+        return $directive;
     }
 
     public function isDirectiveAllowed(string $directive): bool {
