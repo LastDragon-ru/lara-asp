@@ -9,6 +9,7 @@ use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\EnumTypeExtensionNode;
 use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
+use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeExtensionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
@@ -21,6 +22,7 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeExtensionNode;
 use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\AST\SchemaExtensionNode;
+use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\AST\UnionTypeExtensionNode;
@@ -44,6 +46,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Document;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\EnumTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\EnumTypeExtension;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\EnumValueDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Field;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\FieldDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InputObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InputObjectTypeExtension;
@@ -56,6 +59,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ScalarTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ScalarTypeExtension;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\SchemaDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\SchemaExtension;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\SelectionSet;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\UnionTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\UnionTypeExtension;
@@ -126,6 +130,10 @@ class Factory {
                 => new Value($context, $definition),
             $definition instanceof DocumentNode
                 => new Document($context, $definition),
+            $definition instanceof FieldNode
+                => new Field($context, $definition),
+            $definition instanceof SelectionSetNode
+                => new SelectionSet($context, $definition),
             $definition instanceof VariableDefinitionNode
                 => new VariableDefinition($context, $definition),
             default

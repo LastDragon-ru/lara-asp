@@ -27,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveArgumentNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldArgumentNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
 
@@ -318,6 +319,29 @@ class Context {
         }
 
         return $field;
+    }
+
+    /**
+     * @param (TypeNode&Node)|Type $object
+     */
+    public function getFieldArgument(TypeNode|Type $object, string $field, string $name): ?Argument {
+        $argument   = null;
+        $definition = $this->getField($object, $field);
+
+        if ($definition instanceof FieldDefinition) {
+            foreach ($definition->args as $arg) {
+                if ($arg->name === $name) {
+                    $argument = $arg;
+                    break;
+                }
+            }
+        }
+
+        if ($this->getSchema() && !$argument) {
+            throw new FieldArgumentNotFound($this->getTypeName($object), $field, $name);
+        }
+
+        return $argument;
     }
     // </editor-fold>
 }
