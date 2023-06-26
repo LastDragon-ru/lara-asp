@@ -213,15 +213,6 @@ abstract class Block implements Statistics, Stringable {
             ? $this->getContext()->getTypeName($type)
             : $type;
     }
-
-    /**
-     * @param (TypeNode&Node)|Type|null $object
-     */
-    public function getField(TypeNode|Type|null $object, string $field): InputObjectField|FieldDefinition|null {
-        return $object
-            ? $this->getContext()->getField($object, $field)
-            : null;
-    }
     // </editor-fold>
 
     // <editor-fold desc="Directives">
@@ -234,4 +225,16 @@ abstract class Block implements Statistics, Stringable {
         return $this->getContext()->isDirectiveDefinitionAllowed($directive);
     }
     // </editor-fold>
+
+    // <editor-fold desc="Fields">
+    // =================================================================================================================
+    /**
+     * @param (TypeNode&Node)|Type|null $object
+     */
+    public function getField(TypeNode|Type|null $object, string $field): InputObjectField|FieldDefinition|null {
+        return $object
+            ? $this->getContext()->getField($object, $field)
+            : null;
+    }
+    //</editor-fold>
 }

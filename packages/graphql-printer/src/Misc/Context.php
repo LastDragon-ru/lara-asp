@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
 
 use GraphQL\Language\AST\DirectiveDefinitionNode;
+use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NameNode;
@@ -10,6 +12,7 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\FieldDefinition;
@@ -22,6 +25,7 @@ use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveArgumentNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
@@ -260,6 +264,38 @@ class Context {
 
     protected function isDirectiveBuiltIn(string $directive): bool {
         return isset(GraphQLDirective::getInternalDirectives()[$directive]);
+    }
+
+    public function getDirectiveArgument(DirectiveNode $object, string $name): InputValueDefinitionNode|Argument|null {
+        // AST Node doesn't contain type of argument, but it can be
+        // determined by Directive definition.
+        $argument   = null;
+        $directive  = $object->name->value;
+        $definition = $this->getDirective($directive);
+
+        if ($definition instanceof DirectiveDefinitionNode) {
+            foreach ($definition->arguments as $arg) {
+                if ($arg->name->value === $name) {
+                    $argument = $arg;
+                    break;
+                }
+            }
+        } elseif ($definition instanceof GraphQLDirective) {
+            foreach ($definition->args as $arg) {
+                if ($arg->name === $name) {
+                    $argument = $arg;
+                    break;
+                }
+            }
+        } else {
+            // empty
+        }
+
+        if ($this->getSchema() && !$argument) {
+            throw new DirectiveArgumentNotFound("@{$directive}", $name);
+        }
+
+        return $argument;
     }
     // </editor-fold>
 

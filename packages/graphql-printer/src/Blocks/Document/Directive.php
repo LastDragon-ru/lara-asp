@@ -2,18 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
-use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\TypeNode;
-use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
-use function count;
 use function mb_strlen;
 
 /**
@@ -45,53 +40,33 @@ class Directive extends Block implements NamedBlock {
         }
 
         // Convert
-        $node = $this->getDefinition();
-        $name = $this->getName();
-        $used = mb_strlen($name);
-        $args = $this->addUsed(
-            new Arguments(
-                $this->getContext(),
-                $this->getLevel(),
-                $this->getUsed() + $used,
-                $node->arguments,
-                $this->getArgumentsTypes(),
-            ),
-        );
+        $definition = $this->getDefinition();
+        $directive  = $this->getName();
+        $context    = $this->getContext();
+        $level      = $this->getLevel();
+        $used       = $this->getUsed();
+        $args       = new Arguments($context, $level, $used + mb_strlen($directive));
+
+        foreach ($definition->arguments as $node) {
+            $name        = $node->name->value;
+            $arg         = $context->getDirectiveArgument($definition, $name);
+            $type        = $arg instanceof InputValueDefinitionNode
+                ? $arg->type
+                : $arg?->getType();
+            $args[$name] = new Argument(
+                $context,
+                $level,
+                $used,
+                $node,
+                $type,
+            );
+        }
 
         // Statistics
-        $this->addUsedDirective($name);
+        $this->addUsed($args);
+        $this->addUsedDirective($directive);
 
         // Return
-        return "{$name}{$args}";
-    }
-
-    /**
-     * @return array<string, (TypeNode&Node)|Type>
-     */
-    private function getArgumentsTypes(): array {
-        // Arguments?
-        if (count($this->getDefinition()->arguments) <= 0) {
-            return [];
-        }
-
-        // AST Node doesn't contain type of argument, but it can be
-        // determined by Directive definition.
-        $types      = [];
-        $directive  = $this->getDefinition()->name->value;
-        $definition = $this->getContext()->getDirective($directive);
-
-        if ($definition instanceof DirectiveDefinitionNode) {
-            foreach ($definition->arguments as $argument) {
-                $types[$argument->name->value] = $argument->type;
-            }
-        } elseif ($definition instanceof GraphQLDirective) {
-            foreach ($definition->args as $arg) {
-                $types[$arg->name] = $arg->getType();
-            }
-        } else {
-            // empty
-        }
-
-        return $types;
+        return "{$directive}{$args}";
     }
 }
