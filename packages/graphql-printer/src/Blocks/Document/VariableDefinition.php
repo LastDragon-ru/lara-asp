@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
@@ -14,7 +15,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
  * @extends DefinitionBlock<VariableDefinitionNode>
  */
 #[GraphQLAstNode(VariableDefinitionNode::class)]
-class VariableDefinition extends DefinitionBlock {
+class VariableDefinition extends DefinitionBlock implements ExecutableDefinitionBlock {
     protected function content(Collector $collector, int $level, int $used): string {
         return $this->isTypeAllowed($this->getTypeName($this->getDefinition()->type))
             ? parent::content($collector, $level, $used)

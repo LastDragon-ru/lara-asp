@@ -8,6 +8,7 @@ use GraphQL\Language\AST\SelectionNode;
 use GraphQL\Language\AST\SelectionSetNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
@@ -17,7 +18,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
  * @extends ListBlock<Block, array-key, SelectionNode&Node>
  */
 #[GraphQLAstNode(SelectionSetNode::class)]
-class SelectionSet extends ListBlock {
+class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
     public function __construct(
         Context $context,
         SelectionSetNode $definition,

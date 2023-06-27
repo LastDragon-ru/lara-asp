@@ -203,7 +203,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         }
 
         // Statistics
-        if (!($this instanceof ExtensionDefinitionBlock)) {
+        if (!($this instanceof ExtensionDefinitionBlock) && !($this instanceof ExecutableDefinitionBlock)) {
             $name = $this->name();
 
             if ($name) {

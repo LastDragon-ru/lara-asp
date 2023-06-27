@@ -9,6 +9,7 @@ use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
@@ -19,7 +20,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
  * @extends DefinitionBlock<FieldNode>
  */
 #[GraphQLAstNode(FieldNode::class)]
-class Field extends DefinitionBlock {
+class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
     /**
      * @param (TypeNode&Node)|Type|null $type
      */
