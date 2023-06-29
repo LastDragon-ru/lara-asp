@@ -18,7 +18,6 @@ use function array_filter;
 use function array_key_exists;
 use function array_keys;
 use function count;
-use function mb_strlen;
 
 use const ARRAY_FILTER_USE_BOTH;
 
@@ -54,12 +53,11 @@ class SchemaDefinition extends DefinitionBlock {
         return $content;
     }
 
-    protected function fields(int $used): Block|string|null {
-        $space      = $this->space();
+    protected function fields(int $used, bool $multiline): ?Block {
         $fields     = new RootOperationTypesDefinition(
             $this->getContext(),
             $this->getLevel(),
-            $used + mb_strlen($space),
+            $used,
         );
         $operations = $this->getOperationsTypes();
 
@@ -73,7 +71,7 @@ class SchemaDefinition extends DefinitionBlock {
             );
         }
 
-        return $this->addUsed($fields);
+        return $fields;
     }
 
     private function isUseDefaultRootOperationTypeNames(): bool {

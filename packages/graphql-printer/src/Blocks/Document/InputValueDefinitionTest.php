@@ -135,7 +135,8 @@ class InputValueDefinitionTest extends TestCase {
                     "aaaaaaaaaaaaaaaaaaaaaaaaaa"
                 ]
                 STRING,
-                $settings,
+                $settings
+                    ->setLineLength(20),
                 0,
                 120,
                 new Argument([
@@ -156,7 +157,8 @@ class InputValueDefinitionTest extends TestCase {
                         "aaaaaaaaaaaaaaaaaaaaaaaaaa"
                     ]
                 STRING,
-                $settings,
+                $settings
+                    ->setLineLength(50),
                 1,
                 70,
                 new Argument([
@@ -213,7 +215,8 @@ class InputValueDefinitionTest extends TestCase {
                 ]
                 @directive
                 STRING,
-                $settings,
+                $settings
+                    ->setLineLength(20),
                 0,
                 120,
                 Parser::inputValueDefinition(

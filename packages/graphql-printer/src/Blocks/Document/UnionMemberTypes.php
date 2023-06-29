@@ -26,7 +26,7 @@ class UnionMemberTypes extends UsageList {
     }
 
     protected function prefix(): string {
-        return '';
+        return '=';
     }
 
     protected function isNormalized(): bool {
@@ -34,6 +34,7 @@ class UnionMemberTypes extends UsageList {
     }
 
     protected function isAlwaysMultiline(): bool {
-        return $this->getSettings()->isAlwaysMultilineUnions();
+        return parent::isAlwaysMultiline()
+            || $this->getSettings()->isAlwaysMultilineUnions();
     }
 }

@@ -18,8 +18,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
-use function mb_strlen;
-
 /**
  * @internal
  *
@@ -44,8 +42,17 @@ class InputValueDefinition extends DefinitionBlock {
             : '';
     }
 
-    protected function body(int $used): Block|string|null {
-        $type       = $this->getType();
+    protected function type(int $used, bool $multiline): ?Block {
+        return new Type(
+            $this->getContext(),
+            $this->getLevel(),
+            $used,
+            $this->getType(),
+        );
+    }
+
+    protected function value(int $used, bool $multiline): ?Block {
+        $value      = null;
         $default    = null;
         $definition = $this->getDefinition();
 
@@ -57,31 +64,16 @@ class InputValueDefinition extends DefinitionBlock {
                 : null;
         }
 
-        $space = $this->space();
-        $block = $this->addUsed(
-            new Type(
+        if ($default !== null) {
+            $value = new Value(
                 $this->getContext(),
                 $this->getLevel(),
-                $this->getUsed(),
-                $type,
-            ),
-        );
-        $body  = ":{$space}{$block}";
-
-        if ($default !== null) {
-            $prefix = "{$body}{$space}={$space}";
-            $value  = $this->addUsed(
-                new Value(
-                    $this->getContext(),
-                    $this->getLevel(),
-                    $this->getUsed() + mb_strlen($prefix),
-                    $default,
-                ),
+                $used,
+                $default,
             );
-            $body   = "{$prefix}{$value}";
         }
 
-        return $body;
+        return $value;
     }
 
     /**

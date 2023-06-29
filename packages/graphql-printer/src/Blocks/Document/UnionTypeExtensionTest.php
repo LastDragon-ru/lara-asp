@@ -150,7 +150,8 @@ class UnionTypeExtensionTest extends TestCase {
                     | B
                     | A
                 STRING,
-                $settings,
+                $settings
+                    ->setLineLength(10),
                 0,
                 120,
                 Parser::unionTypeExtension(

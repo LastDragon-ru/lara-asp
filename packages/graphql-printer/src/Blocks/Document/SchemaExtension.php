@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
-use function mb_strlen;
-
 /**
  * @internal
  *
@@ -31,13 +29,12 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
         return 'extend schema';
     }
 
-    protected function fields(int $used): Block|string|null {
+    protected function fields(int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $space      = $this->space();
         $fields     = new RootOperationTypesDefinition(
             $this->getContext(),
             $this->getLevel(),
-            $used + mb_strlen($space),
+            $used,
         );
 
         foreach ($definition->operationTypes as $operation) {
@@ -50,6 +47,6 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
             );
         }
 
-        return $this->addUsed($fields);
+        return $fields;
     }
 }

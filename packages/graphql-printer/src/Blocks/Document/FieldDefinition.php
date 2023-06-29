@@ -38,29 +38,27 @@ class FieldDefinition extends DefinitionBlock {
             : '';
     }
 
-    protected function body(int $used): Block|string|null {
-        $definition = $this->getDefinition();
-        $space      = $this->space();
-        $type       = $this->addUsed(
-            new Type(
-                $this->getContext(),
-                $this->getLevel(),
-                $this->getUsed(),
-                $this->getType(),
-            ),
+    protected function type(int $used, bool $multiline): ?Block {
+        return new Type(
+            $this->getContext(),
+            $this->getLevel(),
+            $used,
+            $this->getType(),
         );
-        $args       = $this->addUsed(
-            new ArgumentsDefinition(
-                $this->getContext(),
-                $this->getLevel(),
-                $this->getUsed(),
-                $definition instanceof FieldDefinitionNode
-                    ? $definition->arguments
-                    : $definition->args,
-            ),
+    }
+
+    protected function arguments(int $used, bool $multiline): ?Block {
+        $definition = $this->getDefinition();
+        $arguments  = new ArgumentsDefinition(
+            $this->getContext(),
+            $this->getLevel(),
+            $used,
+            $definition instanceof FieldDefinitionNode
+                ? $definition->arguments
+                : $definition->args,
         );
 
-        return "{$args}:{$space}{$type}";
+        return $arguments;
     }
 
     /**

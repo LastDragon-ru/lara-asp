@@ -17,6 +17,13 @@ type Mutation {
     ): [TypeB!]
 }
 
+type TypeB {
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
 """
 Input description.
 """
@@ -41,13 +48,6 @@ input InputA
     b: [String!]
     @directive(
         location: "extend"
-    )
-}
-
-type TypeB {
-    b: [String!]
-    @directive(
-        location: "field"
     )
 }
 

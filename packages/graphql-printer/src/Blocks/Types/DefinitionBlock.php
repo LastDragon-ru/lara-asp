@@ -11,6 +11,7 @@ use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeExtensionNode;
+use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
@@ -79,38 +80,100 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             return '';
         }
 
-        // Process
-        $eol         = $this->eol();
-        $space       = $this->space();
-        $indent      = $this->indent();
-        $name        = $this->getName();
-        $used        = $this->getUsed() + mb_strlen($name) + mb_strlen($space);
-        $body        = (string) $this->addUsed($this->body($used));
-        $fields      = (string) $this->addUsed($this->fields($used + mb_strlen($body)));
-        $description = (string) $this->addUsed($this->description());
-        $directives  = $this->getSettings()->isPrintDirectives()
-            ? (string) $this->addUsed($this->directives())
-            : '';
-        $content     = '';
+        // Prepare
+        $eol       = $this->eol();
+        $space     = $this->space();
+        $indent    = $this->indent();
+        $content   = '';
+        $used      = $this->getUsed() + mb_strlen($indent) + mb_strlen($content);
+        $multiline = $this->isStringMultiline($content);
+
+        // Description
+        $description = (string) $this->addUsed($this->description($used));
 
         if ($description) {
             $content .= "{$description}{$eol}{$indent}";
+            $used     = mb_strlen($indent); // because new line has started
         }
 
-        $content .= "{$name}{$body}";
+        // Name
+        $name     = $this->getName();
+        $content .= $name;
+        $used    += mb_strlen($name);
 
-        if ($directives) {
-            $content .= "{$eol}{$indent}{$directives}";
+        // Arguments
+        $arguments = $this->addUsed($this->arguments($used, $multiline));
+
+        if ($arguments && !$arguments->isEmpty()) {
+            $multiline = $multiline || $arguments->isMultiline();
+            $content  .= $arguments;
+            $used     += $arguments->getLength();
         }
 
-        if ($fields) {
-            if ((bool) $directives || $this->isStringMultiline($body)) {
-                $content .= "{$eol}{$indent}{$fields}";
+        // Type
+        $prefix = ":{$space}";
+        $type   = $this->addUsed($this->type($used + mb_strlen($prefix), $multiline));
+
+        if ($type && !$type->isEmpty()) {
+            $multiline = $multiline || $type->isMultiline();
+            $content  .= "{$prefix}{$type}";
+            $used     += $type->getLength() + mb_strlen($prefix);
+        }
+
+        // Value
+        $prefix = "{$space}={$space}";
+        $value  = $this->addUsed($this->value($used + mb_strlen($prefix), $multiline));
+
+        if ($value && !$value->isEmpty()) {
+            $multiline = $multiline || $value->isMultiline();
+            $content  .= "{$prefix}{$value}";
+            $used     += $value->getLength() + mb_strlen($prefix);
+        }
+
+        // Body
+        $prefix = $space;
+        $body   = $this->addUsed($this->body($used + mb_strlen($prefix), $multiline));
+
+        if ($body && !$body->isEmpty()) {
+            if ($multiline || ($body instanceof UsageList && $body->isMultiline())) {
+                $multiline = true;
+                $content  .= "{$eol}{$indent}{$body}";
+                $used      = mb_strlen($indent); // because new line has started
             } else {
-                $content .= "{$space}{$fields}";
+                $multiline = $body->isMultiline();
+                $content  .= "{$prefix}{$body}";
+                $used     += $body->getUsed() + mb_strlen($prefix);
             }
         }
 
+        // Directives
+        $directives = $this->getSettings()->isPrintDirectives()
+            ? $this->addUsed($this->directives($used, $multiline))
+            : null;
+
+        if ($directives && !$directives->isEmpty()) {
+            $multiline = true;
+            $content  .= "{$eol}{$indent}{$directives}";
+            $used      = mb_strlen($indent); // because new line has started
+        }
+
+        // Fields
+        $prefix = $space;
+        $fields = $this->addUsed($this->fields($used + mb_strlen($prefix), $multiline));
+
+        if ($fields && !$fields->isEmpty()) {
+            if ($multiline || ($directives && !$directives->isEmpty())) {
+                // $multiline = true;
+                $content .= "{$eol}{$indent}{$fields}";
+                // $used      = mb_strlen($indent); // because new line has started
+            } else {
+                // $multiline = $fields->isMultiline();
+                $content .= "{$prefix}{$fields}";
+                // $used     += $fields->getUsed() + mb_strlen($prefix);
+            }
+        }
+
+        // Return
         return $content;
     }
 
@@ -132,6 +195,8 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             } else {
                 // empty
             }
+        } elseif ($definition instanceof VariableDefinitionNode) {
+            $name = $definition->variable->name->value;
         } else {
             // empty
         }
@@ -139,20 +204,32 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $name;
     }
 
-    protected function body(int $used): Block|string|null {
+    protected function arguments(int $used, bool $multiline): ?Block {
         return null;
     }
 
-    protected function fields(int $used): Block|string|null {
+    protected function type(int $used, bool $multiline): ?Block {
         return null;
     }
 
-    protected function directives(int $level = null, int $used = null): Directives {
+    protected function value(int $used, bool $multiline): ?Block {
+        return null;
+    }
+
+    protected function body(int $used, bool $multiline): ?Block {
+        return null;
+    }
+
+    protected function fields(int $used, bool $multiline): ?Block {
+        return null;
+    }
+
+    protected function directives(int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $directives = new Directives(
             $this->getContext(),
-            $level ?? $this->getLevel(),
-            $used ?? $this->getUsed(),
+            $this->getLevel(),
+            $used,
             $this->getDefinitionDirectives(),
             $definition->deprecationReason ?? null,
         );
@@ -160,7 +237,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $directives;
     }
 
-    protected function description(): ?Block {
+    protected function description(int $used): ?Block {
         // Description
         $definition  = $this->getDefinition();
         $description = null;
@@ -186,7 +263,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return new DescriptionBlock(
             $this->getContext(),
             $this->getLevel(),
-            $this->getUsed(),
+            $used,
             $description,
         );
     }

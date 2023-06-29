@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\EnumValuesDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
-use function mb_strlen;
-
 /**
  * @internal
  *
@@ -28,18 +26,15 @@ abstract class EnumDefinitionBlock extends DefinitionBlock {
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function fields(int $used): Block|string|null {
+    protected function fields(int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $space      = $this->space();
-        $values     = $this->addUsed(
-            new EnumValuesDefinition(
-                $this->getContext(),
-                $this->getLevel(),
-                $used + mb_strlen($space),
-                $definition instanceof EnumType
-                    ? $definition->getValues()
-                    : $definition->values,
-            ),
+        $values     = new EnumValuesDefinition(
+            $this->getContext(),
+            $this->getLevel(),
+            $used,
+            $definition instanceof EnumType
+                ? $definition->getValues()
+                : $definition->values,
         );
 
         return $values;
