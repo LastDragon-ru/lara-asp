@@ -83,8 +83,4 @@ class DirectiveDefinition extends DefinitionBlock {
 
         return $content;
     }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
-    }
 }

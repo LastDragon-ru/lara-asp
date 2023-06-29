@@ -31,10 +31,6 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
         return 'extend schema';
     }
 
-    protected function body(int $used): Block|string|null {
-        return null;
-    }
-
     protected function fields(int $used): Block|string|null {
         $definition = $this->getDefinition();
         $space      = $this->space();

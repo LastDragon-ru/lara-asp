@@ -38,10 +38,6 @@ class FieldDefinition extends DefinitionBlock {
             : '';
     }
 
-    protected function type(): string|null {
-        return null;
-    }
-
     protected function body(int $used): Block|string|null {
         $definition = $this->getDefinition();
         $space      = $this->space();
@@ -65,10 +61,6 @@ class FieldDefinition extends DefinitionBlock {
         );
 
         return "{$args}:{$space}{$type}";
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
     }
 
     /**

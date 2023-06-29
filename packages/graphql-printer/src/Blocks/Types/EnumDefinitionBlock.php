@@ -28,10 +28,6 @@ abstract class EnumDefinitionBlock extends DefinitionBlock {
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function body(int $used): Block|string|null {
-        return null;
-    }
-
     protected function fields(int $used): Block|string|null {
         $definition = $this->getDefinition();
         $space      = $this->space();

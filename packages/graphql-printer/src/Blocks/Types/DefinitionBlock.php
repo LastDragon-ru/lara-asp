@@ -135,11 +135,17 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $name;
     }
 
-    abstract protected function type(): string|null;
+    protected function type(): ?string {
+        return null;
+    }
 
-    abstract protected function body(int $used): Block|string|null;
+    protected function body(int $used): Block|string|null {
+        return null;
+    }
 
-    abstract protected function fields(int $used): Block|string|null;
+    protected function fields(int $used): Block|string|null {
+        return null;
+    }
 
     protected function directives(int $level = null, int $used = null): Directives {
         $definition = $this->getDefinition();

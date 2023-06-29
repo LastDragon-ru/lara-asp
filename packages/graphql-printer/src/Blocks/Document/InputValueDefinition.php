@@ -44,10 +44,6 @@ class InputValueDefinition extends DefinitionBlock {
             : '';
     }
 
-    protected function type(): string|null {
-        return null;
-    }
-
     protected function body(int $used): Block|string|null {
         $type       = $this->getType();
         $default    = null;
@@ -86,10 +82,6 @@ class InputValueDefinition extends DefinitionBlock {
         }
 
         return $body;
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
     }
 
     /**

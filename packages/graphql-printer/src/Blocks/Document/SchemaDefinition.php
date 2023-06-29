@@ -54,10 +54,6 @@ class SchemaDefinition extends DefinitionBlock {
         return $content;
     }
 
-    protected function body(int $used): Block|string|null {
-        return null;
-    }
-
     protected function fields(int $used): Block|string|null {
         $space      = $this->space();
         $fields     = new RootOperationTypesDefinition(

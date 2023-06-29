@@ -10,7 +10,6 @@ use GraphQL\Type\Definition\IDType;
 use GraphQL\Type\Definition\IntType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\StringType;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
@@ -40,13 +39,5 @@ class ScalarTypeDefinition extends DefinitionBlock {
 
     protected function type(): string|null {
         return 'scalar';
-    }
-
-    protected function body(int $used): Block|string|null {
-        return null;
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
     }
 }

@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\ScalarTypeExtensionNode;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
@@ -27,13 +26,5 @@ class ScalarTypeExtension extends DefinitionBlock implements ExtensionDefinition
 
     protected function type(): string|null {
         return 'extend scalar';
-    }
-
-    protected function body(int $used): Block|string|null {
-        return null;
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
     }
 }
