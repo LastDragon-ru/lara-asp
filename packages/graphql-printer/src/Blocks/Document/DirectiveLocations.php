@@ -6,18 +6,20 @@ use GraphQL\Language\AST\NameNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Traversable;
 
 /**
  * @internal
  * @extends UsageList<DirectiveLocation, NameNode|string>
  */
 class DirectiveLocations extends UsageList {
+    /**
+     * @inheritDoc
+     */
     public function __construct(
         Context $context,
         int $level,
         int $used,
-        Traversable|array $items,
+        iterable $items,
         bool $isAlwaysMultiline = false,
         private bool $repeatable = false,
     ) {

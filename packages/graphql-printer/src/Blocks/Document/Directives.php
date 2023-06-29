@@ -53,7 +53,7 @@ class Directives extends ListBlock {
         return true;
     }
 
-    private function block(DirectiveNode $directive,): Directive {
+    private function block(DirectiveNode $directive): Directive {
         return new Directive(
             $this->getContext(),
             $this->getLevel(),
