@@ -28,7 +28,7 @@ class EnumTypeDefinition extends EnumDefinitionBlock {
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function type(): string {
+    protected function prefix(): string {
         return 'enum';
     }
 }

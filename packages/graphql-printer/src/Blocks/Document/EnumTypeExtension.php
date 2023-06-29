@@ -24,7 +24,7 @@ class EnumTypeExtension extends EnumDefinitionBlock implements ExtensionDefiniti
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function type(): string {
+    protected function prefix(): string {
         return 'extend enum';
     }
 }

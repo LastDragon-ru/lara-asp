@@ -24,7 +24,7 @@ class UnionTypeExtension extends UnionDefinitionBlock implements ExtensionDefini
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function type(): string|null {
+    protected function prefix(): ?string {
         return 'extend union';
     }
 }

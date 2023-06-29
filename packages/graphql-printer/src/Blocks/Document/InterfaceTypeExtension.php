@@ -24,7 +24,7 @@ class InterfaceTypeExtension extends TypeDefinitionBlock implements ExtensionDef
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function type(): string|null {
+    protected function prefix(): ?string {
         return 'extend interface';
     }
 }

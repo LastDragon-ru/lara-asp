@@ -49,14 +49,14 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
     }
 
     public function getName(): string {
-        $name = $this->name();
-        $type = $this->type();
+        $name   = $this->name();
+        $prefix = $this->prefix();
 
-        if ($type && $name) {
+        if ($prefix && $name) {
             $space = $this->space();
-            $name  = "{$type}{$space}{$name}";
-        } elseif ($type) {
-            $name = $type;
+            $name  = "{$prefix}{$space}{$name}";
+        } elseif ($prefix) {
+            $name = $prefix;
         } else {
             // empty
         }
@@ -114,6 +114,10 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $content;
     }
 
+    protected function prefix(): ?string {
+        return null;
+    }
+
     public function name(): string {
         $definition = $this->getDefinition();
         $name       = '';
@@ -133,10 +137,6 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         }
 
         return $name;
-    }
-
-    protected function type(): ?string {
-        return null;
     }
 
     protected function body(int $used): Block|string|null {

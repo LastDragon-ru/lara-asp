@@ -27,7 +27,7 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function type(): string|null {
+    protected function prefix(): ?string {
         return 'extend schema';
     }
 
