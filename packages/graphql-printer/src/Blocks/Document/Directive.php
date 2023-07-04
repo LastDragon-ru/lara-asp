@@ -33,7 +33,7 @@ class Directive extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         // Print?
         if (!$this->isDirectiveAllowed($this->getDefinition()->name->value)) {
             return '';
@@ -43,8 +43,6 @@ class Directive extends Block implements NamedBlock {
         $definition = $this->getDefinition();
         $directive  = $this->getName();
         $context    = $this->getContext();
-        $level      = $this->getLevel();
-        $used       = $this->getUsed();
         $args       = new Arguments($context, $level, $used + mb_strlen($directive));
 
         foreach ($definition->arguments as $node) {

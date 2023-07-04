@@ -26,11 +26,11 @@ abstract class UnionDefinitionBlock extends DefinitionBlock {
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function fields(int $used, bool $multiline): ?Block {
+    protected function fields(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $types      = new UnionMemberTypes(
             $this->getContext(),
-            $this->getLevel() + 1,
+            $level + 1,
             $used,
             $definition instanceof UnionType
                 ? $definition->getTypes()

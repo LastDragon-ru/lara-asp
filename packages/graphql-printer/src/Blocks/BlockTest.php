@@ -97,6 +97,8 @@ class BlockTest extends TestCase {
     }
 
     public function testGetContent(): void {
+        $used    = 123;
+        $level   = 1;
         $context = new Context(new TestSettings(), null, null);
         $content = 'content';
         $block   = Mockery::mock(BlockTest__Block::class, [$context]);
@@ -104,11 +106,15 @@ class BlockTest extends TestCase {
         $block->makePartial();
         $block
             ->shouldReceive('content')
+            ->with($level, $used)
             ->once()
             ->andReturn($content);
+        $block
+            ->shouldReceive('content')
+            ->never();
 
-        self::assertEquals($content, $block->getContent());
-        self::assertEquals($content, $block->getContent());
+        self::assertEquals($content, $block->getContent($level, $used));
+        self::assertEquals($content, $block->getContent($level, $used));
     }
 
     public function testGetLength(): void {
@@ -286,8 +292,8 @@ class BlockTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockTest__Block extends Block {
-    public function getContent(): string {
-        return parent::getContent();
+    public function getContent(int $level, int $used): string {
+        return parent::getContent($level, $used);
     }
 
     public function getLength(): int {
@@ -298,7 +304,7 @@ class BlockTest__Block extends Block {
         return parent::isMultiline();
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         return '';
     }
 }

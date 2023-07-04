@@ -36,22 +36,22 @@ class InputValueDefinition extends DefinitionBlock {
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         return $this->isTypeAllowed($this->getType())
-            ? parent::content()
+            ? parent::content($level, $used)
             : '';
     }
 
-    protected function type(int $used, bool $multiline): ?Block {
+    protected function type(int $level, int $used, bool $multiline): ?Block {
         return new Type(
             $this->getContext(),
-            $this->getLevel(),
+            $level,
             $used,
             $this->getType(),
         );
     }
 
-    protected function value(int $used, bool $multiline): ?Block {
+    protected function value(int $level, int $used, bool $multiline): ?Block {
         $value      = null;
         $default    = null;
         $definition = $this->getDefinition();
@@ -67,7 +67,7 @@ class InputValueDefinition extends DefinitionBlock {
         if ($default !== null) {
             $value = new Value(
                 $this->getContext(),
-                $this->getLevel(),
+                $level,
                 $used,
                 $default,
             );

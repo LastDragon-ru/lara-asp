@@ -33,7 +33,7 @@ class PrintableBlock extends Block implements NamedBlock {
     ) {
         parent::__construct($context, $level);
 
-        $this->block = $this->getDefinitionBlock($definition);
+        $this->block = $this->getDefinitionBlock($level, 0, $definition);
     }
 
     public function getName(): string {
@@ -58,14 +58,14 @@ class PrintableBlock extends Block implements NamedBlock {
         return $this->block;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         return (string) $this->addUsed($this->getBlock());
     }
 
     /**
      * @param TDefinition $definition
      */
-    private function getDefinitionBlock(object $definition): Block {
-        return Factory::create($this->getContext(), $this->getLevel(), $this->getUsed(), $definition);
+    private function getDefinitionBlock(int $level, int $used, object $definition): Block {
+        return Factory::create($this->getContext(), $level, $used, $definition);
     }
 }

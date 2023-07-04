@@ -29,8 +29,8 @@ class InputFieldsDefinition extends ListBlock {
                 : $field->name;
             $this[$name] = new InputValueDefinition(
                 $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
+                $level + 1,
+                $used,
                 $field,
             );
         }

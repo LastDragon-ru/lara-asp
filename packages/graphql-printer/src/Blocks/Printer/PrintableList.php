@@ -24,8 +24,8 @@ class PrintableList extends DefinitionList {
         return $this->root;
     }
 
-    protected function content(): string {
-        $content = parent::content();
+    protected function content(int $level, int $used): string {
+        $content = parent::content($level, $used);
 
         if ($content && $this->isRoot()) {
             $eof     = $this->getSettings()->getFileEnd();

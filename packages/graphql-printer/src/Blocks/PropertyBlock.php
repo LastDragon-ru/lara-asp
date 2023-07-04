@@ -40,7 +40,7 @@ class PropertyBlock extends Block implements NamedBlock {
         return ':';
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         $block   = $this->addUsed($this->getBlock());
         $content = "{$this->getName()}{$this->getSeparator()}{$this->space()}{$block}";
 

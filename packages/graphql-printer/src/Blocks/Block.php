@@ -23,6 +23,8 @@ use function str_repeat;
  * @internal
  */
 abstract class Block implements Statistics, Stringable {
+    private int     $_level    = 0;
+    private int     $_used     = 0;
     private ?string $content   = null;
     private ?int    $length    = null;
     private ?bool   $multiline = null;
@@ -55,10 +57,16 @@ abstract class Block implements Statistics, Stringable {
         return $this->getContext()->getSettings();
     }
 
+    /**
+     * @deprecated
+     */
     protected function getLevel(): int {
         return $this->level;
     }
 
+    /**
+     * @deprecated
+     */
     protected function getUsed(): int {
         return $this->used;
     }
@@ -71,15 +79,18 @@ abstract class Block implements Statistics, Stringable {
     }
 
     public function getLength(): int {
-        return $this->resolve(fn (): int => (int) $this->length);
+        return $this->resolve($this->getLevel(), $this->getUsed(), fn (): int => (int) $this->length);
     }
 
     public function isMultiline(): bool {
-        return $this->resolve(fn (): bool => (bool) $this->multiline);
+        return $this->resolve($this->getLevel(), $this->getUsed(), fn (): bool => (bool) $this->multiline);
     }
 
+    /**
+     * @deprecated
+     */
     public function __toString(): string {
-        return $this->getContent();
+        return $this->getContent($this->getLevel(), $this->getUsed());
     }
 
     /**
@@ -89,8 +100,8 @@ abstract class Block implements Statistics, Stringable {
      *
      * @return T
      */
-    protected function resolve(Closure $callback): mixed {
-        $content = $this->getContent();
+    protected function resolve(int $level, int $used, Closure $callback): mixed {
+        $content = $this->getContent($level, $used);
         $result  = $callback($content);
 
         return $result;
@@ -99,9 +110,11 @@ abstract class Block implements Statistics, Stringable {
 
     // <editor-fold desc="Cache">
     // =========================================================================
-    protected function getContent(): string {
-        if ($this->content === null) {
-            $this->content   = $this->content();
+    protected function getContent(int $level, int $used): string {
+        if ($this->content === null || $this->_level !== $level || $this->_used !== $used) {
+            $this->_level    = $level;
+            $this->_used     = $used;
+            $this->content   = $this->content($level, $used);
             $this->length    = mb_strlen($this->content);
             $this->multiline = $this->isStringMultiline($this->content);
         }
@@ -115,9 +128,11 @@ abstract class Block implements Statistics, Stringable {
         $this->multiline      = null;
         $this->content        = null;
         $this->length         = null;
+        $this->_level         = 0;
+        $this->_used          = 0;
     }
 
-    abstract protected function content(): string;
+    abstract protected function content(int $level, int $used): string;
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -150,14 +165,14 @@ abstract class Block implements Statistics, Stringable {
      * @return array<string,string>
      */
     public function getUsedTypes(): array {
-        return $this->resolve(fn (): array => $this->usedTypes);
+        return $this->resolve($this->getLevel(), $this->getUsed(), fn (): array => $this->usedTypes);
     }
 
     /**
      * @return array<string,string>
      */
     public function getUsedDirectives(): array {
-        return $this->resolve(fn (): array => $this->usedDirectives);
+        return $this->resolve($this->getLevel(), $this->getUsed(), fn (): array => $this->usedDirectives);
     }
 
     /**

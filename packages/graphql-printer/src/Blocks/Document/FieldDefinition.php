@@ -32,26 +32,26 @@ class FieldDefinition extends DefinitionBlock {
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         return $this->isTypeAllowed($this->getType())
-            ? parent::content()
+            ? parent::content($level, $used)
             : '';
     }
 
-    protected function type(int $used, bool $multiline): ?Block {
+    protected function type(int $level, int $used, bool $multiline): ?Block {
         return new Type(
             $this->getContext(),
-            $this->getLevel(),
+            $level,
             $used,
             $this->getType(),
         );
     }
 
-    protected function arguments(int $used, bool $multiline): ?Block {
+    protected function arguments(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $arguments  = new ArgumentsDefinition(
             $this->getContext(),
-            $this->getLevel(),
+            $level,
             $used,
             $definition instanceof FieldDefinitionNode
                 ? $definition->arguments

@@ -34,7 +34,7 @@ class Argument extends Block implements NamedBlock {
         return $this->argument->name->value;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         // Print?
         if (!$this->isTypeAllowed($this->type)) {
             return '';
@@ -48,8 +48,8 @@ class Argument extends Block implements NamedBlock {
                 $name,
                 new Value(
                     $this->getContext(),
-                    $this->getLevel() + 1,
-                    $this->getUsed(),
+                    $level + 1,
+                    $used,
                     $this->argument->value,
                 ),
             ),

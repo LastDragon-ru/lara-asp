@@ -24,7 +24,7 @@ class DirectiveLocation extends Block implements NamedBlock {
         return $this->getLocation();
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         return $this->getLocation();
     }
 

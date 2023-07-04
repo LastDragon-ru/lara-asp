@@ -28,7 +28,7 @@ abstract class UsageList extends ListBlock {
         parent::__construct($context, $level, $used);
 
         foreach ($items as $item) {
-            $this[] = $this->block($item);
+            $this[] = $this->block($level, $used, $item);
         }
     }
 
@@ -45,7 +45,7 @@ abstract class UsageList extends ListBlock {
      *
      * @return TBlock
      */
-    abstract protected function block(mixed $item): Block;
+    abstract protected function block(int $level, int $used, mixed $item): Block;
 
     abstract protected function separator(): string;
 
@@ -59,9 +59,9 @@ abstract class UsageList extends ListBlock {
         return "{$this->separator()}{$this->space()}";
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         $prefix  = $this->prefix();
-        $content = parent::content();
+        $content = parent::content($level, $used);
 
         if ($content) {
             if ($this->isAlwaysMultiline() || $this->isStringMultiline($content)) {

@@ -34,7 +34,7 @@ class ObjectField extends Block implements NamedBlock {
         return $this->definition->name->value;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         if (!$this->isTypeAllowed($this->type)) {
             return '';
         }
@@ -45,8 +45,8 @@ class ObjectField extends Block implements NamedBlock {
             $this->addUsed(
                 new Value(
                     $this->getContext(),
-                    $this->getLevel() + 1 + (int) ($this->definition->value instanceof StringValueNode),
-                    $this->getUsed(),
+                    $level + 1 + (int) ($this->definition->value instanceof StringValueNode),
+                    $used,
                     $this->definition->value,
                     $this->type,
                 ),

@@ -29,8 +29,8 @@ class ArgumentsDefinition extends ListBlock {
                 : $argument->name;
             $this[$name] = new InputValueDefinition(
                 $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
+                $level + 1,
+                $used,
                 $argument,
             );
         }

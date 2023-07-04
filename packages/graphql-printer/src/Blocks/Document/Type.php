@@ -53,7 +53,7 @@ class Type extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         $definition = $this->getDefinition();
         $name       = $this->getName();
         $type       = '';

@@ -29,8 +29,8 @@ class FieldsDefinition extends ListBlock {
                 : $field->name;
             $this[$name] = new FieldDefinition(
                 $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
+                $level + 1,
+                $used,
                 $field,
             );
         }

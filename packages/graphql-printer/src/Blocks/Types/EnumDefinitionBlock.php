@@ -26,11 +26,11 @@ abstract class EnumDefinitionBlock extends DefinitionBlock {
         parent::__construct($context, $level, $used, $definition);
     }
 
-    protected function fields(int $used, bool $multiline): ?Block {
+    protected function fields(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $values     = new EnumValuesDefinition(
             $this->getContext(),
-            $this->getLevel(),
+            $level,
             $used,
             $definition instanceof EnumType
                 ? $definition->getValues()

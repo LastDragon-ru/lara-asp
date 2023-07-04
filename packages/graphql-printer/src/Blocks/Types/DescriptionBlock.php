@@ -47,8 +47,8 @@ class DescriptionBlock extends StringValue {
         return $string;
     }
 
-    protected function content(): string {
-        $content = parent::content();
+    protected function content(int $level, int $used): string {
+        $content = parent::content($level, $used);
 
         if ($content === '""""""') {
             $content = '';

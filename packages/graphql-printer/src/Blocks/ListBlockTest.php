@@ -750,27 +750,26 @@ class ListBlockTest__ListBlock extends ListBlock {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ListBlockTest__Block extends Block {
-    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(
         protected bool $multiline,
         protected string $content,
     ) {
-        // empty
+        parent:: __construct(new Context(new TestSettings(), null, null));
     }
 
-    protected function getContent(): string {
+    protected function getContent(int $level, int $used): string {
         return $this->content;
     }
 
     public function getLength(): int {
-        return mb_strlen($this->getContent());
+        return mb_strlen($this->getContent(0, 0));
     }
 
     public function isMultiline(): bool {
         return $this->multiline;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         return '';
     }
 }
@@ -788,7 +787,11 @@ class ListBlockTest__NamedBlock extends PropertyBlock {
         protected bool $multiline,
         protected string $content,
     ) {
-        // empty
+        parent::__construct(
+            new Context(new TestSettings(), null, null),
+            $name,
+            new ListBlockTest__Block(false, ''),
+        );
     }
 
     public function getName(): string {
@@ -812,8 +815,6 @@ class ListBlockTest__StatisticsBlock extends Block {
     /**
      * @param array<string> $types
      * @param array<string> $directives
-     *
-     * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct(array $types, array $directives) {
         foreach ($types as $type) {
@@ -823,13 +824,15 @@ class ListBlockTest__StatisticsBlock extends Block {
         foreach ($directives as $directive) {
             $this->addUsedDirective($directive);
         }
+
+        parent:: __construct(new Context(new TestSettings(), null, null));
     }
 
     public function isEmpty(): bool {
         return false;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         return '';
     }
 }

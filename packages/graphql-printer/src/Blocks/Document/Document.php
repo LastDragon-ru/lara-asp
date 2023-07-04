@@ -27,12 +27,10 @@ class Document extends Block {
         return $this->document;
     }
 
-    protected function content(): string {
-        $definitions = new DefinitionList($this->getContext(), $this->getLevel(), $this->getUsed());
+    protected function content(int $level, int $used): string {
+        $definitions = new DefinitionList($this->getContext(), $level, $used);
         $document    = $this->getDocument();
         $context     = $this->getContext();
-        $level       = $this->getLevel();
-        $used        = $this->getUsed();
 
         foreach ($document->definitions as $definition) {
             $definitions[] = Factory::create($context, $level, $used, $definition);

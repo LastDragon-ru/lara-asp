@@ -24,11 +24,11 @@ class RootOperationTypeDefinition extends Type {
         return $this->operation;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         $content = '';
 
         if ($this->isTypeAllowed($this->getDefinition())) {
-            $content = parent::content();
+            $content = parent::content($level, $used);
             $content = "{$this->getOperation()}:{$this->space()}{$content}";
         }
 

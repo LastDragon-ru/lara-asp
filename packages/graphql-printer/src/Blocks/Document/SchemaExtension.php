@@ -29,19 +29,19 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
         return 'extend schema';
     }
 
-    protected function fields(int $used, bool $multiline): ?Block {
+    protected function fields(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $fields     = new RootOperationTypesDefinition(
             $this->getContext(),
-            $this->getLevel(),
+            $level,
             $used,
         );
 
         foreach ($definition->operationTypes as $operation) {
             $fields[] = new RootOperationTypeDefinition(
                 $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
+                $level + 1,
+                $used,
                 $operation->operation,
                 $operation->type,
             );

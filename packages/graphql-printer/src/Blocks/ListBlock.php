@@ -80,7 +80,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         return $blocks;
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         // Blocks?
         $content = '';
         $blocks  = $this->getBlocks();
@@ -106,7 +106,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
             $eol       = $this->eol();
             $last      = $count - 1;
             $index     = 0;
-            $indent    = $this->indent($this->getLevel() + (int) $isWrapped);
+            $indent    = $this->indent($level + (int) $isWrapped);
             $wrapped   = $this->isWrapped();
             $previous  = false;
             $separator = $this->getMultilineItemPrefix();

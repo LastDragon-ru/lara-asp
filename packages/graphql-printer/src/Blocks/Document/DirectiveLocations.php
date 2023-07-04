@@ -26,11 +26,11 @@ class DirectiveLocations extends UsageList {
         parent::__construct($context, $level, $used, $items, $isAlwaysMultiline);
     }
 
-    protected function block(mixed $item): Block {
+    protected function block(int $level, int $used, mixed $item): Block {
         return new DirectiveLocation(
             $this->getContext(),
-            $this->getLevel() + 1,
-            $this->getUsed(),
+            $level + 1,
+            $used,
             $item,
         );
     }

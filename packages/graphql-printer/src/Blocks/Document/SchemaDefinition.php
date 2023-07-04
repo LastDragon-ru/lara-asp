@@ -43,8 +43,8 @@ class SchemaDefinition extends DefinitionBlock {
         return 'schema';
     }
 
-    protected function content(): string {
-        $content = parent::content();
+    protected function content(int $level, int $used): string {
+        $content = parent::content($level, $used);
 
         if ($this->isUseDefaultRootOperationTypeNames()) {
             $content = '';
@@ -53,10 +53,10 @@ class SchemaDefinition extends DefinitionBlock {
         return $content;
     }
 
-    protected function fields(int $used, bool $multiline): ?Block {
+    protected function fields(int $level, int $used, bool $multiline): ?Block {
         $fields     = new RootOperationTypesDefinition(
             $this->getContext(),
-            $this->getLevel(),
+            $level,
             $used,
         );
         $operations = $this->getOperationsTypes();
@@ -64,8 +64,8 @@ class SchemaDefinition extends DefinitionBlock {
         foreach ($operations as $operation => $type) {
             $fields[] = new RootOperationTypeDefinition(
                 $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
+                $level + 1,
+                $used,
                 $operation,
                 $type,
             );

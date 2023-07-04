@@ -29,8 +29,8 @@ class EnumValuesDefinition extends ObjectBlockList {
                 : $value->name;
             $this[$name] = new EnumValueDefinition(
                 $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
+                $level + 1,
+                $used,
                 $value,
             );
         }

@@ -58,11 +58,9 @@ class Value extends Block {
         parent::__construct($context, $level, $used);
     }
 
-    protected function content(): string {
+    protected function content(int $level, int $used): string {
         // Content
         $context = $this->getContext();
-        $level   = $this->getLevel();
-        $used    = $this->getUsed();
         $content = match (true) {
             $this->node instanceof ListValueNode
                 => new ListValue($context, $level, $used, $this->node),

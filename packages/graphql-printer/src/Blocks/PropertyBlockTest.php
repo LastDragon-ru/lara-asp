@@ -33,7 +33,7 @@ class PropertyBlockTest extends TestCase {
                 parent::__construct($context, $level, $used);
             }
 
-            protected function content(): string {
+            protected function content(int $level, int $used): string {
                 return $this->content;
             }
         };

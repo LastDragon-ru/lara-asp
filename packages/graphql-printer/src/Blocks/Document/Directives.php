@@ -34,9 +34,9 @@ class Directives extends ListBlock {
             // todo(graphql): Is there a better way to create directive node?
             if ($deprecationReason !== GraphQLDirective::DEFAULT_DEPRECATION_REASON && $deprecationReason !== '') {
                 $reason = json_encode($deprecationReason);
-                $this[] = $this->block(Parser::directive("@{$deprecated}(reason: {$reason})"));
+                $this[] = $this->block($level, $used, Parser::directive("@{$deprecated}(reason: {$reason})"));
             } else {
-                $this[] = $this->block(Parser::directive("@{$deprecated}"));
+                $this[] = $this->block($level, $used, Parser::directive("@{$deprecated}"));
             }
         }
 
@@ -45,7 +45,7 @@ class Directives extends ListBlock {
                 continue;
             }
 
-            $this[] = $this->block($directive);
+            $this[] = $this->block($level, $used, $directive);
         }
     }
 
@@ -53,11 +53,11 @@ class Directives extends ListBlock {
         return true;
     }
 
-    private function block(DirectiveNode $directive): Directive {
+    private function block(int $level, int $used, DirectiveNode $directive): Directive {
         return new Directive(
             $this->getContext(),
-            $this->getLevel(),
-            $this->getUsed(),
+            $level,
+            $used,
             $directive,
         );
     }
