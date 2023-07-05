@@ -30,7 +30,7 @@ class PrintableList extends DefinitionList {
         if ($content && $this->isRoot()) {
             $eof     = $this->getSettings()->getFileEnd();
             $content = rtrim($content);
-            $content = "{$this->indent()}{$content}{$eof}";
+            $content = "{$this->indent($level)}{$content}{$eof}";
         }
 
         return $content;

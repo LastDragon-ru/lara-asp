@@ -83,7 +83,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         // Prepare
         $eol       = $this->eol();
         $space     = $this->space();
-        $indent    = $this->indent();
+        $indent    = $this->indent($level);
         $content   = '';
         $used      = $used + mb_strlen($indent) + mb_strlen($content);
         $multiline = $this->isStringMultiline($content);

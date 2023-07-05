@@ -141,8 +141,8 @@ abstract class Block implements Statistics {
         return $this->getSettings()->getSpace();
     }
 
-    protected function indent(int $level = null): string {
-        return str_repeat($this->getSettings()->getIndent(), $level ?? $this->getLevel());
+    protected function indent(int $level): string {
+        return str_repeat($this->getSettings()->getIndent(), $level);
     }
 
     protected function isLineTooLong(int $length): bool {

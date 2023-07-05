@@ -145,7 +145,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         // Prefix & Suffix
         if ($isWrapped) {
             $eol     = $isMultiline ? $this->eol() : '';
-            $indent  = $isMultiline ? $this->indent() : '';
+            $indent  = $isMultiline ? $this->indent($level) : '';
             $content = "{$listPrefix}{$eol}{$content}";
 
             if ($listSuffix) {
