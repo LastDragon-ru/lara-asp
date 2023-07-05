@@ -765,7 +765,7 @@ class ListBlockTest__Block extends Block {
         return mb_strlen($this->getContent(0, 0));
     }
 
-    public function isMultiline(): bool {
+    public function isMultiline(int $level, int $used): bool {
         return $this->multiline;
     }
 

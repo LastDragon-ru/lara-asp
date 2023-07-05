@@ -25,8 +25,8 @@ class PropertyBlock extends Block implements NamedBlock {
         return $this->name;
     }
 
-    public function isMultiline(): bool {
-        return $this->getBlock()->isMultiline() || parent::isMultiline();
+    public function isMultiline(int $level, int $used): bool {
+        return $this->getBlock()->isMultiline($level, $used) || parent::isMultiline($level, $used);
     }
 
     /**

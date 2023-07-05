@@ -81,8 +81,8 @@ abstract class Block implements Statistics {
         return $this->resolve($this->getLevel(), $this->getUsed(), fn (): int => (int) $this->length);
     }
 
-    public function isMultiline(): bool {
-        return $this->resolve($this->getLevel(), $this->getUsed(), fn (): bool => (bool) $this->multiline);
+    public function isMultiline(int $level, int $used): bool {
+        return $this->resolve($level, $used, fn (): bool => (bool) $this->multiline);
     }
 
     public function serialize(int $level, int $used): string {

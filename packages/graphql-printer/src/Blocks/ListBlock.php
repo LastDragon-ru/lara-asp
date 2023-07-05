@@ -96,6 +96,8 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         $separator   = $this->getSeparator();
         $isWrapped   = (bool) $listPrefix || (bool) $listSuffix;
         $isMultiline = $this->isMultilineContent(
+            $level,
+            $used,
             $blocks,
             $listSuffix,
             $listPrefix,
@@ -113,7 +115,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
 
             foreach ($blocks as $block) {
                 $block     = $this->analyze($block);
-                $multiline = $wrapped && $block->isMultiline();
+                $multiline = $wrapped && $block->isMultiline($level, $used);
 
                 if (($multiline && $index > 0) || $previous) {
                     $content .= $eol;
@@ -161,6 +163,8 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
      * @param array<int|string,TBlock> $blocks
      */
     private function isMultilineContent(
+        int $level,
+        int $used,
         array $blocks,
         string $suffix,
         string $prefix,
@@ -178,7 +182,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         foreach ($blocks as $block) {
             $length += $block->getLength();
 
-            if ($block->isMultiline()) {
+            if ($block->isMultiline($level, $used)) {
                 $multiline = true;
                 break;
             }

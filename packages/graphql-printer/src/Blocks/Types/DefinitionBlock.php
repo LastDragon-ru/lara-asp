@@ -105,7 +105,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $arguments = $this->addUsed($this->arguments($level, $used, $multiline));
 
         if ($arguments && !$arguments->isEmpty()) {
-            $multiline = $multiline || $arguments->isMultiline();
+            $multiline = $multiline || $arguments->isMultiline($level, $used);
             $content  .= $arguments->serialize($level, $used);
             $used     += $arguments->getLength();
         }
@@ -115,7 +115,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $type   = $this->addUsed($this->type($level, $used + mb_strlen($prefix), $multiline));
 
         if ($type && !$type->isEmpty()) {
-            $multiline = $multiline || $type->isMultiline();
+            $multiline = $multiline || $type->isMultiline($level, $used);
             $content  .= "{$prefix}{$type->serialize($level, $used)}";
             $used     += $type->getLength() + mb_strlen($prefix);
         }
@@ -125,7 +125,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $value  = $this->addUsed($this->value($level, $used + mb_strlen($prefix), $multiline));
 
         if ($value && !$value->isEmpty()) {
-            $multiline = $multiline || $value->isMultiline();
+            $multiline = $multiline || $value->isMultiline($level, $used);
             $content  .= "{$prefix}{$value->serialize($level, $used)}";
             $used     += $value->getLength() + mb_strlen($prefix);
         }
@@ -135,12 +135,12 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $body   = $this->addUsed($this->body($level, $used + mb_strlen($prefix), $multiline));
 
         if ($body && !$body->isEmpty()) {
-            if ($multiline || ($body instanceof UsageList && $body->isMultiline())) {
+            if ($multiline || ($body instanceof UsageList && $body->isMultiline($level, $used))) {
                 $multiline = true;
                 $content  .= "{$eol}{$indent}{$body->serialize($level, $used)}";
                 $used      = mb_strlen($indent); // because new line has started
             } else {
-                $multiline = $body->isMultiline();
+                $multiline = $body->isMultiline($level, $used);
                 $content  .= "{$prefix}{$body->serialize($level, $used)}";
                 $used     += $body->getUsed() + mb_strlen($prefix);
             }

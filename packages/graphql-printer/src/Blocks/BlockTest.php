@@ -137,17 +137,23 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsMultiline
      */
     public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
+        $used    = 1;
+        $level   = 23;
         $context = new Context($settings, null, null);
         $block   = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
             ->shouldReceive('content')
+            ->with($level, $used)
             ->once()
             ->andReturn($content);
+        $block
+            ->shouldReceive('content')
+            ->never();
 
-        self::assertEquals($expected, $block->isMultiline());
-        self::assertEquals($expected, $block->isMultiline());
+        self::assertEquals($expected, $block->isMultiline($level, $used));
+        self::assertEquals($expected, $block->isMultiline($level, $used));
     }
 
     /**
@@ -300,8 +306,8 @@ class BlockTest__Block extends Block {
         return parent::getLength();
     }
 
-    public function isMultiline(): bool {
-        return parent::isMultiline();
+    public function isMultiline(int $level, int $used): bool {
+        return parent::isMultiline($level, $used);
     }
 
     protected function content(int $level, int $used): string {
