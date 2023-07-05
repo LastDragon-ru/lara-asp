@@ -118,6 +118,8 @@ class BlockTest extends TestCase {
     }
 
     public function testGetLength(): void {
+        $used    = 123;
+        $level   = 3;
         $context = new Context(new TestSettings(), null, null);
         $content = 'content';
         $length  = mb_strlen($content);
@@ -126,11 +128,15 @@ class BlockTest extends TestCase {
         $block->makePartial();
         $block
             ->shouldReceive('content')
+            ->with($level, $used)
             ->once()
             ->andReturn($content);
+        $block
+            ->shouldReceive('content')
+            ->never();
 
-        self::assertEquals($length, $block->getLength());
-        self::assertEquals($length, $block->getLength());
+        self::assertEquals($length, $block->getLength($level, $used));
+        self::assertEquals($length, $block->getLength($level, $used));
     }
 
     /**
@@ -302,8 +308,8 @@ class BlockTest__Block extends Block {
         return parent::getContent($level, $used);
     }
 
-    public function getLength(): int {
-        return parent::getLength();
+    public function getLength(int $level, int $used): int {
+        return parent::getLength($level, $used);
     }
 
     public function isMultiline(int $level, int $used): bool {

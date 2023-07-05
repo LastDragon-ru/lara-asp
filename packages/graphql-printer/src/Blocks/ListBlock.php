@@ -180,7 +180,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         $multiline = false;
 
         foreach ($blocks as $block) {
-            $length += $block->getLength();
+            $length += $block->getLength($level, $used);
 
             if ($block->isMultiline($level, $used)) {
                 $multiline = true;

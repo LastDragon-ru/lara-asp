@@ -761,7 +761,7 @@ class ListBlockTest__Block extends Block {
         return $this->content;
     }
 
-    public function getLength(): int {
+    public function getLength(int $level, int $used): int {
         return mb_strlen($this->getContent(0, 0));
     }
 

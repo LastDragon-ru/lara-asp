@@ -74,11 +74,11 @@ abstract class Block implements Statistics {
     // <editor-fold desc="API">
     // =========================================================================
     public function isEmpty(): bool {
-        return $this->getLength() <= 0;
+        return $this->getLength($this->getLevel(), $this->getUsed()) <= 0;
     }
 
-    public function getLength(): int {
-        return $this->resolve($this->getLevel(), $this->getUsed(), fn (): int => (int) $this->length);
+    public function getLength(int $level, int $used): int {
+        return $this->resolve($level, $used, fn (): int => (int) $this->length);
     }
 
     public function isMultiline(int $level, int $used): bool {

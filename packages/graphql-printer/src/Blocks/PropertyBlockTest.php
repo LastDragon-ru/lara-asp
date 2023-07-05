@@ -65,6 +65,6 @@ class PropertyBlockTest extends TestCase {
         self::assertEquals($level, $property->getLevel());
         self::assertEquals($expected, $property->serialize($level, $used));
         self::assertEquals(mb_strlen($expected), mb_strlen($property->serialize($level, $used)));
-        self::assertEquals(mb_strlen($expected), $property->getLength());
+        self::assertEquals(mb_strlen($expected), $property->getLength($level, $used));
     }
 }

@@ -107,7 +107,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         if ($arguments && !$arguments->isEmpty()) {
             $multiline = $multiline || $arguments->isMultiline($level, $used);
             $content  .= $arguments->serialize($level, $used);
-            $used     += $arguments->getLength();
+            $used     += $arguments->getLength($level, $used);
         }
 
         // Type
@@ -117,7 +117,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         if ($type && !$type->isEmpty()) {
             $multiline = $multiline || $type->isMultiline($level, $used);
             $content  .= "{$prefix}{$type->serialize($level, $used)}";
-            $used     += $type->getLength() + mb_strlen($prefix);
+            $used     += $type->getLength($level, $used) + mb_strlen($prefix);
         }
 
         // Value
@@ -127,7 +127,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         if ($value && !$value->isEmpty()) {
             $multiline = $multiline || $value->isMultiline($level, $used);
             $content  .= "{$prefix}{$value->serialize($level, $used)}";
-            $used     += $value->getLength() + mb_strlen($prefix);
+            $used     += $value->getLength($level, $used) + mb_strlen($prefix);
         }
 
         // Body
