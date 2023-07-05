@@ -25,11 +25,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 class FieldDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         FieldDefinitionNode|GraphQLFieldDefinition $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function content(int $level, int $used): string {
@@ -41,8 +39,6 @@ class FieldDefinition extends DefinitionBlock {
     protected function type(int $level, int $used, bool $multiline): ?Block {
         return new Type(
             $this->getContext(),
-            $level,
-            $used,
             $this->getType(),
         );
     }
@@ -51,8 +47,6 @@ class FieldDefinition extends DefinitionBlock {
         $definition = $this->getDefinition();
         $arguments  = new ArgumentsDefinition(
             $this->getContext(),
-            $level,
-            $used,
             $definition instanceof FieldDefinitionNode
                 ? $definition->arguments
                 : $definition->args,

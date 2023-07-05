@@ -23,14 +23,12 @@ class PropertyBlockTest extends TestCase {
         $content   = 'abc abcabc abcabc abcabc abc';
         $settings  = (new TestSettings())->setSpace($space);
         $context   = new Context($settings, null, null);
-        $block     = new class($context, $level, $used, $content) extends Block {
+        $block     = new class($context, $content) extends Block {
             public function __construct(
                 Context $context,
-                int $level,
-                int $used,
                 protected string $content,
             ) {
-                parent::__construct($context, $level, $used);
+                parent::__construct($context);
             }
 
             protected function content(int $level, int $used): string {
@@ -47,22 +45,12 @@ class PropertyBlockTest extends TestCase {
                 parent::__construct($context, $name, $block);
             }
 
-            public function getUsed(): int {
-                return parent::getUsed();
-            }
-
-            public function getLevel(): int {
-                return parent::getLevel();
-            }
-
             protected function getSeparator(): string {
                 return $this->separator;
             }
         };
         $expected  = "{$name}{$separator}{$space}{$content}";
 
-        self::assertEquals($used, $property->getUsed());
-        self::assertEquals($level, $property->getLevel());
         self::assertEquals($expected, $property->serialize($level, $used));
         self::assertEquals(mb_strlen($expected), mb_strlen($property->serialize($level, $used)));
         self::assertEquals(mb_strlen($expected), $property->getLength($level, $used));

@@ -31,7 +31,7 @@ class InterfaceTypeDefinitionTest extends TestCase {
         InterfaceTypeDefinitionNode|InterfaceType $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new InterfaceTypeDefinition($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new InterfaceTypeDefinition($context, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::interfaceTypeDefinition($actual);
@@ -83,14 +83,14 @@ class InterfaceTypeDefinitionTest extends TestCase {
             ],
             'astNode'    => Parser::interfaceTypeDefinition('interface A @a'),
         ]);
-        $block      = new InterfaceTypeDefinition($context, 0, 0, $definition);
+        $block      = new InterfaceTypeDefinition($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b', '@c' => '@c'], $block->getUsedDirectives());
 
-        $ast = new InterfaceTypeDefinition($context, 0, 0, Parser::interfaceTypeDefinition($content));
+        $ast = new InterfaceTypeDefinition($context, Parser::interfaceTypeDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

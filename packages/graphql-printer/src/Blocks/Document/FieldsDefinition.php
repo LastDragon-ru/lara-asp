@@ -17,11 +17,9 @@ class FieldsDefinition extends ListBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         iterable $fields,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
 
         foreach ($fields as $field) {
             $name        = $field instanceof FieldDefinitionNode
@@ -29,8 +27,6 @@ class FieldsDefinition extends ListBlock {
                 : $field->name;
             $this[$name] = new FieldDefinition(
                 $this->getContext(),
-                $level + 1,
-                $used,
                 $field,
             );
         }

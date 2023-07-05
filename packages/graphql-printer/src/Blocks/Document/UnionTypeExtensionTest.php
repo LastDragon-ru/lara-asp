@@ -32,7 +32,7 @@ class UnionTypeExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new UnionTypeExtension($context, $level, $used, $type))->serialize($level, $used);
+        $actual  = (new UnionTypeExtension($context, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::unionTypeExtension($actual);
@@ -44,14 +44,14 @@ class UnionTypeExtensionTest extends TestCase {
     public function testStatistics(): void {
         $union   = Parser::unionTypeExtension('extend union Test @a = A | B');
         $context = new Context(new TestSettings(), null, null);
-        $block   = new UnionTypeExtension($context, 0, 0, $union);
+        $block   = new UnionTypeExtension($context, $union);
         $content = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new UnionTypeExtension($context, 0, 0, Parser::unionTypeExtension($content));
+        $ast = new UnionTypeExtension($context, Parser::unionTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

@@ -17,20 +17,16 @@ class ArgumentsDefinition extends ListBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         iterable $arguments,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
 
         foreach ($arguments as $argument) {
             $name        = $argument instanceof InputValueDefinitionNode
                 ? $argument->name->value
                 : $argument->name;
             $this[$name] = new InputValueDefinition(
-                $this->getContext(),
-                $level + 1,
-                $used,
+                $context,
                 $argument,
             );
         }

@@ -40,7 +40,7 @@ class TypeTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new Type($context, $level, $used, $type))->serialize($level, $used);
+        $actual  = (new Type($context, $type))->serialize($level, $used);
 
         self::assertEquals($expected, $actual);
     }
@@ -57,7 +57,7 @@ class TypeTest extends TestCase {
             ]),
         );
         $context = new Context(new TestSettings(), null, null);
-        $block   = new Type($context, 0, 0, $node);
+        $block   = new Type($context, $node);
         $type    = $node->getInnermostType()->name();
         $content = $block->serialize(0, 0);
 
@@ -65,7 +65,7 @@ class TypeTest extends TestCase {
         self::assertEquals([$type => $type], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
 
-        $ast = new Type($context, 0, 0, Parser::typeReference($content));
+        $ast = new Type($context, Parser::typeReference($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

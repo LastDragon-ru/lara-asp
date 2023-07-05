@@ -18,10 +18,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 class EnumValueDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         EnumValueDefinitionNode|GraphQLEnumValueDefinition $value,
     ) {
-        parent::__construct($context, $level, $used, $value);
+        parent::__construct($context, $value);
     }
 }

@@ -50,12 +50,10 @@ class Value extends Block {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         protected ValueNode $node,
         protected TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     protected function content(int $level, int $used): string {
@@ -63,11 +61,11 @@ class Value extends Block {
         $context = $this->getContext();
         $content = match (true) {
             $this->node instanceof ListValueNode
-                => new ListValue($context, $level, $used, $this->node),
+                => new ListValue($context, $this->node),
             $this->node instanceof ObjectValueNode
-                => new ObjectValue($context, $level, $used, $this->node, $this->type),
+                => new ObjectValue($context, $this->node, $this->type),
             $this->node instanceof StringValueNode && $this->node->block
-                => new StringValue($context, $level, $used, $this->node->value),
+                => new StringValue($context, $this->node->value),
             $this->node instanceof NullValueNode
                 => 'null',
             $this->node instanceof IntValueNode,
@@ -75,7 +73,7 @@ class Value extends Block {
             $this->node instanceof EnumValueNode
                 => $this->node->value,
             $this->node instanceof VariableNode
-                => new VariableValue($context, $level, 0, $this->node),
+                => new VariableValue($context, $this->node),
             property_exists($this->node, 'value')
                 => json_encode($this->node->value, JSON_THROW_ON_ERROR),
             default

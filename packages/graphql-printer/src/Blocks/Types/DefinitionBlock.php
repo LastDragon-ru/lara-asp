@@ -42,11 +42,9 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema|SchemaDefinitionNode $definition,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {
@@ -142,7 +140,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             } else {
                 $multiline = $body->isMultiline($level, $used);
                 $content  .= "{$prefix}{$body->serialize($level, $used)}";
-                $used     += $body->getUsed() + mb_strlen($prefix);
+                $used     += mb_strlen($prefix);
             }
         }
 
@@ -228,8 +226,6 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $definition = $this->getDefinition();
         $directives = new Directives(
             $this->getContext(),
-            $level,
-            $used,
             $this->getDefinitionDirectives(),
             $definition->deprecationReason ?? null,
         );
@@ -262,8 +258,6 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         // Return
         return new DescriptionBlock(
             $this->getContext(),
-            $level,
-            $used,
             $description,
         );
     }

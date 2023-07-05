@@ -31,7 +31,7 @@ class ObjectTypeDefinitionTest extends TestCase {
         ObjectTypeDefinitionNode|ObjectType $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new ObjectTypeDefinition($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new ObjectTypeDefinition($context, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::objectTypeDefinition($actual);
@@ -83,14 +83,14 @@ class ObjectTypeDefinitionTest extends TestCase {
             ],
             'astNode'    => Parser::objectTypeDefinition('type A @a'),
         ]);
-        $block      = new ObjectTypeDefinition($context, 0, 0, $definition);
+        $block      = new ObjectTypeDefinition($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b', '@c' => '@c'], $block->getUsedDirectives());
 
-        $ast = new ObjectTypeDefinition($context, 0, 0, Parser::objectTypeDefinition($content));
+        $ast = new ObjectTypeDefinition($context, Parser::objectTypeDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

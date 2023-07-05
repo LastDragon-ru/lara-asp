@@ -17,20 +17,16 @@ class DirectiveLocations extends UsageList {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         iterable $items,
         bool $isAlwaysMultiline = false,
         private bool $repeatable = false,
     ) {
-        parent::__construct($context, $level, $used, $items, $isAlwaysMultiline);
+        parent::__construct($context, $items, $isAlwaysMultiline);
     }
 
-    protected function block(int $level, int $used, mixed $item): Block {
+    protected function block(mixed $item): Block {
         return new DirectiveLocation(
             $this->getContext(),
-            $level + 1,
-            $used,
             $item,
         );
     }

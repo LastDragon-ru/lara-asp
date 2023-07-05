@@ -28,7 +28,7 @@ class ScalarTypeExtensionTest extends TestCase {
         ScalarTypeExtensionNode $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new ScalarTypeExtension($context, $level, $used, $type))->serialize($level, $used);
+        $actual  = (new ScalarTypeExtension($context, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::scalarTypeExtension($actual);

@@ -14,14 +14,12 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 class ListValue extends ListBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         ListValueNode $definition,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
 
         foreach ($definition->values as $value) {
-            $this[] = new Value($context, $level + 1, $used, $value);
+            $this[] = new Value($context, $value);
         }
     }
 

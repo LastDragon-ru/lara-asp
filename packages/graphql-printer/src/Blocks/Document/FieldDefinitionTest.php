@@ -34,7 +34,7 @@ class FieldDefinitionTest extends TestCase {
         FieldDefinitionNode|GraphQLFieldDefinition $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new FieldDefinition($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new FieldDefinition($context, $definition))->serialize($level, $used);
 
         Parser::fieldDefinition($actual);
 
@@ -55,14 +55,14 @@ class FieldDefinitionTest extends TestCase {
             ),
             'astNode' => Parser::fieldDefinition('a: A @a'),
         ]);
-        $block      = new FieldDefinition($context, 0, 0, $definition);
+        $block      = new FieldDefinition($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new FieldDefinition($context, 0, 0, Parser::fieldDefinition($content));
+        $ast = new FieldDefinition($context, Parser::fieldDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

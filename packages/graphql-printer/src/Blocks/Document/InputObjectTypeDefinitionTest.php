@@ -31,7 +31,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
         InputObjectTypeDefinitionNode|InputObjectType $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new InputObjectTypeDefinition($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new InputObjectTypeDefinition($context, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::inputObjectTypeDefinition($actual);
@@ -60,14 +60,14 @@ class InputObjectTypeDefinitionTest extends TestCase {
             ],
             'astNode' => Parser::inputObjectTypeDefinition('input A @b'),
         ]);
-        $block      = new InputObjectTypeDefinition($context, 0, 0, $definition);
+        $block      = new InputObjectTypeDefinition($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
 
-        $ast = new InputObjectTypeDefinition($context, 0, 0, Parser::inputObjectTypeDefinition($content));
+        $ast = new InputObjectTypeDefinition($context, Parser::inputObjectTypeDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

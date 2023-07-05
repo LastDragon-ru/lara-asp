@@ -13,11 +13,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 class VariableValue extends Block implements NamedBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         protected VariableNode $node,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {

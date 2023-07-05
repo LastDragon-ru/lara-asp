@@ -66,64 +66,64 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
  * @internal
  */
 class Factory {
-    public static function create(Context $context, int $level, int $used, object $definition): Block {
+    public static function create(Context $context, object $definition): Block {
         return match (true) {
             $definition instanceof ObjectTypeDefinitionNode,
             $definition instanceof ObjectType
-                => new ObjectTypeDefinition($context, $level, $used, $definition),
+                => new ObjectTypeDefinition($context, $definition),
             $definition instanceof ObjectTypeExtensionNode
-                => new ObjectTypeExtension($context, $level, $used, $definition),
+                => new ObjectTypeExtension($context, $definition),
             $definition instanceof InterfaceTypeDefinitionNode,
             $definition instanceof InterfaceType
-                => new InterfaceTypeDefinition($context, $level, $used, $definition),
+                => new InterfaceTypeDefinition($context, $definition),
             $definition instanceof InterfaceTypeExtensionNode
-                => new InterfaceTypeExtension($context, $level, $used, $definition),
+                => new InterfaceTypeExtension($context, $definition),
             $definition instanceof FieldDefinitionNode,
             $definition instanceof GraphQLFieldDefinition
-                => new FieldDefinition($context, $level, $used, $definition),
+                => new FieldDefinition($context, $definition),
             $definition instanceof InputObjectTypeDefinitionNode,
             $definition instanceof InputObjectType
-                => new InputObjectTypeDefinition($context, $level, $used, $definition),
+                => new InputObjectTypeDefinition($context, $definition),
             $definition instanceof InputObjectTypeExtensionNode
-                => new InputObjectTypeExtension($context, $level, $used, $definition),
+                => new InputObjectTypeExtension($context, $definition),
             $definition instanceof InputValueDefinitionNode,
             $definition instanceof GraphQLArgument,
             $definition instanceof InputObjectField
-                => new InputValueDefinition($context, $level, $used, $definition),
+                => new InputValueDefinition($context, $definition),
             $definition instanceof ScalarTypeDefinitionNode,
             $definition instanceof ScalarType
-                => new ScalarTypeDefinition($context, $level, $used, $definition),
+                => new ScalarTypeDefinition($context, $definition),
             $definition instanceof ScalarTypeExtensionNode
-                => new ScalarTypeExtension($context, $level, $used, $definition),
+                => new ScalarTypeExtension($context, $definition),
             $definition instanceof UnionTypeDefinitionNode,
             $definition instanceof UnionType
-                => new UnionTypeDefinition($context, $level, $used, $definition),
+                => new UnionTypeDefinition($context, $definition),
             $definition instanceof UnionTypeExtensionNode
-                => new UnionTypeExtension($context, $level, $used, $definition),
+                => new UnionTypeExtension($context, $definition),
             $definition instanceof EnumTypeDefinitionNode,
             $definition instanceof EnumType
-                => new EnumTypeDefinition($context, $level, $used, $definition),
+                => new EnumTypeDefinition($context, $definition),
             $definition instanceof EnumTypeExtensionNode
-                => new EnumTypeExtension($context, $level, $used, $definition),
+                => new EnumTypeExtension($context, $definition),
             $definition instanceof EnumValueDefinitionNode,
             $definition instanceof GraphQLEnumValueDefinition
-                => new EnumValueDefinition($context, $level, $used, $definition),
+                => new EnumValueDefinition($context, $definition),
             $definition instanceof DirectiveDefinitionNode,
             $definition instanceof GraphQLDirective
-                => new DirectiveDefinition($context, $level, $used, $definition),
+                => new DirectiveDefinition($context, $definition),
             $definition instanceof DirectiveNode
-                => new Directive($context, $level, $used, $definition),
+                => new Directive($context, $definition),
             $definition instanceof SchemaDefinitionNode,
             $definition instanceof Schema
-                => new SchemaDefinition($context, $level, $used, $definition),
+                => new SchemaDefinition($context, $definition),
             $definition instanceof SchemaExtensionNode
-                => new SchemaExtension($context, $level, $used, $definition),
+                => new SchemaExtension($context, $definition),
             $definition instanceof TypeNode && $definition instanceof Node
-                => new Type($context, $level, $used, $definition),
+                => new Type($context, $definition),
             $definition instanceof ValueNode && $definition instanceof Node
-                => new Value($context, $level, $used, $definition),
+                => new Value($context, $definition),
             $definition instanceof DocumentNode
-                => new Document($context, $level, $used, $definition),
+                => new Document($context, $definition),
             default
                 => throw new Unsupported($definition),
         };

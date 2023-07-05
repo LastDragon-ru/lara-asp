@@ -38,7 +38,7 @@ class DirectiveTest extends TestCase {
     ): void {
         $resolver = $directive ? $this->getDirectiveResolver($directive) : null;
         $context  = new Context($settings, $resolver, $schema);
-        $actual   = (new Directive($context, $level, $used, $node))->serialize($level, $used);
+        $actual   = (new Directive($context, $node))->serialize($level, $used);
 
         if ($expected) {
             Parser::directive($actual);
@@ -72,7 +72,7 @@ class DirectiveTest extends TestCase {
         $resolver  = $this->getDirectiveResolver($directive);
         $context   = new Context(new TestSettings(), $resolver, null);
         $node      = Parser::directive('@test(a: 123, b: "b")');
-        $block     = new Directive($context, 0, 0, $node);
+        $block     = new Directive($context, $node);
         $content   = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);

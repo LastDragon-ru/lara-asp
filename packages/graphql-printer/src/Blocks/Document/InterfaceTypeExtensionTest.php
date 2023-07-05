@@ -31,7 +31,7 @@ class InterfaceTypeExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new InterfaceTypeExtension($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new InterfaceTypeExtension($context, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::interfaceTypeExtension($actual);
@@ -49,14 +49,14 @@ class InterfaceTypeExtensionTest extends TestCase {
             }
             STRING,
         );
-        $block      = new InterfaceTypeExtension($context, 0, 0, $definition);
+        $block      = new InterfaceTypeExtension($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B', 'A' => 'A', 'String' => 'String'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new InterfaceTypeExtension($context, 0, 0, Parser::interfaceTypeExtension($content));
+        $ast = new InterfaceTypeExtension($context, Parser::interfaceTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

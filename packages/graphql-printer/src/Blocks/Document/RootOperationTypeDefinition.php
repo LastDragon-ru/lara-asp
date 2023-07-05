@@ -12,12 +12,10 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 class RootOperationTypeDefinition extends Type {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private string $operation,
         NamedTypeNode|ObjectType $type,
     ) {
-        parent::__construct($context, $level, $used, $type);
+        parent::__construct($context, $type);
     }
 
     public function getOperation(): string {

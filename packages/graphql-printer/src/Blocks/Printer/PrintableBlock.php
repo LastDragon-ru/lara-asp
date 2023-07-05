@@ -28,12 +28,11 @@ class PrintableBlock extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
         private object $definition,
     ) {
-        parent::__construct($context, $level);
+        parent::__construct($context);
 
-        $this->block = $this->getDefinitionBlock($level, 0, $definition);
+        $this->block = $this->getDefinitionBlock($definition);
     }
 
     public function getName(): string {
@@ -65,7 +64,7 @@ class PrintableBlock extends Block implements NamedBlock {
     /**
      * @param TDefinition $definition
      */
-    private function getDefinitionBlock(int $level, int $used, object $definition): Block {
-        return Factory::create($this->getContext(), $level, $used, $definition);
+    private function getDefinitionBlock(object $definition): Block {
+        return Factory::create($this->getContext(), $definition);
     }
 }

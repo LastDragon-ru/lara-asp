@@ -19,12 +19,10 @@ class ObjectValue extends ListBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         ObjectValueNode $definition,
         protected TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
 
         foreach ($definition->fields as $field) {
             $name = $field->name->value;
@@ -32,8 +30,6 @@ class ObjectValue extends ListBlock {
 
             $this[$name] = new ObjectField(
                 $context,
-                $level,
-                $used,
                 $field,
                 $type,
             );

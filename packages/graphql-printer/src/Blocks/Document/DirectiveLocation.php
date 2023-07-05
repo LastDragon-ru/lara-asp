@@ -13,11 +13,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 class DirectiveLocation extends Block implements NamedBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private NameNode|string $location,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {

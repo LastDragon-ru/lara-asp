@@ -29,7 +29,7 @@ class EnumValueDefinitionTest extends TestCase {
         EnumValueDefinitionNode|GraphQLEnumValueDefinition $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new EnumValueDefinition($context, $level, $used, $type))->serialize($level, $used);
+        $actual  = (new EnumValueDefinition($context, $type))->serialize($level, $used);
 
         Parser::enumValueDefinition($actual);
 

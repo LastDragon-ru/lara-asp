@@ -31,7 +31,7 @@ class ObjectTypeExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new ObjectTypeExtension($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new ObjectTypeExtension($context, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::objectTypeExtension($actual);
@@ -49,14 +49,14 @@ class ObjectTypeExtensionTest extends TestCase {
             }
             STRING,
         );
-        $block      = new ObjectTypeExtension($context, 0, 0, $definition);
+        $block      = new ObjectTypeExtension($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B', 'A' => 'A', 'String' => 'String'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new ObjectTypeExtension($context, 0, 0, Parser::objectTypeExtension($content));
+        $ast = new ObjectTypeExtension($context, Parser::objectTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

@@ -18,11 +18,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         SchemaExtensionNode $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function prefix(): ?string {
@@ -31,17 +29,11 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
 
     protected function fields(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $fields     = new RootOperationTypesDefinition(
-            $this->getContext(),
-            $level,
-            $used,
-        );
+        $fields     = new RootOperationTypesDefinition($this->getContext());
 
         foreach ($definition->operationTypes as $operation) {
             $fields[] = new RootOperationTypeDefinition(
                 $this->getContext(),
-                $level + 1,
-                $used,
                 $operation->operation,
                 $operation->type,
             );

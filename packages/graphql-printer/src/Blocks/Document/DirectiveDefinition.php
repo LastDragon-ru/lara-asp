@@ -20,11 +20,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 class DirectiveDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         DirectiveDefinitionNode|Directive $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function prefix(): ?string {
@@ -39,8 +37,6 @@ class DirectiveDefinition extends DefinitionBlock {
         $definition = $this->getDefinition();
         $arguments  = new ArgumentsDefinition(
             $this->getContext(),
-            $level,
-            $used,
             $definition instanceof DirectiveDefinitionNode
                 ? $definition->arguments
                 : $definition->args,
@@ -53,8 +49,6 @@ class DirectiveDefinition extends DefinitionBlock {
         $definition = $this->getDefinition();
         $locations  = new DirectiveLocations(
             $this->getContext(),
-            $level + 1,
-            $used,
             $definition->locations,
             $multiline,
             $definition instanceof DirectiveDefinitionNode

@@ -50,7 +50,7 @@ class ValueTest extends TestCase {
         ?Type $type,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new Value($context, $level, $used, $node, $type))->serialize($level, $used);
+        $actual  = (new Value($context, $node, $type))->serialize($level, $used);
         $parsed  = null;
 
         if ($expected) {
@@ -70,7 +70,7 @@ class ValueTest extends TestCase {
     public function testStatistics(): void {
         $context = new Context(new TestSettings(), null, null);
         $literal = Parser::valueLiteral('123');
-        $block   = new Value($context, 0, 0, $literal, Type::int());
+        $block   = new Value($context, $literal, Type::int());
         $content = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
@@ -99,7 +99,7 @@ class ValueTest extends TestCase {
         );
         $context = new Context(new TestSettings(), null, $schema);
         $literal = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
-        $block   = new Value($context, 0, 0, $literal, $schema->getType('A'));
+        $block   = new Value($context, $literal, $schema->getType('A'));
         $content = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
@@ -122,8 +122,6 @@ class ValueTest extends TestCase {
         $literal = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
         $block   = new Value(
             $context,
-            0,
-            0,
             $literal,
             new InputObjectType([
                 'name'   => 'A',

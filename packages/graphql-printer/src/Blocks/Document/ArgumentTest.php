@@ -33,7 +33,7 @@ class ArgumentTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new Argument($context, $level, $used, $argumentNode, $argumentType))->serialize($level, $used);
+        $actual  = (new Argument($context, $argumentNode, $argumentType))->serialize($level, $used);
 
         if ($expected) {
             Parser::argument($actual);
@@ -45,7 +45,7 @@ class ArgumentTest extends TestCase {
     public function testStatistics(): void {
         $context  = new Context(new TestSettings(), null, null);
         $argument = Parser::argument('test: 123');
-        $block    = new Argument($context, 0, 0, $argument, Type::int());
+        $block    = new Argument($context, $argument, Type::int());
         $content  = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);

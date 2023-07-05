@@ -32,7 +32,7 @@ class InputObjectTypeExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new InputObjectTypeExtension($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new InputObjectTypeExtension($context, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::inputObjectTypeExtension($actual);
@@ -44,14 +44,14 @@ class InputObjectTypeExtensionTest extends TestCase {
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
         $definition = Parser::inputObjectTypeExtension('extend input A @a { a: A @b }');
-        $block      = new InputObjectTypeExtension($context, 0, 0, $definition);
+        $block      = new InputObjectTypeExtension($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
 
-        $ast = new InputObjectTypeExtension($context, 0, 0, Parser::inputObjectTypeExtension($content));
+        $ast = new InputObjectTypeExtension($context, Parser::inputObjectTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

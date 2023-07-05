@@ -19,19 +19,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 abstract class UnionDefinitionBlock extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         UnionTypeDefinitionNode|UnionTypeExtensionNode|UnionType $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function fields(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $types      = new UnionMemberTypes(
             $this->getContext(),
-            $level + 1,
-            $used,
             $definition instanceof UnionType
                 ? $definition->getTypes()
                 : $definition->types,

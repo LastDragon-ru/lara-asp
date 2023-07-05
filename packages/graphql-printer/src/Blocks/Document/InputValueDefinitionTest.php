@@ -33,7 +33,7 @@ class InputValueDefinitionTest extends TestCase {
         InputValueDefinitionNode|Argument $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new InputValueDefinition($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new InputValueDefinition($context, $definition))->serialize($level, $used);
 
         Parser::inputValueDefinition($actual);
 
@@ -56,14 +56,14 @@ class InputValueDefinitionTest extends TestCase {
             ),
             'astNode' => Parser::inputValueDefinition('test: Test! @a'),
         ]);
-        $block      = new InputValueDefinition($context, 0, 0, $definition);
+        $block      = new InputValueDefinition($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new InputValueDefinition($context, 0, 0, Parser::inputValueDefinition($content));
+        $ast = new InputValueDefinition($context, Parser::inputValueDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

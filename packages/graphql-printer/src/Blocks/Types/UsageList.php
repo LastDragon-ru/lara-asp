@@ -20,15 +20,13 @@ abstract class UsageList extends ListBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         iterable $items,
         protected bool $isAlwaysMultiline = false,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
 
         foreach ($items as $item) {
-            $this[] = $this->block($level, $used, $item);
+            $this[] = $this->block($item);
         }
     }
 
@@ -45,7 +43,7 @@ abstract class UsageList extends ListBlock {
      *
      * @return TBlock
      */
-    abstract protected function block(int $level, int $used, mixed $item): Block;
+    abstract protected function block(mixed $item): Block;
 
     abstract protected function separator(): string;
 
@@ -60,8 +58,10 @@ abstract class UsageList extends ListBlock {
     }
 
     protected function content(int $level, int $used): string {
-        $level   = $level + 1;
+        $space   = $this->space();
         $prefix  = $this->prefix();
+        $level   = $level + 1;
+        $used    = $used + mb_strlen("{$prefix}{$space}");
         $content = parent::content($level, $used);
 
         if ($content) {
@@ -72,19 +72,13 @@ abstract class UsageList extends ListBlock {
                 if ($prefix) {
                     $content = "{$prefix}{$eol}{$indent}{$content}";
                 }
+            } elseif ($prefix) {
+                $content = "{$prefix}{$space}{$content}";
             } else {
-                $space = $this->space();
-
-                if ($prefix) {
-                    $content = "{$prefix}{$space}{$content}";
-                }
+                // empty
             }
         }
 
         return $content;
-    }
-
-    protected function getUsed(): int {
-        return parent::getUsed() + mb_strlen("{$this->prefix()}{$this->space()}");
     }
 }

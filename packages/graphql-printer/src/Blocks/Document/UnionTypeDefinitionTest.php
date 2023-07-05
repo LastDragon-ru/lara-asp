@@ -32,7 +32,7 @@ class UnionTypeDefinitionTest extends TestCase {
         UnionTypeDefinitionNode|UnionType $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new UnionTypeDefinition($context, $level, $used, $type))->serialize($level, $used);
+        $actual  = (new UnionTypeDefinition($context, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::unionTypeDefinition($actual);
@@ -65,14 +65,14 @@ class UnionTypeDefinitionTest extends TestCase {
             'astNode' => Parser::unionTypeDefinition('union Test @a = A | B'),
         ]);
         $context = new Context(new TestSettings(), null, null);
-        $block   = new UnionTypeDefinition($context, 0, 0, $union);
+        $block   = new UnionTypeDefinition($context, $union);
         $content = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new UnionTypeDefinition($context, 0, 0, Parser::unionTypeDefinition($content));
+        $ast = new UnionTypeDefinition($context, Parser::unionTypeDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

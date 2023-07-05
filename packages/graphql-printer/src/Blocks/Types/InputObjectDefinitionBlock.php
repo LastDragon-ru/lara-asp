@@ -19,19 +19,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 abstract class InputObjectDefinitionBlock extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         InputObjectTypeDefinitionNode|InputObjectTypeExtensionNode|InputObjectType $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function fields(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $fields     = new InputFieldsDefinition(
             $this->getContext(),
-            $level,
-            $used,
             $definition instanceof InputObjectType
                 ? $definition->getFields()
                 : $definition->fields,

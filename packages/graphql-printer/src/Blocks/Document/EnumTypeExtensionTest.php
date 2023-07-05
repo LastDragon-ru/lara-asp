@@ -29,7 +29,7 @@ class EnumTypeExtensionTest extends TestCase {
         EnumTypeExtensionNode $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new EnumTypeExtension($context, $level, $used, $type))->serialize($level, $used);
+        $actual  = (new EnumTypeExtension($context, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::enumTypeExtension($actual);
@@ -43,14 +43,14 @@ class EnumTypeExtensionTest extends TestCase {
         $definition = Parser::enumTypeExtension(
             'extend enum Test @a { A }',
         );
-        $block      = new EnumTypeExtension($context, 0, 0, $definition);
+        $block      = new EnumTypeExtension($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals([], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new EnumTypeExtension($context, 0, 0, Parser::enumTypeExtension($content));
+        $ast = new EnumTypeExtension($context, Parser::enumTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

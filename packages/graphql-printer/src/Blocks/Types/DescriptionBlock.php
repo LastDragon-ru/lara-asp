@@ -16,11 +16,9 @@ use function trim;
 class DescriptionBlock extends StringValue {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         ?string $string,
     ) {
-        parent::__construct($context, $level, $used, (string) $string);
+        parent::__construct($context, (string) $string);
     }
 
     protected function isNormalized(): bool {

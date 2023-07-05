@@ -32,7 +32,7 @@ class DirectivesTest extends TestCase {
         string $reason = null,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new Directives($context, $level, $used, $directives, $reason))->serialize($level, $used);
+        $actual  = (new Directives($context, $directives, $reason))->serialize($level, $used);
 
         Parser::directives($actual);
 
@@ -44,7 +44,7 @@ class DirectivesTest extends TestCase {
         $b        = Parser::directive('@b');
         $settings = (new TestSettings())->setPrintDirectives(true);
         $context  = new Context($settings, null, null);
-        $block    = new Directives($context, 0, 0, [$a, $b]);
+        $block    = new Directives($context, [$a, $b]);
         $content  = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);

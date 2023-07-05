@@ -19,19 +19,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 abstract class EnumDefinitionBlock extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         EnumTypeDefinitionNode|EnumTypeExtensionNode|EnumType $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function fields(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $values     = new EnumValuesDefinition(
             $this->getContext(),
-            $level,
-            $used,
             $definition instanceof EnumType
                 ? $definition->getValues()
                 : $definition->values,

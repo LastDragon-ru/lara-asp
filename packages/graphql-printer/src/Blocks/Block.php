@@ -22,11 +22,11 @@ use function str_repeat;
  * @internal
  */
 abstract class Block implements Statistics {
-    private int     $contentLevel = 0;
-    private int     $contentUsed  = 0;
-    private ?string $content      = null;
-    private ?int    $length       = null;
-    private ?bool   $multiline    = null;
+    private int     $level     = 0;
+    private int     $used      = 0;
+    private ?string $content   = null;
+    private ?int    $length    = null;
+    private ?bool   $multiline = null;
 
     /**
      * @var array<string, string>
@@ -40,8 +40,6 @@ abstract class Block implements Statistics {
 
     public function __construct(
         private Context $context,
-        private int $level = 0,
-        private int $used = 0,
     ) {
         // empty
     }
@@ -54,20 +52,6 @@ abstract class Block implements Statistics {
 
     protected function getSettings(): Settings {
         return $this->getContext()->getSettings();
-    }
-
-    /**
-     * @deprecated
-     */
-    protected function getLevel(): int {
-        return $this->level;
-    }
-
-    /**
-     * @deprecated
-     */
-    protected function getUsed(): int {
-        return $this->used;
     }
     //</editor-fold>
 
@@ -107,12 +91,12 @@ abstract class Block implements Statistics {
     // <editor-fold desc="Cache">
     // =========================================================================
     protected function getContent(int $level, int $used): string {
-        if ($this->content === null || $this->contentLevel !== $level || $this->contentUsed !== $used) {
-            $this->contentLevel = $level;
-            $this->contentUsed  = $used;
-            $this->content      = $this->content($level, $used);
-            $this->length       = mb_strlen($this->content);
-            $this->multiline    = $this->isStringMultiline($this->content);
+        if ($this->content === null || $this->level !== $level || $this->used !== $used) {
+            $this->level     = $level;
+            $this->used      = $used;
+            $this->content   = $this->content($level, $used);
+            $this->length    = mb_strlen($this->content);
+            $this->multiline = $this->isStringMultiline($this->content);
         }
 
         return $this->content;
@@ -124,8 +108,8 @@ abstract class Block implements Statistics {
         $this->multiline      = null;
         $this->content        = null;
         $this->length         = null;
-        $this->contentLevel   = 0;
-        $this->contentUsed    = 0;
+        $this->level          = 0;
+        $this->used           = 0;
     }
 
     abstract protected function content(int $level, int $used): string;
@@ -161,14 +145,14 @@ abstract class Block implements Statistics {
      * @return array<string,string>
      */
     public function getUsedTypes(): array {
-        return $this->resolve($this->getLevel(), $this->getUsed(), fn (): array => $this->usedTypes);
+        return $this->resolve(0, 0, fn (): array => $this->usedTypes);
     }
 
     /**
      * @return array<string,string>
      */
     public function getUsedDirectives(): array {
-        return $this->resolve($this->getLevel(), $this->getUsed(), fn (): array => $this->usedDirectives);
+        return $this->resolve(0, 0, fn (): array => $this->usedDirectives);
     }
 
     /**

@@ -32,11 +32,9 @@ use const ARRAY_FILTER_USE_BOTH;
 class SchemaDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         SchemaDefinitionNode|Schema $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function prefix(): ?string {
@@ -54,18 +52,12 @@ class SchemaDefinition extends DefinitionBlock {
     }
 
     protected function fields(int $level, int $used, bool $multiline): ?Block {
-        $fields     = new RootOperationTypesDefinition(
-            $this->getContext(),
-            $level,
-            $used,
-        );
+        $fields     = new RootOperationTypesDefinition($this->getContext());
         $operations = $this->getOperationsTypes();
 
         foreach ($operations as $operation => $type) {
             $fields[] = new RootOperationTypeDefinition(
                 $this->getContext(),
-                $level + 1,
-                $used,
                 $operation,
                 $type,
             );

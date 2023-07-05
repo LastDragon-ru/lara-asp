@@ -180,14 +180,14 @@ class Printer implements SchemaPrinterContract {
         Context $context,
         Schema|Type|GraphQLDirective|Node $definition,
     ): Block {
-        return new PrintableBlock($context, $this->getLevel(), $definition);
+        return new PrintableBlock($context, $definition);
     }
 
     /**
      * @return ListBlock<Block>
      */
     protected function getDefinitionList(Context $context, bool $root = false): ListBlock {
-        return new PrintableList($context, $this->getLevel(), $root);
+        return new PrintableList($context, $root);
     }
 
     /**

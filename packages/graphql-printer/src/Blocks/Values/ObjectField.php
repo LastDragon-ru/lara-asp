@@ -22,12 +22,10 @@ class ObjectField extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         protected ObjectFieldNode $definition,
         protected TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {
@@ -43,8 +41,6 @@ class ObjectField extends Block implements NamedBlock {
         $value    = $this->addUsed(
             new Value(
                 $this->getContext(),
-                $level,
-                $used,
                 $this->definition->value,
                 $this->type,
             ),

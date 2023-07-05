@@ -35,7 +35,7 @@ class DirectiveDefinitionTest extends TestCase {
         DirectiveDefinitionNode|Directive $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new DirectiveDefinition($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new DirectiveDefinition($context, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::directiveDefinition($actual);
@@ -64,14 +64,14 @@ class DirectiveDefinitionTest extends TestCase {
                 GraphQLDirectiveLocation::FIELD,
             ],
         ]);
-        $block      = new DirectiveDefinition($context, 0, 0, $definition);
+        $block      = new DirectiveDefinition($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
 
-        $ast = new DirectiveDefinition($context, 0, 0, Parser::directiveDefinition($content));
+        $ast = new DirectiveDefinition($context, Parser::directiveDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

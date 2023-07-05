@@ -41,8 +41,6 @@ class ListBlockTest extends TestCase {
         $context = new Context($settings, null, null);
         $list    = new ListBlockTest__ListBlock(
             $context,
-            $level,
-            $used,
             $normalized,
             $wrapped,
             $prefix,
@@ -708,8 +706,6 @@ class ListBlockTest extends TestCase {
 class ListBlockTest__ListBlock extends ListBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private bool $normalized,
         private bool $wrapped,
         private string $prefix,
@@ -717,7 +713,7 @@ class ListBlockTest__ListBlock extends ListBlock {
         private string $separator,
         private string $multilineSeparator,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     protected function isWrapped(): bool {

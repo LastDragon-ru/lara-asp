@@ -29,7 +29,7 @@ class DescriptionBlockTest extends TestCase {
         ?string $description,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new DescriptionBlock($context, $level, $used, $description))->serialize($level, $used);
+        $actual  = (new DescriptionBlock($context, $description))->serialize($level, $used);
 
         self::assertEquals($expected, $actual);
 

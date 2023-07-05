@@ -12,11 +12,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
  * @extends UsageList<Type, NamedTypeNode|ObjectType>
  */
 class UnionMemberTypes extends UsageList {
-    protected function block(int $level, int $used, mixed $item): Block {
+    protected function block(mixed $item): Block {
         return new Type(
             $this->getContext(),
-            $level + 1,
-            $used,
             $item,
         );
     }

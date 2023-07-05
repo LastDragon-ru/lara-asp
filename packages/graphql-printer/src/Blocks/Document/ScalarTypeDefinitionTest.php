@@ -30,7 +30,7 @@ class ScalarTypeDefinitionTest extends TestCase {
         ScalarTypeDefinitionNode|ScalarType $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new ScalarTypeDefinition($context, $level, $used, $type))->serialize($level, $used);
+        $actual  = (new ScalarTypeDefinition($context, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::scalarTypeDefinition($actual);

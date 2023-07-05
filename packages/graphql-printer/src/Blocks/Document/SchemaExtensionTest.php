@@ -33,7 +33,7 @@ class SchemaExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new SchemaExtension($context, $level, $used, $node))->serialize($level, $used);
+        $actual  = (new SchemaExtension($context, $node))->serialize($level, $used);
 
         if ($expected) {
             Parser::schemaTypeExtension($actual);
@@ -47,14 +47,14 @@ class SchemaExtensionTest extends TestCase {
         $definition = Parser::schemaTypeExtension(
             'extend schema @a @b { query: Query, mutation: Mutation }',
         );
-        $block      = new SchemaExtension($context, 0, 0, $definition);
+        $block      = new SchemaExtension($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(['Query' => 'Query', 'Mutation' => 'Mutation'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
 
-        $ast = new SchemaExtension($context, 0, 0, Parser::schemaTypeExtension($content));
+        $ast = new SchemaExtension($context, Parser::schemaTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

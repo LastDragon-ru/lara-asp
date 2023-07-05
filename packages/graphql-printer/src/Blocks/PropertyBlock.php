@@ -18,7 +18,7 @@ class PropertyBlock extends Block implements NamedBlock {
         private string $name,
         private Block $block,
     ) {
-        parent::__construct($context, $block->getLevel(), $block->getUsed());
+        parent::__construct($context);
     }
 
     public function getName(): string {

@@ -17,11 +17,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 class ObjectTypeExtension extends TypeDefinitionBlock implements ExtensionDefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         ObjectTypeExtensionNode $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function prefix(): ?string {

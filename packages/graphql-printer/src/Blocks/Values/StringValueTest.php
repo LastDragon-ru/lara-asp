@@ -30,7 +30,7 @@ class StringValueTest extends TestCase {
         string $string,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new StringValue($context, $level, $used, $string))->serialize($level, $used);
+        $actual  = (new StringValue($context, $string))->serialize($level, $used);
         $parsed  = Parser::valueLiteral($actual);
 
         self::assertInstanceOf(StringValueNode::class, $parsed);

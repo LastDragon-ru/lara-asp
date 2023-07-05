@@ -31,7 +31,7 @@ class DocumentTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new Document($context, $level, $used, $document))->serialize($level, $used);
+        $actual  = (new Document($context, $document))->serialize($level, $used);
 
         if ($expected) {
             Parser::parse($actual);
@@ -57,7 +57,7 @@ class DocumentTest extends TestCase {
             }
             STRING,
         );
-        $block      = new Document($context, 0, 0, $definition);
+        $block      = new Document($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
@@ -81,7 +81,7 @@ class DocumentTest extends TestCase {
             $block->getUsedDirectives(),
         );
 
-        $ast = new Document($context, 0, 0, Parser::parse($content));
+        $ast = new Document($context, Parser::parse($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

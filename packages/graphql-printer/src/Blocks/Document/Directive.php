@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
-use function mb_strlen;
-
 /**
  * @internal
  */
@@ -18,11 +16,9 @@ use function mb_strlen;
 class Directive extends Block implements NamedBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private DirectiveNode $definition,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {
@@ -43,7 +39,7 @@ class Directive extends Block implements NamedBlock {
         $definition = $this->getDefinition();
         $directive  = $this->getName();
         $context    = $this->getContext();
-        $args       = new Arguments($context, $level, $used + mb_strlen($directive));
+        $args       = new Arguments($context);
 
         foreach ($definition->arguments as $node) {
             $name        = $node->name->value;
@@ -53,8 +49,6 @@ class Directive extends Block implements NamedBlock {
                 : $arg?->getType();
             $args[$name] = new Argument(
                 $context,
-                $level,
-                $used,
                 $node,
                 $type,
             );

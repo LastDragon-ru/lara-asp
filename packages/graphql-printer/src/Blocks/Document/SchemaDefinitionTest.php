@@ -36,7 +36,7 @@ class SchemaDefinitionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (new SchemaDefinition($context, $level, $used, $definition))->serialize($level, $used);
+        $actual  = (new SchemaDefinition($context, $definition))->serialize($level, $used);
 
         if ($expected && !str_starts_with($actual, '"""')) {
             // https://github.com/webonyx/graphql-php/issues/1027

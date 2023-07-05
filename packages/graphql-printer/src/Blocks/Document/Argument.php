@@ -22,12 +22,10 @@ class Argument extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private ArgumentNode $argument,
         private TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {
@@ -48,8 +46,6 @@ class Argument extends Block implements NamedBlock {
                 $name,
                 new Value(
                     $this->getContext(),
-                    $level,
-                    $used,
                     $this->argument->value,
                 ),
             ),

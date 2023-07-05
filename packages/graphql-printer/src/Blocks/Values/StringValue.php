@@ -20,11 +20,9 @@ use const JSON_THROW_ON_ERROR;
 class StringValue extends Block {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         protected string $string,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     protected function getString(): string {
@@ -48,7 +46,7 @@ class StringValue extends Block {
         }
 
         // Multiline?
-        $length      = $this->getUsed() + mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($content);
+        $length      = $used + mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($content);
         $isOneliner  = !$this->isStringMultiline($content);
         $isMultiline = $this->isBlock()
             || !$isOneliner

@@ -19,11 +19,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 class UnionTypeDefinition extends UnionDefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         UnionTypeDefinitionNode|UnionType $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function prefix(): ?string {

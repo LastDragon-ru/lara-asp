@@ -194,7 +194,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
 
         // Length?
         $count  = count($blocks);
-        $length = $this->getUsed()
+        $length = $used
             + $length
             + mb_strlen($suffix)
             + mb_strlen($prefix)

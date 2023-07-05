@@ -16,11 +16,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 class Document extends Block {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private DocumentNode $document,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     protected function getDocument(): DocumentNode {
@@ -28,12 +26,12 @@ class Document extends Block {
     }
 
     protected function content(int $level, int $used): string {
-        $definitions = new DefinitionList($this->getContext(), $level, $used);
+        $definitions = new DefinitionList($this->getContext());
         $document    = $this->getDocument();
         $context     = $this->getContext();
 
         foreach ($document->definitions as $definition) {
-            $definitions[] = Factory::create($context, $level, $used, $definition);
+            $definitions[] = Factory::create($context, $definition);
         }
 
         return $this->addUsed($definitions)->serialize($level, $used);

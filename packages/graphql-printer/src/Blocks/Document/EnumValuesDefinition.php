@@ -17,11 +17,9 @@ class EnumValuesDefinition extends ObjectBlockList {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         iterable $values,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
 
         foreach ($values as $value) {
             $name        = $value instanceof EnumValueDefinitionNode
@@ -29,8 +27,6 @@ class EnumValuesDefinition extends ObjectBlockList {
                 : $value->name;
             $this[$name] = new EnumValueDefinition(
                 $this->getContext(),
-                $level + 1,
-                $used,
                 $value,
             );
         }

@@ -30,7 +30,7 @@ class EnumTypeDefinitionTest extends TestCase {
         EnumTypeDefinitionNode|EnumType $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (new EnumTypeDefinition($context, $level, $used, $type))->serialize($level, $used);
+        $actual  = (new EnumTypeDefinition($context, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::enumTypeDefinition($actual);
@@ -48,14 +48,14 @@ class EnumTypeDefinitionTest extends TestCase {
                 'enum Test @a { A }',
             ),
         ]);
-        $block      = new EnumTypeDefinition($context, 0, 0, $definition);
+        $block      = new EnumTypeDefinition($context, $definition);
         $content    = $block->serialize(0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals([], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new EnumTypeDefinition($context, 0, 0, Parser::enumTypeDefinition($content));
+        $ast = new EnumTypeDefinition($context, Parser::enumTypeDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());

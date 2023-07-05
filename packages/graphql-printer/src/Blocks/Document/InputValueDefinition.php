@@ -29,11 +29,9 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 class InputValueDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         InputValueDefinitionNode|Argument|InputObjectField $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
     protected function content(int $level, int $used): string {
@@ -45,8 +43,6 @@ class InputValueDefinition extends DefinitionBlock {
     protected function type(int $level, int $used, bool $multiline): ?Block {
         return new Type(
             $this->getContext(),
-            $level,
-            $used,
             $this->getType(),
         );
     }
@@ -67,8 +63,6 @@ class InputValueDefinition extends DefinitionBlock {
         if ($default !== null) {
             $value = new Value(
                 $this->getContext(),
-                $level,
-                $used,
                 $default,
             );
         }

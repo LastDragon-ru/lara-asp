@@ -14,10 +14,9 @@ use function rtrim;
 class PrintableList extends DefinitionList {
     public function __construct(
         Context $context,
-        int $level,
         protected bool $root = false,
     ) {
-        parent::__construct($context, $level);
+        parent::__construct($context);
     }
 
     protected function isRoot(): bool {
