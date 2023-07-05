@@ -166,6 +166,8 @@ class BlockTest extends TestCase {
      * @dataProvider dataProviderIsEmpty
      */
     public function testIsEmpty(bool $expected, string $content): void {
+        $used    = 123;
+        $level   = 23;
         $context = new Context(new TestSettings(), null, null);
         $block   = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
@@ -174,8 +176,11 @@ class BlockTest extends TestCase {
             ->shouldReceive('content')
             ->once()
             ->andReturn($content);
+        $block
+            ->shouldReceive('content')
+            ->never();
 
-        self::assertEquals($expected, $block->isEmpty());
+        self::assertEquals($expected, $block->isEmpty($level, $used));
     }
     // </editor-fold>
 

@@ -73,8 +73,8 @@ abstract class Block implements Statistics {
 
     // <editor-fold desc="API">
     // =========================================================================
-    public function isEmpty(): bool {
-        return $this->getLength($this->getLevel(), $this->getUsed()) <= 0;
+    public function isEmpty(int $level, int $used): bool {
+        return $this->getLength($level, $used) <= 0;
     }
 
     public function getLength(int $level, int $used): int {

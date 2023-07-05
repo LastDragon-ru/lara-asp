@@ -828,7 +828,7 @@ class ListBlockTest__StatisticsBlock extends Block {
         }
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(int $level, int $used): bool {
         return false;
     }
 
