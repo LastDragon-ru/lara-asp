@@ -20,9 +20,9 @@ class StringValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -30,7 +30,7 @@ class StringValueTest extends TestCase {
         string $string,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) new StringValue($context, $level, $used, $string);
+        $actual  = (new StringValue($context, $level, $used, $string))->serialize($level, $used);
         $parsed  = Parser::valueLiteral($actual);
 
         self::assertInstanceOf(StringValueNode::class, $parsed);
@@ -44,7 +44,7 @@ class StringValueTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, string}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
 
         return [

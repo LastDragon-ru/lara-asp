@@ -60,13 +60,14 @@ abstract class UsageList extends ListBlock {
     }
 
     protected function content(int $level, int $used): string {
+        $level   = $level + 1;
         $prefix  = $this->prefix();
         $content = parent::content($level, $used);
 
         if ($content) {
             if ($this->isAlwaysMultiline() || $this->isStringMultiline($content)) {
                 $eol    = $this->eol();
-                $indent = $this->indent();
+                $indent = $this->indent($level);
 
                 if ($prefix) {
                     $content = "{$prefix}{$eol}{$indent}{$content}";

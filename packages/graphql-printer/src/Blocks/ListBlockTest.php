@@ -20,11 +20,11 @@ class ListBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      *
      * @param array<string, Block> $blocks
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -55,7 +55,7 @@ class ListBlockTest extends TestCase {
             $list[$name] = $block;
         }
 
-        self::assertEquals($expected, (string) $list);
+        self::assertEquals($expected, $list->serialize($level, $used));
         self::assertCount($count, $list);
     }
 
@@ -77,7 +77,7 @@ class ListBlockTest extends TestCase {
     /**
      * @return array<string,array<mixed>>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
 
         return (new MergeDataProvider([
@@ -817,6 +817,8 @@ class ListBlockTest__StatisticsBlock extends Block {
      * @param array<string> $directives
      */
     public function __construct(array $types, array $directives) {
+        parent:: __construct(new Context(new TestSettings(), null, null));
+
         foreach ($types as $type) {
             $this->addUsedType($type);
         }
@@ -824,8 +826,6 @@ class ListBlockTest__StatisticsBlock extends Block {
         foreach ($directives as $directive) {
             $this->addUsedDirective($directive);
         }
-
-        parent:: __construct(new Context(new TestSettings(), null, null));
     }
 
     public function isEmpty(): bool {
@@ -833,6 +833,6 @@ class ListBlockTest__StatisticsBlock extends Block {
     }
 
     protected function content(int $level, int $used): string {
-        return '';
+        return __METHOD__;
     }
 }

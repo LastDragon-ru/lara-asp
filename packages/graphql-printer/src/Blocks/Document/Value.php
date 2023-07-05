@@ -67,7 +67,7 @@ class Value extends Block {
             $this->node instanceof ObjectValueNode
                 => new ObjectValue($context, $level, $used, $this->node, $this->type),
             $this->node instanceof StringValueNode && $this->node->block
-                => new StringValue($context, $level, 0, $this->node->value),
+                => new StringValue($context, $level, $used, $this->node->value),
             $this->node instanceof NullValueNode
                 => 'null',
             $this->node instanceof IntValueNode,
@@ -83,11 +83,17 @@ class Value extends Block {
         };
 
         // Statistics
+        $this->addUsed($content);
+
         if ($this->type) {
             $this->addUsedType($this->getTypeName($this->type));
         }
 
         // Return
-        return (string) $this->addUsed($content);
+        if ($content instanceof Block) {
+            $content = $content->serialize($level, $used);
+        }
+
+        return $content;
     }
 }

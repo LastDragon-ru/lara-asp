@@ -59,7 +59,7 @@ class Type extends Block implements NamedBlock {
         $type       = '';
 
         if ($this->isTypeAllowed($name)) {
-            $type = $this->serialize($definition);
+            $type = $this->name($definition);
 
             $this->addUsedType($name);
         }
@@ -70,15 +70,15 @@ class Type extends Block implements NamedBlock {
     /**
      * @param (TypeNode&Node)|GraphQLType $definition
      */
-    private function serialize(Node|GraphQLType $definition): string {
+    private function name(Node|GraphQLType $definition): string {
         return match (true) {
             $definition instanceof NameNode        => $definition->value,
-            $definition instanceof NamedTypeNode   => $this->serialize($definition->name),
-            $definition instanceof NonNullTypeNode => $this->nonNull($this->serialize($definition->type)),
-            $definition instanceof ListTypeNode    => $this->list($this->serialize($definition->type)),
+            $definition instanceof NamedTypeNode   => $this->name($definition->name),
+            $definition instanceof NonNullTypeNode => $this->nonNull($this->name($definition->type)),
+            $definition instanceof ListTypeNode    => $this->list($this->name($definition->type)),
             $definition instanceof NamedType       => $definition->name(),
-            $definition instanceof NonNull         => $this->nonNull($this->serialize($definition->getWrappedType())),
-            $definition instanceof ListOfType      => $this->list($this->serialize($definition->getWrappedType())),
+            $definition instanceof NonNull         => $this->nonNull($this->name($definition->getWrappedType())),
+            $definition instanceof ListOfType      => $this->list($this->name($definition->getWrappedType())),
             default                                => throw new Unsupported($definition),
         };
     }

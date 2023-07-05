@@ -22,9 +22,9 @@ class SchemaExtensionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -33,7 +33,7 @@ class SchemaExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (string) (new SchemaExtension($context, $level, $used, $node));
+        $actual  = (new SchemaExtension($context, $level, $used, $node))->serialize($level, $used);
 
         if ($expected) {
             Parser::schemaTypeExtension($actual);
@@ -48,12 +48,13 @@ class SchemaExtensionTest extends TestCase {
             'extend schema @a @b { query: Query, mutation: Mutation }',
         );
         $block      = new SchemaExtension($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['Query' => 'Query', 'Mutation' => 'Mutation'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
 
-        $ast = new SchemaExtension($context, 0, 0, Parser::schemaTypeExtension((string) $block));
+        $ast = new SchemaExtension($context, 0, 0, Parser::schemaTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -65,7 +66,7 @@ class SchemaExtensionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, SchemaExtensionNode, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setPrintDirectives(true)
             ->setNormalizeFields(false);

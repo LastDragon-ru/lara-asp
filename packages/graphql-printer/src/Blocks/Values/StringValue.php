@@ -38,7 +38,7 @@ class StringValue extends Block {
     protected function content(int $level, int $used): string {
         // Begin
         $eol     = $this->eol();
-        $indent  = $this->indent();
+        $indent  = $this->indent($level);
         $wrapper = '"""';
         $content = $this->getString();
 

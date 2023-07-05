@@ -10,13 +10,14 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
  */
 class ResultImpl implements Result {
     public function __construct(
+        protected int $level,
         protected Block $block,
     ) {
         // empty
     }
 
     public function __toString(): string {
-        return (string) $this->block;
+        return $this->block->serialize($this->level, 0);
     }
 
     /**

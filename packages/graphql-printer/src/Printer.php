@@ -89,7 +89,7 @@ class Printer implements SchemaPrinterContract {
         }
 
         // Return
-        return new ResultImpl($content);
+        return new ResultImpl($this->getLevel(), $content);
     }
 
     public function printSchemaType(Schema $schema, Type|string $type): Result {
@@ -115,14 +115,14 @@ class Printer implements SchemaPrinterContract {
             $content[] = $definition;
         }
 
-        return new ResultImpl($content);
+        return new ResultImpl($this->getLevel(), $content);
     }
 
     public function printType(Type $type): Result {
         $context   = $this->getContext(null);
         $content   = $this->getDefinitionList($context, true);
         $content[] = $this->getDefinitionBlock($context, $type);
-        $printed   = new ResultImpl($content);
+        $printed   = new ResultImpl($this->getLevel(), $content);
 
         return $printed;
     }

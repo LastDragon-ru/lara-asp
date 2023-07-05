@@ -60,10 +60,7 @@ interface InterfaceC implements InterfaceA & InterfaceB {
   a: Int
   d: TypeHidden!
 
-  e(
-    a: Int
-    b: InputHidden
-  ): Int
+  e(a: Int, b: InputHidden): Int
 }
 
 interface InterfaceUnused {

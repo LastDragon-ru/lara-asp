@@ -12,7 +12,6 @@ use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Stringable;
 
 use function is_object;
 use function mb_strlen;
@@ -22,12 +21,12 @@ use function str_repeat;
 /**
  * @internal
  */
-abstract class Block implements Statistics, Stringable {
-    private int     $_level    = 0;
-    private int     $_used     = 0;
-    private ?string $content   = null;
-    private ?int    $length    = null;
-    private ?bool   $multiline = null;
+abstract class Block implements Statistics {
+    private int     $contentLevel = 0;
+    private int     $contentUsed  = 0;
+    private ?string $content      = null;
+    private ?int    $length       = null;
+    private ?bool   $multiline    = null;
 
     /**
      * @var array<string, string>
@@ -86,11 +85,8 @@ abstract class Block implements Statistics, Stringable {
         return $this->resolve($this->getLevel(), $this->getUsed(), fn (): bool => (bool) $this->multiline);
     }
 
-    /**
-     * @deprecated
-     */
-    public function __toString(): string {
-        return $this->getContent($this->getLevel(), $this->getUsed());
+    public function serialize(int $level, int $used): string {
+        return $this->getContent($level, $used);
     }
 
     /**
@@ -111,12 +107,12 @@ abstract class Block implements Statistics, Stringable {
     // <editor-fold desc="Cache">
     // =========================================================================
     protected function getContent(int $level, int $used): string {
-        if ($this->content === null || $this->_level !== $level || $this->_used !== $used) {
-            $this->_level    = $level;
-            $this->_used     = $used;
-            $this->content   = $this->content($level, $used);
-            $this->length    = mb_strlen($this->content);
-            $this->multiline = $this->isStringMultiline($this->content);
+        if ($this->content === null || $this->contentLevel !== $level || $this->contentUsed !== $used) {
+            $this->contentLevel = $level;
+            $this->contentUsed  = $used;
+            $this->content      = $this->content($level, $used);
+            $this->length       = mb_strlen($this->content);
+            $this->multiline    = $this->isStringMultiline($this->content);
         }
 
         return $this->content;
@@ -128,8 +124,8 @@ abstract class Block implements Statistics, Stringable {
         $this->multiline      = null;
         $this->content        = null;
         $this->length         = null;
-        $this->_level         = 0;
-        $this->_used          = 0;
+        $this->contentLevel   = 0;
+        $this->contentUsed    = 0;
     }
 
     abstract protected function content(int $level, int $used): string;

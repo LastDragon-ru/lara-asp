@@ -25,9 +25,9 @@ class DirectiveDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -35,7 +35,7 @@ class DirectiveDefinitionTest extends TestCase {
         DirectiveDefinitionNode|Directive $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new DirectiveDefinition($context, $level, $used, $definition));
+        $actual  = (new DirectiveDefinition($context, $level, $used, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::directiveDefinition($actual);
@@ -65,12 +65,13 @@ class DirectiveDefinitionTest extends TestCase {
             ],
         ]);
         $block      = new DirectiveDefinition($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B'], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
 
-        $ast = new DirectiveDefinition($context, 0, 0, Parser::directiveDefinition((string) $block));
+        $ast = new DirectiveDefinition($context, 0, 0, Parser::directiveDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -82,7 +83,7 @@ class DirectiveDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, DirectiveDefinitionNode|Directive}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setAlwaysMultilineArguments(false)
             ->setAlwaysMultilineDirectiveLocations(false);

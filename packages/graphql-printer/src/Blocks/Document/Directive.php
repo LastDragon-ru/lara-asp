@@ -65,6 +65,6 @@ class Directive extends Block implements NamedBlock {
         $this->addUsedDirective($directive);
 
         // Return
-        return "{$directive}{$args}";
+        return "{$directive}{$args->serialize($level, $used)}";
     }
 }

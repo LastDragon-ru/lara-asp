@@ -19,9 +19,9 @@ class EnumValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -29,7 +29,7 @@ class EnumValueDefinitionTest extends TestCase {
         EnumValueDefinitionNode|GraphQLEnumValueDefinition $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new EnumValueDefinition($context, $level, $used, $type));
+        $actual  = (new EnumValueDefinition($context, $level, $used, $type))->serialize($level, $used);
 
         Parser::enumValueDefinition($actual);
 
@@ -42,7 +42,7 @@ class EnumValueDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, EnumValueDefinitionNode|GraphQLEnumValueDefinition}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
 
         return [

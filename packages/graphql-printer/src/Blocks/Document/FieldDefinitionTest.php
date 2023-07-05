@@ -24,9 +24,9 @@ class FieldDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -34,7 +34,7 @@ class FieldDefinitionTest extends TestCase {
         FieldDefinitionNode|GraphQLFieldDefinition $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new FieldDefinition($context, $level, $used, $definition));
+        $actual  = (new FieldDefinition($context, $level, $used, $definition))->serialize($level, $used);
 
         Parser::fieldDefinition($actual);
 
@@ -56,12 +56,13 @@ class FieldDefinitionTest extends TestCase {
             'astNode' => Parser::fieldDefinition('a: A @a'),
         ]);
         $block      = new FieldDefinition($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new FieldDefinition($context, 0, 0, Parser::fieldDefinition((string) $block));
+        $ast = new FieldDefinition($context, 0, 0, Parser::fieldDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -73,7 +74,7 @@ class FieldDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, FieldDefinitionNode|GraphQLFieldDefinition}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeArguments(false)
             ->setAlwaysMultilineArguments(false);

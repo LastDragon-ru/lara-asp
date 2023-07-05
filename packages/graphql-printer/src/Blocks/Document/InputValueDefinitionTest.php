@@ -23,9 +23,9 @@ class InputValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -33,7 +33,7 @@ class InputValueDefinitionTest extends TestCase {
         InputValueDefinitionNode|Argument $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new InputValueDefinition($context, $level, $used, $definition));
+        $actual  = (new InputValueDefinition($context, $level, $used, $definition))->serialize($level, $used);
 
         Parser::inputValueDefinition($actual);
 
@@ -56,14 +56,14 @@ class InputValueDefinitionTest extends TestCase {
             ),
             'astNode' => Parser::inputValueDefinition('test: Test! @a'),
         ]);
+        $block      = new InputValueDefinition($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        $block = new InputValueDefinition($context, 0, 0, $definition);
-
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new InputValueDefinition($context, 0, 0, Parser::inputValueDefinition((string) $block));
+        $ast = new InputValueDefinition($context, 0, 0, Parser::inputValueDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -75,7 +75,7 @@ class InputValueDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, InputValueDefinitionNode|Argument}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
 
         return [
@@ -158,7 +158,7 @@ class InputValueDefinitionTest extends TestCase {
                     ]
                 STRING,
                 $settings
-                    ->setLineLength(50),
+                    ->setLineLength(40),
                 1,
                 70,
                 new Argument([

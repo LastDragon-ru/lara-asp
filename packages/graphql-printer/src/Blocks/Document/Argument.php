@@ -48,7 +48,7 @@ class Argument extends Block implements NamedBlock {
                 $name,
                 new Value(
                     $this->getContext(),
-                    $level + 1,
+                    $level,
                     $used,
                     $this->argument->value,
                 ),
@@ -61,6 +61,6 @@ class Argument extends Block implements NamedBlock {
         }
 
         // Return
-        return "{$property}";
+        return $property->serialize($level, $used);
     }
 }

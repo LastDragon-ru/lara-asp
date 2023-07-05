@@ -19,11 +19,11 @@ class DirectivesTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      *
      * @param array<DirectiveNode> $directives
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -32,7 +32,7 @@ class DirectivesTest extends TestCase {
         string $reason = null,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new Directives($context, $level, $used, $directives, $reason));
+        $actual  = (new Directives($context, $level, $used, $directives, $reason))->serialize($level, $used);
 
         Parser::directives($actual);
 
@@ -45,8 +45,9 @@ class DirectivesTest extends TestCase {
         $settings = (new TestSettings())->setPrintDirectives(true);
         $context  = new Context($settings, null, null);
         $block    = new Directives($context, 0, 0, [$a, $b]);
+        $content  = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals([], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
     }
@@ -57,7 +58,7 @@ class DirectivesTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, ?array<DirectiveNode>, ?string}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setAlwaysMultilineArguments(false);
 

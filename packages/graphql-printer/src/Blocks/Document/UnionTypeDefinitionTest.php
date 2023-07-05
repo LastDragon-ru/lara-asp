@@ -22,9 +22,9 @@ class UnionTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -32,7 +32,7 @@ class UnionTypeDefinitionTest extends TestCase {
         UnionTypeDefinitionNode|UnionType $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new UnionTypeDefinition($context, $level, $used, $type));
+        $actual  = (new UnionTypeDefinition($context, $level, $used, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::unionTypeDefinition($actual);
@@ -66,12 +66,13 @@ class UnionTypeDefinitionTest extends TestCase {
         ]);
         $context = new Context(new TestSettings(), null, null);
         $block   = new UnionTypeDefinition($context, 0, 0, $union);
+        $content = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new UnionTypeDefinition($context, 0, 0, Parser::unionTypeDefinition((string) $block));
+        $ast = new UnionTypeDefinition($context, 0, 0, Parser::unionTypeDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -83,7 +84,7 @@ class UnionTypeDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, UnionTypeDefinitionNode|UnionType}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeUnions(false)
             ->setAlwaysMultilineUnions(false);

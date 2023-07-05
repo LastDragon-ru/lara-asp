@@ -20,9 +20,9 @@ class InterfaceTypeExtensionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -31,7 +31,7 @@ class InterfaceTypeExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (string) (new InterfaceTypeExtension($context, $level, $used, $definition));
+        $actual  = (new InterfaceTypeExtension($context, $level, $used, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::interfaceTypeExtension($actual);
@@ -50,12 +50,13 @@ class InterfaceTypeExtensionTest extends TestCase {
             STRING,
         );
         $block      = new InterfaceTypeExtension($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B', 'A' => 'A', 'String' => 'String'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new InterfaceTypeExtension($context, 0, 0, Parser::interfaceTypeExtension((string) $block));
+        $ast = new InterfaceTypeExtension($context, 0, 0, Parser::interfaceTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -67,7 +68,7 @@ class InterfaceTypeExtensionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, InterfaceTypeExtensionNode, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeFields(false)
             ->setNormalizeInterfaces(false)

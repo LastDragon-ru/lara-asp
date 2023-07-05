@@ -27,11 +27,11 @@ class TypeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      *
      * @param (TypeNode&Node)|(GraphQLType&(OutputType|InputType)) $type
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -40,7 +40,7 @@ class TypeTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (string) (new Type($context, $level, $used, $type));
+        $actual  = (new Type($context, $level, $used, $type))->serialize($level, $used);
 
         self::assertEquals($expected, $actual);
     }
@@ -59,12 +59,13 @@ class TypeTest extends TestCase {
         $context = new Context(new TestSettings(), null, null);
         $block   = new Type($context, 0, 0, $node);
         $type    = $node->getInnermostType()->name();
+        $content = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals([$type => $type], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
 
-        $ast = new Type($context, 0, 0, Parser::typeReference((string) $block));
+        $ast = new Type($context, 0, 0, Parser::typeReference($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -76,7 +77,7 @@ class TypeTest extends TestCase {
     /**
      * @return array<string,array{string,Settings,int,int,(TypeNode&Node)|(GraphQLType&(OutputType|InputType)),?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
         $type     = new ObjectType([
             'name'   => 'Test',

@@ -89,7 +89,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $multiline = $this->isStringMultiline($content);
 
         // Description
-        $description = (string) $this->addUsed($this->description($level, $used));
+        $description = $this->addUsed($this->description($level, $used))?->serialize($level, $used);
 
         if ($description) {
             $content .= "{$description}{$eol}{$indent}";
@@ -106,7 +106,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         if ($arguments && !$arguments->isEmpty()) {
             $multiline = $multiline || $arguments->isMultiline();
-            $content  .= $arguments;
+            $content  .= $arguments->serialize($level, $used);
             $used     += $arguments->getLength();
         }
 
@@ -116,7 +116,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         if ($type && !$type->isEmpty()) {
             $multiline = $multiline || $type->isMultiline();
-            $content  .= "{$prefix}{$type}";
+            $content  .= "{$prefix}{$type->serialize($level, $used)}";
             $used     += $type->getLength() + mb_strlen($prefix);
         }
 
@@ -126,7 +126,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         if ($value && !$value->isEmpty()) {
             $multiline = $multiline || $value->isMultiline();
-            $content  .= "{$prefix}{$value}";
+            $content  .= "{$prefix}{$value->serialize($level, $used)}";
             $used     += $value->getLength() + mb_strlen($prefix);
         }
 
@@ -137,11 +137,11 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         if ($body && !$body->isEmpty()) {
             if ($multiline || ($body instanceof UsageList && $body->isMultiline())) {
                 $multiline = true;
-                $content  .= "{$eol}{$indent}{$body}";
+                $content  .= "{$eol}{$indent}{$body->serialize($level, $used)}";
                 $used      = mb_strlen($indent); // because new line has started
             } else {
                 $multiline = $body->isMultiline();
-                $content  .= "{$prefix}{$body}";
+                $content  .= "{$prefix}{$body->serialize($level, $used)}";
                 $used     += $body->getUsed() + mb_strlen($prefix);
             }
         }
@@ -153,7 +153,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         if ($directives && !$directives->isEmpty()) {
             $multiline = true;
-            $content  .= "{$eol}{$indent}{$directives}";
+            $content  .= "{$eol}{$indent}{$directives->serialize($level, $used)}";
             $used      = mb_strlen($indent); // because new line has started
         }
 
@@ -164,11 +164,11 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         if ($fields && !$fields->isEmpty()) {
             if ($multiline || ($directives && !$directives->isEmpty())) {
                 // $multiline = true;
-                $content .= "{$eol}{$indent}{$fields}";
+                $content .= "{$eol}{$indent}{$fields->serialize($level, $used)}";
                 // $used      = mb_strlen($indent); // because new line has started
             } else {
                 // $multiline = $fields->isMultiline();
-                $content .= "{$prefix}{$fields}";
+                $content .= "{$prefix}{$fields->serialize($level, $used)}";
                 // $used     += $fields->getUsed() + mb_strlen($prefix);
             }
         }

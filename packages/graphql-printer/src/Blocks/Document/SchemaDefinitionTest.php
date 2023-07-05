@@ -25,9 +25,9 @@ class SchemaDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -36,7 +36,7 @@ class SchemaDefinitionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (string) (new SchemaDefinition($context, $level, $used, $definition));
+        $actual  = (new SchemaDefinition($context, $level, $used, $definition))->serialize($level, $used);
 
         if ($expected && !str_starts_with($actual, '"""')) {
             // https://github.com/webonyx/graphql-php/issues/1027
@@ -52,7 +52,7 @@ class SchemaDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, SchemaDefinitionNode|Schema, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setPrintDirectives(false)
             ->setNormalizeFields(false);

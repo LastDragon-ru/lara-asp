@@ -25,9 +25,9 @@ class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -38,7 +38,7 @@ class DirectiveTest extends TestCase {
     ): void {
         $resolver = $directive ? $this->getDirectiveResolver($directive) : null;
         $context  = new Context($settings, $resolver, $schema);
-        $actual   = (string) (new Directive($context, $level, $used, $node));
+        $actual   = (new Directive($context, $level, $used, $node))->serialize($level, $used);
 
         if ($expected) {
             Parser::directive($actual);
@@ -73,8 +73,9 @@ class DirectiveTest extends TestCase {
         $context   = new Context(new TestSettings(), $resolver, null);
         $node      = Parser::directive('@test(a: 123, b: "b")');
         $block     = new Directive($context, 0, 0, $node);
+        $content   = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A', 'String' => 'String'], $block->getUsedTypes());
         self::assertEquals(['@test' => '@test'], $block->getUsedDirectives());
     }
@@ -111,7 +112,7 @@ class DirectiveTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, DirectiveNode, ?GraphQLDirective, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeArguments(false)
             ->setAlwaysMultilineArguments(false);

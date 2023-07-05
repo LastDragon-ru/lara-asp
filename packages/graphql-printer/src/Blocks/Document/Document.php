@@ -36,6 +36,6 @@ class Document extends Block {
             $definitions[] = Factory::create($context, $level, $used, $definition);
         }
 
-        return (string) $this->addUsed($definitions);
+        return $this->addUsed($definitions)->serialize($level, $used);
     }
 }

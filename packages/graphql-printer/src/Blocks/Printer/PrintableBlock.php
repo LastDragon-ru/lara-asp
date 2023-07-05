@@ -59,7 +59,7 @@ class PrintableBlock extends Block implements NamedBlock {
     }
 
     protected function content(int $level, int $used): string {
-        return (string) $this->addUsed($this->getBlock());
+        return $this->addUsed($this->getBlock())->content($level, $used);
     }
 
     /**

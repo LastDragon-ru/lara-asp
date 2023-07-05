@@ -21,9 +21,9 @@ class UnionTypeExtensionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -32,7 +32,7 @@ class UnionTypeExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (string) (new UnionTypeExtension($context, $level, $used, $type));
+        $actual  = (new UnionTypeExtension($context, $level, $used, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::unionTypeExtension($actual);
@@ -45,12 +45,13 @@ class UnionTypeExtensionTest extends TestCase {
         $union   = Parser::unionTypeExtension('extend union Test @a = A | B');
         $context = new Context(new TestSettings(), null, null);
         $block   = new UnionTypeExtension($context, 0, 0, $union);
+        $content = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new UnionTypeExtension($context, 0, 0, Parser::unionTypeExtension((string) $block));
+        $ast = new UnionTypeExtension($context, 0, 0, Parser::unionTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -62,7 +63,7 @@ class UnionTypeExtensionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, UnionTypeExtensionNode, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeUnions(false)
             ->setAlwaysMultilineUnions(false);

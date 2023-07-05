@@ -21,9 +21,9 @@ class InterfaceTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -31,7 +31,7 @@ class InterfaceTypeDefinitionTest extends TestCase {
         InterfaceTypeDefinitionNode|InterfaceType $definition,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new InterfaceTypeDefinition($context, $level, $used, $definition));
+        $actual  = (new InterfaceTypeDefinition($context, $level, $used, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::interfaceTypeDefinition($actual);
@@ -84,12 +84,13 @@ class InterfaceTypeDefinitionTest extends TestCase {
             'astNode'    => Parser::interfaceTypeDefinition('interface A @a'),
         ]);
         $block      = new InterfaceTypeDefinition($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['B' => 'B', 'C' => 'C', 'D' => 'D'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b', '@c' => '@c'], $block->getUsedDirectives());
 
-        $ast = new InterfaceTypeDefinition($context, 0, 0, Parser::interfaceTypeDefinition((string) $block));
+        $ast = new InterfaceTypeDefinition($context, 0, 0, Parser::interfaceTypeDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -101,7 +102,7 @@ class InterfaceTypeDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, InterfaceTypeDefinitionNode|InterfaceType}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeFields(false)
             ->setNormalizeInterfaces(false)

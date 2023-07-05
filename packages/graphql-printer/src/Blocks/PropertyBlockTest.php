@@ -14,7 +14,7 @@ use function mb_strlen;
  */
 #[CoversClass(PropertyBlock::class)]
 class PropertyBlockTest extends TestCase {
-    public function testToString(): void {
+    public function testSerialize(): void {
         $name      = 'name';
         $used      = 123;
         $level     = 2;
@@ -63,8 +63,8 @@ class PropertyBlockTest extends TestCase {
 
         self::assertEquals($used, $property->getUsed());
         self::assertEquals($level, $property->getLevel());
-        self::assertEquals($expected, (string) $property);
-        self::assertEquals(mb_strlen($expected), mb_strlen((string) $property));
+        self::assertEquals($expected, $property->serialize($level, $used));
+        self::assertEquals(mb_strlen($expected), mb_strlen($property->serialize($level, $used)));
         self::assertEquals(mb_strlen($expected), $property->getLength());
     }
 }

@@ -63,9 +63,9 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     /**
      * @return array<int|string,TBlock>
      */
-    protected function getBlocks(): array {
-        $blocks = array_filter($this->blocks, static function (Block $block): bool {
-            return !$block->isEmpty();
+    protected function getBlocks(int $level, int $used): array {
+        $blocks = array_filter($this->blocks, static function (Block $block) use ($level, $used): bool {
+            return $block->serialize($level, $used) !== '';
         });
 
         if (count($blocks) > 0 && $this->isNormalized()) {
@@ -83,7 +83,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     protected function content(int $level, int $used): string {
         // Blocks?
         $content = '';
-        $blocks  = $this->getBlocks();
+        $blocks  = $this->getBlocks($level, $used);
         $count   = count($blocks);
 
         if (!$count) {
@@ -123,7 +123,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
                     $content .= $indent;
                 }
 
-                $content .= "{$separator}{$block}";
+                $content .= "{$separator}{$block->serialize($level + (int) $isWrapped, $used)}";
 
                 if ($index < $last) {
                     $content .= $eol;
@@ -137,7 +137,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
             $index = 0;
 
             foreach ($blocks as $block) {
-                $content .= "{$this->analyze($block)}".($index !== $last ? $separator : '');
+                $content .= "{$this->analyze($block)->serialize($level, $used)}".($index !== $last ? $separator : '');
                 $index    = $index + 1;
             }
         }

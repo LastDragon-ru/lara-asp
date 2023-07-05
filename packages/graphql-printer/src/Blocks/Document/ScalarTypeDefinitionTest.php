@@ -20,9 +20,9 @@ class ScalarTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -30,7 +30,7 @@ class ScalarTypeDefinitionTest extends TestCase {
         ScalarTypeDefinitionNode|ScalarType $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new ScalarTypeDefinition($context, $level, $used, $type));
+        $actual  = (new ScalarTypeDefinition($context, $level, $used, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::scalarTypeDefinition($actual);
@@ -45,7 +45,7 @@ class ScalarTypeDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, ScalarTypeDefinitionNode|ScalarType}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setAlwaysMultilineArguments(false)
             ->setPrintDirectives(false);

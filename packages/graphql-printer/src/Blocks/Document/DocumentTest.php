@@ -20,9 +20,9 @@ class DocumentTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -31,7 +31,7 @@ class DocumentTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (string) (new Document($context, $level, $used, $document));
+        $actual  = (new Document($context, $level, $used, $document))->serialize($level, $used);
 
         if ($expected) {
             Parser::parse($actual);
@@ -58,8 +58,9 @@ class DocumentTest extends TestCase {
             STRING,
         );
         $block      = new Document($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(
             [
                 'String' => 'String',
@@ -80,7 +81,7 @@ class DocumentTest extends TestCase {
             $block->getUsedDirectives(),
         );
 
-        $ast = new Document($context, 0, 0, Parser::parse((string) $block));
+        $ast = new Document($context, 0, 0, Parser::parse($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -92,7 +93,7 @@ class DocumentTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, DocumentNode, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setPrintDirectives(false)
             ->setNormalizeSchema(false)

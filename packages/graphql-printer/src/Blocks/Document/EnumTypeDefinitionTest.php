@@ -20,9 +20,9 @@ class EnumTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -30,7 +30,7 @@ class EnumTypeDefinitionTest extends TestCase {
         EnumTypeDefinitionNode|EnumType $type,
     ): void {
         $context = new Context($settings, null, null);
-        $actual  = (string) (new EnumTypeDefinition($context, $level, $used, $type));
+        $actual  = (new EnumTypeDefinition($context, $level, $used, $type))->serialize($level, $used);
 
         if ($expected) {
             Parser::enumTypeDefinition($actual);
@@ -49,12 +49,13 @@ class EnumTypeDefinitionTest extends TestCase {
             ),
         ]);
         $block      = new EnumTypeDefinition($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals([], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
 
-        $ast = new EnumTypeDefinition($context, 0, 0, Parser::enumTypeDefinition((string) $block));
+        $ast = new EnumTypeDefinition($context, 0, 0, Parser::enumTypeDefinition($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -66,7 +67,7 @@ class EnumTypeDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, EnumTypeDefinitionNode|EnumType}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeEnums(false);
 

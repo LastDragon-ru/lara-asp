@@ -36,11 +36,11 @@ class ValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      *
      * @param ValueNode&Node $node
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -50,7 +50,7 @@ class ValueTest extends TestCase {
         ?Type $type,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (string) (new Value($context, $level, $used, $node, $type));
+        $actual  = (new Value($context, $level, $used, $node, $type))->serialize($level, $used);
         $parsed  = null;
 
         if ($expected) {
@@ -71,8 +71,9 @@ class ValueTest extends TestCase {
         $context = new Context(new TestSettings(), null, null);
         $literal = Parser::valueLiteral('123');
         $block   = new Value($context, 0, 0, $literal, Type::int());
+        $content = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['Int' => 'Int'], $block->getUsedTypes());
         self::assertEquals([], $block->getUsedDirectives());
     }
@@ -99,8 +100,9 @@ class ValueTest extends TestCase {
         $context = new Context(new TestSettings(), null, $schema);
         $literal = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
         $block   = new Value($context, 0, 0, $literal, $schema->getType('A'));
+        $content = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(
             [
                 'Int'     => 'Int',
@@ -130,8 +132,9 @@ class ValueTest extends TestCase {
                 ],
             ]),
         );
+        $content = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(
             [
                 'A' => 'A',
@@ -147,7 +150,7 @@ class ValueTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, ValueNode&Node, ?Schema, ?Type}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeArguments(false);
         $object   = new InputObjectType([

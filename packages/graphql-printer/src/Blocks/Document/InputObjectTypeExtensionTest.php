@@ -21,9 +21,9 @@ class InputObjectTypeExtensionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -32,12 +32,7 @@ class InputObjectTypeExtensionTest extends TestCase {
         ?Schema $schema,
     ): void {
         $context = new Context($settings, null, $schema);
-        $actual  = (string) (new InputObjectTypeExtension(
-            $context,
-            $level,
-            $used,
-            $definition,
-        ));
+        $actual  = (new InputObjectTypeExtension($context, $level, $used, $definition))->serialize($level, $used);
 
         if ($expected) {
             Parser::inputObjectTypeExtension($actual);
@@ -50,12 +45,13 @@ class InputObjectTypeExtensionTest extends TestCase {
         $context    = new Context(new TestSettings(), null, null);
         $definition = Parser::inputObjectTypeExtension('extend input A @a { a: A @b }');
         $block      = new InputObjectTypeExtension($context, 0, 0, $definition);
+        $content    = $block->serialize(0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(['A' => 'A'], $block->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
 
-        $ast = new InputObjectTypeExtension($context, 0, 0, Parser::inputObjectTypeExtension((string) $block));
+        $ast = new InputObjectTypeExtension($context, 0, 0, Parser::inputObjectTypeExtension($content));
 
         self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
         self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
@@ -67,7 +63,7 @@ class InputObjectTypeExtensionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, InputObjectTypeExtensionNode, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setPrintDirectives(true)
             ->setNormalizeFields(false);
