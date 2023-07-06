@@ -17,6 +17,7 @@ use GraphQL\Type\Definition\Type as GraphQLType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -51,7 +52,7 @@ class Type extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         $definition = $this->getDefinition();
         $name       = $this->getName();
         $type       = '';
@@ -59,7 +60,7 @@ class Type extends Block implements NamedBlock {
         if ($this->isTypeAllowed($name)) {
             $type = $this->name($definition);
 
-            $this->addUsedType($name);
+            $collector->addUsedType($name);
         }
 
         return $type;

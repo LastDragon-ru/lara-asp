@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function json_encode;
@@ -33,7 +34,7 @@ class StringValue extends Block {
         return false;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Begin
         $eol     = $this->eol();
         $indent  = $this->indent($level);

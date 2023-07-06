@@ -6,6 +6,7 @@ use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -28,8 +29,9 @@ class EnumValueDefinitionTest extends TestCase {
         int $used,
         EnumValueDefinitionNode|GraphQLEnumValueDefinition $type,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new EnumValueDefinition($context, $type))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new EnumValueDefinition($context, $type))->serialize($collector, $level, $used);
 
         Parser::enumValueDefinition($actual);
 

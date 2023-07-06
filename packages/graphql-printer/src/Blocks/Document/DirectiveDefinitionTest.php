@@ -9,6 +9,7 @@ use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -34,8 +35,9 @@ class DirectiveDefinitionTest extends TestCase {
         int $used,
         DirectiveDefinitionNode|Directive $definition,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new DirectiveDefinition($context, $definition))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new DirectiveDefinition($context, $definition))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::directiveDefinition($actual);
@@ -46,6 +48,7 @@ class DirectiveDefinitionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = new Directive([
             'name'      => 'A',
             'args'      => [
@@ -65,16 +68,18 @@ class DirectiveDefinitionTest extends TestCase {
             ],
         ]);
         $block      = new DirectiveDefinition($context, $definition);
-        $content    = $block->serialize(0, 0);
+        $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['B' => 'B'], $block->getUsedTypes());
-        self::assertEquals([], $block->getUsedDirectives());
+        self::assertEquals(['B' => 'B'], $collector->getUsedTypes());
+        self::assertEquals([], $collector->getUsedDirectives());
 
-        $ast = new DirectiveDefinition($context, Parser::directiveDefinition($content));
+        $astCollector = new Collector();
+        $astBlock     = new DirectiveDefinition($context, Parser::directiveDefinition($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -35,8 +36,9 @@ class SchemaDefinitionTest extends TestCase {
         SchemaDefinitionNode|Schema $definition,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (new SchemaDefinition($context, $definition))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new SchemaDefinition($context, $definition))->serialize($collector, $level, $used);
 
         if ($expected && !str_starts_with($actual, '"""')) {
             // https://github.com/webonyx/graphql-php/issues/1027
@@ -44,6 +46,55 @@ class SchemaDefinitionTest extends TestCase {
         }
 
         self::assertEquals($expected, $actual);
+    }
+
+    public function testStatistics(): void {
+        $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
+        $definition = Parser::schemaDefinition(
+            'schema @a @b { query: Query, mutation: Mutation }',
+        );
+        $block      = new SchemaDefinition($context, $definition);
+        $content    = $block->serialize($collector, 0, 0);
+
+        self::assertNotEmpty($content);
+        self::assertEquals(['Query' => 'Query', 'Mutation' => 'Mutation'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a', '@b' => '@b'], $collector->getUsedDirectives());
+
+        $astCollector = new Collector();
+        $astBlock     = new SchemaDefinition($context, Parser::schemaDefinition($content));
+
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
+    }
+
+    public function testStatisticsTypeFilter(): void {
+        $schema     = BuildSchema::build(
+            <<<'STRING'
+            type Query {
+                field(a: Int): String
+            }
+
+            type Mutation {
+                field(a: Int): String
+            }
+            STRING,
+        );
+        $settings   = (new TestSettings())->setTypeFilter(static function (string $type): bool {
+            return $type !== 'Mutation';
+        });
+        $context    = new Context($settings, null, $schema);
+        $collector  = new Collector();
+        $definition = Parser::schemaDefinition(
+            'schema { query: Query, mutation: Mutation }',
+        );
+        $block      = new SchemaDefinition($context, $definition);
+        $content    = $block->serialize($collector, 0, 0);
+
+        self::assertEmpty($content);
+        self::assertEquals(['Query' => 'Query'], $collector->getUsedTypes());
+        self::assertEquals([], $collector->getUsedDirectives());
     }
     // </editor-fold>
 

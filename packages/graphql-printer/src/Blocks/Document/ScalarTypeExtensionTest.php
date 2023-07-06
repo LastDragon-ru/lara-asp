@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 use GraphQL\Language\AST\ScalarTypeExtensionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -27,8 +28,9 @@ class ScalarTypeExtensionTest extends TestCase {
         int $used,
         ScalarTypeExtensionNode $type,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new ScalarTypeExtension($context, $type))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new ScalarTypeExtension($context, $type))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::scalarTypeExtension($actual);

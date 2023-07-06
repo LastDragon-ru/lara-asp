@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ScalarType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -29,8 +30,9 @@ class ScalarTypeDefinitionTest extends TestCase {
         int $used,
         ScalarTypeDefinitionNode|ScalarType $type,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new ScalarTypeDefinition($context, $type))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new ScalarTypeDefinition($context, $type))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::scalarTypeDefinition($actual);

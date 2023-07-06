@@ -14,6 +14,7 @@ use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -34,9 +35,9 @@ class InputValueDefinition extends DefinitionBlock {
         parent::__construct($context, $definition);
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         return $this->isTypeAllowed($this->getType())
-            ? parent::content($level, $used)
+            ? parent::content($collector, $level, $used)
             : '';
     }
 

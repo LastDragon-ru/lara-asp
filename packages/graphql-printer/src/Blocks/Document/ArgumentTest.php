@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -32,8 +33,9 @@ class ArgumentTest extends TestCase {
         ?Type $argumentType,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (new Argument($context, $argumentNode, $argumentType))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new Argument($context, $argumentNode, $argumentType))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::argument($actual);
@@ -43,14 +45,15 @@ class ArgumentTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $context  = new Context(new TestSettings(), null, null);
-        $argument = Parser::argument('test: 123');
-        $block    = new Argument($context, $argument, Type::int());
-        $content  = $block->serialize(0, 0);
+        $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
+        $definition = Parser::argument('test: 123');
+        $block      = new Argument($context, $definition, Type::int());
+        $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['Int' => 'Int'], $block->getUsedTypes());
-        self::assertEquals([], $block->getUsedDirectives());
+        self::assertEquals(['Int' => 'Int'], $collector->getUsedTypes());
+        self::assertEquals([], $collector->getUsedDirectives());
     }
     // </editor-fold>
 

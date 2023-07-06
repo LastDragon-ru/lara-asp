@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -30,8 +31,9 @@ class DocumentTest extends TestCase {
         DocumentNode $document,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (new Document($context, $document))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new Document($context, $document))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::parse($actual);
@@ -42,6 +44,7 @@ class DocumentTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = Parser::parse(
             <<<'STRING'
             type Query {
@@ -58,7 +61,7 @@ class DocumentTest extends TestCase {
             STRING,
         );
         $block      = new Document($context, $definition);
-        $content    = $block->serialize(0, 0);
+        $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
         self::assertEquals(
@@ -70,7 +73,7 @@ class DocumentTest extends TestCase {
                 'B'      => 'B',
                 'C'      => 'C',
             ],
-            $block->getUsedTypes(),
+            $collector->getUsedTypes(),
         );
         self::assertEquals(
             [
@@ -78,13 +81,15 @@ class DocumentTest extends TestCase {
                 '@b' => '@b',
                 '@c' => '@c',
             ],
-            $block->getUsedDirectives(),
+            $collector->getUsedDirectives(),
         );
 
-        $ast = new Document($context, Parser::parse($content));
+        $astCollector = new Collector();
+        $astBlock     = new Document($context, Parser::parse($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

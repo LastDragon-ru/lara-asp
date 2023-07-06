@@ -22,6 +22,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\ObjectValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\StringValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\VariableValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
@@ -56,7 +57,7 @@ class Value extends Block {
         parent::__construct($context);
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Content
         $context = $this->getContext();
         $content = match (true) {
@@ -81,15 +82,15 @@ class Value extends Block {
         };
 
         // Statistics
-        $this->addUsed($content);
+        $collector->addUsed($content);
 
         if ($this->type) {
-            $this->addUsedType($this->getTypeName($this->type));
+            $collector->addUsedType($this->getTypeName($this->type));
         }
 
         // Return
         if ($content instanceof Block) {
-            $content = $content->serialize($level, $used);
+            $content = $content->serialize($collector, $level, $used);
         }
 
         return $content;

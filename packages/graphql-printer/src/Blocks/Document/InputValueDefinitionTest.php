@@ -10,6 +10,7 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -32,8 +33,9 @@ class InputValueDefinitionTest extends TestCase {
         int $used,
         InputValueDefinitionNode|Argument $definition,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new InputValueDefinition($context, $definition))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new InputValueDefinition($context, $definition))->serialize($collector, $level, $used);
 
         Parser::inputValueDefinition($actual);
 
@@ -42,6 +44,7 @@ class InputValueDefinitionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = new Argument([
             'name'    => 'a',
             'type'    => new NonNull(
@@ -57,16 +60,18 @@ class InputValueDefinitionTest extends TestCase {
             'astNode' => Parser::inputValueDefinition('test: Test! @a'),
         ]);
         $block      = new InputValueDefinition($context, $definition);
-        $content    = $block->serialize(0, 0);
+        $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['A' => 'A'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        self::assertEquals(['A' => 'A'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        $ast = new InputValueDefinition($context, Parser::inputValueDefinition($content));
+        $astCollector = new Collector();
+        $astBlock     = new InputValueDefinition($context, Parser::inputValueDefinition($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

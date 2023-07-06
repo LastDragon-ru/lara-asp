@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Type\Definition\ObjectType;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
@@ -22,11 +23,11 @@ class RootOperationTypeDefinition extends Type {
         return $this->operation;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         $content = '';
 
         if ($this->isTypeAllowed($this->getDefinition())) {
-            $content = parent::content($level, $used);
+            $content = parent::content($collector, $level, $used);
             $content = "{$this->getOperation()}:{$this->space()}{$content}";
         }
 

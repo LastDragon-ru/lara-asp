@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 use GraphQL\Language\AST\EnumTypeExtensionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -28,8 +29,9 @@ class EnumTypeExtensionTest extends TestCase {
         int $used,
         EnumTypeExtensionNode $type,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new EnumTypeExtension($context, $type))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new EnumTypeExtension($context, $type))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::enumTypeExtension($actual);
@@ -40,20 +42,23 @@ class EnumTypeExtensionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = Parser::enumTypeExtension(
             'extend enum Test @a { A }',
         );
         $block      = new EnumTypeExtension($context, $definition);
-        $content    = $block->serialize(0, 0);
+        $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals([], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        self::assertEquals([], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        $ast = new EnumTypeExtension($context, Parser::enumTypeExtension($content));
+        $astCollector = new Collector();
+        $astBlock     = new EnumTypeExtension($context, Parser::enumTypeExtension($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

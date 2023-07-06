@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\ResultImpl;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
@@ -74,7 +75,9 @@ class Printer implements SchemaPrinterContract {
     // =========================================================================
     public function printSchema(Schema $schema): Result {
         // Print
+        $collector = new Collector();
         $context   = $this->getContext($schema);
+        $level     = $this->getLevel();
         $block     = $this->getDefinitionBlock($context, $schema);
         $content   = $this->getDefinitionList($context, true);
         $content[] = $block;
@@ -83,13 +86,13 @@ class Printer implements SchemaPrinterContract {
             $content[] = $this->getTypeDefinitions($context);
             $content[] = $this->getDirectiveDefinitions($context);
         } else {
-            foreach ($this->getUsedDefinitions($context, $block) as $definition) {
+            foreach ($this->getUsedDefinitions($collector, $context, $block, $level) as $definition) {
                 $content[] = $definition;
             }
         }
 
         // Return
-        return new ResultImpl($this->getLevel(), $content);
+        return new ResultImpl($collector, $content->serialize($collector, $level, 0));
     }
 
     public function printSchemaType(Schema $schema, Type|string $type): Result {
@@ -104,25 +107,28 @@ class Printer implements SchemaPrinterContract {
         }
 
         // Print
+        $collector = new Collector();
         $context   = $this->getContext($schema);
+        $level     = $this->getLevel();
         $block     = $this->getDefinitionBlock($context, $type);
         $list      = $this->getDefinitionList($context);
         $list[]    = $block;
         $content   = $this->getDefinitionList($context, true);
         $content[] = $list;
 
-        foreach ($this->getUsedDefinitions($context, $block) as $definition) {
+        foreach ($this->getUsedDefinitions($collector, $context, $block, $level) as $definition) {
             $content[] = $definition;
         }
 
-        return new ResultImpl($this->getLevel(), $content);
+        return new ResultImpl($collector, $content->serialize($collector, $level, 0));
     }
 
     public function printType(Type $type): Result {
+        $collector = new Collector();
         $context   = $this->getContext(null);
         $content   = $this->getDefinitionList($context, true);
         $content[] = $this->getDefinitionBlock($context, $type);
-        $printed   = new ResultImpl($this->getLevel(), $content);
+        $printed   = new ResultImpl($collector, $content->serialize($collector, $this->getLevel(), 0));
 
         return $printed;
     }
@@ -191,13 +197,16 @@ class Printer implements SchemaPrinterContract {
     }
 
     /**
+     * @param int $level *
+     *
      * @return array<ListBlock<Block>>
      */
-    protected function getUsedDefinitions(Context $context, Block $root): array {
+    protected function getUsedDefinitions(Collector $collector, Context $context, Block $root, int $level): array {
+        $root       = $this->analyze($collector, $level, $root);
         $types      = $this->getDefinitionList($context);
-        $stack      = $root->getUsedDirectives() + $root->getUsedTypes();
+        $stack      = $collector->getUsedDirectives() + $collector->getUsedTypes();
         $directives = $context->getSettings()->isPrintDirectiveDefinitions()
-            ? $this->getDefinitionList($context)
+            ? $this->analyze($collector, $level, $this->getDefinitionList($context))
             : null;
 
         while ($stack) {
@@ -217,7 +226,7 @@ class Printer implements SchemaPrinterContract {
 
                     if ($directive) {
                         $block             = $this->getDefinitionBlock($context, $directive);
-                        $directives[$name] = $block;
+                        $directives[$name] = $this->analyze($collector, $level, $block);
                     } else {
                         throw new DirectiveDefinitionNotFound($name);
                     }
@@ -227,21 +236,34 @@ class Printer implements SchemaPrinterContract {
 
                 if ($type) {
                     $block        = $this->getDefinitionBlock($context, $type);
-                    $types[$name] = $block;
+                    $types[$name] = $this->analyze($collector, $level, $block);
                 }
             }
 
             // Stack
             if ($block) {
                 $stack = $stack
-                    + $block->getUsedDirectives()
-                    + $block->getUsedTypes();
+                    + $collector->getUsedDirectives()
+                    + $collector->getUsedTypes();
             }
         }
 
         return $directives
             ? [$types, $directives]
             : [$types];
+    }
+
+    /**
+     * @template T of Block
+     *
+     * @param T $block
+     *
+     * @return T
+     */
+    private function analyze(Collector $collector, int $level, Block $block): Block {
+        $block->serialize($collector, $level, 0);
+
+        return $block;
     }
     // </editor-fold>
 }

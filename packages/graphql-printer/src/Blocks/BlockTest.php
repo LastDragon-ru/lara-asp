@@ -22,6 +22,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnresolvedFieldDefinition;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -97,24 +98,25 @@ class BlockTest extends TestCase {
     }
 
     public function testGetContent(): void {
-        $used    = 123;
-        $level   = 1;
-        $context = new Context(new TestSettings(), null, null);
-        $content = 'content';
-        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
+        $used      = 123;
+        $level     = 1;
+        $collector = new Collector();
+        $context   = new Context(new TestSettings(), null, null);
+        $content   = 'content';
+        $block     = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
             ->shouldReceive('content')
-            ->with($level, $used)
+            ->with($collector, $level, $used)
             ->once()
             ->andReturn($content);
         $block
             ->shouldReceive('content')
             ->never();
 
-        self::assertEquals($content, $block->getContent($level, $used));
-        self::assertEquals($content, $block->getContent($level, $used));
+        self::assertEquals($content, $block->getContent($collector, $level, $used));
+        self::assertEquals($content, $block->getContent($collector, $level, $used));
     }
 
     public function testGetLength(): void {
@@ -128,7 +130,7 @@ class BlockTest extends TestCase {
         $block->makePartial();
         $block
             ->shouldReceive('content')
-            ->with($level, $used)
+            ->with(Mockery::any(), $level, $used)
             ->once()
             ->andReturn($content);
         $block
@@ -151,7 +153,7 @@ class BlockTest extends TestCase {
         $block->makePartial();
         $block
             ->shouldReceive('content')
-            ->with($level, $used)
+            ->with(Mockery::any(), $level, $used)
             ->once()
             ->andReturn($content);
         $block
@@ -309,8 +311,8 @@ class BlockTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockTest__Block extends Block {
-    public function getContent(int $level, int $used): string {
-        return parent::getContent($level, $used);
+    public function getContent(Collector $collector, int $level, int $used): string {
+        return parent::getContent($collector, $level, $used);
     }
 
     public function getLength(int $level, int $used): int {
@@ -321,7 +323,7 @@ class BlockTest__Block extends Block {
         return parent::isMultiline($level, $used);
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         return '';
     }
 }

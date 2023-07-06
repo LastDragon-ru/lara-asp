@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -31,8 +32,9 @@ class UnionTypeDefinitionTest extends TestCase {
         int $used,
         UnionTypeDefinitionNode|UnionType $type,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new UnionTypeDefinition($context, $type))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new UnionTypeDefinition($context, $type))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::unionTypeDefinition($actual);
@@ -42,7 +44,7 @@ class UnionTypeDefinitionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $union   = new UnionType([
+        $union     = new UnionType([
             'name'    => 'Test',
             'types'   => [
                 new ObjectType([
@@ -64,18 +66,21 @@ class UnionTypeDefinitionTest extends TestCase {
             ],
             'astNode' => Parser::unionTypeDefinition('union Test @a = A | B'),
         ]);
-        $context = new Context(new TestSettings(), null, null);
-        $block   = new UnionTypeDefinition($context, $union);
-        $content = $block->serialize(0, 0);
+        $context   = new Context(new TestSettings(), null, null);
+        $collector = new Collector();
+        $block     = new UnionTypeDefinition($context, $union);
+        $content   = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        self::assertEquals(['A' => 'A', 'B' => 'B'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        $ast = new UnionTypeDefinition($context, Parser::unionTypeDefinition($content));
+        $astCollector = new Collector();
+        $astBlock     = new UnionTypeDefinition($context, Parser::unionTypeDefinition($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

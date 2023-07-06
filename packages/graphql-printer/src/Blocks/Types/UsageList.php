@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function mb_strlen;
@@ -57,12 +58,12 @@ abstract class UsageList extends ListBlock {
         return "{$this->separator()}{$this->space()}";
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         $space   = $this->space();
         $prefix  = $this->prefix();
         $level   = $level + 1;
         $used    = $used + mb_strlen("{$prefix}{$space}");
-        $content = parent::content($level, $used);
+        $content = parent::content($collector, $level, $used);
 
         if ($content) {
             if ($this->isAlwaysMultiline() || $this->isStringMultiline($content)) {

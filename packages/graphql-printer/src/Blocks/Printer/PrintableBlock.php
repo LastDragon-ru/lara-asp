@@ -13,6 +13,7 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Factory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
@@ -57,8 +58,8 @@ class PrintableBlock extends Block implements NamedBlock {
         return $this->block;
     }
 
-    protected function content(int $level, int $used): string {
-        return $this->addUsed($this->getBlock())->content($level, $used);
+    protected function content(Collector $collector, int $level, int $used): string {
+        return $this->getBlock()->content($collector, $level, $used);
     }
 
     /**

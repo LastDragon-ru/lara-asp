@@ -6,6 +6,7 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -31,8 +32,9 @@ class DirectivesTest extends TestCase {
         array|null $directives,
         string $reason = null,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new Directives($context, $directives, $reason))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new Directives($context, $directives, $reason))->serialize($collector, $level, $used);
 
         Parser::directives($actual);
 
@@ -40,16 +42,17 @@ class DirectivesTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $a        = Parser::directive('@a');
-        $b        = Parser::directive('@b');
-        $settings = (new TestSettings())->setPrintDirectives(true);
-        $context  = new Context($settings, null, null);
-        $block    = new Directives($context, [$a, $b]);
-        $content  = $block->serialize(0, 0);
+        $a         = Parser::directive('@a');
+        $b         = Parser::directive('@b');
+        $settings  = (new TestSettings())->setPrintDirectives(true);
+        $context   = new Context($settings, null, null);
+        $collector = new Collector();
+        $block     = new Directives($context, [$a, $b]);
+        $content   = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals([], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
+        self::assertEquals([], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a', '@b' => '@b'], $collector->getUsedDirectives());
     }
     // </editor-fold>
 

@@ -12,6 +12,7 @@ use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -36,9 +37,10 @@ class DirectiveTest extends TestCase {
         ?GraphQLDirective $directive,
         ?Schema $schema,
     ): void {
-        $resolver = $directive ? $this->getDirectiveResolver($directive) : null;
-        $context  = new Context($settings, $resolver, $schema);
-        $actual   = (new Directive($context, $node))->serialize($level, $used);
+        $collector = new Collector();
+        $resolver  = $directive ? $this->getDirectiveResolver($directive) : null;
+        $context   = new Context($settings, $resolver, $schema);
+        $actual    = (new Directive($context, $node))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::directive($actual);
@@ -71,13 +73,14 @@ class DirectiveTest extends TestCase {
         ]);
         $resolver  = $this->getDirectiveResolver($directive);
         $context   = new Context(new TestSettings(), $resolver, null);
+        $collector = new Collector();
         $node      = Parser::directive('@test(a: 123, b: "b")');
         $block     = new Directive($context, $node);
-        $content   = $block->serialize(0, 0);
+        $content   = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['A' => 'A', 'String' => 'String'], $block->getUsedTypes());
-        self::assertEquals(['@test' => '@test'], $block->getUsedDirectives());
+        self::assertEquals(['A' => 'A', 'String' => 'String'], $collector->getUsedTypes());
+        self::assertEquals(['@test' => '@test'], $collector->getUsedDirectives());
     }
     // </editor-fold>
 

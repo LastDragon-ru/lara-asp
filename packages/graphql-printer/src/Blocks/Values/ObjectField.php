@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Value;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
@@ -32,18 +33,16 @@ class ObjectField extends Block implements NamedBlock {
         return $this->definition->name->value;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         if (!$this->isTypeAllowed($this->type)) {
             return '';
         }
 
         $level    = $level + (int) ($this->definition->value instanceof StringValueNode);
-        $value    = $this->addUsed(
-            new Value(
-                $this->getContext(),
-                $this->definition->value,
-                $this->type,
-            ),
+        $value    = new Value(
+            $this->getContext(),
+            $this->definition->value,
+            $this->type,
         );
         $property = (new PropertyBlock(
             $this->getContext(),
@@ -51,6 +50,6 @@ class ObjectField extends Block implements NamedBlock {
             $value,
         ));
 
-        return $property->serialize($level, $used);
+        return $property->serialize($collector, $level, $used);
     }
 }

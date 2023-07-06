@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -20,6 +21,7 @@ class PropertyBlockTest extends TestCase {
         $level     = 2;
         $space     = '  ';
         $separator = ':';
+        $collector = new Collector();
         $content   = 'abc abcabc abcabc abcabc abc';
         $settings  = (new TestSettings())->setSpace($space);
         $context   = new Context($settings, null, null);
@@ -31,7 +33,7 @@ class PropertyBlockTest extends TestCase {
                 parent::__construct($context);
             }
 
-            protected function content(int $level, int $used): string {
+            protected function content(Collector $collector, int $level, int $used): string {
                 return $this->content;
             }
         };
@@ -50,9 +52,10 @@ class PropertyBlockTest extends TestCase {
             }
         };
         $expected  = "{$name}{$separator}{$space}{$content}";
+        $actual    = $property->serialize($collector, $level, $used);
 
-        self::assertEquals($expected, $property->serialize($level, $used));
-        self::assertEquals(mb_strlen($expected), mb_strlen($property->serialize($level, $used)));
+        self::assertEquals($expected, $actual);
+        self::assertEquals(mb_strlen($expected), mb_strlen($actual));
         self::assertEquals(mb_strlen($expected), $property->getLength($level, $used));
     }
 }

@@ -9,6 +9,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -41,8 +42,8 @@ class SchemaDefinition extends DefinitionBlock {
         return 'schema';
     }
 
-    protected function content(int $level, int $used): string {
-        $content = parent::content($level, $used);
+    protected function content(Collector $collector, int $level, int $used): string {
+        $content = parent::content($collector, $level, $used);
 
         if ($this->isUseDefaultRootOperationTypeNames()) {
             $content = '';

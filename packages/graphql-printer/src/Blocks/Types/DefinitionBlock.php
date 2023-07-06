@@ -23,6 +23,7 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function is_string;
@@ -72,7 +73,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Allowed?
         if (!$this->isDefinitionAllowed()) {
             return '';
@@ -87,7 +88,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $multiline = $this->isStringMultiline($content);
 
         // Description
-        $description = $this->addUsed($this->description($level, $used))?->serialize($level, $used);
+        $description = $this->description($level, $used)?->serialize($collector, $level, $used);
 
         if ($description) {
             $content .= "{$description}{$eol}{$indent}";
@@ -100,73 +101,73 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $used    += mb_strlen($name);
 
         // Arguments
-        $arguments = $this->addUsed($this->arguments($level, $used, $multiline));
+        $arguments = $this->arguments($level, $used, $multiline);
 
         if ($arguments && !$arguments->isEmpty($level, $used)) {
             $multiline = $multiline || $arguments->isMultiline($level, $used);
-            $content  .= $arguments->serialize($level, $used);
+            $content  .= $arguments->serialize($collector, $level, $used);
             $used     += $arguments->getLength($level, $used);
         }
 
         // Type
         $prefix = ":{$space}";
-        $type   = $this->addUsed($this->type($level, $used + mb_strlen($prefix), $multiline));
+        $type   = $this->type($level, $used + mb_strlen($prefix), $multiline);
 
         if ($type && !$type->isEmpty($level, $used)) {
             $multiline = $multiline || $type->isMultiline($level, $used);
-            $content  .= "{$prefix}{$type->serialize($level, $used)}";
+            $content  .= "{$prefix}{$type->serialize($collector, $level, $used)}";
             $used     += $type->getLength($level, $used) + mb_strlen($prefix);
         }
 
         // Value
         $prefix = "{$space}={$space}";
-        $value  = $this->addUsed($this->value($level, $used + mb_strlen($prefix), $multiline));
+        $value  = $this->value($level, $used + mb_strlen($prefix), $multiline);
 
         if ($value && !$value->isEmpty($level, $used)) {
             $multiline = $multiline || $value->isMultiline($level, $used);
-            $content  .= "{$prefix}{$value->serialize($level, $used)}";
+            $content  .= "{$prefix}{$value->serialize($collector, $level, $used)}";
             $used     += $value->getLength($level, $used) + mb_strlen($prefix);
         }
 
         // Body
         $prefix = $space;
-        $body   = $this->addUsed($this->body($level, $used + mb_strlen($prefix), $multiline));
+        $body   = $this->body($level, $used + mb_strlen($prefix), $multiline);
 
         if ($body && !$body->isEmpty($level, $used)) {
             if ($multiline || ($body instanceof UsageList && $body->isMultiline($level, $used))) {
                 $multiline = true;
-                $content  .= "{$eol}{$indent}{$body->serialize($level, $used)}";
+                $content  .= "{$eol}{$indent}{$body->serialize($collector, $level, $used)}";
                 $used      = mb_strlen($indent); // because new line has started
             } else {
                 $multiline = $body->isMultiline($level, $used);
-                $content  .= "{$prefix}{$body->serialize($level, $used)}";
+                $content  .= "{$prefix}{$body->serialize($collector, $level, $used)}";
                 $used     += mb_strlen($prefix);
             }
         }
 
         // Directives
         $directives = $this->getSettings()->isPrintDirectives()
-            ? $this->addUsed($this->directives($level, $used, $multiline))
+            ? $this->directives($level, $used, $multiline)
             : null;
 
         if ($directives && !$directives->isEmpty($level, $used)) {
             $multiline = true;
-            $content  .= "{$eol}{$indent}{$directives->serialize($level, $used)}";
+            $content  .= "{$eol}{$indent}{$directives->serialize($collector, $level, $used)}";
             $used      = mb_strlen($indent); // because new line has started
         }
 
         // Fields
         $prefix = $space;
-        $fields = $this->addUsed($this->fields($level, $used + mb_strlen($prefix), $multiline));
+        $fields = $this->fields($level, $used + mb_strlen($prefix), $multiline);
 
         if ($fields && !$fields->isEmpty($level, $used)) {
             if ($multiline || ($directives && !$directives->isEmpty($level, $used))) {
                 // $multiline = true;
-                $content .= "{$eol}{$indent}{$fields->serialize($level, $used)}";
+                $content .= "{$eol}{$indent}{$fields->serialize($collector, $level, $used)}";
                 // $used      = mb_strlen($indent); // because new line has started
             } else {
                 // $multiline = $fields->isMultiline();
-                $content .= "{$prefix}{$fields->serialize($level, $used)}";
+                $content .= "{$prefix}{$fields->serialize($collector, $level, $used)}";
                 // $used     += $fields->getUsed() + mb_strlen($prefix);
             }
         }

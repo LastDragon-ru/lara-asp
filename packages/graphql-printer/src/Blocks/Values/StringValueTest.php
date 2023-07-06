@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -29,9 +30,10 @@ class StringValueTest extends TestCase {
         int $used,
         string $string,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new StringValue($context, $string))->serialize($level, $used);
-        $parsed  = Parser::valueLiteral($actual);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new StringValue($context, $string))->serialize($collector, $level, $used);
+        $parsed    = Parser::valueLiteral($actual);
 
         self::assertInstanceOf(StringValueNode::class, $parsed);
         self::assertEquals($expected, $actual);

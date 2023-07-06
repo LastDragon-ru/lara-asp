@@ -9,6 +9,7 @@ use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
@@ -32,7 +33,7 @@ class Argument extends Block implements NamedBlock {
         return $this->argument->name->value;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         if (!$this->isTypeAllowed($this->type)) {
             return '';
@@ -40,23 +41,17 @@ class Argument extends Block implements NamedBlock {
 
         // Convert
         $name     = $this->getName();
-        $property = $this->addUsed(
-            new PropertyBlock(
+        $property = new PropertyBlock(
+            $this->getContext(),
+            $name,
+            new Value(
                 $this->getContext(),
-                $name,
-                new Value(
-                    $this->getContext(),
-                    $this->argument->value,
-                ),
+                $this->argument->value,
+                $this->type,
             ),
         );
 
-        // Statistics
-        if ($this->type) {
-            $this->addUsedType($this->getTypeName($this->type));
-        }
-
         // Return
-        return $property->serialize($level, $used);
+        return $property->serialize($collector, $level, $used);
     }
 }

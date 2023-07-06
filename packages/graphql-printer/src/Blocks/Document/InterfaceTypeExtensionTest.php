@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -30,8 +31,9 @@ class InterfaceTypeExtensionTest extends TestCase {
         InterfaceTypeExtensionNode $definition,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (new InterfaceTypeExtension($context, $definition))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new InterfaceTypeExtension($context, $definition))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::interfaceTypeExtension($actual);
@@ -42,6 +44,7 @@ class InterfaceTypeExtensionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = Parser::interfaceTypeExtension(
             <<<'STRING'
             extend interface Test implements B & A @a {
@@ -50,16 +53,18 @@ class InterfaceTypeExtensionTest extends TestCase {
             STRING,
         );
         $block      = new InterfaceTypeExtension($context, $definition);
-        $content    = $block->serialize(0, 0);
+        $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['B' => 'B', 'A' => 'A', 'String' => 'String'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        self::assertEquals(['B' => 'B', 'A' => 'A', 'String' => 'String'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        $ast = new InterfaceTypeExtension($context, Parser::interfaceTypeExtension($content));
+        $astCollector = new Collector();
+        $astBlock     = new InterfaceTypeExtension($context, Parser::interfaceTypeExtension($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -30,8 +31,9 @@ class ObjectTypeExtensionTest extends TestCase {
         ObjectTypeExtensionNode $definition,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (new ObjectTypeExtension($context, $definition))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new ObjectTypeExtension($context, $definition))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::objectTypeExtension($actual);
@@ -42,6 +44,7 @@ class ObjectTypeExtensionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = Parser::objectTypeExtension(
             <<<'STRING'
             extend type Test implements B & A @a {
@@ -50,16 +53,18 @@ class ObjectTypeExtensionTest extends TestCase {
             STRING,
         );
         $block      = new ObjectTypeExtension($context, $definition);
-        $content    = $block->serialize(0, 0);
+        $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['B' => 'B', 'A' => 'A', 'String' => 'String'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        self::assertEquals(['B' => 'B', 'A' => 'A', 'String' => 'String'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        $ast = new ObjectTypeExtension($context, Parser::objectTypeExtension($content));
+        $astCollector = new Collector();
+        $astBlock     = new ObjectTypeExtension($context, Parser::objectTypeExtension($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

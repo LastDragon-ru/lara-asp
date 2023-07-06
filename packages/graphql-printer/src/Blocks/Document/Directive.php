@@ -6,6 +6,7 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
@@ -29,7 +30,7 @@ class Directive extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         if (!$this->isDirectiveAllowed($this->getDefinition()->name->value)) {
             return '';
@@ -55,10 +56,10 @@ class Directive extends Block implements NamedBlock {
         }
 
         // Statistics
-        $this->addUsed($args);
-        $this->addUsedDirective($directive);
+        $collector->addUsed($args);
+        $collector->addUsedDirective($directive);
 
         // Return
-        return "{$directive}{$args->serialize($level, $used)}";
+        return "{$directive}{$args->serialize($collector, $level, $used)}";
     }
 }

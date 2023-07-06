@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
@@ -40,8 +41,8 @@ class PropertyBlock extends Block implements NamedBlock {
         return ':';
     }
 
-    protected function content(int $level, int $used): string {
-        $block   = $this->addUsed($this->getBlock())->serialize($level, $used);
+    protected function content(Collector $collector, int $level, int $used): string {
+        $block   = $this->getBlock()->serialize($collector, $level, $used);
         $content = "{$this->getName()}{$this->getSeparator()}{$this->space()}{$block}";
 
         return $content;

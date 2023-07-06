@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use ArrayAccess;
 use Countable;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 
 use function array_filter;
 use function count;
@@ -17,7 +17,7 @@ use function usort;
  * @template TBlock of Block
  * @implements ArrayAccess<string|int,TBlock>
  */
-abstract class ListBlock extends Block implements Statistics, ArrayAccess, Countable {
+abstract class ListBlock extends Block implements ArrayAccess, Countable {
     /**
      * @var array<int|string,TBlock>
      */
@@ -61,11 +61,13 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     // <editor-fold desc="Content">
     // =========================================================================
     /**
+     * @param Collector $collector *
+     *
      * @return array<int|string,TBlock>
      */
-    protected function getBlocks(int $level, int $used): array {
-        $blocks = array_filter($this->blocks, static function (Block $block) use ($level, $used): bool {
-            return $block->serialize($level, $used) !== '';
+    protected function getBlocks(Collector $collector, int $level, int $used): array {
+        $blocks = array_filter($this->blocks, static function (Block $block) use ($collector, $level, $used): bool {
+            return $block->serialize($collector, $level, $used) !== '';
         });
 
         if (count($blocks) > 0 && $this->isNormalized()) {
@@ -80,10 +82,10 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         return $blocks;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Blocks?
         $content = '';
-        $blocks  = $this->getBlocks($level, $used);
+        $blocks  = $this->getBlocks($collector, $level, $used);
         $count   = count($blocks);
 
         if (!$count) {
@@ -114,7 +116,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
             $separator = $this->getMultilineItemPrefix();
 
             foreach ($blocks as $block) {
-                $block     = $this->analyze($block);
+                $block     = $this->analyze($collector, $block);
                 $multiline = $wrapped && $block->isMultiline($level, $used);
 
                 if (($multiline && $index > 0) || $previous) {
@@ -125,7 +127,7 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
                     $content .= $indent;
                 }
 
-                $content .= "{$separator}{$block->serialize($level + (int) $isWrapped, $used)}";
+                $content .= "{$separator}{$block->serialize($collector, $level + (int) $isWrapped, $used)}";
 
                 if ($index < $last) {
                     $content .= $eol;
@@ -139,7 +141,8 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
             $index = 0;
 
             foreach ($blocks as $block) {
-                $content .= "{$this->analyze($block)->serialize($level, $used)}".($index !== $last ? $separator : '');
+                $content .= "{$this->analyze($collector, $block)->serialize($collector, $level, $used)}";
+                $content .= ($index !== $last ? $separator : '');
                 $index    = $index + 1;
             }
         }
@@ -208,8 +211,8 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
      *
      * @return TBlock
      */
-    protected function analyze(Block $block): Block {
-        return $this->addUsed($block);
+    protected function analyze(Collector $collector, Block $block): Block {
+        return $collector->addUsed($block);
     }
 
     protected function reset(): void {

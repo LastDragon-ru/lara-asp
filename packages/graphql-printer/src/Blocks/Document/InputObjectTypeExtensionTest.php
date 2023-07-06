@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -31,8 +32,9 @@ class InputObjectTypeExtensionTest extends TestCase {
         InputObjectTypeExtensionNode $definition,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (new InputObjectTypeExtension($context, $definition))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new InputObjectTypeExtension($context, $definition))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::inputObjectTypeExtension($actual);
@@ -43,18 +45,21 @@ class InputObjectTypeExtensionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = Parser::inputObjectTypeExtension('extend input A @a { a: A @b }');
         $block      = new InputObjectTypeExtension($context, $definition);
-        $content    = $block->serialize(0, 0);
+        $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['A' => 'A'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
+        self::assertEquals(['A' => 'A'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a', '@b' => '@b'], $collector->getUsedDirectives());
 
-        $ast = new InputObjectTypeExtension($context, Parser::inputObjectTypeExtension($content));
+        $astCollector = new Collector();
+        $astBlock     = new InputObjectTypeExtension($context, Parser::inputObjectTypeExtension($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

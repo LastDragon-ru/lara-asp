@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -31,8 +32,9 @@ class UnionTypeExtensionTest extends TestCase {
         UnionTypeExtensionNode $type,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (new UnionTypeExtension($context, $type))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new UnionTypeExtension($context, $type))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::unionTypeExtension($actual);
@@ -42,19 +44,22 @@ class UnionTypeExtensionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $union   = Parser::unionTypeExtension('extend union Test @a = A | B');
-        $context = new Context(new TestSettings(), null, null);
-        $block   = new UnionTypeExtension($context, $union);
-        $content = $block->serialize(0, 0);
+        $union     = Parser::unionTypeExtension('extend union Test @a = A | B');
+        $context   = new Context(new TestSettings(), null, null);
+        $collector = new Collector();
+        $block     = new UnionTypeExtension($context, $union);
+        $content   = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        self::assertEquals(['A' => 'A', 'B' => 'B'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        $ast = new UnionTypeExtension($context, Parser::unionTypeExtension($content));
+        $astCollector = new Collector();
+        $astBlock     = new UnionTypeExtension($context, Parser::unionTypeExtension($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

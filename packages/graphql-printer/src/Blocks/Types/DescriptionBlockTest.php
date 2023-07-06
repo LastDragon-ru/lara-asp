@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -28,8 +29,9 @@ class DescriptionBlockTest extends TestCase {
         int $used,
         ?string $description,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (new DescriptionBlock($context, $description))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new DescriptionBlock($context, $description))->serialize($collector, $level, $used);
 
         self::assertEquals($expected, $actual);
 

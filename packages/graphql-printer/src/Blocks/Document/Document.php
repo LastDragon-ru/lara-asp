@@ -6,6 +6,7 @@ use GraphQL\Language\AST\DocumentNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Factory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionList;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
@@ -25,7 +26,7 @@ class Document extends Block {
         return $this->document;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         $definitions = new DefinitionList($this->getContext());
         $document    = $this->getDocument();
         $context     = $this->getContext();
@@ -34,6 +35,6 @@ class Document extends Block {
             $definitions[] = Factory::create($context, $definition);
         }
 
-        return $this->addUsed($definitions)->serialize($level, $used);
+        return $definitions->serialize($collector, $level, $used);
     }
 }

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionList;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function rtrim;
@@ -23,8 +24,8 @@ class PrintableList extends DefinitionList {
         return $this->root;
     }
 
-    protected function content(int $level, int $used): string {
-        $content = parent::content($level, $used);
+    protected function content(Collector $collector, int $level, int $used): string {
+        $content = parent::content($collector, $level, $used);
 
         if ($content && $this->isRoot()) {
             $eof     = $this->getSettings()->getFileEnd();
@@ -35,11 +36,11 @@ class PrintableList extends DefinitionList {
         return $content;
     }
 
-    protected function analyze(Block $block): Block {
-        $block = parent::analyze($block);
+    protected function analyze(Collector $collector, Block $block): Block {
+        $block = parent::analyze($collector, $block);
 
         if ($block instanceof PrintableBlock) {
-            parent::analyze($block->getBlock());
+            parent::analyze($collector, $block->getBlock());
         }
 
         return $block;

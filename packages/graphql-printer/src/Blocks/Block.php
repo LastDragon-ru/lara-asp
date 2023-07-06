@@ -11,6 +11,7 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function is_object;
@@ -21,22 +22,13 @@ use function str_repeat;
 /**
  * @internal
  */
-abstract class Block implements Statistics {
-    private int     $level     = 0;
-    private int     $used      = 0;
-    private ?string $content   = null;
-    private ?int    $length    = null;
-    private ?bool   $multiline = null;
-
-    /**
-     * @var array<string, string>
-     */
-    private array $usedTypes = [];
-
-    /**
-     * @var array<string, string>
-     */
-    private array $usedDirectives = [];
+abstract class Block {
+    private int         $level      = 0;
+    private int         $used       = 0;
+    private ?string     $content    = null;
+    private ?int        $length     = null;
+    private ?bool       $multiline  = null;
+    private ?Statistics $statistics = null;
 
     public function __construct(
         private Context $context,
@@ -69,8 +61,8 @@ abstract class Block implements Statistics {
         return $this->resolve($level, $used, fn (): bool => (bool) $this->multiline);
     }
 
-    public function serialize(int $level, int $used): string {
-        return $this->getContent($level, $used);
+    public function serialize(Collector $collector, int $level, int $used): string {
+        return $this->getContent($collector, $level, $used);
     }
 
     /**
@@ -81,7 +73,7 @@ abstract class Block implements Statistics {
      * @return T
      */
     protected function resolve(int $level, int $used, Closure $callback): mixed {
-        $content = $this->getContent($level, $used);
+        $content = $this->getContent(new Collector(), $level, $used);
         $result  = $callback($content);
 
         return $result;
@@ -90,29 +82,33 @@ abstract class Block implements Statistics {
 
     // <editor-fold desc="Cache">
     // =========================================================================
-    protected function getContent(int $level, int $used): string {
+    protected function getContent(Collector $collector, int $level, int $used): string {
         if ($this->content === null || $this->level !== $level || $this->used !== $used) {
-            $this->level     = $level;
-            $this->used      = $used;
-            $this->content   = $this->content($level, $used);
-            $this->length    = mb_strlen($this->content);
-            $this->multiline = $this->isStringMultiline($this->content);
+            $this->statistics = $collector;
+            $this->level      = $level;
+            $this->used       = $used;
+            $this->content    = $this->content($this->statistics, $level, $used);
+            $this->length     = mb_strlen($this->content);
+            $this->multiline  = $this->isStringMultiline($this->content);
+        } elseif ($this->statistics) {
+            $collector->addUsed($this->statistics);
+        } else {
+            // empty
         }
 
         return $this->content;
     }
 
     protected function reset(): void {
-        $this->usedDirectives = [];
-        $this->usedTypes      = [];
-        $this->multiline      = null;
-        $this->content        = null;
-        $this->length         = null;
-        $this->level          = 0;
-        $this->used           = 0;
+        $this->statistics = null;
+        $this->multiline  = null;
+        $this->content    = null;
+        $this->length     = null;
+        $this->level      = 0;
+        $this->used       = 0;
     }
 
-    abstract protected function content(int $level, int $used): string;
+    abstract protected function content(Collector $collector, int $level, int $used): string;
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -136,51 +132,6 @@ abstract class Block implements Statistics {
     protected function isStringMultiline(string $string): bool {
         return mb_strpos($string, "\n") !== false
             || mb_strpos($string, "\r") !== false;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Statistics">
-    // =========================================================================
-    /**
-     * @return array<string,string>
-     */
-    public function getUsedTypes(): array {
-        return $this->resolve(0, 0, fn (): array => $this->usedTypes);
-    }
-
-    /**
-     * @return array<string,string>
-     */
-    public function getUsedDirectives(): array {
-        return $this->resolve(0, 0, fn (): array => $this->usedDirectives);
-    }
-
-    /**
-     * @template T
-     *
-     * @param T $block
-     *
-     * @return T
-     */
-    protected function addUsed(mixed $block): mixed {
-        if ($block instanceof Statistics) {
-            $this->usedTypes      += $block->getUsedTypes();
-            $this->usedDirectives += $block->getUsedDirectives();
-        }
-
-        return $block;
-    }
-
-    protected function addUsedType(string $type): static {
-        $this->usedTypes[$type] = $type;
-
-        return $this;
-    }
-
-    protected function addUsedDirective(string $directive): static {
-        $this->usedDirectives[$directive] = $directive;
-
-        return $this;
     }
     // </editor-fold>
 

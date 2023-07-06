@@ -14,6 +14,7 @@ use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -39,14 +40,15 @@ class TypeTest extends TestCase {
         TypeNode|GraphQLType $type,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (new Type($context, $type))->serialize($level, $used);
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new Type($context, $type))->serialize($collector, $level, $used);
 
         self::assertEquals($expected, $actual);
     }
 
     public function testStatistics(): void {
-        $node    = new NonNull(
+        $node      = new NonNull(
             new ObjectType([
                 'name'   => 'Test',
                 'fields' => [
@@ -56,19 +58,22 @@ class TypeTest extends TestCase {
                 ],
             ]),
         );
-        $context = new Context(new TestSettings(), null, null);
-        $block   = new Type($context, $node);
-        $type    = $node->getInnermostType()->name();
-        $content = $block->serialize(0, 0);
+        $context   = new Context(new TestSettings(), null, null);
+        $collector = new Collector();
+        $block     = new Type($context, $node);
+        $type      = $node->getInnermostType()->name();
+        $content   = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals([$type => $type], $block->getUsedTypes());
-        self::assertEquals([], $block->getUsedDirectives());
+        self::assertEquals([$type => $type], $collector->getUsedTypes());
+        self::assertEquals([], $collector->getUsedDirectives());
 
-        $ast = new Type($context, Parser::typeReference($content));
+        $astCollector = new Collector();
+        $astBlock     = new Type($context, Parser::typeReference($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 

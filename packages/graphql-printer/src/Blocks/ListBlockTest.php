@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -38,8 +39,9 @@ class ListBlockTest extends TestCase {
         array $blocks,
         int $count,
     ): void {
-        $context = new Context($settings, null, null);
-        $list    = new ListBlockTest__ListBlock(
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $list      = new ListBlockTest__ListBlock(
             $context,
             $normalized,
             $wrapped,
@@ -53,20 +55,22 @@ class ListBlockTest extends TestCase {
             $list[$name] = $block;
         }
 
-        self::assertEquals($expected, $list->serialize($level, $used));
+        self::assertEquals($expected, $list->serialize($collector, $level, $used));
         self::assertCount($count, $list);
     }
 
     public function testStatistics(): void {
-        $context = new Context(new TestSettings(), null, null);
-        $list    = new class($context) extends ListBlock {
+        $collector = new Collector();
+        $context   = new Context(new TestSettings(), null, null);
+        $list      = new class($context) extends ListBlock {
             // empty
         };
-        $list[]  = new ListBlockTest__StatisticsBlock(['ta'], ['da']);
-        $list[]  = new ListBlockTest__StatisticsBlock(['tb'], ['db']);
+        $list[]    = new ListBlockTest__StatisticsBlock(['ta'], ['da']);
+        $list[]    = new ListBlockTest__StatisticsBlock(['tb'], ['db']);
 
-        self::assertEquals(['ta' => 'ta', 'tb' => 'tb'], $list->getUsedTypes());
-        self::assertEquals(['da' => 'da', 'db' => 'db'], $list->getUsedDirectives());
+        self::assertNotEmpty($list->serialize($collector, 0, 0));
+        self::assertEquals(['ta' => 'ta', 'tb' => 'tb'], $collector->getUsedTypes());
+        self::assertEquals(['da' => 'da', 'db' => 'db'], $collector->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -753,19 +757,19 @@ class ListBlockTest__Block extends Block {
         parent:: __construct(new Context(new TestSettings(), null, null));
     }
 
-    protected function getContent(int $level, int $used): string {
+    protected function getContent(Collector $collector, int $level, int $used): string {
         return $this->content;
     }
 
     public function getLength(int $level, int $used): int {
-        return mb_strlen($this->getContent(0, 0));
+        return mb_strlen($this->getContent(new Collector(), 0, 0));
     }
 
     public function isMultiline(int $level, int $used): bool {
         return $this->multiline;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         return '';
     }
 }
@@ -812,23 +816,26 @@ class ListBlockTest__StatisticsBlock extends Block {
      * @param array<string> $types
      * @param array<string> $directives
      */
-    public function __construct(array $types, array $directives) {
+    public function __construct(
+        protected array $types,
+        protected array $directives,
+    ) {
         parent:: __construct(new Context(new TestSettings(), null, null));
-
-        foreach ($types as $type) {
-            $this->addUsedType($type);
-        }
-
-        foreach ($directives as $directive) {
-            $this->addUsedDirective($directive);
-        }
     }
 
     public function isEmpty(int $level, int $used): bool {
         return false;
     }
 
-    protected function content(int $level, int $used): string {
+    protected function content(Collector $collector, int $level, int $used): string {
+        foreach ($this->types as $type) {
+            $collector->addUsedType($type);
+        }
+
+        foreach ($this->directives as $directive) {
+            $collector->addUsedDirective($directive);
+        }
+
         return __METHOD__;
     }
 }
