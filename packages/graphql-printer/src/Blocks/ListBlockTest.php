@@ -12,7 +12,6 @@ use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function assert;
-use function mb_strlen;
 
 /**
  * @internal
@@ -38,7 +37,6 @@ class ListBlockTest extends TestCase {
         string $separator,
         string $multilineSeparator,
         array $blocks,
-        int $count,
     ): void {
         $collector = new Collector();
         $context   = new Context($settings, null, null);
@@ -103,7 +101,6 @@ class ListBlockTest extends TestCase {
                     [
                         new ListBlockTest__Block(false, 'block a'),
                     ],
-                    1,
                 ],
                 'one multi-line block'                          => [
                     <<<'STRING'
@@ -121,7 +118,6 @@ class ListBlockTest extends TestCase {
                     [
                         new ListBlockTest__Block(true, 'block a'),
                     ],
-                    1,
                 ],
                 'short block list'                              => [
                     <<<'STRING'
@@ -140,7 +136,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block a'),
                         new ListBlockTest__Block(false, 'block b'),
                     ],
-                    2,
                 ],
                 'long block list'                               => [
                     <<<'STRING'
@@ -160,7 +155,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block b'),
                         new ListBlockTest__Block(false, 'block a'),
                     ],
-                    2,
                 ],
                 'short block list with multiline block'         => [
                     <<<'STRING'
@@ -181,7 +175,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block a'),
                         new ListBlockTest__Block(true, 'block b'),
                     ],
-                    2,
                 ],
                 'block list with multiline blocks'              => [
                     <<<'STRING'
@@ -215,7 +208,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block f'),
                         new ListBlockTest__Block(true, 'block g'),
                     ],
-                    7,
                 ],
                 'block list with multiline blocks without wrap' => [
                     <<<'STRING'
@@ -237,7 +229,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block b'),
                         new ListBlockTest__Block(true, 'block a'),
                     ],
-                    3,
                 ],
                 'normalized block list'                         => [
                     <<<'STRING'
@@ -256,7 +247,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block b'),
                         new ListBlockTest__Block(false, 'block a'),
                     ],
-                    2,
                 ],
                 'multi-line with level'                         => [
                     <<<'STRING'
@@ -276,7 +266,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(true, 'block a'),
                         new ListBlockTest__Block(true, 'block b'),
                     ],
-                    2,
                 ],
             ]),
             'named'           => new ArrayDataProvider([
@@ -296,7 +285,6 @@ class ListBlockTest extends TestCase {
                     [
                         new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
-                    1,
                 ],
                 'one multi-line block'                          => [
                     <<<'STRING'
@@ -314,7 +302,6 @@ class ListBlockTest extends TestCase {
                     [
                         new ListBlockTest__NamedBlock('a', true, 'block a'),
                     ],
-                    1,
                 ],
                 'short block list'                              => [
                     <<<'STRING'
@@ -333,7 +320,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__NamedBlock('a', false, 'block a'),
                         new ListBlockTest__NamedBlock('b', false, 'block b'),
                     ],
-                    2,
                 ],
                 'long block list'                               => [
                     <<<'STRING'
@@ -353,7 +339,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__NamedBlock('b', false, 'block b'),
                         new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
-                    2,
                 ],
                 'short block list with multiline block'         => [
                     <<<'STRING'
@@ -374,7 +359,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__NamedBlock('a', false, 'block a'),
                         new ListBlockTest__NamedBlock('b', true, 'block b'),
                     ],
-                    2,
                 ],
                 'block list with multiline blocks'              => [
                     <<<'STRING'
@@ -408,7 +392,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__NamedBlock('f', false, 'block f'),
                         new ListBlockTest__NamedBlock('g', true, 'block g'),
                     ],
-                    7,
                 ],
                 'block list with multiline blocks without wrap' => [
                     <<<'STRING'
@@ -430,7 +413,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__NamedBlock('b', false, 'block b'),
                         new ListBlockTest__NamedBlock('a', true, 'block a'),
                     ],
-                    3,
                 ],
                 'normalized block list'                         => [
                     <<<'STRING'
@@ -449,7 +431,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__NamedBlock('b', false, 'block b'),
                         new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
-                    2,
                 ],
                 'multi-line with level'                         => [
                     <<<'STRING'
@@ -469,7 +450,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__NamedBlock('a', true, 'block a'),
                         new ListBlockTest__NamedBlock('b', true, 'block b'),
                     ],
-                    2,
                 ],
             ]),
             'prefix & suffix' => new ArrayDataProvider([
@@ -489,7 +469,6 @@ class ListBlockTest extends TestCase {
                     [
                         new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
-                    1,
                 ],
                 'one multi-line block'                  => [
                     <<<'STRING'
@@ -509,7 +488,6 @@ class ListBlockTest extends TestCase {
                     [
                         new ListBlockTest__NamedBlock('a', true, 'block a'),
                     ],
-                    1,
                 ],
                 'short block list'                      => [
                     <<<'STRING'
@@ -528,7 +506,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block a'),
                         new ListBlockTest__NamedBlock('b', false, 'block b'),
                     ],
-                    2,
                 ],
                 'long block list'                       => [
                     <<<'STRING'
@@ -550,7 +527,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__NamedBlock('b', false, 'block b'),
                         new ListBlockTest__NamedBlock('a', false, 'block a'),
                     ],
-                    2,
                 ],
                 'short block list with multiline block' => [
                     <<<'STRING'
@@ -573,7 +549,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block a'),
                         new ListBlockTest__Block(true, 'block b'),
                     ],
-                    2,
                 ],
                 'multi-line with level'                 => [
                     <<<'STRING'
@@ -593,7 +568,6 @@ class ListBlockTest extends TestCase {
                     [
                         new ListBlockTest__Block(true, 'block a'),
                     ],
-                    1,
                 ],
                 'empty'                                 => [
                     '',
@@ -607,7 +581,6 @@ class ListBlockTest extends TestCase {
                     ', ',
                     '',
                     [],
-                    0,
                 ],
             ]),
             'separators'      => new ArrayDataProvider([
@@ -628,7 +601,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block a'),
                         new ListBlockTest__Block(false, 'block b'),
                     ],
-                    2,
                 ],
                 'multiline'            => [
                     <<<'STRING'
@@ -648,7 +620,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block a'),
                         new ListBlockTest__Block(false, 'block b'),
                     ],
-                    2,
                 ],
                 'multiline and indent' => [
                     <<<'STRING'
@@ -668,7 +639,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block a'),
                         new ListBlockTest__Block(false, 'block b'),
                     ],
-                    2,
                 ],
             ]),
             'empty blocks'    => new ArrayDataProvider([
@@ -693,7 +663,6 @@ class ListBlockTest extends TestCase {
                         new ListBlockTest__Block(false, 'block b'),
                         new ListBlockTest__Block(false, ''),
                     ],
-                    5,
                 ],
             ]),
         ]))->getData();
@@ -763,25 +732,17 @@ class ListBlockTest__ListBlock extends ListBlock {
 class ListBlockTest__Block extends Block {
     public function __construct(
         protected bool $multiline,
-        protected string $content,
+        protected string $serialized,
     ) {
         parent:: __construct(new Context(new TestSettings(), null, null));
     }
 
-    protected function getContent(Collector $collector, int $level, int $used): string {
-        return $this->content;
-    }
-
-    public function getLength(int $level, int $used): int {
-        return mb_strlen($this->getContent(new Collector(), 0, 0));
-    }
-
-    public function isMultiline(int $level, int $used): bool {
-        return $this->multiline;
-    }
-
     protected function content(Collector $collector, int $level, int $used): string {
-        return '';
+        return $this->serialized;
+    }
+
+    protected function isStringMultiline(string $string): bool {
+        return $this->multiline;
     }
 }
 
@@ -796,7 +757,7 @@ class ListBlockTest__NamedBlock extends PropertyBlock {
     public function __construct(
         protected string $name,
         protected bool $multiline,
-        protected string $content,
+        protected string $serialized,
     ) {
         parent::__construct(
             new Context(new TestSettings(), null, null),
@@ -809,8 +770,12 @@ class ListBlockTest__NamedBlock extends PropertyBlock {
         return $this->name;
     }
 
+    protected function isStringMultiline(string $string): bool {
+        return $this->multiline;
+    }
+
     protected function getBlock(): Block {
-        return new ListBlockTest__Block($this->multiline, $this->content);
+        return new ListBlockTest__Block($this->multiline, $this->serialized);
     }
 
     protected function space(): string {
@@ -832,10 +797,6 @@ class ListBlockTest__StatisticsBlock extends Block {
         protected array $directives,
     ) {
         parent:: __construct(new Context(new TestSettings(), null, null));
-    }
-
-    public function isEmpty(int $level, int $used): bool {
-        return false;
     }
 
     protected function content(Collector $collector, int $level, int $used): string {

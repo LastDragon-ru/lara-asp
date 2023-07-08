@@ -28,10 +28,6 @@ abstract class UsageList extends ListBlock {
         parent::__construct($context, $items);
     }
 
-    public function isMultiline(int $level, int $used): bool {
-        return $this->isAlwaysMultiline() || parent::isMultiline($level, $used);
-    }
-
     protected function isAlwaysMultiline(): bool {
         return $this->isAlwaysMultiline;
     }

@@ -104,45 +104,50 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         // Arguments
         $arguments = $this->arguments($multiline);
 
-        if ($arguments && !$arguments->isEmpty($level, $used)) {
-            $multiline = $multiline || $arguments->isMultiline($level, $used);
-            $content  .= $arguments->serialize($collector, $level, $used);
-            $used     += $arguments->getLength($level, $used);
+        if ($arguments) {
+            $serialized = $arguments->serialize($collector, $level, $used);
+            $multiline  = $multiline || $this->isStringMultiline($serialized);
+            $content   .= $serialized;
+            $used      += mb_strlen($serialized);
         }
 
         // Type
         $prefix = ":{$space}";
         $type   = $this->type($multiline);
 
-        if ($type && !$type->isEmpty($level, $used)) {
-            $multiline = $multiline || $type->isMultiline($level, $used);
-            $content  .= "{$prefix}{$type->serialize($collector, $level, $used)}";
-            $used     += $type->getLength($level, $used) + mb_strlen($prefix);
+        if ($type) {
+            $serialized = "{$prefix}{$type->serialize($collector, $level, $used)}";
+            $multiline  = $multiline || $this->isStringMultiline($serialized);
+            $content   .= $serialized;
+            $used      += mb_strlen($serialized);
         }
 
         // Value
         $prefix = "{$space}={$space}";
         $value  = $this->value($multiline);
 
-        if ($value && !$value->isEmpty($level, $used)) {
-            $multiline = $multiline || $value->isMultiline($level, $used);
-            $content  .= "{$prefix}{$value->serialize($collector, $level, $used)}";
-            $used     += $value->getLength($level, $used) + mb_strlen($prefix);
+        if ($value) {
+            $serialized = "{$prefix}{$value->serialize($collector, $level, $used)}";
+            $multiline  = $multiline || $this->isStringMultiline($serialized);
+            $content   .= $serialized;
+            $used      += mb_strlen($serialized);
         }
 
         // Body
-        $prefix = $space;
-        $body   = $this->body($multiline);
+        $body       = $this->body($multiline);
+        $serialized = $body
+            ? $body->serialize($collector, $level, $used)
+            : '';
 
-        if ($body && !$body->isEmpty($level, $used)) {
-            if ($multiline || ($body instanceof UsageList && $body->isMultiline($level, $used))) {
+        if ($body && $serialized !== '') {
+            if ($multiline || ($body instanceof UsageList && $this->isStringMultiline($serialized))) {
                 $multiline = true;
-                $content  .= "{$eol}{$indent}{$body->serialize($collector, $level, $used)}";
+                $content  .= "{$eol}{$indent}{$serialized}";
                 $used      = mb_strlen($indent); // because new line has started
             } else {
-                $multiline = $body->isMultiline($level, $used);
-                $content  .= "{$prefix}{$body->serialize($collector, $level, $used)}";
-                $used     += mb_strlen($prefix);
+                $multiline = $this->isStringMultiline($serialized);
+                $content  .= "{$space}{$serialized}";
+                $used     += mb_strlen($serialized) + mb_strlen($space);
             }
         }
 
@@ -150,25 +155,31 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $directives = $this->getSettings()->isPrintDirectives()
             ? $this->directives($multiline)
             : null;
+        $serialized = $directives
+            ? $directives->serialize($collector, $level, $used)
+            : '';
 
-        if ($directives && !$directives->isEmpty($level, $used)) {
+        if ($directives && $serialized !== '') {
             $multiline = true;
-            $content  .= "{$eol}{$indent}{$directives->serialize($collector, $level, $used)}";
+            $content  .= "{$eol}{$indent}{$serialized}";
             $used      = mb_strlen($indent); // because new line has started
         }
 
         // Fields
-        $prefix = $space;
-        $fields = $this->fields($multiline);
+        $prefix     = $space;
+        $fields     = $this->fields($multiline);
+        $serialized = $fields
+            ? $fields->serialize($collector, $level, $used)
+            : '';
 
-        if ($fields && !$fields->isEmpty($level, $used)) {
-            if ($multiline || ($directives && !$directives->isEmpty($level, $used))) {
+        if ($fields && $serialized !== '') {
+            if ($multiline) {
                 // $multiline = true;
-                $content .= "{$eol}{$indent}{$fields->serialize($collector, $level, $used)}";
+                $content .= "{$eol}{$indent}{$serialized}";
                 // $used      = mb_strlen($indent); // because new line has started
             } else {
                 // $multiline = $fields->isMultiline();
-                $content .= "{$prefix}{$fields->serialize($collector, $level, $used)}";
+                $content .= "{$prefix}{$serialized}";
                 // $used     += $fields->getUsed() + mb_strlen($prefix);
             }
         }

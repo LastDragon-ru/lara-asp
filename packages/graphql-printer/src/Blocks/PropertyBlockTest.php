@@ -28,13 +28,13 @@ class PropertyBlockTest extends TestCase {
         $block     = new class($context, $content) extends Block {
             public function __construct(
                 Context $context,
-                protected string $content,
+                protected string $serialized,
             ) {
                 parent::__construct($context);
             }
 
             protected function content(Collector $collector, int $level, int $used): string {
-                return $this->content;
+                return $this->serialized;
             }
         };
         $property  = new class($context, $name, $block, $separator) extends PropertyBlock {
@@ -56,6 +56,5 @@ class PropertyBlockTest extends TestCase {
 
         self::assertEquals($expected, $actual);
         self::assertEquals(mb_strlen($expected), mb_strlen($actual));
-        self::assertEquals(mb_strlen($expected), $property->getLength($level, $used));
     }
 }

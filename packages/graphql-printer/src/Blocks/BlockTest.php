@@ -21,7 +21,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnresolvedFieldDefinition;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
@@ -39,7 +38,6 @@ use function array_fill_keys;
 use function array_unique;
 use function array_values;
 use function dirname;
-use function mb_strlen;
 use function sort;
 
 /**
@@ -97,7 +95,7 @@ class BlockTest extends TestCase {
         );
     }
 
-    public function testGetContent(): void {
+    public function testSerialize(): void {
         $used      = 123;
         $level     = 1;
         $collector = new Collector();
@@ -115,74 +113,8 @@ class BlockTest extends TestCase {
             ->shouldReceive('content')
             ->never();
 
-        self::assertEquals($content, $block->getContent($collector, $level, $used));
-        self::assertEquals($content, $block->getContent($collector, $level, $used));
-    }
-
-    public function testGetLength(): void {
-        $used    = 123;
-        $level   = 3;
-        $context = new Context(new TestSettings(), null, null);
-        $content = 'content';
-        $length  = mb_strlen($content);
-        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
-        $block->shouldAllowMockingProtectedMethods();
-        $block->makePartial();
-        $block
-            ->shouldReceive('content')
-            ->with(Mockery::any(), $level, $used)
-            ->once()
-            ->andReturn($content);
-        $block
-            ->shouldReceive('content')
-            ->never();
-
-        self::assertEquals($length, $block->getLength($level, $used));
-        self::assertEquals($length, $block->getLength($level, $used));
-    }
-
-    /**
-     * @dataProvider dataProviderIsMultiline
-     */
-    public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
-        $used    = 1;
-        $level   = 23;
-        $context = new Context($settings, null, null);
-        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
-        $block->shouldAllowMockingProtectedMethods();
-        $block->makePartial();
-        $block
-            ->shouldReceive('content')
-            ->with(Mockery::any(), $level, $used)
-            ->once()
-            ->andReturn($content);
-        $block
-            ->shouldReceive('content')
-            ->never();
-
-        self::assertEquals($expected, $block->isMultiline($level, $used));
-        self::assertEquals($expected, $block->isMultiline($level, $used));
-    }
-
-    /**
-     * @dataProvider dataProviderIsEmpty
-     */
-    public function testIsEmpty(bool $expected, string $content): void {
-        $used    = 123;
-        $level   = 23;
-        $context = new Context(new TestSettings(), null, null);
-        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
-        $block->shouldAllowMockingProtectedMethods();
-        $block->makePartial();
-        $block
-            ->shouldReceive('content')
-            ->once()
-            ->andReturn($content);
-        $block
-            ->shouldReceive('content')
-            ->never();
-
-        self::assertEquals($expected, $block->isEmpty($level, $used));
+        self::assertEquals($content, $block->serialize($collector, $level, $used));
+        self::assertEquals($content, $block->serialize($collector, $level, $used));
     }
     // </editor-fold>
 
@@ -311,18 +243,6 @@ class BlockTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockTest__Block extends Block {
-    public function getContent(Collector $collector, int $level, int $used): string {
-        return parent::getContent($collector, $level, $used);
-    }
-
-    public function getLength(int $level, int $used): int {
-        return parent::getLength($level, $used);
-    }
-
-    public function isMultiline(int $level, int $used): bool {
-        return parent::isMultiline($level, $used);
-    }
-
     protected function content(Collector $collector, int $level, int $used): string {
         return '';
     }

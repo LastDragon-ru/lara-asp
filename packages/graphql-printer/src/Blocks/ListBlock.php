@@ -136,8 +136,9 @@ abstract class ListBlock extends Block {
             $separator = $this->getMultilineItemPrefix();
 
             foreach ($blocks as $block) {
-                $block     = $this->analyze($collector, $block);
-                $multiline = $wrapped && $block->isMultiline($level, $used);
+                $block      = $this->analyze($collector, $block);
+                $serialized = $block->serialize($collector, $level + (int) $isWrapped, $used);
+                $multiline  = $wrapped && $block->isStringMultiline($serialized);
 
                 if (($multiline && $index > 0) || $previous) {
                     $content .= $eol;
@@ -147,7 +148,7 @@ abstract class ListBlock extends Block {
                     $content .= $indent;
                 }
 
-                $content .= "{$separator}{$block->serialize($collector, $level + (int) $isWrapped, $used)}";
+                $content .= "{$separator}{$serialized}";
 
                 if ($index < $last) {
                     $content .= $eol;
@@ -201,11 +202,13 @@ abstract class ListBlock extends Block {
         // Any multiline block?
         $length    = 0;
         $multiline = false;
+        $collector = new Collector();
 
         foreach ($blocks as $block) {
-            $length += $block->getLength($level, $used);
+            $serialized = $block->serialize($collector, $level, $used);
+            $length    += mb_strlen($serialized);
 
-            if ($block->isMultiline($level, $used)) {
+            if ($block->isStringMultiline($serialized)) {
                 $multiline = true;
                 break;
             }
