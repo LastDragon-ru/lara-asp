@@ -54,7 +54,6 @@ class ListBlockTest extends TestCase {
         );
 
         self::assertEquals($expected, $list->serialize($collector, $level, $used));
-        self::assertCount($count, $list);
     }
 
     public function testStatistics(): void {

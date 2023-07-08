@@ -2,12 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use Countable;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function count;
-use function is_countable;
 use function mb_strlen;
 use function strnatcmp;
 use function usort;
@@ -18,7 +16,7 @@ use function usort;
  * @template TKey of array-key
  * @template TItem
  */
-abstract class ListBlock extends Block implements Countable {
+abstract class ListBlock extends Block {
     /**
      * @param iterable<TKey, TItem> $items
      */
@@ -244,14 +242,5 @@ abstract class ListBlock extends Block implements Countable {
      * @return TBlock
      */
     abstract protected function block(string|int $key, mixed $item): Block;
-    // </editor-fold>
-
-    // <editor-fold desc="Countable">
-    // =========================================================================
-    public function count(): int {
-        return is_countable($this->items)
-            ? count($this->items)
-            : 0;
-    }
     // </editor-fold>
 }
