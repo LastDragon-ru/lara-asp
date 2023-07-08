@@ -33,7 +33,7 @@ class DirectiveDefinition extends DefinitionBlock {
         return '@'.parent::name();
     }
 
-    protected function arguments(int $level, int $used, bool $multiline): ?Block {
+    protected function arguments(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $arguments  = new ArgumentsDefinition(
             $this->getContext(),
@@ -45,7 +45,7 @@ class DirectiveDefinition extends DefinitionBlock {
         return $arguments;
     }
 
-    protected function body(int $level, int $used, bool $multiline): ?Block {
+    protected function body(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $locations  = new DirectiveLocations(
             $this->getContext(),

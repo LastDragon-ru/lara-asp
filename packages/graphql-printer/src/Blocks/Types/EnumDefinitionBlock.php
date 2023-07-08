@@ -24,7 +24,7 @@ abstract class EnumDefinitionBlock extends DefinitionBlock implements TypeDefini
         parent::__construct($context, $definition);
     }
 
-    protected function fields(int $level, int $used, bool $multiline): ?Block {
+    protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $values     = new EnumValuesDefinition(
             $this->getContext(),

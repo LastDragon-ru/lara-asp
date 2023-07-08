@@ -41,14 +41,14 @@ class InputValueDefinition extends DefinitionBlock {
             : '';
     }
 
-    protected function type(int $level, int $used, bool $multiline): ?Block {
+    protected function type(bool $multiline): ?Block {
         return new Type(
             $this->getContext(),
             $this->getType(),
         );
     }
 
-    protected function value(int $level, int $used, bool $multiline): ?Block {
+    protected function value(bool $multiline): ?Block {
         $value      = null;
         $default    = null;
         $definition = $this->getDefinition();

@@ -52,7 +52,7 @@ class SchemaDefinition extends DefinitionBlock {
         return $content;
     }
 
-    protected function fields(int $level, int $used, bool $multiline): ?Block {
+    protected function fields(bool $multiline): ?Block {
         return new RootOperationTypesDefinition(
             $this->getContext(),
             $this->getOperationsTypes(),

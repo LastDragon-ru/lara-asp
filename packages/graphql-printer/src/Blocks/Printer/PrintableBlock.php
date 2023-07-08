@@ -59,7 +59,7 @@ class PrintableBlock extends Block implements NamedBlock {
     }
 
     protected function content(Collector $collector, int $level, int $used): string {
-        return $this->getBlock()->content($collector, $level, $used);
+        return $this->getBlock()->serialize($collector, $level, $used);
     }
 
     /**

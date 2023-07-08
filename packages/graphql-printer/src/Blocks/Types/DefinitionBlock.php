@@ -89,7 +89,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $multiline = $this->isStringMultiline($content);
 
         // Description
-        $description = $this->description($level, $used)?->serialize($collector, $level, $used);
+        $description = $this->description()?->serialize($collector, $level, $used);
 
         if ($description) {
             $content .= "{$description}{$eol}{$indent}";
@@ -102,7 +102,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $used    += mb_strlen($name);
 
         // Arguments
-        $arguments = $this->arguments($level, $used, $multiline);
+        $arguments = $this->arguments($multiline);
 
         if ($arguments && !$arguments->isEmpty($level, $used)) {
             $multiline = $multiline || $arguments->isMultiline($level, $used);
@@ -112,7 +112,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Type
         $prefix = ":{$space}";
-        $type   = $this->type($level, $used + mb_strlen($prefix), $multiline);
+        $type   = $this->type($multiline);
 
         if ($type && !$type->isEmpty($level, $used)) {
             $multiline = $multiline || $type->isMultiline($level, $used);
@@ -122,7 +122,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Value
         $prefix = "{$space}={$space}";
-        $value  = $this->value($level, $used + mb_strlen($prefix), $multiline);
+        $value  = $this->value($multiline);
 
         if ($value && !$value->isEmpty($level, $used)) {
             $multiline = $multiline || $value->isMultiline($level, $used);
@@ -132,7 +132,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Body
         $prefix = $space;
-        $body   = $this->body($level, $used + mb_strlen($prefix), $multiline);
+        $body   = $this->body($multiline);
 
         if ($body && !$body->isEmpty($level, $used)) {
             if ($multiline || ($body instanceof UsageList && $body->isMultiline($level, $used))) {
@@ -148,7 +148,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Directives
         $directives = $this->getSettings()->isPrintDirectives()
-            ? $this->directives($level, $used, $multiline)
+            ? $this->directives($multiline)
             : null;
 
         if ($directives && !$directives->isEmpty($level, $used)) {
@@ -159,7 +159,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Fields
         $prefix = $space;
-        $fields = $this->fields($level, $used + mb_strlen($prefix), $multiline);
+        $fields = $this->fields($multiline);
 
         if ($fields && !$fields->isEmpty($level, $used)) {
             if ($multiline || ($directives && !$directives->isEmpty($level, $used))) {
@@ -219,27 +219,27 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $name;
     }
 
-    protected function arguments(int $level, int $used, bool $multiline): ?Block {
+    protected function arguments(bool $multiline): ?Block {
         return null;
     }
 
-    protected function type(int $level, int $used, bool $multiline): ?Block {
+    protected function type(bool $multiline): ?Block {
         return null;
     }
 
-    protected function value(int $level, int $used, bool $multiline): ?Block {
+    protected function value(bool $multiline): ?Block {
         return null;
     }
 
-    protected function body(int $level, int $used, bool $multiline): ?Block {
+    protected function body(bool $multiline): ?Block {
         return null;
     }
 
-    protected function fields(int $level, int $used, bool $multiline): ?Block {
+    protected function fields(bool $multiline): ?Block {
         return null;
     }
 
-    protected function directives(int $level, int $used, bool $multiline): ?Block {
+    protected function directives(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $directives = new Directives(
             $this->getContext(),
@@ -250,7 +250,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $directives;
     }
 
-    protected function description(int $level, int $used): ?Block {
+    protected function description(): ?Block {
         // Description
         $definition  = $this->getDefinition();
         $description = null;

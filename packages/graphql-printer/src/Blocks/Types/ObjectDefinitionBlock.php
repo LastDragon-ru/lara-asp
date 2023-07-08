@@ -33,7 +33,7 @@ abstract class ObjectDefinitionBlock extends DefinitionBlock implements TypeDefi
         parent::__construct($context, $definition);
     }
 
-    protected function body(int $level, int $used, bool $multiline): ?Block {
+    protected function body(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $implements = new ImplementsInterfaces(
             $this->getContext(),
@@ -45,7 +45,7 @@ abstract class ObjectDefinitionBlock extends DefinitionBlock implements TypeDefi
         return $implements;
     }
 
-    protected function fields(int $level, int $used, bool $multiline): ?Block {
+    protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $fields     = new FieldsDefinition(
             $this->getContext(),

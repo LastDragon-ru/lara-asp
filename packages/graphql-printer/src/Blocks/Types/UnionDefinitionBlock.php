@@ -24,7 +24,7 @@ abstract class UnionDefinitionBlock extends DefinitionBlock implements TypeDefin
         parent::__construct($context, $definition);
     }
 
-    protected function fields(int $level, int $used, bool $multiline): ?Block {
+    protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $types      = new UnionMemberTypes(
             $this->getContext(),

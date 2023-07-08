@@ -37,14 +37,14 @@ class FieldDefinition extends DefinitionBlock {
             : '';
     }
 
-    protected function type(int $level, int $used, bool $multiline): ?Block {
+    protected function type(bool $multiline): ?Block {
         return new Type(
             $this->getContext(),
             $this->getType(),
         );
     }
 
-    protected function arguments(int $level, int $used, bool $multiline): ?Block {
+    protected function arguments(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $arguments  = new ArgumentsDefinition(
             $this->getContext(),

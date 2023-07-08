@@ -27,7 +27,7 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
         return 'extend schema';
     }
 
-    protected function fields(int $level, int $used, bool $multiline): ?Block {
+    protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $operations = [];
 
