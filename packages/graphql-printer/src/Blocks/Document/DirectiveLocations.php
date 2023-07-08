@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
- * @extends UsageList<DirectiveLocation, NameNode|string>
+ * @extends UsageList<DirectiveLocation, array-key, NameNode|string>
  */
 class DirectiveLocations extends UsageList {
     /**
@@ -24,7 +24,7 @@ class DirectiveLocations extends UsageList {
         parent::__construct($context, $items, $isAlwaysMultiline);
     }
 
-    protected function block(mixed $item): Block {
+    protected function block(string|int $key, mixed $item): Block {
         return new DirectiveLocation(
             $this->getContext(),
             $item,

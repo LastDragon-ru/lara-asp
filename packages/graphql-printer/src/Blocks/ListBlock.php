@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use ArrayAccess;
 use Countable;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
-use function array_filter;
 use function count;
+use function is_countable;
 use function mb_strlen;
 use function strnatcmp;
 use function usort;
@@ -15,13 +15,29 @@ use function usort;
 /**
  * @internal
  * @template TBlock of Block
- * @implements ArrayAccess<string|int,TBlock>
+ * @template TKey of array-key
+ * @template TItem
  */
-abstract class ListBlock extends Block implements ArrayAccess, Countable {
+abstract class ListBlock extends Block implements Countable {
     /**
-     * @var array<int|string,TBlock>
+     * @param iterable<TKey, TItem> $items
      */
-    private array $blocks = [];
+    public function __construct(
+        Context $context,
+        private iterable $items,
+    ) {
+        parent::__construct($context);
+    }
+
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
+    /**
+     * @return iterable<TKey, TItem>
+     */
+    protected function getItems(): iterable {
+        return $this->items;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Settings">
     // =========================================================================
@@ -61,15 +77,21 @@ abstract class ListBlock extends Block implements ArrayAccess, Countable {
     // <editor-fold desc="Content">
     // =========================================================================
     /**
-     * @param Collector $collector *
-     *
      * @return array<int|string,TBlock>
      */
     protected function getBlocks(Collector $collector, int $level, int $used): array {
-        $blocks = array_filter($this->blocks, static function (Block $block) use ($collector, $level, $used): bool {
-            return $block->serialize($collector, $level, $used) !== '';
-        });
+        // Create
+        $blocks = [];
 
+        foreach ($this->getItems() as $key => $item) {
+            $block = $this->block($key, $item);
+
+            if ($block->serialize($collector, $level, $used) !== '') {
+                $blocks[] = $block;
+            }
+        }
+
+        // Sort
         if (count($blocks) > 0 && $this->isNormalized()) {
             usort($blocks, static function (Block $a, Block $b): int {
                 $aName = $a instanceof NamedBlock ? $a->getName() : '';
@@ -215,61 +237,21 @@ abstract class ListBlock extends Block implements ArrayAccess, Countable {
         return $collector->addUsed($block);
     }
 
-    protected function reset(): void {
-        foreach ($this->blocks as $block) {
-            $block->reset();
-        }
-
-        parent::reset();
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="ArrayAccess">
-    // =========================================================================
     /**
-     * @param int|string $offset
-     */
-    public function offsetExists(mixed $offset): bool {
-        return isset($this->blocks[$offset]);
-    }
-
-    /**
-     * @param int|string $offset
+     * @param TKey  $key
+     * @param TItem $item
      *
      * @return TBlock
      */
-    public function offsetGet(mixed $offset): Block {
-        return $this->blocks[$offset];
-    }
-
-    /**
-     * @param int|string|null $offset
-     * @param TBlock          $value
-     */
-    public function offsetSet(mixed $offset, mixed $value): void {
-        if ($offset !== null) {
-            $this->blocks[$offset] = $value;
-        } else {
-            $this->blocks[] = $value;
-        }
-
-        parent::reset();
-    }
-
-    /**
-     * @param int|string $offset
-     */
-    public function offsetUnset(mixed $offset): void {
-        unset($this->blocks[$offset]);
-
-        parent::reset();
-    }
+    abstract protected function block(string|int $key, mixed $item): Block;
     // </editor-fold>
 
     // <editor-fold desc="Countable">
     // =========================================================================
     public function count(): int {
-        return count($this->blocks);
+        return is_countable($this->items)
+            ? count($this->items)
+            : 0;
     }
     // </editor-fold>
 }

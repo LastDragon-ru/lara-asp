@@ -8,7 +8,6 @@ use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\PrintableBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\PrintableList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
@@ -142,10 +141,8 @@ class Printer implements SchemaPrinterContract {
 
     /**
      * Returns all types defined in the schema.
-     *
-     * @return ListBlock<Block>
      */
-    protected function getTypeDefinitions(Context $context): ListBlock {
+    protected function getTypeDefinitions(Context $context): PrintableList {
         $blocks = $this->getDefinitionList($context);
 
         foreach ($context->getTypes() as $type) {
@@ -159,10 +156,8 @@ class Printer implements SchemaPrinterContract {
 
     /**
      * Returns all directives defined in the schema.
-     *
-     * @return ListBlock<Block>
      */
-    protected function getDirectiveDefinitions(Context $context): ListBlock {
+    protected function getDirectiveDefinitions(Context $context): PrintableList {
         // Included?
         $blocks = $this->getDefinitionList($context);
 
@@ -189,17 +184,14 @@ class Printer implements SchemaPrinterContract {
         return new PrintableBlock($context, $definition);
     }
 
-    /**
-     * @return ListBlock<Block>
-     */
-    protected function getDefinitionList(Context $context, bool $root = false): ListBlock {
+    protected function getDefinitionList(Context $context, bool $root = false): PrintableList {
         return new PrintableList($context, $root);
     }
 
     /**
      * @param int $level *
      *
-     * @return array<ListBlock<Block>>
+     * @return array<PrintableList>
      */
     protected function getUsedDefinitions(Collector $collector, Context $context, Block $root, int $level): array {
         $root       = $this->analyze($collector, $level, $root);

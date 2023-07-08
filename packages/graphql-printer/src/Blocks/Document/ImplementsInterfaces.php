@@ -9,10 +9,10 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 
 /**
  * @internal
- * @extends UsageList<Type, NamedTypeNode|InterfaceType>
+ * @extends UsageList<Type, array-key, NamedTypeNode|InterfaceType>
  */
 class ImplementsInterfaces extends UsageList {
-    protected function block(mixed $item): Block {
+    protected function block(string|int $key, mixed $item): Block {
         return new Type(
             $this->getContext(),
             $item,

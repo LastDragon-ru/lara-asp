@@ -12,23 +12,20 @@ use function mb_strlen;
 /**
  * @internal
  * @template TBlock of Block
- * @template TType
- * @extends ListBlock<TBlock>
+ * @template TKey of array-key
+ * @template TItem
+ * @extends ListBlock<TBlock, TKey, TItem>
  */
 abstract class UsageList extends ListBlock {
     /**
-     * @param iterable<TType> $items
+     * @inheritDoc
      */
     public function __construct(
         Context $context,
         iterable $items,
         protected bool $isAlwaysMultiline = false,
     ) {
-        parent::__construct($context);
-
-        foreach ($items as $item) {
-            $this[] = $this->block($item);
-        }
+        parent::__construct($context, $items);
     }
 
     public function isMultiline(int $level, int $used): bool {
@@ -38,13 +35,6 @@ abstract class UsageList extends ListBlock {
     protected function isAlwaysMultiline(): bool {
         return $this->isAlwaysMultiline;
     }
-
-    /**
-     * @param TType $item
-     *
-     * @return TBlock
-     */
-    abstract protected function block(mixed $item): Block;
 
     abstract protected function separator(): string;
 

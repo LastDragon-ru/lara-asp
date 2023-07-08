@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function assert;
 use function mb_strlen;
 
 /**
@@ -43,6 +44,7 @@ class ListBlockTest extends TestCase {
         $context   = new Context($settings, null, null);
         $list      = new ListBlockTest__ListBlock(
             $context,
+            $blocks,
             $normalized,
             $wrapped,
             $prefix,
@@ -51,10 +53,6 @@ class ListBlockTest extends TestCase {
             $multilineSeparator,
         );
 
-        foreach ($blocks as $name => $block) {
-            $list[$name] = $block;
-        }
-
         self::assertEquals($expected, $list->serialize($collector, $level, $used));
         self::assertCount($count, $list);
     }
@@ -62,11 +60,17 @@ class ListBlockTest extends TestCase {
     public function testStatistics(): void {
         $collector = new Collector();
         $context   = new Context(new TestSettings(), null, null);
-        $list      = new class($context) extends ListBlock {
-            // empty
+        $items     = [
+            new ListBlockTest__StatisticsBlock(['ta'], ['da']),
+            new ListBlockTest__StatisticsBlock(['tb'], ['db']),
+        ];
+        $list      = new class($context, $items) extends ListBlock {
+            protected function block(string|int $key, mixed $item): Block {
+                assert($item instanceof Block);
+
+                return $item;
+            }
         };
-        $list[]    = new ListBlockTest__StatisticsBlock(['ta'], ['da']);
-        $list[]    = new ListBlockTest__StatisticsBlock(['tb'], ['db']);
 
         self::assertNotEmpty($list->serialize($collector, 0, 0));
         self::assertEquals(['ta' => 'ta', 'tb' => 'tb'], $collector->getUsedTypes());
@@ -705,11 +709,15 @@ class ListBlockTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @extends ListBlock<Block>
+ * @extends ListBlock<Block, array-key, Block>
  */
 class ListBlockTest__ListBlock extends ListBlock {
+    /**
+     * @param iterable<string, Block> $items
+     */
     public function __construct(
         Context $context,
+        iterable $items,
         private bool $normalized,
         private bool $wrapped,
         private string $prefix,
@@ -717,7 +725,7 @@ class ListBlockTest__ListBlock extends ListBlock {
         private string $separator,
         private string $multilineSeparator,
     ) {
-        parent::__construct($context);
+        parent::__construct($context, $items);
     }
 
     protected function isWrapped(): bool {
@@ -742,6 +750,10 @@ class ListBlockTest__ListBlock extends ListBlock {
 
     protected function getMultilineItemPrefix(): string {
         return $this->multilineSeparator;
+    }
+
+    protected function block(string|int $key, mixed $item): Block {
+        return $item;
     }
 }
 

@@ -4,34 +4,14 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ObjectBlockList;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
- * @extends ObjectBlockList<EnumValueDefinition>
+ * @extends ObjectBlockList<EnumValueDefinition, array-key, EnumValueDefinitionNode|GraphQLEnumValueDefinition>
  */
 class EnumValuesDefinition extends ObjectBlockList {
-    /**
-     * @param iterable<EnumValueDefinitionNode>|iterable<GraphQLEnumValueDefinition> $values
-     */
-    public function __construct(
-        Context $context,
-        iterable $values,
-    ) {
-        parent::__construct($context);
-
-        foreach ($values as $value) {
-            $name        = $value instanceof EnumValueDefinitionNode
-                ? $value->name->value
-                : $value->name;
-            $this[$name] = new EnumValueDefinition(
-                $this->getContext(),
-                $value,
-            );
-        }
-    }
-
     protected function isWrapped(): bool {
         return true;
     }
@@ -42,5 +22,12 @@ class EnumValuesDefinition extends ObjectBlockList {
 
     protected function isAlwaysMultiline(): bool {
         return true;
+    }
+
+    protected function block(string|int $key, mixed $item): Block {
+        return new EnumValueDefinition(
+            $this->getContext(),
+            $item,
+        );
     }
 }

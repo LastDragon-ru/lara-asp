@@ -4,34 +4,14 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Type\Definition\Argument;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
- * @extends ListBlock<InputValueDefinition>
+ * @extends ListBlock<InputValueDefinition, array-key, InputValueDefinitionNode|Argument>
  */
 class ArgumentsDefinition extends ListBlock {
-    /**
-     * @param iterable<InputValueDefinitionNode>|iterable<Argument> $arguments
-     */
-    public function __construct(
-        Context $context,
-        iterable $arguments,
-    ) {
-        parent::__construct($context);
-
-        foreach ($arguments as $argument) {
-            $name        = $argument instanceof InputValueDefinitionNode
-                ? $argument->name->value
-                : $argument->name;
-            $this[$name] = new InputValueDefinition(
-                $context,
-                $argument,
-            );
-        }
-    }
-
     protected function getPrefix(): string {
         return '(';
     }
@@ -51,5 +31,9 @@ class ArgumentsDefinition extends ListBlock {
     protected function isAlwaysMultiline(): bool {
         return parent::isAlwaysMultiline()
             || $this->getSettings()->isAlwaysMultilineArguments();
+    }
+
+    protected function block(string|int $key, mixed $item): Block {
+        return new InputValueDefinition($this->getContext(), $item);
     }
 }

@@ -2,8 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
+use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
@@ -40,23 +43,21 @@ class Directive extends Block implements NamedBlock {
         $definition = $this->getDefinition();
         $directive  = $this->getName();
         $context    = $this->getContext();
-        $args       = new Arguments($context);
+        $args       = new Arguments(
+            $context,
+            $definition->arguments,
+            static function (ArgumentNode $argument) use ($context, $definition): TypeNode|Type|null {
+                $name = $argument->name->value;
+                $arg  = $context->getDirectiveArgument($definition, $name);
+                $type = $arg instanceof InputValueDefinitionNode
+                    ? $arg->type
+                    : $arg?->getType();
 
-        foreach ($definition->arguments as $node) {
-            $name        = $node->name->value;
-            $arg         = $context->getDirectiveArgument($definition, $name);
-            $type        = $arg instanceof InputValueDefinitionNode
-                ? $arg->type
-                : $arg?->getType();
-            $args[$name] = new Argument(
-                $context,
-                $node,
-                $type,
-            );
-        }
+                return $type;
+            },
+        );
 
         // Statistics
-        $collector->addUsed($args);
         $collector->addUsedDirective($directive);
 
         // Return

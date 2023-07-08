@@ -4,34 +4,14 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
- * @extends ListBlock<FieldDefinition>
+ * @extends ListBlock<FieldDefinition, array-key, FieldDefinitionNode|GraphQLFieldDefinition>
  */
 class FieldsDefinition extends ListBlock {
-    /**
-     * @param iterable<FieldDefinitionNode>|iterable<GraphQLFieldDefinition> $fields
-     */
-    public function __construct(
-        Context $context,
-        iterable $fields,
-    ) {
-        parent::__construct($context);
-
-        foreach ($fields as $field) {
-            $name        = $field instanceof FieldDefinitionNode
-                ? $field->name->value
-                : $field->name;
-            $this[$name] = new FieldDefinition(
-                $this->getContext(),
-                $field,
-            );
-        }
-    }
-
     protected function getPrefix(): string {
         return '{';
     }
@@ -50,5 +30,9 @@ class FieldsDefinition extends ListBlock {
 
     protected function isAlwaysMultiline(): bool {
         return true;
+    }
+
+    protected function block(string|int $key, mixed $item): Block {
+        return new FieldDefinition($this->getContext(), $item);
     }
 }

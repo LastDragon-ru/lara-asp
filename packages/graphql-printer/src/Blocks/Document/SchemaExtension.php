@@ -29,16 +29,15 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
 
     protected function fields(int $level, int $used, bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $fields     = new RootOperationTypesDefinition($this->getContext());
+        $operations = [];
 
         foreach ($definition->operationTypes as $operation) {
-            $fields[] = new RootOperationTypeDefinition(
-                $this->getContext(),
-                $operation->operation,
-                $operation->type,
-            );
+            $operations[$operation->operation] = $operation->type;
         }
 
-        return $fields;
+        return new RootOperationTypesDefinition(
+            $this->getContext(),
+            $operations,
+        );
     }
 }

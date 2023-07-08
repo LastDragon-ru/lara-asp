@@ -8,50 +8,62 @@ use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
+use function array_unshift;
 use function json_encode;
 
 /**
  * @internal
- * @extends ListBlock<Directive>
+ * @extends ListBlock<Directive, array-key, DirectiveNode>
  */
 class Directives extends ListBlock {
     /**
-     * @param iterable<DirectiveNode>|null $directives
+     * @param iterable<array-key, DirectiveNode> $directives
      */
     public function __construct(
         Context $context,
-        iterable|null $directives,
+        iterable $directives,
         string|null $deprecationReason = null,
     ) {
-        parent::__construct($context);
-
-        $deprecated   = GraphQLDirective::DEPRECATED_NAME;
-        $directives ??= [];
 
         if ($deprecationReason !== null) {
+            $list       = [];
+            $name       = GraphQLDirective::DEPRECATED_NAME;
+            $default    = GraphQLDirective::DEFAULT_DEPRECATION_REASON;
+            $replaced   = false;
+            $deprecated = null;
+
             // todo(graphql): Is there a better way to create directive node?
-            if ($deprecationReason !== GraphQLDirective::DEFAULT_DEPRECATION_REASON && $deprecationReason !== '') {
-                $reason = json_encode($deprecationReason);
-                $this[] = $this->block(Parser::directive("@{$deprecated}(reason: {$reason})"));
+            if ($deprecationReason !== $default && $deprecationReason !== '') {
+                $reason     = json_encode($deprecationReason);
+                $deprecated = Parser::directive("@{$name}(reason: {$reason})");
             } else {
-                $this[] = $this->block(Parser::directive("@{$deprecated}"));
-            }
-        }
-
-        foreach ($directives as $directive) {
-            if ($deprecationReason !== null && $directive->name->value === $deprecated) {
-                continue;
+                $deprecated = Parser::directive("@{$name}");
             }
 
-            $this[] = $this->block($directive);
+            foreach ($directives as $key => $directive) {
+                if ($directive->name->value === $name) {
+                    $list[$key] = $deprecated;
+                    $replaced   = true;
+                } else {
+                    $list[$key] = $directive;
+                }
+            }
+
+            if (!$replaced) {
+                array_unshift($list, $deprecated);
+            }
+
+            $directives = $list;
         }
+
+        parent::__construct($context, $directives);
     }
 
     protected function isAlwaysMultiline(): bool {
         return true;
     }
 
-    private function block(DirectiveNode $directive): Directive {
-        return new Directive($this->getContext(), $directive);
+    protected function block(string|int $key, mixed $item): Directive {
+        return new Directive($this->getContext(), $item);
     }
 }

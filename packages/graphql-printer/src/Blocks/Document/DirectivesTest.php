@@ -29,7 +29,7 @@ class DirectivesTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        array|null $directives,
+        array $directives,
         string $reason = null,
     ): void {
         $collector = new Collector();
@@ -59,21 +59,13 @@ class DirectivesTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, ?array<DirectiveNode>, ?string}>
+     * @return array<string,array{string, Settings, int, int, array<DirectiveNode>, ?string}>
      */
     public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setAlwaysMultilineArguments(false);
 
         return [
-            'null'                                      => [
-                '',
-                $settings,
-                0,
-                0,
-                null,
-                null,
-            ],
             'empty'                                     => [
                 '',
                 $settings,
@@ -103,7 +95,7 @@ class DirectivesTest extends TestCase {
                 $settings,
                 0,
                 0,
-                null,
+                [],
                 GraphQLDirective::DEFAULT_DEPRECATION_REASON,
             ],
             'deprecated (custom reason)'                => [
@@ -113,13 +105,13 @@ class DirectivesTest extends TestCase {
                 $settings,
                 0,
                 0,
-                null,
+                [],
                 'reason',
             ],
             'directives and deprecated (custom reason)' => [
                 <<<'STRING'
-                @deprecated(reason: "reason")
                 @b(b: 123)
+                @deprecated(reason: "reason")
                 STRING,
                 $settings,
                 0,

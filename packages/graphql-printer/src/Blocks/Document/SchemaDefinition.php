@@ -53,18 +53,10 @@ class SchemaDefinition extends DefinitionBlock {
     }
 
     protected function fields(int $level, int $used, bool $multiline): ?Block {
-        $fields     = new RootOperationTypesDefinition($this->getContext());
-        $operations = $this->getOperationsTypes();
-
-        foreach ($operations as $operation => $type) {
-            $fields[] = new RootOperationTypeDefinition(
-                $this->getContext(),
-                $operation,
-                $type,
-            );
-        }
-
-        return $fields;
+        return new RootOperationTypesDefinition(
+            $this->getContext(),
+            $this->getOperationsTypes(),
+        );
     }
 
     private function isUseDefaultRootOperationTypeNames(): bool {
