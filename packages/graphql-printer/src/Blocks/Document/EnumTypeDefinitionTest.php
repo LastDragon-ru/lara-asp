@@ -55,7 +55,7 @@ class EnumTypeDefinitionTest extends TestCase {
         $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals([], $collector->getUsedTypes());
+        self::assertEquals(['Test' => 'Test'], $collector->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
         $astBlock     = new EnumTypeDefinition($context, Parser::enumTypeDefinition($content));

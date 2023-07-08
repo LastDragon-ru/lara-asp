@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
  *
  * @extends DefinitionBlock<TType>
  */
-abstract class EnumDefinitionBlock extends DefinitionBlock {
+abstract class EnumDefinitionBlock extends DefinitionBlock implements TypeDefinitionBlock {
     public function __construct(
         Context $context,
         EnumTypeDefinitionNode|EnumTypeExtensionNode|EnumType $definition,

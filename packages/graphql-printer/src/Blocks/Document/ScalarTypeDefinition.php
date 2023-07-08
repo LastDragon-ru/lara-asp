@@ -11,6 +11,7 @@ use GraphQL\Type\Definition\IntType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\StringType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -27,7 +28,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 #[GraphQLDefinition(IDType::class)]
 #[GraphQLDefinition(IntType::class)]
 #[GraphQLDefinition(StringType::class)]
-class ScalarTypeDefinition extends DefinitionBlock {
+class ScalarTypeDefinition extends DefinitionBlock implements TypeDefinitionBlock {
     public function __construct(
         Context $context,
         ScalarTypeDefinitionNode|ScalarType $definition,

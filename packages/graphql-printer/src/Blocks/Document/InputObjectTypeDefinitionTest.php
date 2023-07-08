@@ -67,7 +67,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
         $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['B' => 'B'], $collector->getUsedTypes());
+        self::assertEquals(['A' => 'A', 'B' => 'B'], $collector->getUsedTypes());
         self::assertEquals(['@a' => '@a', '@b' => '@b'], $collector->getUsedDirectives());
 
         $astCollector = new Collector();

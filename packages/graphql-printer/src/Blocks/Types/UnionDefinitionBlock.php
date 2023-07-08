@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
  *
  * @extends DefinitionBlock<TType>
  */
-abstract class UnionDefinitionBlock extends DefinitionBlock {
+abstract class UnionDefinitionBlock extends DefinitionBlock implements TypeDefinitionBlock {
     public function __construct(
         Context $context,
         UnionTypeDefinitionNode|UnionTypeExtensionNode|UnionType $definition,

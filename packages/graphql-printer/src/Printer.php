@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
@@ -77,15 +78,14 @@ class Printer implements SchemaPrinterContract {
         $collector = new Collector();
         $context   = $this->getContext($schema);
         $level     = $this->getLevel();
-        $block     = $this->getDefinitionBlock($context, $schema);
         $content   = $this->getDefinitionList($context, true);
-        $content[] = $block;
+        $content[] = $this->getDefinitionBlock($context, $schema);
 
         if ($context->getSettings()->isPrintUnusedDefinitions()) {
             $content[] = $this->getTypeDefinitions($context);
             $content[] = $this->getDirectiveDefinitions($context);
         } else {
-            foreach ($this->getUsedDefinitions($collector, $context, $block, $level) as $definition) {
+            foreach ($this->getUsedDefinitions($collector, $context, $content, $level) as $definition) {
                 $content[] = $definition;
             }
         }
@@ -106,16 +106,16 @@ class Printer implements SchemaPrinterContract {
         }
 
         // Print
-        $collector = new Collector();
-        $context   = $this->getContext($schema);
-        $level     = $this->getLevel();
-        $block     = $this->getDefinitionBlock($context, $type);
-        $list      = $this->getDefinitionList($context);
-        $list[]    = $block;
-        $content   = $this->getDefinitionList($context, true);
-        $content[] = $list;
+        $collector      = new Collector();
+        $context        = $this->getContext($schema);
+        $level          = $this->getLevel();
+        $name           = $type instanceof NamedType ? $type->name() : null;
+        $list           = $this->getDefinitionList($context);
+        $list[$name]    = $this->getDefinitionBlock($context, $type);
+        $content        = $this->getDefinitionList($context, true);
+        $content[$name] = $list;
 
-        foreach ($this->getUsedDefinitions($collector, $context, $block, $level) as $definition) {
+        foreach ($this->getUsedDefinitions($collector, $context, $content, $level) as $definition) {
             $content[] = $definition;
         }
 
@@ -189,8 +189,6 @@ class Printer implements SchemaPrinterContract {
     }
 
     /**
-     * @param int $level *
-     *
      * @return array<PrintableList>
      */
     protected function getUsedDefinitions(Collector $collector, Context $context, Block $root, int $level): array {
@@ -205,7 +203,7 @@ class Printer implements SchemaPrinterContract {
             // Added?
             $name = array_pop($stack);
 
-            if (isset($types[$name]) || isset($directives[$name])) {
+            if (isset($types[$name]) || isset($directives[$name]) || isset($root[$name])) {
                 continue;
             }
 

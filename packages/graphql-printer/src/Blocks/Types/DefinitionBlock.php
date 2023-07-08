@@ -21,6 +21,7 @@ use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\DirectiveDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
@@ -169,6 +170,21 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
                 // $multiline = $fields->isMultiline();
                 $content .= "{$prefix}{$fields->serialize($collector, $level, $used)}";
                 // $used     += $fields->getUsed() + mb_strlen($prefix);
+            }
+        }
+
+        // Statistics
+        if (!($this instanceof ExtensionDefinitionBlock)) {
+            $name = $this->name();
+
+            if ($name) {
+                if ($this instanceof DirectiveDefinition) {
+                    $collector->addUsedDirective($name);
+                } elseif ($this instanceof TypeDefinitionBlock) {
+                    $collector->addUsedType($name);
+                } else {
+                    // empty
+                }
             }
         }
 

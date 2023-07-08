@@ -4,11 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
 
 use ArrayAccess;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\DirectiveDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
@@ -77,32 +73,6 @@ class PrintableList extends ListBlock implements ArrayAccess {
 
     protected function block(int|string $key, mixed $item): Block {
         return $item;
-    }
-
-    protected function analyze(Collector $collector, Block $block): Block {
-        $block = parent::analyze($collector, $block);
-
-        if (
-            $block instanceof DefinitionBlock
-            && !($block instanceof ExtensionDefinitionBlock)
-            && !($block instanceof ExecutableDefinitionBlock)
-        ) {
-            $name = $block->name();
-
-            if ($name) {
-                if ($block instanceof DirectiveDefinition) {
-                    $collector->addUsedDirective($name);
-                } else {
-                    $collector->addUsedType($name);
-                }
-            }
-        }
-
-        if ($block instanceof PrintableBlock) {
-            $this->analyze($collector, $block->getBlock());
-        }
-
-        return $block;
     }
     // </editor-fold>
 

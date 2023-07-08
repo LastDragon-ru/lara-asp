@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
  *
  * @extends DefinitionBlock<TType>
  */
-abstract class InputObjectDefinitionBlock extends DefinitionBlock {
+abstract class InputObjectDefinitionBlock extends DefinitionBlock implements TypeDefinitionBlock {
     public function __construct(
         Context $context,
         InputObjectTypeDefinitionNode|InputObjectTypeExtensionNode|InputObjectType $definition,
