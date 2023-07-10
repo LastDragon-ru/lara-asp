@@ -2,43 +2,32 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use Closure;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Stringable;
 
 use function is_object;
-use function mb_strlen;
 use function mb_strpos;
 use function str_repeat;
 
 /**
  * @internal
  */
-abstract class Block implements Statistics, Stringable {
-    private ?string $content   = null;
-    private ?int    $length    = null;
-    private ?bool   $multiline = null;
-
-    /**
-     * @var array<string, string>
-     */
-    private array $usedTypes = [];
-
-    /**
-     * @var array<string, string>
-     */
-    private array $usedDirectives = [];
+abstract class Block {
+    private int         $level      = 0;
+    private int         $used       = 0;
+    private ?string     $serialized = null;
+    private ?Statistics $statistics = null;
 
     public function __construct(
         private Context $context,
-        private int $level = 0,
-        private int $used = 0,
     ) {
         // empty
     }
@@ -52,70 +41,36 @@ abstract class Block implements Statistics, Stringable {
     protected function getSettings(): Settings {
         return $this->getContext()->getSettings();
     }
-
-    protected function getLevel(): int {
-        return $this->level;
-    }
-
-    protected function getUsed(): int {
-        return $this->used;
-    }
     //</editor-fold>
 
     // <editor-fold desc="API">
     // =========================================================================
-    public function isEmpty(): bool {
-        return $this->getLength() <= 0;
-    }
+    public function serialize(Collector $collector, int $level, int $used): string {
+        if ($this->serialized === null || $this->level !== $level || $this->used !== $used) {
+            $this->serialized = $this->content($collector, $level, $used);
+            $this->statistics = $collector;
+            $this->level      = $level;
+            $this->used       = $used;
+        } elseif ($this->statistics) {
+            $collector->addUsed($this->statistics);
+        } else {
+            // empty
+        }
 
-    public function getLength(): int {
-        return $this->resolve(fn (): int => (int) $this->length);
-    }
-
-    public function isMultiline(): bool {
-        return $this->resolve(fn (): bool => (bool) $this->multiline);
-    }
-
-    public function __toString(): string {
-        return $this->getContent();
-    }
-
-    /**
-     * @template T
-     *
-     * @param Closure(string $content): T $callback
-     *
-     * @return T
-     */
-    protected function resolve(Closure $callback): mixed {
-        $content = $this->getContent();
-        $result  = $callback($content);
-
-        return $result;
+        return $this->serialized;
     }
     //</editor-fold>
 
     // <editor-fold desc="Cache">
     // =========================================================================
-    protected function getContent(): string {
-        if ($this->content === null) {
-            $this->content   = $this->content();
-            $this->length    = mb_strlen($this->content);
-            $this->multiline = $this->isStringMultiline($this->content);
-        }
-
-        return $this->content;
-    }
-
     protected function reset(): void {
-        $this->usedDirectives = [];
-        $this->usedTypes      = [];
-        $this->multiline      = null;
-        $this->content        = null;
-        $this->length         = null;
+        $this->statistics = null;
+        $this->serialized = null;
+        $this->level      = 0;
+        $this->used       = 0;
     }
 
-    abstract protected function content(): string;
+    abstract protected function content(Collector $collector, int $level, int $used): string;
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -128,8 +83,8 @@ abstract class Block implements Statistics, Stringable {
         return $this->getSettings()->getSpace();
     }
 
-    protected function indent(int $level = null): string {
-        return str_repeat($this->getSettings()->getIndent(), $level ?? $this->getLevel());
+    protected function indent(int $level): string {
+        return str_repeat($this->getSettings()->getIndent(), $level);
     }
 
     protected function isLineTooLong(int $length): bool {
@@ -139,51 +94,6 @@ abstract class Block implements Statistics, Stringable {
     protected function isStringMultiline(string $string): bool {
         return mb_strpos($string, "\n") !== false
             || mb_strpos($string, "\r") !== false;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Statistics">
-    // =========================================================================
-    /**
-     * @return array<string,string>
-     */
-    public function getUsedTypes(): array {
-        return $this->resolve(fn (): array => $this->usedTypes);
-    }
-
-    /**
-     * @return array<string,string>
-     */
-    public function getUsedDirectives(): array {
-        return $this->resolve(fn (): array => $this->usedDirectives);
-    }
-
-    /**
-     * @template T
-     *
-     * @param T $block
-     *
-     * @return T
-     */
-    protected function addUsed(mixed $block): mixed {
-        if ($block instanceof Statistics) {
-            $this->usedTypes      += $block->getUsedTypes();
-            $this->usedDirectives += $block->getUsedDirectives();
-        }
-
-        return $block;
-    }
-
-    protected function addUsedType(string $type): static {
-        $this->usedTypes[$type] = $type;
-
-        return $this;
-    }
-
-    protected function addUsedDirective(string $directive): static {
-        $this->usedDirectives[$directive] = $directive;
-
-        return $this;
     }
     // </editor-fold>
 
@@ -211,15 +121,6 @@ abstract class Block implements Statistics, Stringable {
             ? $this->getContext()->getTypeName($type)
             : $type;
     }
-
-    /**
-     * @param (TypeNode&Node)|Type|null $object
-     */
-    public function getFieldType(TypeNode|Type|null $object, string $field): ?Type {
-        return $object
-            ? $this->getContext()->getFieldType($object, $field)
-            : null;
-    }
     // </editor-fold>
 
     // <editor-fold desc="Directives">
@@ -232,4 +133,16 @@ abstract class Block implements Statistics, Stringable {
         return $this->getContext()->isDirectiveDefinitionAllowed($directive);
     }
     // </editor-fold>
+
+    // <editor-fold desc="Fields">
+    // =================================================================================================================
+    /**
+     * @param (TypeNode&Node)|Type|null $object
+     */
+    public function getField(TypeNode|Type|null $object, string $field): InputObjectField|FieldDefinition|null {
+        return $object
+            ? $this->getContext()->getField($object, $field)
+            : null;
+    }
+    //</editor-fold>
 }

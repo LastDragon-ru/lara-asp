@@ -11,6 +11,7 @@ use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -25,50 +26,34 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 class FieldDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         FieldDefinitionNode|GraphQLFieldDefinition $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         return $this->isTypeAllowed($this->getType())
-            ? parent::content()
+            ? parent::content($collector, $level, $used)
             : '';
     }
 
-    protected function type(): string|null {
-        return null;
+    protected function type(bool $multiline): ?Block {
+        return new Type(
+            $this->getContext(),
+            $this->getType(),
+        );
     }
 
-    protected function body(int $used): Block|string|null {
+    protected function arguments(bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $space      = $this->space();
-        $type       = $this->addUsed(
-            new Type(
-                $this->getContext(),
-                $this->getLevel(),
-                $this->getUsed(),
-                $this->getType(),
-            ),
-        );
-        $args       = $this->addUsed(
-            new ArgumentsDefinition(
-                $this->getContext(),
-                $this->getLevel(),
-                $this->getUsed(),
-                $definition instanceof FieldDefinitionNode
-                    ? $definition->arguments
-                    : $definition->args,
-            ),
+        $arguments  = new ArgumentsDefinition(
+            $this->getContext(),
+            $definition instanceof FieldDefinitionNode
+                ? $definition->arguments
+                : $definition->args,
         );
 
-        return "{$args}:{$space}{$type}";
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
+        return $arguments;
     }
 
     /**

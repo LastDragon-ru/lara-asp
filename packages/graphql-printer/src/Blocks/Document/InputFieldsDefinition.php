@@ -4,38 +4,14 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Type\Definition\InputObjectField;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
- * @extends ListBlock<InputValueDefinition>
+ * @extends ListBlock<InputValueDefinition, array-key, InputValueDefinitionNode|InputObjectField>
  */
 class InputFieldsDefinition extends ListBlock {
-    /**
-     * @param iterable<InputValueDefinitionNode>|iterable<InputObjectField> $fields
-     */
-    public function __construct(
-        Context $context,
-        int $level,
-        int $used,
-        iterable $fields,
-    ) {
-        parent::__construct($context, $level, $used);
-
-        foreach ($fields as $field) {
-            $name        = $field instanceof InputValueDefinitionNode
-                ? $field->name->value
-                : $field->name;
-            $this[$name] = new InputValueDefinition(
-                $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
-                $field,
-            );
-        }
-    }
-
     protected function getPrefix(): string {
         return '{';
     }
@@ -54,5 +30,9 @@ class InputFieldsDefinition extends ListBlock {
 
     protected function isAlwaysMultiline(): bool {
         return true;
+    }
+
+    protected function block(string|int $key, mixed $item): Block {
+        return new InputValueDefinition($this->getContext(), $item);
     }
 }

@@ -2,13 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
+use GraphQL\Language\AST\DefinitionNode;
+use GraphQL\Language\AST\Node;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\DirectiveDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Factory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 
 /**
  * @internal
- * @extends ListBlock<Block>
+ * @extends ListBlock<Block, array-key, DefinitionNode&Node>
  */
 class DefinitionList extends ListBlock {
     protected function isWrapped(): bool {
@@ -23,21 +25,7 @@ class DefinitionList extends ListBlock {
         return true;
     }
 
-    protected function analyze(Block $block): Block {
-        $block = parent::analyze($block);
-
-        if ($block instanceof DefinitionBlock && !($block instanceof ExtensionDefinitionBlock)) {
-            $name = $block->name();
-
-            if ($name) {
-                if ($block instanceof DirectiveDefinition) {
-                    $this->addUsedDirective($name);
-                } else {
-                    $this->addUsedType($name);
-                }
-            }
-        }
-
-        return $block;
+    protected function block(int|string $key, mixed $item): Block {
+        return Factory::create($this->getContext(), $item);
     }
 }

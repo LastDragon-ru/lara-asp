@@ -9,14 +9,12 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 
 /**
  * @internal
- * @extends UsageList<Type, NamedTypeNode|ObjectType>
+ * @extends UsageList<Type, array-key, NamedTypeNode|ObjectType>
  */
 class UnionMemberTypes extends UsageList {
-    protected function block(mixed $item): Block {
+    protected function block(string|int $key, mixed $item): Block {
         return new Type(
             $this->getContext(),
-            $this->getLevel() + 1,
-            $this->getUsed(),
             $item,
         );
     }
@@ -26,7 +24,7 @@ class UnionMemberTypes extends UsageList {
     }
 
     protected function prefix(): string {
-        return '';
+        return '=';
     }
 
     protected function isNormalized(): bool {
@@ -34,6 +32,7 @@ class UnionMemberTypes extends UsageList {
     }
 
     protected function isAlwaysMultiline(): bool {
-        return $this->getSettings()->isAlwaysMultilineUnions();
+        return parent::isAlwaysMultiline()
+            || $this->getSettings()->isAlwaysMultilineUnions();
     }
 }

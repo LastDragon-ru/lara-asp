@@ -17,14 +17,12 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 class UnionTypeExtension extends UnionDefinitionBlock implements ExtensionDefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         UnionTypeExtensionNode $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
-    protected function type(): string|null {
+    protected function prefix(): ?string {
         return 'extend union';
     }
 }

@@ -6,6 +6,7 @@ use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -19,17 +20,18 @@ class EnumValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
         int $used,
         EnumValueDefinitionNode|GraphQLEnumValueDefinition $type,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (string) (new EnumValueDefinition($context, $level, $used, $type));
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new EnumValueDefinition($context, $type))->serialize($collector, $level, $used);
 
         Parser::enumValueDefinition($actual);
 
@@ -42,7 +44,7 @@ class EnumValueDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, EnumValueDefinitionNode|GraphQLEnumValueDefinition}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
 
         return [

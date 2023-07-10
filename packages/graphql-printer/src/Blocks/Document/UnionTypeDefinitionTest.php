@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\UnionType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -22,17 +23,18 @@ class UnionTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
         int $used,
         UnionTypeDefinitionNode|UnionType $type,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (string) (new UnionTypeDefinition($context, $level, $used, $type));
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new UnionTypeDefinition($context, $type))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::unionTypeDefinition($actual);
@@ -42,7 +44,7 @@ class UnionTypeDefinitionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $union   = new UnionType([
+        $union     = new UnionType([
             'name'    => 'Test',
             'types'   => [
                 new ObjectType([
@@ -64,17 +66,21 @@ class UnionTypeDefinitionTest extends TestCase {
             ],
             'astNode' => Parser::unionTypeDefinition('union Test @a = A | B'),
         ]);
-        $context = new Context(new TestSettings(), null, null);
-        $block   = new UnionTypeDefinition($context, 0, 0, $union);
+        $context   = new Context(new TestSettings(), null, null);
+        $collector = new Collector();
+        $block     = new UnionTypeDefinition($context, $union);
+        $content   = $block->serialize($collector, 0, 0);
 
-        self::assertNotEmpty((string) $block);
-        self::assertEquals(['A' => 'A', 'B' => 'B'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        self::assertNotEmpty($content);
+        self::assertEquals(['Test' => 'Test', 'A' => 'A', 'B' => 'B'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        $ast = new UnionTypeDefinition($context, 0, 0, Parser::unionTypeDefinition((string) $block));
+        $astCollector = new Collector();
+        $astBlock     = new UnionTypeDefinition($context, Parser::unionTypeDefinition($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -83,7 +89,7 @@ class UnionTypeDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, UnionTypeDefinitionNode|UnionType}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeUnions(false)
             ->setAlwaysMultilineUnions(false);
@@ -256,7 +262,8 @@ class UnionTypeDefinitionTest extends TestCase {
                     | B
                     | A
                 STRING,
-                $settings,
+                $settings
+                    ->setLineLength(10),
                 0,
                 120,
                 new UnionType([

@@ -5,9 +5,11 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 /**
  * @internal
  * @template TBlock of Block
- * @extends ListBlock<TBlock>
+ * @template TKey of array-key
+ * @template TItem
+ * @extends ListBlock<TBlock, TKey, TItem>
  */
-class ObjectBlockList extends ListBlock {
+abstract class ObjectBlockList extends ListBlock {
     protected function getPrefix(): string {
         return '{';
     }

@@ -6,6 +6,7 @@ use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -20,17 +21,18 @@ class EnumTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
         int $used,
         EnumTypeDefinitionNode|EnumType $type,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (string) (new EnumTypeDefinition($context, $level, $used, $type));
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new EnumTypeDefinition($context, $type))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::enumTypeDefinition($actual);
@@ -41,6 +43,7 @@ class EnumTypeDefinitionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = new EnumType([
             'name'    => 'Test',
             'values'  => ['A'],
@@ -48,16 +51,19 @@ class EnumTypeDefinitionTest extends TestCase {
                 'enum Test @a { A }',
             ),
         ]);
-        $block      = new EnumTypeDefinition($context, 0, 0, $definition);
+        $block      = new EnumTypeDefinition($context, $definition);
+        $content    = $block->serialize($collector, 0, 0);
 
-        self::assertNotEmpty((string) $block);
-        self::assertEquals([], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        self::assertNotEmpty($content);
+        self::assertEquals(['Test' => 'Test'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        $ast = new EnumTypeDefinition($context, 0, 0, Parser::enumTypeDefinition((string) $block));
+        $astBlock     = new EnumTypeDefinition($context, Parser::enumTypeDefinition($content));
+        $astCollector = new Collector();
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -66,7 +72,7 @@ class EnumTypeDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, EnumTypeDefinitionNode|EnumType}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeEnums(false);
 

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -20,18 +21,19 @@ class StringValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
         int $used,
         string $string,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (string) new StringValue($context, $level, $used, $string);
-        $parsed  = Parser::valueLiteral($actual);
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new StringValue($context, $string))->serialize($collector, $level, $used);
+        $parsed    = Parser::valueLiteral($actual);
 
         self::assertInstanceOf(StringValueNode::class, $parsed);
         self::assertEquals($expected, $actual);
@@ -44,7 +46,7 @@ class StringValueTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, string}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
 
         return [

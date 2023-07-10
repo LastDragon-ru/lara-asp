@@ -3,15 +3,17 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ObjectFieldNode;
 use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
- * @extends ListBlock<ObjectField>
+ * @extends ListBlock<ObjectField, array-key, ObjectFieldNode>
  */
 class ObjectValue extends ListBlock {
     /**
@@ -19,25 +21,10 @@ class ObjectValue extends ListBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         ObjectValueNode $definition,
         protected TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($context, $level, $used);
-
-        foreach ($definition->fields as $field) {
-            $name = $field->name->value;
-            $type = $this->getFieldType($this->type, $name);
-
-            $this[$name] = new ObjectField(
-                $context,
-                $level,
-                $used,
-                $field,
-                $type,
-            );
-        }
+        parent::__construct($context, $definition->fields);
     }
 
     protected function getPrefix(): string {
@@ -58,5 +45,18 @@ class ObjectValue extends ListBlock {
 
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeArguments();
+    }
+
+    protected function block(string|int $key, mixed $item): Block {
+        $name = $item->name->value;
+        $type = $this->type
+            ? $this->getField($this->type, $name)?->getType()
+            : null;
+
+        return new ObjectField(
+            $this->getContext(),
+            $item,
+            $type,
+        );
     }
 }

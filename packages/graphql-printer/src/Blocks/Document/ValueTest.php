@@ -21,6 +21,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -36,11 +37,11 @@ class ValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      *
      * @param ValueNode&Node $node
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -49,9 +50,10 @@ class ValueTest extends TestCase {
         ?Schema $schema,
         ?Type $type,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (string) (new Value($context, $level, $used, $node, $type));
-        $parsed  = null;
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new Value($context, $node, $type))->serialize($collector, $level, $used);
+        $parsed    = null;
 
         if ($expected) {
             $parsed = Parser::valueLiteral($actual);
@@ -68,17 +70,19 @@ class ValueTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $context = new Context(new TestSettings(), null, null);
-        $literal = Parser::valueLiteral('123');
-        $block   = new Value($context, 0, 0, $literal, Type::int());
+        $collector = new Collector();
+        $context   = new Context(new TestSettings(), null, null);
+        $literal   = Parser::valueLiteral('123');
+        $block     = new Value($context, $literal, Type::int());
+        $content   = $block->serialize($collector, 0, 0);
 
-        self::assertNotEmpty((string) $block);
-        self::assertEquals(['Int' => 'Int'], $block->getUsedTypes());
-        self::assertEquals([], $block->getUsedDirectives());
+        self::assertNotEmpty($content);
+        self::assertEquals(['Int' => 'Int'], $collector->getUsedTypes());
+        self::assertEquals([], $collector->getUsedDirectives());
     }
 
     public function testStatisticsObjectValue(): void {
-        $schema  = BuildSchema::build(
+        $schema    = BuildSchema::build(
             <<<'STRING'
             type A {
                 a: Int
@@ -96,11 +100,13 @@ class ValueTest extends TestCase {
             }
             STRING,
         );
-        $context = new Context(new TestSettings(), null, $schema);
-        $literal = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
-        $block   = new Value($context, 0, 0, $literal, $schema->getType('A'));
+        $context   = new Context(new TestSettings(), null, $schema);
+        $collector = new Collector();
+        $literal   = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
+        $block     = new Value($context, $literal, $schema->getType('A'));
+        $content   = $block->serialize($collector, 0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(
             [
                 'Int'     => 'Int',
@@ -110,18 +116,17 @@ class ValueTest extends TestCase {
                 'B'       => 'B',
                 'C'       => 'C',
             ],
-            $block->getUsedTypes(),
+            $collector->getUsedTypes(),
         );
-        self::assertEmpty($block->getUsedDirectives());
+        self::assertEmpty($collector->getUsedDirectives());
     }
 
     public function testStatisticsObjectValueNoSchema(): void {
-        $context = new Context(new TestSettings(), null, null);
-        $literal = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
-        $block   = new Value(
+        $collector = new Collector();
+        $context   = new Context(new TestSettings(), null, null);
+        $literal   = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
+        $block     = new Value(
             $context,
-            0,
-            0,
             $literal,
             new InputObjectType([
                 'name'   => 'A',
@@ -130,15 +135,16 @@ class ValueTest extends TestCase {
                 ],
             ]),
         );
+        $content = $block->serialize($collector, 0, 0);
 
-        self::assertNotEmpty((string) $block);
+        self::assertNotEmpty($content);
         self::assertEquals(
             [
                 'A' => 'A',
             ],
-            $block->getUsedTypes(),
+            $collector->getUsedTypes(),
         );
-        self::assertEmpty($block->getUsedDirectives());
+        self::assertEmpty($collector->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -147,7 +153,7 @@ class ValueTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, ValueNode&Node, ?Schema, ?Type}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setNormalizeArguments(false);
         $object   = new InputObjectType([

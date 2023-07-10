@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -22,9 +23,9 @@ class SchemaExtensionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -32,8 +33,9 @@ class SchemaExtensionTest extends TestCase {
         SchemaExtensionNode $node,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (string) (new SchemaExtension($context, $level, $used, $node));
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new SchemaExtension($context, $node))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::schemaTypeExtension($actual);
@@ -44,19 +46,23 @@ class SchemaExtensionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = Parser::schemaTypeExtension(
             'extend schema @a @b { query: Query, mutation: Mutation }',
         );
-        $block      = new SchemaExtension($context, 0, 0, $definition);
+        $block      = new SchemaExtension($context, $definition);
+        $content    = $block->serialize($collector, 0, 0);
 
-        self::assertNotEmpty((string) $block);
-        self::assertEquals(['Query' => 'Query', 'Mutation' => 'Mutation'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a', '@b' => '@b'], $block->getUsedDirectives());
+        self::assertNotEmpty($content);
+        self::assertEquals(['Query' => 'Query', 'Mutation' => 'Mutation'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a', '@b' => '@b'], $collector->getUsedDirectives());
 
-        $ast = new SchemaExtension($context, 0, 0, Parser::schemaTypeExtension((string) $block));
+        $astCollector = new Collector();
+        $astBlock     = new SchemaExtension($context, Parser::schemaTypeExtension($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -65,7 +71,7 @@ class SchemaExtensionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, SchemaExtensionNode, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setPrintDirectives(true)
             ->setNormalizeFields(false);

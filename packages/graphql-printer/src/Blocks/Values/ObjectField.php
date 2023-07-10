@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Value;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
@@ -22,35 +23,33 @@ class ObjectField extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         protected ObjectFieldNode $definition,
         protected TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {
         return $this->definition->name->value;
     }
 
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         if (!$this->isTypeAllowed($this->type)) {
             return '';
         }
 
-        return (string) new PropertyBlock(
+        $level    = $level + (int) ($this->definition->value instanceof StringValueNode);
+        $value    = new Value(
+            $this->getContext(),
+            $this->definition->value,
+            $this->type,
+        );
+        $property = (new PropertyBlock(
             $this->getContext(),
             $this->definition->name->value,
-            $this->addUsed(
-                new Value(
-                    $this->getContext(),
-                    $this->getLevel() + 1 + (int) ($this->definition->value instanceof StringValueNode),
-                    $this->getUsed(),
-                    $this->definition->value,
-                    $this->type,
-                ),
-            ),
-        );
+            $value,
+        ));
+
+        return $property->serialize($collector, $level, $used);
     }
 }

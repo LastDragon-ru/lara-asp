@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
-use function mb_strlen;
-
 /**
  * @internal
  *
@@ -20,40 +18,26 @@ use function mb_strlen;
 class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         SchemaExtensionNode $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
-    protected function type(): string|null {
+    protected function prefix(): ?string {
         return 'extend schema';
     }
 
-    protected function body(int $used): Block|string|null {
-        return null;
-    }
-
-    protected function fields(int $used): Block|string|null {
+    protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $space      = $this->space();
-        $fields     = new RootOperationTypesDefinition(
-            $this->getContext(),
-            $this->getLevel(),
-            $used + mb_strlen($space),
-        );
+        $operations = [];
 
         foreach ($definition->operationTypes as $operation) {
-            $fields[] = new RootOperationTypeDefinition(
-                $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
-                $operation->operation,
-                $operation->type,
-            );
+            $operations[$operation->operation] = $operation->type;
         }
 
-        return $this->addUsed($fields);
+        return new RootOperationTypesDefinition(
+            $this->getContext(),
+            $operations,
+        );
     }
 }

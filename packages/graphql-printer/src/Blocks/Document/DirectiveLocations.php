@@ -5,17 +5,28 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 use GraphQL\Language\AST\NameNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
- * @extends UsageList<DirectiveLocation, NameNode|string>
+ * @extends UsageList<DirectiveLocation, array-key, NameNode|string>
  */
 class DirectiveLocations extends UsageList {
-    protected function block(mixed $item): Block {
+    /**
+     * @inheritDoc
+     */
+    public function __construct(
+        Context $context,
+        iterable $items,
+        bool $isAlwaysMultiline = false,
+        private bool $repeatable = false,
+    ) {
+        parent::__construct($context, $items, $isAlwaysMultiline);
+    }
+
+    protected function block(string|int $key, mixed $item): Block {
         return new DirectiveLocation(
             $this->getContext(),
-            $this->getLevel() + 1,
-            $this->getUsed(),
             $item,
         );
     }
@@ -25,7 +36,7 @@ class DirectiveLocations extends UsageList {
     }
 
     protected function prefix(): string {
-        return 'on';
+        return ($this->repeatable ? "repeatable{$this->space()}" : '').'on';
     }
 
     protected function isNormalized(): bool {

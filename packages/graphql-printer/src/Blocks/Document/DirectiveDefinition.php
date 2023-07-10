@@ -10,8 +10,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 
-use function mb_strlen;
-
 /**
  * @internal
  *
@@ -22,14 +20,12 @@ use function mb_strlen;
 class DirectiveDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         DirectiveDefinitionNode|Directive $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
-    protected function type(): string|null {
+    protected function prefix(): ?string {
         return 'directive';
     }
 
@@ -37,54 +33,29 @@ class DirectiveDefinition extends DefinitionBlock {
         return '@'.parent::name();
     }
 
-    protected function body(int $used): Block|string|null {
-        $definition   = $this->getDefinition();
-        $eol          = $this->eol();
-        $space        = $this->space();
-        $indent       = $this->indent();
-        $repeatable   = 'repeatable';
-        $isRepeatable = $definition instanceof DirectiveDefinitionNode
-            ? $definition->repeatable
-            : $definition->isRepeatable;
-        $used         = $used + ($isRepeatable ? mb_strlen($repeatable) + 2 * mb_strlen($space) : mb_strlen($space));
-        $args         = $this->addUsed(
-            new ArgumentsDefinition(
-                $this->getContext(),
-                $this->getLevel(),
-                $used,
-                $definition instanceof DirectiveDefinitionNode
-                    ? $definition->arguments
-                    : $definition->args,
-            ),
+    protected function arguments(bool $multiline): ?Block {
+        $definition = $this->getDefinition();
+        $arguments  = new ArgumentsDefinition(
+            $this->getContext(),
+            $definition instanceof DirectiveDefinitionNode
+                ? $definition->arguments
+                : $definition->args,
         );
-        $locations    = $this->addUsed(
-            new DirectiveLocations(
-                $this->getContext(),
-                $this->getLevel() + 1,
-                $used + $args->getLength(),
-                $definition->locations,
-                $args->isMultiline(),
-            ),
-        );
-        $isMultiline  = $args->isMultiline() || $locations->isMultiline();
-        $content      = "{$args}";
 
-        if ($isMultiline) {
-            $content .= "{$eol}{$indent}";
-        } else {
-            $content .= "{$space}";
-        }
-
-        if ($isRepeatable) {
-            $content .= "{$repeatable}{$space}";
-        }
-
-        $content .= "{$locations}";
-
-        return $content;
+        return $arguments;
     }
 
-    protected function fields(int $used): Block|string|null {
-        return null;
+    protected function body(bool $multiline): ?Block {
+        $definition = $this->getDefinition();
+        $locations  = new DirectiveLocations(
+            $this->getContext(),
+            $definition->locations,
+            $multiline,
+            $definition instanceof DirectiveDefinitionNode
+                ? $definition->repeatable
+                : $definition->isRepeatable,
+        );
+
+        return $locations;
     }
 }

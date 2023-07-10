@@ -2,11 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use ArrayAccess;
-use Countable;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
-use function array_filter;
 use function count;
 use function mb_strlen;
 use function strnatcmp;
@@ -15,13 +13,29 @@ use function usort;
 /**
  * @internal
  * @template TBlock of Block
- * @implements ArrayAccess<string|int,TBlock>
+ * @template TKey of array-key
+ * @template TItem
  */
-abstract class ListBlock extends Block implements Statistics, ArrayAccess, Countable {
+abstract class ListBlock extends Block {
     /**
-     * @var array<int|string,TBlock>
+     * @param iterable<TKey, TItem> $items
      */
-    private array $blocks = [];
+    public function __construct(
+        Context $context,
+        private iterable $items,
+    ) {
+        parent::__construct($context);
+    }
+
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
+    /**
+     * @return iterable<TKey, TItem>
+     */
+    protected function getItems(): iterable {
+        return $this->items;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Settings">
     // =========================================================================
@@ -63,11 +77,15 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     /**
      * @return array<int|string,TBlock>
      */
-    protected function getBlocks(): array {
-        $blocks = array_filter($this->blocks, static function (Block $block): bool {
-            return !$block->isEmpty();
-        });
+    private function getBlocks(): array {
+        // Create
+        $blocks = [];
 
+        foreach ($this->getItems() as $key => $item) {
+            $blocks[] = $this->block($key, $item);
+        }
+
+        // Sort
         if (count($blocks) > 0 && $this->isNormalized()) {
             usort($blocks, static function (Block $a, Block $b): int {
                 $aName = $a instanceof NamedBlock ? $a->getName() : '';
@@ -80,77 +98,103 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
         return $blocks;
     }
 
-    protected function content(): string {
-        // Blocks?
-        $content = '';
-        $blocks  = $this->getBlocks();
-        $count   = count($blocks);
+    protected function content(Collector $collector, int $level, int $used): string {
+        // Serialize
+        /** @var array<int, array{bool, non-empty-string}> $serialized */
+        $serialized      = [];
+        $multiline       = $this->isAlwaysMultiline();
+        $prefix          = $this->getPrefix();
+        $prefixLength    = mb_strlen($prefix);
+        $suffix          = $this->getSuffix();
+        $suffixLength    = mb_strlen($suffix);
+        $isWrapped       = ((bool) $prefix || (bool) $suffix);
+        $blocks          = $this->getBlocks();
+        $blockLevel      = $level + (int) $isWrapped;
+        $blockIndent     = $this->indent($blockLevel);
+        $blockPrefix     = $this->getMultilineItemPrefix();
+        $lineUsed        = mb_strlen($blockIndent) + mb_strlen($blockPrefix) + $suffixLength;
+        $lineLength      = $used + $prefixLength;
+        $separator       = $this->getSeparator();
+        $separatorLength = mb_strlen($separator);
 
-        if (!$count) {
+        if ($isWrapped && $multiline) {
+            $used = $lineUsed;
+        }
+
+        foreach ($blocks as $block) {
+            // Serialize
+            $blockContent   = $block->serialize($collector, $blockLevel, $used);
+            $blockMultiline = $this->isStringMultiline($blockContent);
+
+            if (!$blockContent) {
+                continue;
+            }
+
+            // Single line?
+            if (!$multiline) {
+                $lineLength += mb_strlen($blockContent) + $separatorLength * (count($serialized) + 1);
+
+                if ($blockMultiline || $this->isLineTooLong($lineLength + $suffixLength)) {
+                    $used           = $lineUsed;
+                    $multiline      = true;
+                    $blockContent   = $block->serialize($collector, $blockLevel, $used);
+                    $blockMultiline = $this->isStringMultiline($blockContent);
+                } else {
+                    $used = $lineLength;
+                }
+            } else {
+                $used = $lineUsed;
+            }
+
+            // Add
+            $serialized[] = [$blockMultiline, $blockContent];
+        }
+
+        // Empty?
+        if (!$serialized) {
             return $this->getEmptyValue();
         }
 
         // Join
-        $listPrefix  = $this->getPrefix();
-        $listSuffix  = $this->getSuffix();
-        $separator   = $this->getSeparator();
-        $isWrapped   = (bool) $listPrefix || (bool) $listSuffix;
-        $isMultiline = $this->isMultilineContent(
-            $blocks,
-            $listSuffix,
-            $listPrefix,
-            $separator,
-        );
+        $eol                = $this->eol();
+        $content            = '';
+        $multiline          = $multiline || $this->isLineTooLong($lineLength + mb_strlen($suffix));
+        $separator          = $multiline ? $eol : $this->getSeparator();
+        $isMultilineWrapped = $multiline && $this->isWrapped();
 
-        if ($isMultiline) {
-            $eol       = $this->eol();
-            $last      = $count - 1;
-            $index     = 0;
-            $indent    = $this->indent($this->getLevel() + (int) $isWrapped);
-            $wrapped   = $this->isWrapped();
-            $previous  = false;
-            $separator = $this->getMultilineItemPrefix();
+        for ($index = 0, $count = count($serialized); $index < $count; $index++) {
+            [$blockMultiline, $blockContent] = $serialized[$index];
+            $previousMultiline               = $isMultilineWrapped && ($serialized[$index - 1][0] ?? false);
+            $isLast                          = ($index === $count - 1);
 
-            foreach ($blocks as $block) {
-                $block     = $this->analyze($block);
-                $multiline = $wrapped && $block->isMultiline();
-
-                if (($multiline && $index > 0) || $previous) {
+            if ($multiline) {
+                if (($blockMultiline && $isMultilineWrapped && $index > 0) || $previousMultiline) {
                     $content .= $eol;
                 }
 
                 if ($index > 0 || $isWrapped) {
-                    $content .= $indent;
+                    $content .= $blockIndent;
                 }
 
-                $content .= "{$separator}{$block}";
+                $content .= $blockPrefix.$blockContent;
 
-                if ($index < $last) {
+                if (!$isLast) {
                     $content .= $eol;
                 }
-
-                $previous = $multiline;
-                $index    = $index + 1;
-            }
-        } else {
-            $last  = $count - 1;
-            $index = 0;
-
-            foreach ($blocks as $block) {
-                $content .= "{$this->analyze($block)}".($index !== $last ? $separator : '');
-                $index    = $index + 1;
+            } else {
+                $content .= $blockContent.($isLast ? '' : $separator);
             }
         }
 
         // Prefix & Suffix
-        if ($isWrapped) {
-            $eol     = $isMultiline ? $this->eol() : '';
-            $indent  = $isMultiline ? $this->indent() : '';
-            $content = "{$listPrefix}{$eol}{$content}";
+        if ($prefix) {
+            $prefix  = $multiline ? $prefix.$eol : $prefix;
+            $content = "{$prefix}{$content}";
+        }
 
-            if ($listSuffix) {
-                $content .= "{$eol}{$indent}{$listSuffix}";
-            }
+        if ($suffix) {
+            $indent   = $multiline ? $eol.$this->indent($level) : '';
+            $content .= "{$indent}{$suffix}";
         }
 
         // Return
@@ -158,111 +202,11 @@ abstract class ListBlock extends Block implements Statistics, ArrayAccess, Count
     }
 
     /**
-     * @param array<int|string,TBlock> $blocks
-     */
-    private function isMultilineContent(
-        array $blocks,
-        string $suffix,
-        string $prefix,
-        string $separator,
-    ): bool {
-        // Always or Any multiline block?
-        if ($this->isAlwaysMultiline()) {
-            return true;
-        }
-
-        // Any multiline block?
-        $length    = 0;
-        $multiline = false;
-
-        foreach ($blocks as $block) {
-            $length += $block->getLength();
-
-            if ($block->isMultiline()) {
-                $multiline = true;
-                break;
-            }
-        }
-
-        if ($multiline) {
-            return true;
-        }
-
-        // Length?
-        $count  = count($blocks);
-        $length = $this->getUsed()
-            + $length
-            + mb_strlen($suffix)
-            + mb_strlen($prefix)
-            + mb_strlen($separator) * ($count - 1);
-
-        return $this->isLineTooLong($length);
-    }
-
-    /**
-     * @param TBlock $block
+     * @param TKey  $key
+     * @param TItem $item
      *
      * @return TBlock
      */
-    protected function analyze(Block $block): Block {
-        return $this->addUsed($block);
-    }
-
-    protected function reset(): void {
-        foreach ($this->blocks as $block) {
-            $block->reset();
-        }
-
-        parent::reset();
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="ArrayAccess">
-    // =========================================================================
-    /**
-     * @param int|string $offset
-     */
-    public function offsetExists(mixed $offset): bool {
-        return isset($this->blocks[$offset]);
-    }
-
-    /**
-     * @param int|string $offset
-     *
-     * @return TBlock
-     */
-    public function offsetGet(mixed $offset): Block {
-        return $this->blocks[$offset];
-    }
-
-    /**
-     * @param int|string|null $offset
-     * @param TBlock          $value
-     */
-    public function offsetSet(mixed $offset, mixed $value): void {
-        if ($offset !== null) {
-            $this->blocks[$offset] = $value;
-        } else {
-            $this->blocks[] = $value;
-        }
-
-        parent::reset();
-    }
-
-    /**
-     * @param int|string $offset
-     */
-    public function offsetUnset(mixed $offset): void {
-        unset($this->blocks[$offset]);
-
-        parent::reset();
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Countable">
-    // =========================================================================
-    public function count(): int {
-        return count($this->blocks);
-    }
+    abstract protected function block(string|int $key, mixed $item): Block;
     // </editor-fold>
 }

@@ -14,11 +14,10 @@ use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
-
-use function mb_strlen;
 
 /**
  * @internal
@@ -31,25 +30,26 @@ use function mb_strlen;
 class InputValueDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         InputValueDefinitionNode|Argument|InputObjectField $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         return $this->isTypeAllowed($this->getType())
-            ? parent::content()
+            ? parent::content($collector, $level, $used)
             : '';
     }
 
-    protected function type(): string|null {
-        return null;
+    protected function type(bool $multiline): ?Block {
+        return new Type(
+            $this->getContext(),
+            $this->getType(),
+        );
     }
 
-    protected function body(int $used): Block|string|null {
-        $type       = $this->getType();
+    protected function value(bool $multiline): ?Block {
+        $value      = null;
         $default    = null;
         $definition = $this->getDefinition();
 
@@ -61,35 +61,14 @@ class InputValueDefinition extends DefinitionBlock {
                 : null;
         }
 
-        $space = $this->space();
-        $block = $this->addUsed(
-            new Type(
-                $this->getContext(),
-                $this->getLevel(),
-                $this->getUsed(),
-                $type,
-            ),
-        );
-        $body  = ":{$space}{$block}";
-
         if ($default !== null) {
-            $prefix = "{$body}{$space}={$space}";
-            $value  = $this->addUsed(
-                new Value(
-                    $this->getContext(),
-                    $this->getLevel(),
-                    $this->getUsed() + mb_strlen($prefix),
-                    $default,
-                ),
+            $value = new Value(
+                $this->getContext(),
+                $default,
             );
-            $body   = "{$prefix}{$value}";
         }
 
-        return $body;
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
+        return $value;
     }
 
     /**

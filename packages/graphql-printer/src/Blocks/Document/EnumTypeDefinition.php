@@ -21,14 +21,12 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 class EnumTypeDefinition extends EnumDefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         EnumTypeDefinitionNode|EnumType $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
-    protected function type(): string {
+    protected function prefix(): string {
         return 'enum';
     }
 }

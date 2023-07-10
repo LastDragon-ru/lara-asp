@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
 
 use GraphQL\Language\AST\DirectiveDefinitionNode;
+use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NameNode;
@@ -10,9 +12,12 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\HasFieldsType;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
@@ -20,6 +25,7 @@ use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveArgumentNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
@@ -259,27 +265,59 @@ class Context {
     protected function isDirectiveBuiltIn(string $directive): bool {
         return isset(GraphQLDirective::getInternalDirectives()[$directive]);
     }
+
+    public function getDirectiveArgument(DirectiveNode $object, string $name): InputValueDefinitionNode|Argument|null {
+        // AST Node doesn't contain type of argument, but it can be
+        // determined by Directive definition.
+        $argument   = null;
+        $directive  = $object->name->value;
+        $definition = $this->getDirective($directive);
+
+        if ($definition instanceof DirectiveDefinitionNode) {
+            foreach ($definition->arguments as $arg) {
+                if ($arg->name->value === $name) {
+                    $argument = $arg;
+                    break;
+                }
+            }
+        } elseif ($definition instanceof GraphQLDirective) {
+            foreach ($definition->args as $arg) {
+                if ($arg->name === $name) {
+                    $argument = $arg;
+                    break;
+                }
+            }
+        } else {
+            // empty
+        }
+
+        if ($this->getSchema() && !$argument) {
+            throw new DirectiveArgumentNotFound("@{$directive}", $name);
+        }
+
+        return $argument;
+    }
     // </editor-fold>
 
-    // <editor-fold desc="Helpers">
+    // <editor-fold desc="Fields">
     // =========================================================================
     /**
      * @param (TypeNode&Node)|Type $object
      */
-    public function getFieldType(TypeNode|Type $object, string $field): ?Type {
-        $type       = null;
-        $name       = $this->getTypeName($object);
-        $definition = $this->getType($name);
+    public function getField(TypeNode|Type $object, string $name): InputObjectField|FieldDefinition|null {
+        $field      = null;
+        $type       = $this->getTypeName($object);
+        $definition = $this->getType($type);
 
         if ($definition instanceof HasFieldsType || $definition instanceof InputObjectType) {
-            $type = $definition->findField($field)?->getType();
+            $field = $definition->findField($name);
         }
 
-        if ($this->getSchema() && !$type) {
-            throw new FieldNotFound($name, $field);
+        if ($this->getSchema() && !$field) {
+            throw new FieldNotFound($type, $name);
         }
 
-        return $type;
+        return $field;
     }
     // </editor-fold>
 }

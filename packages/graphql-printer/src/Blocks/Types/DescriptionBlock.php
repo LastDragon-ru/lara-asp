@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\StringValue;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function preg_replace;
@@ -16,11 +17,9 @@ use function trim;
 class DescriptionBlock extends StringValue {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         ?string $string,
     ) {
-        parent::__construct($context, $level, $used, (string) $string);
+        parent::__construct($context, (string) $string);
     }
 
     protected function isNormalized(): bool {
@@ -47,8 +46,8 @@ class DescriptionBlock extends StringValue {
         return $string;
     }
 
-    protected function content(): string {
-        $content = parent::content();
+    protected function content(Collector $collector, int $level, int $used): string {
+        $content = parent::content($collector, $level, $used);
 
         if ($content === '""""""') {
             $content = '';

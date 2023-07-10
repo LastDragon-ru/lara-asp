@@ -13,6 +13,7 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Factory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
@@ -28,10 +29,9 @@ class PrintableBlock extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
         private object $definition,
     ) {
-        parent::__construct($context, $level);
+        parent::__construct($context);
 
         $this->block = $this->getDefinitionBlock($definition);
     }
@@ -58,14 +58,14 @@ class PrintableBlock extends Block implements NamedBlock {
         return $this->block;
     }
 
-    protected function content(): string {
-        return (string) $this->addUsed($this->getBlock());
+    protected function content(Collector $collector, int $level, int $used): string {
+        return $this->getBlock()->serialize($collector, $level, $used);
     }
 
     /**
      * @param TDefinition $definition
      */
     private function getDefinitionBlock(object $definition): Block {
-        return Factory::create($this->getContext(), $this->getLevel(), $this->getUsed(), $definition);
+        return Factory::create($this->getContext(), $definition);
     }
 }

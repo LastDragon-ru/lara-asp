@@ -307,6 +307,7 @@ class PrinterTest extends TestCase {
                         'TypeC',
                         'InputHidden',
                         'TypeHidden',
+                        'Subscription',
                     ])
                     ->setUsedDirectives([
                         '@deprecated',

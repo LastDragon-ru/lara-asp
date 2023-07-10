@@ -21,7 +21,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnresolvedFieldDefinition;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -38,7 +38,6 @@ use function array_fill_keys;
 use function array_unique;
 use function array_values;
 use function dirname;
-use function mb_strlen;
 use function sort;
 
 /**
@@ -96,68 +95,26 @@ class BlockTest extends TestCase {
         );
     }
 
-    public function testGetContent(): void {
-        $context = new Context(new TestSettings(), null, null);
-        $content = 'content';
-        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
+    public function testSerialize(): void {
+        $used      = 123;
+        $level     = 1;
+        $collector = new Collector();
+        $context   = new Context(new TestSettings(), null, null);
+        $content   = 'content';
+        $block     = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
         $block->makePartial();
         $block
             ->shouldReceive('content')
+            ->with($collector, $level, $used)
             ->once()
             ->andReturn($content);
-
-        self::assertEquals($content, $block->getContent());
-        self::assertEquals($content, $block->getContent());
-    }
-
-    public function testGetLength(): void {
-        $context = new Context(new TestSettings(), null, null);
-        $content = 'content';
-        $length  = mb_strlen($content);
-        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
-        $block->shouldAllowMockingProtectedMethods();
-        $block->makePartial();
         $block
             ->shouldReceive('content')
-            ->once()
-            ->andReturn($content);
+            ->never();
 
-        self::assertEquals($length, $block->getLength());
-        self::assertEquals($length, $block->getLength());
-    }
-
-    /**
-     * @dataProvider dataProviderIsMultiline
-     */
-    public function testIsMultiline(bool $expected, Settings $settings, string $content): void {
-        $context = new Context($settings, null, null);
-        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
-        $block->shouldAllowMockingProtectedMethods();
-        $block->makePartial();
-        $block
-            ->shouldReceive('content')
-            ->once()
-            ->andReturn($content);
-
-        self::assertEquals($expected, $block->isMultiline());
-        self::assertEquals($expected, $block->isMultiline());
-    }
-
-    /**
-     * @dataProvider dataProviderIsEmpty
-     */
-    public function testIsEmpty(bool $expected, string $content): void {
-        $context = new Context(new TestSettings(), null, null);
-        $block   = Mockery::mock(BlockTest__Block::class, [$context]);
-        $block->shouldAllowMockingProtectedMethods();
-        $block->makePartial();
-        $block
-            ->shouldReceive('content')
-            ->once()
-            ->andReturn($content);
-
-        self::assertEquals($expected, $block->isEmpty());
+        self::assertEquals($content, $block->serialize($collector, $level, $used));
+        self::assertEquals($content, $block->serialize($collector, $level, $used));
     }
     // </editor-fold>
 
@@ -286,19 +243,7 @@ class BlockTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockTest__Block extends Block {
-    public function getContent(): string {
-        return parent::getContent();
-    }
-
-    public function getLength(): int {
-        return parent::getLength();
-    }
-
-    public function isMultiline(): bool {
-        return parent::isMultiline();
-    }
-
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         return '';
     }
 }

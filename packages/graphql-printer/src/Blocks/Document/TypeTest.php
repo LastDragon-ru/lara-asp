@@ -14,6 +14,7 @@ use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -27,11 +28,11 @@ class TypeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      *
      * @param (TypeNode&Node)|(GraphQLType&(OutputType|InputType)) $type
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -39,14 +40,15 @@ class TypeTest extends TestCase {
         TypeNode|GraphQLType $type,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (string) (new Type($context, $level, $used, $type));
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new Type($context, $type))->serialize($collector, $level, $used);
 
         self::assertEquals($expected, $actual);
     }
 
     public function testStatistics(): void {
-        $node    = new NonNull(
+        $node      = new NonNull(
             new ObjectType([
                 'name'   => 'Test',
                 'fields' => [
@@ -56,18 +58,22 @@ class TypeTest extends TestCase {
                 ],
             ]),
         );
-        $context = new Context(new TestSettings(), null, null);
-        $block   = new Type($context, 0, 0, $node);
-        $type    = $node->getInnermostType()->name();
+        $context   = new Context(new TestSettings(), null, null);
+        $collector = new Collector();
+        $block     = new Type($context, $node);
+        $type      = $node->getInnermostType()->name();
+        $content   = $block->serialize($collector, 0, 0);
 
-        self::assertNotEmpty((string) $block);
-        self::assertEquals([$type => $type], $block->getUsedTypes());
-        self::assertEquals([], $block->getUsedDirectives());
+        self::assertNotEmpty($content);
+        self::assertEquals([$type => $type], $collector->getUsedTypes());
+        self::assertEquals([], $collector->getUsedDirectives());
 
-        $ast = new Type($context, 0, 0, Parser::typeReference((string) $block));
+        $astCollector = new Collector();
+        $astBlock     = new Type($context, Parser::typeReference($content));
 
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -76,7 +82,7 @@ class TypeTest extends TestCase {
     /**
      * @return array<string,array{string,Settings,int,int,(TypeNode&Node)|(GraphQLType&(OutputType|InputType)),?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
         $type     = new ObjectType([
             'name'   => 'Test',

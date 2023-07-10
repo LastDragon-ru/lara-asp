@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -14,27 +15,26 @@ use function mb_strlen;
  */
 #[CoversClass(PropertyBlock::class)]
 class PropertyBlockTest extends TestCase {
-    public function testToString(): void {
+    public function testSerialize(): void {
         $name      = 'name';
         $used      = 123;
         $level     = 2;
         $space     = '  ';
         $separator = ':';
+        $collector = new Collector();
         $content   = 'abc abcabc abcabc abcabc abc';
         $settings  = (new TestSettings())->setSpace($space);
         $context   = new Context($settings, null, null);
-        $block     = new class($context, $level, $used, $content) extends Block {
+        $block     = new class($context, $content) extends Block {
             public function __construct(
                 Context $context,
-                int $level,
-                int $used,
-                protected string $content,
+                protected string $serialized,
             ) {
-                parent::__construct($context, $level, $used);
+                parent::__construct($context);
             }
 
-            protected function content(): string {
-                return $this->content;
+            protected function content(Collector $collector, int $level, int $used): string {
+                return $this->serialized;
             }
         };
         $property  = new class($context, $name, $block, $separator) extends PropertyBlock {
@@ -47,24 +47,14 @@ class PropertyBlockTest extends TestCase {
                 parent::__construct($context, $name, $block);
             }
 
-            public function getUsed(): int {
-                return parent::getUsed();
-            }
-
-            public function getLevel(): int {
-                return parent::getLevel();
-            }
-
             protected function getSeparator(): string {
                 return $this->separator;
             }
         };
         $expected  = "{$name}{$separator}{$space}{$content}";
+        $actual    = $property->serialize($collector, $level, $used);
 
-        self::assertEquals($used, $property->getUsed());
-        self::assertEquals($level, $property->getLevel());
-        self::assertEquals($expected, (string) $property);
-        self::assertEquals(mb_strlen($expected), mb_strlen((string) $property));
-        self::assertEquals(mb_strlen($expected), $property->getLength());
+        self::assertEquals($expected, $actual);
+        self::assertEquals(mb_strlen($expected), mb_strlen($actual));
     }
 }

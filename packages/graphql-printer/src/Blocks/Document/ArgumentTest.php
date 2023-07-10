@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -21,9 +22,9 @@ class ArgumentTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
@@ -32,8 +33,9 @@ class ArgumentTest extends TestCase {
         ?Type $argumentType,
         ?Schema $schema,
     ): void {
-        $context = new Context($settings, null, $schema);
-        $actual  = (string) (new Argument($context, $level, $used, $argumentNode, $argumentType));
+        $collector = new Collector();
+        $context   = new Context($settings, null, $schema);
+        $actual    = (new Argument($context, $argumentNode, $argumentType))->serialize($collector, $level, $used);
 
         if ($expected) {
             Parser::argument($actual);
@@ -43,13 +45,15 @@ class ArgumentTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $context  = new Context(new TestSettings(), null, null);
-        $argument = Parser::argument('test: 123');
-        $block    = new Argument($context, 0, 0, $argument, Type::int());
+        $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
+        $definition = Parser::argument('test: 123');
+        $block      = new Argument($context, $definition, Type::int());
+        $content    = $block->serialize($collector, 0, 0);
 
-        self::assertNotEmpty((string) $block);
-        self::assertEquals(['Int' => 'Int'], $block->getUsedTypes());
-        self::assertEquals([], $block->getUsedDirectives());
+        self::assertNotEmpty($content);
+        self::assertEquals(['Int' => 'Int'], $collector->getUsedTypes());
+        self::assertEquals([], $collector->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -58,15 +62,15 @@ class ArgumentTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, ArgumentNode, ?Type, ?Schema}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
 
         return [
             'argument'                    => [
                 <<<'STRING'
                 c: {
-                        a: 123
-                    }
+                    a: 123
+                }
                 STRING,
                 $settings,
                 0,
@@ -78,8 +82,8 @@ class ArgumentTest extends TestCase {
             'argument (level)'            => [
                 <<<'STRING'
                 c: {
-                            a: 123
-                        }
+                        a: 123
+                    }
                 STRING,
                 $settings,
                 1,

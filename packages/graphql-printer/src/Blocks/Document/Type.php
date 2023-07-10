@@ -17,6 +17,7 @@ use GraphQL\Type\Definition\Type as GraphQLType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -35,11 +36,9 @@ class Type extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private TypeNode|GraphQLType $definition,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {
@@ -53,15 +52,15 @@ class Type extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         $definition = $this->getDefinition();
         $name       = $this->getName();
         $type       = '';
 
         if ($this->isTypeAllowed($name)) {
-            $type = $this->serialize($definition);
+            $type = $this->name($definition);
 
-            $this->addUsedType($name);
+            $collector->addUsedType($name);
         }
 
         return $type;
@@ -70,15 +69,15 @@ class Type extends Block implements NamedBlock {
     /**
      * @param (TypeNode&Node)|GraphQLType $definition
      */
-    private function serialize(Node|GraphQLType $definition): string {
+    private function name(Node|GraphQLType $definition): string {
         return match (true) {
             $definition instanceof NameNode        => $definition->value,
-            $definition instanceof NamedTypeNode   => $this->serialize($definition->name),
-            $definition instanceof NonNullTypeNode => $this->nonNull($this->serialize($definition->type)),
-            $definition instanceof ListTypeNode    => $this->list($this->serialize($definition->type)),
+            $definition instanceof NamedTypeNode   => $this->name($definition->name),
+            $definition instanceof NonNullTypeNode => $this->nonNull($this->name($definition->type)),
+            $definition instanceof ListTypeNode    => $this->list($this->name($definition->type)),
             $definition instanceof NamedType       => $definition->name(),
-            $definition instanceof NonNull         => $this->nonNull($this->serialize($definition->getWrappedType())),
-            $definition instanceof ListOfType      => $this->list($this->serialize($definition->getWrappedType())),
+            $definition instanceof NonNull         => $this->nonNull($this->name($definition->getWrappedType())),
+            $definition instanceof ListOfType      => $this->list($this->name($definition->getWrappedType())),
             default                                => throw new Unsupported($definition),
         };
     }

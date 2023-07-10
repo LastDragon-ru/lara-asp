@@ -22,6 +22,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\ObjectValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\StringValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\VariableValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 
@@ -50,26 +51,22 @@ class Value extends Block {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         protected ValueNode $node,
         protected TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Content
         $context = $this->getContext();
-        $level   = $this->getLevel();
-        $used    = $this->getUsed();
         $content = match (true) {
             $this->node instanceof ListValueNode
-                => new ListValue($context, $level, $used, $this->node),
+                => new ListValue($context, $this->node),
             $this->node instanceof ObjectValueNode
-                => new ObjectValue($context, $level, $used, $this->node, $this->type),
+                => new ObjectValue($context, $this->node, $this->type),
             $this->node instanceof StringValueNode && $this->node->block
-                => new StringValue($context, $level, 0, $this->node->value),
+                => new StringValue($context, $this->node->value),
             $this->node instanceof NullValueNode
                 => 'null',
             $this->node instanceof IntValueNode,
@@ -77,7 +74,7 @@ class Value extends Block {
             $this->node instanceof EnumValueNode
                 => $this->node->value,
             $this->node instanceof VariableNode
-                => new VariableValue($context, $level, 0, $this->node),
+                => new VariableValue($context, $this->node),
             property_exists($this->node, 'value')
                 => json_encode($this->node->value, JSON_THROW_ON_ERROR),
             default
@@ -85,11 +82,17 @@ class Value extends Block {
         };
 
         // Statistics
+        $collector->addUsed($content);
+
         if ($this->type) {
-            $this->addUsedType($this->getTypeName($this->type));
+            $collector->addUsedType($this->getTypeName($this->type));
         }
 
         // Return
-        return (string) $this->addUsed($content);
+        if ($content instanceof Block) {
+            $content = $content->serialize($collector, $level, $used);
+        }
+
+        return $content;
     }
 }

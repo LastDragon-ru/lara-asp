@@ -10,8 +10,8 @@ use GraphQL\Type\Definition\IDType;
 use GraphQL\Type\Definition\IntType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\StringType;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\TypeDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -28,25 +28,15 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 #[GraphQLDefinition(IDType::class)]
 #[GraphQLDefinition(IntType::class)]
 #[GraphQLDefinition(StringType::class)]
-class ScalarTypeDefinition extends DefinitionBlock {
+class ScalarTypeDefinition extends DefinitionBlock implements TypeDefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         ScalarTypeDefinitionNode|ScalarType $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
-    protected function type(): string|null {
+    protected function prefix(): ?string {
         return 'scalar';
-    }
-
-    protected function body(int $used): Block|string|null {
-        return null;
-    }
-
-    protected function fields(int $used): Block|string|null {
-        return null;
     }
 }

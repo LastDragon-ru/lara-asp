@@ -10,6 +10,7 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
@@ -23,17 +24,18 @@ class InputValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderToString
+     * @dataProvider dataProviderSerialize
      */
-    public function testToString(
+    public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
         int $used,
         InputValueDefinitionNode|Argument $definition,
     ): void {
-        $context = new Context($settings, null, null);
-        $actual  = (string) (new InputValueDefinition($context, $level, $used, $definition));
+        $collector = new Collector();
+        $context   = new Context($settings, null, null);
+        $actual    = (new InputValueDefinition($context, $definition))->serialize($collector, $level, $used);
 
         Parser::inputValueDefinition($actual);
 
@@ -42,6 +44,7 @@ class InputValueDefinitionTest extends TestCase {
 
     public function testStatistics(): void {
         $context    = new Context(new TestSettings(), null, null);
+        $collector  = new Collector();
         $definition = new Argument([
             'name'    => 'a',
             'type'    => new NonNull(
@@ -56,17 +59,19 @@ class InputValueDefinitionTest extends TestCase {
             ),
             'astNode' => Parser::inputValueDefinition('test: Test! @a'),
         ]);
+        $block      = new InputValueDefinition($context, $definition);
+        $content    = $block->serialize($collector, 0, 0);
 
-        $block = new InputValueDefinition($context, 0, 0, $definition);
+        self::assertNotEmpty($content);
+        self::assertEquals(['A' => 'A'], $collector->getUsedTypes());
+        self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
-        self::assertNotEmpty((string) $block);
-        self::assertEquals(['A' => 'A'], $block->getUsedTypes());
-        self::assertEquals(['@a' => '@a'], $block->getUsedDirectives());
+        $astCollector = new Collector();
+        $astBlock     = new InputValueDefinition($context, Parser::inputValueDefinition($content));
 
-        $ast = new InputValueDefinition($context, 0, 0, Parser::inputValueDefinition((string) $block));
-
-        self::assertEquals($block->getUsedTypes(), $ast->getUsedTypes());
-        self::assertEquals($block->getUsedDirectives(), $ast->getUsedDirectives());
+        self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
+        self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());
+        self::assertEquals($collector->getUsedDirectives(), $astCollector->getUsedDirectives());
     }
     // </editor-fold>
 
@@ -75,7 +80,7 @@ class InputValueDefinitionTest extends TestCase {
     /**
      * @return array<string,array{string, Settings, int, int, InputValueDefinitionNode|Argument}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
 
         return [
@@ -135,7 +140,8 @@ class InputValueDefinitionTest extends TestCase {
                     "aaaaaaaaaaaaaaaaaaaaaaaaaa"
                 ]
                 STRING,
-                $settings,
+                $settings
+                    ->setLineLength(20),
                 0,
                 120,
                 new Argument([
@@ -156,7 +162,8 @@ class InputValueDefinitionTest extends TestCase {
                         "aaaaaaaaaaaaaaaaaaaaaaaaaa"
                     ]
                 STRING,
-                $settings,
+                $settings
+                    ->setLineLength(51),
                 1,
                 70,
                 new Argument([
@@ -213,7 +220,8 @@ class InputValueDefinitionTest extends TestCase {
                 ]
                 @directive
                 STRING,
-                $settings,
+                $settings
+                    ->setLineLength(20),
                 0,
                 120,
                 Parser::inputValueDefinition(

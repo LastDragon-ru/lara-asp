@@ -11,6 +11,7 @@ use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeExtensionNode;
+use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
@@ -20,12 +21,16 @@ use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\DirectiveDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function is_string;
 use function mb_strlen;
+use function mb_strrpos;
+use function mb_substr;
 use function property_exists;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
@@ -41,22 +46,20 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         private Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema|SchemaDefinitionNode $definition,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     public function getName(): string {
-        $name = $this->name();
-        $type = $this->type();
+        $name   = $this->name();
+        $prefix = $this->prefix();
 
-        if ($type && $name) {
+        if ($prefix && $name) {
             $space = $this->space();
-            $name  = "{$type}{$space}{$name}";
-        } elseif ($type) {
-            $name = $type;
+            $name  = "{$prefix}{$space}{$name}";
+        } elseif ($prefix) {
+            $name = $prefix;
         } else {
             // empty
         }
@@ -73,45 +76,153 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Allowed?
         if (!$this->isDefinitionAllowed()) {
             return '';
         }
 
-        // Process
-        $eol         = $this->eol();
-        $space       = $this->space();
-        $indent      = $this->indent();
-        $name        = $this->getName();
-        $used        = $this->getUsed() + mb_strlen($name) + mb_strlen($space);
-        $body        = (string) $this->addUsed($this->body($used));
-        $fields      = (string) $this->addUsed($this->fields($used + mb_strlen($body)));
-        $description = (string) $this->addUsed($this->description());
-        $directives  = $this->getSettings()->isPrintDirectives()
-            ? (string) $this->addUsed($this->directives())
-            : '';
-        $content     = '';
+        // Prepare
+        $eol          = $this->eol();
+        $space        = $this->space();
+        $spaceLength  = mb_strlen($space);
+        $indent       = $this->indent($level);
+        $indentLength = mb_strlen($indent);
+        $content      = '';
+        $used         = $used + $indentLength + mb_strlen($content);
+        $multiline    = $this->isStringMultiline($content);
+
+        // Description
+        $description = $this->description()?->serialize($collector, $level, $used);
 
         if ($description) {
             $content .= "{$description}{$eol}{$indent}";
+            $used     = $indentLength; // because new line has started
         }
 
-        $content .= "{$name}{$body}";
+        // Name
+        $name     = $this->getName();
+        $content .= $name;
+        $used    += mb_strlen($name);
 
-        if ($directives) {
-            $content .= "{$eol}{$indent}{$directives}";
-        }
+        // Arguments
+        $arguments = $this->arguments($multiline);
 
-        if ($fields) {
-            if ((bool) $directives || $this->isStringMultiline($body)) {
-                $content .= "{$eol}{$indent}{$fields}";
+        if ($arguments) {
+            $serialized = $arguments->serialize($collector, $level, $used);
+            $content   .= $serialized;
+
+            if ($this->isStringMultiline($serialized)) {
+                $multiline = true;
+                $used      = $this->getLastLineLength($serialized);
             } else {
-                $content .= "{$space}{$fields}";
+                $used += mb_strlen($serialized);
             }
         }
 
+        // Type
+        $prefix = ":{$space}";
+        $type   = $this->type($multiline);
+
+        if ($type) {
+            $serialized = "{$prefix}{$type->serialize($collector, $level, $used + mb_strlen($prefix))}";
+            $content   .= $serialized;
+
+            if ($this->isStringMultiline($serialized)) {
+                $multiline = true;
+                $used      = $this->getLastLineLength($serialized);
+            } else {
+                $used += mb_strlen($serialized);
+            }
+        }
+
+        // Value
+        $prefix = "{$space}={$space}";
+        $value  = $this->value($multiline);
+
+        if ($value) {
+            $serialized = "{$prefix}{$value->serialize($collector, $level, $used + mb_strlen($prefix))}";
+            $content   .= $serialized;
+
+            if ($this->isStringMultiline($serialized)) {
+                $multiline = true;
+                $used      = $this->getLastLineLength($serialized);
+            } else {
+                $used += mb_strlen($serialized);
+            }
+        }
+
+        // Body
+        $body       = $this->body($multiline);
+        $serialized = $body
+            ? $body->serialize($collector, $level, $used + $spaceLength)
+            : '';
+
+        if ($body && $serialized !== '') {
+            if ($multiline || ($body instanceof UsageList && $this->isStringMultiline($serialized))) {
+                $multiline = true;
+                $content  .= "{$eol}{$indent}{$serialized}";
+                $used      = $indentLength; // because new line has started
+            } elseif ($this->isStringMultiline($serialized)) {
+                $multiline = true;
+                $content  .= "{$space}{$serialized}";
+                $used      = $this->getLastLineLength($serialized);
+            } else {
+                $content .= "{$space}{$serialized}";
+                $used    += mb_strlen($serialized) + $spaceLength;
+            }
+        }
+
+        // Directives
+        $directives = $this->getSettings()->isPrintDirectives()
+            ? $this->directives($multiline)
+            : null;
+        $serialized = $directives
+            ? $directives->serialize($collector, $level, $indentLength)
+            : '';
+
+        if ($directives && $serialized !== '') {
+            $multiline = true;
+            $content  .= "{$eol}{$indent}{$serialized}";
+            $used      = $indentLength; // because new line has started
+        }
+
+        // Fields
+        $prefix     = $space;
+        $fields     = $this->fields($multiline);
+        $serialized = $fields
+            ? $fields->serialize($collector, $level, $used)
+            : '';
+
+        if ($fields && $serialized !== '') {
+            if ($multiline) {
+                $content .= "{$eol}{$indent}{$serialized}";
+            } else {
+                $content .= "{$prefix}{$serialized}";
+            }
+        }
+
+        // Statistics
+        if (!($this instanceof ExtensionDefinitionBlock)) {
+            $name = $this->name();
+
+            if ($name) {
+                if ($this instanceof DirectiveDefinition) {
+                    $collector->addUsedDirective($name);
+                } elseif ($this instanceof TypeDefinitionBlock) {
+                    $collector->addUsedType($name);
+                } else {
+                    // empty
+                }
+            }
+        }
+
+        // Return
         return $content;
+    }
+
+    protected function prefix(): ?string {
+        return null;
     }
 
     public function name(): string {
@@ -128,6 +239,8 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             } else {
                 // empty
             }
+        } elseif ($definition instanceof VariableDefinitionNode) {
+            $name = $definition->variable->name->value;
         } else {
             // empty
         }
@@ -135,18 +248,30 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $name;
     }
 
-    abstract protected function type(): string|null;
+    protected function arguments(bool $multiline): ?Block {
+        return null;
+    }
 
-    abstract protected function body(int $used): Block|string|null;
+    protected function type(bool $multiline): ?Block {
+        return null;
+    }
 
-    abstract protected function fields(int $used): Block|string|null;
+    protected function value(bool $multiline): ?Block {
+        return null;
+    }
 
-    protected function directives(int $level = null, int $used = null): Directives {
+    protected function body(bool $multiline): ?Block {
+        return null;
+    }
+
+    protected function fields(bool $multiline): ?Block {
+        return null;
+    }
+
+    protected function directives(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $directives = new Directives(
             $this->getContext(),
-            $level ?? $this->getLevel(),
-            $used ?? $this->getUsed(),
             $this->getDefinitionDirectives(),
             $definition->deprecationReason ?? null,
         );
@@ -179,8 +304,6 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         // Return
         return new DescriptionBlock(
             $this->getContext(),
-            $this->getLevel(),
-            $this->getUsed(),
             $description,
         );
     }
@@ -239,5 +362,15 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Return
         return $directives;
+    }
+
+    private function getLastLineLength(string $string): int {
+        $eol    = $this->eol();
+        $index  = mb_strrpos($string, $eol, -1);
+        $length = $index !== false
+            ? mb_strlen(mb_substr($string, $index + 1))
+            : mb_strlen($string);
+
+        return $length;
     }
 }

@@ -9,6 +9,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
@@ -18,7 +19,6 @@ use function array_filter;
 use function array_key_exists;
 use function array_keys;
 use function count;
-use function mb_strlen;
 
 use const ARRAY_FILTER_USE_BOTH;
 
@@ -33,19 +33,17 @@ use const ARRAY_FILTER_USE_BOTH;
 class SchemaDefinition extends DefinitionBlock {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         SchemaDefinitionNode|Schema $definition,
     ) {
-        parent::__construct($context, $level, $used, $definition);
+        parent::__construct($context, $definition);
     }
 
-    protected function type(): string|null {
+    protected function prefix(): ?string {
         return 'schema';
     }
 
-    protected function content(): string {
-        $content = parent::content();
+    protected function content(Collector $collector, int $level, int $used): string {
+        $content = parent::content($collector, $level, $used);
 
         if ($this->isUseDefaultRootOperationTypeNames()) {
             $content = '';
@@ -54,30 +52,11 @@ class SchemaDefinition extends DefinitionBlock {
         return $content;
     }
 
-    protected function body(int $used): Block|string|null {
-        return null;
-    }
-
-    protected function fields(int $used): Block|string|null {
-        $space      = $this->space();
-        $fields     = new RootOperationTypesDefinition(
+    protected function fields(bool $multiline): ?Block {
+        return new RootOperationTypesDefinition(
             $this->getContext(),
-            $this->getLevel(),
-            $used + mb_strlen($space),
+            $this->getOperationsTypes(),
         );
-        $operations = $this->getOperationsTypes();
-
-        foreach ($operations as $operation => $type) {
-            $fields[] = new RootOperationTypeDefinition(
-                $this->getContext(),
-                $this->getLevel() + 1,
-                $this->getUsed(),
-                $operation,
-                $type,
-            );
-        }
-
-        return $this->addUsed($fields);
     }
 
     private function isUseDefaultRootOperationTypeNames(): bool {

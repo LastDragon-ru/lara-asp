@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function json_encode;
@@ -20,11 +21,9 @@ use const JSON_THROW_ON_ERROR;
 class StringValue extends Block {
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
         protected string $string,
     ) {
-        parent::__construct($context, $level, $used);
+        parent::__construct($context);
     }
 
     protected function getString(): string {
@@ -35,10 +34,10 @@ class StringValue extends Block {
         return false;
     }
 
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
         // Begin
         $eol     = $this->eol();
-        $indent  = $this->indent();
+        $indent  = $this->indent($level);
         $wrapper = '"""';
         $content = $this->getString();
 
@@ -48,7 +47,7 @@ class StringValue extends Block {
         }
 
         // Multiline?
-        $length      = $this->getUsed() + mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($content);
+        $length      = $used + mb_strlen($indent) + 2 * mb_strlen($wrapper) + mb_strlen($content);
         $isOneliner  = !$this->isStringMultiline($content);
         $isMultiline = $this->isBlock()
             || !$isOneliner
