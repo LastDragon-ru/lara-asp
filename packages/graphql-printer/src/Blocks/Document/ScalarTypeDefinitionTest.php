@@ -92,9 +92,7 @@ class ScalarTypeDefinitionTest extends TestCase {
                     @a(
                         value: "very very long value"
                     )
-                    @b(
-                        value: "b"
-                    )
+                    @b(value: "b")
                 STRING,
                 $settings
                     ->setLineLength(20)
@@ -114,12 +112,8 @@ class ScalarTypeDefinitionTest extends TestCase {
             'indent + no description' => [
                 <<<'STRING'
                 scalar Test
-                    @a(
-                        value: "very very long value"
-                    )
-                    @b(
-                        value: "b"
-                    )
+                    @a(value: "very very long value")
+                    @b(value: "b")
                 STRING,
                 $settings->setPrintDirectives(true),
                 1,

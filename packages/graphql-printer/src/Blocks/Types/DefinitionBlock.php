@@ -29,6 +29,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 use function is_string;
 use function mb_strlen;
+use function mb_strrpos;
+use function mb_substr;
 use function property_exists;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
@@ -81,19 +83,21 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         }
 
         // Prepare
-        $eol       = $this->eol();
-        $space     = $this->space();
-        $indent    = $this->indent($level);
-        $content   = '';
-        $used      = $used + mb_strlen($indent) + mb_strlen($content);
-        $multiline = $this->isStringMultiline($content);
+        $eol          = $this->eol();
+        $space        = $this->space();
+        $spaceLength  = mb_strlen($space);
+        $indent       = $this->indent($level);
+        $indentLength = mb_strlen($indent);
+        $content      = '';
+        $used         = $used + $indentLength + mb_strlen($content);
+        $multiline    = $this->isStringMultiline($content);
 
         // Description
         $description = $this->description()?->serialize($collector, $level, $used);
 
         if ($description) {
             $content .= "{$description}{$eol}{$indent}";
-            $used     = mb_strlen($indent); // because new line has started
+            $used     = $indentLength; // because new line has started
         }
 
         // Name
@@ -106,9 +110,14 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         if ($arguments) {
             $serialized = $arguments->serialize($collector, $level, $used);
-            $multiline  = $multiline || $this->isStringMultiline($serialized);
             $content   .= $serialized;
-            $used      += mb_strlen($serialized);
+
+            if ($this->isStringMultiline($serialized)) {
+                $multiline = true;
+                $used      = $this->getLastLineLength($serialized);
+            } else {
+                $used += mb_strlen($serialized);
+            }
         }
 
         // Type
@@ -116,10 +125,15 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $type   = $this->type($multiline);
 
         if ($type) {
-            $serialized = "{$prefix}{$type->serialize($collector, $level, $used)}";
-            $multiline  = $multiline || $this->isStringMultiline($serialized);
+            $serialized = "{$prefix}{$type->serialize($collector, $level, $used + mb_strlen($prefix))}";
             $content   .= $serialized;
-            $used      += mb_strlen($serialized);
+
+            if ($this->isStringMultiline($serialized)) {
+                $multiline = true;
+                $used      = $this->getLastLineLength($serialized);
+            } else {
+                $used += mb_strlen($serialized);
+            }
         }
 
         // Value
@@ -127,27 +141,35 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $value  = $this->value($multiline);
 
         if ($value) {
-            $serialized = "{$prefix}{$value->serialize($collector, $level, $used)}";
-            $multiline  = $multiline || $this->isStringMultiline($serialized);
+            $serialized = "{$prefix}{$value->serialize($collector, $level, $used + mb_strlen($prefix))}";
             $content   .= $serialized;
-            $used      += mb_strlen($serialized);
+
+            if ($this->isStringMultiline($serialized)) {
+                $multiline = true;
+                $used      = $this->getLastLineLength($serialized);
+            } else {
+                $used += mb_strlen($serialized);
+            }
         }
 
         // Body
         $body       = $this->body($multiline);
         $serialized = $body
-            ? $body->serialize($collector, $level, $used)
+            ? $body->serialize($collector, $level, $used + $spaceLength)
             : '';
 
         if ($body && $serialized !== '') {
             if ($multiline || ($body instanceof UsageList && $this->isStringMultiline($serialized))) {
                 $multiline = true;
                 $content  .= "{$eol}{$indent}{$serialized}";
-                $used      = mb_strlen($indent); // because new line has started
-            } else {
-                $multiline = $this->isStringMultiline($serialized);
+                $used      = $indentLength; // because new line has started
+            } elseif ($this->isStringMultiline($serialized)) {
+                $multiline = true;
                 $content  .= "{$space}{$serialized}";
-                $used     += mb_strlen($serialized) + mb_strlen($space);
+                $used      = $this->getLastLineLength($serialized);
+            } else {
+                $content .= "{$space}{$serialized}";
+                $used    += mb_strlen($serialized) + $spaceLength;
             }
         }
 
@@ -156,13 +178,13 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             ? $this->directives($multiline)
             : null;
         $serialized = $directives
-            ? $directives->serialize($collector, $level, $used)
+            ? $directives->serialize($collector, $level, $indentLength)
             : '';
 
         if ($directives && $serialized !== '') {
             $multiline = true;
             $content  .= "{$eol}{$indent}{$serialized}";
-            $used      = mb_strlen($indent); // because new line has started
+            $used      = $indentLength; // because new line has started
         }
 
         // Fields
@@ -174,13 +196,9 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         if ($fields && $serialized !== '') {
             if ($multiline) {
-                // $multiline = true;
                 $content .= "{$eol}{$indent}{$serialized}";
-                // $used      = mb_strlen($indent); // because new line has started
             } else {
-                // $multiline = $fields->isMultiline();
                 $content .= "{$prefix}{$serialized}";
-                // $used     += $fields->getUsed() + mb_strlen($prefix);
             }
         }
 
@@ -344,5 +362,15 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Return
         return $directives;
+    }
+
+    private function getLastLineLength(string $string): int {
+        $eol    = $this->eol();
+        $index  = mb_strrpos($string, $eol, -1);
+        $length = $index !== false
+            ? mb_strlen(mb_substr($string, $index + 1))
+            : mb_strlen($string);
+
+        return $length;
     }
 }

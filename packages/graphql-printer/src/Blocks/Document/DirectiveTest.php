@@ -202,19 +202,15 @@ class DirectiveTest extends TestCase {
             'arguments indent'                  => [
                 <<<'STRING'
                 @directive(
-                    a: [
-                        "aaaaaaaaaaaaaaaaaaaaaaaaaa"
-                        "aaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    ]
+                    a: ["aaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaa"]
                     b: {
                         a: "aaaaaaaaaaaaaaaaaaaaaaaaaa"
-                        b: [
-                            "aaaaaaaaaaaaaaaaaaaaaaaaaa"
-                        ]
+                        b: ["aaaaaaaaaaaaaaaaaaaaaaaaaa"]
                     }
                 )
                 STRING,
                 $settings
+                    ->setLineLength(80)
                     ->setAlwaysMultilineArguments(true),
                 0,
                 120,

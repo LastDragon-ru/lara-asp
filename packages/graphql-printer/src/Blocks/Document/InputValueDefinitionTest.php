@@ -163,7 +163,7 @@ class InputValueDefinitionTest extends TestCase {
                     ]
                 STRING,
                 $settings
-                    ->setLineLength(40),
+                    ->setLineLength(51),
                 1,
                 70,
                 new Argument([

@@ -107,13 +107,19 @@ abstract class ListBlock extends Block {
         $prefixLength    = mb_strlen($prefix);
         $suffix          = $this->getSuffix();
         $suffixLength    = mb_strlen($suffix);
+        $isWrapped       = ((bool) $prefix || (bool) $suffix);
         $blocks          = $this->getBlocks();
-        $blockLevel      = $level + (int) ((bool) $prefix || (bool) $suffix);
+        $blockLevel      = $level + (int) $isWrapped;
         $blockIndent     = $this->indent($blockLevel);
         $blockPrefix     = $this->getMultilineItemPrefix();
+        $lineUsed        = mb_strlen($blockIndent) + mb_strlen($blockPrefix) + $suffixLength;
         $lineLength      = $used + $prefixLength;
         $separator       = $this->getSeparator();
         $separatorLength = mb_strlen($separator);
+
+        if ($isWrapped && $multiline) {
+            $used = $lineUsed;
+        }
 
         foreach ($blocks as $block) {
             // Serialize
@@ -129,13 +135,15 @@ abstract class ListBlock extends Block {
                 $lineLength += mb_strlen($blockContent) + $separatorLength * (count($serialized) + 1);
 
                 if ($blockMultiline || $this->isLineTooLong($lineLength + $suffixLength)) {
-                    $used           = mb_strlen($blockIndent) + mb_strlen($blockPrefix) + $suffixLength;
+                    $used           = $lineUsed;
                     $multiline      = true;
                     $blockContent   = $block->serialize($collector, $blockLevel, $used);
                     $blockMultiline = $this->isStringMultiline($blockContent);
                 } else {
                     $used = $lineLength;
                 }
+            } else {
+                $used = $lineUsed;
             }
 
             // Add
@@ -148,23 +156,23 @@ abstract class ListBlock extends Block {
         }
 
         // Join
-        $eol       = $this->eol();
-        $content   = '';
-        $multiline = $multiline || $this->isLineTooLong($lineLength + mb_strlen($suffix));
-        $isWrapped = $multiline && $this->isWrapped();
-        $separator = $multiline ? $eol : $this->getSeparator();
+        $eol                = $this->eol();
+        $content            = '';
+        $multiline          = $multiline || $this->isLineTooLong($lineLength + mb_strlen($suffix));
+        $separator          = $multiline ? $eol : $this->getSeparator();
+        $isMultilineWrapped = $multiline && $this->isWrapped();
 
         for ($index = 0, $count = count($serialized); $index < $count; $index++) {
             [$blockMultiline, $blockContent] = $serialized[$index];
-            $previousMultiline               = $isWrapped && ($serialized[$index - 1][0] ?? false);
+            $previousMultiline               = $isMultilineWrapped && ($serialized[$index - 1][0] ?? false);
             $isLast                          = ($index === $count - 1);
 
             if ($multiline) {
-                if (($blockMultiline && $isWrapped && $index > 0) || $previousMultiline) {
+                if (($blockMultiline && $isMultilineWrapped && $index > 0) || $previousMultiline) {
                     $content .= $eol;
                 }
 
-                if ($index > 0 || $blockLevel > $level) {
+                if ($index > 0 || $isWrapped) {
                     $content .= $blockIndent;
                 }
 

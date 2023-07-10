@@ -128,9 +128,7 @@ class DirectivesTest extends TestCase {
                     reason: "very very very long reason"
                 )
                 @a(a: 123)
-                @b(
-                    b: 1234567890
-                )
+                @b(b: 1234567890)
                 STRING,
                 $settings,
                 0,
@@ -147,9 +145,7 @@ class DirectivesTest extends TestCase {
                         reason: "very very very long reason"
                     )
                     @a(a: 123)
-                    @b(
-                        b: 1234567890
-                    )
+                    @b(b: 1234567890)
                 STRING,
                 $settings,
                 1,
