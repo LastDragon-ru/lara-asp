@@ -77,16 +77,12 @@ abstract class ListBlock extends Block {
     /**
      * @return array<int|string,TBlock>
      */
-    protected function getBlocks(Collector $collector, int $level, int $used): array {
+    private function getBlocks(): array {
         // Create
         $blocks = [];
 
         foreach ($this->getItems() as $key => $item) {
-            $block = $this->block($key, $item);
-
-            if ($block->serialize($collector, $level, $used) !== '') {
-                $blocks[] = $block;
-            }
+            $blocks[] = $this->block($key, $item);
         }
 
         // Sort
@@ -103,139 +99,98 @@ abstract class ListBlock extends Block {
     }
 
     protected function content(Collector $collector, int $level, int $used): string {
-        // Blocks?
-        $content = '';
-        $blocks  = $this->getBlocks($collector, $level, $used);
-        $count   = count($blocks);
+        // Serialize
+        /** @var array<int, array{bool, non-empty-string}> $serialized */
+        $serialized      = [];
+        $multiline       = $this->isAlwaysMultiline();
+        $prefix          = $this->getPrefix();
+        $prefixLength    = mb_strlen($prefix);
+        $suffix          = $this->getSuffix();
+        $suffixLength    = mb_strlen($suffix);
+        $blocks          = $this->getBlocks();
+        $blockLevel      = $level + (int) ((bool) $prefix || (bool) $suffix);
+        $blockIndent     = $this->indent($blockLevel);
+        $blockPrefix     = $this->getMultilineItemPrefix();
+        $lineLength      = $used + $prefixLength;
+        $separator       = $this->getSeparator();
+        $separatorLength = mb_strlen($separator);
 
-        if (!$count) {
+        foreach ($blocks as $block) {
+            // Serialize
+            $blockContent   = $block->serialize($collector, $blockLevel, $used);
+            $blockMultiline = $this->isStringMultiline($blockContent);
+
+            if (!$blockContent) {
+                continue;
+            }
+
+            // Single line?
+            if (!$multiline) {
+                $lineLength += mb_strlen($blockContent) + $separatorLength * (count($serialized) + 1);
+
+                if ($blockMultiline || $this->isLineTooLong($lineLength + $suffixLength)) {
+                    $used           = mb_strlen($blockIndent) + mb_strlen($blockPrefix) + $suffixLength;
+                    $multiline      = true;
+                    $blockContent   = $block->serialize($collector, $blockLevel, $used);
+                    $blockMultiline = $this->isStringMultiline($blockContent);
+                } else {
+                    $used = $lineLength;
+                }
+            }
+
+            // Add
+            $serialized[] = [$blockMultiline, $blockContent];
+        }
+
+        // Empty?
+        if (!$serialized) {
             return $this->getEmptyValue();
         }
 
         // Join
-        $listPrefix  = $this->getPrefix();
-        $listSuffix  = $this->getSuffix();
-        $separator   = $this->getSeparator();
-        $isWrapped   = (bool) $listPrefix || (bool) $listSuffix;
-        $isMultiline = $this->isMultilineContent(
-            $level,
-            $used,
-            $blocks,
-            $listSuffix,
-            $listPrefix,
-            $separator,
-        );
+        $eol       = $this->eol();
+        $content   = '';
+        $multiline = $multiline || $this->isLineTooLong($lineLength + mb_strlen($suffix));
+        $isWrapped = $multiline && $this->isWrapped();
+        $separator = $multiline ? $eol : $this->getSeparator();
 
-        if ($isMultiline) {
-            $eol       = $this->eol();
-            $last      = $count - 1;
-            $index     = 0;
-            $indent    = $this->indent($level + (int) $isWrapped);
-            $wrapped   = $this->isWrapped();
-            $previous  = false;
-            $separator = $this->getMultilineItemPrefix();
+        for ($index = 0, $count = count($serialized); $index < $count; $index++) {
+            [$blockMultiline, $blockContent] = $serialized[$index];
+            $previousMultiline               = $isWrapped && ($serialized[$index - 1][0] ?? false);
+            $isLast                          = ($index === $count - 1);
 
-            foreach ($blocks as $block) {
-                $block      = $this->analyze($collector, $block);
-                $serialized = $block->serialize($collector, $level + (int) $isWrapped, $used);
-                $multiline  = $wrapped && $block->isStringMultiline($serialized);
-
-                if (($multiline && $index > 0) || $previous) {
+            if ($multiline) {
+                if (($blockMultiline && $isWrapped && $index > 0) || $previousMultiline) {
                     $content .= $eol;
                 }
 
-                if ($index > 0 || $isWrapped) {
-                    $content .= $indent;
+                if ($index > 0 || $blockLevel > $level) {
+                    $content .= $blockIndent;
                 }
 
-                $content .= "{$separator}{$serialized}";
+                $content .= $blockPrefix.$blockContent;
 
-                if ($index < $last) {
+                if (!$isLast) {
                     $content .= $eol;
                 }
-
-                $previous = $multiline;
-                $index    = $index + 1;
-            }
-        } else {
-            $last  = $count - 1;
-            $index = 0;
-
-            foreach ($blocks as $block) {
-                $content .= "{$this->analyze($collector, $block)->serialize($collector, $level, $used)}";
-                $content .= ($index !== $last ? $separator : '');
-                $index    = $index + 1;
+            } else {
+                $content .= $blockContent.($isLast ? '' : $separator);
             }
         }
 
         // Prefix & Suffix
-        if ($isWrapped) {
-            $eol     = $isMultiline ? $this->eol() : '';
-            $indent  = $isMultiline ? $this->indent($level) : '';
-            $content = "{$listPrefix}{$eol}{$content}";
+        if ($prefix) {
+            $prefix  = $multiline ? $prefix.$eol : $prefix;
+            $content = "{$prefix}{$content}";
+        }
 
-            if ($listSuffix) {
-                $content .= "{$eol}{$indent}{$listSuffix}";
-            }
+        if ($suffix) {
+            $indent   = $multiline ? $eol.$this->indent($level) : '';
+            $content .= "{$indent}{$suffix}";
         }
 
         // Return
         return $content;
-    }
-
-    /**
-     * @param array<int|string,TBlock> $blocks
-     */
-    private function isMultilineContent(
-        int $level,
-        int $used,
-        array $blocks,
-        string $suffix,
-        string $prefix,
-        string $separator,
-    ): bool {
-        // Always or Any multiline block?
-        if ($this->isAlwaysMultiline()) {
-            return true;
-        }
-
-        // Any multiline block?
-        $length    = 0;
-        $multiline = false;
-        $collector = new Collector();
-
-        foreach ($blocks as $block) {
-            $serialized = $block->serialize($collector, $level, $used);
-            $length    += mb_strlen($serialized);
-
-            if ($block->isStringMultiline($serialized)) {
-                $multiline = true;
-                break;
-            }
-        }
-
-        if ($multiline) {
-            return true;
-        }
-
-        // Length?
-        $count  = count($blocks);
-        $length = $used
-            + $length
-            + mb_strlen($suffix)
-            + mb_strlen($prefix)
-            + mb_strlen($separator) * ($count - 1);
-
-        return $this->isLineTooLong($length);
-    }
-
-    /**
-     * @param TBlock $block
-     *
-     * @return TBlock
-     */
-    protected function analyze(Collector $collector, Block $block): Block {
-        return $collector->addUsed($block);
     }
 
     /**
