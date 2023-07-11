@@ -10,6 +10,7 @@ use GraphQL\Language\AST\EnumTypeExtensionNode;
 use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeExtensionNode;
@@ -49,6 +50,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\EnumTypeExtension;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\EnumValueDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Field;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\FieldDefinition;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\FragmentDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InlineFragment;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InputObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InputObjectTypeExtension;
@@ -140,6 +142,8 @@ class Factory {
                 => new InlineFragment($context, $definition),
             $definition instanceof VariableDefinitionNode
                 => new VariableDefinition($context, $definition),
+            $definition instanceof FragmentDefinitionNode
+                => new FragmentDefinition($context, $definition),
             default
                 => throw new Unsupported($definition),
         };
