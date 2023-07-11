@@ -3,9 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\SelectionNode;
 use GraphQL\Language\AST\SelectionSetNode;
+use GraphQL\Language\AST\TypeNode;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
@@ -19,9 +22,13 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
  */
 #[GraphQLAstNode(SelectionSetNode::class)]
 class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
+    /**
+     * @param (TypeNode&Node)|Type|null $type
+     */
     public function __construct(
         Context $context,
         SelectionSetNode $definition,
+        private TypeNode|Type|null $type = null,
     ) {
         parent::__construct($context, $definition->selections);
     }
@@ -34,10 +41,6 @@ class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
         return '}';
     }
 
-    protected function isWrapped(): bool {
-        return true;
-    }
-
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeFields();
     }
@@ -48,8 +51,9 @@ class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
 
     protected function block(string|int $key, mixed $item): Block {
         return match (true) {
-            $item instanceof FieldNode => new Field($this->getContext(), $item),
-            default                    => throw new Unsupported($item),
+            $item instanceof FieldNode          => new Field($this->getContext(), $item, $this->type),
+            $item instanceof InlineFragmentNode => new InlineFragment($this->getContext(), $item, $this->type),
+            default                             => throw new Unsupported($item),
         };
     }
 }

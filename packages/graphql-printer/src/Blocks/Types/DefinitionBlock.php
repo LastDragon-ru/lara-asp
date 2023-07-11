@@ -157,8 +157,9 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $serialized = $body
             ? $body->serialize($collector, $level, $used + $spaceLength)
             : '';
+        $hasBody    = $body && $serialized !== '';
 
-        if ($body && $serialized !== '') {
+        if ($hasBody) {
             if ($multiline || ($body instanceof UsageList && $this->isStringMultiline($serialized))) {
                 $multiline = true;
                 $content  .= "{$eol}{$indent}{$serialized}";
@@ -174,14 +175,15 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         }
 
         // Directives
-        $directives = $this->getSettings()->isPrintDirectives()
+        $directives    = $this->getSettings()->isPrintDirectives()
             ? $this->directives($multiline)
             : null;
-        $serialized = $directives
+        $serialized    = $directives
             ? $directives->serialize($collector, $level, $indentLength)
             : '';
+        $hasDirectives = $directives && $serialized !== '';
 
-        if ($directives && $serialized !== '') {
+        if ($hasDirectives) {
             $multiline = true;
             $content  .= "{$eol}{$indent}{$serialized}";
             $used      = $indentLength; // because new line has started
@@ -195,7 +197,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             : '';
 
         if ($fields && $serialized !== '') {
-            if ($multiline) {
+            if ($multiline && ($hasBody || $hasDirectives)) {
                 $content .= "{$eol}{$indent}{$serialized}";
             } else {
                 $content .= "{$prefix}{$serialized}";
