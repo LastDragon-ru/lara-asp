@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\FragmentSpreadNode;
 use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\SelectionNode;
@@ -52,6 +53,7 @@ class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
     protected function block(string|int $key, mixed $item): Block {
         return match (true) {
             $item instanceof FieldNode          => new Field($this->getContext(), $item, $this->type),
+            $item instanceof FragmentSpreadNode => new FragmentSpread($this->getContext(), $item, $this->type),
             $item instanceof InlineFragmentNode => new InlineFragment($this->getContext(), $item, $this->type),
             default                             => throw new Unsupported($item),
         };

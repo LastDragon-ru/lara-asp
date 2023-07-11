@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 use Attribute;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use GraphQL\Language\AST\DefinitionNode;
-use GraphQL\Language\AST\FragmentSpreadNode;
 use GraphQL\Language\AST\Location;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\NodeKind;
@@ -58,7 +57,6 @@ class BlockTest extends TestCase {
 
                 // todo(graphql-printer): ExecutableDefinition support
                 //      https://github.com/LastDragon-ru/lara-asp/issues/72
-                FragmentSpreadNode::class,
                 OperationDefinitionNode::class,
             ],
         );
