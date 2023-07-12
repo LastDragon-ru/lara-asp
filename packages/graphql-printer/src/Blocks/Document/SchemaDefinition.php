@@ -66,7 +66,7 @@ class SchemaDefinition extends DefinitionBlock {
         }
 
         // Names?
-        $default     = $this->getOperationsDefaultTypes();
+        $default     = $this->getContext()->getOperationsDefaultTypes();
         $operations  = $this->getOperationsTypes();
         $nonStandard = array_filter(
             $operations,
@@ -95,7 +95,7 @@ class SchemaDefinition extends DefinitionBlock {
     private function getOperationsTypes(): array {
         $definition = $this->getDefinition();
         $operations = array_fill_keys(
-            array_keys($this->getOperationsDefaultTypes()),
+            array_keys($this->getContext()->getOperationsDefaultTypes()),
             null,
         );
 
@@ -116,20 +116,5 @@ class SchemaDefinition extends DefinitionBlock {
         }
 
         return array_filter($operations);
-    }
-
-    /**
-     * @return array{
-     *      query: string,
-     *      mutation: string,
-     *      subscription: string,
-     *      }
-     */
-    private function getOperationsDefaultTypes(): array {
-        return [
-            'query'        => 'Query',
-            'mutation'     => 'Mutation',
-            'subscription' => 'Subscription',
-        ];
     }
 }

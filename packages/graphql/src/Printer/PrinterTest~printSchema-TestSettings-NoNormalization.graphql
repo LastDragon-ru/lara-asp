@@ -49,22 +49,6 @@ represent free-form human-readable text.
 """
 scalar CodeScalar
 
-input SchemaInput
-@schemaDirective
-{
-    f: [String!]
-
-    """
-    Recursion
-    """
-    e: SchemaInput
-
-    d: SchemaEnum
-    c: SchemaScalar
-    b: CodeEnum
-    a: CodeScalar
-}
-
 enum CodeEnum {
     C
     B
@@ -81,6 +65,22 @@ scalar SchemaScalar
     class: "GraphQL\\Type\\Definition\\StringType"
 )
 @codeDirective
+
+input SchemaInput
+@schemaDirective
+{
+    f: [String!]
+
+    """
+    Recursion
+    """
+    e: SchemaInput
+
+    d: SchemaEnum
+    c: SchemaScalar
+    b: CodeEnum
+    a: CodeScalar
+}
 
 enum SchemaEnum
 @schemaDirective

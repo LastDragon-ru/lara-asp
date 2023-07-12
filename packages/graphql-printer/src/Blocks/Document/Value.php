@@ -51,8 +51,8 @@ class Value extends Block {
      */
     public function __construct(
         Context $context,
-        protected ValueNode $node,
-        protected TypeNode|Type|null $type = null,
+        private ValueNode $node,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context);
     }
@@ -62,7 +62,7 @@ class Value extends Block {
         $context = $this->getContext();
         $content = match (true) {
             $this->node instanceof ListValueNode
-                => new ListValue($context, $this->node),
+                => new ListValue($context, $this->node, $this->type),
             $this->node instanceof ObjectValueNode
                 => new ObjectValue($context, $this->node, $this->type),
             $this->node instanceof StringValueNode && $this->node->block

@@ -22,7 +22,7 @@ class ObjectValue extends ListBlock {
     public function __construct(
         Context $context,
         ObjectValueNode $definition,
-        protected TypeNode|Type|null $type = null,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context, $definition->fields);
     }
@@ -50,7 +50,7 @@ class ObjectValue extends ListBlock {
     protected function block(string|int $key, mixed $item): Block {
         $name = $item->name->value;
         $type = $this->type
-            ? $this->getField($this->type, $name)?->getType()
+            ? $this->getContext()->getField($this->type, $name)?->getType()
             : null;
 
         return new ObjectField(

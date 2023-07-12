@@ -131,6 +131,16 @@ class Printer implements SchemaPrinterContract {
 
         return $printed;
     }
+
+    public function printNode(Node $node, ?Schema $schema = null): Result {
+        $collector = new Collector();
+        $context   = $this->getContext($schema);
+        $content   = $this->getDefinitionList($context, true);
+        $content[] = $this->getDefinitionBlock($context, $node);
+        $printed   = new ResultImpl($collector, $content->serialize($collector, $this->getLevel(), 0));
+
+        return $printed;
+    }
     // </editor-fold>
 
     // <editor-fold desc="Helpers">

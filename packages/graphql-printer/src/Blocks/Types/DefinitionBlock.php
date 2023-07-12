@@ -7,7 +7,6 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
-use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeExtensionNode;
@@ -33,12 +32,10 @@ use function mb_strrpos;
 use function mb_substr;
 use function property_exists;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @internal
  *
- * @template TDefinition of Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema|SchemaDefinitionNode
+ * @template TDefinition of Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema
  */
 abstract class DefinitionBlock extends Block implements NamedBlock {
     /**
@@ -46,7 +43,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        private Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema|SchemaDefinitionNode $definition,
+        private Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema $definition,
     ) {
         parent::__construct($context);
     }
@@ -157,8 +154,9 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $serialized = $body
             ? $body->serialize($collector, $level, $used + $spaceLength)
             : '';
+        $hasBody    = $body && $serialized !== '';
 
-        if ($body && $serialized !== '') {
+        if ($hasBody) {
             if ($multiline || ($body instanceof UsageList && $this->isStringMultiline($serialized))) {
                 $multiline = true;
                 $content  .= "{$eol}{$indent}{$serialized}";
@@ -174,14 +172,15 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         }
 
         // Directives
-        $directives = $this->getSettings()->isPrintDirectives()
+        $directives    = $this->getSettings()->isPrintDirectives()
             ? $this->directives($multiline)
             : null;
-        $serialized = $directives
+        $serialized    = $directives
             ? $directives->serialize($collector, $level, $indentLength)
             : '';
+        $hasDirectives = $directives && $serialized !== '';
 
-        if ($directives && $serialized !== '') {
+        if ($hasDirectives) {
             $multiline = true;
             $content  .= "{$eol}{$indent}{$serialized}";
             $used      = $indentLength; // because new line has started
@@ -195,7 +194,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             : '';
 
         if ($fields && $serialized !== '') {
-            if ($multiline) {
+            if ($multiline && ($hasBody || $hasDirectives)) {
                 $content .= "{$eol}{$indent}{$serialized}";
             } else {
                 $content .= "{$prefix}{$serialized}";
@@ -203,7 +202,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         }
 
         // Statistics
-        if (!($this instanceof ExtensionDefinitionBlock)) {
+        if (!($this instanceof ExtensionDefinitionBlock) && !($this instanceof ExecutableDefinitionBlock)) {
             $name = $this->name();
 
             if ($name) {
@@ -225,7 +224,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return null;
     }
 
-    public function name(): string {
+    protected function name(): string {
         $definition = $this->getDefinition();
         $name       = '';
 

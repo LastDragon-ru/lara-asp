@@ -116,11 +116,11 @@ class DocumentTest extends TestCase {
             type Test {
                 c: C! @c
                 b: B
+                d: Int
             }
 
             extend type Test implements B & A @a {
                 a: String
-                b: [B!]!
             }
 
             enum C {
@@ -128,11 +128,23 @@ class DocumentTest extends TestCase {
                 C
                 A
             }
+
+            interface A {
+                a: String
+            }
+
+            interface B {
+                b: [B!]!
+            }
+
+            directive @a on FIELD | FIELD_DEFINITION | OBJECT | INTERFACE
+            directive @b on FIELD | FIELD_DEFINITION | OBJECT | INTERFACE
+            directive @c on FIELD | FIELD_DEFINITION | OBJECT | INTERFACE
             STRING,
         );
 
         return [
-            'default'            => [
+            'schema / default'               => [
                 <<<'STRING'
                 type Query {
                     test: [Test]!
@@ -141,6 +153,7 @@ class DocumentTest extends TestCase {
                 type Test {
                     c: C!
                     b: B
+                    d: Int
                 }
 
                 extend type Test
@@ -149,7 +162,6 @@ class DocumentTest extends TestCase {
                     & A
                 {
                     a: String
-                    b: [B!]!
                 }
 
                 enum C {
@@ -157,6 +169,35 @@ class DocumentTest extends TestCase {
                     C
                     A
                 }
+
+                interface A {
+                    a: String
+                }
+
+                interface B {
+                    b: [B!]!
+                }
+
+                directive @a
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
+
+                directive @b
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
+
+                directive @c
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
                 STRING,
                 $settings,
                 0,
@@ -164,8 +205,29 @@ class DocumentTest extends TestCase {
                 $document,
                 null,
             ],
-            'normalized'         => [
+            'schema / normalized'            => [
                 <<<'STRING'
+                directive @a
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
+
+                directive @b
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
+
+                directive @c
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
+
                 enum C {
                     A
                     B
@@ -179,6 +241,13 @@ class DocumentTest extends TestCase {
                 @a
                 {
                     a: String
+                }
+
+                interface A {
+                    a: String
+                }
+
+                interface B {
                     b: [B!]!
                 }
 
@@ -192,6 +261,8 @@ class DocumentTest extends TestCase {
 
                     c: C!
                     @c
+
+                    d: Int
                 }
                 STRING,
                 $settings
@@ -207,7 +278,7 @@ class DocumentTest extends TestCase {
                 $document,
                 null,
             ],
-            'indent'             => [
+            'schema / indent'                => [
                 <<<'STRING'
                 type Query {
                         test: [Test]!
@@ -216,6 +287,7 @@ class DocumentTest extends TestCase {
                     type Test {
                         c: C!
                         b: B
+                        d: Int
                     }
 
                     extend type Test
@@ -224,7 +296,6 @@ class DocumentTest extends TestCase {
                         & A
                     {
                         a: String
-                        b: [B!]!
                     }
 
                     enum C {
@@ -232,6 +303,35 @@ class DocumentTest extends TestCase {
                         C
                         A
                     }
+
+                    interface A {
+                        a: String
+                    }
+
+                    interface B {
+                        b: [B!]!
+                    }
+
+                    directive @a
+                    on
+                        | FIELD
+                        | FIELD_DEFINITION
+                        | INTERFACE
+                        | OBJECT
+
+                    directive @b
+                    on
+                        | FIELD
+                        | FIELD_DEFINITION
+                        | INTERFACE
+                        | OBJECT
+
+                    directive @c
+                    on
+                        | FIELD
+                        | FIELD_DEFINITION
+                        | INTERFACE
+                        | OBJECT
                 STRING,
                 $settings,
                 1,
@@ -239,7 +339,7 @@ class DocumentTest extends TestCase {
                 $document,
                 null,
             ],
-            'filter (no schema)' => [
+            'schema / filter (no schema)'    => [
                 <<<'STRING'
                 type Query {
                     test: [Test]!
@@ -250,6 +350,7 @@ class DocumentTest extends TestCase {
                     @c
 
                     b: B
+                    d: Int
                 }
 
                 extend type Test
@@ -259,7 +360,6 @@ class DocumentTest extends TestCase {
                 @a
                 {
                     a: String
-                    b: [B!]!
                 }
 
                 enum C {
@@ -267,6 +367,28 @@ class DocumentTest extends TestCase {
                     C
                     A
                 }
+
+                interface A {
+                    a: String
+                }
+
+                interface B {
+                    b: [B!]!
+                }
+
+                directive @a
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
+
+                directive @c
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
                 STRING,
                 $settings
                     ->setPrintDirectives(true)
@@ -281,7 +403,7 @@ class DocumentTest extends TestCase {
                 $document,
                 null,
             ],
-            'filter'             => [
+            'schema / filter'                => [
                 <<<'STRING'
                 type Query {
                     test: [Test]!
@@ -290,6 +412,8 @@ class DocumentTest extends TestCase {
                 type Test {
                     c: C!
                     @c
+
+                    d: Int
                 }
 
                 extend type Test
@@ -305,6 +429,24 @@ class DocumentTest extends TestCase {
                     C
                     A
                 }
+
+                interface A {
+                    a: String
+                }
+
+                directive @a
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
+
+                directive @c
+                on
+                    | FIELD
+                    | FIELD_DEFINITION
+                    | INTERFACE
+                    | OBJECT
                 STRING,
                 $settings
                     ->setPrintDirectives(true)
@@ -322,6 +464,129 @@ class DocumentTest extends TestCase {
                     scalar B
                     STRING,
                 ),
+            ],
+            'operation / default'            => [
+                <<<'STRING'
+                query test($a: Int) {
+                    test {
+                        b
+                        c
+                    }
+                }
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(false),
+                0,
+                0,
+                Parser::parse(
+                    'query test($a: Int) @b @a { test { b @b @a, c} }',
+                ),
+                BuildSchema::build($document),
+            ],
+            'operation / normalized'         => [
+                <<<'STRING'
+                query test($a: Int, $b: String)
+                @b
+                @a
+                {
+                    test {
+                        b
+                        @b
+                        @a
+
+                        c
+                    }
+                }
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(false)
+                    ->setPrintDirectives(true)
+                    ->setNormalizeFields(true)
+                    ->setNormalizeArguments(true),
+                0,
+                0,
+                Parser::parse(
+                    'query test($b: String, $a: Int) @b @a { test { c, b @b @a} }',
+                ),
+                BuildSchema::build($document),
+            ],
+            'operation / indent'             => [
+                <<<'STRING'
+                query test($a: Int, $b: String) {
+                        test {
+                            b
+                            c
+                        }
+                    }
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(false)
+                    ->setNormalizeFields(true)
+                    ->setNormalizeArguments(true),
+                1,
+                0,
+                Parser::parse(
+                    'query test($b: String, $a: Int) @b @a { test { c, b @b @a} }',
+                ),
+                BuildSchema::build($document),
+            ],
+            'operation / filter (no schema)' => [
+                <<<'STRING'
+                query test($b: String, $a: Int)
+                @a
+                {
+                    test {
+                        c
+
+                        b
+                        @a
+                    }
+                }
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(false)
+                    ->setPrintDirectives(true)
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'Int';
+                    })
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
+                0,
+                0,
+                Parser::parse(
+                    'query test($b: String, $a: Int) @b @a { test { c, b @b @a } }',
+                ),
+                null,
+            ],
+            'operation / filter'             => [
+                <<<'STRING'
+                query test($b: String)
+                @a
+                {
+                    test {
+                        c
+
+                        b
+                        @a
+                    }
+                }
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(false)
+                    ->setPrintDirectives(true)
+                    ->setTypeFilter(static function (string $type): bool {
+                        return $type !== 'Int';
+                    })
+                    ->setDirectiveFilter(static function (string $directive): bool {
+                        return $directive !== 'b';
+                    }),
+                0,
+                0,
+                Parser::parse(
+                    'query test($b: String, $a: Int) @b @a { test { c, b @b @a} }',
+                ),
+                BuildSchema::build($document),
             ],
         ];
     }

@@ -27,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveArgumentNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldArgumentNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
 
@@ -66,6 +67,8 @@ class Context {
         // empty
     }
 
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
     public function getSettings(): Settings {
         return $this->settings;
     }
@@ -77,6 +80,38 @@ class Context {
     public function getSchema(): ?Schema {
         return $this->schema;
     }
+    // </editor-fold>
+
+    // <editor-fold desc="Schema">
+    // =========================================================================
+    /**
+     * @return array{
+     *      query: string,
+     *      mutation: string,
+     *      subscription: string,
+     *      }
+     */
+    public function getOperationsDefaultTypes(): array {
+        return [
+            'query'        => 'Query',
+            'mutation'     => 'Mutation',
+            'subscription' => 'Subscription',
+        ];
+    }
+
+    /**
+     * @return (Type&NamedType)|null
+     */
+    public function getOperationType(string $operation): ?Type {
+        $type = $this->getSchema()?->getOperationType($operation);
+
+        if (!$type && $this->getSchema()) {
+            throw new TypeNotFound($operation);
+        }
+
+        return $type;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Types">
     // =========================================================================
@@ -318,6 +353,29 @@ class Context {
         }
 
         return $field;
+    }
+
+    /**
+     * @param (TypeNode&Node)|Type $object
+     */
+    public function getFieldArgument(TypeNode|Type $object, string $field, string $name): ?Argument {
+        $argument   = null;
+        $definition = $this->getField($object, $field);
+
+        if ($definition instanceof FieldDefinition) {
+            foreach ($definition->args as $arg) {
+                if ($arg->name === $name) {
+                    $argument = $arg;
+                    break;
+                }
+            }
+        }
+
+        if ($this->getSchema() && !$argument) {
+            throw new FieldArgumentNotFound($this->getTypeName($object), $field, $name);
+        }
+
+        return $argument;
     }
     // </editor-fold>
 }
