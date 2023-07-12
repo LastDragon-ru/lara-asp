@@ -216,6 +216,7 @@ class InlineFragmentTest extends TestCase {
                     {
                         c
                     }
+
                     a
                 }
                 STRING,
@@ -238,6 +239,7 @@ class InlineFragmentTest extends TestCase {
                     ) {
                         c
                     }
+
                     a
                 }
                 STRING,
@@ -258,6 +260,7 @@ class InlineFragmentTest extends TestCase {
                 @a
                 {
                     a
+
                     b(a: 123, b: "321") {
                         c
                     }

@@ -42,6 +42,10 @@ class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
         return '}';
     }
 
+    protected function isWrapped(): bool {
+        return true;
+    }
+
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeFields();
     }

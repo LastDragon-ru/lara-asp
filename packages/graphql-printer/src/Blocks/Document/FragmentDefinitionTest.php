@@ -149,6 +149,7 @@ class FragmentDefinitionTest extends TestCase {
                 @a
                 {
                     a
+
                     b(a: 123, b: "321") {
                         c
                     }
