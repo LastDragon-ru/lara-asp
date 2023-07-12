@@ -21,6 +21,7 @@ use GraphQL\Language\AST\InterfaceTypeExtensionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeExtensionNode;
+use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeExtensionNode;
 use GraphQL\Language\AST\SchemaDefinitionNode;
@@ -61,6 +62,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InterfaceTypeDefinition
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InterfaceTypeExtension;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ObjectTypeExtension;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\OperationDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ScalarTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ScalarTypeExtension;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\SchemaDefinition;
@@ -148,6 +150,8 @@ class Factory {
                 => new FragmentDefinition($context, $definition),
             $definition instanceof FragmentSpreadNode
                 => new FragmentSpread($context, $definition),
+            $definition instanceof OperationDefinitionNode
+                => new OperationDefinition($context, $definition),
             default
                 => throw new Unsupported($definition),
         };
