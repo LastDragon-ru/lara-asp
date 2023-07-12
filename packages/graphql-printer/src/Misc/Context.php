@@ -67,6 +67,8 @@ class Context {
         // empty
     }
 
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
     public function getSettings(): Settings {
         return $this->settings;
     }
@@ -78,6 +80,38 @@ class Context {
     public function getSchema(): ?Schema {
         return $this->schema;
     }
+    // </editor-fold>
+
+    // <editor-fold desc="Schema">
+    // =========================================================================
+    /**
+     * @return array{
+     *      query: string,
+     *      mutation: string,
+     *      subscription: string,
+     *      }
+     */
+    public function getOperationsDefaultTypes(): array {
+        return [
+            'query'        => 'Query',
+            'mutation'     => 'Mutation',
+            'subscription' => 'Subscription',
+        ];
+    }
+
+    /**
+     * @return (Type&NamedType)|null
+     */
+    public function getOperationType(string $operation): ?Type {
+        $type = $this->getSchema()?->getOperationType($operation);
+
+        if (!$type && $this->getSchema()) {
+            throw new TypeNotFound($operation);
+        }
+
+        return $type;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Types">
     // =========================================================================

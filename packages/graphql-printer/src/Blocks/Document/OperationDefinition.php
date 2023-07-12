@@ -75,13 +75,8 @@ class OperationDefinition extends DefinitionBlock implements ExecutableDefinitio
      */
     private function getType(): TypeNode|Type|null {
         $definition = $this->getDefinition();
-        $type       = $this->type;
-
-        if (!$type) {
-            $context = $this->getContext();
-            $default = SchemaDefinition::getOperationsDefaultTypes()[$definition->operation] ?? null;
-            $type    = $default ? $context->getType($default) : null;
-        }
+        $type       = $this->type
+            ?? $this->getContext()->getOperationType($definition->operation);
 
         return $type;
     }
