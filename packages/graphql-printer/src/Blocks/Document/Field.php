@@ -97,10 +97,13 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
 
     protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $selection  = $definition->selectionSet
-            ? new SelectionSet($this->getContext(), $definition->selectionSet)
+        $type       = $this->type
+            ? $this->getContext()->getField($this->type, $this->name())?->getType()
+            : null;
+        $set        = $definition->selectionSet
+            ? new SelectionSet($this->getContext(), $definition->selectionSet, $type)
             : null;
 
-        return $selection;
+        return $set;
     }
 }

@@ -52,19 +52,23 @@ class FieldTest extends TestCase {
         $schema     = BuildSchema::build(
             <<<'STRING'
             type A {
-                field(a: Int): String
+                field(a: Int): B
+            }
+
+            type B {
+                a: String
             }
             STRING,
         );
         $context    = new Context(new TestSettings(), null, $schema);
         $collector  = new Collector();
-        $definition = Parser::field('alias: field(a: 123) @a');
+        $definition = Parser::field('alias: field(a: 123) @a { a }');
         $type       = $schema->getType('A');
         $block      = new Field($context, $definition, $type);
         $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
-        self::assertEquals(['A' => 'A', 'String' => 'String', 'Int' => 'Int'], $collector->getUsedTypes());
+        self::assertEquals(['A' => 'A', 'B' => 'B', 'String' => 'String', 'Int' => 'Int'], $collector->getUsedTypes());
         self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
         $astCollector = new Collector();
