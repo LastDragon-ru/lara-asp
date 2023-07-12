@@ -29,7 +29,7 @@ class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
     public function __construct(
         Context $context,
         SelectionSetNode $definition,
-        private TypeNode|Type|null $type = null,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context, $definition->selections);
     }

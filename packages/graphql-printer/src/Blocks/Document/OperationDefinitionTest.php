@@ -92,7 +92,8 @@ class OperationDefinitionTest extends TestCase {
         $context    = new Context(new TestSettings(), null, null);
         $collector  = new Collector();
         $definition = Parser::operationDefinition('query($a: Int) @a { field(a: $a) { a } }');
-        $block      = new OperationDefinition($context, $definition);
+        $type       = null;
+        $block      = new OperationDefinition($context, $definition, $type);
         $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
@@ -100,7 +101,7 @@ class OperationDefinitionTest extends TestCase {
         self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
         $astCollector = new Collector();
-        $astBlock     = new OperationDefinition($context, Parser::operationDefinition($content));
+        $astBlock     = new OperationDefinition($context, Parser::operationDefinition($content), $type);
 
         self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
         self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());

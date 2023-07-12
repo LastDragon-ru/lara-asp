@@ -83,7 +83,8 @@ class FieldTest extends TestCase {
         $context    = new Context(new TestSettings(), null, null);
         $collector  = new Collector();
         $definition = Parser::field('alias: field(a: 123) @a');
-        $block      = new Field($context, $definition);
+        $type       = null;
+        $block      = new Field($context, $definition, $type);
         $content    = $block->serialize($collector, 0, 0);
 
         self::assertNotEmpty($content);
@@ -91,7 +92,7 @@ class FieldTest extends TestCase {
         self::assertEquals(['@a' => '@a'], $collector->getUsedDirectives());
 
         $astCollector = new Collector();
-        $astBlock     = new Field($context, Parser::field($content));
+        $astBlock     = new Field($context, Parser::field($content), $type);
 
         self::assertEquals($content, $astBlock->serialize($astCollector, 0, 0));
         self::assertEquals($collector->getUsedTypes(), $astCollector->getUsedTypes());

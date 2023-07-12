@@ -23,8 +23,8 @@ class ObjectField extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        protected ObjectFieldNode $definition,
-        protected TypeNode|Type|null $type = null,
+        private ObjectFieldNode $definition,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context);
     }

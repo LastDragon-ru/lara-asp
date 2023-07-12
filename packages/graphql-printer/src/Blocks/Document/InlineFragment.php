@@ -26,7 +26,7 @@ class InlineFragment extends DefinitionBlock implements ExecutableDefinitionBloc
     public function __construct(
         Context $context,
         InlineFragmentNode $definition,
-        private TypeNode|Type|null $type = null,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context, $definition);
 

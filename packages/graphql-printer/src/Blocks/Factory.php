@@ -42,6 +42,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directive;
@@ -80,7 +81,10 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
  * @internal
  */
 class Factory {
-    public static function create(Context $context, object $definition): Block {
+    /**
+     * @param (TypeNode&Node)|GraphQLType|null $type
+     */
+    public static function create(Context $context, object $definition, TypeNode|GraphQLType|null $type = null): Block {
         return match (true) {
             $definition instanceof ObjectTypeDefinitionNode,
             $definition instanceof ObjectType
@@ -135,23 +139,23 @@ class Factory {
             $definition instanceof TypeNode && $definition instanceof Node
                 => new Type($context, $definition),
             $definition instanceof ValueNode && $definition instanceof Node
-                => new Value($context, $definition),
+                => new Value($context, $definition, $type),
             $definition instanceof DocumentNode
                 => new Document($context, $definition),
             $definition instanceof FieldNode
-                => new Field($context, $definition),
+                => new Field($context, $definition, $type),
             $definition instanceof SelectionSetNode
-                => new SelectionSet($context, $definition),
+                => new SelectionSet($context, $definition, $type),
             $definition instanceof InlineFragmentNode
-                => new InlineFragment($context, $definition),
+                => new InlineFragment($context, $definition, $type),
             $definition instanceof VariableDefinitionNode
                 => new VariableDefinition($context, $definition),
             $definition instanceof FragmentDefinitionNode
                 => new FragmentDefinition($context, $definition),
             $definition instanceof FragmentSpreadNode
-                => new FragmentSpread($context, $definition),
+                => new FragmentSpread($context, $definition, $type),
             $definition instanceof OperationDefinitionNode
-                => new OperationDefinition($context, $definition),
+                => new OperationDefinition($context, $definition, $type),
             default
                 => throw new Unsupported($definition),
         };

@@ -49,13 +49,16 @@ class InputValueDefinition extends DefinitionBlock {
     }
 
     protected function value(bool $multiline): ?Block {
+        $type       = null;
         $value      = null;
         $default    = null;
         $definition = $this->getDefinition();
 
         if ($definition instanceof InputValueDefinitionNode) {
+            $type    = $definition->type;
             $default = $definition->defaultValue;
         } else {
+            $type    = $definition->getType();
             $default = $definition->defaultValueExists()
                 ? (AST::astFromValue($definition->defaultValue, $definition->getType()) ?? new NullValueNode([]))
                 : null;
@@ -65,6 +68,7 @@ class InputValueDefinition extends DefinitionBlock {
             $value = new Value(
                 $this->getContext(),
                 $default,
+                $type,
             );
         }
 

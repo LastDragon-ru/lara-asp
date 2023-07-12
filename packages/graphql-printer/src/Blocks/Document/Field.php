@@ -27,7 +27,7 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
     public function __construct(
         Context $context,
         FieldNode $definition,
-        private TypeNode|Type|null $type = null,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context, $definition);
     }

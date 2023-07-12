@@ -24,7 +24,7 @@ class Argument extends Block implements NamedBlock {
     public function __construct(
         Context $context,
         private ArgumentNode $argument,
-        private TypeNode|Type|null $type = null,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context);
     }

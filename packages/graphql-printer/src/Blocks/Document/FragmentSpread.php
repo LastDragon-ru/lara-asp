@@ -25,7 +25,7 @@ class FragmentSpread extends DefinitionBlock implements ExecutableDefinitionBloc
     public function __construct(
         Context $context,
         FragmentSpreadNode $definition,
-        private TypeNode|Type|null $type = null,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context, $definition);
     }

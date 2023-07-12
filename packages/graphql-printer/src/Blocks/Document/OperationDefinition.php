@@ -26,7 +26,7 @@ class OperationDefinition extends DefinitionBlock implements ExecutableDefinitio
     public function __construct(
         Context $context,
         OperationDefinitionNode $definition,
-        private TypeNode|Type|null $type = null,
+        private TypeNode|Type|null $type,
     ) {
         parent::__construct($context, $definition);
     }
