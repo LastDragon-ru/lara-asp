@@ -34,7 +34,7 @@ class FragmentSpread extends DefinitionBlock implements ExecutableDefinitionBloc
         return '...';
     }
 
-    public function name(): string {
+    protected function name(): string {
         return $this->getDefinition()->name->value;
     }
 

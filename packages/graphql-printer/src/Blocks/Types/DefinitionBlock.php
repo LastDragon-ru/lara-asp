@@ -7,7 +7,6 @@ use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
-use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeExtensionNode;
@@ -33,12 +32,10 @@ use function mb_strrpos;
 use function mb_substr;
 use function property_exists;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @internal
  *
- * @template TDefinition of Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema|SchemaDefinitionNode
+ * @template TDefinition of Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema
  */
 abstract class DefinitionBlock extends Block implements NamedBlock {
     /**
@@ -46,7 +43,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
      */
     public function __construct(
         Context $context,
-        private Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema|SchemaDefinitionNode $definition,
+        private Node|Type|FieldDefinition|EnumValueDefinition|Argument|Directive|InputObjectField|Schema $definition,
     ) {
         parent::__construct($context);
     }
@@ -227,7 +224,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return null;
     }
 
-    public function name(): string {
+    protected function name(): string {
         $definition = $this->getDefinition();
         $name       = '';
 

@@ -22,7 +22,7 @@ class VariableDefinition extends DefinitionBlock implements ExecutableDefinition
             : '';
     }
 
-    public function name(): string {
+    protected function name(): string {
         return '$'.parent::name();
     }
 

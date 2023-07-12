@@ -32,7 +32,7 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
         parent::__construct($context, $definition);
     }
 
-    public function name(): string {
+    protected function name(): string {
         return $this->getDefinition()->name->value;
     }
 
