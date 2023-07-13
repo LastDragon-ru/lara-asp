@@ -113,6 +113,20 @@ class Operators extends BuilderOperators {
             SearchByOperatorRelationDirective::class,
             SearchByOperatorConditionDirective::class,
         ],
+
+        // Lighthouse
+        'Date'          => [
+            self::Number,
+        ],
+        'DateTime'      => [
+            'Date',
+        ],
+        'DateTimeTz'    => [
+            'Date',
+        ],
+        'DateTimeUtc'   => [
+            'Date',
+        ],
     ];
 
     public function __construct() {
