@@ -41,14 +41,14 @@ class Printer implements SchemaPrinterContract {
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function getLevel(): int {
         return $this->level;
     }
 
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function setLevel(int $level): static {
         $this->level = $level;
@@ -80,7 +80,7 @@ class Printer implements SchemaPrinterContract {
     // <editor-fold desc="Printer">
     // =========================================================================
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function printSchema(Schema $schema): Result {
         // Print
@@ -104,7 +104,7 @@ class Printer implements SchemaPrinterContract {
     }
 
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function printSchemaType(Schema $schema, Type|string $type): Result {
         // Type
@@ -135,7 +135,7 @@ class Printer implements SchemaPrinterContract {
     }
 
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function printType(Type $type): Result {
         $collector = new Collector();
@@ -148,7 +148,7 @@ class Printer implements SchemaPrinterContract {
     }
 
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function printNode(Node $node, ?Schema $schema = null): Result {
         $collector = new Collector();

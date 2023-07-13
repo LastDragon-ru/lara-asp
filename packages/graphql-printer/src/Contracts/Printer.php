@@ -7,27 +7,27 @@ use GraphQL\Type\Schema;
 
 interface Printer {
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function printSchema(Schema $schema): Result;
 
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function printSchemaType(Schema $schema, Type|string $type): Result;
 
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function printType(Type $type): Result;
 
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function getLevel(): int;
 
     /**
-     * @deprecated Please see #78
+     * @deprecated 4.3.0 Please see #78
      */
     public function setLevel(int $level): static;
 
