@@ -172,7 +172,13 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
             foreach ($directives as $directive) {
                 if ($directive instanceof OperatorsDirective) {
-                    array_push($operators, ...$directive->getOperators($this, $scope));
+                    $directiveType = $directive->getType();
+
+                    if ($type !== $directiveType) {
+                        array_push($operators, ...$this->getTypeOperators($scope, $directiveType));
+                    } else {
+                        array_push($operators, ...$provider->getOperators($type));
+                    }
                 } elseif ($directive instanceof Operator) {
                     $operators[] = $directive;
                 } else {

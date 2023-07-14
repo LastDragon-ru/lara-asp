@@ -25,9 +25,12 @@ $settings = [
          * Operators
          * ---------------------------------------------------------------------
          *
-         * You can (re)define types and supported operators here.
+         * You can redefine operators for exiting (=default) types OR define own
+         * types here. Note that directives is the recommended way and have
+         * priority over the array. Please see the documentation for more
+         * details.
          *
-         * @see Operator
+         * @see ../README.md#type-operators
          */
         'operators' => [
             // empty
@@ -42,9 +45,12 @@ $settings = [
          * Operators
          * ---------------------------------------------------------------------
          *
-         * You can (re)define types and supported operators here.
+         * You can redefine operators for exiting (=default) types OR define own
+         * types here. Note that directives is the recommended way and have
+         * priority over the array. Please see the documentation for more
+         * details.
          *
-         * @see Operator
+         * @see ../README.md#operators-1
          */
         'operators' => [
             // empty

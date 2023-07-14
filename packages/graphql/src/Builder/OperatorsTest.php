@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use Exception;
 use GraphQL\Language\AST\DirectiveNode;
-use Hamcrest\Core\IsNot;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -27,7 +26,7 @@ class OperatorsTest extends TestCase {
             /**
              * @inheritDoc
              */
-            protected array $operators = [
+            protected array $default = [
                 Operators::Int => [
                     OperatorsTest__OperatorA::class,
                 ],
@@ -42,49 +41,76 @@ class OperatorsTest extends TestCase {
         self::assertFalse($operators->hasOperators('unknown'));
     }
 
-    /**
-     * @dataProvider dataProviderSetOperators
-     *
-     * @param array<class-string<Operator>|string> $typeOperators
-     */
-    public function testSetOperators(Exception|bool $expected, string $type, array $typeOperators): void {
-        if ($expected instanceof Exception) {
-            self::expectExceptionObject($expected);
-        }
-
-        $operators = new class() extends Operators {
-            public function getScope(): string {
-                return Scope::class;
-            }
-        };
-
-        $operators->setOperators($type, $typeOperators);
-
-        self::assertEquals($expected, $operators->hasOperators($type));
-    }
-
     public function testGetOperators(): void {
-        $type      = __FUNCTION__;
-        $alias     = 'alias';
-        $operators = new class() extends Operators {
+        $config    = [
+            'alias'  => [
+                'type-a',
+            ],
+            'type-a' => [
+                OperatorsTest__OperatorA::class,
+                OperatorsTest__OperatorA::class,
+            ],
+            'type-b' => [
+                OperatorsTest__OperatorA::class,
+                'type-b',
+            ],
+        ];
+        $default   = [
+            'type-a' => [
+                OperatorsTest__OperatorA::class,
+                OperatorsTest__OperatorB::class,
+                OperatorsTest__OperatorC::class,
+            ],
+            'type-b' => [
+                OperatorsTest__OperatorB::class,
+                'type-b',
+            ],
+            'type-c' => [
+                OperatorsTest__OperatorC::class,
+                'type-b',
+                'type-a',
+            ],
+        ];
+        $operators = new class($config, $default) extends Operators {
+            /**
+             * @param array<string, array<class-string<Operator>|string>> $operators
+             * @param array<string, array<class-string<Operator>|string>> $default
+             */
+            public function __construct(array $operators = [], array $default = []) {
+                parent::__construct($operators);
+
+                $this->default = $default;
+            }
+
             public function getScope(): string {
                 return Scope::class;
             }
         };
-
-        $operators->setOperators($type, [
-            OperatorsTest__OperatorA::class,
-            OperatorsTest__OperatorA::class,
-        ]);
-        $operators->setOperators($alias, [$type]);
 
         self::assertEquals(
-            [OperatorsTest__OperatorA::class],
-            $this->toClassNames($operators->getOperators($type)),
+            [
+                OperatorsTest__OperatorA::class,
+            ],
+            $this->toClassNames($operators->getOperators('type-a')),
         );
         self::assertEquals(
-            $operators->getOperators($type),
-            $operators->getOperators($alias),
+            [
+                OperatorsTest__OperatorA::class,
+                OperatorsTest__OperatorB::class,
+            ],
+            $this->toClassNames($operators->getOperators('type-b')),
+        );
+        self::assertEquals(
+            [
+                OperatorsTest__OperatorC::class,
+                OperatorsTest__OperatorA::class,
+                OperatorsTest__OperatorB::class,
+            ],
+            $this->toClassNames($operators->getOperators('type-c')),
+        );
+        self::assertEquals(
+            $operators->getOperators('type-a'),
+            $operators->getOperators('alias'),
         );
     }
 
@@ -98,28 +124,6 @@ class OperatorsTest extends TestCase {
         self::expectExceptionObject(new TypeUnknown($operators->getScope(), 'unknown'));
 
         $operators->getOperators('unknown');
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="DataProviders">
-    // =========================================================================
-    /**
-     * @return array<mixed>
-     */
-    public static function dataProviderSetOperators(): array {
-        return [
-            'ok'              => [true, 'scalar', [IsNot::class]],
-            'unknown scalar'  => [
-                true,
-                'scalar',
-                ['unknown'],
-            ],
-            'empty operators' => [
-                false,
-                'scalar',
-                [],
-            ],
-        ];
     }
     // </editor-fold>
 

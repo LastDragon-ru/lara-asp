@@ -179,7 +179,9 @@ There are three types of operators:
     }
     ```
 
-By default, the package provide list of predefined operators for each build-in type. To extend/replace the list, you can use config and/or add directives to scalar/enum inside the schema. Directives is the recommended way and have priority over the config.
+## Type Operators
+
+By default, the package provide list of predefined operators for build-in GraphQL and Lighthouse types. To extend/replace the built-in list, you can use config and/or add directives to type/scalar/enum inside the schema. Directives is the recommended way and have priority over the config.
 
 The package also defines a few own types in addition to the standard GraphQL types:
 
@@ -188,6 +190,18 @@ The package also defines a few own types in addition to the standard GraphQL typ
 * `SearchByNull` / [`Operators::Null`](./src/SearchBy/Operators.php) - Additional operators available for nullable fields.
 * `SearchByExtra` / [`Operators::Extra`](./src/SearchBy/Operators.php) - List of additional extra operators for all types.
 * `SearchByEnum` / [`Operators::Enum`](./src/SearchBy/Operators.php) - Default operators for enums.
+
+### GraphQL
+
+```graphql
+scalar MyScalar
+@searchByOperators(type: "MyScalar")    # Re-use operators for `MyScalar` from config
+@searchByOperators(type: "Int")         # Re-use operators from `Int` from schema
+@searchByOperatorEqual                  # Package operator
+@myOperator                             # Custom operator
+```
+
+### Schema
 
 ```php
 <?php declare(strict_types = 1);
@@ -208,18 +222,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDire
  *      } $settings
  */
 $settings = [
-    /**
-     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective @searchBy} directive.
-     */
     'search_by' => [
-        /**
-         * Operators
-         * ---------------------------------------------------------------------
-         *
-         * You can (re)define types and supported operators here.
-         *
-         * @see Operator
-         */
         'operators' => [
             // You can define a list of operators for each type
             'Date'     => [
@@ -233,6 +236,12 @@ $settings = [
                 'Date',
             ],
 
+            // Or re-use built-in type
+            'Int' => [
+                'Int',                  // built-in operators for `Int` will be used
+                MyCustomOperator::class,
+            ],
+
             // You can also use enum name to redefine default operators for it:
             'MyEnum' => [
                 'Boolean',
@@ -242,22 +251,6 @@ $settings = [
 ];
 
 return $settings;
-```
-
-```graphql
-# Only two operators will be available.
-enum MyEnum
-@searchByOperatorEqual
-@searchByOperatorNotEqual
-{
-    Enabled
-    Disabled
-}
-
-# All operators from `Int` type and `@myOperator` will be available.
-scalar MyScalar
-@searchByOperators(type: "Int")
-@myOperator
 ```
 
 # `@sortBy` directive
@@ -316,7 +309,7 @@ As you can see in the example above you can use the special placeholder `_` inst
 
 ## Operators
 
-The package defines only one's own type. To extend/replace the list of its operators, you can use config and/or add directives to scalar/enum inside the schema. Directives is the recommended way and have priority over the config.
+The package defines only one's own type. To extend/replace the list of its operators, you can use config and/or add directives to scalar/enum inside the schema. Directives is the recommended way and have priority over the config. Please see [`@searchBy`](#type-operators) for examples.
 
 * `SortByExtra` / [`Operators::Extra`](./src/SortBy/Operators.php) - List of additional extra operators for all types. The list is empty by default.
 
@@ -359,18 +352,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirecti
  *      } $settings
  */
 $settings = [
-    /**
-     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective @sortBy} directive.
-     */
     'sort_by'   => [
-        /**
-         * Operators
-         * ---------------------------------------------------------------------
-         *
-         * You can (re)define types and supported operators here.
-         *
-         * @see Operator
-         */
         'operators' => [
             SortByOperators::Extra => [
                 SortByOperatorRandomDirective::class,

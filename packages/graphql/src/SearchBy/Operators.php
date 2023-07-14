@@ -46,7 +46,7 @@ class Operators extends BuilderOperators {
     /**
      * @inheritDoc
      */
-    protected array $operators = [
+    protected array $default = [
         // Standard types
         self::ID        => [
             SearchByOperatorEqualDirective::class,
