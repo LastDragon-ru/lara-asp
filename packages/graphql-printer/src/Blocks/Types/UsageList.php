@@ -4,49 +4,33 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Traversable;
 
 use function mb_strlen;
 
 /**
  * @internal
  * @template TBlock of Block
- * @template TType
- * @extends ListBlock<TBlock>
+ * @template TKey of array-key
+ * @template TItem
+ * @extends ListBlock<TBlock, TKey, TItem>
  */
 abstract class UsageList extends ListBlock {
     /**
-     * @param Traversable<TType>|array<TType> $items
+     * @inheritDoc
      */
     public function __construct(
         Context $context,
-        int $level,
-        int $used,
-        Traversable|array $items,
+        iterable $items,
         protected bool $isAlwaysMultiline = false,
     ) {
-        parent::__construct($context, $level, $used);
-
-        foreach ($items as $item) {
-            $this[] = $this->block($item);
-        }
-    }
-
-    public function isMultiline(): bool {
-        return parent::isMultiline() || $this->isAlwaysMultiline();
+        parent::__construct($context, $items);
     }
 
     protected function isAlwaysMultiline(): bool {
         return $this->isAlwaysMultiline;
     }
-
-    /**
-     * @param TType $item
-     *
-     * @return TBlock
-     */
-    abstract protected function block(mixed $item): Block;
 
     abstract protected function separator(): string;
 
@@ -60,31 +44,28 @@ abstract class UsageList extends ListBlock {
         return "{$this->separator()}{$this->space()}";
     }
 
-    protected function content(): string {
+    protected function content(Collector $collector, int $level, int $used): string {
+        $space   = $this->space();
         $prefix  = $this->prefix();
-        $content = parent::content();
+        $level   = $level + 1;
+        $used    = $used + mb_strlen("{$prefix}{$space}");
+        $content = parent::content($collector, $level, $used);
 
         if ($content) {
             if ($this->isAlwaysMultiline() || $this->isStringMultiline($content)) {
                 $eol    = $this->eol();
-                $indent = $this->indent();
+                $indent = $this->indent($level);
 
                 if ($prefix) {
                     $content = "{$prefix}{$eol}{$indent}{$content}";
                 }
+            } elseif ($prefix) {
+                $content = "{$prefix}{$space}{$content}";
             } else {
-                $space = $this->space();
-
-                if ($prefix) {
-                    $content = "{$prefix}{$space}{$content}";
-                }
+                // empty
             }
         }
 
         return $content;
-    }
-
-    protected function getUsed(): int {
-        return parent::getUsed() + mb_strlen("{$this->prefix()}{$this->space()}");
     }
 }

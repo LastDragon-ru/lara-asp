@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Contracts;
 
+use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Type\Definition\Directive;
 
 /**
@@ -12,10 +13,10 @@ use GraphQL\Type\Definition\Directive;
  * @see Printer::setDirectiveResolver()
  */
 interface DirectiveResolver {
-    public function getDefinition(string $name): ?Directive;
+    public function getDefinition(string $name): DirectiveDefinitionNode|Directive|null;
 
     /**
-     * @return array<Directive>
+     * @return array<DirectiveDefinitionNode|Directive>
      */
     public function getDefinitions(): array;
 }

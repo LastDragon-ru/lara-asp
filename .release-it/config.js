@@ -11,6 +11,7 @@ const types          = [
     {type: 'perf', section: 'Performance Improvements'},
     {type: 'revert', section: 'Reverts'},
     {type: 'chore', section: 'Miscellaneous Chores'},
+    {type: 'deprecate', section: 'Deprecations'},
     {type: 'docs', section: 'Documentation', hidden: true},
     {type: 'refactor', section: 'Code Refactoring', hidden: true},
     {type: 'test', section: 'Tests', hidden: true},

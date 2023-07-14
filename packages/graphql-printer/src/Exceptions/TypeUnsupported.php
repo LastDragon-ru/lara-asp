@@ -8,6 +8,9 @@ use Throwable;
 
 use function sprintf;
 
+/**
+ * @deprecated 4.2.1 Please use {@link Unsupported} instead.
+ */
 class TypeUnsupported extends PackageException {
     public function __construct(
         protected Type $type,

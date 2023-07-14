@@ -2,43 +2,30 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
-use Closure;
-use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use GraphQL\Type\Definition\NamedType;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\WrappingType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use Stringable;
 
-use function mb_strlen;
+use function is_object;
 use function mb_strpos;
 use function str_repeat;
 
 /**
  * @internal
  */
-abstract class Block implements Statistics, Stringable {
-    private ?string $content   = null;
-    private ?int    $length    = null;
-    private ?bool   $multiline = null;
-
-    /**
-     * @var array<string, string>
-     */
-    private array $usedTypes = [];
-
-    /**
-     * @var array<string, string>
-     */
-    private array $usedDirectives = [];
+abstract class Block {
+    private int         $level      = 0;
+    private int         $used       = 0;
+    private ?string     $serialized = null;
+    private ?Statistics $statistics = null;
 
     public function __construct(
         private Context $context,
-        private int $level = 0,
-        private int $used = 0,
     ) {
         // empty
     }
@@ -52,70 +39,36 @@ abstract class Block implements Statistics, Stringable {
     protected function getSettings(): Settings {
         return $this->getContext()->getSettings();
     }
-
-    protected function getLevel(): int {
-        return $this->level;
-    }
-
-    protected function getUsed(): int {
-        return $this->used;
-    }
     //</editor-fold>
 
     // <editor-fold desc="API">
     // =========================================================================
-    public function isEmpty(): bool {
-        return $this->getLength() <= 0;
-    }
+    public function serialize(Collector $collector, int $level, int $used): string {
+        if ($this->serialized === null || $this->level !== $level || $this->used !== $used) {
+            $this->serialized = $this->content($collector, $level, $used);
+            $this->statistics = $collector;
+            $this->level      = $level;
+            $this->used       = $used;
+        } elseif ($this->statistics) {
+            $collector->addUsed($this->statistics);
+        } else {
+            // empty
+        }
 
-    public function getLength(): int {
-        return $this->resolve(fn (): int => (int) $this->length);
-    }
-
-    public function isMultiline(): bool {
-        return $this->resolve(fn (): bool => (bool) $this->multiline);
-    }
-
-    public function __toString(): string {
-        return $this->getContent();
-    }
-
-    /**
-     * @template T
-     *
-     * @param Closure(string $content): T $callback
-     *
-     * @return T
-     */
-    protected function resolve(Closure $callback): mixed {
-        $content = $this->getContent();
-        $result  = $callback($content);
-
-        return $result;
+        return $this->serialized;
     }
     //</editor-fold>
 
     // <editor-fold desc="Cache">
     // =========================================================================
-    protected function getContent(): string {
-        if ($this->content === null) {
-            $this->content   = $this->content();
-            $this->length    = mb_strlen($this->content);
-            $this->multiline = $this->isStringMultiline($this->content);
-        }
-
-        return $this->content;
-    }
-
     protected function reset(): void {
-        $this->usedDirectives = [];
-        $this->usedTypes      = [];
-        $this->multiline      = null;
-        $this->content        = null;
-        $this->length         = null;
+        $this->statistics = null;
+        $this->serialized = null;
+        $this->level      = 0;
+        $this->used       = 0;
     }
 
-    abstract protected function content(): string;
+    abstract protected function content(Collector $collector, int $level, int $used): string;
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -128,8 +81,8 @@ abstract class Block implements Statistics, Stringable {
         return $this->getSettings()->getSpace();
     }
 
-    protected function indent(int $level = null): string {
-        return str_repeat($this->getSettings()->getIndent(), $level ?? $this->getLevel());
+    protected function indent(int $level): string {
+        return str_repeat($this->getSettings()->getIndent(), $level);
     }
 
     protected function isLineTooLong(int $length): bool {
@@ -142,137 +95,40 @@ abstract class Block implements Statistics, Stringable {
     }
     // </editor-fold>
 
-    // <editor-fold desc="Statistics">
-    // =========================================================================
-    /**
-     * @return array<string,string>
-     */
-    public function getUsedTypes(): array {
-        return $this->resolve(fn (): array => $this->usedTypes);
-    }
-
-    /**
-     * @return array<string,string>
-     */
-    public function getUsedDirectives(): array {
-        return $this->resolve(fn (): array => $this->usedDirectives);
-    }
-
-    /**
-     * @template T
-     *
-     * @param T $block
-     *
-     * @return T
-     */
-    protected function addUsed(mixed $block): mixed {
-        if ($block instanceof Statistics) {
-            $this->usedTypes      += $block->getUsedTypes();
-            $this->usedDirectives += $block->getUsedDirectives();
-        }
-
-        return $block;
-    }
-
-    protected function addUsedType(string $type): static {
-        $this->usedTypes[$type] = $type;
-
-        return $this;
-    }
-
-    protected function addUsedDirective(string $directive): static {
-        $this->usedDirectives[$directive] = $directive;
-
-        return $this;
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Types">
     // =========================================================================
-    public function isTypeAllowed(Type $type): bool {
-        // Filter?
-        $filter = $this->getSettings()->getTypeFilter();
-
-        if ($filter === null) {
-            return true;
-        }
-
-        // Wrapped?
-        if ($type instanceof WrappingType) {
-            $type = $type->getInnermostType();
-        }
-
-        // Named?
-        if (!($type instanceof NamedType)) {
-            return false;
-        }
-
-        // Allowed?
-        $name      = $type->name();
-        $isBuiltIn = $type->isBuiltInType();
-        $isAllowed = $filter->isAllowedType($name, $isBuiltIn);
-
-        // Return
-        return $isAllowed;
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type
+     */
+    public function isTypeAllowed(TypeDefinitionNode|TypeNode|Type|string|null $type): bool {
+        return $type === null || $this->getContext()->isTypeAllowed($this->getTypeName($type));
     }
 
-    public function isTypeDefinitionAllowed(Type $type): bool {
-        // Allowed?
-        if (!($type instanceof NamedType) || !$this->isTypeAllowed($type)) {
-            return false;
-        }
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type
+     */
+    public function isTypeDefinitionAllowed(TypeDefinitionNode|TypeNode|Type|string|null $type): bool {
+        return $type === null || $this->getContext()->isTypeDefinitionAllowed($this->getTypeName($type));
+    }
 
-        // Allowed?
-        $name      = $type->name();
-        $filter    = $this->getSettings()->getTypeDefinitionFilter();
-        $isBuiltIn = $type->isBuiltInType();
-        $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedType($name, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedType($name, $isBuiltIn));
-
-        // Return
-        return $isAllowed;
+    /**
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type
+     */
+    protected function getTypeName(TypeDefinitionNode|TypeNode|Type|string $type): string {
+        return is_object($type)
+            ? $this->getContext()->getTypeName($type)
+            : $type;
     }
     // </editor-fold>
 
     // <editor-fold desc="Directives">
     // =========================================================================
     public function isDirectiveAllowed(string $directive): bool {
-        // Filter?
-        $filter = $this->getSettings()->getDirectiveFilter();
-
-        if ($filter === null) {
-            return true;
-        }
-
-        // Allowed?
-        $isBuiltIn = $this->isDirectiveBuiltIn($directive);
-        $isAllowed = $filter->isAllowedDirective($directive, $isBuiltIn);
-
-        // Return
-        return $isAllowed;
+        return $this->getContext()->isDirectiveAllowed($directive);
     }
 
-    public function isDirectiveDefinitionAllowed(Directive $directive): bool {
-        // Allowed?
-        if (!$this->getSettings()->isPrintDirectiveDefinitions() || !$this->isDirectiveAllowed($directive->name)) {
-            return false;
-        }
-
-        // Definition?
-        $name      = $directive->name;
-        $filter    = $this->getSettings()->getDirectiveDefinitionFilter();
-        $isBuiltIn = $this->isDirectiveBuiltIn($name);
-        $isAllowed = $isBuiltIn
-            ? ($filter !== null && $filter->isAllowedDirective($name, $isBuiltIn))
-            : ($filter === null || $filter->isAllowedDirective($name, $isBuiltIn));
-
-        // Return
-        return $isAllowed;
-    }
-
-    private function isDirectiveBuiltIn(string $directive): bool {
-        return isset(GraphQLDirective::getInternalDirectives()[$directive]);
+    public function isDirectiveDefinitionAllowed(string $directive): bool {
+        return $this->getContext()->isDirectiveDefinitionAllowed($directive);
     }
     // </editor-fold>
 }

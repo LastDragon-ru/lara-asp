@@ -647,7 +647,7 @@ union ObjectUnion =
     | ObjectNested
 
 """
-Convert Input into Sort Clause.
+Use Input as Sort Conditions for the current Builder.
 """
 directive @sortBy
 on

@@ -106,12 +106,21 @@ class ManipulatorTest extends TestCase {
         // Types
         $types = $this->app->make(TypeRegistry::class);
 
-        $types->register(new CustomScalarType([
-            'name' => 'TestScalar',
-        ]));
-        $types->register(new CustomScalarType([
-            'name' => 'TestOperators',
-        ]));
+        $types->register(
+            new CustomScalarType([
+                'name' => 'TestScalar',
+            ]),
+        );
+        $types->register(
+            new CustomScalarType([
+                'name' => 'TestOperators',
+            ]),
+        );
+        $types->register(
+            new CustomScalarType([
+                'name' => 'TestBuiltinOperators',
+            ]),
+        );
 
         // Directives
         $directives = $this->app->make(DirectiveLocator::class);
@@ -124,8 +133,17 @@ class ManipulatorTest extends TestCase {
         // Schema
         $this->useGraphQLSchema(
             <<<'GRAPHQL'
-            scalar TestScalar @aOperator @bOperator @cOperator
-            scalar TestOperators @operators(type: "TestScalar")
+            scalar TestScalar
+            @aOperator
+            @bOperator
+            @cOperator
+
+            scalar TestOperators
+            @operators(type: "TestScalar")
+
+            scalar TestBuiltinOperators
+            @operators(type: "TestBuiltinOperators")
+            @aOperator
 
             type Query {
                 test: Int @all
@@ -133,25 +151,42 @@ class ManipulatorTest extends TestCase {
             GRAPHQL,
         );
 
-        // Manipulator
-        $document    = $this->app->make(ASTBuilder::class)->documentAST();
-        $operators   = new class() extends Operators {
+        // Operators
+        $config    = [];
+        $default   = [
+            Operators::ID          => [
+                $aOperator,
+                $bOperator,
+            ],
+            Operators::Int         => [
+                $bOperator,
+                $cOperator,
+            ],
+            'TestBuiltinOperators' => [
+                $cOperator,
+            ],
+        ];
+        $operators = new class($config, $default) extends Operators {
+            /**
+             * @param array<string, array<class-string<Operator>|string>> $operators
+             * @param array<string, array<class-string<Operator>|string>> $default
+             */
+            public function __construct(array $operators = [], array $default = []) {
+                parent::__construct($operators);
+
+                $this->default = $default;
+            }
+
             public function getScope(): string {
                 return Scope::class;
             }
         };
+
+        // Manipulator
+        $document    = $this->app->make(ASTBuilder::class)->documentAST();
         $manipulator = $this->app->make(Manipulator::class, [
             'document'    => $document,
             'builderInfo' => new BuilderInfo($builder::class, $builder::class),
-        ]);
-
-        $operators->setOperators(Operators::ID, [
-            $aOperator,
-            $bOperator,
-        ]);
-        $operators->setOperators(Operators::Int, [
-            $bOperator,
-            $cOperator,
         ]);
 
         $manipulator->addOperators($operators);
@@ -191,6 +226,13 @@ class ManipulatorTest extends TestCase {
                 $aOperator,
             ],
             array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestOperators')),
+        );
+        self::assertEquals(
+            [
+                $cOperator,
+                $aOperator,
+            ],
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestBuiltinOperators')),
         );
     }
     // </editor-fold>

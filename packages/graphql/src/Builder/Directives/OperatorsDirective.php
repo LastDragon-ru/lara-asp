@@ -3,10 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use GraphQL\Language\DirectiveLocation;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 
 use function assert;
@@ -45,26 +41,11 @@ abstract class OperatorsDirective extends BaseDirective {
         ];
     }
 
-    /**
-     * @param class-string<Scope> $scope
-     *
-     * @return list<Operator>
-     */
-    public function getOperators(Manipulator $manipulator, string $scope): array {
-        // Type
+    public function getType(): string {
         $type = $this->directiveArgValue('type');
 
         assert(is_string($type));
 
-        // Operators
-        $operators = $manipulator->getTypeOperators($scope, $type);
-
-        if (!$operators) {
-            // We throw an error if operators are empty to find an invalid type
-            // used with the directive.
-            throw new TypeUnknown($scope, $type);
-        }
-
-        return $operators;
+        return $type;
     }
 }

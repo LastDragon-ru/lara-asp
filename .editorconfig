@@ -9,7 +9,7 @@ indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[{*.json, *.yml, Vagrantfile}]
+[{*.json,*.yml,Vagrantfile}]
 indent_size = 2
 
 [*.md]

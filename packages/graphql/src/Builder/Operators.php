@@ -8,8 +8,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
+use function array_key_exists;
 use function array_map;
-use function array_merge;
+use function array_push;
 use function array_shift;
 use function array_unique;
 use function is_a;
@@ -26,7 +27,14 @@ abstract class Operators {
      *
      * @var array<string, array<class-string<Operator>|string>>
      */
-    protected array $operators = [];
+    protected array $default = [];
+
+    /**
+     * Determines actual operators available for each type.
+     *
+     * @var array<string, array<class-string<Operator>|string>>
+     */
+    private array $operators = [];
 
     /**
      * @param array<string, array<class-string<Operator>|string>> $operators
@@ -54,7 +62,8 @@ abstract class Operators {
     }
 
     public function hasOperators(string $type): bool {
-        return isset($this->operators[$type]) && !!$this->operators[$type];
+        return array_key_exists($type, $this->operators)
+            || array_key_exists($type, $this->default);
     }
 
     /**
@@ -73,26 +82,42 @@ abstract class Operators {
             throw new TypeUnknown($this->getScope(), $type);
         }
 
-        // Base
-        $extends   = [$type];
-        $operators = [];
-
-        do {
-            $operator = array_shift($extends);
-
-            if (!is_a($operator, Operator::class, true)) {
-                $extends = array_merge($extends, $this->operators[$operator] ?? []);
-            } else {
-                $operators[] = $operator;
-            }
-        } while ($extends);
-
-        // Create Instances
+        // Operators
+        $operators = $this->findOperators($type);
         $operators = array_map(function (string $operator): Operator {
             return $this->getOperator($operator);
         }, array_unique($operators));
 
         // Return
+        return $operators;
+    }
+
+    /**
+     * @return array<class-string<Operator>>
+     */
+    private function findOperators(string $type): array {
+        $extends   = $this->operators[$type] ?? $this->default[$type] ?? [];
+        $operators = [];
+        $processed = [];
+
+        do {
+            $operator = array_shift($extends);
+
+            if ($operator === null || isset($processed[$operator])) {
+                continue;
+            }
+
+            if (is_a($operator, Operator::class, true)) {
+                $operators[] = $operator;
+            } elseif ($type === $operator) {
+                array_push($extends, ...($this->default[$operator] ?? []));
+            } else {
+                array_push($operators, ...$this->findOperators($operator));
+            }
+
+            $processed[$operator] = true;
+        } while ($extends);
+
         return $operators;
     }
 }

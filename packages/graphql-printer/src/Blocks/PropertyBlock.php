@@ -2,7 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
+use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+
+use function mb_strlen;
 
 /**
  * @internal
@@ -18,15 +21,11 @@ class PropertyBlock extends Block implements NamedBlock {
         private string $name,
         private Block $block,
     ) {
-        parent::__construct($context, $block->getLevel(), $block->getUsed());
+        parent::__construct($context);
     }
 
     public function getName(): string {
         return $this->name;
-    }
-
-    public function isMultiline(): bool {
-        return $this->getBlock()->isMultiline() || parent::isMultiline();
     }
 
     /**
@@ -40,9 +39,10 @@ class PropertyBlock extends Block implements NamedBlock {
         return ':';
     }
 
-    protected function content(): string {
-        $block   = $this->addUsed($this->getBlock());
-        $content = "{$this->getName()}{$this->getSeparator()}{$this->space()}{$block}";
+    protected function content(Collector $collector, int $level, int $used): string {
+        $prefix  = "{$this->getName()}{$this->getSeparator()}{$this->space()}";
+        $block   = $this->getBlock()->serialize($collector, $level, $used + mb_strlen($prefix));
+        $content = "{$prefix}{$block}";
 
         return $content;
     }

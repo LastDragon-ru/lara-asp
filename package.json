@@ -8,9 +8,9 @@
     "url": "https://github.com/LastDragon-ru/lara-asp"
   },
   "devDependencies": {
-    "@release-it/bumper": "^4.0.0",
-    "@release-it/conventional-changelog": "^5.0.0",
+    "@release-it/bumper": "^5.0.0",
+    "@release-it/conventional-changelog": "^7.0.0",
     "markdownlint-cli": "^0.34.0",
-    "release-it": "~15.11.0"
+    "release-it": "~16.1.0"
   }
 }

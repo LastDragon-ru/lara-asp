@@ -42,21 +42,12 @@ type CodeType
     a: Boolean
 }
 
-input SchemaInput
-@schemaDirective
-{
-    f: [String!]
-
-    """
-    Recursion
-    """
-    e: SchemaInput
-
-    d: SchemaEnum
-    c: SchemaScalar
-    b: CodeEnum
-    a: CodeScalar
-}
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar CodeScalar
 
 enum CodeEnum {
     C
@@ -75,12 +66,21 @@ scalar SchemaScalar
 )
 @codeDirective
 
-"""
-The `String` scalar type represents textual data, represented as UTF-8
-character sequences. The String type is most often used by GraphQL to
-represent free-form human-readable text.
-"""
-scalar CodeScalar
+input SchemaInput
+@schemaDirective
+{
+    f: [String!]
+
+    """
+    Recursion
+    """
+    e: SchemaInput
+
+    d: SchemaEnum
+    c: SchemaScalar
+    b: CodeEnum
+    a: CodeScalar
+}
 
 enum SchemaEnum
 @schemaDirective
@@ -136,6 +136,8 @@ union SchemaUnion
 @schemaDirective
 = SchemaType | CodeType
 
+union CodeUnion = CodeType
+
 """
 Description
 """
@@ -144,8 +146,6 @@ input CodeInput
 {
     a: Boolean
 }
-
-union CodeUnion = CodeType
 
 """
 Interface description.

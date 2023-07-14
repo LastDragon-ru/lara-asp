@@ -46,7 +46,7 @@ class Operators extends BuilderOperators {
     /**
      * @inheritDoc
      */
-    protected array $operators = [
+    protected array $default = [
         // Standard types
         self::ID        => [
             SearchByOperatorEqualDirective::class,
@@ -112,6 +112,20 @@ class Operators extends BuilderOperators {
         self::Condition => [
             SearchByOperatorRelationDirective::class,
             SearchByOperatorConditionDirective::class,
+        ],
+
+        // Lighthouse
+        'Date'          => [
+            self::Number,
+        ],
+        'DateTime'      => [
+            'Date',
+        ],
+        'DateTimeTz'    => [
+            'Date',
+        ],
+        'DateTimeUtc'   => [
+            'Date',
         ],
     ];
 

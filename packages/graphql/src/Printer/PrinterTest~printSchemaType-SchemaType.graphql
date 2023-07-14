@@ -122,43 +122,6 @@ type CodeType {
     a: Boolean
 }
 
-type SchemaType
-implements
-    & SchemaInterfaceB
-{
-    a: Boolean!
-
-    """
-    Deprecated field
-    """
-    b: [String]!
-
-    c(
-        """
-        aaa
-        """
-        a: String
-
-        """
-        bbb
-        """
-        b: [SchemaScalar!]!
-
-        c: CodeInput
-    ): CodeUnion
-
-    d: CodeScalar
-    e: CodeEnum
-
-    f(
-        a: [String!] = [
-            "very very very long line of text"
-            "very very very long line of text"
-            "very very very long line of text"
-        ]
-    ): SchemaUnion
-}
-
 union CodeUnion =
     | CodeType
 
