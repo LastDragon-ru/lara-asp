@@ -25,7 +25,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     public static function definition(): string {
         return /** @lang GraphQL */ <<<'GRAPHQL'
             """
-            Convert Input into Sort Clause.
+            Use Input as Sort Conditions for the current Builder.
             """
             directive @sortBy on ARGUMENT_DEFINITION
         GRAPHQL;
