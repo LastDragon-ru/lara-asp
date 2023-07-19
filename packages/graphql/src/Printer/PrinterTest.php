@@ -697,7 +697,6 @@ class PrinterTest extends TestCase {
                     <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
-
                     GRAPHQL,
                 ))
                     ->setUsedTypes([
@@ -735,7 +734,6 @@ class PrinterTest extends TestCase {
                     {
                         a: Boolean
                     }
-
                     GRAPHQL,
                 ))
                     ->setUsedTypes([
@@ -768,7 +766,6 @@ class PrinterTest extends TestCase {
                     interface CodeInterface {
                         a: Boolean!
                     }
-
                     GRAPHQL,
                 ))
                     ->setUsedTypes([

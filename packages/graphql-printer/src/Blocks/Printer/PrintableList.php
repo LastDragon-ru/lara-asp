@@ -8,8 +8,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
-use function rtrim;
-
 /**
  * @internal
  * @extends ListBlock<Block, array-key, Block>
@@ -24,6 +22,7 @@ class PrintableList extends ListBlock implements ArrayAccess {
     public function __construct(
         Context $context,
         protected bool $root = false,
+        protected bool $eof = true,
     ) {
         parent::__construct($context, []);
     }
@@ -63,9 +62,11 @@ class PrintableList extends ListBlock implements ArrayAccess {
         $content = parent::content($collector, $level, $used);
 
         if ($content && $this->isRoot()) {
-            $eof     = $this->getSettings()->getFileEnd();
-            $content = rtrim($content);
-            $content = "{$this->indent($level)}{$content}{$eof}";
+            $content = "{$this->indent($level)}{$content}";
+
+            if ($this->eof) {
+                $content .= $this->getSettings()->getFileEnd();
+            }
         }
 
         return $content;

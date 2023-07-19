@@ -140,7 +140,7 @@ class Printer implements SchemaPrinterContract {
     public function printType(Type $type): Result {
         $collector = new Collector();
         $context   = $this->getContext(null);
-        $content   = $this->getDefinitionList($context, true);
+        $content   = $this->getDefinitionList($context, true, false);
         $content[] = $this->getDefinitionBlock($context, $type);
         $printed   = new ResultImpl($collector, $content->serialize($collector, $this->getLevel(), 0));
 
@@ -153,7 +153,7 @@ class Printer implements SchemaPrinterContract {
     public function printNode(Node $node, ?Schema $schema = null): Result {
         $collector = new Collector();
         $context   = $this->getContext($schema);
-        $content   = $this->getDefinitionList($context, true);
+        $content   = $this->getDefinitionList($context, true, false);
         $content[] = $this->getDefinitionBlock($context, $node);
         $printed   = new ResultImpl($collector, $content->serialize($collector, $this->getLevel(), 0));
 
@@ -212,8 +212,8 @@ class Printer implements SchemaPrinterContract {
         return new PrintableBlock($context, $definition);
     }
 
-    protected function getDefinitionList(Context $context, bool $root = false): PrintableList {
-        return new PrintableList($context, $root);
+    protected function getDefinitionList(Context $context, bool $root = false, bool $eof = true): PrintableList {
+        return new PrintableList($context, $root, $eof);
     }
 
     /**
