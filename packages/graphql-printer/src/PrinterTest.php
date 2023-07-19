@@ -2,15 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InputObjectTypeDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\GraphQLSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
@@ -61,6 +65,16 @@ class PrinterTest extends TestCase {
         $actual  = $printer->printType($type);
 
         $this->assertGraphQLTypeEquals($expected, $actual);
+    }
+
+    /**
+     * @dataProvider dataProviderPrintNode
+     */
+    public function testPrintNode(GraphQLExpectedNode $expected, ?Settings $settings, int $level, Node $node): void {
+        $printer = (new Printer())->setSettings($settings)->setLevel($level);
+        $actual  = $printer->printNode($node);
+
+        $this->assertGraphQLNodeEquals($expected, $actual);
     }
     // </editor-fold>
 
@@ -586,6 +600,62 @@ class PrinterTest extends TestCase {
                         ],
                     ],
                 ]),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array<mixed>>
+     */
+    public static function dataProviderPrintNode(): array {
+        return [
+            UnionTypeDefinitionNode::class   => [
+                (new GraphQLExpectedNode(
+                /** @lang GraphQL */
+                    <<<'GRAPHQL'
+                        union CodeUnion =
+                            | CodeType
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'CodeType',
+                        'CodeUnion',
+                    ])
+                    ->setUsedDirectives([
+                        // empty
+                    ]),
+                new TestSettings(),
+                1,
+                Parser::unionTypeDefinition(
+                    'union CodeUnion = CodeType',
+                ),
+            ],
+            InputObjectTypeDefinition::class => [
+                (new GraphQLExpectedNode(
+                /** @lang GraphQL */
+                    <<<'GRAPHQL'
+                    """
+                    Description
+                    """
+                    input CodeInput
+                    @schemaDirective
+                    {
+                        a: Boolean
+                    }
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'Boolean',
+                        'CodeInput',
+                    ])
+                    ->setUsedDirectives([
+                        '@schemaDirective',
+                    ]),
+                new TestSettings(),
+                0,
+                Parser::inputObjectTypeDefinition(
+                    '"Description" input CodeInput @schemaDirective { a: Boolean }',
+                ),
             ],
         ];
     }

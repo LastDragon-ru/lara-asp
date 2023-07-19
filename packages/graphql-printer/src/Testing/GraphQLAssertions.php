@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
 
 use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
@@ -17,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 use function array_combine;
+use function assert;
 use function is_string;
 
 /**
@@ -143,6 +145,43 @@ trait GraphQLAssertions {
         $this->assertGraphQLExpectation($expected, $type);
     }
 
+    /**
+     * Compares two GraphQL nodes.
+     */
+    public function assertGraphQLNodeEquals(
+        GraphQLExpectedNode|Node|SplFileInfo|string $expected,
+        Result|Node $type,
+        string $message = '',
+    ): void {
+        // GraphQL
+        $output   = $expected;
+        $settings = null;
+
+        if ($output instanceof GraphQLExpectedNode) {
+            $settings = $output->getSettings();
+            $output   = $output->getNode();
+        }
+
+        if ($output instanceof Node) {
+            $output = (string) $this->printGraphQLNode($output, $settings);
+        } else {
+            $output = Args::content($output);
+        }
+
+        if (!($type instanceof Result)) {
+            $type = $this->printGraphQLNode($type, $settings);
+        }
+
+        self::assertEquals($output, (string) $type, $message);
+
+        // Expectation
+        if (!($expected instanceof GraphQLExpectedNode)) {
+            $expected = new GraphQLExpectedNode($expected);
+        }
+
+        $this->assertGraphQLExpectation($expected, $type);
+    }
+
     private function assertGraphQLExpectation(
         GraphQLExpected $expected,
         Statistics $actual,
@@ -208,6 +247,14 @@ trait GraphQLAssertions {
 
     protected function printGraphQLType(Type $type, Settings $settings = null): Result {
         return $this->getGraphQLSchemaPrinter($settings)->printType($type);
+    }
+
+    protected function printGraphQLNode(Node $node, Settings $settings = null): Result {
+        $printer = $this->getGraphQLSchemaPrinter($settings);
+
+        assert($printer instanceof Printer);
+
+        return $printer->printNode($node);
     }
 
     protected function getGraphQLSchemaPrinter(Settings $settings = null): PrinterContract {
