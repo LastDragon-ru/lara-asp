@@ -28,9 +28,9 @@ use function str_starts_with;
 use function substr;
 
 class Printer implements SchemaPrinterContract {
-    protected ?DirectiveResolver $directiveResolver;
-    protected Settings           $settings;
-    protected int                $level;
+    private ?DirectiveResolver $directiveResolver;
+    private Settings           $settings;
+    private int                $level;
 
     public function __construct(Settings $settings = null, ?DirectiveResolver $directiveResolver = null) {
         $this->setLevel(0);
