@@ -43,6 +43,25 @@ type CodeType
 }
 
 """
+Directive
+"""
+directive @schemaDirective(
+    """
+    Directive argument
+    """
+    message: String
+)
+on
+    | SCHEMA
+    | FIELD
+    | ARGUMENT_DEFINITION
+    | INTERFACE
+    | OBJECT
+    | UNION
+    | INPUT_OBJECT
+    | SCALAR
+
+"""
 The `String` scalar type represents textual data, represented as UTF-8
 character sequences. The String type is most often used by GraphQL to
 represent free-form human-readable text.
@@ -65,6 +84,18 @@ scalar SchemaScalar
     class: "GraphQL\\Type\\Definition\\StringType"
 )
 @codeDirective
+
+"""
+Reference a class implementing a scalar definition.
+"""
+directive @scalar(
+    """
+    Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
+    """
+    class: String!
+)
+on
+    | SCALAR
 
 input SchemaInput
 @schemaDirective
@@ -192,54 +223,6 @@ interface SchemaInterfaceA {
     a: Boolean!
 }
 
-scalar CodeDirectiveScalarCustomClass
-@scalar(
-    class: "GraphQL\\Type\\Definition\\StringType"
-)
-
-scalar CodeDirectiveScalar
-
-input CodeDirectiveInput {
-    a: Int!
-}
-
-enum CodeDirectiveEnum {
-    A
-    B
-    C
-}
-
-"""
-Directive
-"""
-directive @schemaDirective(
-    """
-    Directive argument
-    """
-    message: String
-)
-on
-    | SCHEMA
-    | FIELD
-    | ARGUMENT_DEFINITION
-    | INTERFACE
-    | OBJECT
-    | UNION
-    | INPUT_OBJECT
-    | SCALAR
-
-"""
-Reference a class implementing a scalar definition.
-"""
-directive @scalar(
-    """
-    Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
-    """
-    class: String!
-)
-on
-    | SCALAR
-
 """
 Allows you to easily hook up a resolver for an endpoint.
 """
@@ -262,3 +245,20 @@ repeatable on
     | INTERFACE
     | SCALAR
     | SCHEMA
+
+scalar CodeDirectiveScalarCustomClass
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
+
+scalar CodeDirectiveScalar
+
+input CodeDirectiveInput {
+    a: Int!
+}
+
+enum CodeDirectiveEnum {
+    A
+    B
+    C
+}

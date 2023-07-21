@@ -1,4 +1,31 @@
 """
+Directive description
+"""
+directive @directive(
+    location: String
+)
+repeatable on
+    | ARGUMENT_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | FIELD
+    | FIELD_DEFINITION
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | INTERFACE
+    | MUTATION
+    | OBJECT
+    | QUERY
+    | SCALAR
+    | SCHEMA
+    | SUBSCRIPTION
+    | UNION
+    | VARIABLE_DEFINITION
+
+"""
 Enum description.
 """
 enum Enum
@@ -192,30 +219,3 @@ union Union
     | TypeA
     | TypeB
     | TypeC
-
-"""
-Directive description
-"""
-directive @directive(
-    location: String
-)
-repeatable on
-    | ARGUMENT_DEFINITION
-    | ENUM
-    | ENUM_VALUE
-    | FIELD
-    | FIELD_DEFINITION
-    | FRAGMENT_DEFINITION
-    | FRAGMENT_SPREAD
-    | INLINE_FRAGMENT
-    | INPUT_FIELD_DEFINITION
-    | INPUT_OBJECT
-    | INTERFACE
-    | MUTATION
-    | OBJECT
-    | QUERY
-    | SCALAR
-    | SCHEMA
-    | SUBSCRIPTION
-    | UNION
-    | VARIABLE_DEFINITION

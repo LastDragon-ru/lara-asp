@@ -1,3 +1,57 @@
+directive @codeDirective(
+    custom: [CodeDirectiveScalarCustomClass]
+    enum: CodeDirectiveEnum
+    input: CodeDirectiveInput
+    scalar: CodeDirectiveScalar!
+)
+repeatable on
+    | INTERFACE
+    | SCALAR
+    | SCHEMA
+
+"""
+Allows you to easily hook up a resolver for an endpoint.
+"""
+directive @mock(
+    """
+    Specify a unique key for the mock resolver.
+    """
+    key: String = "default"
+)
+on
+    | FIELD_DEFINITION
+
+"""
+Reference a class implementing a scalar definition.
+"""
+directive @scalar(
+    """
+    Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
+    """
+    class: String!
+)
+on
+    | SCALAR
+
+"""
+Directive
+"""
+directive @schemaDirective(
+    """
+    Directive argument
+    """
+    message: String
+)
+on
+    | ARGUMENT_DEFINITION
+    | FIELD
+    | INPUT_OBJECT
+    | INTERFACE
+    | OBJECT
+    | SCALAR
+    | SCHEMA
+    | UNION
+
 enum SchemaEnum
 @schemaDirective
 @codeDirective
@@ -156,57 +210,3 @@ union SchemaUnion
 =
     | CodeType
     | SchemaType
-
-directive @codeDirective(
-    custom: [CodeDirectiveScalarCustomClass]
-    enum: CodeDirectiveEnum
-    input: CodeDirectiveInput
-    scalar: CodeDirectiveScalar!
-)
-repeatable on
-    | INTERFACE
-    | SCALAR
-    | SCHEMA
-
-"""
-Allows you to easily hook up a resolver for an endpoint.
-"""
-directive @mock(
-    """
-    Specify a unique key for the mock resolver.
-    """
-    key: String = "default"
-)
-on
-    | FIELD_DEFINITION
-
-"""
-Reference a class implementing a scalar definition.
-"""
-directive @scalar(
-    """
-    Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
-    """
-    class: String!
-)
-on
-    | SCALAR
-
-"""
-Directive
-"""
-directive @schemaDirective(
-    """
-    Directive argument
-    """
-    message: String
-)
-on
-    | ARGUMENT_DEFINITION
-    | FIELD
-    | INPUT_OBJECT
-    | INTERFACE
-    | OBJECT
-    | SCALAR
-    | SCHEMA
-    | UNION

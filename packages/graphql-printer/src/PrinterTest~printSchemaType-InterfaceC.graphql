@@ -1,18 +1,30 @@
-    interface InterfaceC
-    implements
-        & InterfaceA
-        & InterfaceB
-    {
-        a: Int
-        b: [String!]
-        c: [Float!]!
-        d: TypeHidden!
-
-        e(
-            a: Int
-            b: InputHidden
-        ): Int
-    }
+    """
+    Directive description
+    """
+    directive @directive(
+        hidden: InputHidden
+        location: String
+    )
+    repeatable on
+        | ARGUMENT_DEFINITION
+        | ENUM
+        | ENUM_VALUE
+        | FIELD
+        | FIELD_DEFINITION
+        | FRAGMENT_DEFINITION
+        | FRAGMENT_SPREAD
+        | INLINE_FRAGMENT
+        | INPUT_FIELD_DEFINITION
+        | INPUT_OBJECT
+        | INTERFACE
+        | MUTATION
+        | OBJECT
+        | QUERY
+        | SCALAR
+        | SCHEMA
+        | SUBSCRIPTION
+        | UNION
+        | VARIABLE_DEFINITION
 
     input InputHidden {
         a: Int
@@ -47,34 +59,22 @@
         )
     }
 
+    interface InterfaceC
+    implements
+        & InterfaceA
+        & InterfaceB
+    {
+        a: Int
+        b: [String!]
+        c: [Float!]!
+        d: TypeHidden!
+
+        e(
+            a: Int
+            b: InputHidden
+        ): Int
+    }
+
     type TypeHidden {
         a: Int
     }
-
-    """
-    Directive description
-    """
-    directive @directive(
-        hidden: InputHidden
-        location: String
-    )
-    repeatable on
-        | ARGUMENT_DEFINITION
-        | ENUM
-        | ENUM_VALUE
-        | FIELD
-        | FIELD_DEFINITION
-        | FRAGMENT_DEFINITION
-        | FRAGMENT_SPREAD
-        | INLINE_FRAGMENT
-        | INPUT_FIELD_DEFINITION
-        | INPUT_OBJECT
-        | INTERFACE
-        | MUTATION
-        | OBJECT
-        | QUERY
-        | SCALAR
-        | SCHEMA
-        | SUBSCRIPTION
-        | UNION
-        | VARIABLE_DEFINITION

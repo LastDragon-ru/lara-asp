@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
 
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Argument as GraphQLArgument;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
@@ -25,15 +26,17 @@ class PrintableBlock extends Block implements NamedBlock {
     private Block $block;
 
     /**
-     * @param TDefinition $definition
+     * @param TDefinition                      $definition
+     * @param (TypeNode&Node)|GraphQLType|null $type
      */
     public function __construct(
         Context $context,
         private object $definition,
+        private TypeNode|GraphQLType|null $type = null,
     ) {
         parent::__construct($context);
 
-        $this->block = $this->getDefinitionBlock($definition);
+        $this->block = Factory::create($context, $definition, $type);
     }
 
     public function getName(): string {
@@ -54,18 +57,18 @@ class PrintableBlock extends Block implements NamedBlock {
         return $this->definition;
     }
 
+    /**
+     * @return (TypeNode&Node)|GraphQLType|null
+     */
+    public function getType(): TypeNode|GraphQLType|null {
+        return $this->type;
+    }
+
     public function getBlock(): Block {
         return $this->block;
     }
 
     protected function content(Collector $collector, int $level, int $used): string {
         return $this->getBlock()->serialize($collector, $level, $used);
-    }
-
-    /**
-     * @param TDefinition $definition
-     */
-    private function getDefinitionBlock(object $definition): Block {
-        return Factory::create($this->getContext(), $definition);
     }
 }

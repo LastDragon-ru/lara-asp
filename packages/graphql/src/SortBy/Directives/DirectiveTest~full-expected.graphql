@@ -1,3 +1,41 @@
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+"""
+Marks that field should be excluded from sort.
+"""
+directive @sortByIgnored
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorRandom
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 enum EnumIgnored
 @sortByIgnored
 {
@@ -645,41 +683,3 @@ implements
 union ObjectUnion =
     | Object
     | ObjectNested
-
-"""
-Use Input as Sort Conditions for the current Builder.
-"""
-directive @sortBy
-on
-    | ARGUMENT_DEFINITION
-
-"""
-Marks that field should be excluded from sort.
-"""
-directive @sortByIgnored
-on
-    | ENUM
-    | FIELD_DEFINITION
-    | INPUT_FIELD_DEFINITION
-    | INPUT_OBJECT
-    | OBJECT
-    | SCALAR
-
-directive @sortByOperatorField
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @sortByOperatorProperty
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @sortByOperatorRandom
-on
-    | ENUM
-    | FIELD_DEFINITION
-    | INPUT_FIELD_DEFINITION
-    | SCALAR

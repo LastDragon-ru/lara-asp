@@ -1,13 +1,4 @@
 """
-Description
-"""
-input CodeInput
-@schemaDirective
-{
-    a: Boolean
-}
-
-"""
 Directive
 """
 directive @schemaDirective(
@@ -25,3 +16,12 @@ on
     | SCALAR
     | SCHEMA
     | UNION
+
+"""
+Description
+"""
+input CodeInput
+@schemaDirective
+{
+    a: Boolean
+}

@@ -2,10 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
-use GraphQL\Language\AST\DirectiveDefinitionNode;
+use ArrayAccess;
+use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeNode;
+use GraphQL\Language\AST\TypeSystemDefinitionNode;
+use GraphQL\Language\AST\TypeSystemExtensionNode;
+use GraphQL\Type\Definition\Argument as GraphQLArgument;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use GraphQL\Type\Definition\NamedType;
+use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
+use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
@@ -27,13 +34,21 @@ use function is_string;
 use function str_starts_with;
 use function substr;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 class Printer implements SchemaPrinterContract {
     private ?DirectiveResolver $directiveResolver;
     private Settings           $settings;
     private int                $level;
+    private ?Schema            $schema = null;
 
-    public function __construct(Settings $settings = null, ?DirectiveResolver $directiveResolver = null) {
+    public function __construct(
+        Settings $settings = null,
+        ?DirectiveResolver $directiveResolver = null,
+        ?Schema $schema = null,
+    ) {
         $this->setLevel(0);
+        $this->setSchema($schema);
         $this->setSettings($settings);
         $this->setDirectiveResolver($directiveResolver);
     }
@@ -75,36 +90,94 @@ class Printer implements SchemaPrinterContract {
 
         return $this;
     }
+
+    public function getSchema(): ?Schema {
+        return $this->schema;
+    }
+
+    public function setSchema(?Schema $schema): static {
+        $this->schema = $schema;
+
+        return $this;
+    }
     // </editor-fold>
 
     // <editor-fold desc="Printer">
     // =========================================================================
     /**
-     * @deprecated 4.3.0 Please see #78
+     * @param Node|Type|GraphQLDirective|GraphQLFieldDefinition|GraphQLArgument|GraphQLEnumValueDefinition|InputObjectField|Schema $printable
+     * @param (TypeNode&Node)|Type|null                                                                                            $type
      */
-    public function printSchema(Schema $schema): Result {
-        // Print
-        $collector = new Collector();
-        $context   = $this->getContext($schema);
-        $level     = $this->getLevel();
-        $content   = $this->getDefinitionList($context, true);
-        $content[] = $this->getDefinitionBlock($context, $schema);
-
-        if ($context->getSettings()->isPrintUnusedDefinitions()) {
-            $content[] = $this->getTypeDefinitions($context);
-            $content[] = $this->getDirectiveDefinitions($context);
-        } else {
-            foreach ($this->getUsedDefinitions($collector, $context, $content, $level) as $definition) {
-                $content[] = $definition;
-            }
+    public function print(
+        object $printable,
+        int $level = 0,
+        int $used = 0,
+        TypeNode|Type|null $type = null,
+    ): Result {
+        // Schema?
+        if ($printable instanceof Schema) {
+            return $this->export($printable, $level, $used, $type);
         }
 
-        // Return
-        return new ResultImpl($collector, $content->serialize($collector, $level, 0));
+        // Print
+        $collector = new Collector();
+        $context   = $this->getContext($this->getSchema());
+        $content   = $this->getList($context, true, false);
+        $content[] = $this->getBlock($context, $printable, $type);
+        $printed   = new ResultImpl($collector, $content->serialize($collector, $level, $used));
+
+        return $printed;
     }
 
     /**
-     * @deprecated 4.3.0 Please see #78
+     * @param Node|Type|GraphQLDirective|GraphQLFieldDefinition|GraphQLArgument|GraphQLEnumValueDefinition|InputObjectField|Schema $printable
+     * @param (TypeNode&Node)|Type|null                                                                                            $type
+     */
+    public function export(
+        object $printable,
+        int $level = 0,
+        int $used = 0,
+        TypeNode|Type|null $type = null,
+    ): Result {
+        // Exportable?
+        if (!$this->isExportable($printable)) {
+            return $this->print($printable, $level, $used, $type);
+        }
+
+        // Export
+        $collector = new Collector();
+        $schema    = $printable instanceof Schema ? $printable : $this->getSchema();
+        $context   = $this->getContext($schema);
+        $content   = $this->getList($context, true);
+        $content[] = $this->getBlock($context, $printable, $type);
+        $settings  = $context->getSettings();
+
+        if ($printable instanceof Schema && $settings->isPrintUnusedDefinitions()) {
+            foreach ($context->getTypes() as $definition) {
+                $content[] = $this->getBlock($context, $definition);
+            }
+
+            if ($settings->isPrintDirectiveDefinitions()) {
+                foreach ($context->getDirectives() as $definition) {
+                    $content[] = $this->getBlock($context, $definition);
+                }
+            }
+        } else {
+            $this->process($collector, $context, $content, $level, $used);
+        }
+
+        return new ResultImpl($collector, $content->serialize($collector, $level, $used));
+    }
+
+    /**
+     * @deprecated 4.3.0 Please use {@see self::print()}/{@see self::export()} instead (see #78)
+     */
+    public function printSchema(Schema $schema): Result {
+        return $this->print($schema, $this->getLevel());
+    }
+
+    /**
+     * @deprecated 4.3.0 Please use {@see self::print()}/{@see self::export()} instead (see #78)
      */
     public function printSchemaType(Schema $schema, Type|string $type): Result {
         // Type
@@ -118,46 +191,33 @@ class Printer implements SchemaPrinterContract {
         }
 
         // Print
-        $collector      = new Collector();
-        $context        = $this->getContext($schema);
-        $level          = $this->getLevel();
-        $name           = $type instanceof NamedType ? $type->name() : null;
-        $list           = $this->getDefinitionList($context);
-        $list[$name]    = $this->getDefinitionBlock($context, $type);
-        $content        = $this->getDefinitionList($context, true);
-        $content[$name] = $list;
+        $previous = $this->getSchema();
 
-        foreach ($this->getUsedDefinitions($collector, $context, $content, $level) as $definition) {
-            $content[] = $definition;
+        try {
+            return $this->setSchema($schema)->export($type, $this->getLevel());
+        } finally {
+            $this->setSchema($previous);
         }
-
-        return new ResultImpl($collector, $content->serialize($collector, $level, 0));
     }
 
     /**
-     * @deprecated 4.3.0 Please see #78
+     * @deprecated 4.3.0 Please use {@see self::print()}/{@see self::export()} instead (see #78)
      */
     public function printType(Type $type): Result {
-        $collector = new Collector();
-        $context   = $this->getContext(null);
-        $content   = $this->getDefinitionList($context, true, false);
-        $content[] = $this->getDefinitionBlock($context, $type);
-        $printed   = new ResultImpl($collector, $content->serialize($collector, $this->getLevel(), 0));
-
-        return $printed;
+        return $this->print($type, $this->getLevel());
     }
 
     /**
-     * @deprecated 4.3.0 Please see #78
+     * @deprecated 4.3.0 Please use {@see self::print()}/{@see self::export()} instead (see #78)
      */
     public function printNode(Node $node, ?Schema $schema = null): Result {
-        $collector = new Collector();
-        $context   = $this->getContext($schema);
-        $content   = $this->getDefinitionList($context, true, false);
-        $content[] = $this->getDefinitionBlock($context, $node);
-        $printed   = new ResultImpl($collector, $content->serialize($collector, $this->getLevel(), 0));
+        $previous = $this->getSchema();
 
-        return $printed;
+        try {
+            return $this->setSchema($schema)->print($node, $this->getLevel());
+        } finally {
+            $this->setSchema($previous);
+        }
     }
     // </editor-fold>
 
@@ -168,70 +228,44 @@ class Printer implements SchemaPrinterContract {
     }
 
     /**
-     * Returns all types defined in the schema.
+     * @param Node|Type|GraphQLDirective|GraphQLFieldDefinition|GraphQLArgument|GraphQLEnumValueDefinition|InputObjectField|Schema $definition
+     * @param (TypeNode&Node)|Type|null                                                                                            $type
      */
-    protected function getTypeDefinitions(Context $context): PrintableList {
-        $blocks = $this->getDefinitionList($context);
-
-        foreach ($context->getTypes() as $type) {
-            if (!isset($blocks[$type->name()])) {
-                $blocks[$type->name()] = $this->getDefinitionBlock($context, $type);
-            }
-        }
-
-        return $blocks;
+    protected function getBlock(
+        Context $context,
+        object $definition,
+        TypeNode|Type|null $type = null,
+    ): Block {
+        return new PrintableBlock($context, $definition, $type);
     }
 
     /**
-     * Returns all directives defined in the schema.
+     * @return Block&ArrayAccess<Block, Block>
      */
-    protected function getDirectiveDefinitions(Context $context): PrintableList {
-        // Included?
-        $blocks = $this->getDefinitionList($context);
-
-        if ($context->getSettings()->isPrintDirectiveDefinitions()) {
-            foreach ($context->getDirectives() as $directive) {
-                $name = $directive instanceof DirectiveDefinitionNode
-                    ? $directive->name->value
-                    : $directive->name;
-
-                if (!isset($blocks[$name])) {
-                    $blocks[$name] = $this->getDefinitionBlock($context, $directive);
-                }
-            }
-        }
-
-        // Return
-        return $blocks;
-    }
-
-    protected function getDefinitionBlock(
-        Context $context,
-        Schema|Type|GraphQLDirective|Node $definition,
-    ): Block {
-        return new PrintableBlock($context, $definition);
-    }
-
-    protected function getDefinitionList(Context $context, bool $root = false, bool $eof = true): PrintableList {
+    protected function getList(Context $context, bool $root = false, bool $eof = true): Block {
         return new PrintableList($context, $root, $eof);
     }
 
     /**
-     * @return array<PrintableList>
+     * @param Block&ArrayAccess<Block, Block> $root
      */
-    protected function getUsedDefinitions(Collector $collector, Context $context, Block $root, int $level): array {
-        $root       = $this->analyze($collector, $level, $root);
-        $types      = $this->getDefinitionList($context);
+    protected function process(
+        Collector $collector,
+        Context $context,
+        Block $root,
+        int $level,
+        int $used,
+    ): void {
+        $root       = $this->analyze($collector, $root, $level, $used);
         $stack      = $collector->getUsedDirectives() + $collector->getUsedTypes();
-        $directives = $context->getSettings()->isPrintDirectiveDefinitions()
-            ? $this->analyze($collector, $level, $this->getDefinitionList($context))
-            : null;
+        $printed    = [];
+        $directives = $context->getSettings()->isPrintDirectiveDefinitions();
 
         while ($stack) {
             // Added?
             $name = array_pop($stack);
 
-            if (isset($types[$name]) || isset($directives[$name]) || isset($root[$name])) {
+            if (isset($printed[$name])) {
                 continue;
             }
 
@@ -239,12 +273,12 @@ class Printer implements SchemaPrinterContract {
             $block = null;
 
             if (str_starts_with($name, '@')) {
-                if ($directives !== null) {
+                if ($directives) {
                     $directive = $context->getDirective(substr($name, 1));
 
                     if ($directive) {
-                        $block             = $this->getDefinitionBlock($context, $directive);
-                        $directives[$name] = $this->analyze($collector, $level, $block);
+                        $block          = $this->getBlock($context, $directive);
+                        $printed[$name] = true;
                     } else {
                         throw new DirectiveDefinitionNotFound($name);
                     }
@@ -253,22 +287,21 @@ class Printer implements SchemaPrinterContract {
                 $type = $context->getType($name);
 
                 if ($type) {
-                    $block        = $this->getDefinitionBlock($context, $type);
-                    $types[$name] = $this->analyze($collector, $level, $block);
+                    $block          = $this->getBlock($context, $type);
+                    $printed[$name] = true;
                 }
             }
 
             // Stack
-            if ($block) {
-                $stack = $stack
-                    + $collector->getUsedDirectives()
-                    + $collector->getUsedTypes();
+            if ($block && !isset($root[$block])) {
+                $statistics = new Collector();
+                $root[]     = $this->analyze($statistics, $block, $level, $used);
+                $statistics = $collector->addUsed($statistics);
+                $stack      = $stack
+                    + $statistics->getUsedDirectives()
+                    + $statistics->getUsedTypes();
             }
         }
-
-        return $directives
-            ? [$types, $directives]
-            : [$types];
     }
 
     /**
@@ -278,10 +311,28 @@ class Printer implements SchemaPrinterContract {
      *
      * @return T
      */
-    private function analyze(Collector $collector, int $level, Block $block): Block {
-        $block->serialize($collector, $level, 0);
+    protected function analyze(Collector $collector, Block $block, int $level, int $used): Block {
+        $block->serialize($collector, $level, $used);
 
         return $block;
+    }
+
+    protected function isExportable(object $printable): bool {
+        $exportable = true;
+
+        if ($printable instanceof DocumentNode) {
+            foreach ($printable->definitions as $definition) {
+                $exportable = $this->isExportable($definition);
+                break;
+            }
+        } elseif ($printable instanceof Node) {
+            $exportable = $printable instanceof TypeSystemDefinitionNode
+                || $printable instanceof TypeSystemExtensionNode;
+        } else {
+            // empty
+        }
+
+        return $exportable;
     }
     // </editor-fold>
 }
