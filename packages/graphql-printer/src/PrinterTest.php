@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InputObjectTypeDefiniti
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\GraphQLSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedType;
@@ -33,12 +34,12 @@ class PrinterTest extends TestCase {
     /**
      * @dataProvider dataProviderPrintSchema
      */
-    public function testPrintSchema(GraphQLExpectedSchema $expected, ?Settings $settings, int $level): void {
+    public function testPrintSchema(GraphQLExpected $expected, ?Settings $settings, int $level): void {
         $printer = (new Printer())->setSettings($settings)->setLevel($level);
         $schema  = $this->getGraphQLSchema(self::getTestData()->file('~schema.graphql'));
         $actual  = $printer->printSchema($schema);
 
-        $this->assertGraphQLSchemaEquals($expected, $actual);
+        $this->assertGraphQLPrintableEquals($expected, $actual);
     }
 
     /**
@@ -54,7 +55,7 @@ class PrinterTest extends TestCase {
         $schema  = $this->getGraphQLSchema(self::getTestData()->file('~schema.graphql'));
         $actual  = $printer->printSchemaType($schema, $type);
 
-        $this->assertGraphQLSchemaTypeEquals($expected, $actual, $schema);
+        $this->assertGraphQLExportableEquals($expected, $actual);
     }
 
     /**
@@ -64,7 +65,7 @@ class PrinterTest extends TestCase {
         $printer = (new Printer())->setSettings($settings)->setLevel($level);
         $actual  = $printer->printType($type);
 
-        $this->assertGraphQLTypeEquals($expected, $actual);
+        $this->assertGraphQLPrintableEquals($expected, $actual);
     }
 
     /**
@@ -74,7 +75,7 @@ class PrinterTest extends TestCase {
         $printer = (new Printer())->setSettings($settings)->setLevel($level);
         $actual  = $printer->printNode($node);
 
-        $this->assertGraphQLNodeEquals($expected, $actual);
+        $this->assertGraphQLPrintableEquals($expected, $actual);
     }
     // </editor-fold>
 

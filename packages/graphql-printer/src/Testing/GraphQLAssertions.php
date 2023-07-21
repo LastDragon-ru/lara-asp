@@ -24,7 +24,6 @@ use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 use function array_combine;
-use function assert;
 use function is_string;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
@@ -85,6 +84,8 @@ trait GraphQLAssertions {
 
     /**
      * Compares two GraphQL schemas.
+     *
+     * @deprecated 4.4.0 Please use {@see self::assertGraphQLPrintableEquals()}/{@see self::assertGraphQLExportableEquals()} instead.
      */
     public function assertGraphQLSchemaEquals(
         GraphQLExpectedSchema|Schema|DocumentNode|SplFileInfo|string $expected,
@@ -123,6 +124,8 @@ trait GraphQLAssertions {
 
     /**
      * Compares two GraphQL types (full).
+     *
+     * @deprecated 4.4.0 Please use {@see self::assertGraphQLExportableEquals()} instead.
      */
     public function assertGraphQLSchemaTypeEquals(
         GraphQLExpectedType|Type|SplFileInfo|string $expected,
@@ -166,6 +169,8 @@ trait GraphQLAssertions {
 
     /**
      * Compares two GraphQL types.
+     *
+     * @deprecated 4.4.0 Please use {@see self::assertGraphQLPrintableEquals()} instead.
      */
     public function assertGraphQLTypeEquals(
         GraphQLExpectedType|Type|SplFileInfo|string $expected,
@@ -203,6 +208,8 @@ trait GraphQLAssertions {
 
     /**
      * Compares two GraphQL nodes.
+     *
+     * @deprecated 4.4.0 Please use {@see self::assertGraphQLPrintableEquals()} instead.
      */
     public function assertGraphQLNodeEquals(
         GraphQLExpectedNode|Node|SplFileInfo|string $expected,
@@ -258,8 +265,6 @@ trait GraphQLAssertions {
 
         // Compare
         $printer = $this->getGraphQLPrinter($settings);
-
-        assert($printer instanceof Printer);
 
         if (!($output instanceof SplFileInfo) && !is_string($output)) {
             $output = (string) $print($printer, $output);
@@ -324,43 +329,57 @@ trait GraphQLAssertions {
         return $schema;
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printGraphQLSchema(
         Schema|DocumentNode|SplFileInfo|string $schema,
         Settings $settings = null,
     ): Result {
         $schema = $this->getGraphQLSchema($schema);
-        $result = $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
+        $result = $this->getGraphQLPrinter($settings)->printSchema($schema);
 
         return $result;
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printGraphQLSchemaType(
         Schema|DocumentNode|SplFileInfo|string $schema,
         Type|string $type,
         Settings $settings = null,
     ): Result {
         $schema = $this->getGraphQLSchema($schema);
-        $result = $this->getGraphQLSchemaPrinter($settings)->printSchemaType($schema, $type);
+        $result = $this->getGraphQLPrinter($settings)->printSchemaType($schema, $type);
 
         return $result;
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printGraphQLType(Type $type, Settings $settings = null): Result {
-        return $this->getGraphQLSchemaPrinter($settings)->printType($type);
+        return $this->getGraphQLPrinter($settings)->printType($type);
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printGraphQLNode(Node $node, Settings $settings = null): Result {
-        $printer = $this->getGraphQLSchemaPrinter($settings);
-
-        assert($printer instanceof Printer);
-
-        return $printer->printNode($node);
+        return $this->getGraphQLPrinter($settings)->printNode($node);
     }
 
+    /**
+     * @deprecated 4.4.0 Please use {@see self::getGraphQLPrinter()} instead.
+     */
     protected function getGraphQLSchemaPrinter(Settings $settings = null): PrinterContract {
         return $this->getGraphQLPrinter($settings);
     }
 
+    /**
+     * @return PrinterContract&Printer
+     */
     protected function getGraphQLPrinter(Settings $settings = null): PrinterContract {
         return new Printer($settings ?? new TestSettings());
     }

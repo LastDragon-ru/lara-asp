@@ -2,14 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
+use GraphQL\Type\Schema;
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\LighthouseDirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -21,7 +23,9 @@ use SplFileInfo;
  * @internal
  */
 class TestCase extends PackageTestCase {
-    use GraphQLAssertions;
+    use GraphQLAssertions {
+        getGraphQLPrinter as private getDefaultGraphQLPrinter;
+    }
 
     /**
      * @inheritDoc
@@ -39,15 +43,22 @@ class TestCase extends PackageTestCase {
         return parent::getContainer();
     }
 
-    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
+    /**
+     * @return PrinterContract&Printer
+     */
+    protected function getGraphQLPrinter(Settings $settings = null): PrinterContract {
         $settings ??= (new TestSettings())
             ->setDirectiveDefinitionFilter($this->app->make(LighthouseDirectiveFilter::class));
-        $printer    = $this->app->make(Printer::class)->setSettings($settings);
+        $printer    = $this->getDefaultGraphQLPrinter($settings);
 
         return $printer;
     }
 
-    protected function getGraphQLArgument(string $type, mixed $value, SplFileInfo|string $schema = null): Argument {
+    protected function getGraphQLArgument(
+        string $type,
+        mixed $value,
+        Schema|SplFileInfo|string $schema = null,
+    ): Argument {
         try {
             $this->useGraphQLSchema(
                 $schema ?? <<<'GRAPHQL'

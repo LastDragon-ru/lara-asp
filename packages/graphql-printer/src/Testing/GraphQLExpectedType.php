@@ -6,6 +6,9 @@ use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
+/**
+ * @deprecated 4.4.0 Please use {@see GraphQLExpected} instead.
+ */
 class GraphQLExpectedType extends GraphQLExpected {
     /**
      * @inheritDoc

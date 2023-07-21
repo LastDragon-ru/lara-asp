@@ -7,6 +7,9 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
+/**
+ * @deprecated 4.4.0 Please use {@see GraphQLExpected} instead.
+ */
 class GraphQLExpectedSchema extends GraphQLExpected {
     /**
      * @inheritDoc

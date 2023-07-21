@@ -5,9 +5,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions as PrinterGraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
@@ -25,10 +26,7 @@ use function assert;
  */
 trait GraphQLAssertions {
     use MocksResolvers;
-
-    use PrinterGraphQLAssertions {
-        printGraphQLSchema as private printerPrintGraphQLSchema;
-    }
+    use PrinterGraphQLAssertions;
 
     // <editor-fold desc="Assertions">
     // =========================================================================
@@ -45,13 +43,28 @@ trait GraphQLAssertions {
             $message,
         );
     }
+
+    /**
+     * Compares two GraphQL schemas.
+     */
+    public function assertGraphQLSchemaEquals(
+        GraphQLExpectedSchema|SplFileInfo|string $expected,
+        Schema|DocumentNode|SplFileInfo|string $schema,
+        string $message = '',
+    ): void {
+        self::assertGraphQLPrintableEquals(
+            $expected,
+            $this->getGraphQLSchema($schema),
+            $message,
+        );
+    }
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function useGraphQLSchema(Schema|DocumentNode|SplFileInfo|string $schema): static {
         $schema   = $schema instanceof Schema || $schema instanceof DocumentNode
-            ? $this->printerPrintGraphQLSchema($schema)
+            ? (string) $this->getGraphQLPrinter()->print($schema)
             : Args::content($schema);
         $provider = new TestSchemaProvider($schema);
 
@@ -87,12 +100,15 @@ trait GraphQLAssertions {
                 $schema = $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
             }
 
-            return $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
+            return $this->getGraphQLPrinter($settings)->printSchema($schema);
         } finally {
             $this->useDefaultGraphQLSchema();
         }
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printGraphQLSchemaType(
         Schema|DocumentNode|SplFileInfo|string $schema,
         Type|string $type,
@@ -103,7 +119,7 @@ trait GraphQLAssertions {
                 $schema = $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
             }
 
-            return $this->getGraphQLSchemaPrinter($settings)->printSchemaType($schema, $type);
+            return $this->getGraphQLPrinter($settings)->printSchemaType($schema, $type);
         } finally {
             $this->useDefaultGraphQLSchema();
         }
@@ -111,13 +127,27 @@ trait GraphQLAssertions {
 
     protected function printDefaultGraphQLSchema(Settings $settings = null): Result {
         $schema  = $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
-        $printed = $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
+        $printed = $this->getGraphQLPrinter($settings)->printSchema($schema);
 
         return $printed;
     }
 
-    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
-        return $this->app->make(Printer::class)->setSettings($settings ?? new TestSettings());
+    /**
+     * @deprecated 4.4.0 Please use {@see self::getGraphQLPrinter()} instead.
+     */
+    protected function getGraphQLSchemaPrinter(Settings $settings = null): PrinterContract {
+        return $this->getGraphQLPrinter($settings);
+    }
+
+    /**
+     * @return PrinterContract&Printer
+     */
+    protected function getGraphQLPrinter(Settings $settings = null): PrinterContract {
+        $printer = $this->app->make(PrinterContract::class)->setSettings($settings ?? new TestSettings());
+
+        assert($printer instanceof Printer);
+
+        return $printer;
     }
 
     protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {
