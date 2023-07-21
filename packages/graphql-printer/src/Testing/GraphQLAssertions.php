@@ -12,7 +12,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;

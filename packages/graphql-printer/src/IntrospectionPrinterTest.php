@@ -6,7 +6,7 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

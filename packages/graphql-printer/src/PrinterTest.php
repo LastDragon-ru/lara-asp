@@ -18,7 +18,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function str_ends_with;

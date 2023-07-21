@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions as PrinterGraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestSettings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Testing\MocksResolvers;
