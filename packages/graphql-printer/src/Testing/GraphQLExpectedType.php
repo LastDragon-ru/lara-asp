@@ -16,7 +16,7 @@ class GraphQLExpectedType extends GraphQLExpected {
         ?array $usedDirectives = null,
         ?Settings $settings = null,
     ) {
-        parent::__construct($usedTypes, $usedDirectives, $settings);
+        parent::__construct($this->type, $usedTypes, $usedDirectives, $settings);
     }
 
     public function getType(): Type|SplFileInfo|string {

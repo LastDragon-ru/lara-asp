@@ -2,19 +2,35 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
 
+use GraphQL\Language\AST\Node;
+use GraphQL\Type\Definition\Argument;
+use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use SplFileInfo;
 
-abstract class GraphQLExpected {
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
+class GraphQLExpected {
     /**
      * @param array<string>|null $usedTypes
      * @param array<string>|null $usedDirectives
      */
     public function __construct(
+        protected Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|SplFileInfo|string $printable,
         protected ?array $usedTypes = null,
         protected ?array $usedDirectives = null,
         protected ?Settings $settings = null,
     ) {
         // empty
+    }
+
+    public function getPrintable(): Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|SplFileInfo|string {
+        return $this->printable;
     }
 
     /**

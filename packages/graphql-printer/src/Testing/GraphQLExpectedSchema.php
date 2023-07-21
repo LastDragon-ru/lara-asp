@@ -17,7 +17,7 @@ class GraphQLExpectedSchema extends GraphQLExpected {
         ?array $usedDirectives = null,
         ?Settings $settings = null,
     ) {
-        parent::__construct($usedTypes, $usedDirectives, $settings);
+        parent::__construct($this->schema, $usedTypes, $usedDirectives, $settings);
     }
 
     public function getSchema(): Schema|DocumentNode|SplFileInfo|string {

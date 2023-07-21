@@ -8,10 +8,10 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\TypeSystemDefinitionNode;
 use GraphQL\Language\AST\TypeSystemExtensionNode;
-use GraphQL\Type\Definition\Argument as GraphQLArgument;
-use GraphQL\Type\Definition\Directive as GraphQLDirective;
-use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
-use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
+use GraphQL\Type\Definition\Argument;
+use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
@@ -33,8 +33,6 @@ use function array_pop;
 use function is_string;
 use function str_starts_with;
 use function substr;
-
-// @phpcs:disable Generic.Files.LineLength.TooLong
 
 class Printer implements SchemaPrinterContract {
     private ?DirectiveResolver $directiveResolver;
@@ -105,11 +103,10 @@ class Printer implements SchemaPrinterContract {
     // <editor-fold desc="Printer">
     // =========================================================================
     /**
-     * @param Node|Type|GraphQLDirective|GraphQLFieldDefinition|GraphQLArgument|GraphQLEnumValueDefinition|InputObjectField|Schema $printable
-     * @param (TypeNode&Node)|Type|null                                                                                            $type
+     * @param (TypeNode&Node)|Type|null $type
      */
     public function print(
-        object $printable,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
         int $level = 0,
         int $used = 0,
         TypeNode|Type|null $type = null,
@@ -130,11 +127,10 @@ class Printer implements SchemaPrinterContract {
     }
 
     /**
-     * @param Node|Type|GraphQLDirective|GraphQLFieldDefinition|GraphQLArgument|GraphQLEnumValueDefinition|InputObjectField|Schema $printable
-     * @param (TypeNode&Node)|Type|null                                                                                            $type
+     * @param (TypeNode&Node)|Type|null $type
      */
     public function export(
-        object $printable,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
         int $level = 0,
         int $used = 0,
         TypeNode|Type|null $type = null,
@@ -228,12 +224,11 @@ class Printer implements SchemaPrinterContract {
     }
 
     /**
-     * @param Node|Type|GraphQLDirective|GraphQLFieldDefinition|GraphQLArgument|GraphQLEnumValueDefinition|InputObjectField|Schema $definition
-     * @param (TypeNode&Node)|Type|null                                                                                            $type
+     * @param (TypeNode&Node)|Type|null $type
      */
     protected function getBlock(
         Context $context,
-        object $definition,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $definition,
         TypeNode|Type|null $type = null,
     ): Block {
         return new PrintableBlock($context, $definition, $type);
@@ -317,7 +312,9 @@ class Printer implements SchemaPrinterContract {
         return $block;
     }
 
-    protected function isExportable(object $printable): bool {
+    protected function isExportable(
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
+    ): bool {
         $exportable = true;
 
         if ($printable instanceof DocumentNode) {

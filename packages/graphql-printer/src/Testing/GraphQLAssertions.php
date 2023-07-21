@@ -2,8 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
 
+use Closure;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\Argument;
+use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
@@ -20,12 +27,62 @@ use function array_combine;
 use function assert;
 use function is_string;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 /**
  * @mixin TestCase
  */
 trait GraphQLAssertions {
     // <editor-fold desc="Assertions">
     // =========================================================================
+    /**
+     * Prints and compares two GraphQL schemas/types/nodes/etc.
+     */
+    public function assertGraphQLPrintableEquals(
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
+        string $message = '',
+    ): void {
+        // Printed
+        $actual = $this->assertGraphQLResult(
+            $expected,
+            $actual,
+            $message,
+            static function (Printer $printer, mixed $printable): Result {
+                return $printer->print($printable);
+            },
+        );
+
+        // Expectation
+        if ($expected instanceof GraphQLExpected) {
+            $this->assertGraphQLExpectation($expected, $actual);
+        }
+    }
+
+    /**
+     * Exports and compares two GraphQL schemas/types/nodes/etc.
+     */
+    public function assertGraphQLExportableEquals(
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
+        string $message = '',
+    ): void {
+        // Printed
+        $actual = $this->assertGraphQLResult(
+            $expected,
+            $actual,
+            $message,
+            static function (Printer $printer, mixed $printable): Result {
+                return $printer->export($printable);
+            },
+        );
+
+        // Expectation
+        if ($expected instanceof GraphQLExpected) {
+            $this->assertGraphQLExpectation($expected, $actual);
+        }
+    }
+
     /**
      * Compares two GraphQL schemas.
      */
@@ -181,6 +238,50 @@ trait GraphQLAssertions {
         $this->assertGraphQLExpectation($expected, $type);
     }
 
+    /**
+     * @param Closure(Printer, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
+     */
+    private function assertGraphQLResult(
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
+        string $message,
+        Closure $print,
+    ): Result {
+        // GraphQL
+        $output   = $expected;
+        $settings = null;
+
+        if ($output instanceof GraphQLExpected) {
+            $settings = $output->getSettings();
+            $output   = $output->getPrintable();
+        }
+
+        // Compare
+        $printer = $this->getGraphQLPrinter($settings);
+
+        assert($printer instanceof Printer);
+
+        if (!($output instanceof SplFileInfo) && !is_string($output)) {
+            $output = (string) $print($printer, $output);
+        } else {
+            $output = Args::content($output);
+        }
+
+        if ($actual instanceof SplFileInfo || is_string($actual)) {
+            $actual = Parser::parse(Args::content($actual));
+        }
+
+        if (!($actual instanceof Result)) {
+            $actual = $print($printer, $actual);
+        } else {
+            // empty
+        }
+
+        self::assertEquals($output, (string) $actual, $message);
+
+        return $actual;
+    }
+
     private function assertGraphQLExpectation(
         GraphQLExpected $expected,
         Statistics $actual,
@@ -257,6 +358,10 @@ trait GraphQLAssertions {
     }
 
     protected function getGraphQLSchemaPrinter(Settings $settings = null): PrinterContract {
+        return $this->getGraphQLPrinter($settings);
+    }
+
+    protected function getGraphQLPrinter(Settings $settings = null): PrinterContract {
         return new Printer($settings ?? new TestSettings());
     }
     // </editor-fold>

@@ -16,7 +16,7 @@ class GraphQLExpectedNode extends GraphQLExpected {
         ?array $usedDirectives = null,
         ?Settings $settings = null,
     ) {
-        parent::__construct($usedTypes, $usedDirectives, $settings);
+        parent::__construct($this->node, $usedTypes, $usedDirectives, $settings);
     }
 
     public function getNode(): Node|SplFileInfo|string {
