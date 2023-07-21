@@ -17,6 +17,9 @@ use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthousTestingServiceProvider;
 use SplFileInfo;
 
+/**
+ * @internal
+ */
 class TestCase extends PackageTestCase {
     use GraphQLAssertions;
 

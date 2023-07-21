@@ -10,6 +10,9 @@ use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use function explode;
 use function str_starts_with;
 
+/**
+ * @internal
+ */
 class LighthouseDirectiveFilter implements DirectiveFilter {
     public function __construct(
         protected DirectiveLocator $locator,

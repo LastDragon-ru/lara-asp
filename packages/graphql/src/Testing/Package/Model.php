@@ -4,6 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
+/**
+ * @internal
+ */
 class Model extends EloquentModel {
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint

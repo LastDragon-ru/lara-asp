@@ -15,6 +15,8 @@ use Orchestra\Testbench\TestCase as TestbenchTestCase;
  * Special test case for packages with application.
  *
  * @required orchestra/testbench package
+ *
+ * @internal
  */
 abstract class TestCase extends TestbenchTestCase {
     use Assertions;

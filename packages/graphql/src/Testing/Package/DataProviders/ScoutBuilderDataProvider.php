@@ -8,6 +8,9 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 
+/**
+ * @internal
+ */
 class ScoutBuilderDataProvider extends ArrayDataProvider {
     public function __construct() {
         parent::__construct([
