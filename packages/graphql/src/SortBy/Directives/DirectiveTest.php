@@ -157,7 +157,7 @@ class DirectiveTest extends TestCase {
         $registry = $this->app->make(TypeRegistry::class);
         $registry->register($type);
 
-        $this->getGraphQLSchema(
+        $this->useGraphQLSchema(
         /** @lang GraphQL */
             <<<'GRAPHQL'
             type Query {

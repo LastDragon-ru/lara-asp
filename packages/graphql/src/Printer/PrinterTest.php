@@ -141,7 +141,7 @@ class PrinterTest extends TestCase {
 
         // Test
         $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
-        $schema  = $this->getGraphQLSchemaBuilder()->schema();
+        $schema  = $this->getCurrentGraphQLSchema();
         $actual  = $printer->printSchema($schema);
 
         $this->assertGraphQLPrintableEquals($expected, $actual);
@@ -260,7 +260,7 @@ class PrinterTest extends TestCase {
 
         // Test
         $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
-        $schema  = $this->getGraphQLSchemaBuilder()->schema();
+        $schema  = $this->getCurrentGraphQLSchema();
         $actual  = $printer->printSchemaType($schema, $type);
 
         $this->assertGraphQLExportableEquals($expected, $actual);

@@ -52,11 +52,17 @@ trait GraphQLAssertions {
         Schema|DocumentNode|SplFileInfo|string $schema,
         string $message = '',
     ): void {
-        self::assertGraphQLPrintableEquals(
-            $expected,
-            $this->getGraphQLSchema($schema),
-            $message,
-        );
+        $schema = $this->useGraphQLSchema($schema)->getCurrentGraphQLSchema();
+
+        try {
+            self::assertGraphQLPrintableEquals(
+                $expected,
+                $schema,
+                $message,
+            );
+        } finally {
+            $this->useDefaultGraphQLSchema();
+        }
     }
     // </editor-fold>
 
@@ -73,6 +79,11 @@ trait GraphQLAssertions {
         return $this;
     }
 
+    /**
+     * @deprecated 4.4.0 The method is not recommended to use and probably will
+     *      be removed in the next major version. Please use
+     *      {@see self::useGraphQLSchema()} instead.
+     */
     protected function getGraphQLSchema(Schema|DocumentNode|SplFileInfo|string $schema): Schema {
         try {
             return $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
@@ -88,7 +99,11 @@ trait GraphQLAssertions {
     }
 
     protected function getDefaultGraphQLSchema(): Schema {
-        return $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
+        return $this->getGraphQLSchemaBuilder()->default();
+    }
+
+    protected function getCurrentGraphQLSchema(): Schema {
+        return $this->getGraphQLSchemaBuilder()->schema();
     }
 
     protected function printGraphQLSchema(

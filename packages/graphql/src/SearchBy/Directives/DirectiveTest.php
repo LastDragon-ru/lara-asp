@@ -98,7 +98,7 @@ class DirectiveTest extends TestCase {
     public function testManipulateArgDefinitionUnknownType(): void {
         self::expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
 
-        $this->getGraphQLSchema(self::getTestData()->file('~unknown.graphql'));
+        $this->useGraphQLSchema(self::getTestData()->file('~unknown.graphql'));
     }
 
     public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {

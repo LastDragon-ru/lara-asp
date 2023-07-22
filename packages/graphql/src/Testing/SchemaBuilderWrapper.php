@@ -40,6 +40,10 @@ class SchemaBuilderWrapper extends SchemaBuilder {
         return $this->getSchemaBuilder()->schema();
     }
 
+    public function default(): Schema {
+        return $this->builder->schema();
+    }
+
     public function setSchema(?SchemaSourceProvider $provider): void {
         // Origins
         $container = Container::getInstance();
