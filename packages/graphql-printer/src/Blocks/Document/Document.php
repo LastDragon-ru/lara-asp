@@ -28,7 +28,7 @@ class Document extends Block {
     protected function content(Collector $collector, int $level, int $used): string {
         $context     = $this->getContext();
         $document    = $this->getDocument();
-        $definitions = new DefinitionList($context, $document->definitions);
+        $definitions = new DefinitionList($context, $document->definitions, static fn() => null);
 
         return $definitions->serialize($collector, $level, $used);
     }
