@@ -1,0 +1,34 @@
+"""
+Directive
+"""
+directive @schemaDirective(
+    """
+    Directive argument
+    """
+    message: String
+)
+on
+    | ARGUMENT_DEFINITION
+    | FIELD
+    | INPUT_OBJECT
+    | INTERFACE
+    | OBJECT
+    | SCALAR
+    | SCHEMA
+    | UNION
+
+"""
+Description
+"""
+input CodeInput
+@schemaDirective
+{
+    a: Boolean
+}
+
+"""
+Description
+"""
+input SchemaInput {
+    a: CodeInput
+}
