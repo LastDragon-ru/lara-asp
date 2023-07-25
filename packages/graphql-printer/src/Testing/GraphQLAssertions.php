@@ -317,6 +317,9 @@ trait GraphQLAssertions {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
+    /**
+     * @deprecated 4.4.0 Please use {@see BuildSchema::build()} instead.
+     */
     protected function getGraphQLSchema(Schema|DocumentNode|SplFileInfo|string $schema): Schema {
         if ($schema instanceof SplFileInfo || is_string($schema)) {
             $schema = Args::content($schema);

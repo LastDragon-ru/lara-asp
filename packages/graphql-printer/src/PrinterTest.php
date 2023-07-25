@@ -17,6 +17,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\GraphQLSettings;
@@ -185,8 +186,8 @@ class PrinterTest extends TestCase {
      * @return array<string, array<mixed>>
      */
     public static function dataProviderPrintSchema(): array {
-        $schemaFactory    = static function (TestCase $test): Schema {
-            return $test->getGraphQLSchema(self::getTestData()->file('~schema.graphql'));
+        $schemaFactory    = static function (): Schema {
+            return BuildSchema::build(self::getTestData()->content('~schema.graphql'));
         };
         $printableFactory = static function (TestCase $test, ?Schema $schema): ?Schema {
             return $schema;
@@ -550,8 +551,8 @@ class PrinterTest extends TestCase {
      * @return array<string, array<mixed>>
      */
     public static function dataProviderExportType(): array {
-        $schemaFactory = static function (TestCase $test): Schema {
-            return $test->getGraphQLSchema(self::getTestData()->file('~schema.graphql'));
+        $schemaFactory = static function (): Schema {
+            return BuildSchema::build(self::getTestData()->content('~schema.graphql'));
         };
 
         return [
@@ -854,8 +855,8 @@ class PrinterTest extends TestCase {
      * @return array<string, array<mixed>>
      */
     public static function dataProviderExportNode(): array {
-        $schemaFactory = static function (TestCase $test): Schema {
-            return $test->getGraphQLSchema(self::getTestData()->file('~schema.graphql'));
+        $schemaFactory = static function (): Schema {
+            return BuildSchema::build(self::getTestData()->content('~schema.graphql'));
         };
 
         return [
