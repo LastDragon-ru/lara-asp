@@ -130,28 +130,24 @@ class FieldTest extends TestCase {
      */
     public static function dataProviderCall(): array {
         $factory = static function (self $test): Argument {
-            $schema   = $test
-                ->useGraphQLSchema(
-                    /** @lang GraphQL */
-                    <<<'GRAPHQL'
-                    type Query {
-                        test(input: Test @sortBy): String! @all
-                    }
+            $test->useGraphQLSchema(
+                /** @lang GraphQL */
+                <<<'GRAPHQL'
+                type Query {
+                    test(input: Test @sortBy): String! @all
+                }
 
-                    input Test {
-                        a: Int!
-                        b: String
-                    }
-                    GRAPHQL,
-                )
-                ->getCurrentGraphQLSchema();
-            $argument = $test->getGraphQLArgument(
-                'SortByTypeDirection!',
-                'desc',
-                $schema,
+                input Test {
+                    a: Int!
+                    b: String
+                }
+                GRAPHQL,
             );
 
-            return $argument;
+            return $test->getGraphQLArgument(
+                'SortByTypeDirection!',
+                'desc',
+            );
         };
 
         return (new CompositeDataProvider(

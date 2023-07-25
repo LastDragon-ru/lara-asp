@@ -60,20 +60,16 @@ class TestCase extends PackageTestCase {
         Schema|SplFileInfo|string $schema = null,
     ): Argument {
         try {
-            $this->useGraphQLSchema(
-                $schema ?? <<<'GRAPHQL'
-                type Query {
-                    test: Int @all
-                }
-                GRAPHQL,
-            );
+            if ($schema) {
+                $this->useGraphQLSchema($schema);
+            }
 
             $factory  = $this->app->make(ArgumentFactory::class);
             $argument = $factory->getArgument($type, $value);
 
             return $argument;
         } finally {
-            $this->useDefaultGraphQLSchema();
+            $this->resetGraphQLSchema();
         }
     }
 }

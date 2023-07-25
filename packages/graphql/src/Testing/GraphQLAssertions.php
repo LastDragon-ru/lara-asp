@@ -48,7 +48,8 @@ trait GraphQLAssertions {
     /**
      * Compares GraphQL schema with default (application) schema.
      *
-     * @deprecated 4.4.0 Please use {@see self::useDefaultGraphQLSchema()} +{@see self::assertGraphQLPrintableEquals()}
+     * @deprecated 4.4.0 Please use {@see self::resetGraphQLSchema()} (if needed)
+     *      with {@see self::assertGraphQLPrintableEquals()} instead.
      */
     public function assertDefaultGraphQLSchemaEquals(
         GraphQLExpectedSchema|SplFileInfo|string $expected,
@@ -64,7 +65,8 @@ trait GraphQLAssertions {
     /**
      * Compares two GraphQL schemas.
      *
-     * @deprecated 4.4.0 Please use {@see self::useGraphQLSchema()} + {@see self::assertGraphQLPrintableEquals()}
+     * @deprecated 4.4.0 Please use {@see self::useGraphQLSchema()} with
+     *      {@see self::assertGraphQLPrintableEquals()} instead.
      */
     public function assertGraphQLSchemaEquals(
         GraphQLExpectedSchema|SplFileInfo|string $expected,
@@ -80,7 +82,7 @@ trait GraphQLAssertions {
                 $message,
             );
         } finally {
-            $this->useDefaultGraphQLSchema();
+            $this->resetGraphQLSchema();
         }
     }
     // </editor-fold>
@@ -107,16 +109,27 @@ trait GraphQLAssertions {
         try {
             return $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
         } finally {
-            $this->useDefaultGraphQLSchema();
+            $this->resetGraphQLSchema();
         }
     }
 
-    protected function useDefaultGraphQLSchema(): static {
+    protected function resetGraphQLSchema(): static {
         $this->getGraphQLSchemaBuilder()->setSchema(null);
 
         return $this;
     }
 
+    /**
+     * @deprecated 4.4.0 Please use {@see self::resetGraphQLSchema()} instead.
+     */
+    protected function useDefaultGraphQLSchema(): static {
+        return $this->resetGraphQLSchema();
+    }
+
+    /**
+     * @deprecated 4.4.0 The method is not recommended to use and probably will
+     *      be removed in the next major version.
+     */
     protected function getDefaultGraphQLSchema(): Schema {
         return $this->getGraphQLSchemaBuilder()->default();
     }
@@ -125,6 +138,9 @@ trait GraphQLAssertions {
         return $this->getGraphQLSchemaBuilder()->schema();
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printGraphQLSchema(
         Schema|DocumentNode|SplFileInfo|string $schema,
         Settings $settings = null,
@@ -136,7 +152,7 @@ trait GraphQLAssertions {
 
             return $this->getGraphQLPrinter($settings)->printSchema($schema);
         } finally {
-            $this->useDefaultGraphQLSchema();
+            $this->resetGraphQLSchema();
         }
     }
 
@@ -155,7 +171,7 @@ trait GraphQLAssertions {
 
             return $this->getGraphQLPrinter($settings)->printSchemaType($schema, $type);
         } finally {
-            $this->useDefaultGraphQLSchema();
+            $this->resetGraphQLSchema();
         }
     }
 
@@ -163,7 +179,7 @@ trait GraphQLAssertions {
      * @deprecated 4.4.0 Method will be removed in the next major version.
      */
     protected function printDefaultGraphQLSchema(Settings $settings = null): Result {
-        $schema  = $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
+        $schema  = $this->resetGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
         $printed = $this->getGraphQLPrinter($settings)->printSchema($schema);
 
         return $printed;
