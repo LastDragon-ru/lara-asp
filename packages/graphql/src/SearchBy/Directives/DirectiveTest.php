@@ -40,7 +40,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderData
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Model;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
@@ -77,8 +77,8 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderManipulateArgDefinition
      *
-     * @param Closure(static): GraphQLExpectedSchema $expected
-     * @param Closure(static): void|null             $prepare
+     * @param Closure(static): GraphQLExpected $expected
+     * @param Closure(static): void|null       $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
         $directives = $this->app->make(DirectiveLocator::class);
@@ -89,9 +89,12 @@ class DirectiveTest extends TestCase {
             $prepare($this);
         }
 
-        self::assertGraphQLSchemaEquals(
-            $expected($this),
+        $this->useGraphQLSchema(
             self::getTestData()->file($graphql),
+        );
+
+        self::assertCurrentGraphQLSchemaEquals(
+            $expected($this),
         );
     }
 
@@ -164,9 +167,12 @@ class DirectiveTest extends TestCase {
         $registry->register($typeB);
         $registry->register($ignored);
 
-        self::assertGraphQLSchemaEquals(
-            self::getTestData()->file('~programmatically-expected.graphql'),
+        $this->useGraphQLSchema(
             self::getTestData()->file('~programmatically.graphql'),
+        );
+
+        self::assertCurrentGraphQLSchemaEquals(
+            self::getTestData()->file('~programmatically-expected.graphql'),
         );
     }
 
@@ -340,13 +346,13 @@ class DirectiveTest extends TestCase {
     // <editor-fold desc="DataProvider">
     // =========================================================================
     /**
-     * @return array<string,array{Closure(self): GraphQLExpectedSchema, string}>
+     * @return array<string,array{Closure(self): GraphQLExpected, string}>
      */
     public static function dataProviderManipulateArgDefinition(): array {
         return [
             'full'                           => [
-                static function (self $test): GraphQLExpectedSchema {
-                    return (new GraphQLExpectedSchema(
+                static function (self $test): GraphQLExpected {
+                    return (new GraphQLExpected(
                         $test::getTestData()->file('~full-expected.graphql'),
                     ));
                 },
@@ -362,8 +368,8 @@ class DirectiveTest extends TestCase {
                 },
             ],
             'example'                        => [
-                static function (self $test): GraphQLExpectedSchema {
-                    return (new GraphQLExpectedSchema(
+                static function (self $test): GraphQLExpected {
+                    return (new GraphQLExpected(
                         $test::getTestData()->file('~example-expected.graphql'),
                     ));
                 },
@@ -379,8 +385,8 @@ class DirectiveTest extends TestCase {
                 },
             ],
             'only used type should be added' => [
-                static function (self $test): GraphQLExpectedSchema {
-                    return (new GraphQLExpectedSchema(
+                static function (self $test): GraphQLExpected {
+                    return (new GraphQLExpected(
                         $test::getTestData()->file('~usedonly-expected.graphql'),
                     ));
                 },
@@ -388,8 +394,8 @@ class DirectiveTest extends TestCase {
                 null,
             ],
             'custom complex operators'       => [
-                static function (self $test): GraphQLExpectedSchema {
-                    return (new GraphQLExpectedSchema(
+                static function (self $test): GraphQLExpected {
+                    return (new GraphQLExpected(
                         $test::getTestData()->file('~custom-complex-operators-expected.graphql'),
                     ));
                 },

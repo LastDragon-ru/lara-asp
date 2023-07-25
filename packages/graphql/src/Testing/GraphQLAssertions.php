@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions as PrinterGraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
@@ -31,7 +32,23 @@ trait GraphQLAssertions {
     // <editor-fold desc="Assertions">
     // =========================================================================
     /**
+     * Compares GraphQL schema with current (application) schema.
+     */
+    public function assertCurrentGraphQLSchemaEquals(
+        GraphQLExpected|SplFileInfo|string $expected,
+        string $message = '',
+    ): void {
+        self::assertGraphQLPrintableEquals(
+            $expected,
+            $this->getCurrentGraphQLSchema(),
+            $message,
+        );
+    }
+
+    /**
      * Compares GraphQL schema with default (application) schema.
+     *
+     * @deprecated 4.4.0 Please use {@see self::useDefaultGraphQLSchema()} +{@see self::assertGraphQLPrintableEquals()}
      */
     public function assertDefaultGraphQLSchemaEquals(
         GraphQLExpectedSchema|SplFileInfo|string $expected,
@@ -46,6 +63,8 @@ trait GraphQLAssertions {
 
     /**
      * Compares two GraphQL schemas.
+     *
+     * @deprecated 4.4.0 Please use {@see self::useGraphQLSchema()} + {@see self::assertGraphQLPrintableEquals()}
      */
     public function assertGraphQLSchemaEquals(
         GraphQLExpectedSchema|SplFileInfo|string $expected,
@@ -140,6 +159,9 @@ trait GraphQLAssertions {
         }
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printDefaultGraphQLSchema(Settings $settings = null): Result {
         $schema  = $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
         $printed = $this->getGraphQLPrinter($settings)->printSchema($schema);
