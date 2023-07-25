@@ -6,6 +6,9 @@ use GraphQL\Language\AST\Node;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
+/**
+ * @deprecated 4.4.0 Please use {@see GraphQLExpected} instead.
+ */
 class GraphQLExpectedNode extends GraphQLExpected {
     /**
      * @inheritDoc
@@ -16,7 +19,7 @@ class GraphQLExpectedNode extends GraphQLExpected {
         ?array $usedDirectives = null,
         ?Settings $settings = null,
     ) {
-        parent::__construct($usedTypes, $usedDirectives, $settings);
+        parent::__construct($this->node, $usedTypes, $usedDirectives, $settings);
     }
 
     public function getNode(): Node|SplFileInfo|string {

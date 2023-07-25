@@ -4,12 +4,8 @@ enum CodeEnum {
     C
 }
 
-enum SchemaEnum
-@schemaDirective
-@codeDirective
-{
+enum SchemaEnum {
     A
-    @deprecated
 
     """
     Description
@@ -20,34 +16,14 @@ enum SchemaEnum
 """
 Description
 """
-input CodeInput
-@schemaDirective
-{
+input CodeInput {
     a: Boolean
-}
-
-input SchemaInput
-@schemaDirective
-{
-    a: CodeScalar
-    b: CodeEnum
-    c: SchemaScalar
-    d: SchemaEnum
-
-    """
-    Recursion
-    """
-    e: SchemaInput
-
-    f: [String!]
 }
 
 """
 Description
 """
-interface CodeInterface
-@codeDirective
-{
+interface CodeInterface {
     a: Boolean!
 }
 
@@ -62,7 +38,6 @@ interface SchemaInterfaceB
 implements
     & CodeInterface
     & SchemaInterfaceA
-@schemaDirective
 {
     a: Boolean!
 
@@ -70,7 +45,6 @@ implements
     Deprecated field
     """
     b: [String]!
-    @deprecated
 
     c(
         """
@@ -103,59 +77,17 @@ character sequences. The String type is most often used by GraphQL to
 represent free-form human-readable text.
 """
 scalar SchemaScalar
-@scalar(
-    class: "GraphQL\\Type\\Definition\\StringType"
-)
-@codeDirective
 
 """
 Description
 """
-type CodeType
-@schemaDirective
-{
+type CodeType {
     a: Boolean
-}
-
-type Query {
-    a: SchemaType
-    @deprecated(
-        reason: "deprecated reason"
-    )
-    @codeDirective
-    @mock
-
-    b: SchemaEnum
-    @deprecated
-    @mock
-
-    c(
-        a: SchemaInput = {
-            a: "aaa"
-            b: A
-            c: "ccc"
-            d: A
-            e: {
-                a: "aaa"
-                b: A
-                c: "ccc"
-                d: A
-                f: ["aaa", "bbb", "ccc", "ddd"]
-            }
-        }
-    ): CodeScalar
-    @mock
-
-    d(
-        a: SchemaInput = {}
-    ): CodeType
-    @mock
 }
 
 type SchemaType
 implements
     & SchemaInterfaceB
-@schemaDirective
 {
     a: Boolean!
 
@@ -163,7 +95,6 @@ implements
     Deprecated field
     """
     b: [String]!
-    @deprecated
 
     c(
         """
@@ -194,27 +125,6 @@ implements
 union CodeUnion =
     | CodeType
 
-union SchemaUnion
-@schemaDirective
-=
+union SchemaUnion =
     | CodeType
     | SchemaType
-
-"""
-Directive
-"""
-directive @schemaDirective(
-    """
-    Directive argument
-    """
-    message: String
-)
-on
-    | ARGUMENT_DEFINITION
-    | FIELD
-    | INPUT_OBJECT
-    | INTERFACE
-    | OBJECT
-    | SCALAR
-    | SCHEMA
-    | UNION

@@ -40,6 +40,14 @@ class SchemaBuilderWrapper extends SchemaBuilder {
         return $this->getSchemaBuilder()->schema();
     }
 
+    /**
+     * @deprecated 4.4.0 The method is not recommended to use and probably will
+     *      be removed in the next major version.
+     */
+    public function default(): Schema {
+        return $this->builder->schema();
+    }
+
     public function setSchema(?SchemaSourceProvider $provider): void {
         // Origins
         $container = Container::getInstance();

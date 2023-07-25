@@ -1,15 +1,3 @@
-    union CodeUnion =
-        | CodeType
-
-    """
-    Description
-    """
-    type CodeType
-    @schemaDirective
-    {
-        a: Boolean
-    }
-
     """
     Directive
     """
@@ -28,3 +16,15 @@
         | SCALAR
         | SCHEMA
         | UNION
+
+    """
+    Description
+    """
+    type CodeType
+    @schemaDirective
+    {
+        a: Boolean
+    }
+
+    union CodeUnion =
+        | CodeType

@@ -5,13 +5,14 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
 use ArrayAccess;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 
 /**
  * @internal
  * @extends ListBlock<Block, array-key, Block>
- * @implements ArrayAccess<array-key, Block>
+ * @implements ArrayAccess<Block, Block>
  */
 class PrintableList extends ListBlock implements ArrayAccess {
     /**
@@ -80,24 +81,26 @@ class PrintableList extends ListBlock implements ArrayAccess {
     // <editor-fold desc="ArrayAccess">
     // =========================================================================
     /**
-     * @param array-key $offset
+     * @param Block $offset
      */
     public function offsetExists(mixed $offset): bool {
-        return isset($this->blocks[$offset]);
+        return isset($this->blocks[$this->offset($offset)]);
     }
 
     /**
-     * @param array-key $offset
+     * @param Block $offset
      */
     public function offsetGet(mixed $offset): Block {
-        return $this->blocks[$offset];
+        return $this->blocks[$this->offset($offset)];
     }
 
     /**
-     * @param array-key|null $offset
-     * @param Block          $value
+     * @param Block|null $offset
+     * @param Block $value
      */
     public function offsetSet(mixed $offset, mixed $value): void {
+        $offset = $this->offset($offset ?? $value);
+
         if ($offset !== null) {
             $this->blocks[$offset] = $value;
         } else {
@@ -108,12 +111,18 @@ class PrintableList extends ListBlock implements ArrayAccess {
     }
 
     /**
-     * @param array-key $offset
+     * @param Block $offset
      */
     public function offsetUnset(mixed $offset): void {
-        unset($this->blocks[$offset]);
+        unset($this->blocks[$this->offset($offset)]);
 
         parent::reset();
+    }
+
+    private function offset(?Block $offset): ?string {
+        return $offset instanceof NamedBlock
+            ? ($offset->getName() ?: null)
+            : null;
     }
     // </editor-fold>
 }

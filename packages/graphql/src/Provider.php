@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
@@ -20,6 +21,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings as SettingsContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
+use Nuwave\Lighthouse\Schema\SchemaBuilder;
 
 use function array_slice;
 use function explode;
@@ -69,8 +71,15 @@ class Provider extends ServiceProvider {
 
     protected function registerSchemaPrinter(): void {
         $this->app->bindIf(SettingsContract::class, DefaultSettings::class);
-        $this->app->bindIf(SchemaPrinterContract::class, Printer::class);
         $this->app->bindIf(DirectiveResolverContract::class, DirectiveResolver::class);
+        $this->app->bindIf(SchemaPrinterContract::class, static function (Container $container): SchemaPrinterContract {
+            $settings = $container->make(SettingsContract::class);
+            $resolver = $container->make(DirectiveResolverContract::class);
+            $schema   = $container->make(SchemaBuilder::class)->schema();
+            $printer  = new Printer($settings, $resolver, $schema);
+
+            return $printer;
+        });
     }
 
     protected function getName(): string {

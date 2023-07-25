@@ -84,7 +84,7 @@ class Factory {
     /**
      * @param (TypeNode&Node)|GraphQLType|null $type
      */
-    public static function create(Context $context, object $definition, TypeNode|GraphQLType|null $type = null): Block {
+    public static function create(Context $context, object $definition, TypeNode|GraphQLType|null $type): Block {
         return match (true) {
             $definition instanceof ObjectTypeDefinitionNode,
             $definition instanceof ObjectType

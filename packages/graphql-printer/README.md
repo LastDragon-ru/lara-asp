@@ -24,7 +24,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 $schema   = BuildSchema::build('...');
 $settings = new DefaultSettings();
 $printer  = new Printer($settings);
-$printed  = $printer->printSchema();
+$printed  = $printer->print($schema);
 ```
 
 ## Customization
@@ -43,8 +43,7 @@ It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#Printe
 
 Package also provides few great [GraphQL Assertions](./src/Testing/GraphQLAssertions.php):
 
-| Name                            | Description           |
-|---------------------------------|-----------------------|
-| `assertGraphQLSchemaTypeEquals` | Compares schema type. |
-| `assertGraphQLSchemaEquals`     | Compares any schemas. |
-| `assertGraphQLTypeEquals`       | Compares any types.   |
+| Name                            | Description                                               |
+|---------------------------------|-----------------------------------------------------------|
+| `assertGraphQLPrintableEquals`  | Prints and compares two GraphQL schemas/types/nodes/etc.  |
+| `assertGraphQLExportableEquals` | Exports and compares two GraphQL schemas/types/nodes/etc. |

@@ -1,4 +1,32 @@
 """
+Directive description
+"""
+directive @directive(
+    hidden: InputHidden
+    location: String
+)
+repeatable on
+    | ARGUMENT_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | FIELD
+    | FIELD_DEFINITION
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | INTERFACE
+    | MUTATION
+    | OBJECT
+    | QUERY
+    | SCALAR
+    | SCHEMA
+    | SUBSCRIPTION
+    | UNION
+    | VARIABLE_DEFINITION
+
+"""
 Enum description.
 """
 enum Enum
@@ -49,6 +77,10 @@ input InputA
     )
 }
 
+input InputHidden {
+    a: Int
+}
+
 """
 Interface description.
 """
@@ -86,9 +118,11 @@ implements
     a: Int
     b: [String!]
     c: [Float!]!
+    d: TypeHidden!
 
     e(
         a: Int
+        b: InputHidden
     ): Int
 }
 
@@ -117,7 +151,12 @@ type Mutation {
 type Query {
     enum(
         enum: Enum = A
+        hidden: [InputHidden!]!
     ): TypeB
+
+    hidden(
+        scalar: Int! = 123
+    ): TypeHidden
 
     scalar: Scalar
 
@@ -126,15 +165,12 @@ type Query {
 
         scalar: Int! = 123
         @directive(
+            hidden: null
             location: "argument"
         )
     ): TypeA!
 
     union: Union
-}
-
-type Subscription {
-    subscribe: TypeC
 }
 
 """
@@ -178,6 +214,10 @@ type TypeC {
     c: [Float!]!
 }
 
+type TypeHidden {
+    a: Int
+}
+
 """
 Union description.
 """
@@ -192,30 +232,3 @@ union Union
     | TypeA
     | TypeB
     | TypeC
-
-"""
-Directive description
-"""
-directive @directive(
-    location: String
-)
-repeatable on
-    | ARGUMENT_DEFINITION
-    | ENUM
-    | ENUM_VALUE
-    | FIELD
-    | FIELD_DEFINITION
-    | FRAGMENT_DEFINITION
-    | FRAGMENT_SPREAD
-    | INLINE_FRAGMENT
-    | INPUT_FIELD_DEFINITION
-    | INPUT_OBJECT
-    | INTERFACE
-    | MUTATION
-    | OBJECT
-    | QUERY
-    | SCALAR
-    | SCHEMA
-    | SUBSCRIPTION
-    | UNION
-    | VARIABLE_DEFINITION

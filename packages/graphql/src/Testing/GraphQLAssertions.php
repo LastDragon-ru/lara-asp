@@ -5,10 +5,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions as PrinterGraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpectedSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
@@ -25,15 +27,29 @@ use function assert;
  */
 trait GraphQLAssertions {
     use MocksResolvers;
-
-    use PrinterGraphQLAssertions {
-        printGraphQLSchema as private printerPrintGraphQLSchema;
-    }
+    use PrinterGraphQLAssertions;
 
     // <editor-fold desc="Assertions">
     // =========================================================================
     /**
+     * Compares GraphQL schema with current (application) schema.
+     */
+    public function assertCurrentGraphQLSchemaEquals(
+        GraphQLExpected|SplFileInfo|string $expected,
+        string $message = '',
+    ): void {
+        self::assertGraphQLPrintableEquals(
+            $expected,
+            $this->getCurrentGraphQLSchema(),
+            $message,
+        );
+    }
+
+    /**
      * Compares GraphQL schema with default (application) schema.
+     *
+     * @deprecated 4.4.0 Please use {@see self::resetGraphQLSchema()} (if needed)
+     *      with {@see self::assertGraphQLPrintableEquals()} instead.
      */
     public function assertDefaultGraphQLSchemaEquals(
         GraphQLExpectedSchema|SplFileInfo|string $expected,
@@ -45,13 +61,37 @@ trait GraphQLAssertions {
             $message,
         );
     }
+
+    /**
+     * Compares two GraphQL schemas.
+     *
+     * @deprecated 4.4.0 Please use {@see self::useGraphQLSchema()} with
+     *      {@see self::assertGraphQLPrintableEquals()} instead.
+     */
+    public function assertGraphQLSchemaEquals(
+        GraphQLExpectedSchema|SplFileInfo|string $expected,
+        Schema|DocumentNode|SplFileInfo|string $schema,
+        string $message = '',
+    ): void {
+        $schema = $this->useGraphQLSchema($schema)->getCurrentGraphQLSchema();
+
+        try {
+            self::assertGraphQLPrintableEquals(
+                $expected,
+                $schema,
+                $message,
+            );
+        } finally {
+            $this->resetGraphQLSchema();
+        }
+    }
     // </editor-fold>
 
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function useGraphQLSchema(Schema|DocumentNode|SplFileInfo|string $schema): static {
         $schema   = $schema instanceof Schema || $schema instanceof DocumentNode
-            ? $this->printerPrintGraphQLSchema($schema)
+            ? (string) $this->getGraphQLPrinter()->print($schema)
             : Args::content($schema);
         $provider = new TestSchemaProvider($schema);
 
@@ -60,24 +100,47 @@ trait GraphQLAssertions {
         return $this;
     }
 
+    /**
+     * @deprecated 4.4.0 The method is not recommended to use and probably will
+     *      be removed in the next major version. Please use
+     *      {@see self::useGraphQLSchema()} instead.
+     */
     protected function getGraphQLSchema(Schema|DocumentNode|SplFileInfo|string $schema): Schema {
         try {
             return $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
         } finally {
-            $this->useDefaultGraphQLSchema();
+            $this->resetGraphQLSchema();
         }
     }
 
-    protected function useDefaultGraphQLSchema(): static {
+    protected function resetGraphQLSchema(): static {
         $this->getGraphQLSchemaBuilder()->setSchema(null);
 
         return $this;
     }
 
-    protected function getDefaultGraphQLSchema(): Schema {
-        return $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
+    /**
+     * @deprecated 4.4.0 Please use {@see self::resetGraphQLSchema()} instead.
+     */
+    protected function useDefaultGraphQLSchema(): static {
+        return $this->resetGraphQLSchema();
     }
 
+    /**
+     * @deprecated 4.4.0 The method is not recommended to use and probably will
+     *      be removed in the next major version.
+     */
+    protected function getDefaultGraphQLSchema(): Schema {
+        return $this->getGraphQLSchemaBuilder()->default();
+    }
+
+    protected function getCurrentGraphQLSchema(): Schema {
+        return $this->getGraphQLSchemaBuilder()->schema();
+    }
+
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printGraphQLSchema(
         Schema|DocumentNode|SplFileInfo|string $schema,
         Settings $settings = null,
@@ -87,12 +150,15 @@ trait GraphQLAssertions {
                 $schema = $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
             }
 
-            return $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
+            return $this->getGraphQLPrinter($settings)->printSchema($schema);
         } finally {
-            $this->useDefaultGraphQLSchema();
+            $this->resetGraphQLSchema();
         }
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printGraphQLSchemaType(
         Schema|DocumentNode|SplFileInfo|string $schema,
         Type|string $type,
@@ -103,21 +169,38 @@ trait GraphQLAssertions {
                 $schema = $this->useGraphQLSchema($schema)->getGraphQLSchemaBuilder()->schema();
             }
 
-            return $this->getGraphQLSchemaPrinter($settings)->printSchemaType($schema, $type);
+            return $this->getGraphQLPrinter($settings)->printSchemaType($schema, $type);
         } finally {
-            $this->useDefaultGraphQLSchema();
+            $this->resetGraphQLSchema();
         }
     }
 
+    /**
+     * @deprecated 4.4.0 Method will be removed in the next major version.
+     */
     protected function printDefaultGraphQLSchema(Settings $settings = null): Result {
-        $schema  = $this->useDefaultGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
-        $printed = $this->getGraphQLSchemaPrinter($settings)->printSchema($schema);
+        $schema  = $this->resetGraphQLSchema()->getGraphQLSchemaBuilder()->schema();
+        $printed = $this->getGraphQLPrinter($settings)->printSchema($schema);
 
         return $printed;
     }
 
-    protected function getGraphQLSchemaPrinter(Settings $settings = null): Printer {
-        return $this->app->make(Printer::class)->setSettings($settings ?? new TestSettings());
+    /**
+     * @deprecated 4.4.0 Please use {@see self::getGraphQLPrinter()} instead.
+     */
+    protected function getGraphQLSchemaPrinter(Settings $settings = null): PrinterContract {
+        return $this->getGraphQLPrinter($settings);
+    }
+
+    /**
+     * @return PrinterContract&Printer
+     */
+    protected function getGraphQLPrinter(Settings $settings = null): PrinterContract {
+        $printer = $this->app->make(PrinterContract::class)->setSettings($settings ?? new TestSettings());
+
+        assert($printer instanceof Printer);
+
+        return $printer;
     }
 
     protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {

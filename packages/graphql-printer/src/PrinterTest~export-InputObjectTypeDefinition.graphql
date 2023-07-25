@@ -1,0 +1,65 @@
+"""
+Directive description
+"""
+directive @directive(
+    hidden: InputHidden
+    location: String
+)
+repeatable on
+    | ARGUMENT_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | FIELD
+    | FIELD_DEFINITION
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | INTERFACE
+    | MUTATION
+    | OBJECT
+    | QUERY
+    | SCALAR
+    | SCHEMA
+    | SUBSCRIPTION
+    | UNION
+    | VARIABLE_DEFINITION
+
+"""
+Input description.
+"""
+input InputA
+@directive(
+    location: "input"
+)
+@directive(
+    location: "extend"
+)
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "extend"
+    )
+
+    c: [Float!]!
+    @directive(
+        location: "field"
+    )
+}
+
+input InputHidden {
+    a: Int
+}
+
+"""
+Description
+"""
+input InputUnused {
+    a: InputA
+}
