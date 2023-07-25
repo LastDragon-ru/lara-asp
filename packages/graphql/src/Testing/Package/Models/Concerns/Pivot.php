@@ -4,6 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\Pivot as EloquentPivot;
 
+/**
+ * @internal
+ */
 abstract class Pivot extends EloquentPivot {
     use Concerns;
 }

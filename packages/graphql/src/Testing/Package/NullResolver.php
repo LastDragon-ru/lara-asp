@@ -2,6 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
+/**
+ * @internal
+ */
 class NullResolver {
     /**
      * @param array<string, mixed> $args

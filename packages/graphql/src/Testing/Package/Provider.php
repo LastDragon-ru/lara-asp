@@ -5,6 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * @internal
+ */
 class Provider extends ServiceProvider {
     public function register(): void {
         parent::register();

@@ -10,6 +10,8 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
  * @template TModel of Model
  *
  * @extends Relation<TModel>
+ *
+ * @internal
  */
 class Unsupported extends Relation {
     public function __construct() {

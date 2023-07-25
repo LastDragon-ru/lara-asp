@@ -467,11 +467,11 @@ use Nuwave\Lighthouse\Schema\SchemaBuilder;
 
 $schema  = Container::getInstance()->make(SchemaBuilder::class)->schema();
 $printer = Container::getInstance()->make(Printer::class);
-$printed = $printer->printSchema($schema);
+$printed = $printer->print($schema);
 ```
 
 There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertions.php).
 
 | Name                               | Description              |
 |------------------------------------|--------------------------|
-| `assertDefaultGraphQLSchemaEquals` | Compares default schema. |
+| `assertCurrentGraphQLSchemaEquals` | Compares default schema. |

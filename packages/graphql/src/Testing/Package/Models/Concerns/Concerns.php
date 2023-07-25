@@ -4,6 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns;
 
 use function array_merge;
 
+/**
+ * @internal
+ */
 trait Concerns {
     /**
      * @param array<string, mixed> $attributes

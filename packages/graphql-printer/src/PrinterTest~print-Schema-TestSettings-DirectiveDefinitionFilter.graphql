@@ -1,4 +1,19 @@
 """
+Marks an element of a GraphQL schema as no longer supported.
+"""
+directive @deprecated(
+    """
+    Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).
+    """
+    reason: String = "No longer supported"
+)
+on
+    | ARGUMENT_DEFINITION
+    | ENUM_VALUE
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+
+"""
 Enum description.
 """
 enum Enum
@@ -49,6 +64,10 @@ input InputA
     )
 }
 
+input InputHidden {
+    a: Int
+}
+
 """
 Interface description.
 """
@@ -86,9 +105,11 @@ implements
     a: Int
     b: [String!]
     c: [Float!]!
+    d: TypeHidden!
 
     e(
         a: Int
+        b: InputHidden
     ): Int
 }
 
@@ -117,7 +138,12 @@ type Mutation {
 type Query {
     enum(
         enum: Enum = A
+        hidden: [InputHidden!]!
     ): TypeB
+
+    hidden(
+        scalar: Int! = 123
+    ): TypeHidden
 
     scalar: Scalar
 
@@ -126,6 +152,7 @@ type Query {
 
         scalar: Int! = 123
         @directive(
+            hidden: null
             location: "argument"
         )
     ): TypeA!
@@ -178,6 +205,10 @@ type TypeC {
     c: [Float!]!
 }
 
+type TypeHidden {
+    a: Int
+}
+
 """
 Union description.
 """
@@ -192,30 +223,3 @@ union Union
     | TypeA
     | TypeB
     | TypeC
-
-"""
-Directive description
-"""
-directive @directive(
-    location: String
-)
-repeatable on
-    | ARGUMENT_DEFINITION
-    | ENUM
-    | ENUM_VALUE
-    | FIELD
-    | FIELD_DEFINITION
-    | FRAGMENT_DEFINITION
-    | FRAGMENT_SPREAD
-    | INLINE_FRAGMENT
-    | INPUT_FIELD_DEFINITION
-    | INPUT_OBJECT
-    | INTERFACE
-    | MUTATION
-    | OBJECT
-    | QUERY
-    | SCALAR
-    | SCHEMA
-    | SUBSCRIPTION
-    | UNION
-    | VARIABLE_DEFINITION

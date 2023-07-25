@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
 
-class DefaultSettings extends GraphQLSettings {
+class DefaultSettings extends ImmutableSettings {
     protected string           $space                             = ' ';
     protected string           $indent                            = '    ';
     protected string           $fileEnd                           = "\n";

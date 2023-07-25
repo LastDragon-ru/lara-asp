@@ -20,6 +20,8 @@ jobs:
       contents: write
     needs:
       - ci
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       # Bot cannot sign tags/commits yet
       # https://github.com/actions/runner/issues/667
@@ -47,6 +49,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm run release
+      - name: Version
+        id: version
+        run: |
+          echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
   packages:
     uses: ./.github/workflows/packages.yml
@@ -65,6 +71,4 @@ jobs:
         uses: actions/checkout@v3
       - name: Summary
         run: |
-          VERSION=$(git describe --tags --abbrev=0)
-
-          echo "Version **[${VERSION}](https://github.com/${{ github.repository }}/releases/tag/${VERSION})** released! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "Version **[${{ needs.release.outputs.version }}](https://github.com/${{ github.repository }}/releases/tag/${{ needs.release.outputs.version }})** released! :rocket:" >> $GITHUB_STEP_SUMMARY

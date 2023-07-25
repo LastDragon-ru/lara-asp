@@ -51,6 +51,34 @@ input InputA
     )
 }
 
+"""
+Directive description
+"""
+directive @directive(
+    location: String
+    hidden: InputHidden
+)
+repeatable on
+    | QUERY
+    | MUTATION
+    | SUBSCRIPTION
+    | FIELD
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | VARIABLE_DEFINITION
+    | SCHEMA
+    | SCALAR
+    | OBJECT
+    | FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | INTERFACE
+    | UNION
+    | ENUM
+    | ENUM_VALUE
+    | INPUT_OBJECT
+    | INPUT_FIELD_DEFINITION
+
 input InputHidden {
     a: Int
 }
@@ -194,31 +222,3 @@ interface InterfaceC implements InterfaceA & InterfaceB {
         b: InputHidden
     ): Int
 }
-
-"""
-Directive description
-"""
-directive @directive(
-    location: String
-    hidden: InputHidden
-)
-repeatable on
-    | QUERY
-    | MUTATION
-    | SUBSCRIPTION
-    | FIELD
-    | FRAGMENT_DEFINITION
-    | FRAGMENT_SPREAD
-    | INLINE_FRAGMENT
-    | VARIABLE_DEFINITION
-    | SCHEMA
-    | SCALAR
-    | OBJECT
-    | FIELD_DEFINITION
-    | ARGUMENT_DEFINITION
-    | INTERFACE
-    | UNION
-    | ENUM
-    | ENUM_VALUE
-    | INPUT_OBJECT
-    | INPUT_FIELD_DEFINITION

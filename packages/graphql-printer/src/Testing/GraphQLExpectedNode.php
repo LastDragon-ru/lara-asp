@@ -2,27 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
 
-use GraphQL\Type\Definition\Type;
+use GraphQL\Language\AST\Node;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
 /**
  * @deprecated 4.4.0 Please use {@see GraphQLExpected} instead.
  */
-class GraphQLExpectedType extends GraphQLExpected {
+class GraphQLExpectedNode extends GraphQLExpected {
     /**
      * @inheritDoc
      */
     public function __construct(
-        protected Type|SplFileInfo|string $type,
+        protected Node|SplFileInfo|string $node,
         ?array $usedTypes = null,
         ?array $usedDirectives = null,
         ?Settings $settings = null,
     ) {
-        parent::__construct($this->type, $usedTypes, $usedDirectives, $settings);
+        parent::__construct($this->node, $usedTypes, $usedDirectives, $settings);
     }
 
-    public function getType(): Type|SplFileInfo|string {
-        return $this->type;
+    public function getNode(): Node|SplFileInfo|string {
+        return $this->node;
     }
 }
