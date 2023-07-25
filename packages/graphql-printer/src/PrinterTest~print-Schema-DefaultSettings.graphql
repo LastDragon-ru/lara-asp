@@ -1,27 +1,80 @@
 """
+Directive description
+"""
+directive @directive(
+    hidden: InputHidden
+    location: String
+)
+repeatable on
+    | ARGUMENT_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | FIELD
+    | FIELD_DEFINITION
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | INTERFACE
+    | MUTATION
+    | OBJECT
+    | QUERY
+    | SCALAR
+    | SCHEMA
+    | SUBSCRIPTION
+    | UNION
+    | VARIABLE_DEFINITION
+
+"""
 Enum description.
 """
-enum Enum {
+enum Enum
+@directive(
+    location: "enum"
+)
+@directive(
+    location: "extend"
+)
+{
     """
     Enum value description
     """
     A
 
     B
+    @directive(
+        location: "enum value"
+    )
+
     C
 }
 
 """
 Input description.
 """
-input InputA {
+input InputA
+@directive(
+    location: "input"
+)
+@directive(
+    location: "extend"
+)
+{
     """
     Field description.
     """
     a: Int
 
     b: [String!]
+    @directive(
+        location: "extend"
+    )
+
     c: [Float!]!
+    @directive(
+        location: "field"
+    )
 }
 
 input InputHidden {
@@ -31,7 +84,14 @@ input InputHidden {
 """
 Interface description.
 """
-interface InterfaceA {
+interface InterfaceA
+@directive(
+    location: "interface"
+)
+@directive(
+    location: "extend"
+)
+{
     a: Int
 }
 
@@ -45,6 +105,9 @@ implements
     a: Int
 
     b: [String!]
+    @directive(
+        location: "field"
+    )
 }
 
 interface InterfaceC
@@ -67,11 +130,21 @@ implements
 Scalar description.
 """
 scalar Scalar
+@directive(
+    location: "scalar"
+)
+@directive(
+    location: "extend"
+)
 
 type Mutation {
     mutate(
         a: InputA
+
         scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
     ): [TypeB!]
 }
 
@@ -89,7 +162,12 @@ type Query {
 
     type(
         a: InputA
+
         scalar: Int! = 123
+        @directive(
+            hidden: null
+            location: "argument"
+        )
     ): TypeA!
 
     union: Union
@@ -106,6 +184,12 @@ type TypeA
 implements
     & InterfaceB
     & InterfaceC
+@directive(
+    location: "type"
+)
+@directive(
+    location: "extend"
+)
 {
     a: Int
     @deprecated
@@ -116,11 +200,18 @@ implements
     b: [String!]
 
     c: [Float!]!
+
     d: [String!]
+    @directive(
+        location: "extend"
+    )
 }
 
 type TypeB {
     b: [String!]
+    @directive(
+        location: "field"
+    )
 }
 
 type TypeC {
@@ -134,7 +225,14 @@ type TypeHidden {
 """
 Union description.
 """
-union Union =
+union Union
+@directive(
+    location: "union"
+)
+@directive(
+    location: "extend"
+)
+=
     | TypeA
     | TypeB
     | TypeC

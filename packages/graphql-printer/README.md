@@ -41,10 +41,7 @@ $schema   = BuildSchema::build(
     GraphQL,
 );
 $type     = $schema->getType('A');
-$settings = (new DefaultSettings())
-    ->setPrintDirectiveDefinitions(true)
-    ->setPrintDirectives(true)
-    ->setDirectiveFilter(null);
+$settings = new DefaultSettings();
 $printer  = new Printer($settings, null, $schema);
 $printed  = $printer->print($type);
 $exported = $printer->export($type);

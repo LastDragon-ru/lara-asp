@@ -1,10 +1,73 @@
+directive @codeDirective(
+    custom: [CodeDirectiveScalarCustomClass]
+    enum: CodeDirectiveEnum
+    input: CodeDirectiveInput
+    scalar: CodeDirectiveScalar!
+)
+repeatable on
+    | INTERFACE
+    | SCALAR
+    | SCHEMA
+
+"""
+Allows you to easily hook up a resolver for an endpoint.
+"""
+directive @mock(
+    """
+    Specify a unique key for the mock resolver.
+    """
+    key: String = "default"
+)
+on
+    | FIELD_DEFINITION
+
+"""
+Reference a class implementing a scalar definition.
+"""
+directive @scalar(
+    """
+    Reference to a class that extends `\GraphQL\Type\Definition\ScalarType`.
+    """
+    class: String!
+)
+on
+    | SCALAR
+
+"""
+Directive
+"""
+directive @schemaDirective(
+    """
+    Directive argument
+    """
+    message: String
+)
+on
+    | ARGUMENT_DEFINITION
+    | FIELD
+    | INPUT_OBJECT
+    | INTERFACE
+    | OBJECT
+    | SCALAR
+    | SCHEMA
+    | UNION
+
+enum CodeDirectiveEnum {
+    A
+    B
+    C
+}
+
 enum CodeEnum {
     A
     B
     C
 }
 
-enum SchemaEnum {
+enum SchemaEnum
+@schemaDirective
+@codeDirective
+{
     A
     @deprecated
 
@@ -14,14 +77,22 @@ enum SchemaEnum {
     B
 }
 
+input CodeDirectiveInput {
+    a: Int!
+}
+
 """
 Description
 """
-input CodeInput {
+input CodeInput
+@schemaDirective
+{
     a: Boolean
 }
 
-input SchemaInput {
+input SchemaInput
+@schemaDirective
+{
     a: CodeScalar
     b: CodeEnum
     c: SchemaScalar
@@ -38,7 +109,9 @@ input SchemaInput {
 """
 Description
 """
-interface CodeInterface {
+interface CodeInterface
+@codeDirective
+{
     a: Boolean!
 }
 
@@ -53,6 +126,7 @@ interface SchemaInterfaceB
 implements
     & CodeInterface
     & SchemaInterfaceA
+@schemaDirective
 {
     a: Boolean!
 
@@ -80,6 +154,13 @@ implements
     e: CodeEnum
 }
 
+scalar CodeDirectiveScalar
+
+scalar CodeDirectiveScalarCustomClass
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
+
 """
 The `String` scalar type represents textual data, represented as UTF-8
 character sequences. The String type is most often used by GraphQL to
@@ -93,11 +174,17 @@ character sequences. The String type is most often used by GraphQL to
 represent free-form human-readable text.
 """
 scalar SchemaScalar
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
+@codeDirective
 
 """
 Description
 """
-type CodeType {
+type CodeType
+@schemaDirective
+{
     a: Boolean
 }
 
@@ -106,9 +193,12 @@ type Query {
     @deprecated(
         reason: "deprecated reason"
     )
+    @codeDirective
+    @mock
 
     b: SchemaEnum
     @deprecated
+    @mock
 
     c(
         a: SchemaInput = {
@@ -125,15 +215,18 @@ type Query {
             }
         }
     ): CodeScalar
+    @mock
 
     d(
         a: SchemaInput = {}
     ): CodeType
+    @mock
 }
 
 type SchemaType
 implements
     & SchemaInterfaceB
+@schemaDirective
 {
     a: Boolean!
 
@@ -172,6 +265,8 @@ implements
 union CodeUnion =
     | CodeType
 
-union SchemaUnion =
+union SchemaUnion
+@schemaDirective
+=
     | CodeType
     | SchemaType

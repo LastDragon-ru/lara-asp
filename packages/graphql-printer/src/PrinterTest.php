@@ -230,6 +230,7 @@ class PrinterTest extends TestCase {
                     ])
                     ->setUsedDirectives([
                         '@deprecated',
+                        '@directive',
                     ]),
                 new DefaultSettings(),
                 0,
