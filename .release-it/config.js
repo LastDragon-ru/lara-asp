@@ -59,6 +59,7 @@ module.exports = {
                 mainTemplate:  mainTemplate,
                 commitPartial: commitTemplate,
                 commitsSort:   (a, b) => {
+                    // todo(release-it): Is it possible to sort by commit datetime?
                     return (a.scope || '').localeCompare(b.scope || '')
                         || a.subject.localeCompare(b.subject);
                 },
