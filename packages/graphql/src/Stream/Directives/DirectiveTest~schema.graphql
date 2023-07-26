@@ -1,0 +1,15 @@
+type Query {
+    fieldWithoutArguments: [Object] @stream
+
+    fieldWithArguments(argument: String): [Object] @stream
+
+    fieldWithDirectives(a: _ @searchBy, b: _ @sortBy): [Object] @stream
+
+    fieldNotSearchable: [Object] @stream(searchable: false)
+
+    fieldNotSortable: [Object] @stream(sortable: false)
+}
+
+type Object {
+    id: ID
+}

@@ -1,0 +1,233 @@
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorAnyOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIsNotNull
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIsNull
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNot
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Splits list of items into the chunks and return one chunk specified by page number or cursor.
+"""
+directive @stream(
+    searchable: Boolean
+    sortable: Boolean
+)
+on
+    | FIELD_DEFINITION
+
+enum SearchByTypeFlag {
+    yes
+}
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    asc
+    desc
+}
+
+"""
+Available conditions for `type Object` (only one property allowed at a time).
+"""
+input SearchByConditionObject {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionObject!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionObject!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    id: SearchByScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Not.
+    """
+    not: SearchByConditionObject
+    @searchByOperatorNot
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByScalarIDOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [ID!]
+    @searchByOperatorIn
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ID
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [ID!]
+    @searchByOperatorNotIn
+}
+
+"""
+Sort clause for `type Object` (only one property allowed at a time).
+"""
+input SortByClauseObject {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+}
+
+type Object {
+    id: ID
+}
+
+type Query {
+    fieldNotSearchable(
+        order: [SortByClauseObject!]
+        @sortBy
+    ): [Object]
+    @stream(
+        searchable: false
+    )
+
+    fieldNotSortable(
+        where: SearchByConditionObject
+        @searchBy
+    ): [Object]
+    @stream(
+        sortable: false
+    )
+
+    fieldWithArguments(
+        argument: String
+
+        order: [SortByClauseObject!]
+        @sortBy
+
+        where: SearchByConditionObject
+        @searchBy
+    ): [Object]
+    @stream
+
+    fieldWithDirectives(
+        a: SearchByConditionObject
+        @searchBy
+
+        b: [SortByClauseObject!]
+        @sortBy
+    ): [Object]
+    @stream
+
+    fieldWithoutArguments(
+        order: [SortByClauseObject!]
+        @sortBy
+
+        where: SearchByConditionObject
+        @searchBy
+    ): [Object]
+    @stream
+}
