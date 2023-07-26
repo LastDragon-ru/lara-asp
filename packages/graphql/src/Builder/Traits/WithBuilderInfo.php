@@ -39,6 +39,23 @@ trait WithBuilderInfo {
     use WithManipulator;
     use WithSource;
 
+    protected function getFieldBuilderInfo(
+        DocumentAST $document,
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
+        FieldDefinitionNode $field,
+    ): BuilderInfo {
+        $builder = $this->getBuilderInfo($field);
+
+        if (!$builder) {
+            $manipulator = $this->getAstManipulator($document);
+            $argSource   = $this->getFieldSource($manipulator, $type, $field);
+
+            throw new BuilderUnknown($argSource);
+        }
+
+        return $builder;
+    }
+
     protected function getFieldArgumentBuilderInfo(
         DocumentAST $document,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
