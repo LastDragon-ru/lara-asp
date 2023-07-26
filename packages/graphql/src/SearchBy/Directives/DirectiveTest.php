@@ -202,8 +202,7 @@ class DirectiveTest extends TestCase {
 
         $this
             ->useGraphQLSchema(
-            /** @lang GraphQL */
-                <<<GRAPHQL
+                <<<GraphQL
                 type Query {
                     test(input: Test @searchBy): [TestObject!]!
                     @all(model: {$model})
@@ -217,17 +216,16 @@ class DirectiveTest extends TestCase {
                 type TestObject {
                     id: String!
                 }
-                GRAPHQL,
+                GraphQL,
             )
             ->graphQL(
-            /** @lang GraphQL */
-                <<<'GRAPHQL'
+                <<<'GraphQL'
                 query test($input: SearchByConditionTest) {
                     test(input: $input) {
                         id
                     }
                 }
-                GRAPHQL,
+                GraphQL,
                 [
                     'input' => $value,
                 ],
@@ -259,8 +257,7 @@ class DirectiveTest extends TestCase {
         }
 
         $this->useGraphQLSchema(
-        /** @lang GraphQL */
-            <<<'GRAPHQL'
+            <<<'GraphQL'
             type Query {
                 test(input: Test @searchBy): String! @all
             }
@@ -269,7 +266,7 @@ class DirectiveTest extends TestCase {
                 a: Int!
                 b: String
             }
-            GRAPHQL,
+            GraphQL,
         );
 
         $definitionNode = Parser::inputValueDefinition('input: SearchByConditionTest');
@@ -311,8 +308,7 @@ class DirectiveTest extends TestCase {
             ->setResolved('search', SearchDirective::class);
 
         $this->useGraphQLSchema(
-        /** @lang GraphQL */
-            <<<'GRAPHQL'
+            <<<'GraphQL'
             type Query {
                 test(search: String @search, input: Test @searchBy): String! @mock
             }
@@ -322,7 +318,7 @@ class DirectiveTest extends TestCase {
                 b: String @rename(attribute: "renamed")
                 c: Test
             }
-            GRAPHQL,
+            GraphQL,
         );
 
         $definitionNode = Parser::inputValueDefinition('input: SearchByScoutConditionTest');
@@ -420,9 +416,9 @@ class DirectiveTest extends TestCase {
                         }
 
                         public static function definition(): string {
-                            return /** @lang GraphQL */ <<<'GRAPHQL'
+                            return <<<'GraphQL'
                                 directive @customComplexOperator(value: String) on INPUT_FIELD_DEFINITION
-                            GRAPHQL;
+                            GraphQL;
                         }
 
                         public function call(

@@ -164,12 +164,11 @@ class DirectiveTest extends TestCase {
         $registry->register($type);
 
         $this->useGraphQLSchema(
-        /** @lang GraphQL */
-            <<<'GRAPHQL'
+            <<<'GraphQL'
             type Query {
               test(order: _ @sortBy): TestType! @all
             }
-            GRAPHQL,
+            GraphQL,
         );
     }
 
@@ -195,8 +194,7 @@ class DirectiveTest extends TestCase {
         }
 
         $this->useGraphQLSchema(
-        /** @lang GraphQL */
-            <<<'GRAPHQL'
+            <<<'GraphQL'
             type Query {
                 test(input: Test @sortBy): String! @all
             }
@@ -205,7 +203,7 @@ class DirectiveTest extends TestCase {
                 a: Int!
                 b: String @rename(attribute: "renamed")
             }
-            GRAPHQL,
+            GraphQL,
         );
 
         $definitionNode = Parser::inputValueDefinition('input: [SortByClauseTest!]');

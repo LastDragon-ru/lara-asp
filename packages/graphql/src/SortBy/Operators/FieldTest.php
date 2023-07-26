@@ -131,8 +131,7 @@ class FieldTest extends TestCase {
     public static function dataProviderCall(): array {
         $factory = static function (self $test): Argument {
             $test->useGraphQLSchema(
-                /** @lang GraphQL */
-                <<<'GRAPHQL'
+                <<<'GraphQL'
                 type Query {
                     test(input: Test @sortBy): String! @all
                 }
@@ -141,7 +140,7 @@ class FieldTest extends TestCase {
                     a: Int!
                     b: String
                 }
-                GRAPHQL,
+                GraphQL,
             );
 
             return $test->getGraphQLArgument(

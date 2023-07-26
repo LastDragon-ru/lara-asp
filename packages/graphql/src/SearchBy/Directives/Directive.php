@@ -26,12 +26,12 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     public const Name = 'SearchBy';
 
     public static function definition(): string {
-        return /** @lang GraphQL */ <<<'GRAPHQL'
+        return <<<'GraphQL'
             """
             Use Input as Search Conditions for the current Builder.
             """
             directive @searchBy on ARGUMENT_DEFINITION
-        GRAPHQL;
+        GraphQL;
     }
 
     // <editor-fold desc="Getters / Setters">
