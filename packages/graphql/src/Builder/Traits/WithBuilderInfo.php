@@ -15,7 +15,6 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
-use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -37,6 +36,7 @@ use function class_exists;
 use function is_a;
 
 trait WithBuilderInfo {
+    use WithManipulator;
     use WithSource;
 
     protected function getFieldArgumentBuilderInfo(
@@ -48,9 +48,7 @@ trait WithBuilderInfo {
         $builder = $this->getBuilderInfo($field);
 
         if (!$builder) {
-            $manipulator = Container::getInstance()->make(AstManipulator::class, [
-                'document' => $document,
-            ]);
+            $manipulator = $this->getAstManipulator($document);
             $argSource   = $this->getFieldArgumentSource($manipulator, $type, $field, $argument);
 
             throw new BuilderUnknown($argSource);

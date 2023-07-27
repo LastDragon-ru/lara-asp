@@ -10,7 +10,6 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -194,10 +193,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     ): void {
         // Converted?
         $builder     = $this->getFieldArgumentBuilderInfo($documentAST, $parentType, $parentField, $argDefinition);
-        $manipulator = Container::getInstance()->make(Manipulator::class, [
-            'document'    => $documentAST,
-            'builderInfo' => $builder,
-        ]);
+        $manipulator = $this->getManipulator($documentAST, $builder);
 
         if ($this->isTypeName($manipulator->getNodeTypeName($argDefinition))) {
             return;
