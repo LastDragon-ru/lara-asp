@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
- * @template TType of TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type
+ * @template TType of (TypeDefinitionNode&Node)|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type
  */
 class Source implements TypeSource {
     /**
@@ -45,6 +45,9 @@ class Source implements TypeSource {
         return $this->getManipulator()->getNodeTypeName($this->getType());
     }
 
+    /**
+     * @return (TypeDefinitionNode&Node)|Type
+     */
     public function getTypeDefinition(): TypeDefinitionNode|Type {
         $type       = $this->getType();
         $definition = !($type instanceof TypeDefinitionNode)

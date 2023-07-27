@@ -8,6 +8,7 @@ use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
@@ -318,6 +319,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $this->removeTypeDefinition($name);
     }
 
+    /**
+     * @return (TypeDefinitionNode&Node)|Type|null
+     */
     public function getPlaceholderTypeDefinitionNode(
         FieldDefinitionNode|FieldDefinition $field,
     ): TypeDefinitionNode|Type|null {

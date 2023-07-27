@@ -76,6 +76,9 @@ class AstManipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================}
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node)|string $node
+     */
     public function isPlaceholder(
         Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
     ): bool {
@@ -83,6 +86,9 @@ class AstManipulator {
         return $this->getNodeTypeName($node) === '_';
     }
 
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node) $node
+     */
     public function isNullable(
         Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode $node,
     ): bool {
@@ -102,6 +108,9 @@ class AstManipulator {
             && !($type instanceof NonNullTypeNode);
     }
 
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node) $node
+     */
     public function isList(
         Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode $node,
     ): bool {
@@ -129,6 +138,9 @@ class AstManipulator {
             || $type instanceof ListTypeNode;
     }
 
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
+     */
     public function isUnion(
         Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
     ): bool {
@@ -158,6 +170,9 @@ class AstManipulator {
         }
     }
 
+    /**
+     * @return (TypeDefinitionNode&Node)|Type
+     */
     public function getTypeDefinitionNode(
         Node|Type|InputObjectField|FieldDefinition|Argument|string $node,
     ): TypeDefinitionNode|Type {
@@ -217,8 +232,9 @@ class AstManipulator {
     /**
      * @template T
      *
-     * @param class-string<T>       $class
-     * @param Closure(T): bool|null $callback
+     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|Argument $node
+     * @param class-string<T>                                                               $class
+     * @param Closure(T): bool|null                                                         $callback
      *
      * @return (T&Directive)|null
      */
@@ -238,8 +254,9 @@ class AstManipulator {
     /**
      * @template T
      *
-     * @param class-string<T>|null                                           $class
-     * @param Closure(($class is null ? Directive : T&Directive)): bool|null $callback
+     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|Argument $node
+     * @param class-string<T>|null                                                          $class
+     * @param Closure(($class is null ? Directive : T&Directive)): bool|null                $callback
      *
      * @return ($class is null ? list<Directive> : list<T&Directive>)
      */
@@ -286,12 +303,20 @@ class AstManipulator {
         return $directives;
     }
 
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node)|string $node
+     */
     public function getNodeTypeName(
         Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
     ): string {
         $name = null;
 
-        if ($node instanceof Type || $node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
+        if (
+            $node instanceof Type
+            || $node instanceof InputObjectField
+            || $node instanceof FieldDefinition
+            || $node instanceof Argument
+        ) {
             $type = $node instanceof Type ? $node : $node->getType();
 
             if ($type instanceof WrappingType) {
@@ -314,6 +339,9 @@ class AstManipulator {
         return $name;
     }
 
+    /**
+     * @param InputValueDefinitionNode|(TypeDefinitionNode&Node)|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|Type $node
+     */
     public function getNodeName(
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|Type $node,
     ): string {
@@ -338,6 +366,9 @@ class AstManipulator {
         return $name;
     }
 
+    /**
+     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|string $node
+     */
     public function getNodeTypeFullName(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
