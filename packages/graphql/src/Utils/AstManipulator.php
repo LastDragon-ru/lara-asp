@@ -238,7 +238,7 @@ class AstManipulator {
      *
      * @return (T&Directive)|null
      */
-    public function getNodeDirective(
+    public function getDirective(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
         string $class,
         ?Closure $callback = null,

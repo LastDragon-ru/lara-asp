@@ -224,7 +224,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             }
 
             // Directive? (no need to update type here)
-            if ($manipulator->getNodeDirective($argument, self::class) !== null) {
+            if ($manipulator->getDirective($argument, self::class) !== null) {
                 continue;
             }
 

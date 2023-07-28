@@ -142,7 +142,7 @@ abstract class InputObject implements TypeDefinition {
         }
 
         // Resolver?
-        $resolver = $manipulator->getNodeDirective($field->getField(), FieldResolver::class);
+        $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
 
         if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $resolver)) {
             return false;
@@ -200,7 +200,7 @@ abstract class InputObject implements TypeDefinition {
         $nodes    = [$field->getField(), $field->getTypeDefinition()];
 
         foreach ($nodes as $node) {
-            $operator = $manipulator->getNodeDirective(
+            $operator = $manipulator->getDirective(
                 $node,
                 $directive,
                 static function (Operator $operator) use ($builder): bool {

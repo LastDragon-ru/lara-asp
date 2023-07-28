@@ -326,7 +326,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         FieldDefinitionNode|FieldDefinition $field,
     ): TypeDefinitionNode|Type|null {
         $node     = null;
-        $paginate = $this->getNodeDirective($field, PaginateDirective::class);
+        $paginate = $this->getDirective($field, PaginateDirective::class);
 
         if ($paginate) {
             $type       = $this->getNodeTypeName($this->getTypeDefinition($field));
