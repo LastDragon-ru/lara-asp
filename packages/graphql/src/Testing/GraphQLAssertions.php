@@ -55,35 +55,8 @@ trait GraphQLAssertions {
         GraphQLExpectedSchema|SplFileInfo|string $expected,
         string $message = '',
     ): void {
-        self::assertGraphQLSchemaEquals(
-            $expected,
-            $this->getDefaultGraphQLSchema(),
-            $message,
-        );
-    }
-
-    /**
-     * Compares two GraphQL schemas.
-     *
-     * @deprecated 4.4.0 Please use {@see self::useGraphQLSchema()} with
-     *      {@see self::assertGraphQLPrintableEquals()} instead.
-     */
-    public function assertGraphQLSchemaEquals(
-        GraphQLExpectedSchema|SplFileInfo|string $expected,
-        Schema|DocumentNode|SplFileInfo|string $schema,
-        string $message = '',
-    ): void {
-        $schema = $this->useGraphQLSchema($schema)->getCurrentGraphQLSchema();
-
-        try {
-            self::assertGraphQLPrintableEquals(
-                $expected,
-                $schema,
-                $message,
-            );
-        } finally {
-            $this->resetGraphQLSchema();
-        }
+        $this->resetGraphQLSchema();
+        $this->assertCurrentGraphQLSchemaEquals($expected, $message);
     }
     // </editor-fold>
 
