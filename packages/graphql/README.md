@@ -472,6 +472,6 @@ $printed = $printer->print($schema);
 
 There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertions.php).
 
-| Name                               | Description              |
-|------------------------------------|--------------------------|
-| `assertCurrentGraphQLSchemaEquals` | Compares default schema. |
+| Name                        | Description              |
+|-----------------------------|--------------------------|
+| `assertGraphQLSchemaEquals` | Compares default schema. |

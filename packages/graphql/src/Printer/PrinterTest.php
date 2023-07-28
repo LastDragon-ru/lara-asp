@@ -64,7 +64,7 @@ class PrinterTest extends TestCase {
         Closure $typeFactory = null,
     ): void {
         $schema    = $schemaFactory($this);
-        $schema    = $this->useGraphQLSchema($schema)->getCurrentGraphQLSchema();
+        $schema    = $this->useGraphQLSchema($schema)->getGraphQLSchema();
         $printer   = $this->app->make(Printer::class)->setSettings($settings);
         $type      = $typeFactory ? $typeFactory($this, $schema) : null;
         $printable = $printableFactory($this, $schema);
@@ -92,7 +92,7 @@ class PrinterTest extends TestCase {
         Closure $typeFactory = null,
     ): void {
         $schema     = $schemaFactory($this);
-        $schema     = $this->useGraphQLSchema($schema)->getCurrentGraphQLSchema();
+        $schema     = $this->useGraphQLSchema($schema)->getGraphQLSchema();
         $printer    = $this->app->make(Printer::class)->setSettings($settings);
         $type       = $typeFactory ? $typeFactory($this, $schema) : null;
         $exportable = $exportableFactory($this, $schema);
@@ -116,7 +116,7 @@ class PrinterTest extends TestCase {
         Closure $printableFactory,
     ): void {
         $schema    = $schemaFactory($this);
-        $schema    = $this->useGraphQLSchema($schema)->getCurrentGraphQLSchema();
+        $schema    = $this->useGraphQLSchema($schema)->getGraphQLSchema();
         $printer   = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
         $printable = $printableFactory($this, $schema);
         $actual    = $printer->printSchema($printable);
@@ -139,7 +139,7 @@ class PrinterTest extends TestCase {
         Closure $typeFactory,
     ): void {
         $schema  = $schemaFactory($this);
-        $schema  = $this->useGraphQLSchema($schema)->getCurrentGraphQLSchema();
+        $schema  = $this->useGraphQLSchema($schema)->getGraphQLSchema();
         $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
         $type    = $typeFactory($this, $schema);
         $actual  = $printer->printSchemaType($schema, $type);
@@ -162,7 +162,7 @@ class PrinterTest extends TestCase {
         Closure $typeFactory,
     ): void {
         $schema  = $schemaFactory($this);
-        $schema  = $this->useGraphQLSchema($schema)->getCurrentGraphQLSchema();
+        $schema  = $this->useGraphQLSchema($schema)->getGraphQLSchema();
         $printer = $this->app->make(Printer::class)->setSettings($settings)->setLevel($level);
         $type    = $typeFactory($this, $schema);
         $actual  = $printer->printType($type);

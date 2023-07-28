@@ -31,13 +31,13 @@ trait GraphQLAssertions {
     /**
      * Compares GraphQL schema with current (application) schema.
      */
-    public function assertCurrentGraphQLSchemaEquals(
+    public function assertGraphQLSchemaEquals(
         GraphQLExpected|SplFileInfo|string $expected,
         string $message = '',
     ): void {
         self::assertGraphQLPrintableEquals(
             $expected,
-            $this->getCurrentGraphQLSchema(),
+            $this->getGraphQLSchema(),
             $message,
         );
     }
@@ -62,7 +62,7 @@ trait GraphQLAssertions {
         return $this;
     }
 
-    protected function getCurrentGraphQLSchema(): Schema {
+    protected function getGraphQLSchema(): Schema {
         return $this->getGraphQLSchemaBuilder()->schema();
     }
 

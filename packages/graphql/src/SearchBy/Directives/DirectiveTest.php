@@ -92,7 +92,7 @@ class DirectiveTest extends TestCase {
             self::getTestData()->file($graphql),
         );
 
-        self::assertCurrentGraphQLSchemaEquals(
+        self::assertGraphQLSchemaEquals(
             $expected($this),
         );
     }
@@ -170,7 +170,7 @@ class DirectiveTest extends TestCase {
             self::getTestData()->file('~programmatically.graphql'),
         );
 
-        self::assertCurrentGraphQLSchemaEquals(
+        self::assertGraphQLSchemaEquals(
             self::getTestData()->file('~programmatically-expected.graphql'),
         );
     }

@@ -75,7 +75,7 @@ class ManipulatorTest extends TestCase {
             }
         };
 
-        $schema = $this->useGraphQLSchema($graphql)->getCurrentGraphQLSchema();
+        $schema = $this->useGraphQLSchema($graphql)->getGraphQLSchema();
         $query  = $schema->getType('Query');
         $field  = $query instanceof ObjectType
             ? $query->getField('field')->astNode
