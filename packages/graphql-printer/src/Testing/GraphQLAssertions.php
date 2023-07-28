@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
 
 use Closure;
-use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
@@ -13,7 +12,6 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -154,21 +152,6 @@ trait GraphQLAssertions {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    /**
-     * @deprecated 4.4.0 Please use {@see BuildSchema::build()} instead.
-     */
-    protected function getGraphQLSchema(Schema|DocumentNode|SplFileInfo|string $schema): Schema {
-        if ($schema instanceof SplFileInfo || is_string($schema)) {
-            $schema = Args::content($schema);
-        }
-
-        if (!($schema instanceof Schema)) {
-            $schema = BuildSchema::build($schema);
-        }
-
-        return $schema;
-    }
-
     /**
      * @return PrinterContract&Printer
      */
