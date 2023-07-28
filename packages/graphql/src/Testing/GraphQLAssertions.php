@@ -4,9 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions as PrinterGraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
@@ -72,15 +71,8 @@ trait GraphQLAssertions {
         return $this->getGraphQLSchemaBuilder()->schema();
     }
 
-    /**
-     * @return PrinterContract&Printer
-     */
-    protected function getGraphQLPrinter(Settings $settings = null): PrinterContract {
-        $printer = $this->app->make(PrinterContract::class)->setSettings($settings ?? new TestSettings());
-
-        assert($printer instanceof Printer);
-
-        return $printer;
+    protected function getGraphQLPrinter(Settings $settings = null): Printer {
+        return $this->app->make(Printer::class)->setSettings($settings ?? new TestSettings());
     }
 
     protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {

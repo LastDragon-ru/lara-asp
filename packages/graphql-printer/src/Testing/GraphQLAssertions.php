@@ -45,7 +45,7 @@ trait GraphQLAssertions {
             $expected,
             $actual,
             $message,
-            static function (Printer $printer, mixed $printable): Result {
+            static function (PrinterContract $printer, mixed $printable): Result {
                 return $printer->print($printable);
             },
         );
@@ -69,7 +69,7 @@ trait GraphQLAssertions {
             $expected,
             $actual,
             $message,
-            static function (Printer $printer, mixed $printable): Result {
+            static function (PrinterContract $printer, mixed $printable): Result {
                 return $printer->export($printable);
             },
         );
@@ -81,7 +81,7 @@ trait GraphQLAssertions {
     }
 
     /**
-     * @param Closure(Printer, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
+     * @param Closure(PrinterContract, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
      */
     private function assertGraphQLResult(
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
@@ -152,9 +152,6 @@ trait GraphQLAssertions {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    /**
-     * @return PrinterContract&Printer
-     */
     protected function getGraphQLPrinter(Settings $settings = null): PrinterContract {
         return new Printer($settings ?? new TestSettings());
     }
