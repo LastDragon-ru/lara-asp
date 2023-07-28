@@ -45,6 +45,9 @@ trait GraphQLAssertions {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
+    /**
+     * Sets the current (application) schema to given.
+     */
     protected function useGraphQLSchema(Schema|DocumentNode|SplFileInfo|string $schema): static {
         $schema   = $schema instanceof Schema || $schema instanceof DocumentNode
             ? (string) $this->getGraphQLPrinter()->print($schema)
@@ -56,6 +59,9 @@ trait GraphQLAssertions {
         return $this;
     }
 
+    /**
+     * Resets the current (application) schema to the default schema.
+     */
     protected function resetGraphQLSchema(): static {
         $this->getGraphQLSchemaBuilder()->setSchema(null);
 
