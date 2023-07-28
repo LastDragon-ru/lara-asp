@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use GraphQL\Language\DirectiveLocation;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 
 use function assert;
@@ -15,7 +16,7 @@ abstract class OperatorsDirective extends BaseDirective {
     }
 
     public static function definition(): string {
-        $name      = static::getDirectiveName();
+        $name      = '@'.DirectiveLocator::directiveName(static::class);
         $locations = implode(' | ', static::getDirectiveLocations());
 
         return <<<GraphQL
@@ -25,11 +26,6 @@ abstract class OperatorsDirective extends BaseDirective {
             directive {$name}(type: String!) on {$locations}
         GraphQL;
     }
-
-    /**
-     * Must start with `@` and be a valid GraphQL Directive name.
-     */
-    abstract protected static function getDirectiveName(): string;
 
     /**
      * @return non-empty-list<string>

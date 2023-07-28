@@ -423,10 +423,6 @@ class DirectiveTest extends TestCase {
                             return 'Custom condition.';
                         }
 
-                        public static function getDirectiveName(): string {
-                            throw new Exception('should not be called');
-                        }
-
                         public static function definition(): string {
                             return <<<'GraphQL'
                                 directive @customComplexOperator(value: String) on INPUT_FIELD_DEFINITION

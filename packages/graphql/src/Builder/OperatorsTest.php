@@ -162,10 +162,6 @@ abstract class OperatorsTest__Operator implements Operator {
         throw new Exception('Should not be called');
     }
 
-    public static function getDirectiveName(): string {
-        throw new Exception('Should not be called');
-    }
-
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         throw new Exception('Should not be called');
     }

@@ -341,9 +341,7 @@ class ManipulatorTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ManipulatorTest_Operators extends OperatorsDirective implements Scope {
-    protected static function getDirectiveName(): string {
-        return '@operators';
-    }
+    // empty
 }
 
 /**
@@ -351,10 +349,6 @@ class ManipulatorTest_Operators extends OperatorsDirective implements Scope {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, Scope {
-    public static function getDirectiveName(): string {
-        return 'aOperator';
-    }
-
     public static function getName(): string {
         return 'a';
     }
@@ -381,10 +375,6 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
-    public static function getDirectiveName(): string {
-        return 'bOperator';
-    }
-
     public static function getName(): string {
         return 'b';
     }
@@ -411,10 +401,6 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
-    public static function getDirectiveName(): string {
-        return 'cOperator';
-    }
-
     public static function getName(): string {
         return 'c';
     }
