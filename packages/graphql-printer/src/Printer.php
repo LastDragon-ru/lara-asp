@@ -19,25 +19,22 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\PrintableBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer\PrintableList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as SchemaPrinterContract;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\ResultImpl;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
 use function array_pop;
-use function is_string;
 use function str_starts_with;
 use function substr;
 
-class Printer implements SchemaPrinterContract {
+class Printer implements PrinterContract {
     private ?DirectiveResolver $directiveResolver;
     private Settings           $settings;
-    private int                $level;
     private ?Schema            $schema = null;
 
     public function __construct(
@@ -45,7 +42,6 @@ class Printer implements SchemaPrinterContract {
         ?DirectiveResolver $directiveResolver = null,
         ?Schema $schema = null,
     ) {
-        $this->setLevel(0);
         $this->setSchema($schema);
         $this->setSettings($settings);
         $this->setDirectiveResolver($directiveResolver);
@@ -53,22 +49,6 @@ class Printer implements SchemaPrinterContract {
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
-    /**
-     * @deprecated 4.3.0 Please see #78
-     */
-    public function getLevel(): int {
-        return $this->level;
-    }
-
-    /**
-     * @deprecated 4.3.0 Please see #78
-     */
-    public function setLevel(int $level): static {
-        $this->level = $level;
-
-        return $this;
-    }
-
     public function getSettings(): Settings {
         return $this->settings;
     }
@@ -163,57 +143,6 @@ class Printer implements SchemaPrinterContract {
         }
 
         return new ResultImpl($collector, $content->serialize($collector, $level, $used));
-    }
-
-    /**
-     * @deprecated 4.3.0 Please use {@see self::print()}/{@see self::export()} instead (see #78)
-     */
-    public function printSchema(Schema $schema): Result {
-        return $this->print($schema, $this->getLevel());
-    }
-
-    /**
-     * @deprecated 4.3.0 Please use {@see self::print()}/{@see self::export()} instead (see #78)
-     */
-    public function printSchemaType(Schema $schema, Type|string $type): Result {
-        // Type
-        if (is_string($type)) {
-            $name = $type;
-            $type = $schema->getType($type);
-
-            if ($type === null) {
-                throw new TypeNotFound($name);
-            }
-        }
-
-        // Print
-        $previous = $this->getSchema();
-
-        try {
-            return $this->setSchema($schema)->export($type, $this->getLevel());
-        } finally {
-            $this->setSchema($previous);
-        }
-    }
-
-    /**
-     * @deprecated 4.3.0 Please use {@see self::print()}/{@see self::export()} instead (see #78)
-     */
-    public function printType(Type $type): Result {
-        return $this->print($type, $this->getLevel());
-    }
-
-    /**
-     * @deprecated 4.3.0 Please use {@see self::print()}/{@see self::export()} instead (see #78)
-     */
-    public function printNode(Node $node, ?Schema $schema = null): Result {
-        $previous = $this->getSchema();
-
-        try {
-            return $this->setSchema($schema)->print($node, $this->getLevel());
-        } finally {
-            $this->setSchema($previous);
-        }
     }
     // </editor-fold>
 

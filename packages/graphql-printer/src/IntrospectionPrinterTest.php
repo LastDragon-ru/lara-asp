@@ -21,9 +21,9 @@ class IntrospectionPrinterTest extends TestCase {
      */
     public function testPrint(string $expected, Settings $settings, int $level): void {
         $expected = self::getTestData()->content($expected);
-        $printer  = (new IntrospectionPrinter())->setSettings($settings)->setLevel($level);
+        $printer  = (new IntrospectionPrinter())->setSettings($settings);
         $schema   = new Schema([]);
-        $actual   = $printer->printSchema($schema);
+        $actual   = $printer->print($schema, $level);
 
         self::assertEquals($expected, (string) $actual);
     }
