@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
-use GraphQL\Language\AST\DirectiveNode;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -17,12 +16,6 @@ interface Operator extends Directive {
     public function getFieldType(TypeProvider $provider, TypeSource $source): string;
 
     public function getFieldDescription(): string;
-
-    /**
-     * @deprecated 4.2.1 The actual `Directive` node will be used. So the method
-     *      is not needed anymore and will be removed in the next major version.
-     */
-    public function getFieldDirective(): ?DirectiveNode;
 
     /**
      * @param class-string $builder

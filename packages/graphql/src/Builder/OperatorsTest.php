@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use Exception;
-use GraphQL\Language\AST\DirectiveNode;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -167,10 +166,6 @@ abstract class OperatorsTest__Operator implements Operator {
     }
 
     public function getFieldDescription(): string {
-        throw new Exception('Should not be called');
-    }
-
-    public function getFieldDirective(): ?DirectiveNode {
         throw new Exception('Should not be called');
     }
 

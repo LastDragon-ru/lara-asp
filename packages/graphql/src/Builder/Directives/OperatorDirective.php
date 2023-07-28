@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
-use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\DirectiveLocation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -40,9 +39,5 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
         }
 
         return $locations;
-    }
-
-    public function getFieldDirective(): ?DirectiveNode {
-        return null;
     }
 }
