@@ -84,7 +84,7 @@ class AstManipulatorTest extends TestCase {
         );
 
         // Object
-        $object = $manipulator->getTypeDefinitionNode('ObjectA');
+        $object = $manipulator->getTypeDefinition('ObjectA');
 
         self::assertInstanceOf(ObjectTypeDefinitionNode::class, $object);
         self::assertEquals(
@@ -100,7 +100,7 @@ class AstManipulatorTest extends TestCase {
         );
 
         // ObjectType
-        $objectType = $manipulator->getTypeDefinitionNode('ObjectB');
+        $objectType = $manipulator->getTypeDefinition('ObjectB');
 
         self::assertInstanceOf(ObjectType::class, $objectType);
         self::assertEquals(
@@ -114,7 +114,7 @@ class AstManipulatorTest extends TestCase {
         );
 
         // Interface
-        $interface = $manipulator->getTypeDefinitionNode('InterfaceB');
+        $interface = $manipulator->getTypeDefinition('InterfaceB');
 
         self::assertInstanceOf(InterfaceTypeDefinitionNode::class, $interface);
         self::assertEquals(
@@ -129,7 +129,7 @@ class AstManipulatorTest extends TestCase {
         );
 
         // InterfaceType
-        $interfaceType = $manipulator->getTypeDefinitionNode('InterfaceC');
+        $interfaceType = $manipulator->getTypeDefinition('InterfaceC');
 
         self::assertInstanceOf(InterfaceType::class, $interfaceType);
         self::assertEquals(
@@ -188,7 +188,7 @@ class AstManipulatorTest extends TestCase {
             array_map(
                 $map,
                 $manipulator->getNodeDirectives(
-                    $manipulator->getTypeDefinitionNode('CustomScalar'),
+                    $manipulator->getTypeDefinition('CustomScalar'),
                     stdClass::class,
                 ),
             ),
@@ -203,7 +203,7 @@ class AstManipulatorTest extends TestCase {
             array_map(
                 $map,
                 $manipulator->getNodeDirectives(
-                    $manipulator->getTypeDefinitionNode('CustomScalar'),
+                    $manipulator->getTypeDefinition('CustomScalar'),
                     Directive::class,
                 ),
             ),

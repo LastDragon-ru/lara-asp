@@ -150,7 +150,7 @@ class AstManipulator {
             $type = $node->getInnermostType();
         } elseif ($node instanceof Node) {
             try {
-                $type = $this->getTypeDefinitionNode($node);
+                $type = $this->getTypeDefinition($node);
             } catch (TypeDefinitionUnknown) {
                 // empty
             }
@@ -164,7 +164,7 @@ class AstManipulator {
 
     public function isTypeDefinitionExists(string $name): bool {
         try {
-            return (bool) $this->getTypeDefinitionNode($name);
+            return (bool) $this->getTypeDefinition($name);
         } catch (TypeDefinitionUnknown) {
             return false;
         }
@@ -173,7 +173,7 @@ class AstManipulator {
     /**
      * @return (TypeDefinitionNode&Node)|Type
      */
-    public function getTypeDefinitionNode(
+    public function getTypeDefinition(
         Node|Type|InputObjectField|FieldDefinition|Argument|string $node,
     ): TypeDefinitionNode|Type {
         $name       = $this->getNodeTypeName($node);
@@ -373,7 +373,7 @@ class AstManipulator {
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
         $name   = $this->getNodeTypeName($node);
-        $node   = $this->getTypeDefinitionNode($name);
+        $node   = $this->getTypeDefinition($name);
         $prefix = null;
 
         if ($node instanceof InputObjectTypeDefinitionNode || $node instanceof InputObjectType) {
@@ -410,7 +410,7 @@ class AstManipulator {
             $name = $this->getNodeTypeName($interface);
 
             if ($interface instanceof NamedTypeNode) {
-                $interface = $this->getTypeDefinitionNode($interface);
+                $interface = $this->getTypeDefinition($interface);
             }
 
             if ($interface instanceof InterfaceTypeDefinitionNode || $interface instanceof InterfaceType) {

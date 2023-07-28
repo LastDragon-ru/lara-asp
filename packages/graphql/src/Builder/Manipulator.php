@@ -168,7 +168,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operators = [];
 
         if ($this->isTypeDefinitionExists($type)) {
-            $node       = $this->getTypeDefinitionNode($type);
+            $node       = $this->getTypeDefinition($type);
             $directives = $this->getNodeDirectives($node, $scope);
 
             foreach ($directives as $directive) {
@@ -305,7 +305,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     protected function removeFakeTypeDefinition(string $name): void {
         // Possible?
-        $fake = $this->getTypeDefinitionNode($name);
+        $fake = $this->getTypeDefinition($name);
 
         if (!($fake instanceof InputObjectTypeDefinitionNode)) {
             throw new FakeTypeDefinitionUnknown($name);
@@ -329,7 +329,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $paginate = $this->getNodeDirective($field, PaginateDirective::class);
 
         if ($paginate) {
-            $type       = $this->getNodeTypeName($this->getTypeDefinitionNode($field));
+            $type       = $this->getNodeTypeName($this->getTypeDefinition($field));
             $pagination = (new class() extends PaginateDirective {
                 public function getPaginationType(PaginateDirective $directive): PaginationType {
                     return $directive->paginationType();
@@ -347,10 +347,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             if ($type) {
-                $node = $this->getTypeDefinitionNode($type);
+                $node = $this->getTypeDefinition($type);
             }
         } else {
-            $node = $this->getTypeDefinitionNode($field);
+            $node = $this->getTypeDefinition($field);
         }
 
         return $node;
