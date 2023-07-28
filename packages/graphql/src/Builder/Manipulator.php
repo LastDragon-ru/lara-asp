@@ -94,7 +94,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Create new
-        $node = $instance->getTypeDefinitionNode($this, $name, $source);
+        $node = $instance->getTypeDefinition($this, $name, $source);
 
         if (!$node) {
             throw new TypeDefinitionImpossibleToCreateType($definition, $source);

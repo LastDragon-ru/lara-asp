@@ -46,7 +46,7 @@ abstract class InputObject implements TypeDefinition {
     /**
      * @inheritDoc
      */
-    public function getTypeDefinitionNode(
+    public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,
         TypeSource $source,

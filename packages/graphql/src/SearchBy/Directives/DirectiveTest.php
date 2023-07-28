@@ -449,7 +449,7 @@ class DirectiveTest extends TestCase {
                             return "{$directiveName}ComplexCustom{$typeName}";
                         }
 
-                        public function getTypeDefinitionNode(
+                        public function getTypeDefinition(
                             Manipulator $manipulator,
                             string $name,
                             TypeSource $source,

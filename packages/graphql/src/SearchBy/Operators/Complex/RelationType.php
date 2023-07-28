@@ -28,7 +28,7 @@ class RelationType implements TypeDefinition {
         return "{$directiveName}{$builderName}Complex{$operatorName}{$typeName}";
     }
 
-    public function getTypeDefinitionNode(
+    public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,
         TypeSource $source,

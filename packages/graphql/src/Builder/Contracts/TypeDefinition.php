@@ -20,7 +20,7 @@ interface TypeDefinition {
      *
      * @return (TypeDefinitionNode&Node)|(Type&NamedType)|null
      */
-    public function getTypeDefinitionNode(
+    public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,
         TypeSource $source,

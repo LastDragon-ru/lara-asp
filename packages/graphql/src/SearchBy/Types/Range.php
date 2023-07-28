@@ -23,7 +23,7 @@ class Range implements TypeDefinition {
         return "{$directiveName}TypeRange{$typeName}";
     }
 
-    public function getTypeDefinitionNode(
+    public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,
         TypeSource $source,

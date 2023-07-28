@@ -20,7 +20,7 @@ class Direction implements TypeDefinition {
         return Directive::Name.'TypeDirection';
     }
 
-    public function getTypeDefinitionNode(
+    public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,
         TypeSource $source,

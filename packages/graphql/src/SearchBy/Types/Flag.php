@@ -20,7 +20,7 @@ class Flag implements TypeDefinition {
         return Directive::Name.'TypeFlag';
     }
 
-    public function getTypeDefinitionNode(
+    public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,
         TypeSource $source,
