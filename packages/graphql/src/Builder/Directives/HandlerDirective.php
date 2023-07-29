@@ -210,7 +210,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
         foreach ($interfaces as $interface) {
             // Field?
-            $field = $manipulator->getNodeField($interface, $fieldName);
+            $field = $manipulator->getField($interface, $fieldName);
 
             if (!$field) {
                 continue;

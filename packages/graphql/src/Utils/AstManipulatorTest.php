@@ -226,7 +226,7 @@ class AstManipulatorTest extends TestCase {
         // Field
         $schema   = $this->app->make(SchemaBuilder::class)->schema();
         $query    = $schema->getQueryType();
-        $field    = $manipulator->getNodeField($query, 'test');
+        $field    = $manipulator->getField($query, 'test');
         $expected = [
             AllDirective::class,
             AstManipulatorTest_BDirective::class,

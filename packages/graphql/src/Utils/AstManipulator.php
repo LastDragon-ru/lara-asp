@@ -427,7 +427,7 @@ class AstManipulator {
         return $interfaces;
     }
 
-    public function getNodeField(
+    public function getField(
         InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|HasFieldsType $node,
         string $name,
     ): FieldDefinitionNode|FieldDefinition|null {
