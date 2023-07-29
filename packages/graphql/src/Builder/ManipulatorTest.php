@@ -87,7 +87,7 @@ class ManipulatorTest extends TestCase {
 
         if ($expected !== null) {
             self::assertNotNull($type);
-            self::assertEquals($expected, $manipulator->getNodeName($type));
+            self::assertEquals($expected, $manipulator->getName($type));
         } else {
             self::assertNull($type);
         }

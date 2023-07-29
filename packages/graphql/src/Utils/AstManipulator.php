@@ -203,7 +203,7 @@ class AstManipulator {
      * @return TDefinition
      */
     public function addTypeDefinition(TypeDefinitionNode|Type $definition): TypeDefinitionNode|Type {
-        $name = $this->getNodeName($definition);
+        $name = $this->getName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
             throw new TypeDefinitionAlreadyDefined($name);
@@ -327,7 +327,7 @@ class AstManipulator {
                 $name = $type->name();
             }
         } elseif ($node instanceof TypeDefinitionNode) {
-            $name = $this->getNodeName($node);
+            $name = $this->getName($node);
         } elseif ($node instanceof Node) {
             $name = ASTHelper::getUnderlyingTypeName($node);
         } else {
@@ -342,7 +342,7 @@ class AstManipulator {
     /**
      * @param InputValueDefinitionNode|(TypeDefinitionNode&Node)|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|Type $node
      */
-    public function getNodeName(
+    public function getName(
         InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|Type $node,
     ): string {
         if ($node instanceof TypeDefinitionNode) {
@@ -437,7 +437,7 @@ class AstManipulator {
             $field = $node->hasField($name) ? $node->getField($name) : null;
         } else {
             foreach ($node->fields as $nodeField) {
-                if ($this->getNodeName($nodeField) === $name) {
+                if ($this->getName($nodeField) === $name) {
                     $field = $nodeField;
                     break;
                 }
@@ -457,7 +457,7 @@ class AstManipulator {
             $argument = $node->getArg($name);
         } else {
             foreach ($node->arguments as $nodeArgument) {
-                if ($this->getNodeName($nodeArgument) === $name) {
+                if ($this->getName($nodeArgument) === $name) {
                     $argument = $nodeArgument;
                     break;
                 }

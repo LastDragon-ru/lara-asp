@@ -12,8 +12,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 trait FieldArgument {
     public function __toString(): string {
         $manipulator = $this->getManipulator();
-        $argument    = $manipulator->getNodeName($this->getArgument());
-        $field       = $manipulator->getNodeName($this->getField());
+        $argument    = $manipulator->getName($this->getArgument());
+        $field       = $manipulator->getName($this->getField());
         $type        = $manipulator->getNodeTypeFullName($this->getObject());
 
         return "{$type} { {$field}({$argument}) }";

@@ -84,7 +84,7 @@ abstract class InputObject implements TypeDefinition {
 
         foreach ($fields as $field) {
             // Name should be unique (may conflict with Type's operators)
-            $fieldName = $manipulator->getNodeName($field);
+            $fieldName = $manipulator->getName($field);
 
             if (isset($definition->fields[$fieldName])) {
                 throw new TypeDefinitionFieldAlreadyDefined($fieldName);
@@ -166,7 +166,7 @@ abstract class InputObject implements TypeDefinition {
             $type = $manipulator->getTypeSource($field->getTypeDefinition());
         }
 
-        $fieldName       = $manipulator->getNodeName($field->getField());
+        $fieldName       = $manipulator->getName($field->getField());
         $fieldDesc       = $this->getFieldDescription($manipulator, $field);
         $fieldDirectives = $this->getFieldDirectives($manipulator, $field);
         $fieldDefinition = $manipulator->getOperatorField($operator, $type, $fieldName, $fieldDesc, $fieldDirectives);

@@ -100,8 +100,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
             throw new TypeDefinitionImpossibleToCreateType($definition, $source);
         }
 
-        if ($name !== $this->getNodeName($node)) {
-            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getNodeName($node));
+        if ($name !== $this->getName($node)) {
+            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getName($node));
         }
 
         // Save
@@ -311,7 +311,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             throw new FakeTypeDefinitionUnknown($name);
         }
 
-        if (count($fake->fields) !== 1 || $this->getNodeName($fake->fields[0]) !== 'fake') {
+        if (count($fake->fields) !== 1 || $this->getName($fake->fields[0]) !== 'fake') {
             throw new FakeTypeDefinitionIsNotFake($name);
         }
 
