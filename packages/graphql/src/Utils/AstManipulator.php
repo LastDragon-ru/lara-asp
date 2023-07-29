@@ -245,7 +245,7 @@ class AstManipulator {
     ): ?Directive {
         // todo(graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         // todo(graphql): Should we throw an error if $node has multiple directives?
-        $directives = $this->getNodeDirectives($node, $class, $callback);
+        $directives = $this->getDirectives($node, $class, $callback);
         $directive  = reset($directives) ?: null;
 
         return $directive;
@@ -260,7 +260,7 @@ class AstManipulator {
      *
      * @return ($class is null ? list<Directive> : list<T&Directive>)
      */
-    public function getNodeDirectives(
+    public function getDirectives(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
         ?string $class = null,
         ?Closure $callback = null,
@@ -269,11 +269,11 @@ class AstManipulator {
 
         if ($node instanceof NamedType) {
             if ($node->astNode()) {
-                $directives = $this->getNodeDirectives($node->astNode(), $class, $callback);
+                $directives = $this->getDirectives($node->astNode(), $class, $callback);
             }
 
             foreach ($node->extensionASTNodes() as $extensionNode) {
-                $directives = array_merge($directives, $this->getNodeDirectives($extensionNode, $class, $callback));
+                $directives = array_merge($directives, $this->getDirectives($extensionNode, $class, $callback));
             }
         } elseif ($node instanceof Node) {
             $associated = $this->getDirectiveLocator()->associated($node);
@@ -294,7 +294,7 @@ class AstManipulator {
             }
         } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
             if ($node->astNode) {
-                $directives = $this->getNodeDirectives($node->astNode, $class, $callback);
+                $directives = $this->getDirectives($node->astNode, $class, $callback);
             }
         } else {
             // empty

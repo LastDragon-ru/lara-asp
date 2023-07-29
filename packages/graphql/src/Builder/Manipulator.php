@@ -169,7 +169,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         if ($this->isTypeDefinitionExists($type)) {
             $node       = $this->getTypeDefinition($type);
-            $directives = $this->getNodeDirectives($node, $scope);
+            $directives = $this->getDirectives($node, $scope);
 
             foreach ($directives as $directive) {
                 if ($directive instanceof OperatorsDirective) {

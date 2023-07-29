@@ -142,7 +142,7 @@ class AstManipulatorTest extends TestCase {
         );
     }
 
-    public function testGetNodeDirectives(): void {
+    public function testGetDirectives(): void {
         // Types
         $types = $this->app->make(TypeRegistry::class);
 
@@ -187,7 +187,7 @@ class AstManipulatorTest extends TestCase {
             ],
             array_map(
                 $map,
-                $manipulator->getNodeDirectives(
+                $manipulator->getDirectives(
                     $manipulator->getTypeDefinition('CustomScalar'),
                     stdClass::class,
                 ),
@@ -202,7 +202,7 @@ class AstManipulatorTest extends TestCase {
             ],
             array_map(
                 $map,
-                $manipulator->getNodeDirectives(
+                $manipulator->getDirectives(
                     $manipulator->getTypeDefinition('CustomScalar'),
                     Directive::class,
                 ),
@@ -216,7 +216,7 @@ class AstManipulatorTest extends TestCase {
             ],
             array_map(
                 $map,
-                $manipulator->getNodeDirectives(
+                $manipulator->getDirectives(
                     Type::int(),
                     Directive::class,
                 ),
@@ -238,7 +238,7 @@ class AstManipulatorTest extends TestCase {
             $expected,
             array_map(
                 $map,
-                $manipulator->getNodeDirectives(
+                $manipulator->getDirectives(
                     $field,
                     Directive::class,
                 ),
@@ -248,7 +248,7 @@ class AstManipulatorTest extends TestCase {
             $expected,
             array_map(
                 $map,
-                $manipulator->getNodeDirectives(
+                $manipulator->getDirectives(
                     $field->astNode,
                     Directive::class,
                 ),
@@ -268,7 +268,7 @@ class AstManipulatorTest extends TestCase {
             $expected,
             array_map(
                 $map,
-                $manipulator->getNodeDirectives(
+                $manipulator->getDirectives(
                     $argument,
                     Directive::class,
                 ),
@@ -278,7 +278,7 @@ class AstManipulatorTest extends TestCase {
             $expected,
             array_map(
                 $map,
-                $manipulator->getNodeDirectives(
+                $manipulator->getDirectives(
                     $argument->astNode,
                     Directive::class,
                 ),

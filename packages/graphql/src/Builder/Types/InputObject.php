@@ -247,7 +247,7 @@ abstract class InputObject implements TypeDefinition {
     ): array {
         $directives = [];
 
-        foreach ($manipulator->getNodeDirectives($field->getField()) as $directive) {
+        foreach ($manipulator->getDirectives($field->getField()) as $directive) {
             if ($this->isFieldDirectiveAllowed($manipulator, $directive)) {
                 $node = $manipulator->getDirectiveNode($directive);
 
