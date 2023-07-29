@@ -42,7 +42,7 @@ class Source implements TypeSource {
     }
 
     public function getTypeName(): string {
-        return $this->getManipulator()->getNodeTypeName($this->getType());
+        return $this->getManipulator()->getTypeName($this->getType());
     }
 
     /**

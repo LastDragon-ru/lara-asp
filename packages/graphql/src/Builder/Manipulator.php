@@ -329,7 +329,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $paginate = $this->getDirective($field, PaginateDirective::class);
 
         if ($paginate) {
-            $type       = $this->getNodeTypeName($this->getTypeDefinition($field));
+            $type       = $this->getTypeName($this->getTypeDefinition($field));
             $pagination = (new class() extends PaginateDirective {
                 public function getPaginationType(PaginateDirective $directive): PaginationType {
                     return $directive->paginationType();

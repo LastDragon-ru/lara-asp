@@ -83,7 +83,7 @@ class AstManipulator {
         Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
     ): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
-        return $this->getNodeTypeName($node) === '_';
+        return $this->getTypeName($node) === '_';
     }
 
     /**
@@ -176,7 +176,7 @@ class AstManipulator {
     public function getTypeDefinition(
         Node|Type|InputObjectField|FieldDefinition|Argument|string $node,
     ): TypeDefinitionNode|Type {
-        $name       = $this->getNodeTypeName($node);
+        $name       = $this->getTypeName($node);
         $types      = $this->getTypes();
         $definition = $this->getDocument()->types[$name] ?? null;
 
@@ -306,7 +306,7 @@ class AstManipulator {
     /**
      * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node)|string $node
      */
-    public function getNodeTypeName(
+    public function getTypeName(
         Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
     ): string {
         $name = null;
@@ -360,7 +360,7 @@ class AstManipulator {
         } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
             $name = $node->name;
         } else {
-            $name = $this->getNodeTypeName($node);
+            $name = $this->getTypeName($node);
         }
 
         return $name;
@@ -372,7 +372,7 @@ class AstManipulator {
     public function getNodeTypeFullName(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
-        $name   = $this->getNodeTypeName($node);
+        $name   = $this->getTypeName($node);
         $node   = $this->getTypeDefinition($name);
         $prefix = null;
 
@@ -407,7 +407,7 @@ class AstManipulator {
             : $node->interfaces;
 
         foreach ($nodeInterfaces as $interface) {
-            $name = $this->getNodeTypeName($interface);
+            $name = $this->getTypeName($interface);
 
             if ($interface instanceof NamedTypeNode) {
                 $interface = $this->getTypeDefinition($interface);
