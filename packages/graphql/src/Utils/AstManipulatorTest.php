@@ -31,7 +31,7 @@ use function array_map;
 class AstManipulatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    public function testGetNodeInterfaces(): void {
+    public function testGetInterfaces(): void {
         // Object
         $types       = $this->app->make(TypeRegistry::class);
         $manipulator = $this->getManipulator(
@@ -95,7 +95,7 @@ class AstManipulatorTest extends TestCase {
                 'InterfaceD',
             ],
             array_keys(
-                $manipulator->getNodeInterfaces($object),
+                $manipulator->getInterfaces($object),
             ),
         );
 
@@ -109,7 +109,7 @@ class AstManipulatorTest extends TestCase {
                 'InterfaceD',
             ],
             array_keys(
-                $manipulator->getNodeInterfaces($objectType),
+                $manipulator->getInterfaces($objectType),
             ),
         );
 
@@ -124,7 +124,7 @@ class AstManipulatorTest extends TestCase {
                 'InterfaceD',
             ],
             array_keys(
-                $manipulator->getNodeInterfaces($interface),
+                $manipulator->getInterfaces($interface),
             ),
         );
 
@@ -137,7 +137,7 @@ class AstManipulatorTest extends TestCase {
                 'InterfaceD',
             ],
             array_keys(
-                $manipulator->getNodeInterfaces($interfaceType),
+                $manipulator->getInterfaces($interfaceType),
             ),
         );
     }

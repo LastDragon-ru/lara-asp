@@ -398,7 +398,7 @@ class AstManipulator {
     /**
      * @return array<string, InterfaceTypeDefinitionNode|InterfaceType>
      */
-    public function getNodeInterfaces(
+    public function getInterfaces(
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $node,
     ): array {
         $interfaces     = [];
@@ -419,7 +419,7 @@ class AstManipulator {
                     [
                         $name => $interface,
                     ],
-                    $this->getNodeInterfaces($interface),
+                    $this->getInterfaces($interface),
                 );
             }
         }

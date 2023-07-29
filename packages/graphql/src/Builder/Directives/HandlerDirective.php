@@ -204,7 +204,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         $argDefinition->type = $this->getArgDefinitionType($manipulator, $documentAST, $argSource);
 
         // Interfaces
-        $interfaces   = $manipulator->getNodeInterfaces($parentType);
+        $interfaces   = $manipulator->getInterfaces($parentType);
         $fieldName    = $manipulator->getName($parentField);
         $argumentName = $manipulator->getName($argDefinition);
 
