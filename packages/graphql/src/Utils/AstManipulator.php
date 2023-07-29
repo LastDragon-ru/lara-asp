@@ -52,7 +52,7 @@ use function trim;
 
 class AstManipulator {
     public function __construct(
-        private DirectiveLocator $directives,
+        private DirectiveLocator $directiveLocator,
         private DocumentAST $document,
         private TypeRegistry $types,
     ) {
@@ -61,8 +61,8 @@ class AstManipulator {
 
     // <editor-fold desc="Getters & Setters">
     // =========================================================================
-    protected function getDirectives(): DirectiveLocator {
-        return $this->directives;
+    protected function getDirectiveLocator(): DirectiveLocator {
+        return $this->directiveLocator;
     }
 
     public function getDocument(): DocumentAST {
@@ -276,7 +276,7 @@ class AstManipulator {
                 $directives = array_merge($directives, $this->getNodeDirectives($extensionNode, $class, $callback));
             }
         } elseif ($node instanceof Node) {
-            $associated = $this->getDirectives()->associated($node);
+            $associated = $this->getDirectiveLocator()->associated($node);
 
             foreach ($associated as $directive) {
                 // Class?

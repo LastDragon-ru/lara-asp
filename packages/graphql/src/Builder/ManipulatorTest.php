@@ -55,15 +55,15 @@ class ManipulatorTest extends TestCase {
         $manipulator = new class($directives, $types, $ast) extends Manipulator {
             /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct(
-                protected DirectiveLocator $directives,
+                protected DirectiveLocator $directiveLocator,
                 protected TypeRegistry $types,
                 protected DocumentAST $document,
             ) {
                 // empty
             }
 
-            protected function getDirectives(): DirectiveLocator {
-                return $this->directives;
+            protected function getDirectiveLocator(): DirectiveLocator {
+                return $this->directiveLocator;
             }
 
             public function getDocument(): DocumentAST {

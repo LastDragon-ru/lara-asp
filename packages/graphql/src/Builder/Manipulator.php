@@ -235,7 +235,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     ): string {
         // Operator already added?
         $added   = false;
-        $locator = $this->getDirectives();
+        $locator = $this->getDirectiveLocator();
 
         foreach ($directives as $directive) {
             if ($locator->resolve($directive->name->value) === $operator::class) {
