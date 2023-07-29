@@ -369,7 +369,7 @@ class AstManipulator {
     /**
      * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|string $node
      */
-    public function getNodeTypeFullName(
+    public function getTypeFullName(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
         $name   = $this->getTypeName($node);

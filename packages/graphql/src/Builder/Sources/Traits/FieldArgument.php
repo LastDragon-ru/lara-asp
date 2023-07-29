@@ -14,7 +14,7 @@ trait FieldArgument {
         $manipulator = $this->getManipulator();
         $argument    = $manipulator->getName($this->getArgument());
         $field       = $manipulator->getName($this->getField());
-        $type        = $manipulator->getNodeTypeFullName($this->getObject());
+        $type        = $manipulator->getTypeFullName($this->getObject());
 
         return "{$type} { {$field}({$argument}) }";
     }

@@ -46,7 +46,7 @@ class Enumeration implements TypeDefinition {
 
         // Definition
         $content    = $manipulator->getOperatorsFields($operators, $source);
-        $typeName   = $manipulator->getNodeTypeFullName($source->getType());
+        $typeName   = $manipulator->getTypeFullName($source->getType());
         $definition = Parser::inputObjectTypeDefinition(
             <<<DEF
             """

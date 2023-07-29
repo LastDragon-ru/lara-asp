@@ -30,7 +30,7 @@ trait Field {
     public function __toString(): string {
         $manipulator = $this->getManipulator();
         $field       = $manipulator->getName($this->getField());
-        $type        = $manipulator->getNodeTypeFullName($this->getObject());
+        $type        = $manipulator->getTypeFullName($this->getObject());
 
         return "{$type} { {$field} }";
     }

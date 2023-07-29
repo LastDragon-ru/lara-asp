@@ -66,7 +66,7 @@ class Source implements TypeSource {
     }
 
     public function __toString(): string {
-        return $this->getManipulator()->getNodeTypeFullName($this->getType());
+        return $this->getManipulator()->getTypeFullName($this->getType());
     }
     // </editor-fold>
 }
