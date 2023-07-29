@@ -10,6 +10,8 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 /**
  * Can be used with a directive to define the builder type in case when auto-detection doesn't work.
  *
@@ -17,7 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
  */
 interface BuilderInfoProvider {
     /**
-     * @return BuilderInfo|class-string<EloquentBuilder<Model>|QueryBuilder|ScoutBuilder|Collection<array-key, mixed>>
+     * @return BuilderInfo|class-string<EloquentBuilder<Model>|QueryBuilder|ScoutBuilder|Collection<array-key, mixed>>|null
      */
-    public function getBuilderInfo(): BuilderInfo|string;
+    public function getBuilderInfo(): BuilderInfo|string|null;
 }

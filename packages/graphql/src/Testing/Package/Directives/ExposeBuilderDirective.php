@@ -43,7 +43,7 @@ class ExposeBuilderDirective extends BaseDirective implements FieldResolver, Bui
         return '@exposeBuilder'.md5(static::class);
     }
 
-    public function getBuilderInfo(): BuilderInfo|string {
+    public function getBuilderInfo(): BuilderInfo|string|null {
         return static::$builder::class;
     }
 

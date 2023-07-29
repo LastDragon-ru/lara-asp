@@ -65,7 +65,12 @@ trait WithBuilderInfo {
         });
 
         if ($provider instanceof BuilderInfoProvider) {
-            return $this->getBuilderInfoInstance($provider);
+            $builder  = $provider->getBuilderInfo();
+            $instance = $builder
+                ? $this->getBuilderInfoInstance($builder)
+                : null;
+
+            return $instance;
         }
 
         // Scout?
@@ -144,10 +149,9 @@ trait WithBuilderInfo {
         return $type;
     }
 
-    private function getBuilderInfoInstance(BuilderInfoProvider|BuilderInfo|string $type): ?BuilderInfo {
+    private function getBuilderInfoInstance(BuilderInfo|string $type): ?BuilderInfo {
         return match (true) {
             $type instanceof BuilderInfo              => $type,
-            $type instanceof BuilderInfoProvider      => $this->getBuilderInfoInstance($type->getBuilderInfo()),
             is_a($type, EloquentBuilder::class, true) => new BuilderInfo('', EloquentBuilder::class),
             is_a($type, ScoutBuilder::class, true)    => new BuilderInfo('Scout', ScoutBuilder::class),
             is_a($type, QueryBuilder::class, true)    => new BuilderInfo('Query', QueryBuilder::class),

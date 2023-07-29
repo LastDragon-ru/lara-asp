@@ -299,7 +299,7 @@ class WithBuilderInfoTest extends TestCase {
                                 throw new Exception('should not be called.');
                             }
 
-                            public function getBuilderInfo(): BuilderInfo|string {
+                            public function getBuilderInfo(): BuilderInfo|string|null {
                                 return new BuilderInfo('Custom', BuilderInfoProvider::class);
                             }
                         })::class,
@@ -328,7 +328,7 @@ class WithBuilderInfoTest extends TestCase {
                                 throw new Exception('should not be called.');
                             }
 
-                            public function getBuilderInfo(): BuilderInfo|string {
+                            public function getBuilderInfo(): BuilderInfo|string|null {
                                 return EloquentBuilder::class;
                             }
                         })::class,
