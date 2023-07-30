@@ -476,11 +476,11 @@ class DirectiveTest extends TestCase {
                     'empty'               => [
                         [
                             'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "tmp"
-                        SQL
+                                select
+                                    *
+                                from
+                                    "tmp"
+                            SQL
                             ,
                             'bindings' => [],
                         ],
@@ -519,11 +519,11 @@ class DirectiveTest extends TestCase {
                     'null'                => [
                         [
                             'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "tmp"
-                        SQL
+                                select
+                                    *
+                                from
+                                    "tmp"
+                            SQL
                             ,
                             'bindings' => [],
                         ],
@@ -537,25 +537,25 @@ class DirectiveTest extends TestCase {
                     'valid condition' => [
                         [
                             'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "tmp"
-                            where
-                                (
-                                    not (
-                                        (
-                                            ("a" != ?)
-                                            and (
-                                                (
-                                                    ("a" = ?)
-                                                    or ("b" != ?)
+                                select
+                                    *
+                                from
+                                    "tmp"
+                                where
+                                    (
+                                        not (
+                                            (
+                                                ("a" != ?)
+                                                and (
+                                                    (
+                                                        ("a" = ?)
+                                                        or ("b" != ?)
+                                                    )
                                                 )
                                             )
                                         )
                                     )
-                                )
-                        SQL
+                            SQL
                             ,
                             'bindings' => [1, 2, 'a'],
                         ],
@@ -593,25 +593,25 @@ class DirectiveTest extends TestCase {
                     'valid condition' => [
                         [
                             'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "tmp"
-                            where
-                                (
-                                    not (
-                                        (
-                                            ("tmp"."a" != ?)
-                                            and (
-                                                (
-                                                    ("tmp"."a" = ?)
-                                                    or ("tmp"."b" != ?)
+                                select
+                                    *
+                                from
+                                    "tmp"
+                                where
+                                    (
+                                        not (
+                                            (
+                                                ("tmp"."a" != ?)
+                                                and (
+                                                    (
+                                                        ("tmp"."a" = ?)
+                                                        or ("tmp"."b" != ?)
+                                                    )
                                                 )
                                             )
                                         )
                                     )
-                                )
-                        SQL
+                            SQL
                             ,
                             'bindings' => [1, 2, 'a'],
                         ],
