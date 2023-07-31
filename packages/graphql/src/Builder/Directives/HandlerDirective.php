@@ -33,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -108,7 +109,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      */
     protected function handleAnyBuilder(object $builder, mixed $value): object {
         if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
-            $argument   = $this->getFactory()->getArgument($this->definitionNode, $value);
+            $argument   = !($value instanceof Argument)
+                ? $this->getFactory()->getArgument($this->definitionNode, $value)
+                : $value;
             $isList     = $this->definitionNode->type instanceof ListTypeNode;
             $conditions = $isList && is_array($argument->value)
                 ? $argument->value
