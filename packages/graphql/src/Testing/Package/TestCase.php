@@ -4,8 +4,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use GraphQL\Type\Schema;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\ExposeBuilderDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\LighthouseDirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
@@ -16,8 +21,11 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthousTestingServiceProvider;
 use SplFileInfo;
+
+use function mb_substr;
 
 /**
  * @internal
@@ -71,5 +79,26 @@ class TestCase extends PackageTestCase {
         } finally {
             $this->resetGraphQLSchema();
         }
+    }
+
+    /**
+     * @template M of Model
+     *
+     * @param QueryBuilder|EloquentBuilder<M>|ScoutBuilder $builder
+     */
+    protected function getExposeBuilderDirective(
+        QueryBuilder|EloquentBuilder|ScoutBuilder $builder,
+    ): ExposeBuilderDirective {
+        $directive = new class() extends ExposeBuilderDirective {
+            // empty
+        };
+
+        $directive::$builder = $builder;
+        $directive::$result  = $builder;
+
+        $this->app->make(DirectiveLocator::class)
+            ->setResolved(mb_substr($directive::getName(), 1), $directive::class);
+
+        return $directive;
     }
 }

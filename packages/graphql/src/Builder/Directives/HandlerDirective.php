@@ -33,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -45,14 +46,12 @@ use Nuwave\Lighthouse\Schema\Directives\CountDirective;
 use Nuwave\Lighthouse\Schema\Directives\FindDirective;
 use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
-use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Schema\Directives\WithRelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use ReflectionFunction;
 use ReflectionNamedType;
 
-use function array_keys;
 use function array_map;
 use function class_exists;
 use function count;
@@ -110,7 +109,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      */
     protected function handleAnyBuilder(object $builder, mixed $value): object {
         if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
-            $argument   = $this->getFactory()->getArgument($this->definitionNode, $value);
+            $argument   = !($value instanceof Argument)
+                ? $this->getFactory()->getArgument($this->definitionNode, $value)
+                : $value;
             $isList     = $this->definitionNode->type instanceof ListTypeNode;
             $conditions = $isList && is_array($argument->value)
                 ? $argument->value
@@ -143,7 +144,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
         // Valid?
         if (count($conditions->arguments) !== 1) {
-            throw new ConditionTooManyProperties(array_keys($conditions->arguments));
+            throw new ConditionTooManyProperties(
+                ArgumentFactory::getArgumentsNames($conditions),
+            );
         }
 
         // Call
@@ -161,7 +164,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         // Arguments?
         if (count($operator->arguments) > 1) {
             throw new ConditionTooManyOperators(
-                array_keys($operator->arguments),
+                ArgumentFactory::getArgumentsNames($operator),
             );
         }
 
@@ -175,10 +178,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             foreach ($argument->directives as $directive) {
                 if ($directive instanceof Operator) {
                     $operators[] = $directive;
-                }
-
-                if ($directive instanceof RenameDirective) {
-                    $name = $directive->attributeArgValue();
                 }
             }
 

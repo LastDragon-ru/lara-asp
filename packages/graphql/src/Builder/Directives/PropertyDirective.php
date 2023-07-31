@@ -9,10 +9,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 
-use function array_keys;
 use function count;
 
 abstract class PropertyDirective extends OperatorDirective {
@@ -41,7 +41,7 @@ abstract class PropertyDirective extends OperatorDirective {
         // Valid?
         if (count($argument->value->arguments) > 1) {
             throw new ConditionTooManyOperators(
-                array_keys($argument->value->arguments),
+                ArgumentFactory::getArgumentsNames($argument->value),
             );
         }
 
