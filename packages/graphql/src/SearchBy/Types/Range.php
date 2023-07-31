@@ -29,13 +29,12 @@ class Range implements TypeDefinition {
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
         return Parser::inputObjectTypeDefinition(
-        /** @lang GraphQL */
-            <<<GRAPHQL
+            <<<GraphQL
             input {$name} {
                 min: {$source->getTypeName()}!
                 max: {$source->getTypeName()}!
             }
-            GRAPHQL,
+            GraphQL,
         );
     }
 }

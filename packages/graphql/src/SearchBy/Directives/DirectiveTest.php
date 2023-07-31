@@ -56,7 +56,6 @@ use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function assert;
 use function config;
 use function implode;
 use function is_array;
@@ -202,8 +201,7 @@ class DirectiveTest extends TestCase {
 
         $this
             ->useGraphQLSchema(
-            /** @lang GraphQL */
-                <<<GRAPHQL
+                <<<GraphQL
                 type Query {
                     test(input: Test @searchBy): [TestObject!]!
                     @all(model: {$model})
@@ -217,17 +215,16 @@ class DirectiveTest extends TestCase {
                 type TestObject {
                     id: String!
                 }
-                GRAPHQL,
+                GraphQL,
             )
             ->graphQL(
-            /** @lang GraphQL */
-                <<<'GRAPHQL'
+                <<<'GraphQL'
                 query test($input: SearchByConditionTest) {
                     test(input: $input) {
                         id
                     }
                 }
-                GRAPHQL,
+                GraphQL,
                 [
                     'input' => $value,
                 ],
@@ -254,35 +251,44 @@ class DirectiveTest extends TestCase {
         Closure $builderFactory,
         mixed $value,
     ): void {
-        if ($expected instanceof Exception) {
-            self::expectExceptionObject($expected);
-        }
+        $builder   = $builderFactory($this);
+        $directive = $this->getExposeBuilderDirective($builder);
 
         $this->useGraphQLSchema(
-        /** @lang GraphQL */
-            <<<'GRAPHQL'
+            <<<GraphQL
             type Query {
-                test(input: Test @searchBy): String! @all
+                test(input: Test @searchBy): [String!]! {$directive::getName()}
             }
 
             input Test {
                 a: Int!
-                b: String
+                b: String @rename(attribute: "renamed")
             }
-            GRAPHQL,
+            GraphQL,
         );
 
-        $definitionNode = Parser::inputValueDefinition('input: SearchByConditionTest');
-        $directiveNode  = Parser::directive('@test');
-        $directive      = $this->app->make(Directive::class)->hydrate($directiveNode, $definitionNode);
-        $builder        = $builderFactory($this);
-        $actual         = $directive->handleBuilder($builder, $value);
+        $type = match (true) {
+            $builder instanceof QueryBuilder => 'SearchByQueryConditionTest',
+            default                          => 'SearchByConditionTest',
+        };
+        $result = $this->graphQL(
+            <<<GraphQL
+            query test(\$query: {$type}) {
+                test(input: \$query)
+            }
+            GraphQL,
+            [
+                'query' => $value,
+            ],
+        );
 
         if (is_array($expected)) {
-            self::assertInstanceOf($builder::class, $actual);
-            self::assertDatabaseQueryEquals($expected, $actual);
+            self::assertInstanceOf($builder::class, $directive::$result);
+            self::assertDatabaseQueryEquals($expected, $directive::$result);
         } else {
-            self::fail('Something wrong...');
+            $result->assertJsonFragment([
+                'message' => $expected->getMessage(),
+            ]);
         }
     }
 
@@ -299,22 +305,20 @@ class DirectiveTest extends TestCase {
         mixed $value,
         Closure $fieldResolver = null,
     ): void {
-        if ($expected instanceof Exception) {
-            self::expectExceptionObject($expected);
-        }
+        $builder   = $builderFactory($this);
+        $directive = $this->getExposeBuilderDirective($builder);
+
+        $this->app->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
 
         if ($fieldResolver) {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 
-        $this->app->make(DirectiveLocator::class)
-            ->setResolved('search', SearchDirective::class);
-
         $this->useGraphQLSchema(
-        /** @lang GraphQL */
-            <<<'GRAPHQL'
+            <<<GraphQL
             type Query {
-                test(search: String @search, input: Test @searchBy): String! @mock
+                test(search: String @search, input: Test @searchBy): [String!]! {$directive::getName()}
             }
 
             input Test {
@@ -322,23 +326,27 @@ class DirectiveTest extends TestCase {
                 b: String @rename(attribute: "renamed")
                 c: Test
             }
-            GRAPHQL,
+            GraphQL,
         );
 
-        $definitionNode = Parser::inputValueDefinition('input: SearchByScoutConditionTest');
-        $directiveNode  = Parser::directive('@test');
-        $directive      = $this->app->make(Directive::class)->hydrate($directiveNode, $definitionNode);
-
-        assert($directive instanceof Directive);
-
-        $builder = $builderFactory($this);
-        $actual  = $directive->handleScoutBuilder($builder, $value);
+        $result = $this->graphQL(
+            <<<'GraphQL'
+            query test($query: SearchByScoutConditionTest) {
+                test(search: "*", input: $query)
+            }
+            GraphQL,
+            [
+                'query' => $value,
+            ],
+        );
 
         if (is_array($expected)) {
-            self::assertInstanceOf($builder::class, $actual);
-            self::assertScoutQueryEquals($expected, $actual);
+            self::assertInstanceOf($builder::class, $directive::$result);
+            self::assertScoutQueryEquals($expected, $directive::$result);
         } else {
-            self::fail('Something wrong...');
+            $result->assertJsonFragment([
+                'message' => $expected->getMessage(),
+            ]);
         }
     }
     // </editor-fold>
@@ -420,9 +428,9 @@ class DirectiveTest extends TestCase {
                         }
 
                         public static function definition(): string {
-                            return /** @lang GraphQL */ <<<'GRAPHQL'
+                            return <<<'GraphQL'
                                 directive @customComplexOperator(value: String) on INPUT_FIELD_DEFINITION
-                            GRAPHQL;
+                            GraphQL;
                         }
 
                         public function call(
@@ -480,11 +488,11 @@ class DirectiveTest extends TestCase {
                     'empty'               => [
                         [
                             'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "tmp"
-                        SQL
+                                select
+                                    *
+                                from
+                                    "tmp"
+                            SQL
                             ,
                             'bindings' => [],
                         ],
@@ -523,11 +531,11 @@ class DirectiveTest extends TestCase {
                     'null'                => [
                         [
                             'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "tmp"
-                        SQL
+                                select
+                                    *
+                                from
+                                    "tmp"
+                            SQL
                             ,
                             'bindings' => [],
                         ],
@@ -541,25 +549,25 @@ class DirectiveTest extends TestCase {
                     'valid condition' => [
                         [
                             'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "tmp"
-                            where
-                                (
-                                    not (
-                                        (
-                                            ("a" != ?)
-                                            and (
-                                                (
-                                                    ("a" = ?)
-                                                    or ("b" != ?)
+                                select
+                                    *
+                                from
+                                    "tmp"
+                                where
+                                    (
+                                        not (
+                                            (
+                                                ("a" != ?)
+                                                and (
+                                                    (
+                                                        ("a" = ?)
+                                                        or ("renamed" != ?)
+                                                    )
                                                 )
                                             )
                                         )
                                     )
-                                )
-                        SQL
+                            SQL
                             ,
                             'bindings' => [1, 2, 'a'],
                         ],
@@ -597,25 +605,25 @@ class DirectiveTest extends TestCase {
                     'valid condition' => [
                         [
                             'query'    => <<<'SQL'
-                            select
-                                *
-                            from
-                                "tmp"
-                            where
-                                (
-                                    not (
-                                        (
-                                            ("tmp"."a" != ?)
-                                            and (
-                                                (
-                                                    ("tmp"."a" = ?)
-                                                    or ("tmp"."b" != ?)
+                                select
+                                    *
+                                from
+                                    "tmp"
+                                where
+                                    (
+                                        not (
+                                            (
+                                                ("tmp"."a" != ?)
+                                                and (
+                                                    (
+                                                        ("tmp"."a" = ?)
+                                                        or ("tmp"."renamed" != ?)
+                                                    )
                                                 )
                                             )
                                         )
                                     )
-                                )
-                        SQL
+                            SQL
                             ,
                             'bindings' => [1, 2, 'a'],
                         ],
@@ -711,7 +719,7 @@ class DirectiveTest extends TestCase {
                             'c.a' => 2,
                         ],
                         'whereIns' => [
-                            'renamed' => [1, 2, 3],
+                            'renamed' => ['a', 'b', 'c'],
                         ],
                     ],
                     [
@@ -723,7 +731,7 @@ class DirectiveTest extends TestCase {
                             ],
                             [
                                 'b' => [
-                                    'in' => [1, 2, 3],
+                                    'in' => ['a', 'b', 'c'],
                                 ],
                             ],
                             [
@@ -744,7 +752,7 @@ class DirectiveTest extends TestCase {
                             'properties/c/a' => 2,
                         ],
                         'whereIns' => [
-                            'properties/renamed' => [1, 2, 3],
+                            'properties/renamed' => ['a', 'b', 'c'],
                         ],
                     ],
                     [
@@ -756,7 +764,7 @@ class DirectiveTest extends TestCase {
                             ],
                             [
                                 'b' => [
-                                    'in' => [1, 2, 3],
+                                    'in' => ['a', 'b', 'c'],
                                 ],
                             ],
                             [

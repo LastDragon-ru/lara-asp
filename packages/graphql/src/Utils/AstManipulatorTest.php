@@ -35,8 +35,7 @@ class AstManipulatorTest extends TestCase {
         // Object
         $types       = $this->app->make(TypeRegistry::class);
         $manipulator = $this->getManipulator(
-        /** @lang GraphQL */
-            <<<'GRAPHQL'
+            <<<'GraphQL'
             interface InterfaceA {
                 id: ID!
             }
@@ -48,7 +47,7 @@ class AstManipulatorTest extends TestCase {
             type ObjectA implements InterfaceA & InterfaceB {
                 id: ID!
             }
-            GRAPHQL,
+            GraphQL,
         );
         $interface   = new InterfaceType([
             'name'       => 'InterfaceC',
@@ -160,8 +159,7 @@ class AstManipulatorTest extends TestCase {
 
         // Schema
         $this->useGraphQLSchema(
-        /** @lang GraphQL */
-            <<<'GRAPHQL'
+            <<<'GraphQL'
             extend scalar Int @aDirective @bDirective
             scalar CustomScalar @bDirective @cDirective
             extend scalar CustomScalar @aDirective
@@ -173,7 +171,7 @@ class AstManipulatorTest extends TestCase {
             type Test {
                 id: ID!
             }
-            GRAPHQL,
+            GraphQL,
         );
 
         // Prepare
