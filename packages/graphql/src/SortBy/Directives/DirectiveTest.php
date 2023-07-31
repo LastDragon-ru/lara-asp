@@ -4,38 +4,56 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
 use Closure;
 use Exception;
-use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Model;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
+use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
+use function implode;
 use function is_array;
+use function json_encode;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
  */
 #[CoversClass(Directive::class)]
 class DirectiveTest extends TestCase {
+    use MakesGraphQLRequests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -176,6 +194,77 @@ class DirectiveTest extends TestCase {
      * @dataProvider dataProviderHandleBuilder
      *
      * @param array{query: string, bindings: array<mixed>}|Exception $expected
+     * @param Closure(static): object                                $builderFactory
+     * @param Closure(static): void|null                             $prepare
+     */
+    public function testDirective(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+        ?Closure $prepare = null,
+    ): void {
+        if ($prepare) {
+            $prepare($this);
+        }
+
+        $model = json_encode(Model::class, JSON_THROW_ON_ERROR);
+        $path  = is_array($expected) ? 'data.test' : 'errors.0.message';
+        $body  = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
+        $table = (new Model())->getTable();
+
+        if (!Schema::hasTable($table)) {
+            Schema::create($table, static function (Blueprint $table): void {
+                $table->increments('id');
+                $table->string('a')->nullable();
+                $table->string('b')->nullable();
+            });
+        }
+
+        $this
+            ->useGraphQLSchema(
+                <<<GraphQL
+                type Query {
+                    test(input: Test @sortBy): [TestObject!]!
+                    @all(model: {$model})
+                }
+
+                input Test {
+                    a: Int!
+                    b: String
+                }
+
+                type TestObject {
+                    id: String!
+                }
+                GraphQL,
+            )
+            ->graphQL(
+                <<<'GraphQL'
+                query test($input: [SortByClauseTest!]) {
+                    test(input: $input) {
+                        id
+                    }
+                }
+                GraphQL,
+                [
+                    'input' => $value,
+                ],
+            )
+            ->assertThat(
+                new Response(
+                    new Ok(),
+                    new JsonContentType(),
+                    new JsonBody(
+                        new JsonMatchesFragment($path, $body),
+                    ),
+                ),
+            );
+    }
+
+    /**
+     * @dataProvider dataProviderHandleBuilder
+     *
+     * @param array{query: string, bindings: array<mixed>}|Exception $expected
      * @param Closure(static): (QueryBuilder|EloquentBuilder<Model>) $builderFactory
      * @param Closure(static): void|null                             $prepare
      */
@@ -185,18 +274,17 @@ class DirectiveTest extends TestCase {
         mixed $value,
         ?Closure $prepare = null,
     ): void {
-        if ($expected instanceof Exception) {
-            self::expectExceptionObject($expected);
-        }
-
         if ($prepare) {
             $prepare($this);
         }
 
+        $builder   = $builderFactory($this);
+        $directive = $this->getExposeBuilderDirective($builder);
+
         $this->useGraphQLSchema(
-            <<<'GraphQL'
+            <<<GraphQL
             type Query {
-                test(input: Test @sortBy): String! @all
+                test(input: Test @sortBy): [String!]! {$directive::getName()}
             }
 
             input Test {
@@ -206,17 +294,86 @@ class DirectiveTest extends TestCase {
             GraphQL,
         );
 
-        $definitionNode = Parser::inputValueDefinition('input: [SortByClauseTest!]');
-        $directiveNode  = Parser::directive('@test');
-        $directive      = $this->app->make(Directive::class)->hydrate($directiveNode, $definitionNode);
-        $builder        = $builderFactory($this);
-        $actual         = $directive->handleBuilder($builder, $value);
+        $type = match (true) {
+            $builder instanceof QueryBuilder => 'SortByQueryClauseTest',
+            default                          => 'SortByClauseTest',
+        };
+        $result = $this->graphQL(
+            <<<GraphQL
+            query test(\$query: [{$type}!]) {
+                test(input: \$query)
+            }
+            GraphQL,
+            [
+                'query' => $value,
+            ],
+        );
 
         if (is_array($expected)) {
-            self::assertInstanceOf($builder::class, $actual);
-            self::assertDatabaseQueryEquals($expected, $actual);
+            self::assertInstanceOf($builder::class, $directive::$result);
+            self::assertDatabaseQueryEquals($expected, $directive::$result);
         } else {
-            self::fail('Something wrong...');
+            $result->assertJsonFragment([
+                'message' => $expected->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @dataProvider dataProviderHandleScoutBuilder
+     *
+     * @param array<string, mixed>|Exception $expected
+     * @param Closure(static): ScoutBuilder  $builderFactory
+     * @param Closure():FieldResolver|null   $fieldResolver
+     */
+    public function testHandleScoutBuilder(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+        Closure $fieldResolver = null,
+    ): void {
+        $builder   = $builderFactory($this);
+        $directive = $this->getExposeBuilderDirective($builder);
+
+        $this->app->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        if ($fieldResolver) {
+            $this->override(FieldResolver::class, $fieldResolver);
+        }
+
+        $this->useGraphQLSchema(
+            <<<GraphQL
+            type Query {
+                test(search: String @search, input: Test @sortBy): [String!]! {$directive::getName()}
+            }
+
+            input Test {
+                a: Int!
+                b: String @rename(attribute: "renamed")
+                c: Test
+            }
+            GraphQL,
+        );
+
+        $result = $this->graphQL(
+            <<<'GraphQL'
+            query test($query: [SortByScoutClauseTest!]) {
+                test(search: "*", input: $query)
+            }
+            GraphQL,
+            [
+                'query' => $value,
+            ],
+        );
+
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $directive::$result);
+            self::assertScoutQueryEquals($expected, $directive::$result);
+        } else {
+            $result->assertJsonFragment([
+                'message' => $expected->getMessage(),
+            ]);
         }
     }
     // </editor-fold>
@@ -360,6 +517,130 @@ class DirectiveTest extends TestCase {
                                 ],
                             ],
                         ]);
+                    },
+                ],
+            ]),
+        ))->getData();
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public static function dataProviderHandleScoutBuilder(): array {
+        return (new CompositeDataProvider(
+            new ScoutBuilderDataProvider(),
+            new ArrayDataProvider([
+                'empty'                  => [
+                    [
+                        // empty
+                    ],
+                    [
+                        // empty
+                    ],
+                    null,
+                ],
+                'empty operators'        => [
+                    [
+                        // empty
+                    ],
+                    [
+                        [
+                            // empty
+                        ],
+                    ],
+                    null,
+                ],
+                'too many properties'    => [
+                    new ConditionTooManyProperties(['a', 'b']),
+                    [
+                        [
+                            'a' => 'asc',
+                            'b' => 'desc',
+                        ],
+                    ],
+                    null,
+                ],
+                'null'                   => [
+                    [
+                        // empty
+                    ],
+                    null,
+                    null,
+                ],
+                'default field resolver' => [
+                    [
+                        'orders' => [
+                            [
+                                'column'    => 'a',
+                                'direction' => 'asc',
+                            ],
+                            [
+                                'column'    => 'c.a',
+                                'direction' => 'desc',
+                            ],
+                            [
+                                'column'    => 'renamed',
+                                'direction' => 'desc',
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'a' => 'asc',
+                        ],
+                        [
+                            'c' => [
+                                'a' => 'desc',
+                            ],
+                        ],
+                        [
+                            'b' => 'desc',
+                        ],
+                    ],
+                    null,
+                ],
+                'custom field resolver'  => [
+                    [
+                        'orders' => [
+                            [
+                                'column'    => 'properties/a',
+                                'direction' => 'asc',
+                            ],
+                            [
+                                'column'    => 'properties/c/a',
+                                'direction' => 'desc',
+                            ],
+                            [
+                                'column'    => 'properties/renamed',
+                                'direction' => 'desc',
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'a' => 'asc',
+                        ],
+                        [
+                            'c' => [
+                                'a' => 'desc',
+                            ],
+                        ],
+                        [
+                            'b' => 'desc',
+                        ],
+                    ],
+                    static function (): FieldResolver {
+                        return new class() implements FieldResolver {
+                            /**
+                             * @inheritDoc
+                             */
+                            public function getField(
+                                EloquentModel $model,
+                                Property $property,
+                            ): string {
+                                return 'properties/'.implode('/', $property->getPath());
+                            }
+                        };
                     },
                 ],
             ]),
