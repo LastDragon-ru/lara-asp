@@ -6,14 +6,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
-use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use PHPUnit\Framework\Attributes\CoversClass;
-
-use function config;
 
 /**
  * @internal
@@ -21,13 +18,6 @@ use function config;
 #[CoversClass(Directive::class)]
 class DirectiveTest extends TestCase {
     public function testManipulateFieldDefinition(): void {
-        config([
-            Package::Name.'.stream.search.enabled' => true,
-            Package::Name.'.stream.search.name'    => 'where',
-            Package::Name.'.stream.sort.enabled'   => true,
-            Package::Name.'.stream.sort.name'      => 'order',
-        ]);
-
         $directives = $this->app->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
@@ -40,7 +30,7 @@ class DirectiveTest extends TestCase {
 
     public function testManipulateFieldDefinitionBuilderUnknown(): void {
         self::expectException(BuilderUnknown::class);
-        self::expectExceptionMessage('Impossible to determine builder type for `type Test { field }`.');
+        self::expectExceptionMessage('Impossible to determine builder type for `type Query { field }`.');
 
         $directives = $this->app->make(DirectiveLocator::class);
         $directive  = new class() extends StreamDirective {
@@ -62,8 +52,6 @@ class DirectiveTest extends TestCase {
             }
             GraphQL,
         );
-
-        self::markTestIncomplete();
     }
 
     public function testManipulateFieldDefinitionFieldIsNotList(): void {

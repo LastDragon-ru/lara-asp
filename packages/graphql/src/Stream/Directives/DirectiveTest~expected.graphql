@@ -95,6 +95,10 @@ directive @streamChunk(
 on
     | ARGUMENT_DEFINITION
 
+directive @streamCursor
+on
+    | ARGUMENT_DEFINITION
+
 enum SearchByTypeFlag {
     yes
 }
@@ -188,6 +192,16 @@ input SortByClauseObject {
     @sortByOperatorField
 }
 
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar StreamCursor
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Scalars\\Cursor"
+)
+
 type Object {
     id: ID
 }
@@ -199,6 +213,9 @@ type Query {
             default: 25
             max: 100
         )
+
+        cursor: StreamCursor
+        @streamCursor
 
         order: [SortByClauseObject!]
         @sortBy
@@ -213,6 +230,9 @@ type Query {
             default: 25
             max: 100
         )
+
+        cursor: StreamCursor
+        @streamCursor
 
         where: SearchByConditionObject
         @searchBy
@@ -230,20 +250,8 @@ type Query {
             max: 100
         )
 
-        order: [SortByClauseObject!]
-        @sortBy
-
-        where: SearchByConditionObject
-        @searchBy
-    ): [Object]
-    @stream
-
-    fieldWithCustomChunkName(
-        a: Int = 5
-        @streamChunk(
-            default: 5
-            max: 10
-        )
+        cursor: StreamCursor
+        @streamCursor
 
         order: [SortByClauseObject!]
         @sortBy
@@ -260,11 +268,14 @@ type Query {
         b: [SortByClauseObject!]
         @sortBy
 
-        chunk: Int = 25
+        c: Int = 5
         @streamChunk(
-            default: 25
-            max: 100
+            default: 5
+            max: 10
         )
+
+        d: StreamCursor
+        @streamCursor
     ): [Object]
     @stream
 
@@ -274,6 +285,9 @@ type Query {
             default: 25
             max: 100
         )
+
+        cursor: StreamCursor
+        @streamCursor
 
         order: [SortByClauseObject!]
         @sortBy

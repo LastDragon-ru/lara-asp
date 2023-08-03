@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -113,6 +114,15 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 StreamChunkDirective::ArgMax     => config("{$prefix}.chunk.max") ?: 100,
                 StreamChunkDirective::ArgDefault => config("{$prefix}.chunk.default") ?: 25,
             ],
+        );
+
+        // Cursor
+        $this->addArgument(
+            $manipulator,
+            $source,
+            StreamCursorDirective::class,
+            Cast::toString(config("{$prefix}.cursor.name") ?: 'cursor'),
+            $manipulator::Placeholder,
         );
 
         // Update type

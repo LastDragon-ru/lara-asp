@@ -3,18 +3,19 @@ type Query {
 
     fieldWithArguments(argument: String): [Object] @stream
 
-    fieldWithDirectives(a: _ @searchBy, b: _ @sortBy): [Object] @stream
+    fieldWithDirectives(
+        a: _ @searchBy,
+        b: _ @sortBy
+        c: _ @streamChunk(
+            default: 5
+            max: 10
+        )
+        d: _ @streamCursor
+    ): [Object] @stream
 
     fieldNotSearchable: [Object] @stream(searchable: false)
 
     fieldNotSortable: [Object] @stream(sortable: false)
-
-    fieldWithCustomChunkName(
-        a: String @streamChunk(
-            default: 5
-            max: 10
-        )
-    ): [Object] @stream
 }
 
 type Object {

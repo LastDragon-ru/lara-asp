@@ -28,6 +28,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *              default: int<1, max>,
  *              max: int<1, max>,
  *          },
+ *          cursor: array{
+ *              name: string,
+ *              encrypted: bool
+ *          }
  *      }
  *      } $settings
  */
@@ -88,6 +92,10 @@ $settings = [
             'name'    => 'chunk',
             'default' => 25,
             'max'     => 100,
+        ],
+        'cursor' => [
+            'name'      => 'cursor',
+            'encrypted' => true,
         ],
     ],
 ];
