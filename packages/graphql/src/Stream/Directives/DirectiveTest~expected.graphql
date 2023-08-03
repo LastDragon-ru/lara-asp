@@ -88,6 +88,13 @@ directive @stream(
 on
     | FIELD_DEFINITION
 
+directive @streamChunk(
+    default: Int!
+    max: Int!
+)
+on
+    | ARGUMENT_DEFINITION
+
 enum SearchByTypeFlag {
     yes
 }
@@ -187,6 +194,12 @@ type Object {
 
 type Query {
     fieldNotSearchable(
+        chunk: Int = 25
+        @streamChunk(
+            default: 25
+            max: 100
+        )
+
         order: [SortByClauseObject!]
         @sortBy
     ): [Object]
@@ -195,6 +208,12 @@ type Query {
     )
 
     fieldNotSortable(
+        chunk: Int = 25
+        @streamChunk(
+            default: 25
+            max: 100
+        )
+
         where: SearchByConditionObject
         @searchBy
     ): [Object]
@@ -204,6 +223,27 @@ type Query {
 
     fieldWithArguments(
         argument: String
+
+        chunk: Int = 25
+        @streamChunk(
+            default: 25
+            max: 100
+        )
+
+        order: [SortByClauseObject!]
+        @sortBy
+
+        where: SearchByConditionObject
+        @searchBy
+    ): [Object]
+    @stream
+
+    fieldWithCustomChunkName(
+        a: Int = 5
+        @streamChunk(
+            default: 5
+            max: 10
+        )
 
         order: [SortByClauseObject!]
         @sortBy
@@ -219,10 +259,22 @@ type Query {
 
         b: [SortByClauseObject!]
         @sortBy
+
+        chunk: Int = 25
+        @streamChunk(
+            default: 25
+            max: 100
+        )
     ): [Object]
     @stream
 
     fieldWithoutArguments(
+        chunk: Int = 25
+        @streamChunk(
+            default: 25
+            max: 100
+        )
+
         order: [SortByClauseObject!]
         @sortBy
 

@@ -8,6 +8,13 @@ type Query {
     fieldNotSearchable: [Object] @stream(searchable: false)
 
     fieldNotSortable: [Object] @stream(sortable: false)
+
+    fieldWithCustomChunkName(
+        a: String @streamChunk(
+            default: 5
+            max: 10
+        )
+    ): [Object] @stream
 }
 
 type Object {

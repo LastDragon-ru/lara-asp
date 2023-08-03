@@ -18,6 +18,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -100,17 +101,30 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Chunk
-        // fixme(graphql)!: not implemented
+        $this->addArgument(
+            $manipulator,
+            $source,
+            StreamChunkDirective::class,
+            Cast::toString(config("{$prefix}.chunk.name") ?: 'chunk'),
+            $manipulator::Placeholder,
+            null,
+            null,
+            [
+                StreamChunkDirective::ArgMax     => config("{$prefix}.chunk.max") ?: 100,
+                StreamChunkDirective::ArgDefault => config("{$prefix}.chunk.default") ?: 25,
+            ],
+        );
 
         // Update type
-        // fixme(graphql)!: not implemented
+        // fixme(graphql/@stream)!: Update type: not implemented
 
         // Interfaces (same as @searchBy/@sortBy)
-        // fixme(graphql)!: not implemented
+        // fixme(graphql/@stream)!: Interfaces: not implemented
     }
 
     /**
      * @param class-string<DirectiveContract> $directive
+     * @param array<string, mixed>            $arguments
      */
     protected function addArgument(
         AstManipulator $manipulator,
@@ -120,6 +134,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         string $type,
         string $value = null,
         string $description = null,
+        array $arguments = [],
     ): void {
         // Arguments with directive already exists?
         $argument = $manipulator->findArgument(
@@ -137,6 +152,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $manipulator->addDirective(
             $manipulator->addArgument($field->getObject(), $field->getField(), $name, $type, $value, $description),
             $directive,
+            $arguments,
         );
     }
     // </editor-fold>

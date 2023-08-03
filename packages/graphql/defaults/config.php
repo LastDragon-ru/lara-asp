@@ -16,14 +16,18 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *      },
  *      stream: array{
  *          search: array{
- *              enabled: bool,
  *              name: string,
+ *              enabled: bool,
  *          },
  *          sort: array{
- *              enabled: bool,
  *              name: string,
+ *              enabled: bool,
  *          },
- *          chunk: int<1, max>
+ *          chunk: array{
+ *              name: string,
+ *              default: int<1, max>,
+ *              max: int<1, max>,
+ *          },
  *      }
  *      } $settings
  */
@@ -73,14 +77,18 @@ $settings = [
      */
     'stream'    => [
         'search' => [
-            'enabled' => true,
             'name'    => 'where',
+            'enabled' => true,
         ],
         'sort'   => [
-            'enabled' => true,
             'name'    => 'order',
+            'enabled' => true,
         ],
-        'chunk'  => 25,
+        'chunk'  => [
+            'name'    => 'chunk',
+            'default' => 25,
+            'max'     => 100,
+        ],
     ],
 ];
 
