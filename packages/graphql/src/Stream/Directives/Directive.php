@@ -154,7 +154,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             },
         );
 
-        if ($argument) {
+        if ($argument && !$manipulator->isDeprecated($argument)) {
             return;
         }
 

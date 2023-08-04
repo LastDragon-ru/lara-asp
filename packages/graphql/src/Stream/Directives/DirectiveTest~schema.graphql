@@ -16,6 +16,16 @@ type Query {
     fieldNotSearchable: [Object] @stream(searchable: false)
 
     fieldNotSortable: [Object] @stream(sortable: false)
+
+    fieldWithDeprecations(
+        a: _ @deprecated @searchBy,
+        b: _ @deprecated @sortBy
+        c: _ @deprecated @streamChunk(
+            default: 5
+            max: 10
+        )
+        d: _ @deprecated @streamCursor
+    ): [Object] @stream
 }
 
 type Object {

@@ -261,6 +261,43 @@ type Query {
     ): [Object]
     @stream
 
+    fieldWithDeprecations(
+        a: SearchByConditionObject
+        @deprecated
+        @searchBy
+
+        b: [SortByClauseObject!]
+        @deprecated
+        @sortBy
+
+        c: Int = 5
+        @deprecated
+        @streamChunk(
+            default: 5
+            max: 10
+        )
+
+        chunk: Int = 25
+        @streamChunk(
+            default: 25
+            max: 100
+        )
+
+        cursor: StreamCursor
+        @streamCursor
+
+        d: StreamCursor
+        @deprecated
+        @streamCursor
+
+        order: [SortByClauseObject!]
+        @sortBy
+
+        where: SearchByConditionObject
+        @searchBy
+    ): [Object]
+    @stream
+
     fieldWithDirectives(
         a: SearchByConditionObject
         @searchBy
