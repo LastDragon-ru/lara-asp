@@ -23,6 +23,7 @@ use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\EnumType;
+use GraphQL\Type\Definition\EnumValueDefinition;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\HasFieldsType;
 use GraphQL\Type\Definition\InputObjectField;
@@ -47,6 +48,7 @@ use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Nuwave\Lighthouse\Schema\Directives\DeprecatedDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
@@ -173,6 +175,20 @@ class AstManipulator {
 
         return $type instanceof UnionTypeDefinitionNode
             || $type instanceof UnionType;
+    }
+
+    public function isDeprecated(
+        Node|Argument|EnumValueDefinition|FieldDefinition|InputObjectField $node,
+    ): bool {
+        $deprecated = false;
+
+        if ($node instanceof Node) {
+            $deprecated = $this->getDirective($node, DeprecatedDirective::class) !== null;
+        } else {
+            $deprecated = $node->deprecationReason !== null;
+        }
+
+        return $deprecated;
     }
 
     public function isTypeDefinitionExists(string $name): bool {

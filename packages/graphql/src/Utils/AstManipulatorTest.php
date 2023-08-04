@@ -6,11 +6,14 @@ use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\CustomScalarType;
+use GraphQL\Type\Definition\EnumValueDefinition;
 use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -398,6 +401,17 @@ class AstManipulatorTest extends TestCase {
         }
     }
 
+    /**
+     * @dataProvider dataProviderIsDeprecated
+     */
+    public function testIsDeprecated(
+        bool $expected,
+        Node|Argument|EnumValueDefinition|FieldDefinition|InputObjectField $node,
+    ): void {
+        self::assertEquals($expected, $this->getManipulator()->isDeprecated($node));
+    }
+    //</editor-fold>
+
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function getManipulator(string $schema = null): AstManipulator {
@@ -581,6 +595,44 @@ class AstManipulatorTest extends TestCase {
                 ]),
                 AstManipulatorTest_ADirective::class,
                 [],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{
+     *      bool,
+     *      Node|Argument|EnumValueDefinition|FieldDefinition|InputObjectField,
+     *      }>
+     */
+    public static function dataProviderIsDeprecated(): array {
+        return [
+            'argument: deprecated' => [
+                true,
+                new Argument([
+                    'name'              => 'argument',
+                    'type'              => Type::string(),
+                    'deprecationReason' => '',
+                ]),
+            ],
+            'argument'             => [
+                false,
+                new Argument([
+                    'name' => 'argument',
+                    'type' => Type::string(),
+                ]),
+            ],
+            'node: deprecated'     => [
+                true,
+                Parser::field(
+                    'argument: String @deprecated',
+                ),
+            ],
+            'node'                 => [
+                false,
+                Parser::field(
+                    'argument: String',
+                ),
             ],
         ];
     }
