@@ -328,6 +328,19 @@ class ManipulatorTest extends TestCase {
                 }
                 GRAPHQL,
             ],
+            '@stream'                     => [
+                'Test',
+                <<<'GraphQL'
+                type Query {
+                    field: [Test!]
+                    @stream
+                }
+
+                type Test {
+                    field: Int
+                }
+                GraphQL,
+            ],
         ];
     }
     //</editor-fold>

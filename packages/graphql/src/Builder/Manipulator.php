@@ -21,6 +21,7 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
+use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
@@ -35,6 +36,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Pagination\PaginationType;
@@ -323,32 +325,44 @@ class Manipulator extends AstManipulator implements TypeProvider {
     public function getPlaceholderTypeDefinitionNode(
         FieldDefinitionNode|FieldDefinition $field,
     ): TypeDefinitionNode|Type|null {
-        $node     = null;
-        $paginate = $this->getDirective($field, PaginateDirective::class);
+        $node       = $this->getTypeDefinition($field);
+        $name       = $this->getTypeName($node);
+        $directives = [
+            StreamDirective::class,
+            PaginateDirective::class,
+        ];
 
-        if ($paginate) {
-            $type       = $this->getTypeName($this->getTypeDefinition($field));
-            $pagination = (new class() extends PaginateDirective {
-                public function getPaginationType(PaginateDirective $directive): PaginationType {
-                    return $directive->paginationType();
+        foreach ($directives as $directive) {
+            $directive = $this->getDirective($field, $directive);
+            $type      = null;
+
+            if ($directive instanceof StreamDirective) {
+                $type = Str::singular(mb_substr($name, 0, -mb_strlen(StreamDirective::Name)));
+            } elseif ($directive instanceof PaginateDirective) {
+                $pagination = (new class() extends PaginateDirective {
+                    public function getPaginationType(PaginateDirective $directive): PaginationType {
+                        return $directive->paginationType();
+                    }
+                })->getPaginationType($directive);
+
+                if ($pagination->isPaginator()) {
+                    $type = mb_substr($name, 0, -mb_strlen('Paginator'));
+                } elseif ($pagination->isSimple()) {
+                    $type = mb_substr($name, 0, -mb_strlen('SimplePaginator'));
+                } elseif ($pagination->isConnection()) {
+                    $type = mb_substr($name, 0, -mb_strlen('Connection'));
+                } else {
+                    // empty
                 }
-            })->getPaginationType($paginate);
-
-            if ($pagination->isPaginator()) {
-                $type = mb_substr($type, 0, -mb_strlen('Paginator'));
-            } elseif ($pagination->isSimple()) {
-                $type = mb_substr($type, 0, -mb_strlen('SimplePaginator'));
-            } elseif ($pagination->isConnection()) {
-                $type = mb_substr($type, 0, -mb_strlen('Connection'));
             } else {
-                // empty
+                 // empty
             }
 
             if ($type) {
                 $node = $this->getTypeDefinition($type);
+
+                break;
             }
-        } else {
-            $node = $this->getTypeDefinition($field);
         }
 
         return $node;

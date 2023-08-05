@@ -9,19 +9,15 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Scalars\Cursor as CursorScalar;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
 
-use function json_encode;
-
-use const JSON_THROW_ON_ERROR;
-
-class Cursor implements TypeDefinition {
+class Navigator implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
-        return CursorScalar::Name;
+        return Directive::Name.'Navigator';
     }
 
     public function getTypeDefinition(
@@ -29,11 +25,15 @@ class Cursor implements TypeDefinition {
         string $name,
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
-        $class = json_encode(CursorScalar::class, JSON_THROW_ON_ERROR);
+        $cursor = $manipulator->getType(Cursor::class, $source);
 
-        return Parser::scalarTypeDefinition(
+        return Parser::objectTypeDefinition(
             <<<GraphQL
-            scalar {$name} @scalar(class: {$class})
+            type {$name} {
+                previous: {$cursor}!
+                current: {$cursor}!
+                next: {$cursor}!
+            }
             GraphQL,
         );
     }

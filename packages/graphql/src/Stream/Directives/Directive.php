@@ -6,6 +6,7 @@ use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
@@ -21,6 +22,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -29,8 +31,10 @@ use Nuwave\Lighthouse\Schema\Values\FieldValue;
 use Nuwave\Lighthouse\Support\Contracts\Directive as DirectiveContract;
 use Nuwave\Lighthouse\Support\Contracts\FieldManipulator;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
+use stdClass;
 
 use function config;
+use function str_starts_with;
 
 class Directive extends BaseDirective implements FieldResolver, FieldManipulator, BuilderInfoProvider {
     use WithManipulator;
@@ -64,9 +68,15 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Prepare
-        $manipulator = $this->getAstManipulator($documentAST);
+        $builder     = new BuilderInfo('fixme', stdClass::class); // fixme(graphql/@stream)!: BuilderInfo
+        $manipulator = $this->getManipulator($documentAST, $builder);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
         $prefix      = Package::Name.'.stream';
+
+        // Updated?
+        if (str_starts_with($manipulator->getTypeName($fieldDefinition), self::Name)) {
+            return;
+        }
 
         // Field is a list?
         if (!$source->isList()) {
@@ -126,7 +136,8 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         );
 
         // Update type
-        // fixme(graphql/@stream)!: Update type: not implemented
+        $type                  = $manipulator->getType(Stream::class, $source);
+        $fieldDefinition->type = Parser::typeReference("{$type}!");
 
         // Interfaces (same as @searchBy/@sortBy)
         // fixme(graphql/@stream)!: Interfaces: not implemented

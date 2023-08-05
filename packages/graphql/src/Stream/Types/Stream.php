@@ -5,23 +5,20 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Types;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Scalars\Cursor as CursorScalar;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
 
-use function json_encode;
-
-use const JSON_THROW_ON_ERROR;
-
-class Cursor implements TypeDefinition {
+class Stream implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
-        return CursorScalar::Name;
+        return Str::plural(Str::studly($source->getTypeName())).Directive::Name;
     }
 
     public function getTypeDefinition(
@@ -29,11 +26,19 @@ class Cursor implements TypeDefinition {
         string $name,
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
-        $class = json_encode(CursorScalar::class, JSON_THROW_ON_ERROR);
+        $type       = $source->getTypeName();
+        $info       = $manipulator->getType(Info::class, $source);
+        $navigator  = $manipulator->getType(Navigator::class, $source);
+        $aggregator = $manipulator->getType(Aggregator::class, $source);
 
-        return Parser::scalarTypeDefinition(
+        return Parser::objectTypeDefinition(
             <<<GraphQL
-            scalar {$name} @scalar(class: {$class})
+            type {$name} {
+                items: [{$type}!]!
+                info: {$info}!
+                navigator: {$navigator}!
+                aggregator: {$aggregator}!
+            }
             GraphQL,
         );
     }

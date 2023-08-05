@@ -193,9 +193,11 @@ input SortByClauseObject {
 }
 
 """
-The `String` scalar type represents textual data, represented as UTF-8
-character sequences. The String type is most often used by GraphQL to
-represent free-form human-readable text.
+Represents a cursor for the `@stream` directive. The value can be a
+positive `Int` or a `String`. The `Int` value represents the offset
+(zero-based) to navigate to any position within the stream (= cursor
+pagination). And the `String` value represents the cursor and allows
+navigation only to the previous/next pages (= offset pagination).
 """
 scalar StreamCursor
 @scalar(
@@ -204,6 +206,13 @@ scalar StreamCursor
 
 type Object {
     id: ID
+}
+
+type ObjectsStream {
+    aggregator: StreamAggregator!
+    info: StreamInfo!
+    items: [Object!]!
+    navigator: StreamNavigator!
 }
 
 type Query {
@@ -219,7 +228,7 @@ type Query {
 
         order: [SortByClauseObject!]
         @sortBy
-    ): [Object]
+    ): ObjectsStream!
     @stream(
         searchable: false
     )
@@ -236,7 +245,7 @@ type Query {
 
         where: SearchByConditionObject
         @searchBy
-    ): [Object]
+    ): ObjectsStream!
     @stream(
         sortable: false
     )
@@ -258,7 +267,7 @@ type Query {
 
         where: SearchByConditionObject
         @searchBy
-    ): [Object]
+    ): ObjectsStream!
     @stream
 
     fieldWithDeprecations(
@@ -295,7 +304,7 @@ type Query {
 
         where: SearchByConditionObject
         @searchBy
-    ): [Object]
+    ): ObjectsStream!
     @stream
 
     fieldWithDirectives(
@@ -313,7 +322,7 @@ type Query {
 
         d: StreamCursor
         @streamCursor
-    ): [Object]
+    ): ObjectsStream!
     @stream
 
     fieldWithoutArguments(
@@ -331,6 +340,22 @@ type Query {
 
         where: SearchByConditionObject
         @searchBy
-    ): [Object]
+    ): ObjectsStream!
     @stream
+}
+
+type StreamAggregator {
+    count: Int!
+}
+
+type StreamInfo {
+    chunk: Int!
+    order: String!
+    where: String!
+}
+
+type StreamNavigator {
+    current: StreamCursor!
+    next: StreamCursor!
+    previous: StreamCursor!
 }
