@@ -56,7 +56,6 @@ use function array_merge;
 use function assert;
 use function is_string;
 use function json_encode;
-use function reset;
 use function trim;
 
 use const JSON_THROW_ON_ERROR;
@@ -274,10 +273,26 @@ class AstManipulator {
     ): ?Directive {
         // todo(graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
         // todo(graphql): Should we throw an error if $node has multiple directives?
-        $directives = $this->getDirectives($node, $class, $callback);
-        $directive  = reset($directives) ?: null;
+        $directives = $this->getDirectives($node);
+        $found      = null;
 
-        return $directive;
+        foreach ($directives as $directive) {
+            // Class?
+            if (!($directive instanceof $class)) {
+                continue;
+            }
+
+            // Callback?
+            if ($callback && !$callback($directive)) {
+                continue;
+            }
+
+            // Ok
+            $found = $directive;
+            break;
+        }
+
+        return $found;
     }
 
     /**
@@ -287,7 +302,7 @@ class AstManipulator {
      * @param class-string<T>|null                                                          $class
      * @param Closure(($class is null ? Directive : T&Directive)): bool|null                $callback
      *
-     * @return ($class is null ? list<Directive> : list<T&Directive>)
+     * @return ($class is null ? array<array-key, Directive> : array<array-key, T&Directive>)
      */
     public function getDirectives(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
@@ -305,21 +320,25 @@ class AstManipulator {
                 $directives = array_merge($directives, $this->getDirectives($extensionNode, $class, $callback));
             }
         } elseif ($node instanceof Node) {
-            $associated = $this->getDirectiveLocator()->associated($node);
+            $associated = $this->getDirectiveLocator()->associated($node)->all();
 
-            foreach ($associated as $directive) {
-                // Class?
-                if ($class && !($directive instanceof $class)) {
-                    continue;
+            if ($class !== null || $callback !== null) {
+                foreach ($associated as $directive) {
+                    // Class?
+                    if ($class && !($directive instanceof $class)) {
+                        continue;
+                    }
+
+                    // Callback?
+                    if ($callback && !$callback($directive)) {
+                        continue;
+                    }
+
+                    // Ok
+                    $directives[] = $directive;
                 }
-
-                // Callback?
-                if ($callback && !$callback($directive)) {
-                    continue;
-                }
-
-                // Ok
-                $directives[] = $directive;
+            } else {
+                $directives = $associated;
             }
         } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
             if ($node->astNode) {
