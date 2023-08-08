@@ -56,6 +56,7 @@ use function array_merge;
 use function assert;
 use function is_string;
 use function json_encode;
+use function sprintf;
 use function trim;
 
 use const JSON_THROW_ON_ERROR;
@@ -544,26 +545,32 @@ class AstManipulator {
     }
 
     public function addArgument(
-        FieldDefinitionNode|FieldDefinition $node,
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
+        FieldDefinitionNode|FieldDefinition $field,
         string $name,
         string $type,
         mixed $default = null,
         string $description = null,
     ): InputValueDefinitionNode|Argument {
         // Added?
-        if ($this->getArgument($node, $name)) {
-            throw new ArgumentAlreadyDefined($name);
+        if ($this->getArgument($field, $name)) {
+            throw new ArgumentAlreadyDefined(sprintf(
+                '%s { %s(%s) }',
+                $this->getTypeFullName($definition),
+                $this->getName($field),
+                $name,
+            ));
         }
 
         // Add
-        if ($node instanceof FieldDefinitionNode) {
-            $definition = ''
+        if ($field instanceof FieldDefinitionNode) {
+            $argument = ''
                 .($description ? BlockString::print($description) : '')
                 ."{$name}: {$type}"
                 .($default !== null ? ' = '.json_encode($default, JSON_THROW_ON_ERROR) : '');
-            $argument   = Parser::inputValueDefinition($definition);
+            $argument = Parser::inputValueDefinition($argument);
 
-            $node->arguments[] = $argument;
+            $field->arguments[] = $argument;
         } else {
             $argument = new Argument([
                 'name'         => $name,
@@ -572,9 +579,34 @@ class AstManipulator {
                 'defaultValue' => $default,
             ]);
 
-            $node->args[] = $argument;
+            $field->args[] = $argument;
         }
 
+        // Interfaces
+        // (to make sure to get a valid schema)
+        $interfaces = $this->getInterfaces($definition);
+        $fieldName  = $this->getName($field);
+
+        foreach ($interfaces as $interface) {
+            // Field?
+            $interfaceField = $this->getField($interface, $fieldName);
+
+            if (!$interfaceField) {
+                continue;
+            }
+
+            // Update
+            $this->addArgument(
+                $interface,
+                $interfaceField,
+                $name,
+                $type,
+                $default,
+                $description,
+            );
+        }
+
+        // Return
         return $argument;
     }
 

@@ -309,10 +309,15 @@ class AstManipulatorTest extends TestCase {
 
     /**
      * @dataProvider dataProviderAddArgument
+     *
+     * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                      $definitionFactory
+     * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition) $fieldFactory
      */
     public function testAddArgument(
         Exception|string $expected,
-        FieldDefinitionNode|FieldDefinition $node,
+        string $schema,
+        Closure $definitionFactory,
+        Closure $fieldFactory,
         string $name,
         string $type,
         mixed $default,
@@ -322,12 +327,15 @@ class AstManipulatorTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $manipulator = $this->getManipulator();
+        $manipulator = $this->getManipulator($schema);
+        $definition  = $definitionFactory($manipulator);
+        $field       = $fieldFactory($manipulator, $definition);
 
-        $manipulator->addArgument($node, $name, $type, $default, $description);
+        $manipulator->addArgument($definition, $field, $name, $type, $default, $description);
 
         if (is_string($expected)) {
-            $this->assertGraphQLPrintableEquals($expected, $node);
+            $this->useGraphQLSchema($manipulator->getDocument());
+            $this->assertGraphQLExportableEquals($expected, $definition);
         }
     }
 
@@ -496,6 +504,63 @@ class AstManipulatorTest extends TestCase {
 
         return $manipulator;
     }
+
+    /**
+     * @return Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)
+     */
+    protected static function getDefinitionFactory(string $name): Closure {
+        return static function (
+            AstManipulator $manipulator,
+        ) use (
+            $name,
+        ): ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode {
+            $definition = $manipulator->getTypeDefinition($name);
+
+            assert(
+                $definition instanceof ObjectTypeDefinitionNode
+                || $definition instanceof InterfaceTypeDefinitionNode,
+            );
+
+            return $definition;
+        };
+    }
+
+    /**
+     * @return Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition)
+     */
+    protected static function getFieldFactory(string $name): Closure {
+        return static function (
+            AstManipulator $manipulator,
+            ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
+        ) use (
+            $name,
+        ): FieldDefinitionNode|FieldDefinition {
+            $field = $manipulator->getField($definition, $name);
+
+            self::assertNotNull($field);
+
+            return $field;
+        };
+    }
+
+    /**
+     * @return Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType, FieldDefinitionNode|FieldDefinition): (InputValueDefinitionNode|Argument)
+     */
+    protected static function getArgumentFactory(string $name): Closure {
+        return static function (
+            AstManipulator $manipulator,
+            ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
+            FieldDefinitionNode|FieldDefinition $field,
+        ) use (
+            $name,
+        ): InputValueDefinitionNode {
+            $argument = $manipulator->getArgument($field, $name);
+
+            self::assertInstanceOf(InputValueDefinitionNode::class, $argument);
+
+            return $argument;
+        };
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -503,7 +568,9 @@ class AstManipulatorTest extends TestCase {
     /**
      * @return array<string, array{
      *      Exception|string,
-     *      FieldDefinitionNode|FieldDefinition,
+     *      string,
+     *      Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType),
+     *      Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition),
      *      string,
      *      string,
      *      mixed,
@@ -511,35 +578,136 @@ class AstManipulatorTest extends TestCase {
      *      }>
      */
     public static function dataProviderAddArgument(): array {
+        $schema = <<<'GraphQL'
+            type Query implements InterfaceB & InterfaceC {
+                a(a: Int): Int @mock
+                b: Boolean @mock
+            }
+
+            interface InterfaceA {
+                a(a: Int): Int
+            }
+
+            interface InterfaceB implements InterfaceA {
+                a(a: Int): Int
+                b: Boolean
+            }
+
+            interface InterfaceC {
+                a(a: Int): Int
+            }
+        GraphQL;
+
         return [
             'argument exists'                          => [
-                new ArgumentAlreadyDefined('argument'),
-                Parser::fieldDefinition('field(argument: String): String'),
-                'argument',
+                new ArgumentAlreadyDefined('type Query { a(a) }'),
+                $schema,
+                self::getDefinitionFactory('Query'),
+                self::getFieldFactory('a'),
+                'a',
                 'Boolean',
                 null,
                 null,
             ],
             'argument without description and default' => [
                 <<<'GraphQL'
-                field(
-                    a: String
-                    b: Boolean
-                ): String
+                interface InterfaceA {
+                    a(
+                        a: Int
+                    ): Int
+                }
+
+                interface InterfaceB
+                implements
+                    & InterfaceA
+                {
+                    a(
+                        a: Int
+                    ): Int
+
+                    b(
+                        argument: Boolean
+                    ): Boolean
+                }
+
+                interface InterfaceC {
+                    a(
+                        a: Int
+                    ): Int
+                }
+
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a(
+                        a: Int
+                    ): Int
+                    @mock
+
+                    b(
+                        argument: Boolean
+                    ): Boolean
+                    @mock
+                }
+
                 GraphQL,
-                Parser::fieldDefinition('field(a: String): String'),
-                'b',
+                $schema,
+                self::getDefinitionFactory('Query'),
+                self::getFieldFactory('b'),
+                'argument',
                 'Boolean',
                 null,
                 null,
             ],
             'argument without description'             => [
                 <<<'GraphQL'
-                field(
-                    argument: String = "String value"
-                ): String
+                interface InterfaceA {
+                    a(
+                        a: Int
+                    ): Int
+                }
+
+                interface InterfaceB
+                implements
+                    & InterfaceA
+                {
+                    a(
+                        a: Int
+                    ): Int
+
+                    b(
+                        argument: String = "String value"
+                    ): Boolean
+                }
+
+                interface InterfaceC {
+                    a(
+                        a: Int
+                    ): Int
+                }
+
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a(
+                        a: Int
+                    ): Int
+                    @mock
+
+                    b(
+                        argument: String = "String value"
+                    ): Boolean
+                    @mock
+                }
+
                 GraphQL,
-                Parser::fieldDefinition('field: String'),
+                $schema,
+                self::getDefinitionFactory('Query'),
+                self::getFieldFactory('b'),
                 'argument',
                 'String',
                 'String value',
@@ -547,35 +715,91 @@ class AstManipulatorTest extends TestCase {
             ],
             'argument'                                 => [
                 <<<'GraphQL'
-                field(
-                    """
-                    Description \"""
-                    "multiline"
-                    with \\ \n
-                    """
-                    argument: Int = 123
-                ): String
+                interface InterfaceA {
+                    a(
+                        a: Int
+                    ): Int
+                }
+
+                interface InterfaceB
+                implements
+                    & InterfaceA
+                {
+                    a(
+                        a: Int
+                    ): Int
+
+                    b(
+                        """
+                        Description \"""
+                        "multiline"
+                        with \\
+                        """
+                        argument: Int = 123
+                    ): Boolean
+                }
+
+                interface InterfaceC {
+                    a(
+                        a: Int
+                    ): Int
+                }
+
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a(
+                        a: Int
+                    ): Int
+                    @mock
+
+                    b(
+                        """
+                        Description \"""
+                        "multiline"
+                        with \\
+                        """
+                        argument: Int = 123
+                    ): Boolean
+                    @mock
+                }
+
                 GraphQL,
-                Parser::fieldDefinition('field: String'),
+                $schema,
+                self::getDefinitionFactory('Query'),
+                self::getFieldFactory('b'),
                 'argument',
                 'Int',
                 123,
                 <<<'DESCRIPTION'
                 Description """
                 "multiline"
-                with \\ \n
+                with \\
                 DESCRIPTION,
             ],
             'FieldDefinition'                          => [
                 <<<'GraphQL'
-                field(
-                    argument: [String!] = ["a", "b", "c"]
-                ): String
+                type Query {
+                    a(
+                        argument: [String!] = ["a", "b", "c"]
+                    ): Int
+                }
+
                 GraphQL,
-                new FieldDefinition([
-                    'name' => 'field',
-                    'type' => static fn () => Type::string(),
-                ]),
+                $schema,
+                static function (): ObjectType {
+                    return new ObjectType([
+                        'name'   => 'Query',
+                        'fields' => [
+                            'a' => [
+                                'type' => Type::int(),
+                            ],
+                        ],
+                    ]);
+                },
+                self::getFieldFactory('a'),
                 'argument',
                 '[String!]',
                 [
@@ -719,7 +943,7 @@ class AstManipulatorTest extends TestCase {
      *      }>
      */
     public static function dataProviderSetFieldType(): array {
-        $schema            = <<<'GraphQL'
+        $schema = <<<'GraphQL'
             type Query implements InterfaceB & InterfaceC {
                 a: Int @mock
             }
@@ -736,36 +960,6 @@ class AstManipulatorTest extends TestCase {
                 a: Int
             }
         GraphQL;
-        $definitionFactory = static function (string $name): Closure {
-            return static function (
-                AstManipulator $manipulator,
-            ) use (
-                $name,
-            ): ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode {
-                $definition = $manipulator->getTypeDefinition($name);
-
-                assert(
-                    $definition instanceof ObjectTypeDefinitionNode
-                    || $definition instanceof InterfaceTypeDefinitionNode,
-                );
-
-                return $definition;
-            };
-        };
-        $fieldFactory      = static function (string $name): Closure {
-            return static function (
-                AstManipulator $manipulator,
-                ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
-            ) use (
-                $name,
-            ): FieldDefinitionNode {
-                $field = $manipulator->getField($definition, $name);
-
-                self::assertInstanceOf(FieldDefinitionNode::class, $field);
-
-                return $field;
-            };
-        };
 
         return [
             'type'      => [
@@ -796,8 +990,8 @@ class AstManipulatorTest extends TestCase {
 
                 GraphQL,
                 $schema,
-                $definitionFactory('Query'),
-                $fieldFactory('a'),
+                self::getDefinitionFactory('Query'),
+                self::getFieldFactory('a'),
                 Type::boolean(),
             ],
             'interface' => [
@@ -808,8 +1002,8 @@ class AstManipulatorTest extends TestCase {
 
                 GraphQL,
                 $schema,
-                $definitionFactory('InterfaceC'),
-                $fieldFactory('a'),
+                self::getDefinitionFactory('InterfaceC'),
+                self::getFieldFactory('a'),
                 Type::boolean(),
             ],
         ];
@@ -826,7 +1020,7 @@ class AstManipulatorTest extends TestCase {
      *      }>
      */
     public static function dataProviderSetArgumentType(): array {
-        $schema            = <<<'GraphQL'
+        $schema = <<<'GraphQL'
             type Query implements InterfaceB & InterfaceC {
                 a(a: Int, b: String): Int @mock
             }
@@ -843,51 +1037,6 @@ class AstManipulatorTest extends TestCase {
                 a(a: Int, b: String): Int
             }
         GraphQL;
-        $definitionFactory = static function (string $name): Closure {
-            return static function (
-                AstManipulator $manipulator,
-            ) use (
-                $name,
-            ): ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode {
-                $definition = $manipulator->getTypeDefinition($name);
-
-                assert(
-                    $definition instanceof ObjectTypeDefinitionNode
-                    || $definition instanceof InterfaceTypeDefinitionNode,
-                );
-
-                return $definition;
-            };
-        };
-        $fieldFactory      = static function (string $name): Closure {
-            return static function (
-                AstManipulator $manipulator,
-                ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
-            ) use (
-                $name,
-            ): FieldDefinitionNode {
-                $field = $manipulator->getField($definition, $name);
-
-                self::assertInstanceOf(FieldDefinitionNode::class, $field);
-
-                return $field;
-            };
-        };
-        $argumentFactory   = static function (string $name): Closure {
-            return static function (
-                AstManipulator $manipulator,
-                ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
-                FieldDefinitionNode|FieldDefinition $field,
-            ) use (
-                $name,
-            ): InputValueDefinitionNode {
-                $argument = $manipulator->getArgument($field, $name);
-
-                self::assertInstanceOf(InputValueDefinitionNode::class, $argument);
-
-                return $argument;
-            };
-        };
 
         return [
             'type'      => [
@@ -930,9 +1079,9 @@ class AstManipulatorTest extends TestCase {
 
                 GraphQL,
                 $schema,
-                $definitionFactory('Query'),
-                $fieldFactory('a'),
-                $argumentFactory('b'),
+                self::getDefinitionFactory('Query'),
+                self::getFieldFactory('a'),
+                self::getArgumentFactory('b'),
                 Type::int(),
             ],
             'interface' => [
@@ -946,9 +1095,9 @@ class AstManipulatorTest extends TestCase {
 
                 GraphQL,
                 $schema,
-                $definitionFactory('InterfaceC'),
-                $fieldFactory('a'),
-                $argumentFactory('a'),
+                self::getDefinitionFactory('InterfaceC'),
+                self::getFieldFactory('a'),
+                self::getArgumentFactory('a'),
                 Type::boolean(),
             ],
         ];
