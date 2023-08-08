@@ -80,10 +80,8 @@ class SchemaBuilderWrapper extends SchemaBuilder {
     private function reset(): void {
         $builder = $this->getSchemaBuilder();
 
-        $builder->typeRegistry->setDocumentAST($builder->astBuilder->documentAST());
-
-        if ($this->current) {
-            $builder->schema()->getTypeMap();
-        }
+        $builder->typeRegistry->setDocumentAST(
+            $builder->astBuilder->documentAST(),
+        );
     }
 }
