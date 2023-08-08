@@ -7,6 +7,7 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -17,6 +18,8 @@ use function json_encode;
 use const JSON_THROW_ON_ERROR;
 
 class Chunk extends BaseDirective implements ArgManipulator {
+    use WithManipulator;
+
     public const ArgDefault = 'default';
     public const ArgMax     = 'max';
 
@@ -39,7 +42,13 @@ class Chunk extends BaseDirective implements ArgManipulator {
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
-        $argDefinition->type         = Parser::typeReference('Int');
+        $manipulator                 = $this->getAstManipulator($documentAST);
+        $argDefinition               = $manipulator->setArgumentType(
+            $parentType,
+            $parentField,
+            $argDefinition,
+            Parser::typeReference('Int'),
+        );
         $argDefinition->defaultValue = Parser::valueLiteral(
             json_encode($this->directiveArgValue(static::ArgDefault), JSON_THROW_ON_ERROR),
         );

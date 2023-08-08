@@ -1,4 +1,4 @@
-type Query {
+type Query implements InterfaceA & InterfaceB {
     fieldWithoutArguments: [Object] @stream
 
     fieldWithArguments(argument: String): [Object] @stream
@@ -30,4 +30,21 @@ type Query {
 
 type Object {
     id: ID
+}
+
+interface InterfaceA {
+    fieldWithArguments(argument: String): [Object]
+}
+
+interface InterfaceB implements InterfaceC {
+    fieldNotSearchable: [Object]
+}
+
+interface InterfaceC {
+    fieldWithDirectives(
+        a: TypeDoesntMatter,
+        b: TypeDoesntMatter,
+        c: TypeDoesntMatter,
+        d: TypeDoesntMatter,
+    ): [Object]
 }

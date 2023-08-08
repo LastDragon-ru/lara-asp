@@ -35,10 +35,17 @@ class Cursor extends BaseDirective implements ArgManipulator {
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
-        $detector            = Container::getInstance()->make(BuilderInfoDetector::class);
-        $builder             = $detector->getFieldBuilderInfo($documentAST, $parentType, $parentField);
-        $manipulator         = $this->getManipulator($documentAST, $builder);
-        $source              = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
-        $argDefinition->type = Parser::typeReference($manipulator->getType(CursorType::class, $source));
+        $detector    = Container::getInstance()->make(BuilderInfoDetector::class);
+        $builder     = $detector->getFieldBuilderInfo($documentAST, $parentType, $parentField);
+        $manipulator = $this->getManipulator($documentAST, $builder);
+        $source      = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+        $type        = Parser::typeReference($manipulator->getType(CursorType::class, $source));
+
+        $manipulator->setArgumentType(
+            $parentType,
+            $parentField,
+            $argDefinition,
+            $type,
+        );
     }
 }

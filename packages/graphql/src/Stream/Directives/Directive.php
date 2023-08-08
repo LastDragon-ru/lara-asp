@@ -136,11 +136,14 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         );
 
         // Update type
-        $type                  = $manipulator->getType(Stream::class, $source);
-        $fieldDefinition->type = Parser::typeReference("{$type}!");
+        $type = $manipulator->getType(Stream::class, $source);
+        $type = Parser::typeReference("{$type}!");
 
-        // Interfaces (same as @searchBy/@sortBy)
-        // fixme(graphql/@stream)!: Interfaces: not implemented
+        $manipulator->setFieldType(
+            $parentType,
+            $fieldDefinition,
+            $type,
+        );
     }
 
     /**

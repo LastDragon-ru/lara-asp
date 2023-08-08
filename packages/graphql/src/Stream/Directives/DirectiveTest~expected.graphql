@@ -192,6 +192,36 @@ input SortByClauseObject {
     @sortByOperatorField
 }
 
+interface InterfaceA {
+    fieldWithArguments(
+        argument: String
+        chunk: Int
+        cursor: StreamCursor
+        order: [SortByClauseObject!]
+        where: SearchByConditionObject
+    ): ObjectsStream!
+}
+
+interface InterfaceB
+implements
+    & InterfaceC
+{
+    fieldNotSearchable(
+        chunk: Int
+        cursor: StreamCursor
+        order: [SortByClauseObject!]
+    ): ObjectsStream!
+}
+
+interface InterfaceC {
+    fieldWithDirectives(
+        a: SearchByConditionObject
+        b: [SortByClauseObject!]
+        c: Int
+        d: StreamCursor
+    ): ObjectsStream!
+}
+
 """
 Represents a cursor for the `@stream` directive. The value can be a
 positive `Int` or a `String`. The `Int` value represents the offset
@@ -215,7 +245,11 @@ type ObjectsStream {
     navigator: StreamNavigator!
 }
 
-type Query {
+type Query
+implements
+    & InterfaceA
+    & InterfaceB
+{
     fieldNotSearchable(
         chunk: Int = 25
         @streamChunk(
