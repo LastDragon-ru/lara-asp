@@ -611,6 +611,51 @@ class AstManipulator {
     }
 
     /**
+     * @template T of InputValueDefinitionNode|Argument
+     *
+     * @param T                                                           $argument
+     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType) $type
+     *
+     * @return T
+     */
+    public function setArgumentType(
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
+        FieldDefinitionNode|FieldDefinition $field,
+        InputValueDefinitionNode|Argument $argument,
+        TypeNode|Type $type,
+    ): InputValueDefinitionNode|Argument {
+        // Update
+        $this->setType($argument, $type);
+
+        // Interfaces
+        $interfaces   = $this->getInterfaces($definition);
+        $fieldName    = $this->getName($field);
+        $argumentName = $this->getName($argument);
+
+        foreach ($interfaces as $interface) {
+            // Field?
+            $interfaceField = $this->getField($interface, $fieldName);
+
+            if (!$interfaceField) {
+                continue;
+            }
+
+            // Argument?
+            $interfaceArgument = $this->getArgument($interfaceField, $argumentName);
+
+            if ($interfaceArgument === null) {
+                continue;
+            }
+
+            // Update
+            $this->setType($interfaceArgument, $type);
+        }
+
+        // Return
+        return $argument;
+    }
+
+    /**
      * @template T
      *
      * @param (TypeNode&Node)|string $name
@@ -641,5 +686,22 @@ class AstManipulator {
 
         return $type;
     }
-    //</editor-fold>
+
+    /**
+     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType) $type
+     */
+    private function setType(
+        InputValueDefinitionNode|Argument $node,
+        TypeNode|Type $type,
+    ): void {
+        // It seems that we can only modify types of AST nodes :(
+        if ($node instanceof Node) {
+            $node->type = !($type instanceof Node)
+                ? Parser::typeReference($type->toString())
+                : $type;
+        } else {
+            throw new NotImplemented($node::class);
+        }
+    }
+    // </editor-fold>
 }

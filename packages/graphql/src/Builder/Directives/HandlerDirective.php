@@ -26,7 +26,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithBuilderInfo;
-use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -200,41 +199,15 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Argument
-        $argSource           = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
-        $argDefinition->type = $this->getArgDefinitionType($manipulator, $documentAST, $argSource);
+        $source = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+        $type   = $this->getArgDefinitionType($manipulator, $documentAST, $source);
 
-        // Interfaces
-        $interfaces   = $manipulator->getInterfaces($parentType);
-        $fieldName    = $manipulator->getName($parentField);
-        $argumentName = $manipulator->getName($argDefinition);
-
-        foreach ($interfaces as $interface) {
-            // Field?
-            $field = $manipulator->getField($interface, $fieldName);
-
-            if (!$field) {
-                continue;
-            }
-
-            // Argument?
-            $argument = $manipulator->getArgument($field, $argumentName);
-
-            if ($argument === null) {
-                continue;
-            }
-
-            // Directive? (no need to update type here)
-            if ($manipulator->getDirective($argument, self::class) !== null) {
-                continue;
-            }
-
-            // Update
-            if ($argument instanceof InputValueDefinitionNode) {
-                $argument->type = $argDefinition->type;
-            } else {
-                throw new NotImplemented($argument::class);
-            }
-        }
+        $manipulator->setArgumentType(
+            $parentType,
+            $parentField,
+            $argDefinition,
+            $type,
+        );
     }
 
     /**

@@ -2,18 +2,24 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
+use Closure;
 use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
+use GraphQL\Language\AST\ListTypeNode;
+use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\EnumValueDefinition;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -32,7 +38,10 @@ use stdClass;
 
 use function array_keys;
 use function array_map;
+use function assert;
 use function is_string;
+
+// @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
  * @internal
@@ -410,6 +419,39 @@ class AstManipulatorTest extends TestCase {
     ): void {
         self::assertEquals($expected, $this->getManipulator()->isDeprecated($node));
     }
+
+    /**
+     * @dataProvider dataProviderSetArgumentType
+     *
+     * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                                                         $definitionFactory
+     * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition)                                    $fieldFactory
+     * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType, FieldDefinitionNode|FieldDefinition): (InputValueDefinitionNode|Argument) $argumentFactory
+     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType)                                                                                                                      $type
+     */
+    public function testSetArgumentType(
+        Exception|string $expected,
+        string $schema,
+        Closure $definitionFactory,
+        Closure $fieldFactory,
+        Closure $argumentFactory,
+        TypeNode|Type $type,
+    ): void {
+        if ($expected instanceof Exception) {
+            self::expectExceptionObject($expected);
+        }
+
+        $manipulator = $this->getManipulator($schema);
+        $definition  = $definitionFactory($manipulator);
+        $field       = $fieldFactory($manipulator, $definition);
+        $arg         = $argumentFactory($manipulator, $definition, $field);
+
+        $manipulator->setArgumentType($definition, $field, $arg, $type);
+
+        if (is_string($expected)) {
+            $this->useGraphQLSchema($manipulator->getDocument());
+            $this->assertGraphQLExportableEquals($expected, $definition);
+        }
+    }
     //</editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -633,6 +675,145 @@ class AstManipulatorTest extends TestCase {
                 Parser::field(
                     'argument: String',
                 ),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{
+     *      Exception|string,
+     *      string,
+     *      Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType),
+     *      Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition),
+     *      Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType, FieldDefinitionNode|FieldDefinition): (InputValueDefinitionNode|Argument),
+     *      NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType),
+     *      }>
+     */
+    public static function dataProviderSetArgumentType(): array {
+        $schema            = <<<'GraphQL'
+            type Query implements InterfaceB & InterfaceC {
+                a(a: Int, b: String): Int @mock
+            }
+
+            interface InterfaceA {
+                a(a: Int, b: String): Int
+            }
+
+            interface InterfaceB implements InterfaceA {
+                a(a: Int, b: String): Int
+            }
+
+            interface InterfaceC {
+                a(a: Int, b: String): Int
+            }
+        GraphQL;
+        $definitionFactory = static function (string $name): Closure {
+            return static function (
+                AstManipulator $manipulator,
+            ) use (
+                $name,
+            ): ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode {
+                $definition = $manipulator->getTypeDefinition($name);
+
+                assert(
+                    $definition instanceof ObjectTypeDefinitionNode
+                    || $definition instanceof InterfaceTypeDefinitionNode,
+                );
+
+                return $definition;
+            };
+        };
+        $fieldFactory      = static function (string $name): Closure {
+            return static function (
+                AstManipulator $manipulator,
+                ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
+            ) use (
+                $name,
+            ): FieldDefinitionNode {
+                $field = $manipulator->getField($definition, $name);
+
+                self::assertInstanceOf(FieldDefinitionNode::class, $field);
+
+                return $field;
+            };
+        };
+        $argumentFactory   = static function (string $name): Closure {
+            return static function (
+                AstManipulator $manipulator,
+                ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
+                FieldDefinitionNode|FieldDefinition $field,
+            ) use (
+                $name,
+            ): InputValueDefinitionNode {
+                $argument = $manipulator->getArgument($field, $name);
+
+                self::assertInstanceOf(InputValueDefinitionNode::class, $argument);
+
+                return $argument;
+            };
+        };
+
+        return [
+            'type'      => [
+                <<<'GraphQL'
+                interface InterfaceA {
+                    a(
+                        a: Int
+                        b: Int
+                    ): Int
+                }
+
+                interface InterfaceB
+                implements
+                    & InterfaceA
+                {
+                    a(
+                        a: Int
+                        b: Int
+                    ): Int
+                }
+
+                interface InterfaceC {
+                    a(
+                        a: Int
+                        b: Int
+                    ): Int
+                }
+
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a(
+                        a: Int
+                        b: Int
+                    ): Int
+                    @mock
+                }
+
+                GraphQL,
+                $schema,
+                $definitionFactory('Query'),
+                $fieldFactory('a'),
+                $argumentFactory('b'),
+                Type::int(),
+            ],
+            'interface' => [
+                <<<'GraphQL'
+                interface InterfaceC {
+                    a(
+                        a: Boolean
+                        b: String
+                    ): Int
+                }
+
+                GraphQL,
+                $schema,
+                $definitionFactory('InterfaceC'),
+                $fieldFactory('a'),
+                $argumentFactory('a'),
+                Type::boolean(),
             ],
         ];
     }
