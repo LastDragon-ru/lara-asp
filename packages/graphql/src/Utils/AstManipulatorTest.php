@@ -421,6 +421,36 @@ class AstManipulatorTest extends TestCase {
     }
 
     /**
+     * @dataProvider dataProviderSetFieldType
+     *
+     * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                      $definitionFactory
+     * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition) $fieldFactory
+     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType)                                                                                   $type
+     */
+    public function testSetFieldType(
+        Exception|string $expected,
+        string $schema,
+        Closure $definitionFactory,
+        Closure $fieldFactory,
+        TypeNode|Type $type,
+    ): void {
+        if ($expected instanceof Exception) {
+            self::expectExceptionObject($expected);
+        }
+
+        $manipulator = $this->getManipulator($schema);
+        $definition  = $definitionFactory($manipulator);
+        $field       = $fieldFactory($manipulator, $definition);
+
+        $manipulator->setFieldType($definition, $field, $type);
+
+        if (is_string($expected)) {
+            $this->useGraphQLSchema($manipulator->getDocument());
+            $this->assertGraphQLExportableEquals($expected, $definition);
+        }
+    }
+
+    /**
      * @dataProvider dataProviderSetArgumentType
      *
      * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                                                         $definitionFactory
@@ -675,6 +705,112 @@ class AstManipulatorTest extends TestCase {
                 Parser::field(
                     'argument: String',
                 ),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{
+     *      Exception|string,
+     *      string,
+     *      Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType),
+     *      Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition),
+     *      NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType),
+     *      }>
+     */
+    public static function dataProviderSetFieldType(): array {
+        $schema            = <<<'GraphQL'
+            type Query implements InterfaceB & InterfaceC {
+                a: Int @mock
+            }
+
+            interface InterfaceA {
+                a: Int
+            }
+
+            interface InterfaceB implements InterfaceA {
+                a: Int
+            }
+
+            interface InterfaceC {
+                a: Int
+            }
+        GraphQL;
+        $definitionFactory = static function (string $name): Closure {
+            return static function (
+                AstManipulator $manipulator,
+            ) use (
+                $name,
+            ): ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode {
+                $definition = $manipulator->getTypeDefinition($name);
+
+                assert(
+                    $definition instanceof ObjectTypeDefinitionNode
+                    || $definition instanceof InterfaceTypeDefinitionNode,
+                );
+
+                return $definition;
+            };
+        };
+        $fieldFactory      = static function (string $name): Closure {
+            return static function (
+                AstManipulator $manipulator,
+                ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
+            ) use (
+                $name,
+            ): FieldDefinitionNode {
+                $field = $manipulator->getField($definition, $name);
+
+                self::assertInstanceOf(FieldDefinitionNode::class, $field);
+
+                return $field;
+            };
+        };
+
+        return [
+            'type'      => [
+                <<<'GraphQL'
+                interface InterfaceA {
+                    a: Boolean
+                }
+
+                interface InterfaceB
+                implements
+                    & InterfaceA
+                {
+                    a: Boolean
+                }
+
+                interface InterfaceC {
+                    a: Boolean
+                }
+
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a: Boolean
+                    @mock
+                }
+
+                GraphQL,
+                $schema,
+                $definitionFactory('Query'),
+                $fieldFactory('a'),
+                Type::boolean(),
+            ],
+            'interface' => [
+                <<<'GraphQL'
+                interface InterfaceC {
+                    a: Boolean
+                }
+
+                GraphQL,
+                $schema,
+                $definitionFactory('InterfaceC'),
+                $fieldFactory('a'),
+                Type::boolean(),
             ],
         ];
     }

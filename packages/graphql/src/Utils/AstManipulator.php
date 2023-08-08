@@ -611,6 +611,42 @@ class AstManipulator {
     }
 
     /**
+     * @template T of FieldDefinitionNode|FieldDefinition
+     *
+     * @param T                                                           $field
+     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType) $type
+     *
+     * @return T
+     */
+    public function setFieldType(
+        ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
+        FieldDefinitionNode|FieldDefinition $field,
+        TypeNode|Type $type,
+    ): FieldDefinitionNode|FieldDefinition {
+        // Update
+        $this->setType($field, $type);
+
+        // Interfaces
+        $interfaces = $this->getInterfaces($definition);
+        $fieldName  = $this->getName($field);
+
+        foreach ($interfaces as $interface) {
+            // Field?
+            $interfaceField = $this->getField($interface, $fieldName);
+
+            if (!$interfaceField) {
+                continue;
+            }
+
+            // Update
+            $this->setType($interfaceField, $type);
+        }
+
+        // Return
+        return $field;
+    }
+
+    /**
      * @template T of InputValueDefinitionNode|Argument
      *
      * @param T                                                           $argument
@@ -691,7 +727,7 @@ class AstManipulator {
      * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType) $type
      */
     private function setType(
-        InputValueDefinitionNode|Argument $node,
+        FieldDefinitionNode|FieldDefinition|InputValueDefinitionNode|Argument $node,
         TypeNode|Type $type,
     ): void {
         // It seems that we can only modify types of AST nodes :(
