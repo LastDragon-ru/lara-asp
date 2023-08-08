@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Language\AST\NodeList;
 use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -10,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions as PrinterGra
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Testing\MocksResolvers;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
@@ -45,9 +47,19 @@ trait GraphQLAssertions {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * Sets the current (application) schema to given.
+     * Sets the current (application) schema to the given.
      */
-    protected function useGraphQLSchema(Schema|DocumentNode|SplFileInfo|string $schema): static {
+    protected function useGraphQLSchema(Schema|DocumentNode|DocumentAST|SplFileInfo|string $schema): static {
+        if ($schema instanceof DocumentAST) {
+            // We just need all definitions
+            $schema = new DocumentNode([
+                'definitions' => (new NodeList([]))
+                    ->merge($schema->types)
+                    ->merge($schema->typeExtensions)
+                    ->merge($schema->directives),
+            ]);
+        }
+
         $schema   = $schema instanceof Schema || $schema instanceof DocumentNode
             ? (string) $this->getGraphQLPrinter()->print($schema)
             : Args::content($schema);
