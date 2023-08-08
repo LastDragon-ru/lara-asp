@@ -100,8 +100,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
             throw new TypeDefinitionImpossibleToCreateType($definition, $source);
         }
 
-        if ($name !== $this->getNodeName($node)) {
-            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getNodeName($node));
+        if ($name !== $this->getName($node)) {
+            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getName($node));
         }
 
         // Save
@@ -168,8 +168,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $operators = [];
 
         if ($this->isTypeDefinitionExists($type)) {
-            $node       = $this->getTypeDefinitionNode($type);
-            $directives = $this->getNodeDirectives($node, $scope);
+            $node       = $this->getTypeDefinition($type);
+            $directives = $this->getDirectives($node, $scope);
 
             foreach ($directives as $directive) {
                 if ($directive instanceof OperatorsDirective) {
@@ -235,7 +235,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     ): string {
         // Operator already added?
         $added   = false;
-        $locator = $this->getDirectives();
+        $locator = $this->getDirectiveLocator();
 
         foreach ($directives as $directive) {
             if ($locator->resolve($directive->name->value) === $operator::class) {
@@ -305,13 +305,13 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     protected function removeFakeTypeDefinition(string $name): void {
         // Possible?
-        $fake = $this->getTypeDefinitionNode($name);
+        $fake = $this->getTypeDefinition($name);
 
         if (!($fake instanceof InputObjectTypeDefinitionNode)) {
             throw new FakeTypeDefinitionUnknown($name);
         }
 
-        if (count($fake->fields) !== 1 || $this->getNodeName($fake->fields[0]) !== 'fake') {
+        if (count($fake->fields) !== 1 || $this->getName($fake->fields[0]) !== 'fake') {
             throw new FakeTypeDefinitionIsNotFake($name);
         }
 
@@ -326,10 +326,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
         FieldDefinitionNode|FieldDefinition $field,
     ): TypeDefinitionNode|Type|null {
         $node     = null;
-        $paginate = $this->getNodeDirective($field, PaginateDirective::class);
+        $paginate = $this->getDirective($field, PaginateDirective::class);
 
         if ($paginate) {
-            $type       = $this->getNodeTypeName($this->getTypeDefinitionNode($field));
+            $type       = $this->getTypeName($this->getTypeDefinition($field));
             $pagination = (new class() extends PaginateDirective {
                 public function getPaginationType(PaginateDirective $directive): PaginationType {
                     return $directive->paginationType();
@@ -347,10 +347,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
 
             if ($type) {
-                $node = $this->getTypeDefinitionNode($type);
+                $node = $this->getTypeDefinition($type);
             }
         } else {
-            $node = $this->getTypeDefinitionNode($field);
+            $node = $this->getTypeDefinition($field);
         }
 
         return $node;

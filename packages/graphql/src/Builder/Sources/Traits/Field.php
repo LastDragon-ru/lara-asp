@@ -29,8 +29,8 @@ trait Field {
 
     public function __toString(): string {
         $manipulator = $this->getManipulator();
-        $field       = $manipulator->getNodeName($this->getField());
-        $type        = $manipulator->getNodeTypeFullName($this->getObject());
+        $field       = $manipulator->getName($this->getField());
+        $type        = $manipulator->getTypeFullName($this->getObject());
 
         return "{$type} { {$field} }";
     }

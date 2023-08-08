@@ -42,7 +42,7 @@ class Source implements TypeSource {
     }
 
     public function getTypeName(): string {
-        return $this->getManipulator()->getNodeTypeName($this->getType());
+        return $this->getManipulator()->getTypeName($this->getType());
     }
 
     /**
@@ -51,7 +51,7 @@ class Source implements TypeSource {
     public function getTypeDefinition(): TypeDefinitionNode|Type {
         $type       = $this->getType();
         $definition = !($type instanceof TypeDefinitionNode)
-            ? $this->getManipulator()->getTypeDefinitionNode($type)
+            ? $this->getManipulator()->getTypeDefinition($type)
             : $type;
 
         return $definition;
@@ -66,7 +66,7 @@ class Source implements TypeSource {
     }
 
     public function __toString(): string {
-        return $this->getManipulator()->getNodeTypeFullName($this->getType());
+        return $this->getManipulator()->getTypeFullName($this->getType());
     }
     // </editor-fold>
 }

@@ -83,14 +83,14 @@ class Condition extends InputObject {
         }
 
         // Ignored field?
-        if ($manipulator->getNodeDirective($field->getField(), Ignored::class) !== null) {
+        if ($manipulator->getDirective($field->getField(), Ignored::class) !== null) {
             return false;
         }
 
         // Ignored type?
         $fieldType = $field->getTypeDefinition();
 
-        if ($fieldType instanceof Ignored || $manipulator->getNodeDirective($fieldType, Ignored::class) !== null) {
+        if ($fieldType instanceof Ignored || $manipulator->getDirective($fieldType, Ignored::class) !== null) {
             return false;
         }
 

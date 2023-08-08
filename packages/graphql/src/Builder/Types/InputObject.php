@@ -84,7 +84,7 @@ abstract class InputObject implements TypeDefinition {
 
         foreach ($fields as $field) {
             // Name should be unique (may conflict with Type's operators)
-            $fieldName = $manipulator->getNodeName($field);
+            $fieldName = $manipulator->getName($field);
 
             if (isset($definition->fields[$fieldName])) {
                 throw new TypeDefinitionFieldAlreadyDefined($fieldName);
@@ -142,7 +142,7 @@ abstract class InputObject implements TypeDefinition {
         }
 
         // Resolver?
-        $resolver = $manipulator->getNodeDirective($field->getField(), FieldResolver::class);
+        $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
 
         if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $resolver)) {
             return false;
@@ -166,7 +166,7 @@ abstract class InputObject implements TypeDefinition {
             $type = $manipulator->getTypeSource($field->getTypeDefinition());
         }
 
-        $fieldName       = $manipulator->getNodeName($field->getField());
+        $fieldName       = $manipulator->getName($field->getField());
         $fieldDesc       = $this->getFieldDescription($manipulator, $field);
         $fieldDirectives = $this->getFieldDirectives($manipulator, $field);
         $fieldDefinition = $manipulator->getOperatorField($operator, $type, $fieldName, $fieldDesc, $fieldDirectives);
@@ -200,7 +200,7 @@ abstract class InputObject implements TypeDefinition {
         $nodes    = [$field->getField(), $field->getTypeDefinition()];
 
         foreach ($nodes as $node) {
-            $operator = $manipulator->getNodeDirective(
+            $operator = $manipulator->getDirective(
                 $node,
                 $directive,
                 static function (Operator $operator) use ($builder): bool {
@@ -247,7 +247,7 @@ abstract class InputObject implements TypeDefinition {
     ): array {
         $directives = [];
 
-        foreach ($manipulator->getNodeDirectives($field->getField()) as $directive) {
+        foreach ($manipulator->getDirectives($field->getField()) as $directive) {
             if ($this->isFieldDirectiveAllowed($manipulator, $directive)) {
                 $node = $manipulator->getDirectiveNode($directive);
 
