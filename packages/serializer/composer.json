@@ -1,0 +1,47 @@
+{
+  "name": "lastdragon-ru/lara-asp-serializer",
+  "homepage": "https://github.com/LastDragon-ru/lara-asp",
+  "description": "The Awesome Set of Packages for Laravel - The Serializer.",
+  "readme": "README.md",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "serializer",
+    "laravel-package",
+    "laravel",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp",
+    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+  },
+  "require": {
+    "php": "^8.0|^8.1|^8.2",
+    "laravel/framework": "^9.0.0|^10.0.0"
+  },
+  "require-dev": {
+    "lastdragon-ru/lara-asp-testing": "self.version",
+    "orchestra/testbench": "^6.9.0|^7.0.0|^8.0.0",
+    "phpunit/phpunit": "^9.5.0|^10.1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\Serializer\\": "src/"
+    },
+    "exclude-from-classmap": [
+      "src/**Test.php"
+    ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "LastDragon_ru\\LaraASP\\Serializer\\Provider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}

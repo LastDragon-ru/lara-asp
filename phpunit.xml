@@ -33,6 +33,9 @@
         <testsuite name="lastdragon-ru/lara-asp-graphql-printer">
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
         </testsuite>
+        <testsuite name="lastdragon-ru/serializer">
+            <directory suffix="Test.php">./packages/serializer/src</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
@@ -45,6 +48,7 @@
             <directory suffix=".php">./packages/spa/src</directory>
             <directory suffix=".php">./packages/graphql/src</directory>
             <directory suffix=".php">./packages/graphql-printer/src</directory>
+            <directory suffix=".php">./packages/serializer/src</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./packages/core/src</directory>
@@ -56,6 +60,7 @@
             <directory suffix="Test.php">./packages/spa/src</directory>
             <directory suffix="Test.php">./packages/graphql/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
+            <directory suffix="Test.php">./packages/serializer/src</directory>
         </exclude>
     </source>
     <coverage cacheDirectory=".phpunit/coverage.cache"/>
