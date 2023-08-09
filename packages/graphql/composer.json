@@ -24,8 +24,7 @@
     "nuwave/lighthouse": "^6.0.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
-    "lastdragon-ru/lara-asp-graphql-printer": "self.version",
-    "phpdocumentor/reflection-docblock": "^5.2"
+    "lastdragon-ru/lara-asp-graphql-printer": "self.version"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",

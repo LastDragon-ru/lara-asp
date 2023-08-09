@@ -21,7 +21,6 @@
   "require": {
     "php": "^8.0|^8.1|^8.2",
     "ext-json": "*",
-    "ext-xml": "*",
     "ext-libxml": "*",
     "ext-dom": "*",
     "ext-xmlreader": "*",

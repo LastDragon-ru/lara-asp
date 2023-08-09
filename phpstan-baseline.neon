@@ -31,11 +31,6 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Parameter \\#2 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:when\\(\\) expects \\(callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, string\\|null\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\)\\|null, Closure\\(Illuminate\\\\Database\\\\Eloquent\\\\Builder, string\\)\\: Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"
-			count: 1
-			path: packages/graphql/src/SortBy/Builders/Eloquent/Builder.php
-
-		-
 			message: "#^Parameter \\#1 \\$builder of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Eloquent\\\\Builder\\:\\:handle\\(\\) expects Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder given\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Builders/Eloquent/BuilderTest.php
