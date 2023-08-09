@@ -58,6 +58,7 @@
   "require-dev": {
     "ext-pdo_sqlite": "*",
     "composer/class-map-generator": "^1.0",
+    "icanhazstring/composer-unused": "^0.8.10",
     "laravel/scout": "^9.2.1|^10.0.0",
     "mockery/mockery": "^1.4.4",
     "nunomaduro/larastan": "2.6.3",
@@ -131,7 +132,8 @@
       "@markdownlint"
     ],
     "validate:dependencies": [
-      "./vendor/bin/monorepo-builder validate"
+      "./vendor/bin/monorepo-builder validate",
+      "./vendor/bin/composer-unused"
     ],
     "phpstan": [
       "@php ./vendor/bin/phpstan analyse"

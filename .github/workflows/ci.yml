@@ -18,7 +18,7 @@ jobs:
     name: Settings
     uses: ./.github/workflows/settings.yml
 
-  monorepo:
+  dependencies:
     name: Validate composer.json
     runs-on: ubuntu-latest
     steps:
@@ -26,9 +26,12 @@ jobs:
         uses: actions/checkout@v3
       - name: Install PHP
         uses: ./.github/actions/php
-      - name: Execute
+      - name: Check package versions
         run: |
           ./vendor/bin/monorepo-builder validate
+      - name: Check unused packages
+        run: |
+          ./vendor/bin/composer-unused
 
   phpcs:
     name: PHP CodeSniffer
