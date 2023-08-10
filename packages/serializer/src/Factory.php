@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\Serializer;
 use DateTimeInterface;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizerContextBuilder;
 use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
 use Symfony\Component\Serializer\Context\Normalizer\DateTimeNormalizerContextBuilder;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
@@ -54,7 +56,7 @@ class Factory {
 
     protected function getConfigFormat(): ?string {
         /** @var ?string $format */
-        $format = config(Package::Name.".default");
+        $format = config(Package::Name.'.default');
 
         return $format;
     }
@@ -64,7 +66,7 @@ class Factory {
      */
     protected function getConfigContext(): array {
         /** @var array<string, mixed> $context */
-        $context = (array) config(Package::Name.".context");
+        $context = (array) config(Package::Name.'.context');
 
         return $context;
     }
@@ -93,7 +95,7 @@ class Factory {
      */
     protected function getConfigEncoders(): array {
         /** @var array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>|null> $encoders */
-        $encoders = (array) config(Package::Name.".encoders");
+        $encoders = (array) config(Package::Name.'.encoders');
 
         return $encoders;
     }
@@ -143,7 +145,7 @@ class Factory {
      */
     protected function getConfigNormalizers(): array {
         /** @var array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers */
-        $normalizers = (array) config(Package::Name.".normalizers");
+        $normalizers = (array) config(Package::Name.'.normalizers');
 
         return $normalizers;
     }
@@ -159,6 +161,13 @@ class Factory {
                 ->toArray(),
             DateTimeZoneNormalizer::class => null,
             DateIntervalNormalizer::class => null,
+            SerializableNormalizer::class => (new SerializableNormalizerContextBuilder())
+                ->withAllowExtraAttributes(false)
+                ->withDisableTypeEnforcement(false)
+                ->withSkipNullValues(false)
+                ->withSkipUninitializedValues(true)
+                ->withPreserveEmptyObjects(true)
+                ->toArray(),
         ];
     }
 }
