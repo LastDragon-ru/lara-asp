@@ -119,56 +119,33 @@ class ProviderTest extends TestCase {
             }
         };
         $datetime     = Carbon::make('2023-08-11T10:45:00');
-        $serializable = new ProviderTest__Serializable();
+        $serializable = new ProviderTest__Simple();
         $curcular     = new class() implements Serializable {
-            public Serializable $a;
+            public Serializable $a; // @phpstan-ignore-line required for tests
         };
         $curcular->a  = $curcular;
 
         return [
             'empty object'       => [
                 '{}',
-                new class() implements Serializable {
-                    // empty
-                },
+                new ProviderTest__Empty(),
             ],
             'simple object'      => [
                 '{"a": 123}',
-                new class() implements Serializable, Stringable {
-                    public int       $a = 123;
-                    public bool      $b;
-                    protected string $c = 'should be ignored';
-                    private string   $d = 'should be ignored';
-
-                    public function __toString(): string {
-                        return $this->d;
-                    }
-                },
+                $serializable,
             ],
             'complex object'     => [
                 <<<'JSON'
                 {
                     "a": 123,
+                    "flags": [1,2,3],
                     "datetime": "2023-08-11T10:45:00.000+00:00",
                     "nested": {"a":123},
-                    "array": ["2023-08-11T10:45:00.000+00:00","2023-08-11T10:45:00.000+00:00"]
+                    "array": ["2023-08-11T10:45:00.000+00:00","2023-08-11T10:45:00.000+00:00"],
+                    "nullable": null
                 }
                 JSON,
-                new class($datetime, $serializable, [$datetime, $datetime]) implements Serializable {
-                    public int  $a = 123;
-                    public bool $b;
-
-                    /**
-                     * @param array<array-key, ?Carbon> $array
-                     */
-                    public function __construct(
-                        public ?Carbon $datetime,
-                        public ProviderTest__Serializable $nested,
-                        public array $array,
-                    ) {
-                        // empty
-                    }
-                },
+                new ProviderTest__Complex($datetime, $serializable, [$datetime, $datetime], null),
             ],
             'unsupported object' => [
                 new FailedToSerialize($invalid, 'json', [], new NotNormalizableValueException(
@@ -206,59 +183,21 @@ class ProviderTest extends TestCase {
             }
         };
         $datetime     = Carbon::make('2023-08-11T10:45:00');
-        $serializable = new ProviderTest__Serializable();
+        $serializable = new ProviderTest__Simple();
 
         return [
             'empty object'       => [
-                new class() implements Serializable {
-                    // empty
-                },
+                new ProviderTest__Empty(),
                 null,
                 '{}',
             ],
             'simple object'      => [
-                new class() implements Serializable, Stringable, JsonSerializable {
-                    public int       $a = 123;
-                    public bool      $b;
-                    protected string $c = 'should be ignored';
-                    private string   $d = 'should be ignored';
-
-                    public function __toString(): string {
-                        return $this->d;
-                    }
-
-                    public function jsonSerialize(): mixed {
-                        return [
-                            'c' => $this->c,
-                            'd' => $this->d,
-                        ];
-                    }
-                },
+                $serializable,
                 null,
                 '{"a": 123}',
             ],
             'complex object'     => [
-                new class($datetime, $serializable, [$datetime, $datetime], null) implements Serializable {
-                    public int  $a = 123;
-                    public bool $b;
-
-                    /**
-                     * @var array<int, int>
-                     */
-                    public array $flags = [1, 2, 3];
-
-                    /**
-                     * @param array<array-key, ?\Carbon\Carbon> $array
-                     */
-                    public function __construct(
-                        public ?Carbon $datetime,
-                        public ProviderTest__Serializable $nested,
-                        public array $array,
-                        public ?Carbon $nullable,
-                    ) {
-                        // empty
-                    }
-                },
+                new ProviderTest__Complex($datetime, $serializable, [$datetime, $datetime], null),
                 null,
                 <<<'JSON'
                 {
@@ -296,9 +235,56 @@ class ProviderTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ProviderTest__Serializable implements Serializable {
+class ProviderTest__Simple implements Serializable, Stringable, JsonSerializable {
+    public int       $a = 123;
+    public bool      $b; // @phpstan-ignore-line required for tests
+    protected string $c = 'should be ignored';
+    private string   $d = 'should be ignored';
+
+    public function __toString(): string {
+        return $this->d;
+    }
+
+    public function jsonSerialize(): mixed {
+        return [
+            'c' => $this->c,
+            'd' => $this->d,
+        ];
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ProviderTest__Complex implements Serializable {
     public int  $a = 123;
-    public bool $b;
+    public bool $b; // @phpstan-ignore-line required for tests
+
+    /**
+     * @var array<int, int>
+     */
+    public array $flags = [1, 2, 3];
+
+    /**
+     * @param array<array-key, ?Carbon> $array
+     */
+    public function __construct(
+        public ?Carbon $datetime,
+        public ProviderTest__Simple $nested,
+        public array $array,
+        public ?Carbon $nullable,
+    ) {
+        // empty
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ProviderTest__Empty implements Serializable {
+    // empty
 }
 
 /**
