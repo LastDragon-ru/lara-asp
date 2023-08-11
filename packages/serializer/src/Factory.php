@@ -20,6 +20,10 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer as SymfonySerializer;
 
+use function array_filter;
+use function array_key_exists;
+use function array_keys;
+use function array_map;
 use function config;
 
 use const JSON_BIGINT_AS_STRING;
@@ -31,27 +35,46 @@ use const JSON_UNESCAPED_UNICODE;
 
 class Factory {
     /**
-     * @param array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>|null>         $encoders
+     * @param array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>>              $encoders
      * @param array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers
+     *      The `null` value can be used to remove the built-in normalizer.
      * @param array<string, mixed>                                                                      $context
      */
     public function create(
         array $encoders = [],
         array $normalizers = [],
         array $context = [],
-        string $default = null,
+        string $format = null,
     ): SerializerContract {
-        $default     = $default ?? $this->getConfigFormat() ?? JsonEncoder::FORMAT;
+        $format      = $format ?? $this->getConfigFormat() ?? JsonEncoder::FORMAT;
         $context     = $context + $this->getConfigContext();
         $encoders    = $this->getEncoders($encoders, $context);
         $normalizers = $this->getNormalizers($normalizers, $context);
-        $serializer  = new Serializer(
-            new SymfonySerializer($normalizers, $encoders),
-            $default,
-            $context,
-        );
+        $serializer  = $this->make($encoders, $normalizers, $context, $format);
 
         return $serializer;
+    }
+
+    /**
+     * @param list<class-string<EncoderInterface|DecoderInterface>>         $encoders
+     * @param list<class-string<NormalizerInterface|DenormalizerInterface>> $normalizers
+     * @param array<string, mixed>                                          $context
+     */
+    protected function make(
+        array $encoders,
+        array $normalizers,
+        array $context,
+        string $format,
+    ): SerializerContract {
+        $factory     = static fn($class) => Container::getInstance()->make($class);
+        $encoders    = array_map($factory, $encoders);
+        $normalizers = array_map($factory, $normalizers);
+
+        return new Serializer(
+            new SymfonySerializer($normalizers, $encoders),
+            $format,
+            $context,
+        );
     }
 
     protected function getConfigFormat(): ?string {
@@ -72,36 +95,40 @@ class Factory {
     }
 
     /**
-     * @param array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>|null> $encoders
-     * @param array<string, mixed>                                                              $context
+     * @param array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>> $encoders
+     * @param array<string, mixed>                                                         $context
      *
-     * @return list<EncoderInterface|DecoderInterface>
+     * @return list<class-string<EncoderInterface|DecoderInterface>>
      */
     protected function getEncoders(array $encoders, array &$context): array {
-        $encoders  = $encoders + $this->getConfigEncoders() + $this->getDefaultEncoders();
-        $container = Container::getInstance();
-        $instances = [];
+        $groups = [$encoders, $this->getConfigEncoders(), $this->getDefaultEncoders()];
+        $list   = [];
 
-        foreach ($encoders as $encoder => $options) {
-            $instances[] = $container->make($encoder);
-            $context     = ((array) $options) + $context;
+        foreach ($groups as $group) {
+            foreach ($group as $encoder => $options) {
+                if (!isset($list[$encoder])) {
+                    $list[$encoder] = true;
+                }
+
+                $context += $options;
+            }
         }
 
-        return $instances;
+        return array_keys($list);
     }
 
     /**
-     * @return array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>|null>
+     * @return array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>>
      */
     protected function getConfigEncoders(): array {
-        /** @var array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>|null> $encoders */
+        /** @var array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>> $encoders */
         $encoders = (array) config(Package::Name.'.encoders');
 
         return $encoders;
     }
 
     /**
-     * @return array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>|null>
+     * @return array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>>
      */
     protected function getDefaultEncoders(): array {
         return [
@@ -125,19 +152,29 @@ class Factory {
      * @param array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers
      * @param array<string, mixed>                                                                      $context
      *
-     * @return list<NormalizerInterface|DenormalizerInterface>
+     * @return list<class-string<NormalizerInterface|DenormalizerInterface>>
      */
     protected function getNormalizers(array $normalizers, array &$context): array {
-        $normalizers = $normalizers + $this->getConfigNormalizers() + $this->getDefaultNormalizers();
-        $container   = Container::getInstance();
-        $instances   = [];
+        $groups = [$normalizers, $this->getConfigNormalizers(), $this->getDefaultNormalizers()];
+        $list   = [];
 
-        foreach ($normalizers as $normalizer => $options) {
-            $instances[] = $container->make($normalizer);
-            $context     = ((array) $options) + $context;
+        foreach ($groups as $group) {
+            foreach ($group as $normalizer => $options) {
+                if (!array_key_exists($normalizer, $list)) {
+                    $list[$normalizer] = true;
+                }
+
+                if ($options === null) {
+                    $list[$normalizer] = false;
+                } elseif ($list[$normalizer]) {
+                    $context += $options;
+                } else {
+                    // ignore
+                }
+            }
         }
 
-        return $instances;
+        return array_keys(array_filter($list));
     }
 
     /**
@@ -151,16 +188,16 @@ class Factory {
     }
 
     /**
-     * @return array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null>
+     * @return array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>>
      */
     protected function getDefaultNormalizers(): array {
         return [
-            ArrayDenormalizer::class      => null,
+            ArrayDenormalizer::class      => [],
             DateTimeNormalizer::class     => (new DateTimeNormalizerContextBuilder())
                 ->withFormat(DateTimeInterface::RFC3339_EXTENDED)
                 ->toArray(),
-            DateTimeZoneNormalizer::class => null,
-            DateIntervalNormalizer::class => null,
+            DateTimeZoneNormalizer::class => [],
+            DateIntervalNormalizer::class => [],
             SerializableNormalizer::class => (new SerializableNormalizerContextBuilder())
                 ->withAllowExtraAttributes(false)
                 ->withDisableTypeEnforcement(false)
