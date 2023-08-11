@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Serializer;
 
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\CarbonNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use Mockery;
@@ -73,6 +74,7 @@ class FactoryTest extends TestCase {
                             'json_encode_options'           => 4_197_698,
                             'json_decode_options'           => 4_194_304,
                             'datetime_format'               => 'Y-m-d\TH:i:s.vP',
+                            CarbonNormalizer::ContextFormat => 'Y-m-d\TH:i:s.vP',
                         ],
                         $context,
                     );
@@ -89,6 +91,7 @@ class FactoryTest extends TestCase {
                             DateTimeNormalizer::class,
                             DataUriNormalizer::class,
                             ArrayDenormalizer::class,
+                            CarbonNormalizer::class,
                             DateIntervalNormalizer::class,
                         ],
                         $normalizers,

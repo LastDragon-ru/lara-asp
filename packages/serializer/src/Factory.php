@@ -2,9 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Serializer;
 
-use DateTimeInterface;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\CarbonNormalizer;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\CarbonNormalizerContextBuilder;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizerContextBuilder;
 use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
@@ -66,7 +67,7 @@ class Factory {
         array $context,
         string $format,
     ): SerializerContract {
-        $factory     = static fn($class) => Container::getInstance()->make($class);
+        $factory     = static fn ($class) => Container::getInstance()->make($class);
         $encoders    = array_map($factory, $encoders);
         $normalizers = array_map($factory, $normalizers);
 
@@ -193,13 +194,15 @@ class Factory {
     protected function getDefaultNormalizers(): array {
         return [
             ArrayDenormalizer::class      => [],
+            CarbonNormalizer::class       => (new CarbonNormalizerContextBuilder())
+                ->withFormat(CarbonNormalizer::ContextFormatDefault)
+                ->toArray(),
             DateTimeNormalizer::class     => (new DateTimeNormalizerContextBuilder())
-                ->withFormat(DateTimeInterface::RFC3339_EXTENDED)
+                ->withFormat(CarbonNormalizer::ContextFormatDefault)
                 ->toArray(),
             DateTimeZoneNormalizer::class => [],
             DateIntervalNormalizer::class => [],
             SerializableNormalizer::class => (new SerializableNormalizerContextBuilder())
-                ->withAllowExtraAttributes(false)
                 ->withDisableTypeEnforcement(false)
                 ->withSkipNullValues(false)
                 ->withSkipUninitializedValues(true)

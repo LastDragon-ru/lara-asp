@@ -22,7 +22,7 @@ use function array_unique;
 use function class_exists;
 use function is_string;
 
-class SerializableNormalizer extends AbstractObjectNormalizer {
+final class SerializableNormalizer extends AbstractObjectNormalizer {
     /**
      * @param Closure(object): class-string|null $objectClassResolver
      * @param array<string, mixed>               $defaultContext
@@ -61,7 +61,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
      */
     public function getSupportedTypes(?string $format): array {
         return [
-            Serializable::class => self::class === static::class,
+            Serializable::class => true,
         ];
     }
 
@@ -121,7 +121,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
         string $format = null,
         array $context = [],
     ): mixed {
-        return $object->{$attribute} ?? null;
+        return $object->{$attribute};
     }
 
     /**
