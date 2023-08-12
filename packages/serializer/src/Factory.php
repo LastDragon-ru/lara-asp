@@ -57,6 +57,8 @@ class Factory {
     }
 
     /**
+     * @private for tests only
+     *
      * @param list<class-string<EncoderInterface|DecoderInterface>>         $encoders
      * @param list<class-string<NormalizerInterface|DenormalizerInterface>> $normalizers
      * @param array<string, mixed>                                          $context
@@ -207,6 +209,7 @@ class Factory {
                 ->withSkipNullValues(false)
                 ->withSkipUninitializedValues(true)
                 ->withPreserveEmptyObjects(true)
+                ->withAllowExtraAttributes(false)
                 ->toArray(),
         ];
     }

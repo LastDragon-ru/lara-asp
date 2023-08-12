@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Stringable;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
+use Symfony\Component\Serializer\Exception\ExtraAttributesException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 
 use function get_debug_type;
@@ -222,6 +223,13 @@ class ProviderTest extends TestCase {
                 )),
                 $invalid::class,
                 '{"a": {}}',
+            ],
+            'unknown property'   => [
+                new FailedToDeserialize(ProviderTest__Simple::class, '', 'json', [], new ExtraAttributesException([
+                    'unknown',
+                ])),
+                ProviderTest__Simple::class,
+                '{"unknown": 123}',
             ],
         ];
     }

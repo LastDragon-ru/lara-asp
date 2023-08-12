@@ -2,57 +2,32 @@
 
 namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 
-use Closure;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
-use phpDocumentor\Reflection\Types\ContextFactory;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionObject;
-use Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
-use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
-use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
-use Symfony\Component\Serializer\Mapping\ClassDiscriminatorResolverInterface;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
-use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
+use LastDragon_ru\LaraASP\Serializer\Metadata\MetadataFactory;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-use function array_unique;
-use function class_exists;
-use function is_string;
-
+/**
+ * Special serializer for {@see Serializable}.
+ *
+ * Only public properties will be serialized. Accessors/mutators/magic/etc
+ * doesn't supported. If you need it, please consider using one of Symfony's
+ * normalizer like {@see ObjectNormalizer}.
+ *
+ * @see ObjectNormalizer
+ */
 final class SerializableNormalizer extends AbstractObjectNormalizer {
     /**
-     * @param Closure(object): class-string|null $objectClassResolver
-     * @param array<string, mixed>               $defaultContext
+     * @param array<string, mixed> $defaultContext
      */
     public function __construct(
-        ClassMetadataFactoryInterface $classMetadataFactory = null,
-        NameConverterInterface $nameConverter = null,
-        PropertyTypeExtractorInterface $propertyTypeExtractor = null,
-        ClassDiscriminatorResolverInterface $classDiscriminatorResolver = null,
-        callable $objectClassResolver = null,
+        MetadataFactory $metadata,
         array $defaultContext = [],
     ) {
-        if (class_exists(ContextFactory::class) && class_exists(PhpDocParser::class)) {
-            $propertyTypeExtractor ??= new PropertyInfoExtractor(
-                typeExtractors: [
-                    new PhpStanExtractor(),
-                    new ReflectionExtractor(
-                        magicMethodsFlags: ReflectionExtractor::DISALLOW_MAGIC_METHODS,
-                    ),
-                ],
-            );
-        }
-
         parent::__construct(
-            $classMetadataFactory,
-            $nameConverter,
-            $propertyTypeExtractor,
-            $classDiscriminatorResolver,
-            $objectClassResolver,
-            $defaultContext,
+            classMetadataFactory : $metadata,
+            propertyTypeExtractor: $metadata,
+            defaultContext       : $defaultContext,
         );
     }
 
@@ -71,45 +46,16 @@ final class SerializableNormalizer extends AbstractObjectNormalizer {
      * @return array<array-key, string>
      */
     protected function extractAttributes(object $object, string $format = null, array $context = []): array {
-        $class      = new ReflectionObject($object);
+        /** This method will be called if {@see self::ALLOW_EXTRA_ATTRIBUTES} is `true`. */
         $attributes = [];
 
-        foreach ($class->getProperties() as $property) {
-            if ($this->isAllowedAttribute($object::class, $property->name, $format, $context)) {
-                $attributes[] = $property->name;
+        if ($this->classMetadataFactory) {
+            foreach ($this->classMetadataFactory->getMetadataFor($object)->getAttributesMetadata() as $metadata) {
+                $attributes[] = $metadata->getName();
             }
         }
 
-        return array_unique($attributes);
-    }
-
-    /**
-     * @param array<array-key, mixed> $context
-     */
-    protected function isAllowedAttribute(
-        object|string $classOrObject,
-        string $attribute,
-        string $format = null,
-        array $context = [],
-    ): bool {
-        if (!parent::isAllowedAttribute($classOrObject, $attribute, $format, $context)) {
-            return false;
-        }
-
-        if (is_string($classOrObject) && !class_exists($classOrObject)) {
-            return false;
-        }
-
-        $allowed = false;
-
-        try {
-            $property = (new ReflectionClass($classOrObject))->getProperty($attribute);
-            $allowed  = $property->isPublic() && !$property->isStatic();
-        } catch (ReflectionException) {
-            // skip
-        }
-
-        return $allowed;
+        return $attributes;
     }
 
     /**
