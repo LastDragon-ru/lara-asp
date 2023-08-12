@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 use Symfony\Component\Serializer\Context\ContextBuilderInterface;
 use Symfony\Component\Serializer\Context\ContextBuilderTrait;
 
-final class DateTimeNormalizerContextBuilder implements ContextBuilderInterface {
+class DateTimeNormalizerContextBuilder implements ContextBuilderInterface {
     use ContextBuilderTrait;
 
     /**

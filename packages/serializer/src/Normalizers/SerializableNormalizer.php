@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
  *
  * @see ObjectNormalizer
  */
-final class SerializableNormalizer extends AbstractObjectNormalizer {
+class SerializableNormalizer extends AbstractObjectNormalizer {
     /**
      * @param array<string, mixed> $defaultContext
      */
@@ -36,7 +36,7 @@ final class SerializableNormalizer extends AbstractObjectNormalizer {
      */
     public function getSupportedTypes(?string $format): array {
         return [
-            Serializable::class => true,
+            Serializable::class => self::class === static::class,
         ];
     }
 

@@ -16,7 +16,7 @@ use function is_a;
 use function is_string;
 use function sprintf;
 
-final class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
+class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     use WithDefaultContext;
 
     public const ContextFormat          = self::class.'@format';
@@ -38,7 +38,7 @@ final class DateTimeNormalizer implements NormalizerInterface, DenormalizerInter
      */
     public function getSupportedTypes(?string $format): array {
         return [
-            DateTimeInterface::class => true,
+            DateTimeInterface::class => self::class === static::class,
         ];
     }
 

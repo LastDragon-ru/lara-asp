@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Stringable;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
 use Symfony\Component\Serializer\Exception\ExtraAttributesException;
+use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 
 use function get_debug_type;
@@ -196,12 +197,12 @@ class ProviderTest extends TestCase {
         $serializable = new ProviderTest__Simple($datetime);
 
         return [
-            'empty object'       => [
+            'empty object'                       => [
                 new ProviderTest__Empty(),
                 null,
                 '{}',
             ],
-            'simple object'      => [
+            'simple object'                      => [
                 $serializable,
                 null,
                 <<<'JSON'
@@ -211,7 +212,7 @@ class ProviderTest extends TestCase {
                 }
                 JSON,
             ],
-            'complex object'     => [
+            'complex object'                     => [
                 new ProviderTest__Complex($datetime, new ProviderTest__Simple(), [$datetime, $datetime], null),
                 null,
                 <<<'JSON'
@@ -225,7 +226,7 @@ class ProviderTest extends TestCase {
                 }
                 JSON,
             ],
-            'unsupported object' => [
+            'unsupported object'                 => [
                 new FailedToDeserialize($invalid::class, '', 'json', [], new NotNormalizableValueException(
                     sprintf(
                         'The type of the "%s" attribute for class "%s" must be one of "%s" ("%s" given).',
@@ -238,12 +239,36 @@ class ProviderTest extends TestCase {
                 $invalid::class,
                 '{"a": {}}',
             ],
-            'unknown property'   => [
+            'unknown property'                   => [
                 new FailedToDeserialize(ProviderTest__Simple::class, '', 'json', [], new ExtraAttributesException([
                     'unknown',
                 ])),
                 ProviderTest__Simple::class,
                 '{"unknown": 123}',
+            ],
+            'incomplete object with constructor' => [
+                new FailedToDeserialize(
+                    ProviderTest__Complex::class,
+                    '',
+                    'json',
+                    [],
+                    new MissingConstructorArgumentsException(
+                        sprintf(
+                            'Cannot create an instance of "%s" from serialized'
+                            .' data because its constructor requires the following'
+                            .' parameters to be present : "$%s".',
+                            ProviderTest__Complex::class,
+                            'array',
+                        ),
+                    ),
+                ),
+                ProviderTest__Complex::class,
+                <<<'JSON'
+                {
+                    "datetime": "2023-08-11T10:45:00.000+00:00",
+                    "nested": {"a":123}
+                }
+                JSON,
             ],
         ];
     }
