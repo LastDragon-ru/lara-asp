@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Serializer;
 
+use DateTimeInterface;
 use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Support\Carbon;
@@ -120,7 +121,7 @@ class ProviderTest extends TestCase {
             }
         };
         $datetime     = Carbon::make('2023-08-11T10:45:00');
-        $serializable = new ProviderTest__Simple();
+        $serializable = new ProviderTest__Simple($datetime);
         $curcular     = new class() implements Serializable {
             public Serializable $a; // @phpstan-ignore-line required for tests
         };
@@ -132,7 +133,12 @@ class ProviderTest extends TestCase {
                 new ProviderTest__Empty(),
             ],
             'simple object'      => [
-                '{"a": 123}',
+                <<<'JSON'
+                {
+                    "a": 123,
+                    "e": "2023-08-11T10:45:00.000+00:00"
+                }
+                JSON,
                 $serializable,
             ],
             'complex object'     => [
@@ -141,7 +147,10 @@ class ProviderTest extends TestCase {
                     "a": 123,
                     "flags": [1,2,3],
                     "datetime": "2023-08-11T10:45:00.000+00:00",
-                    "nested": {"a":123},
+                    "nested": {
+                        "a": 123,
+                        "e": "2023-08-11T10:45:00.000+00:00"
+                    },
                     "array": ["2023-08-11T10:45:00.000+00:00","2023-08-11T10:45:00.000+00:00"],
                     "nullable": null
                 }
@@ -184,7 +193,7 @@ class ProviderTest extends TestCase {
             }
         };
         $datetime     = Carbon::make('2023-08-11T10:45:00');
-        $serializable = new ProviderTest__Simple();
+        $serializable = new ProviderTest__Simple($datetime);
 
         return [
             'empty object'       => [
@@ -195,10 +204,15 @@ class ProviderTest extends TestCase {
             'simple object'      => [
                 $serializable,
                 null,
-                '{"a": 123}',
+                <<<'JSON'
+                {
+                    "a": 123,
+                    "e": "2023-08-11T10:45:00.000+00:00"
+                }
+                JSON,
             ],
             'complex object'     => [
-                new ProviderTest__Complex($datetime, $serializable, [$datetime, $datetime], null),
+                new ProviderTest__Complex($datetime, new ProviderTest__Simple(), [$datetime, $datetime], null),
                 null,
                 <<<'JSON'
                 {
@@ -244,10 +258,15 @@ class ProviderTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ProviderTest__Simple implements Serializable, Stringable, JsonSerializable {
-    public int       $a = 123;
-    public bool      $b; // @phpstan-ignore-line required for tests
-    protected string $c = 'should be ignored';
-    private string   $d = 'should be ignored';
+    public int                $a = 123;
+    public bool               $b; // @phpstan-ignore-line required for tests
+    protected string          $c = 'should be ignored';
+    private string            $d = 'should be ignored';
+    public ?DateTimeInterface $e = null;
+
+    public function __construct(?DateTimeInterface $e = null) {
+        $this->e = $e;
+    }
 
     public function __toString(): string {
         return $this->d;

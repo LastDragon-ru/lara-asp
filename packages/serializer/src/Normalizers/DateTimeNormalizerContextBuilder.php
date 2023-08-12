@@ -5,17 +5,17 @@ namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 use Symfony\Component\Serializer\Context\ContextBuilderInterface;
 use Symfony\Component\Serializer\Context\ContextBuilderTrait;
 
-final class CarbonNormalizerContextBuilder implements ContextBuilderInterface {
+final class DateTimeNormalizerContextBuilder implements ContextBuilderInterface {
     use ContextBuilderTrait;
 
     /**
      * @see https://secure.php.net/manual/en/datetime.format.php
      */
     public function withFormat(?string $format): static {
-        return $this->with(CarbonNormalizer::ContextFormat, $format);
+        return $this->with(DateTimeNormalizer::ContextFormat, $format);
     }
 
     public function withFallback(?bool $fallback): static {
-        return $this->with(CarbonNormalizer::ContextFallback, $fallback);
+        return $this->with(DateTimeNormalizer::ContextFallback, $fallback);
     }
 }

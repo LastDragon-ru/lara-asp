@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Serializer;
 
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
-use LastDragon_ru\LaraASP\Serializer\Normalizers\CarbonNormalizer;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use Mockery;
@@ -14,7 +14,6 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\DataUriNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer;
 
 use function config;
@@ -64,17 +63,16 @@ class FactoryTest extends TestCase {
                     self::assertEquals('format from config', $format);
                     self::assertEquals(
                         [
-                            'encoder option from config'    => 'encoder',
-                            'encoder option'                => 'call',
-                            'normalizer option from config' => 'normalizer',
-                            'normalizer option'             => 'call',
-                            'context option from config'    => 'context',
-                            'context option'                => 'call',
-                            'csv encoder option'            => 'call',
-                            'json_encode_options'           => 4_197_698,
-                            'json_decode_options'           => 4_194_304,
-                            'datetime_format'               => 'Y-m-d\TH:i:s.vP',
-                            CarbonNormalizer::ContextFormat => 'Y-m-d\TH:i:s.vP',
+                            'encoder option from config'      => 'encoder',
+                            'encoder option'                  => 'call',
+                            'normalizer option from config'   => 'normalizer',
+                            'normalizer option'               => 'call',
+                            'context option from config'      => 'context',
+                            'context option'                  => 'call',
+                            'csv encoder option'              => 'call',
+                            'json_encode_options'             => 4_197_698,
+                            'json_decode_options'             => 4_194_304,
+                            DateTimeNormalizer::ContextFormat => 'Y-m-d\TH:i:s.vP',
                         ],
                         $context,
                     );
@@ -91,7 +89,6 @@ class FactoryTest extends TestCase {
                             DateTimeNormalizer::class,
                             DataUriNormalizer::class,
                             ArrayDenormalizer::class,
-                            CarbonNormalizer::class,
                             DateIntervalNormalizer::class,
                         ],
                         $normalizers,

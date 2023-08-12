@@ -4,18 +4,16 @@ namespace LastDragon_ru\LaraASP\Serializer;
 
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
-use LastDragon_ru\LaraASP\Serializer\Normalizers\CarbonNormalizer;
-use LastDragon_ru\LaraASP\Serializer\Normalizers\CarbonNormalizerContextBuilder;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizerContextBuilder;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizerContextBuilder;
 use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
-use Symfony\Component\Serializer\Context\Normalizer\DateTimeNormalizerContextBuilder;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -196,11 +194,8 @@ class Factory {
     protected function getDefaultNormalizers(): array {
         return [
             ArrayDenormalizer::class      => [],
-            CarbonNormalizer::class       => (new CarbonNormalizerContextBuilder())
-                ->withFormat(CarbonNormalizer::ContextFormatDefault)
-                ->toArray(),
             DateTimeNormalizer::class     => (new DateTimeNormalizerContextBuilder())
-                ->withFormat(CarbonNormalizer::ContextFormatDefault)
+                ->withFormat(DateTimeNormalizer::ContextFormatDefault)
                 ->toArray(),
             DateTimeZoneNormalizer::class => [],
             DateIntervalNormalizer::class => [],

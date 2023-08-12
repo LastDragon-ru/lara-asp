@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 
-use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Exception;
 use Illuminate\Support\Facades\Date;
@@ -17,7 +16,7 @@ use function is_a;
 use function is_string;
 use function sprintf;
 
-final class CarbonNormalizer implements NormalizerInterface, DenormalizerInterface {
+final class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     use WithDefaultContext;
 
     public const ContextFormat          = self::class.'@format';
@@ -39,7 +38,7 @@ final class CarbonNormalizer implements NormalizerInterface, DenormalizerInterfa
      */
     public function getSupportedTypes(?string $format): array {
         return [
-            CarbonInterface::class => true,
+            DateTimeInterface::class => true,
         ];
     }
 
@@ -47,11 +46,11 @@ final class CarbonNormalizer implements NormalizerInterface, DenormalizerInterfa
      * @param array<array-key, mixed> $context
      */
     public function normalize(mixed $object, string $format = null, array $context = []): string {
-        if (!($object instanceof CarbonInterface)) {
+        if (!($object instanceof DateTimeInterface)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `$object` expected to be a `%s`, `%s` given.',
-                    CarbonInterface::class,
+                    DateTimeInterface::class,
                     get_debug_type($object),
                 ),
             );
@@ -63,7 +62,7 @@ final class CarbonNormalizer implements NormalizerInterface, DenormalizerInterfa
     }
 
     public function supportsNormalization(mixed $data, string $format = null): bool {
-        return $data instanceof CarbonInterface;
+        return $data instanceof DateTimeInterface;
     }
 
     /**
@@ -81,11 +80,11 @@ final class CarbonNormalizer implements NormalizerInterface, DenormalizerInterfa
             );
         }
 
-        if (!is_a($type, CarbonInterface::class, true)) {
+        if (!is_a($type, DateTimeInterface::class, true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `$type` expected to be a `%s`, `%s` given.',
-                    CarbonInterface::class,
+                    DateTimeInterface::class,
                     get_debug_type($data),
                 ),
             );
@@ -107,7 +106,7 @@ final class CarbonNormalizer implements NormalizerInterface, DenormalizerInterfa
             }
         }
 
-        if (!($result instanceof CarbonInterface) && $fallback) {
+        if (!($result instanceof DateTimeInterface) && $fallback) {
             try {
                 $result = Date::make($data);
             } catch (Exception $exception) {
@@ -115,7 +114,7 @@ final class CarbonNormalizer implements NormalizerInterface, DenormalizerInterfa
             }
         }
 
-        if (!($result instanceof CarbonInterface)) {
+        if (!($result instanceof DateTimeInterface)) {
             throw new UnexpectedValueException(
                 sprintf(
                     'The `%s` cannot be parsed to `DateTime`.',
@@ -128,6 +127,6 @@ final class CarbonNormalizer implements NormalizerInterface, DenormalizerInterfa
     }
 
     public function supportsDenormalization(mixed $data, string $type, string $format = null): bool {
-        return is_a($type, CarbonInterface::class, true);
+        return is_a($type, DateTimeInterface::class, true);
     }
 }
