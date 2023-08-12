@@ -44,11 +44,12 @@ class Factory {
         array $normalizers = [],
         array $context = [],
         string $format = null,
+        ?string $config = Package::Name,
     ): SerializerContract {
-        $format      = $format ?? $this->getConfigFormat() ?? JsonEncoder::FORMAT;
-        $context     = $context + $this->getConfigContext();
-        $encoders    = $this->getEncoders($encoders, $context);
-        $normalizers = $this->getNormalizers($normalizers, $context);
+        $format      = $format ?? $this->getConfigFormat($config) ?? JsonEncoder::FORMAT;
+        $context     = $context + $this->getConfigContext($config);
+        $encoders    = $this->getEncoders($encoders, $context, $config);
+        $normalizers = $this->getNormalizers($normalizers, $context, $config);
         $serializer  = $this->make($encoders, $normalizers, $context, $format);
 
         return $serializer;
@@ -78,9 +79,9 @@ class Factory {
         );
     }
 
-    protected function getConfigFormat(): ?string {
+    protected function getConfigFormat(?string $config): ?string {
         /** @var ?string $format */
-        $format = config(Package::Name.'.default');
+        $format = $config ? config("{$config}.default") : null;
 
         return $format;
     }
@@ -88,9 +89,9 @@ class Factory {
     /**
      * @return array<string, mixed>
      */
-    protected function getConfigContext(): array {
+    protected function getConfigContext(?string $config): array {
         /** @var array<string, mixed> $context */
-        $context = (array) config(Package::Name.'.context');
+        $context = $config ? (array) config("{$config}.context") : [];
 
         return $context;
     }
@@ -101,8 +102,8 @@ class Factory {
      *
      * @return list<class-string<EncoderInterface|DecoderInterface>>
      */
-    protected function getEncoders(array $encoders, array &$context): array {
-        $groups = [$encoders, $this->getConfigEncoders(), $this->getDefaultEncoders()];
+    protected function getEncoders(array $encoders, array &$context, ?string $config): array {
+        $groups = [$encoders, $this->getConfigEncoders($config), $this->getDefaultEncoders()];
         $list   = [];
 
         foreach ($groups as $group) {
@@ -121,9 +122,9 @@ class Factory {
     /**
      * @return array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>>
      */
-    protected function getConfigEncoders(): array {
+    protected function getConfigEncoders(?string $config): array {
         /** @var array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>> $encoders */
-        $encoders = (array) config(Package::Name.'.encoders');
+        $encoders = $config ? (array) config("{$config}.encoders") : [];
 
         return $encoders;
     }
@@ -155,8 +156,8 @@ class Factory {
      *
      * @return list<class-string<NormalizerInterface|DenormalizerInterface>>
      */
-    protected function getNormalizers(array $normalizers, array &$context): array {
-        $groups = [$normalizers, $this->getConfigNormalizers(), $this->getDefaultNormalizers()];
+    protected function getNormalizers(array $normalizers, array &$context, ?string $config): array {
+        $groups = [$normalizers, $this->getConfigNormalizers($config), $this->getDefaultNormalizers()];
         $list   = [];
 
         foreach ($groups as $group) {
@@ -181,9 +182,9 @@ class Factory {
     /**
      * @return array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null>
      */
-    protected function getConfigNormalizers(): array {
+    protected function getConfigNormalizers(?string $config): array {
         /** @var array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers */
-        $normalizers = (array) config(Package::Name.'.normalizers');
+        $normalizers = $config ? (array) config("{$config}.normalizers") : $config;
 
         return $normalizers;
     }
