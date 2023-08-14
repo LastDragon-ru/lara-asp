@@ -74,18 +74,71 @@ module.exports = {
                 mainTemplate:    mainTemplate,
                 commitPartial:   commitTemplate,
                 finalizeContext: (context, options, commits, keyCommit) => {
-                    context.release = {
+                    // Group commits by package and type
+                    let packages = commits.reduce((result, commit) => {
+                        // Comment may have multiple scopes (separated by `,`), each scope may have component (after `/`).
+                        const scopes = (commit.scope || '')
+                            .split(',')
+                            .map(scope => scope.trim())
+                            .filter((v, i, a) => a.indexOf(v) === i);
+
+                        for (let scope of scopes) {
+                            const parts     = scope.split('/');
+                            const package   = parts[0].trim();
+                            const component = parts.slice(1).join('/').trim() || null;
+                            const byPackage = result[package] = result[package] || {
+                                name:  package,
+                                types: {},
+                            };
+                            const byType    = byPackage.types[commit.section] = byPackage.types[commit.section] || {
+                                name:    commit.section,
+                                commits: [],
+                            };
+
+                            byType.commits.push(Object.assign({}, commit, {
+                                scope: component,
+                            }));
+                        }
+
+                        return result;
+                    }, {});
+
+                    // Sort by names/scope/subject
+                    packages      = Object.values(packages);
+                    const trim    = /^[*`_~]+/g;
+                    const compare = (a, b) => {
+                        // The strings may contain the markdown, so we are
+                        // removing "invisible" chars before comparing.
+                        a = (a || '').trimStart().replace(trim, '');
+                        b = (b || '').trimStart().replace(trim, '');
+
+                        return a.localeCompare(b);
+                    };
+
+                    packages
+                        .sort((a, b) => compare(a.name, b.name))
+                        .forEach((package) => {
+                            package.types = Object.values(package.types);
+                            package.types
+                                .sort((a, b) => compare(a.name, b.name))
+                                .forEach((type) => {
+                                    type.commits.sort((a, b) => {
+                                        return compare(a.scope, b.scope)
+                                            || compare(a.subject, b.subject)
+                                    })
+                                });
+                        });
+
+                    // Update context
+                    context.release  = {
                         name:        releaseName.replaceAll('${version}', context.version),
                         description: releaseDescription,
                         breaking:    !!commits.some(commit => commit.breaking),
                     };
+                    context.packages = packages;
 
+                    // Return
                     return context;
-                },
-                commitsSort:     (a, b) => {
-                    // todo(release-it): Is it possible to sort by commit datetime?
-                    return (a.scope || '').localeCompare(b.scope || '')
-                        || a.subject.localeCompare(b.subject);
                 },
                 transform:       (commit, context) => {
                     // Type?
@@ -112,11 +165,9 @@ module.exports = {
                         }
                     }
 
-                    // Properties
-                    commit.type  = type.section;
-                    commit.scope = commit.scope === '*' ? null : commit.scope;
-
                     // Custom
+                    commit.mentions = []; // see https://github.com/conventional-changelog/conventional-changelog/issues/601
+                    commit.section  = type.section;
                     commit.breaking = breaking;
                     commit.related  = [...new Set([
                         ...commit.references.map((r) => `${r.prefix}${r.issue}`),

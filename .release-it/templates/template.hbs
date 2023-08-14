@@ -11,17 +11,20 @@
 {{release.description}}
 
 {{/if}}
-{{#each commitGroups}}
+{{#each packages}}
 
-{{#if title}}
-### {{title}}
+### {{#if name}}Package `{{name}}`{{else}}All packages{{/if}}
 
+{{#each types}}
 
-{{/if}}
+#### {{name}}
+
 {{#each commits}}
+
 {{> commit root=@root}}
 
 {{/each}}
 
+{{/each}}
 
 {{/each}}
