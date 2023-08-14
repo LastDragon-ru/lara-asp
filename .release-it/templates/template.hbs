@@ -1,14 +1,14 @@
-## {{#if title}}{{title}}{{else}}Release v{{version}} ({{date}}){{/if}}
+## {{#if release.name}}{{release.name}}{{else}}Release v{{version}} ({{date}}){{/if}}
 
-{{#if breaking}}
+{{#if release.breaking}}
 
 | ☣    | Breaking changes |
 |:-----:|:-----------------|
 
 {{/if}}
-{{#if description}}
+{{#if release.description}}
 
-{{description}}
+{{release.description}}
 
 {{/if}}
 {{#each commitGroups}}

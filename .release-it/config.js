@@ -1,10 +1,18 @@
 const fs   = require('fs');
 const path = require('path');
 
-const mainTemplate   = fs.readFileSync(path.resolve(__dirname, './templates/template.hbs')).toString();
-const commitTemplate = fs.readFileSync(path.resolve(__dirname, './templates/commit.hbs')).toString();
-const release        = 'release';
-const types          = [
+const mainTemplate       = fs.readFileSync(path.resolve(__dirname, './templates/template.hbs')).toString();
+const commitTemplate     = fs.readFileSync(path.resolve(__dirname, './templates/commit.hbs')).toString();
+const args               = require('minimist')(process.argv.slice(2), {
+    string:  ['release.name', 'release.description'],
+    default: {
+        'release.name':        null,
+        'release.description': null,
+    },
+});
+const releaseName        = args.release.name || 'Release ${version}';
+const releaseDescription = args.release.description;
+const types              = [
     {type: 'feat', section: 'Features'},
     {type: 'feature', section: 'Features'},
     {type: 'fix', section: 'Bug Fixes'},
@@ -16,8 +24,11 @@ const types          = [
     {type: 'refactor', section: 'Code Refactoring', hidden: true},
     {type: 'test', section: 'Tests', hidden: true},
     {type: 'ci', section: 'Continuous Integration', hidden: true},
-    {type: release},
 ];
+
+if (!releaseName) {
+    throw new Error('The release name is required! Please specify it with `--release.name="name"`.');
+}
 
 module.exports = {
     npm:     false,
@@ -25,12 +36,13 @@ module.exports = {
         tagArgs:        '-s',
         commitArgs:     '-S',
         requireCommits: true,
+        commitMessage:  `release: ${releaseName}${releaseDescription ? '\n\n' + releaseDescription : ''}`,
     },
     github:  {
         release:      true,
         draft:        true,
         comments:     false,
-        releaseName:  '${(changelog.split("\\n", 1)[0] || "").replace(/^#+\\s+(.+?)$/, "$1")}',
+        releaseName:  releaseName,
         releaseNotes: (context) => {
             let changelog = context.changelog;
             const lines   = changelog.split('\n');
@@ -51,31 +63,31 @@ module.exports = {
             },
         },
         '@release-it/conventional-changelog': {
-            preset: {
-                name: 'conventionalcommits',
-                types: types
+            preset:            {
+                name:  'conventionalcommits',
+                types: types,
             },
             gitRawCommitsOpts: {
                 merges: null,
             },
             writerOpts:        {
-                mainTemplate:  mainTemplate,
-                commitPartial: commitTemplate,
-                commitsSort:   (a, b) => {
+                mainTemplate:    mainTemplate,
+                commitPartial:   commitTemplate,
+                finalizeContext: (context, options, commits, keyCommit) => {
+                    context.release = {
+                        name:        releaseName.replaceAll('${version}', context.version),
+                        description: releaseDescription,
+                        breaking:    !!commits.some(commit => commit.breaking),
+                    };
+
+                    return context;
+                },
+                commitsSort:     (a, b) => {
                     // todo(release-it): Is it possible to sort by commit datetime?
                     return (a.scope || '').localeCompare(b.scope || '')
                         || a.subject.localeCompare(b.subject);
                 },
-                transform:     (commit, context) => {
-                    // Release?
-                    // todo(release-it): Only the top commit should be used.
-                    if (commit.type === release) {
-                        context.title       = commit.subject;
-                        context.description = commit.release || commit.body;
-
-                        return null;
-                    }
-
+                transform:       (commit, context) => {
                     // Type?
                     const breaking = commit.notes.length > 0;
                     const type     = types.find(t => t.type === commit.type);
@@ -105,9 +117,8 @@ module.exports = {
                     commit.scope = commit.scope === '*' ? null : commit.scope;
 
                     // Custom
-                    context.breaking = context.breaking || breaking;
-                    commit.breaking  = breaking;
-                    commit.related   = [...new Set([
+                    commit.breaking = breaking;
+                    commit.related  = [...new Set([
                         ...commit.references.map((r) => `${r.prefix}${r.issue}`),
                         commit.hash,
                     ])].sort();
