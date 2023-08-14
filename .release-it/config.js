@@ -51,7 +51,10 @@ module.exports = {
             },
         },
         '@release-it/conventional-changelog': {
-            preset:            'conventionalcommits',
+            preset: {
+                name: 'conventionalcommits',
+                types: types
+            },
             gitRawCommitsOpts: {
                 merges: null,
             },
