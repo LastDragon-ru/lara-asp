@@ -27,7 +27,7 @@ on:
         required: true
         default: true
 
-run-name: "${{ inputs.name }} (${{ inputs.type }})"
+run-name: "${{ inputs.name }} (${{ inputs.type }}${{ inputs.dry-run && '; dry-run' || ''}})"
 
 permissions:
   contents: read
@@ -39,7 +39,7 @@ jobs:
     permissions:
       contents: write
     outputs:
-      version: ${{ steps.version.outputs.version }}
+      version: ${{ steps.release.outputs.version }}
     steps:
       # Bot cannot sign tags/commits yet
       # https://github.com/actions/runner/issues/667
@@ -63,24 +63,23 @@ jobs:
         uses: ./.github/actions/npm
 
       - name: Release
+        id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          VERSION="${{ runner.temp }}/VERSION"
           CHANGELOG="${{ runner.temp }}/CHANGELOG.md"
 
           npm run release -- \
-            ${{ inputs.type != 'stable' && format('--preRelease="{0}"', inputs.type) || ''} \
-            --dry-run ${{ inputs.dry_run && '--dry-run' || ''}} \
+            ${{ inputs.type != 'stable' && format('--preRelease="{0}"', inputs.type) || ''}} \
+            ${{ inputs.dry-run && '--dry-run' || ''}} \
             --release.name="${{ inputs.name }}" \
             --release.description="${{ inputs.description }}" \
+            --dump.version="$VERSION" \
             --dump.changelog="$CHANGELOG"
 
+          echo "version=$(cat $VERSION)" >> $GITHUB_OUTPUT
           cat "$CHANGELOG" >> $GITHUB_STEP_SUMMARY
-
-      - name: Version
-        id: version
-        run: |
-          echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
   congrat:
     name: Congratulations
@@ -89,5 +88,10 @@ jobs:
       - release
     steps:
       - name: Summary
+        if: ${{ !inputs.dry-run }}
         run: |
           echo "Version **[${{ needs.release.outputs.version }}](https://github.com/${{ github.repository }}/releases/tag/${{ needs.release.outputs.version }})** released! :rocket:" >> $GITHUB_STEP_SUMMARY
+      - name: Summary (dry-run)
+        if: ${{ inputs.dry-run }}
+        run: |
+          echo "Version **${{ needs.release.outputs.version }}** will be released! 🔥" >> $GITHUB_STEP_SUMMARY

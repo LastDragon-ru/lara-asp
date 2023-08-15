@@ -4,11 +4,12 @@ const path = require('path');
 const mainTemplate       = fs.readFileSync(path.resolve(__dirname, './templates/template.hbs')).toString();
 const commitTemplate     = fs.readFileSync(path.resolve(__dirname, './templates/commit.hbs')).toString();
 const args               = require('minimist')(process.argv.slice(2), {
-    string:  ['release.name', 'release.description', 'dump.changelog'],
+    string:  ['release.name', 'release.description', 'dump.changelog', 'dump.version'],
     default: {
         'release.name':        null,
         'release.description': null,
         'dump.changelog':      null,
+        'dump.version':        null,
     },
 });
 const releaseName        = args.release.name || 'Release ${version}';
@@ -120,8 +121,12 @@ module.exports = {
         releaseNotes: (context) => {
             // Dump
             // waiting for https://github.com/release-it/release-it/issues/1031
-            if (args.dump.release) {
-                fs.writeFileSync(args.dump.release, context.changelog);
+            if (args.dump.version) {
+                fs.writeFileSync(args.dump.version, context.version);
+            }
+
+            if (args.dump.changelog) {
+                fs.writeFileSync(args.dump.changelog, context.changelog);
             }
 
             // The GitHub release already includes a header, so there is no need
