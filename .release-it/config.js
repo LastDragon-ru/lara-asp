@@ -13,23 +13,77 @@ const args               = require('minimist')(process.argv.slice(2), {
 });
 const releaseName        = args.release.name || 'Release ${version}';
 const releaseDescription = args.release.description;
-const types              = [
-    {type: 'feat', section: 'Features'},
-    {type: 'feature', section: 'Features'},
-    {type: 'fix', section: 'Bug Fixes'},
-    {type: 'perf', section: 'Performance Improvements'},
-    {type: 'revert', section: 'Reverts'},
-    {type: 'chore', section: 'Miscellaneous Chores'},
-    {type: 'deprecate', section: 'Deprecations'},
-    {type: 'docs', section: 'Documentation', hidden: true},
-    {type: 'refactor', section: 'Code Refactoring', hidden: true},
-    {type: 'test', section: 'Tests', hidden: true},
-    {type: 'ci', section: 'Continuous Integration', hidden: true},
-];
 
 if (!releaseName) {
     throw new Error('The release name is required! Please specify it with `--release.name="name"`.');
 }
+
+/**
+ * The types with `hidden: true` are not included in the changelog unless they
+ * have a breaking change (`!`) mark.
+ */
+const types = [
+    {
+        description: 'A new feature.',
+        section:     'Features',
+        hidden:      false,
+        type:        'feat',
+    },
+    {
+        description: 'A code change that improves performance.',
+        section:     'Performance Improvements',
+        hidden:      false,
+        type:        'perf',
+    },
+    {
+        description: 'A bug fix.',
+        section:     'Bug Fixes',
+        hidden:      false,
+        type:        'fix',
+    },
+    {
+        description: 'A code change that deprecate a part of public API.',
+        section:     'Deprecations',
+        hidden:      false,
+        type:        'deprecate',
+    },
+    {
+        description: 'Something important but not related to any other categories.',
+        section:     'Miscellaneous',
+        hidden:      false,
+        type:        'chore',
+    },
+    {
+        description: 'A code change that reverts previous change.',
+        section:     'Reverts',
+        hidden:      false,
+        type:        'revert',
+    },
+    {
+        description: 'Documentation only changes',
+        section:     'Documentation',
+        hidden:      true,
+        type:        'docs',
+    },
+    {
+        description: 'An important code change that does not introduce new features or fix issues but restructuring existing code.',
+        section:     'Code Refactoring',
+        hidden:      true,
+        type:        'refactor',
+    },
+    {
+        description: 'Adding missing/new tests or correcting existing.',
+        section:     'Tests',
+        hidden:      true,
+        type:        'test',
+    },
+    {
+        description: 'Changes to CI configuration files and scripts.',
+        section:     'Continuous Integration',
+        hidden:      true,
+        type:        'ci',
+    },
+];
 
 module.exports = {
     npm:     false,
