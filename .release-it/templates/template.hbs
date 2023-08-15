@@ -1,30 +1,24 @@
 ## {{#if release.name}}{{release.name}}{{else}}Release v{{version}} ({{date}}){{/if}}
 
 {{#if release.breaking}}
-
 | ☣    | Breaking changes |
 |:-----:|:-----------------|
 
 {{/if}}
 {{#if release.description}}
-
 {{release.description}}
 
 {{/if}}
 {{#each packages}}
-
 ### {{#if name}}Package `{{name}}`{{else}}All packages{{/if}}
 
 {{#each types}}
-
 #### {{name}}
 
 {{#each commits}}
-
 {{> commit root=@root}}
 
 {{/each}}
 
 {{/each}}
-
 {{/each}}
