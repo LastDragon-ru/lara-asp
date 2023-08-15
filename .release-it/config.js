@@ -19,8 +19,11 @@ if (!releaseName) {
 }
 
 /**
- * The types with `hidden: true` are not included in the changelog unless they
- * have a breaking change (`!`) mark.
+ * Types
+ *
+ * - The changelog will contain types in the same order as they defined.
+ * - The types with `hidden: true` are not included in the changelog unless they
+ *   have a breaking change (`!`) mark.
  */
 const types = [
     {
@@ -167,9 +170,9 @@ module.exports = {
                     }, {});
 
                     // Sort by names/scope/subject
-                    packages      = Object.values(packages);
-                    const trim    = /^[*`_~]+/g;
-                    const compare = (a, b) => {
+                    packages             = Object.values(packages);
+                    const trim           = /^[*`_~]+/g;
+                    const compareStrings = (a, b) => {
                         // The strings may contain the markdown, so we are
                         // removing "invisible" chars before comparing.
                         a = (a || '').trimStart().replace(trim, '');
@@ -177,17 +180,31 @@ module.exports = {
 
                         return a.localeCompare(b);
                     };
+                    const compareNumbers = (a, b) => {
+                        a = Number.isInteger(a) ? a : Number.MAX_SAFE_INTEGER;
+                        b = Number.isInteger(b) ? b : Number.MAX_SAFE_INTEGER;
+
+                        return a - b;
+                    };
+                    const sections       = types.reduce((result, type, index) => {
+                        result[type.section] = index;
+
+                        return result;
+                    }, {});
 
                     packages
-                        .sort((a, b) => compare(a.name, b.name))
+                        .sort((a, b) => compareStrings(a.name, b.name))
                         .forEach((package) => {
                             package.types = Object.values(package.types);
                             package.types
-                                .sort((a, b) => compare(a.name, b.name))
+                                .sort((a, b) => {
+                                    return compareNumbers(sections[a.name], sections[b.name])
+                                        || compareStrings(a.name, b.name);
+                                })
                                 .forEach((type) => {
                                     type.commits.sort((a, b) => {
-                                        return compare(a.scope, b.scope)
-                                            || compare(a.subject, b.subject)
+                                        return compareStrings(a.scope, b.scope)
+                                            || compareStrings(a.subject, b.subject)
                                     })
                                 });
                         });
