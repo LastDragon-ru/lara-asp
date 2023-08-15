@@ -88,8 +88,6 @@ jobs:
     needs:
       - release
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
       - name: Summary
         run: |
           echo "Version **[${{ needs.release.outputs.version }}](https://github.com/${{ github.repository }}/releases/tag/${{ needs.release.outputs.version }})** released! :rocket:" >> $GITHUB_STEP_SUMMARY
