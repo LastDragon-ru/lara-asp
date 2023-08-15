@@ -3,7 +3,8 @@ name: Continuous Integration
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
+      - '[0-9]+.x'
   pull_request:
   schedule:
     - cron: "0 0 * * SAT"
