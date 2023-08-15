@@ -77,7 +77,9 @@ jobs:
         working-directory: package
         run: |
           for i in `git branch -a | grep remotes/origin/`;
-            do git branch --track ${i#remotes/origin/} --set-upstream-to $i;
+          do
+            git branch --track ${i#remotes/origin/} $i \
+              || git branch --track ${i#remotes/origin/} --set-upstream-to=$i
           done
 
       - name: Push package
