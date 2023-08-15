@@ -1,25 +1,43 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - 'release'
   workflow_dispatch:
+    inputs:
+      type:
+        description: Type
+        type: choice
+        required: true
+        default: stable
+        options:
+          - stable
+          - rc
+          - beta
+          - alpha
+      name:
+        description: Name
+        type: string
+        required: true
+      description:
+        description: Description
+        type: string
+        required: false
+      dry-run:
+        description: Dry run?
+        type: boolean
+        required: true
+        default: true
+
+run-name: "${{ inputs.name }} (${{ inputs.type }})"
 
 permissions:
   contents: read
 
 jobs:
-  ci:
-    uses: ./.github/workflows/ci.yml
-
   release:
     name: Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs:
-      - ci
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
@@ -48,24 +66,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run release
+          CHANGELOG="${{ runner.temp }}/CHANGELOG.md"
+
+          npm run release -- \
+            ${{ inputs.type != 'stable' && format('--preRelease="{0}"', inputs.type) || ''} \
+            --dry-run ${{ inputs.dry_run && '--dry-run' || ''}} \
+            --release.name="${{ inputs.name }}" \
+            --release.description="${{ inputs.description }}" \
+            --dump.changelog="$CHANGELOG"
+
+          cat "$CHANGELOG" >> $GITHUB_STEP_SUMMARY
+
       - name: Version
         id: version
         run: |
           echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
-
-  packages:
-    uses: ./.github/workflows/packages.yml
-    needs:
-      - release
-    secrets: inherit
 
   congrat:
     name: Congratulations
     runs-on: ubuntu-latest
     needs:
       - release
-      - packages
     steps:
       - name: Checkout
         uses: actions/checkout@v3
