@@ -1,10 +1,13 @@
 ## {{#if release.name}}{{release.name}}{{else}}Release v{{version}} ({{date}}){{/if}}
 
-{{#if release.breaking}}
-| ☣    | Breaking changes |
-|:-----:|:-----------------|
-
+{{#if summary}}
+| Mark | Type | Count | Packages |
+|:----:|------|------:|----------|
+{{#each summary}}
+| {{icon}} | {{#if icon}}**{{name}}**{{else}}{{name}}{{/if}} | {{count}} | {{#each packages}}`{{this}}`{{#unless @last}}, {{/unless}}{{/each}} |
+{{/each}}
 {{/if}}
+
 {{#if release.description}}
 {{release.description}}
 
@@ -13,7 +16,7 @@
 ### {{#if name}}Package `{{name}}`{{else}}All packages{{/if}}
 
 {{#each types}}
-#### {{name}}
+#### {{name}}{{#if mark}} {{mark}}{{/if}}
 
 {{#each commits}}
 {{> commit root=@root}}

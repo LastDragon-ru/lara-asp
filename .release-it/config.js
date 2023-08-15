@@ -24,69 +24,85 @@ if (!releaseName) {
  * - The changelog will contain types in the same order as they defined.
  * - The types with `hidden: true` are not included in the changelog unless they
  *   have a breaking change (`!`) mark.
+ * - The `mark` property (expects emoji) allow mark the type section, the mark
+ *   will also be added into the Legend section of the changelog.
  */
-const types = [
+const types        = [
     {
         description: 'A new feature.',
         section:     'Features',
         hidden:      false,
         type:        'feat',
+        mark:        null,
     },
     {
         description: 'A code change that improves performance.',
         section:     'Performance Improvements',
         hidden:      false,
         type:        'perf',
+        mark:        null,
     },
     {
         description: 'A bug fix.',
         section:     'Bug Fixes',
         hidden:      false,
         type:        'fix',
+        mark:        null,
     },
     {
         description: 'A code change that deprecate a part of public API.',
         section:     'Deprecations',
         hidden:      false,
         type:        'deprecate',
+        mark:        '💀',
     },
     {
         description: 'Something important but not related to any other categories.',
         section:     'Miscellaneous',
         hidden:      false,
         type:        'chore',
+        mark:        null,
     },
     {
         description: 'A code change that reverts previous change.',
         section:     'Reverts',
         hidden:      false,
         type:        'revert',
+        mark:        null,
     },
     {
         description: 'Documentation only changes',
         section:     'Documentation',
         hidden:      true,
         type:        'docs',
+        mark:        null,
     },
     {
         description: 'An important code change that does not introduce new features or fix issues but restructuring existing code.',
         section:     'Code Refactoring',
         hidden:      true,
         type:        'refactor',
+        mark:        null,
     },
     {
         description: 'Adding missing/new tests or correcting existing.',
         section:     'Tests',
         hidden:      true,
         type:        'test',
+        mark:        null,
     },
     {
         description: 'Changes to CI configuration files and scripts.',
         section:     'Continuous Integration',
         hidden:      true,
         type:        'ci',
+        mark:        null,
     },
 ];
+const breakingMark = {
+    name: 'Breaking changes',
+    icon: '☣',
+};
 
 module.exports = {
     npm:     false,
@@ -140,9 +156,23 @@ module.exports = {
                 mainTemplate:    mainTemplate,
                 commitPartial:   commitTemplate,
                 finalizeContext: (context, options, commits, keyCommit) => {
-                    // Group commits by package and type
-                    let packages = commits.reduce((result, commit) => {
-                        // Comment may have multiple scopes (separated by `,`), each scope may have component (after `/`).
+                    // Group commits by package and type, collect summary
+                    let breaking   = {count: 0, packages: []};
+                    let packages   = {};
+                    let summary    = {};
+                    const sections = types.reduce((result, type, index) => {
+                        result[type.section] = {
+                            priority: index,
+                            mark:     type.mark,
+                        };
+
+                        return result;
+                    }, {});
+
+                    for (let commit of commits) {
+                        // Comment may have multiple scopes (separated by `,`),
+                        // each scope may have component (after `/`).
+                        const pkgs   = [];
                         const scopes = (commit.scope || '')
                             .split(',')
                             .map(scope => scope.trim())
@@ -152,53 +182,52 @@ module.exports = {
                             const parts     = scope.split('/');
                             const package   = parts[0].trim();
                             const component = parts.slice(1).join('/').trim() || null;
-                            const byPackage = result[package] = result[package] || {
+                            const byPackage = packages[package] = packages[package] || {
                                 name:  package,
                                 types: {},
                             };
                             const byType    = byPackage.types[commit.section] = byPackage.types[commit.section] || {
                                 name:    commit.section,
+                                mark:    sections[commit.section].mark,
                                 commits: [],
                             };
 
                             byType.commits.push(Object.assign({}, commit, {
                                 scope: component,
                             }));
+
+                            pkgs.push(package);
                         }
 
-                        return result;
-                    }, {});
+                        // Summary
+                        if (summary[commit.section]) {
+                            summary[commit.section].count++;
+                            summary[commit.section].packages.push(...pkgs);
+                        } else {
+                            summary[commit.section] = {
+                                name:     commit.section,
+                                icon:     sections[commit.section].mark,
+                                count:    1,
+                                packages: pkgs,
+                            };
+                        }
+
+                        // Breaking change?
+                        if (commit.breaking) {
+                            breaking.count++;
+                            breaking.packages.push(...pkgs);
+                        }
+                    }
 
                     // Sort by names/scope/subject
-                    packages             = Object.values(packages);
-                    const trim           = /^[*`_~]+/g;
-                    const compareStrings = (a, b) => {
-                        // The strings may contain the markdown, so we are
-                        // removing "invisible" chars before comparing.
-                        a = (a || '').trimStart().replace(trim, '');
-                        b = (b || '').trimStart().replace(trim, '');
-
-                        return a.localeCompare(b);
-                    };
-                    const compareNumbers = (a, b) => {
-                        a = Number.isInteger(a) ? a : Number.MAX_SAFE_INTEGER;
-                        b = Number.isInteger(b) ? b : Number.MAX_SAFE_INTEGER;
-
-                        return a - b;
-                    };
-                    const sections       = types.reduce((result, type, index) => {
-                        result[type.section] = index;
-
-                        return result;
-                    }, {});
-
+                    packages = Object.values(packages);
                     packages
                         .sort((a, b) => compareStrings(a.name, b.name))
                         .forEach((package) => {
                             package.types = Object.values(package.types);
                             package.types
                                 .sort((a, b) => {
-                                    return compareNumbers(sections[a.name], sections[b.name])
+                                    return comparePriority(sections[a.name], sections[b.name], Number.MAX_SAFE_INTEGER)
                                         || compareStrings(a.name, b.name);
                                 })
                                 .forEach((type) => {
@@ -209,13 +238,32 @@ module.exports = {
                                 });
                         });
 
+                    // Summary
+                    summary = Object.values(summary);
+
+                    if (breaking.count) {
+                        summary.unshift(Object.assign(breaking, breakingMark));
+                    }
+
+                    summary
+                        .sort((a, b) => {
+                            return comparePriority(sections[a.name], sections[b.name], Number.MIN_SAFE_INTEGER)
+                                || compareStrings(a.name, b.name);
+                        })
+                        .forEach((type) => {
+                            type.packages = type.packages
+                                .filter((v, i, a) => v && a.indexOf(v) === i)
+                                .sort(compareStrings);
+                        });
+
                     // Update context
                     context.release  = {
                         name:        releaseName.replaceAll('${version}', context.version),
                         description: releaseDescription,
-                        breaking:    !!commits.some(commit => commit.breaking),
+                        breaking:    breaking.count > 0,
                     };
                     context.packages = packages;
+                    context.summary  = summary;
 
                     // Return
                     return context;
@@ -249,6 +297,7 @@ module.exports = {
                     commit.mentions = []; // see https://github.com/conventional-changelog/conventional-changelog/issues/601
                     commit.section  = type.section;
                     commit.breaking = breaking;
+                    commit.marks    = breaking ? [breakingMark.icon] : [];
                     commit.related  = [...new Set([
                         ...commit.references.map((r) => `${r.prefix}${r.issue}`),
                         commit.hash,
@@ -260,4 +309,20 @@ module.exports = {
             },
         },
     },
+};
+
+// Helpers
+const compareStrings  = (a, b, trim = /^[*`_~]+/g) => {
+    // The strings may contain the markdown, so we are
+    // removing "invisible" chars before comparing.
+    a = (a || '').trimStart().replace(trim, '');
+    b = (b || '').trimStart().replace(trim, '');
+
+    return a.localeCompare(b);
+};
+const comparePriority = (a, b, d) => {
+    a = a && Number.isInteger(a.priority) ? a.priority : d;
+    b = b && Number.isInteger(b.priority) ? b.priority : d;
+
+    return a - b;
 };
