@@ -10,6 +10,7 @@ parameters:
     checkOctaneCompatibility: true
     checkBenevolentUnionTypes: true
     reportAlwaysTrueInLastCondition: true
+    checkUninitializedProperties: true
 
 includes:
     # Vendor

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\TestCase;
 use InvalidArgumentException;
 use WeakMap;
+
 use function is_a;
 use function is_string;
 use function sprintf;
@@ -19,25 +20,23 @@ use function sprintf;
  */
 trait WithQueryLog {
     /**
-     * @var WeakMap<Connection, QueryLog>
+     * @var WeakMap<Connection, QueryLog>|null
      */
-    private WeakMap $withQueryLog;
+    private ?WeakMap $withQueryLog = null;
 
     /**
      * @before
      * @internal
      */
     public function initWithQueryLog(): void {
-        $this->withQueryLog = new WeakMap();
-
         $this->beforeApplicationDestroyed(function (): void {
-            foreach ($this->withQueryLog as $connection => $log) {
+            foreach ($this->withQueryLog ?? [] as $connection => $log) {
                 /** @var Connection $connection */
                 $connection->disableQueryLog();
                 $connection->flushQueryLog();
             }
 
-            unset($this->withQueryLog);
+            $this->withQueryLog = null;
         });
     }
 
@@ -74,8 +73,11 @@ trait WithQueryLog {
         $connection->enableQueryLog();
 
         // Exists?
-        $log                             = $this->withQueryLog[$connection] ?? new QueryLog($connection);
-        $this->withQueryLog[$connection] = $log;
+        /** @var WeakMap<Connection, QueryLog> $logs */
+        $logs               = $this->withQueryLog ?? new WeakMap();
+        $log                = $logs[$connection] ?? new QueryLog($connection);
+        $logs[$connection]  = $log;
+        $this->withQueryLog = $logs;
 
         // Return
         return $log;
