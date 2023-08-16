@@ -13,7 +13,7 @@ class Operators extends BuilderOperators {
     public const Extra = Directive::Name.'Extra';
 
     public function __construct() {
-        /** @var array<string,array<class-string<BuilderOperator>|string>> $operators */
+        /** @var array<string, list<class-string<BuilderOperator>|string>> $operators */
         $operators = (array) config(Package::Name.'.sort_by.operators');
 
         parent::__construct($operators);

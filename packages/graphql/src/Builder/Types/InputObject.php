@@ -63,7 +63,7 @@ abstract class InputObject implements TypeDefinition {
         $description = BlockString::print($description);
         $operators   = $this->getOperators($manipulator, $source);
         $definition  = Parser::inputObjectTypeDefinition(
-            <<<DEF
+            <<<GRAPHQL
             {$description}
             input {$name} {
                 """
@@ -73,7 +73,7 @@ abstract class InputObject implements TypeDefinition {
 
                 {$manipulator->getOperatorsFields($operators, $source)}
             }
-            DEF,
+            GRAPHQL,
         );
 
         // Add searchable fields
@@ -118,7 +118,7 @@ abstract class InputObject implements TypeDefinition {
     }
 
     /**
-     * @return array<Operator>
+     * @return list<Operator>
      */
     protected function getOperators(
         Manipulator $manipulator,
@@ -239,7 +239,7 @@ abstract class InputObject implements TypeDefinition {
     }
 
     /**
-     * @return array<DirectiveNode>
+     * @return list<DirectiveNode>
      */
     protected function getFieldDirectives(
         Manipulator $manipulator,

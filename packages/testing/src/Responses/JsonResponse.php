@@ -18,7 +18,7 @@ use function array_filter;
 
 class JsonResponse extends Response {
     /**
-     * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $content
+     * @param JsonSerializable|SplFileInfo|stdClass|array<array-key, mixed>|string|int|float|bool|null $content
      */
     public function __construct(
         StatusCode $code,

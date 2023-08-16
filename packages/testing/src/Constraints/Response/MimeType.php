@@ -7,7 +7,7 @@ use Symfony\Component\Mime\MimeTypes;
 
 class MimeType extends Response {
     /**
-     * @param array<string,array<string>> $map
+     * @param array<string, list<string>> $map
      */
     public function __construct(string $extension, array $map = []) {
         $types       = (new MimeTypes($map))->getMimeTypes($extension);

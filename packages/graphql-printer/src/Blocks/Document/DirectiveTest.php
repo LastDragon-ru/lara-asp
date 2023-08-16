@@ -304,10 +304,10 @@ class DirectiveTest extends TestCase {
                     ],
                 ]),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar A
                     scalar B
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

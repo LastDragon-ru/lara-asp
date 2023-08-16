@@ -19,7 +19,7 @@ class ResourceCollectionTest extends TestCase {
      *
      * @dataProvider dataProviderSchema
      *
-     * @param array<mixed> $json
+     * @param array<array-key, mixed> $json
      */
     public function testSchema(bool $expected, array $json): void {
         $schema     = new ResourceCollection(static::class);
@@ -41,7 +41,7 @@ class ResourceCollectionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderSchema(): array {
         return [

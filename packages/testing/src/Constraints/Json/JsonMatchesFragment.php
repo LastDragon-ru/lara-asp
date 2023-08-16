@@ -15,7 +15,7 @@ use function sprintf;
 
 class JsonMatchesFragment extends Constraint {
     /**
-     * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $json
+     * @param JsonSerializable|SplFileInfo|stdClass|array<array-key, mixed>|string|int|float|bool|null $json
      */
     public function __construct(
         protected string $path,

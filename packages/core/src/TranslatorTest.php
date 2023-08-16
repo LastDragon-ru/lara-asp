@@ -18,11 +18,11 @@ class TranslatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param array<string>|string $key
-     * @param TranslationsFactory  $translations
-     * @param array<mixed>         $replace
-     *
      * @dataProvider dataProviderChoice
+     *
+     * @param list<string>|string  $key
+     * @param TranslationsFactory  $translations
+     * @param array<string, mixed> $replace
      */
     public function testChoice(
         string $expected,
@@ -43,11 +43,11 @@ class TranslatorTest extends TestCase {
     }
 
     /**
-     * @param array<string>|string $key
-     * @param TranslationsFactory  $translations
-     * @param array<mixed>         $replace
-     *
      * @dataProvider dataProviderGet
+     *
+     * @param list<string>|string  $key
+     * @param TranslationsFactory  $translations
+     * @param array<string, mixed> $replace
      */
     public function testGet(
         string $expected,
@@ -70,7 +70,7 @@ class TranslatorTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, TranslationsFactory, array<string>|string, array<string,string>, ?string}>
+     * @return array<string,array{string, TranslationsFactory, list<string>|string, array<string,string>, ?string}>
      */
     public static function dataProviderGet(): array {
         return [
@@ -132,7 +132,7 @@ class TranslatorTest extends TestCase {
     }
 
     /**
-     * @return array<string,array{string,TranslationsFactory,array<string>|string,int,array<string,string>,?string}>
+     * @return array<string,array{string,TranslationsFactory,list<string>|string,int,array<string,string>,?string}>
      */
     public static function dataProviderChoice(): array {
         return [

@@ -130,7 +130,7 @@ class Operators extends BuilderOperators {
     ];
 
     public function __construct() {
-        /** @var array<string,array<class-string<BuilderOperator>|string>> $operators */
+        /** @var array<string, list<class-string<BuilderOperator>|string>> $operators */
         $operators = (array) config(Package::Name.'.search_by.operators');
 
         parent::__construct($operators);

@@ -11,8 +11,8 @@ use function sprintf;
 
 class RelationUnsupported extends SortByException {
     /**
-     * @param class-string<Relation<Model>>        $relationClass
-     * @param array<class-string<Relation<Model>>> $supported
+     * @param class-string<Relation<Model>>       $relationClass
+     * @param list<class-string<Relation<Model>>> $supported
      */
     public function __construct(
         protected string $relationName,
@@ -40,7 +40,7 @@ class RelationUnsupported extends SortByException {
     }
 
     /**
-     * @return array<class-string<Relation<Model>>>
+     * @return list<class-string<Relation<Model>>>
      */
     public function getSupported(): array {
         return $this->supported;

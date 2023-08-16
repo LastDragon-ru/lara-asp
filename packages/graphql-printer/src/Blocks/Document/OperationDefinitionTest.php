@@ -50,7 +50,7 @@ class OperationDefinitionTest extends TestCase {
 
     public function testStatistics(): void {
         $schema     = BuildSchema::build(
-            <<<'STRING'
+            <<<'GRAPHQL'
             type Query {
                 field(a: Int): A
             }
@@ -59,7 +59,7 @@ class OperationDefinitionTest extends TestCase {
                 a: String
                 b: Boolean
             }
-            STRING,
+            GRAPHQL,
         );
         $context    = new Context(new TestSettings(), null, $schema);
         $collector  = new Collector();
@@ -131,14 +131,14 @@ class OperationDefinitionTest extends TestCase {
 
         return [
             'without variables'               => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test
                 @a
                 {
                     b
                     a
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 0,
@@ -150,14 +150,14 @@ class OperationDefinitionTest extends TestCase {
                 null,
             ],
             'with variables (short)'          => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 mutation test($a: [String!] = ["aaaaaaaaaaaaaaaaaaaaaaaaaa"], $b: Int)
                 @a
                 {
                     b
                     a
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 0,
@@ -169,7 +169,7 @@ class OperationDefinitionTest extends TestCase {
                 null,
             ],
             'with variables (long)'           => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test(
                     $a: [String!] = [
                         "aaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -181,7 +181,7 @@ class OperationDefinitionTest extends TestCase {
                     b
                     a
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setLineLength(51),
@@ -194,14 +194,14 @@ class OperationDefinitionTest extends TestCase {
                 null,
             ],
             'normalized'                      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query($a: String, $b: Int)
                 @a
                 {
                     a
                     b
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setNormalizeFields(true)
@@ -215,7 +215,7 @@ class OperationDefinitionTest extends TestCase {
                 null,
             ],
             'with variables always multiline' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query(
                     $b: Int
                     $a: String
@@ -223,7 +223,7 @@ class OperationDefinitionTest extends TestCase {
                     a
                     b
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(false)
                     ->setAlwaysMultilineArguments(true),
@@ -236,12 +236,12 @@ class OperationDefinitionTest extends TestCase {
                 null,
             ],
             'indent'                          => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($b: Int, $a: String) {
                         a
                         b
                     }
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 0,
@@ -252,14 +252,14 @@ class OperationDefinitionTest extends TestCase {
                 null,
             ],
             'filter (no schema)'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($b: Int, $a: String)
                 @a
                 {
                     a
                     b
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static fn () => false)
@@ -285,21 +285,21 @@ class OperationDefinitionTest extends TestCase {
                 ),
                 Parser::typeReference('Query'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         test: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter: type'                    => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($a: String)
                 @a
                 {
                     a
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static function (string $type): bool {
@@ -312,7 +312,7 @@ class OperationDefinitionTest extends TestCase {
                 ),
                 Parser::typeReference('Query'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type Query {
                         a: A
                         b: Int
@@ -324,17 +324,17 @@ class OperationDefinitionTest extends TestCase {
                     }
 
                     directive @a(a: Int) on FIELD
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter: operation'               => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($a: String)
                 @a
                 {
                     a
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static function (string $type): bool {
@@ -347,7 +347,7 @@ class OperationDefinitionTest extends TestCase {
                 ),
                 null,
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type Query {
                         a: A
                         b: Int
@@ -359,7 +359,7 @@ class OperationDefinitionTest extends TestCase {
                     }
 
                     directive @a(a: Int) on FIELD
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

@@ -46,7 +46,7 @@ class DocumentTest extends TestCase {
         $context    = new Context(new TestSettings(), null, null);
         $collector  = new Collector();
         $definition = Parser::parse(
-            <<<'STRING'
+            <<<'GRAPHQL'
             type Query {
                 test: [Test]! @b
             }
@@ -58,7 +58,7 @@ class DocumentTest extends TestCase {
             extend type Test implements B & A @a {
                 a: String
             }
-            STRING,
+            GRAPHQL,
         );
         $block      = new Document($context, $definition);
         $content    = $block->serialize($collector, 0, 0);
@@ -108,7 +108,7 @@ class DocumentTest extends TestCase {
             ->setNormalizeUnions(false)
             ->setNormalizeArguments(false);
         $document = Parser::parse(
-            <<<'STRING'
+            <<<'GRAPHQL'
             type Query {
                 test: [Test]! @b
             }
@@ -140,12 +140,12 @@ class DocumentTest extends TestCase {
             directive @a on FIELD | FIELD_DEFINITION | OBJECT | INTERFACE
             directive @b on FIELD | FIELD_DEFINITION | OBJECT | INTERFACE
             directive @c on FIELD | FIELD_DEFINITION | OBJECT | INTERFACE
-            STRING,
+            GRAPHQL,
         );
 
         return [
             'schema / default'               => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Query {
                     test: [Test]!
                 }
@@ -198,7 +198,7 @@ class DocumentTest extends TestCase {
                     | FIELD_DEFINITION
                     | INTERFACE
                     | OBJECT
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -206,7 +206,7 @@ class DocumentTest extends TestCase {
                 null,
             ],
             'schema / normalized'            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @a
                 on
                     | FIELD
@@ -264,7 +264,7 @@ class DocumentTest extends TestCase {
 
                     d: Int
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setNormalizeSchema(true)
@@ -279,7 +279,7 @@ class DocumentTest extends TestCase {
                 null,
             ],
             'schema / indent'                => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Query {
                         test: [Test]!
                     }
@@ -332,7 +332,7 @@ class DocumentTest extends TestCase {
                         | FIELD_DEFINITION
                         | INTERFACE
                         | OBJECT
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 0,
@@ -340,7 +340,7 @@ class DocumentTest extends TestCase {
                 null,
             ],
             'schema / filter (no schema)'    => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Query {
                     test: [Test]!
                 }
@@ -389,7 +389,7 @@ class DocumentTest extends TestCase {
                     | FIELD_DEFINITION
                     | INTERFACE
                     | OBJECT
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static function (string $type): bool {
@@ -404,7 +404,7 @@ class DocumentTest extends TestCase {
                 null,
             ],
             'schema / filter'                => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Query {
                     test: [Test]!
                 }
@@ -447,7 +447,7 @@ class DocumentTest extends TestCase {
                     | FIELD_DEFINITION
                     | INTERFACE
                     | OBJECT
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static function (string $type): bool {
@@ -460,20 +460,20 @@ class DocumentTest extends TestCase {
                 0,
                 $document,
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar B
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'operation / default'            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($a: Int) {
                     test {
                         b
                         c
                     }
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineArguments(false),
                 0,
@@ -484,7 +484,7 @@ class DocumentTest extends TestCase {
                 BuildSchema::build($document),
             ],
             'operation / normalized'         => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($a: Int, $b: String)
                 @b
                 @a
@@ -497,7 +497,7 @@ class DocumentTest extends TestCase {
                         c
                     }
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineArguments(false)
                     ->setPrintDirectives(true)
@@ -511,14 +511,14 @@ class DocumentTest extends TestCase {
                 BuildSchema::build($document),
             ],
             'operation / indent'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($a: Int, $b: String) {
                         test {
                             b
                             c
                         }
                     }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineArguments(false)
                     ->setNormalizeFields(true)
@@ -531,7 +531,7 @@ class DocumentTest extends TestCase {
                 BuildSchema::build($document),
             ],
             'operation / filter (no schema)' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($b: String, $a: Int)
                 @a
                 {
@@ -542,7 +542,7 @@ class DocumentTest extends TestCase {
                         @a
                     }
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineArguments(false)
                     ->setPrintDirectives(true)
@@ -560,7 +560,7 @@ class DocumentTest extends TestCase {
                 null,
             ],
             'operation / filter'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 query test($b: String)
                 @a
                 {
@@ -571,7 +571,7 @@ class DocumentTest extends TestCase {
                         @a
                     }
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineArguments(false)
                     ->setPrintDirectives(true)

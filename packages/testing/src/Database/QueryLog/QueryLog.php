@@ -32,7 +32,7 @@ class QueryLog implements Countable {
     }
 
     /**
-     * @return array<array{query: string, bindings: array<mixed>, time: float|null}>
+     * @return array<array{query: string, bindings: array<array-key, mixed>, time: float|null}>
      */
     public function get(): array {
         return $this->getConnection()->getQueryLog();

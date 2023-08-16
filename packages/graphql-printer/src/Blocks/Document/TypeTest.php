@@ -135,9 +135,9 @@ class TypeTest extends TestCase {
                 0,
                 new NonNull(new ListOfType($type)),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar Test
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'ast: object'             => [
@@ -181,9 +181,9 @@ class TypeTest extends TestCase {
                 0,
                 Parser::typeReference('[Test]!'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar Test
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

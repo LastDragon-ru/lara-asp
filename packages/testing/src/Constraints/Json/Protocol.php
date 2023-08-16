@@ -48,9 +48,7 @@ class Protocol {
         // Build
         $scheme = static::Scheme;
         $query  = http_build_query($parameters, encoding_type: PHP_QUERY_RFC3986);
-        $path   = implode('/', array_map(static function (string $segment): string {
-            return rawurlencode($segment);
-        }, explode('/', ltrim($path, '/'))));
+        $path   = implode('/', array_map(rawurlencode(...), explode('/', ltrim($path, '/'))));
         $uri    = new Uri((array) parse_url("{$scheme}://{$host}/{$path}?{$query}"));
 
         // Return
@@ -68,9 +66,7 @@ class Protocol {
 
         // Decode path
         $path = (string) $uri->path();
-        $path = implode('/', array_map(static function (string $segment): string {
-            return rawurldecode($segment);
-        }, explode('/', $path)));
+        $path = implode('/', array_map(rawurldecode(...), explode('/', $path)));
 
         if ($uri->host() === self::HostWindows) {
             // For Windows it can be `/C:/path`, so we need to remove the slash

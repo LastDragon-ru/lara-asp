@@ -23,12 +23,12 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     public const Name = 'SortBy';
 
     public static function definition(): string {
-        return <<<'GraphQL'
+        return <<<'GRAPHQL'
             """
             Use Input as Sort Conditions for the current Builder.
             """
             directive @sortBy on ARGUMENT_DEFINITION
-        GraphQL;
+        GRAPHQL;
     }
 
     // <editor-fold desc="Getters / Setters">

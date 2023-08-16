@@ -9,11 +9,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *
  * @var array{
  *      search_by: array{
- *          operators: array<string, array<string|class-string<Operator>>>
+ *          operators: array<string, list<string|class-string<Operator>>>,
  *      },
  *      sort_by: array{
- *          operators: array<string, array<string|class-string<Operator>>>
- *      }
+ *          operators: array<string, list<string|class-string<Operator>>>,
+ *      },
  *      } $settings
  */
 $settings = [

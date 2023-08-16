@@ -60,7 +60,7 @@ class ResourceTest extends TestCase {
     /**
      * @dataProvider dataProviderMapResourceData
      *
-     * @param array<mixed>|Exception $expected
+     * @param array<array-key, mixed>|Exception $expected
      */
     public function testMapResourceData(array|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
@@ -147,7 +147,7 @@ class ResourceTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderConstruct(): array {
         return [
@@ -169,7 +169,7 @@ class ResourceTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderCollection(): array {
         return [
@@ -208,7 +208,7 @@ class ResourceTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderMapResourceData(): array {
         $date   = new DateTimeImmutable();
@@ -241,7 +241,7 @@ class ResourceTest extends TestCase {
                     'array'            => [1, 2, 3, $date],
                     'SafeResource'     => new class() implements SafeResource, JsonSerializable {
                         /**
-                         * @return array<mixed>
+                         * @return array<array-key, mixed>
                          */
                         public function jsonSerialize(): array {
                             return [
@@ -262,7 +262,7 @@ class ResourceTest extends TestCase {
                         }
 
                         /**
-                         * @return array<mixed>
+                         * @return array<array-key, mixed>
                          */
                         public function jsonSerialize(): array {
                             return [
@@ -299,11 +299,11 @@ class ResourceTest extends TestCase {
                 ],
                 new
                 /**
-                 * @property DateTimeInterface             $date
-                 * @property DateTimeInterface             $datetime
-                 * @property DateTimeInterface             $date_no_cast
-                 * @property array<DateTimeInterface>      $nested
-                 * @property Collection<DateTimeInterface> $collection
+                 * @property DateTimeInterface                        $date
+                 * @property DateTimeInterface                        $datetime
+                 * @property DateTimeInterface                        $date_no_cast
+                 * @property array<array-key, DateTimeInterface>      $nested
+                 * @property Collection<array-key, DateTimeInterface> $collection
                  */
                 class($date, $format) extends Model {
                     public function __construct(DateTimeInterface $date, string $format) {

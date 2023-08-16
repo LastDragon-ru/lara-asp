@@ -75,11 +75,11 @@ class InputObjectTypeExtensionTest extends TestCase {
 
         return [
             'directives'          => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend input Test
                 @b
                 @a
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -89,11 +89,11 @@ class InputObjectTypeExtensionTest extends TestCase {
                 null,
             ],
             'fields'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend input Test {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(false),
                 0,
@@ -104,13 +104,13 @@ class InputObjectTypeExtensionTest extends TestCase {
                 null,
             ],
             'fields + directives' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend input Test
                 @a
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -120,7 +120,7 @@ class InputObjectTypeExtensionTest extends TestCase {
                 null,
             ],
             'indent'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend input Test
                     @a
                     {
@@ -129,7 +129,7 @@ class InputObjectTypeExtensionTest extends TestCase {
                         """
                         a: String
                     }
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 120,
@@ -150,14 +150,14 @@ class InputObjectTypeExtensionTest extends TestCase {
                 null,
             ],
             'filter (no schema)'  => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend input Test
                 @a
                 {
                     a: String
                     b: B
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static function (string $type): bool {
@@ -174,13 +174,13 @@ class InputObjectTypeExtensionTest extends TestCase {
                 null,
             ],
             'filter'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend input Test
                 @a
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static function (string $type): bool {
@@ -195,9 +195,9 @@ class InputObjectTypeExtensionTest extends TestCase {
                     'extend input Test @a @b { a: String, b: B }',
                 ),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar B
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

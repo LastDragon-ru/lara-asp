@@ -26,7 +26,7 @@ class Direction implements TypeDefinition {
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
         return Parser::enumTypeDefinition(
-            <<<GraphQL
+            <<<GRAPHQL
             """
             Sort direction.
             """
@@ -34,7 +34,7 @@ class Direction implements TypeDefinition {
                 asc
                 desc
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 }

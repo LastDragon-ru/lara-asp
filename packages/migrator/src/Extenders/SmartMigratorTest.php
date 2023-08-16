@@ -19,6 +19,7 @@ use function get_class;
 use function implode;
 use function json_decode;
 use function json_encode;
+use function rtrim;
 use function str_replace;
 use function trim;
 
@@ -108,6 +109,6 @@ class SmartMigratorTest extends TestCase {
     }
 
     private function prepare(string $content): string {
-        return trim(implode("\n", array_map('rtrim', explode("\n", str_replace("\r\n", "\n", $content)))));
+        return trim(implode("\n", array_map(rtrim(...), explode("\n", str_replace("\r\n", "\n", $content)))));
     }
 }

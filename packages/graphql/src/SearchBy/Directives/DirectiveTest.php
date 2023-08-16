@@ -178,8 +178,8 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderHandleBuilder
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param Closure(static): object                                $builderFactory
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param Closure(static): object                                           $builderFactory
      */
     public function testDirective(
         array|Exception $expected,
@@ -201,7 +201,7 @@ class DirectiveTest extends TestCase {
 
         $this
             ->useGraphQLSchema(
-                <<<GraphQL
+                <<<GRAPHQL
                 type Query {
                     test(input: Test @searchBy): [TestObject!]!
                     @all(model: {$model})
@@ -215,16 +215,16 @@ class DirectiveTest extends TestCase {
                 type TestObject {
                     id: String!
                 }
-                GraphQL,
+                GRAPHQL,
             )
             ->graphQL(
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 query test($input: SearchByConditionTest) {
                     test(input: $input) {
                         id
                     }
                 }
-                GraphQL,
+                GRAPHQL,
                 [
                     'input' => $value,
                 ],
@@ -243,8 +243,8 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderHandleBuilder
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception         $expected
-     * @param Closure(static): (QueryBuilder|EloquentBuilder<EloquentModel>) $builderFactory
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param Closure(static): (QueryBuilder|EloquentBuilder<EloquentModel>)    $builderFactory
      */
     public function testHandleBuilder(
         array|Exception $expected,
@@ -255,7 +255,7 @@ class DirectiveTest extends TestCase {
         $directive = $this->getExposeBuilderDirective($builder);
 
         $this->useGraphQLSchema(
-            <<<GraphQL
+            <<<GRAPHQL
             type Query {
                 test(input: Test @searchBy): [String!]! {$directive::getName()}
             }
@@ -264,7 +264,7 @@ class DirectiveTest extends TestCase {
                 a: Int!
                 b: String @rename(attribute: "renamed")
             }
-            GraphQL,
+            GRAPHQL,
         );
 
         $type = match (true) {
@@ -272,11 +272,11 @@ class DirectiveTest extends TestCase {
             default                          => 'SearchByConditionTest',
         };
         $result = $this->graphQL(
-            <<<GraphQL
+            <<<GRAPHQL
             query test(\$query: {$type}) {
                 test(input: \$query)
             }
-            GraphQL,
+            GRAPHQL,
             [
                 'query' => $value,
             ],
@@ -316,7 +316,7 @@ class DirectiveTest extends TestCase {
         }
 
         $this->useGraphQLSchema(
-            <<<GraphQL
+            <<<GRAPHQL
             type Query {
                 test(search: String @search, input: Test @searchBy): [String!]! {$directive::getName()}
             }
@@ -326,15 +326,15 @@ class DirectiveTest extends TestCase {
                 b: String @rename(attribute: "renamed")
                 c: Test
             }
-            GraphQL,
+            GRAPHQL,
         );
 
         $result = $this->graphQL(
-            <<<'GraphQL'
+            <<<'GRAPHQL'
             query test($query: SearchByScoutConditionTest) {
                 test(search: "*", input: $query)
             }
-            GraphQL,
+            GRAPHQL,
             [
                 'query' => $value,
             ],
@@ -424,9 +424,9 @@ class DirectiveTest extends TestCase {
                         }
 
                         public static function definition(): string {
-                            return <<<'GraphQL'
+                            return <<<'GRAPHQL'
                                 directive @customComplexOperator(value: String) on INPUT_FIELD_DEFINITION
-                            GraphQL;
+                            GRAPHQL;
                         }
 
                         public function call(
@@ -455,14 +455,14 @@ class DirectiveTest extends TestCase {
                             TypeSource $source,
                         ): TypeDefinitionNode|Type|null {
                             return Parser::inputObjectTypeDefinition(
-                                <<<DEF
+                                <<<GRAPHQL
                                 """
                                 Custom operator
                                 """
                                 input {$name} {
                                     custom: {$source->getTypeName()}
                                 }
-                                DEF,
+                                GRAPHQL,
                             );
                         }
                     };
@@ -474,7 +474,7 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderHandleBuilder(): array {
         return (new MergeDataProvider([
@@ -655,7 +655,7 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderHandleScoutBuilder(): array {
         return (new CompositeDataProvider(

@@ -103,7 +103,7 @@ class FragmentSpreadTest extends TestCase {
                 Parser::fragment('... Test @a'),
                 Parser::typeReference('A'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         a: Int
                     }
@@ -111,7 +111,7 @@ class FragmentSpreadTest extends TestCase {
                     type B {
                         b: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'no schema' => [
@@ -231,11 +231,11 @@ class FragmentSpreadTest extends TestCase {
                 ),
                 null,
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type B {
                         b: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter (no schema, type)'    => [
@@ -265,11 +265,11 @@ class FragmentSpreadTest extends TestCase {
                 ),
                 Parser::typeReference('A'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         a: Int
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

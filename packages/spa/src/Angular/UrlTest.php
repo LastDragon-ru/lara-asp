@@ -17,7 +17,7 @@ class UrlTest extends TestCase {
     /**
      * @dataProvider dataProviderConstruct
      *
-     * @param array<mixed> $expected
+     * @param array<array-key, mixed> $expected
      */
     public function testConstruct(array $expected, string $template): void {
         $url = new Url($template);
@@ -29,7 +29,7 @@ class UrlTest extends TestCase {
     /**
      * @dataProvider dataProviderBuild
      *
-     * @param array<mixed> $parameters
+     * @param array<array-key, mixed> $parameters
      */
     public function testBuild(string|Exception $expected, string $template, array $parameters): void {
         if ($expected instanceof Exception) {
@@ -43,7 +43,7 @@ class UrlTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderConstruct(): array {
         return [
@@ -55,7 +55,7 @@ class UrlTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderBuild(): array {
         return [

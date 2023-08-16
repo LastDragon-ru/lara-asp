@@ -39,7 +39,7 @@ interface Iterator extends IteratorAggregate, Countable {
     /**
      * Adds the closure that will be called after non-empty chunk processed.
      *
-     * @param Closure(Collection<int,TItem>): void|null $closure `null` removes all observers
+     * @param Closure(Collection<array-key,TItem>): void|null $closure `null` removes all observers
      */
     public function onAfterChunk(?Closure $closure): static;
 }

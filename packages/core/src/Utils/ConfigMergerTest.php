@@ -18,9 +18,9 @@ class ConfigMergerTest extends TestCase {
     /**
      * @dataProvider dataProviderMerge
      *
-     * @param array<mixed>|Exception $expected
-     * @param array<mixed>           $target
-     * @param array<mixed>           $configs
+     * @param array<array-key, mixed>|Exception $expected
+     * @param array<array-key, mixed>           $target
+     * @param array<array-key, mixed>           $configs
      */
     public function testMerge(
         array|Exception $expected,
@@ -41,7 +41,7 @@ class ConfigMergerTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderMerge(): array {
         return [

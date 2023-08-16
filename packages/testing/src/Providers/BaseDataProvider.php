@@ -6,9 +6,9 @@ use function array_key_first;
 
 abstract class BaseDataProvider implements DataProvider {
     /**
-     * @param array<string|int,array<mixed>> $items
+     * @param array<array-key, array<array-key, mixed>> $items
      *
-     * @return array<string|int,array<mixed>>
+     * @return array<array-key, array<array-key, mixed>>
      */
     protected function replaceExpectedValues(array $items, bool $raw): array {
         return $raw === false
@@ -17,9 +17,9 @@ abstract class BaseDataProvider implements DataProvider {
     }
 
     /**
-     * @param array<string|int,array<mixed>> $items
+     * @param array<array-key, array<array-key, mixed>> $items
      *
-     * @return array<string|int,array<mixed>>
+     * @return array<array-key, array<array-key, mixed>>
      */
     private function processExpectedValues(array $items): array {
         foreach ($items as $name => $args) {

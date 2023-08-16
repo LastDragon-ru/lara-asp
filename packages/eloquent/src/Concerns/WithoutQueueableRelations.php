@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait WithoutQueueableRelations {
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getQueueableRelations(): array {
         // Usually, there are no reasons to save relations while serialization

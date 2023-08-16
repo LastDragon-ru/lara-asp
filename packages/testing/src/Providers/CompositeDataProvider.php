@@ -37,7 +37,7 @@ use function reset;
  */
 class CompositeDataProvider extends BaseDataProvider {
     /**
-     * @var array<DataProvider>
+     * @var array<array-key, DataProvider>
      */
     private array $providers;
 
@@ -48,7 +48,7 @@ class CompositeDataProvider extends BaseDataProvider {
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     /**
-     * @return array<DataProvider>
+     * @return array<array-key, DataProvider>
      */
     protected function getProviders(): array {
         return $this->providers;

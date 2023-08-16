@@ -224,7 +224,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * @param array<DirectiveNode> $directives
+     * @param list<DirectiveNode> $directives
      */
     public function getOperatorField(
         Operator $operator,
@@ -254,24 +254,22 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $directives  = implode(
             "\n",
             array_map(
-                static function (DirectiveNode $node): string {
-                    return Printer::doPrint($node);
-                },
+                Printer::doPrint(...),
                 $directives,
             ),
         );
         $description = $description ?: $operator->getFieldDescription();
         $description = BlockString::print($description);
 
-        return <<<DEF
+        return <<<GRAPHQL
             {$description}
             {$field}: {$type}
             {$directives}
-        DEF;
+        GRAPHQL;
     }
 
     /**
-     * @param array<Operator> $operators
+     * @param list<Operator> $operators
      */
     public function getOperatorsFields(array $operators, TypeSource $source): string {
         return implode(
@@ -291,14 +289,14 @@ class Manipulator extends AstManipulator implements TypeProvider {
     protected function addFakeTypeDefinition(string $name): void {
         $this->addTypeDefinition(
             Parser::inputObjectTypeDefinition(
-                <<<DEF
+                <<<GRAPHQL
                 """
                 Fake type to prevent circular dependency infinite loop.
                 """
                 input {$name} {
                     fake: Boolean! = true
                 }
-                DEF,
+                GRAPHQL,
             ),
         );
     }

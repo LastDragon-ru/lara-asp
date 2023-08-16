@@ -42,7 +42,7 @@ class XmlMatchesSchemaTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderEvaluate(): array {
         return [

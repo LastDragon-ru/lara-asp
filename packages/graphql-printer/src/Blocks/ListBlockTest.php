@@ -78,7 +78,7 @@ class ListBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array<mixed>>
+     * @return array<string,array<array-key, mixed>>
      */
     public static function dataProviderSerialize(): array {
         $settings = new TestSettings();
@@ -821,8 +821,8 @@ class ListBlockTest__NamedBlock extends PropertyBlock {
  */
 class ListBlockTest__StatisticsBlock extends Block {
     /**
-     * @param array<string> $types
-     * @param array<string> $directives
+     * @param array<array-key, string> $types
+     * @param array<array-key, string> $directives
      */
     public function __construct(
         protected array $types,

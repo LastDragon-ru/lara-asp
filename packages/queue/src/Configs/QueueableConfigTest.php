@@ -46,9 +46,9 @@ class QueueableConfigTest extends TestCase {
     /**
      * @dataProvider dataProviderConfig
      *
-     * @param array<mixed>|Exception $expected
-     * @param array<mixed>           $appConfig
-     * @param array<string,mixed>    $queueableConfig
+     * @param array<array-key, mixed>|Exception $expected
+     * @param array<array-key, mixed>           $appConfig
+     * @param array<string, mixed>              $queueableConfig
      */
     public function testConfig(array|Exception $expected, array $appConfig, array $queueableConfig): void {
         $dateFactory  = new DateFactory();
@@ -106,7 +106,7 @@ class QueueableConfigTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderGetQueueClass(): array {
         return [
@@ -121,7 +121,7 @@ class QueueableConfigTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderConfig(): array {
         return [

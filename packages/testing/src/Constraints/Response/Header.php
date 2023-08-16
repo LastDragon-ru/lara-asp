@@ -10,7 +10,7 @@ use function reset;
 
 class Header extends Response {
     /**
-     * @param array<Constraint> $constraints
+     * @param array<array-key, Constraint> $constraints
      */
     public function __construct(
         protected string $name,

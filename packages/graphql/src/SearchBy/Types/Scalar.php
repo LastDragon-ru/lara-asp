@@ -47,14 +47,14 @@ class Scalar implements TypeDefinition {
         $content    = $manipulator->getOperatorsFields($operators, $source);
         $typeName   = $manipulator->getTypeFullName($source->getType());
         $definition = Parser::inputObjectTypeDefinition(
-            <<<DEF
+            <<<GRAPHQL
             """
             Available operators for `{$typeName}` (only one operator allowed at a time).
             """
             input {$name} {
                 {$content}
             }
-            DEF,
+            GRAPHQL,
         );
 
         // Return

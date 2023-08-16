@@ -79,7 +79,7 @@ class DatabaseQueryComparatorTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderAccepts(): array {
         return [
@@ -110,7 +110,7 @@ class DatabaseQueryComparatorTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderAssertEquals(): array {
         $a = new Query(

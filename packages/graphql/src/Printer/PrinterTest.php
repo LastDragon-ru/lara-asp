@@ -105,7 +105,7 @@ class PrinterTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintSchema(): array {
         $schemaFactory    = self::getSchemaFactory();
@@ -491,7 +491,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderExportType(): array {
         $schemaFactory = self::getSchemaFactory();
@@ -594,7 +594,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintType(): array {
         $schemaFactory = self::getSchemaFactory();
@@ -602,10 +602,10 @@ class PrinterTest extends TestCase {
         return [
             'UnionType'       => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'CodeType',
@@ -636,7 +636,7 @@ class PrinterTest extends TestCase {
             ],
             'InputObjectType' => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                     """
                     Description
                     """
@@ -645,7 +645,7 @@ class PrinterTest extends TestCase {
                     {
                         a: Boolean
                     }
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'Boolean',
@@ -673,14 +673,14 @@ class PrinterTest extends TestCase {
             ],
             'InterfaceType'   => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                     """
                     Description
                     """
                     interface CodeInterface {
                         a: Boolean!
                     }
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'Boolean',
@@ -712,7 +712,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintNode(): array {
         $schemaFactory = self::getSchemaFactory();
@@ -720,10 +720,10 @@ class PrinterTest extends TestCase {
         return [
             'UnionTypeDefinitionNode'   => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'CodeType',
@@ -744,7 +744,7 @@ class PrinterTest extends TestCase {
             ],
             'InputObjectTypeDefinition' => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                     """
                     Description
                     """
@@ -753,7 +753,7 @@ class PrinterTest extends TestCase {
                     {
                         a: Boolean
                     }
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'Boolean',
@@ -776,7 +776,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderExportNode(): array {
         $schemaFactory = self::getSchemaFactory();
@@ -898,7 +898,7 @@ class PrinterTest extends TestCase {
                 'codeDirective',
                 (new class() extends BaseDirective {
                     public static function definition(): string {
-                        return <<<'GraphQL'
+                        return <<<'GRAPHQL'
                     directive @codeDirective(
                         enum: CodeDirectiveEnum
                         input: CodeDirectiveInput
@@ -924,7 +924,7 @@ class PrinterTest extends TestCase {
 
                     scalar CodeDirectiveScalarCustomClass
                     @scalar(class: "GraphQL\\Type\\Definition\\StringType")
-                    GraphQL;
+                    GRAPHQL;
                     }
                 })::class,
             );

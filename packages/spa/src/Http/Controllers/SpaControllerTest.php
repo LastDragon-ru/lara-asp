@@ -43,8 +43,8 @@ class SpaControllerTest extends TestCase {
     /**
      * @dataProvider dataProviderSettings
      *
-     * @param array<mixed> $headers
-     * @param array<mixed> $settings
+     * @param array<array-key, mixed> $headers
+     * @param array<array-key, mixed> $settings
      */
     public function testSettings(
         Response $expected,
@@ -68,7 +68,7 @@ class SpaControllerTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderSettings(): array {
         return (new CompositeDataProvider(

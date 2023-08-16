@@ -17,8 +17,8 @@ use SplFileInfo;
 
 class GraphQLExpected {
     /**
-     * @param array<string>|null $usedTypes
-     * @param array<string>|null $usedDirectives
+     * @param list<string>|null $usedTypes
+     * @param list<string>|null $usedDirectives
      */
     public function __construct(
         protected Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|SplFileInfo|string $printable,
@@ -34,14 +34,14 @@ class GraphQLExpected {
     }
 
     /**
-     * @return array<string>|null
+     * @return list<string>|null
      */
     public function getUsedTypes(): ?array {
         return $this->usedTypes;
     }
 
     /**
-     * @param array<string>|null $usedTypes
+     * @param list<string>|null $usedTypes
      */
     public function setUsedTypes(?array $usedTypes): static {
         $this->usedTypes = $usedTypes;
@@ -50,14 +50,14 @@ class GraphQLExpected {
     }
 
     /**
-     * @return array<string>|null
+     * @return list<string>|null
      */
     public function getUsedDirectives(): ?array {
         return $this->usedDirectives;
     }
 
     /**
-     * @param array<string>|null $usedDirectives
+     * @param list<string>|null $usedDirectives
      */
     public function setUsedDirectives(?array $usedDirectives): static {
         $this->usedDirectives = $usedDirectives;

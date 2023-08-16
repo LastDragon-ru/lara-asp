@@ -46,11 +46,11 @@ class InterfaceTypeExtensionTest extends TestCase {
         $context    = new Context(new TestSettings(), null, null);
         $collector  = new Collector();
         $definition = Parser::interfaceTypeExtension(
-            <<<'STRING'
+            <<<'GRAPHQL'
             extend interface Test implements B & A @a {
                 a: String
             }
-            STRING,
+            GRAPHQL,
         );
         $block      = new InterfaceTypeExtension($context, $definition);
         $content    = $block->serialize($collector, 0, 0);
@@ -82,12 +82,12 @@ class InterfaceTypeExtensionTest extends TestCase {
 
         return [
             'directives'                                  => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend interface Test
                 @a
                 @b
                 @c
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 0,
@@ -98,7 +98,7 @@ class InterfaceTypeExtensionTest extends TestCase {
                 null,
             ],
             'fields'                                      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend interface Test {
                     """
                     Description
@@ -107,27 +107,27 @@ class InterfaceTypeExtensionTest extends TestCase {
 
                     b: B
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setNormalizeFields(true),
                 0,
                 0,
                 Parser::interfaceTypeExtension(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     extend interface Test {
                         b: B
 
                         "Description"
                         a(a: Int): A
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 null,
             ],
             'implements'                                  => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend interface Test implements A & B
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setNormalizeInterfaces(true),
                 0,
@@ -138,7 +138,7 @@ class InterfaceTypeExtensionTest extends TestCase {
                 null,
             ],
             'implements(multiline) + directives + fields' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend interface Test
                 implements
                     & B
@@ -147,47 +147,47 @@ class InterfaceTypeExtensionTest extends TestCase {
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 0,
                 120,
                 Parser::interfaceTypeExtension(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     extend interface Test implements B & A @a {
                         a: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 null,
             ],
             'indent'                                      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend interface Test implements B & A
                     @a
                     {
                         a: String
                     }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 1,
                 0,
                 Parser::interfaceTypeExtension(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     extend interface Test implements B & A @a {
                         a: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 null,
             ],
             'implements always multiline'                 => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend interface Test
                 implements
                     & B
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineInterfaces(true),
                 0,
@@ -209,14 +209,14 @@ class InterfaceTypeExtensionTest extends TestCase {
                 null,
             ],
             'filter (no schema)'                          => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend interface Test implements B & A
                 @a
                 {
                     a: A
                     b: [B!]
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'B';
@@ -227,23 +227,23 @@ class InterfaceTypeExtensionTest extends TestCase {
                 0,
                 0,
                 Parser::interfaceTypeExtension(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     extend interface Test implements B & A @a @b {
                         a: A
                         b: [B!]
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 null,
             ],
             'filter'                                      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend interface Test implements A
                 @a
                 {
                     a: A
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'B';
@@ -254,18 +254,18 @@ class InterfaceTypeExtensionTest extends TestCase {
                 0,
                 0,
                 Parser::interfaceTypeExtension(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     extend interface Test implements B & A @a @b {
                         a: A
                         b: [B!]
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar A
                     scalar B
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

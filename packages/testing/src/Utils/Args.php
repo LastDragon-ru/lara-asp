@@ -56,9 +56,11 @@ class Args {
     }
 
     /**
-     * @param JsonSerializable|SplFileInfo|stdClass|array<mixed>|string|int|float|bool|null $json
+     * @param JsonSerializable|SplFileInfo|stdClass|array<array-key, mixed>|string|int|float|bool|null $json
      *
-     * @return stdClass|array<mixed>|string|int|float|bool|null
+     * @return ($associative is true
+     *      ? array<array-key, mixed>|string|int|float|bool|null
+     *      : stdClass|array<array-key, mixed>|string|int|float|bool|null)
      */
     public static function getJson(
         JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $json,

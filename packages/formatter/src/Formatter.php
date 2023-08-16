@@ -173,12 +173,12 @@ class Formatter {
     private IntlTimeZone|DateTimeZone|string|null $timezone = null;
 
     /**
-     * @var array<IntlDateFormatter>
+     * @var array<string, IntlDateFormatter>
      */
     private array $dateFormatters = [];
 
     /**
-     * @var array<NumberFormatter>
+     * @var array<string, NumberFormatter>
      */
     private array $numbersFormatters = [];
 
@@ -406,7 +406,7 @@ class Formatter {
     }
 
     /**
-     * @param array<string>|string $key
+     * @param list<string>|string  $key
      * @param array<string, mixed> $replace
      */
     protected function getTranslation(array|string $key, array $replace = []): string {

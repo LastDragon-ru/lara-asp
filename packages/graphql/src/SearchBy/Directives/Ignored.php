@@ -7,7 +7,7 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 class Ignored implements Directive, IgnoredContract {
     public static function definition(): string {
-        return <<<'GraphQL'
+        return <<<'GRAPHQL'
             """
             Marks that field should be excluded from search.
             """
@@ -18,6 +18,6 @@ class Ignored implements Directive, IgnoredContract {
                 | INPUT_OBJECT
                 | ENUM
                 | SCALAR
-        GraphQL;
+        GRAPHQL;
     }
 }

@@ -24,7 +24,7 @@ class ValidationErrorResponse extends Response {
     use WithTestData;
 
     /**
-     * @param array<string,array<string>|string|null>|null $errors
+     * @param array<string,array<array-key, string>|string|null>|null $errors
      */
     public function __construct(array $errors = null) {
         parent::__construct(
@@ -40,9 +40,9 @@ class ValidationErrorResponse extends Response {
     }
 
     /**
-     * @param array<string,array<string>|string|null> $errors
+     * @param array<string,array<array-key, string>|string|null> $errors
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     protected function getErrorsSchema(array $errors): array {
         $properties = [];

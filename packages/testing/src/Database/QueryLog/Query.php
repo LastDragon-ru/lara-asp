@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Database\QueryLog;
 
 class Query {
     /**
-     * @param array<mixed> $bindings
+     * @param array<array-key, mixed> $bindings
      */
     public function __construct(
         protected string $query,
@@ -18,7 +18,7 @@ class Query {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public function getBindings(): array {
         return $this->bindings;

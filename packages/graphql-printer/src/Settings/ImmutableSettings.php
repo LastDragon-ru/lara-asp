@@ -8,30 +8,30 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
 
 abstract class ImmutableSettings implements Settings {
-    protected string           $space;
-    protected string           $indent;
-    protected string           $fileEnd;
-    protected string           $lineEnd;
-    protected int              $lineLength;
-    protected bool             $printDirectives;
-    protected bool             $printDirectiveDefinitions;
-    protected bool             $printUnusedDefinitions;
-    protected bool             $normalizeSchema;
-    protected bool             $normalizeUnions;
-    protected bool             $normalizeEnums;
-    protected bool             $normalizeInterfaces;
-    protected bool             $normalizeFields;
-    protected bool             $normalizeArguments;
-    protected bool             $normalizeDescription;
-    protected bool             $normalizeDirectiveLocations;
-    protected bool             $alwaysMultilineUnions;
-    protected bool             $alwaysMultilineArguments;
-    protected bool             $alwaysMultilineInterfaces;
-    protected bool             $alwaysMultilineDirectiveLocations;
-    protected ?TypeFilter      $typeFilter;
-    protected ?TypeFilter      $typeDefinitionFilter;
-    protected ?DirectiveFilter $directiveFilter;
-    protected ?DirectiveFilter $directiveDefinitionFilter;
+    protected string           $space                             = ' ';
+    protected string           $indent                            = '    ';
+    protected string           $fileEnd                           = "\n";
+    protected string           $lineEnd                           = "\n";
+    protected int              $lineLength                        = 80;
+    protected bool             $printDirectives                   = true;
+    protected bool             $printDirectiveDefinitions         = true;
+    protected bool             $printUnusedDefinitions            = false;
+    protected bool             $normalizeSchema                   = true;
+    protected bool             $normalizeUnions                   = true;
+    protected bool             $normalizeEnums                    = true;
+    protected bool             $normalizeInterfaces               = true;
+    protected bool             $normalizeFields                   = true;
+    protected bool             $normalizeArguments                = true;
+    protected bool             $normalizeDescription              = true;
+    protected bool             $normalizeDirectiveLocations       = true;
+    protected bool             $alwaysMultilineUnions             = true;
+    protected bool             $alwaysMultilineArguments          = true;
+    protected bool             $alwaysMultilineInterfaces         = true;
+    protected bool             $alwaysMultilineDirectiveLocations = true;
+    protected ?TypeFilter      $typeFilter                        = null;
+    protected ?TypeFilter      $typeDefinitionFilter              = null;
+    protected ?DirectiveFilter $directiveFilter                   = null;
+    protected ?DirectiveFilter $directiveDefinitionFilter         = null;
 
     public function __construct() {
         // empty

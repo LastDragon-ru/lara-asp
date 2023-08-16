@@ -29,6 +29,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
 use function array_merge;
 use function array_unique;
+use function array_values;
 
 use const SORT_REGULAR;
 
@@ -59,12 +60,14 @@ class Clause extends InputObject {
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
     ): array {
-        return array_unique(
-            array_merge(
-                parent::getOperators($manipulator, $source),
-                $manipulator->getTypeOperators($this->getScope(), Operators::Extra),
+        return array_values(
+            array_unique(
+                array_merge(
+                    parent::getOperators($manipulator, $source),
+                    $manipulator->getTypeOperators($this->getScope(), Operators::Extra),
+                ),
+                SORT_REGULAR,
             ),
-            SORT_REGULAR,
         );
     }
 

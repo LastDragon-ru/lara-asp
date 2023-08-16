@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\Queue\CronableRegistrator;
 use LogicException;
 
 /**
- * @property array<class-string<Cronable>> $schedule
+ * @property list<class-string<Cronable>> $schedule
  * @mixin Kernel
  */
 trait ConsoleKernelWithSchedule {

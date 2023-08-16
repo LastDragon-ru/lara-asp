@@ -9,6 +9,8 @@ use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Assert;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 /**
  * @mixin Assert
  */
@@ -16,8 +18,8 @@ trait DatabaseAssertions {
     /**
      * Asserts that SQL Query equals SQL Query.
      *
-     * @param Query|QueryBuilder|EloquentBuilder<Model>|array{query: string, bindings: array<mixed>}|string $expected
-     * @param Query|QueryBuilder|EloquentBuilder<Model>|array{query: string, bindings: array<mixed>}|string $actual
+     * @param Query|QueryBuilder|EloquentBuilder<Model>|array{query: string, bindings: array<array-key, mixed>}|string $expected
+     * @param Query|QueryBuilder|EloquentBuilder<Model>|array{query: string, bindings: array<array-key, mixed>}|string $actual
      */
     public static function assertDatabaseQueryEquals(
         Query|QueryBuilder|EloquentBuilder|array|string $expected,

@@ -51,7 +51,7 @@ class Dispatcher implements Subject {
     }
 
     /**
-     * @return array<Closure(TContext):void>
+     * @return list<Closure(TContext):void>
      */
     public function getObservers(): array {
         return array_values(iterator_to_array($this->observers));

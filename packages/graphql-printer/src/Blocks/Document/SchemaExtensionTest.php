@@ -78,10 +78,10 @@ class SchemaExtensionTest extends TestCase {
 
         return [
             'without fields'     => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend schema
                 @a
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -91,13 +91,13 @@ class SchemaExtensionTest extends TestCase {
                 null,
             ],
             'with fields'        => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend schema
                 @a
                 {
                     query: Query
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -107,11 +107,11 @@ class SchemaExtensionTest extends TestCase {
                 null,
             ],
             'indent'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend schema {
                         query: Query
                     }
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 0,
@@ -121,14 +121,14 @@ class SchemaExtensionTest extends TestCase {
                 null,
             ],
             'filter (no schema)' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend schema
                 @a
                 {
                     query: Query
                     mutation: Mutation
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'Mutation';
@@ -144,13 +144,13 @@ class SchemaExtensionTest extends TestCase {
                 null,
             ],
             'filter'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend schema
                 @a
                 {
                     query: Query
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'Mutation';
@@ -164,9 +164,9 @@ class SchemaExtensionTest extends TestCase {
                     'extend schema @a @b { query: Query, mutation: Mutation }',
                 ),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar A
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

@@ -9,7 +9,7 @@ use function sprintf;
 
 class ConditionTooManyProperties extends ClientException {
     /**
-     * @param array<string> $properties
+     * @param list<string> $properties
      */
     public function __construct(
         protected array $properties,
@@ -22,7 +22,7 @@ class ConditionTooManyProperties extends ClientException {
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getProperties(): array {
         return $this->properties;

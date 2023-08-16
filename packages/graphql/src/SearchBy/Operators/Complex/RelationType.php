@@ -37,7 +37,7 @@ class RelationType implements TypeDefinition {
         $where = $manipulator->getType(Condition::class, $source);
 
         return Parser::inputObjectTypeDefinition(
-            <<<DEF
+            <<<GRAPHQL
             """
             Conditions for the related objects (`has()`/`doesntHave()`) for `{$source}`.
 
@@ -66,7 +66,7 @@ class RelationType implements TypeDefinition {
                 """
                 notExists: Boolean! = false
             }
-            DEF,
+            GRAPHQL,
         );
     }
 }

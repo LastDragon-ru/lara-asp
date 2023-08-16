@@ -31,10 +31,10 @@ class ContainsTest extends TestCase {
     /**
      * @dataProvider dataProviderCall
      *
-     * @param array{query: string, bindings: array<mixed>} $expected
-     * @param BuilderFactory                               $builderFactory
-     * @param class-string<Grammar>                        $grammar
-     * @param Closure(static): Argument                    $argumentFactory
+     * @param array{query: string, bindings: array<array-key, mixed>} $expected
+     * @param BuilderFactory                                          $builderFactory
+     * @param class-string<Grammar>                                   $grammar
+     * @param Closure(static): Argument                               $argumentFactory
      */
     public function testCall(
         array $expected,
@@ -65,7 +65,7 @@ class ContainsTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderCall(): array {
         return (new CompositeDataProvider(

@@ -42,7 +42,7 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     // <editor-fold desc="\Illuminate\Contracts\Support\DeferrableProvider">
     // =========================================================================
     /**
-     * @return array<string>
+     * @return array<array-key, string>
      */
     public function provides(): array {
         return array_merge(parent::provides(), ['migrator', 'command.seeder.make', RawMigrationCreator::class]);

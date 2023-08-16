@@ -21,7 +21,7 @@ abstract class Rule implements RuleContract {
     // <editor-fold desc="Rule">
     // =========================================================================
     /**
-     * @return array<mixed>|string
+     * @return array<array-key, mixed>|string
      */
     public function message(): array|string {
         $replace     = $this->getMessageReplace();
@@ -41,14 +41,14 @@ abstract class Rule implements RuleContract {
     // <editor-fold desc="Functions">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     protected function getMessageReplace(): array {
         return [];
     }
 
     /**
-     * @return array<string>
+     * @return array<array-key, string>
      */
     protected function getMessageVariants(): array {
         $name    = Str::snake((new ReflectionClass($this))->getShortName());
