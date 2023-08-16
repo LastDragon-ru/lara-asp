@@ -8,6 +8,7 @@ parameters:
     # Settings
     checkMissingCallableSignature: true
     checkOctaneCompatibility: true
+    checkBenevolentUnionTypes: true
 
 includes:
     # Vendor

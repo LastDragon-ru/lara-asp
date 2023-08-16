@@ -12,7 +12,7 @@ use function mb_strlen;
 /**
  * @internal
  * @template TBlock of Block
- * @template TKey of array-key
+ * @template TKey of string|int
  * @template TItem
  * @extends ListBlock<TBlock, TKey, TItem>
  */

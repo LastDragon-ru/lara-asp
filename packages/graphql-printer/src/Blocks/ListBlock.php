@@ -13,7 +13,7 @@ use function usort;
 /**
  * @internal
  * @template TBlock of Block
- * @template TKey of array-key
+ * @template TKey of string|int
  * @template TItem
  */
 abstract class ListBlock extends Block {
@@ -75,7 +75,7 @@ abstract class ListBlock extends Block {
     // <editor-fold desc="Content">
     // =========================================================================
     /**
-     * @return array<int|string,TBlock>
+     * @return list<TBlock>
      */
     private function getBlocks(): array {
         // Create

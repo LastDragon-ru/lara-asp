@@ -23,11 +23,11 @@ use function min;
  */
 abstract class IteratorImpl implements Iterator {
     /**
-     * @var Dispatcher<Collection<array-key,TItem>>
+     * @var Dispatcher<Collection<string|int,TItem>>
      */
     protected Dispatcher $beforeChunk;
     /**
-     * @var Dispatcher<Collection<array-key,TItem>>
+     * @var Dispatcher<Collection<string|int,TItem>>
      */
     protected Dispatcher $afterChunk;
 
