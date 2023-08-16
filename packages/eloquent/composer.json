@@ -24,7 +24,7 @@
   "require-dev": {
     "ext-pdo_sqlite": "*",
     "lastdragon-ru/lara-asp-testing": "self.version",
-    "orchestra/testbench": "^6.9.0|^7.0.0|^8.0.0",
+    "orchestra/testbench": "^7.0.0|^8.0.0",
     "phpunit/phpunit": "^9.5.0|^10.1.0"
   },
   "suggest": {
