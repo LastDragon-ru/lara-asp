@@ -6,7 +6,7 @@ The set provides best practices to make development more fun and classes/service
 
 | Package | Version             |
 |---------|---------------------|
-| PHP     | `^8.0.0`            |
+| PHP     | `^8.1.0`            |
 | Laravel | `^9.0.0`, `^10.0.0` |
 
 # Installation
