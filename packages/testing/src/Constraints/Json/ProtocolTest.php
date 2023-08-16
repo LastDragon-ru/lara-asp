@@ -52,9 +52,7 @@ class ProtocolTest extends TestCase {
         $file   = new SplFileInfo(__FILE__);
         $host   = PHP_OS_FAMILY === 'Windows' ? 'windows.path' : 'unix.path';
         $path   = str_replace('\\', '/', $file->getPathname());
-        $path   = implode('/', array_map(static function (string $segment): string {
-            return rawurlencode($segment);
-        }, explode('/', '/'.ltrim($path, '/'))));
+        $path   = implode('/', array_map(rawurlencode(...), explode('/', '/'.ltrim($path, '/'))));
         $params = ['a' => 'a', 'b' => 'b'];
         $actual = Protocol::getUri($file, $params);
 

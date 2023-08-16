@@ -254,9 +254,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $directives  = implode(
             "\n",
             array_map(
-                static function (DirectiveNode $node): string {
-                    return Printer::doPrint($node);
-                },
+                Printer::doPrint(...),
                 $directives,
             ),
         );

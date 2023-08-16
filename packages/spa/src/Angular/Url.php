@@ -113,9 +113,7 @@ class Url {
      */
     private function serialize(mixed $value): string|array {
         if (is_array($value)) {
-            $value = array_map(function ($value) {
-                return $this->serialize($value);
-            }, $value);
+            $value = array_map($this->serialize(...), $value);
         } else {
             $value = $this->value($value);
         }

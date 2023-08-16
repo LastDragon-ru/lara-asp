@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
 use function array_key_exists;
 use function array_map;
+use function array_merge;
 use function array_push;
 use function array_shift;
 use function array_unique;
@@ -85,16 +86,14 @@ abstract class Operators {
 
         // Operators
         $operators = $this->findOperators($type);
-        $operators = array_map(function (string $operator): Operator {
-            return $this->getOperator($operator);
-        }, array_values(array_unique($operators)));
+        $operators = array_map($this->getOperator(...), $operators);
 
         // Return
         return $operators;
     }
 
     /**
-     * @return array<array-key, class-string<Operator>>
+     * @return list<class-string<Operator>>
      */
     private function findOperators(string $type): array {
         $extends   = $this->operators[$type] ?? $this->default[$type] ?? [];
@@ -113,12 +112,12 @@ abstract class Operators {
             } elseif ($type === $operator) {
                 array_push($extends, ...($this->default[$operator] ?? []));
             } else {
-                array_push($operators, ...$this->findOperators($operator));
+                $operators = array_merge($operators, $this->findOperators($operator));
             }
 
             $processed[$operator] = true;
         } while ($extends);
 
-        return $operators;
+        return array_values(array_unique($operators));
     }
 }
