@@ -65,12 +65,12 @@ class ProviderTest extends TestCase {
     /**
      * @dataProvider dataProviderDeserialization
      *
-     * @param class-string<Serializable>|null $class
+     * @param class-string<Serializable> $class
      */
-    public function testDeserialization(Exception|Serializable $expected, ?string $class, string $serialized): void {
+    public function testDeserialization(Exception|Serializable $expected, string $class, string $serialized): void {
         try {
             $serializer   = Container::getInstance()->make(Serializer::class);
-            $deserialized = $serializer->deserialize($class ?? $expected::class, $serialized);
+            $deserialized = $serializer->deserialize($class, $serialized);
 
             if ($expected instanceof Serializable) {
                 self::assertEquals($expected, $deserialized);
@@ -182,7 +182,7 @@ class ProviderTest extends TestCase {
     }
 
     /**
-     * @return array<string, array{Exception|Serializable, class-string<Serializable>|null, string}>
+     * @return array<string, array{Exception|Serializable, class-string<Serializable>, string}>
      */
     public static function dataProviderDeserialization(): array {
         $object       = new ProviderTest__Class();
@@ -199,12 +199,12 @@ class ProviderTest extends TestCase {
         return [
             'empty object'                       => [
                 new ProviderTest__Empty(),
-                null,
+                ProviderTest__Empty::class,
                 '{}',
             ],
             'simple object'                      => [
                 $serializable,
-                null,
+                $serializable::class,
                 <<<'JSON'
                 {
                     "a": 123,
@@ -214,7 +214,7 @@ class ProviderTest extends TestCase {
             ],
             'complex object'                     => [
                 new ProviderTest__Complex($datetime, new ProviderTest__Simple(), [$datetime, $datetime], null),
-                null,
+                ProviderTest__Complex::class,
                 <<<'JSON'
                 {
                     "a": 123,
