@@ -75,9 +75,9 @@ class UnionTypeExtensionTest extends TestCase {
 
         return [
             'single-line'            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend union Test = C | B | A
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -87,12 +87,12 @@ class UnionTypeExtensionTest extends TestCase {
                 null,
             ],
             'multiline'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend union Test =
                     | A
                     | B
                     | C
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setNormalizeUnions(true),
                 0,
@@ -103,12 +103,12 @@ class UnionTypeExtensionTest extends TestCase {
                 null,
             ],
             'indent'                 => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend union Test =
                         | C
                         | B
                         | A
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 120,
@@ -118,12 +118,12 @@ class UnionTypeExtensionTest extends TestCase {
                 null,
             ],
             'multiline always'       => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend union Test =
                     | C
                     | B
                     | A
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineUnions(true),
                 0,
@@ -134,11 +134,11 @@ class UnionTypeExtensionTest extends TestCase {
                 null,
             ],
             'directives'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend union Test
                 @a
                 = C | B | A
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -148,14 +148,14 @@ class UnionTypeExtensionTest extends TestCase {
                 null,
             ],
             'directives + multiline' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend union Test
                 @a
                 =
                     | C
                     | B
                     | A
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setLineLength(10),
                 0,
@@ -177,11 +177,11 @@ class UnionTypeExtensionTest extends TestCase {
                 null,
             ],
             'filter: no schema'      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend union Test
                 @a
                 = B | A
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'B';
@@ -197,11 +197,11 @@ class UnionTypeExtensionTest extends TestCase {
                 null,
             ],
             'filter'                 => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend union Test
                 @a
                 = A
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'B';
@@ -215,10 +215,10 @@ class UnionTypeExtensionTest extends TestCase {
                     'extend union Test @a @b = B | A',
                 ),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar A
                     scalar B
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

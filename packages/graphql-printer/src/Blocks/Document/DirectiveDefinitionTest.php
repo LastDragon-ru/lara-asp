@@ -95,12 +95,12 @@ class DirectiveDefinitionTest extends TestCase {
 
         return [
             'description'                => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
                 directive @test on ARGUMENT_DEFINITION | ENUM
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -114,9 +114,9 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'repeatable'                 => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test repeatable on ARGUMENT_DEFINITION | ENUM
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -130,9 +130,9 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'args'                       => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test(a: String) repeatable on ARGUMENT_DEFINITION | ENUM
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -151,14 +151,14 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'multiline + repeatable'     => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test(
                     a: String
                 )
                 repeatable on
                     | ARGUMENT_DEFINITION
                     | ENUM
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 120,
@@ -177,14 +177,14 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'multiline'                  => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test(
                     a: String
                 )
                 on
                     | ARGUMENT_DEFINITION
                     | ENUM
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 120,
@@ -202,12 +202,12 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'multiline (no args)'        => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test
                 on
                     | ARGUMENT_DEFINITION
                     | ENUM
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 60,
@@ -220,14 +220,14 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'indent'                     => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test(
                         a: String
                     )
                     on
                         | ARGUMENT_DEFINITION
                         | ENUM
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 120,
@@ -245,9 +245,9 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'normalized'                 => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test on ENUM | INPUT_FIELD_DEFINITION | OBJECT
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setNormalizeDirectiveLocations(true),
                 0,
@@ -262,11 +262,11 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'locations always multiline' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test
                 on
                     | ARGUMENT_DEFINITION
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineDirectiveLocations(true),
                 0,
@@ -279,13 +279,13 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'args always multiline'      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test(
                     a: String
                 )
                 on
                     | ENUM
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineArguments(true),
                 0,
@@ -303,7 +303,7 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'args + one location'        => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test(
                     """
                     Description
@@ -312,7 +312,7 @@ class DirectiveDefinitionTest extends TestCase {
                 )
                 on
                     | ARGUMENT_DEFINITION
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -343,14 +343,14 @@ class DirectiveDefinitionTest extends TestCase {
                 ]),
             ],
             'ast'                        => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 directive @test(
                     a: String
                 )
                 repeatable on
                     | ARGUMENT_DEFINITION
                     | ENUM
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 120,

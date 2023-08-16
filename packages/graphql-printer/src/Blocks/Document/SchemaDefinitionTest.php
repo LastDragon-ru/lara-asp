@@ -71,7 +71,7 @@ class SchemaDefinitionTest extends TestCase {
 
     public function testStatisticsTypeFilter(): void {
         $schema     = BuildSchema::build(
-            <<<'STRING'
+            <<<'GRAPHQL'
             type Query {
                 field(a: Int): String
             }
@@ -79,7 +79,7 @@ class SchemaDefinitionTest extends TestCase {
             type Mutation {
                 field(a: Int): String
             }
-            STRING,
+            GRAPHQL,
         );
         $settings   = (new TestSettings())->setTypeFilter(static function (string $type): bool {
             return $type !== 'Mutation';
@@ -122,7 +122,7 @@ class SchemaDefinitionTest extends TestCase {
                 null,
             ],
             'standard names with directives'      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema
                 @a
                 @b
@@ -132,7 +132,7 @@ class SchemaDefinitionTest extends TestCase {
                     mutation: Mutation
                     subscription: Subscription
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 0,
@@ -142,9 +142,9 @@ class SchemaDefinitionTest extends TestCase {
                     'mutation'          => new ObjectType(['name' => 'Mutation', 'fields' => []]),
                     'subscription'      => new ObjectType(['name' => 'Subscription', 'fields' => []]),
                     'astNode'           => Parser::schemaDefinition(
-                        <<<'STRING'
+                        <<<'GRAPHQL'
                         schema @a { query: Query }
-                        STRING,
+                        GRAPHQL,
                     ),
                     'extensionASTNodes' => [
                         Parser::schemaTypeExtension('extend schema @b'),
@@ -154,13 +154,13 @@ class SchemaDefinitionTest extends TestCase {
                 null,
             ],
             'non standard names'                  => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema {
                     query: MyQuery
                     mutation: Mutation
                     subscription: Subscription
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -172,13 +172,13 @@ class SchemaDefinitionTest extends TestCase {
                 null,
             ],
             'indent'                              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema {
                         query: MyQuery
                         mutation: Mutation
                         subscription: Subscription
                     }
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 0,
@@ -190,12 +190,12 @@ class SchemaDefinitionTest extends TestCase {
                 null,
             ],
             'filter (no schema)'                  => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema {
                     query: MyQuery
                     mutation: Mutation
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'Mutation';
@@ -209,11 +209,11 @@ class SchemaDefinitionTest extends TestCase {
                 null,
             ],
             'filter'                              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema {
                     query: MyQuery
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'Mutation';
@@ -225,11 +225,11 @@ class SchemaDefinitionTest extends TestCase {
                     'mutation' => new ObjectType(['name' => 'Mutation', 'fields' => []]),
                 ]),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type MyQuery {
                         a: Int
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'ast: standard names'                 => [
@@ -238,18 +238,18 @@ class SchemaDefinitionTest extends TestCase {
                 0,
                 0,
                 Parser::schemaDefinition(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     schema {
                         query: Query
                         mutation: Mutation
                         subscription: Subscription
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 null,
             ],
             'ast: standard names with directives' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema
                 @a
                 {
@@ -257,53 +257,53 @@ class SchemaDefinitionTest extends TestCase {
                     mutation: Mutation
                     subscription: Subscription
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 0,
                 0,
                 Parser::schemaDefinition(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     schema @a {
                         query: Query
                         mutation: Mutation
                         subscription: Subscription
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 null,
             ],
             'ast: non standard names'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema {
                     query: MyQuery
                     mutation: Mutation
                     subscription: Subscription
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
                 Parser::schemaDefinition(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     schema {
                         query: MyQuery
                         mutation: Mutation
                         subscription: Subscription
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 null,
             ],
             'ast: filter (no schema)'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema
                 @a
                 {
                     query: MyQuery
                     mutation: Mutation
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static function (string $type): bool {
@@ -315,23 +315,23 @@ class SchemaDefinitionTest extends TestCase {
                 0,
                 0,
                 Parser::schemaDefinition(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     schema @a @b {
                         query: MyQuery
                         mutation: Mutation
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 null,
             ],
             'ast: filter'                         => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 schema
                 @a
                 {
                     query: MyQuery
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setTypeFilter(static function (string $type): bool {
@@ -343,19 +343,19 @@ class SchemaDefinitionTest extends TestCase {
                 0,
                 0,
                 Parser::schemaDefinition(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     schema @a @b {
                         query: MyQuery
                         mutation: Mutation
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type MyQuery {
                         a: Int
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

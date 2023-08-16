@@ -26,11 +26,11 @@ class Flag implements TypeDefinition {
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
         return Parser::enumTypeDefinition(
-            <<<GraphQL
+            <<<GRAPHQL
             enum {$name} {
                 yes
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 }

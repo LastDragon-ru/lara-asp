@@ -88,7 +88,7 @@ class FragmentDefinitionTest extends TestCase {
                 ],
                 Parser::fragmentDefinition('fragment Test on A @a { a }'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         a: Int
                     }
@@ -96,7 +96,7 @@ class FragmentDefinitionTest extends TestCase {
                     type B {
                         b: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'no schema' => [
@@ -128,12 +128,12 @@ class FragmentDefinitionTest extends TestCase {
 
         return [
             'named'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 fragment Test on A {
                     a
                     b
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -143,7 +143,7 @@ class FragmentDefinitionTest extends TestCase {
                 null,
             ],
             'normalized'         => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 fragment Test on A
                 @b
                 @a
@@ -154,7 +154,7 @@ class FragmentDefinitionTest extends TestCase {
                         c
                     }
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setNormalizeFields(true)
@@ -167,12 +167,12 @@ class FragmentDefinitionTest extends TestCase {
                 null,
             ],
             'indent'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 fragment Test on A {
                         a
                         b
                     }
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 120,
@@ -182,14 +182,14 @@ class FragmentDefinitionTest extends TestCase {
                 null,
             ],
             'filter (directive)' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 fragment Test on A
                 @a
                 {
                     a
                     b
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setDirectiveFilter(static function (string $directive): bool {
                         return $directive !== 'b';
@@ -202,11 +202,11 @@ class FragmentDefinitionTest extends TestCase {
                 null,
             ],
             'filter (no schema)' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 fragment Test on B {
                     b
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static fn () => false),
                 0,
@@ -226,21 +226,21 @@ class FragmentDefinitionTest extends TestCase {
                     'fragment Test on B { b }',
                 ),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type B {
                         b: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 fragment Test on B {
                     b(b: "321") {
                         c
                     }
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setTypeFilter(static function (string $type): bool {
                         return $type !== 'Int';
@@ -251,7 +251,7 @@ class FragmentDefinitionTest extends TestCase {
                     'fragment Test on B { b(a: 123, b: "321") { c }, a }',
                 ),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type B {
                         a: Int
                         b(a: Int, b: String): C
@@ -260,7 +260,7 @@ class FragmentDefinitionTest extends TestCase {
                     type C {
                         c: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

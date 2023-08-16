@@ -583,10 +583,10 @@ class PrinterTest extends TestCase {
         return [
             'UnionType'       => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'CodeType',
@@ -617,7 +617,7 @@ class PrinterTest extends TestCase {
             ],
             'InputObjectType' => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                     """
                     Description
                     """
@@ -626,7 +626,7 @@ class PrinterTest extends TestCase {
                     {
                         a: Boolean
                     }
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'Boolean',
@@ -655,14 +655,14 @@ class PrinterTest extends TestCase {
             ],
             'InterfaceType'   => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                     """
                     Description
                     """
                     interface CodeInterface {
                         a: Boolean!
                     }
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'Boolean',
@@ -704,10 +704,10 @@ class PrinterTest extends TestCase {
         return [
             'UnionTypeDefinitionNode'   => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'CodeType',
@@ -728,7 +728,7 @@ class PrinterTest extends TestCase {
             ],
             'InputObjectTypeDefinition' => [
                 (new GraphQLExpected(
-                    <<<'GraphQL'
+                    <<<'GRAPHQL'
                     """
                     Description
                     """
@@ -737,7 +737,7 @@ class PrinterTest extends TestCase {
                     {
                         a: Boolean
                     }
-                    GraphQL,
+                    GRAPHQL,
                 ))
                     ->setUsedTypes([
                         'Boolean',

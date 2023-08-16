@@ -22,7 +22,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
 $schema   = BuildSchema::build(
-    <<<'GraphQL'
+    <<<'GRAPHQL'
     type Query {
         a: A
     }
@@ -38,7 +38,7 @@ $schema   = BuildSchema::build(
 
     directive @a on OBJECT
     directive @b on OBJECT
-    GraphQL,
+    GRAPHQL,
 );
 $type     = $schema->getType('A');
 $settings = new DefaultSettings();
@@ -120,7 +120,7 @@ $directiveFilter = new class() implements DirectiveFilter {
 };
 
 $schema = BuildSchema::build(
-    <<<'GraphQL'
+    <<<'GRAPHQL'
     type Query {
         allowed: Boolean @forbidden @allowed
         forbidden: Forbidden
@@ -132,17 +132,17 @@ $schema = BuildSchema::build(
 
     directive @allowed on FIELD_DEFINITION
     directive @forbidden on FIELD_DEFINITION
-    GraphQL,
+    GRAPHQL,
 );
 $query  = Parser::parse(
-    <<<'GraphQL'
+    <<<'GRAPHQL'
     query {
         allowed
         forbidden {
             id
         }
     }
-    GraphQL,
+    GRAPHQL,
 );
 
 $settings      = (new DefaultSettings())

@@ -120,9 +120,9 @@ class UnionTypeDefinitionTest extends TestCase {
 
         return [
             'single-line'                   => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test = C | B | A
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -136,12 +136,12 @@ class UnionTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'multiline'                     => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test =
                     | C
                     | B
                     | A
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 120,
@@ -155,9 +155,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'indent single-line'            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test = C | B | A
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 0,
@@ -171,12 +171,12 @@ class UnionTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'indent multiline'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test =
                         | C
                         | B
                         | A
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 120,
@@ -190,9 +190,9 @@ class UnionTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'multiline normalized'          => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test = A | B | C
-                STRING,
+                GRAPHQL,
                 $settings->setNormalizeUnions(true),
                 0,
                 0,
@@ -206,12 +206,12 @@ class UnionTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'multiline always'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test =
                     | C
                     | B
                     | A
-                STRING,
+                GRAPHQL,
                 $settings->setAlwaysMultilineUnions(true),
                 0,
                 0,
@@ -225,13 +225,13 @@ class UnionTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'directives'                    => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test
                 @a
                 @b
                 @c
                 = C | B | A
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -243,9 +243,9 @@ class UnionTypeDefinitionTest extends TestCase {
                         $a,
                     ],
                     'astNode'           => Parser::unionTypeDefinition(
-                        <<<'STRING'
+                        <<<'GRAPHQL'
                         union Test @a = A | B | C
-                        STRING,
+                        GRAPHQL,
                     ),
                     'extensionASTNodes' => [
                         Parser::unionTypeExtension('extend union Test @b'),
@@ -254,14 +254,14 @@ class UnionTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'directives + multiline'        => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test
                 @a
                 =
                     | C
                     | B
                     | A
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setLineLength(10),
                 0,
@@ -274,17 +274,17 @@ class UnionTypeDefinitionTest extends TestCase {
                         $a,
                     ],
                     'astNode' => Parser::unionTypeDefinition(
-                        <<<'STRING'
+                        <<<'GRAPHQL'
                         union Test @a = A | B | C
-                        STRING,
+                        GRAPHQL,
                     ),
                 ]),
             ],
             'one member + always multiline' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 union Test =
                     | A
-                STRING,
+                GRAPHQL,
                 $settings->setAlwaysMultilineUnions(true),
                 0,
                 0,
@@ -309,14 +309,14 @@ class UnionTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'ast'                           => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
                 union Test
                 @a
                 = C | B | A
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setDirectiveFilter(static function (string $directive): bool {
                         return $directive !== 'b';

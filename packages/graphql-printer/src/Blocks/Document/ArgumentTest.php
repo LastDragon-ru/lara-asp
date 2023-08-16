@@ -111,9 +111,9 @@ class ArgumentTest extends TestCase {
                 Parser::argument('a: 123'),
                 Type::int(),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar A
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter => true'              => [
@@ -125,9 +125,9 @@ class ArgumentTest extends TestCase {
                 Parser::argument('b: "abc"'),
                 Type::string(),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar A
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter => unknown'           => [
@@ -139,9 +139,9 @@ class ArgumentTest extends TestCase {
                 Parser::argument('c: "abc"'),
                 null,
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar A
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

@@ -50,7 +50,7 @@ class FieldTest extends TestCase {
 
     public function testStatistics(): void {
         $schema     = BuildSchema::build(
-            <<<'STRING'
+            <<<'GRAPHQL'
             type A {
                 field(a: Int): B
             }
@@ -58,7 +58,7 @@ class FieldTest extends TestCase {
             type B {
                 a: String
             }
-            STRING,
+            GRAPHQL,
         );
         $context    = new Context(new TestSettings(), null, $schema);
         $collector  = new Collector();
@@ -240,11 +240,11 @@ class FieldTest extends TestCase {
                 ),
                 Parser::typeReference('A'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         test: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter: type'               => [
@@ -260,11 +260,11 @@ class FieldTest extends TestCase {
                 ),
                 Parser::typeReference('A'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         test: Int
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter: arg'                => [
@@ -280,11 +280,11 @@ class FieldTest extends TestCase {
                 ),
                 Parser::typeReference('A'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         test(a: Int, b: String): String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

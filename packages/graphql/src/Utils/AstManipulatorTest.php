@@ -54,7 +54,7 @@ class AstManipulatorTest extends TestCase {
         // Object
         $types       = $this->app->make(TypeRegistry::class);
         $manipulator = $this->getManipulator(
-            <<<'GraphQL'
+            <<<'GRAPHQL'
             interface InterfaceA {
                 id: ID!
             }
@@ -66,7 +66,7 @@ class AstManipulatorTest extends TestCase {
             type ObjectA implements InterfaceA & InterfaceB {
                 id: ID!
             }
-            GraphQL,
+            GRAPHQL,
         );
         $interface   = new InterfaceType([
             'name'       => 'InterfaceC',
@@ -180,7 +180,7 @@ class AstManipulatorTest extends TestCase {
 
         // Schema
         $this->useGraphQLSchema(
-            <<<'GraphQL'
+            <<<'GRAPHQL'
             extend scalar Int @aDirective @bDirective
             scalar CustomScalar @bDirective @cDirective
             extend scalar CustomScalar @aDirective
@@ -192,7 +192,7 @@ class AstManipulatorTest extends TestCase {
             type Test {
                 id: ID!
             }
-            GraphQL,
+            GRAPHQL,
         );
 
         // Prepare
@@ -578,7 +578,7 @@ class AstManipulatorTest extends TestCase {
      *      }>
      */
     public static function dataProviderAddArgument(): array {
-        $schema = <<<'GraphQL'
+        $schema = <<<'GRAPHQL'
             type Query implements InterfaceB & InterfaceC {
                 a(a: Int): Int @mock
                 b: Boolean @mock
@@ -596,7 +596,7 @@ class AstManipulatorTest extends TestCase {
             interface InterfaceC {
                 a(a: Int): Int
             }
-        GraphQL;
+        GRAPHQL;
 
         return [
             'argument exists'                          => [
@@ -610,7 +610,7 @@ class AstManipulatorTest extends TestCase {
                 null,
             ],
             'argument without description and default' => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 interface InterfaceA {
                     a(
                         a: Int
@@ -652,7 +652,7 @@ class AstManipulatorTest extends TestCase {
                     @mock
                 }
 
-                GraphQL,
+                GRAPHQL,
                 $schema,
                 self::getDefinitionFactory('Query'),
                 self::getFieldFactory('b'),
@@ -662,7 +662,7 @@ class AstManipulatorTest extends TestCase {
                 null,
             ],
             'argument without description'             => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 interface InterfaceA {
                     a(
                         a: Int
@@ -704,7 +704,7 @@ class AstManipulatorTest extends TestCase {
                     @mock
                 }
 
-                GraphQL,
+                GRAPHQL,
                 $schema,
                 self::getDefinitionFactory('Query'),
                 self::getFieldFactory('b'),
@@ -714,7 +714,7 @@ class AstManipulatorTest extends TestCase {
                 null,
             ],
             'argument'                                 => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 interface InterfaceA {
                     a(
                         a: Int
@@ -766,7 +766,7 @@ class AstManipulatorTest extends TestCase {
                     @mock
                 }
 
-                GraphQL,
+                GRAPHQL,
                 $schema,
                 self::getDefinitionFactory('Query'),
                 self::getFieldFactory('b'),
@@ -780,14 +780,14 @@ class AstManipulatorTest extends TestCase {
                 DESCRIPTION,
             ],
             'FieldDefinition'                          => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 type Query {
                     a(
                         argument: [String!] = ["a", "b", "c"]
                     ): Int
                 }
 
-                GraphQL,
+                GRAPHQL,
                 $schema,
                 static function (): ObjectType {
                     return new ObjectType([
@@ -823,22 +823,22 @@ class AstManipulatorTest extends TestCase {
     public static function dataProviderAddDirective(): array {
         return [
             'field: without arguments'          => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 field: String
                 @astManipulatorTest_A
-                GraphQL,
+                GRAPHQL,
                 Parser::fieldDefinition('field: String'),
                 AstManipulatorTest_ADirective::class,
                 [],
             ],
             'field: with arguments'             => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 field: String
                 @astManipulatorTest_A(
                     a: 123
                     b: "b"
                 )
-                GraphQL,
+                GRAPHQL,
                 Parser::fieldDefinition('field: String'),
                 AstManipulatorTest_ADirective::class,
                 [
@@ -847,22 +847,22 @@ class AstManipulatorTest extends TestCase {
                 ],
             ],
             'input argument: without arguments' => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 argument: String = 123
                 @astManipulatorTest_A
-                GraphQL,
+                GRAPHQL,
                 Parser::inputValueDefinition('argument: String = 123'),
                 AstManipulatorTest_ADirective::class,
                 [],
             ],
             'input argument: with arguments'    => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 argument: String
                 @astManipulatorTest_A(
                     a: 123
                     b: "b"
                 )
-                GraphQL,
+                GRAPHQL,
                 Parser::inputValueDefinition('argument: String'),
                 AstManipulatorTest_ADirective::class,
                 [
@@ -871,10 +871,10 @@ class AstManipulatorTest extends TestCase {
                 ],
             ],
             'astNode'                           => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 argument: String
                 @astManipulatorTest_A
-                GraphQL,
+                GRAPHQL,
                 new Argument([
                     'name'    => 'argument',
                     'type'    => static fn () => Type::string(),
@@ -943,7 +943,7 @@ class AstManipulatorTest extends TestCase {
      *      }>
      */
     public static function dataProviderSetFieldType(): array {
-        $schema = <<<'GraphQL'
+        $schema = <<<'GRAPHQL'
             type Query implements InterfaceB & InterfaceC {
                 a: Int @mock
             }
@@ -959,11 +959,11 @@ class AstManipulatorTest extends TestCase {
             interface InterfaceC {
                 a: Int
             }
-        GraphQL;
+        GRAPHQL;
 
         return [
             'type'      => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 interface InterfaceA {
                     a: Boolean
                 }
@@ -988,19 +988,19 @@ class AstManipulatorTest extends TestCase {
                     @mock
                 }
 
-                GraphQL,
+                GRAPHQL,
                 $schema,
                 self::getDefinitionFactory('Query'),
                 self::getFieldFactory('a'),
                 Type::boolean(),
             ],
             'interface' => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 interface InterfaceC {
                     a: Boolean
                 }
 
-                GraphQL,
+                GRAPHQL,
                 $schema,
                 self::getDefinitionFactory('InterfaceC'),
                 self::getFieldFactory('a'),
@@ -1020,7 +1020,7 @@ class AstManipulatorTest extends TestCase {
      *      }>
      */
     public static function dataProviderSetArgumentType(): array {
-        $schema = <<<'GraphQL'
+        $schema = <<<'GRAPHQL'
             type Query implements InterfaceB & InterfaceC {
                 a(a: Int, b: String): Int @mock
             }
@@ -1036,11 +1036,11 @@ class AstManipulatorTest extends TestCase {
             interface InterfaceC {
                 a(a: Int, b: String): Int
             }
-        GraphQL;
+        GRAPHQL;
 
         return [
             'type'      => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 interface InterfaceA {
                     a(
                         a: Int
@@ -1077,7 +1077,7 @@ class AstManipulatorTest extends TestCase {
                     @mock
                 }
 
-                GraphQL,
+                GRAPHQL,
                 $schema,
                 self::getDefinitionFactory('Query'),
                 self::getFieldFactory('a'),
@@ -1085,7 +1085,7 @@ class AstManipulatorTest extends TestCase {
                 Type::int(),
             ],
             'interface' => [
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 interface InterfaceC {
                     a(
                         a: Boolean
@@ -1093,7 +1093,7 @@ class AstManipulatorTest extends TestCase {
                     ): Int
                 }
 
-                GraphQL,
+                GRAPHQL,
                 $schema,
                 self::getDefinitionFactory('InterfaceC'),
                 self::getFieldFactory('a'),

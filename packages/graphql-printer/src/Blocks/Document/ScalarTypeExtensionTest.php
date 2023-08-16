@@ -51,10 +51,10 @@ class ScalarTypeExtensionTest extends TestCase {
 
         return [
             'scalar'            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend scalar Test
                 @a
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -63,10 +63,10 @@ class ScalarTypeExtensionTest extends TestCase {
                 ),
             ],
             'indent'            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend scalar Test
                     @a
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 0,
@@ -85,10 +85,10 @@ class ScalarTypeExtensionTest extends TestCase {
                 ),
             ],
             'filter: directive' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend scalar Test
                 @a
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setDirectiveFilter(static function (string $directive): bool {
                         return $directive !== 'b';

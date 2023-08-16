@@ -263,11 +263,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $description = $description ?: $operator->getFieldDescription();
         $description = BlockString::print($description);
 
-        return <<<DEF
+        return <<<GRAPHQL
             {$description}
             {$field}: {$type}
             {$directives}
-        DEF;
+        GRAPHQL;
     }
 
     /**
@@ -291,14 +291,14 @@ class Manipulator extends AstManipulator implements TypeProvider {
     protected function addFakeTypeDefinition(string $name): void {
         $this->addTypeDefinition(
             Parser::inputObjectTypeDefinition(
-                <<<DEF
+                <<<GRAPHQL
                 """
                 Fake type to prevent circular dependency infinite loop.
                 """
                 input {$name} {
                     fake: Boolean! = true
                 }
-                DEF,
+                GRAPHQL,
             ),
         );
     }

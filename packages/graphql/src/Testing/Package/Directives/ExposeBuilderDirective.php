@@ -34,9 +34,9 @@ class ExposeBuilderDirective extends BaseDirective implements FieldResolver, Bui
     public static function definition(): string {
         $name = static::getName();
 
-        return <<<GraphQL
+        return <<<GRAPHQL
             directive {$name} on FIELD_DEFINITION
-        GraphQL;
+        GRAPHQL;
     }
 
     public static function getName(): string {

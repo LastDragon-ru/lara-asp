@@ -20,9 +20,9 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
         $name      = '@'.DirectiveLocator::directiveName(static::class);
         $locations = implode('|', static::getDirectiveLocations());
 
-        return <<<GraphQL
+        return <<<GRAPHQL
             directive {$name} on {$locations}
-        GraphQL;
+        GRAPHQL;
     }
 
     /**

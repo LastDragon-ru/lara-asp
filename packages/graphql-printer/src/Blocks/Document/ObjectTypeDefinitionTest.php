@@ -116,7 +116,7 @@ class ObjectTypeDefinitionTest extends TestCase {
 
         return [
             'description + directives'                    => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
@@ -124,7 +124,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 @a
                 @b
                 @c
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 0,
@@ -141,7 +141,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'description + directives + fields'           => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
@@ -157,7 +157,7 @@ class ObjectTypeDefinitionTest extends TestCase {
 
                     a(a: Int): A
                 }
-                STRING,
+                GRAPHQL,
                 $settings->setPrintDirectives(true),
                 0,
                 0,
@@ -214,11 +214,11 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'fields'                                      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -232,13 +232,13 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'implements + directives + fields'            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test implements B & A
                 @a
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings->setPrintDirectives(true),
                 0,
                 0,
@@ -271,7 +271,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'implements(multiline) + directives + fields' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test
                 implements
                     & B
@@ -280,7 +280,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings->setPrintDirectives(true),
                 0,
                 120,
@@ -313,7 +313,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'implements(multiline) + fields'              => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test
                 implements
                     & B
@@ -321,7 +321,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 120,
@@ -353,11 +353,11 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'implements + fields'                         => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test implements B & A {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -389,7 +389,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'implements(normalized) + fields'             => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test
                 implements
                     & A
@@ -397,7 +397,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings->setNormalizeInterfaces(true),
                 0,
                 120,
@@ -429,7 +429,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'indent'                                      => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test
                     implements
                         & A
@@ -437,7 +437,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                     {
                         a: String
                     }
-                STRING,
+                GRAPHQL,
                 $settings->setNormalizeInterfaces(true),
                 1,
                 120,
@@ -469,14 +469,14 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'implements always multiline'                 => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test
                 implements
                     & B
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setAlwaysMultilineInterfaces(true),
                 0,
@@ -501,7 +501,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'args always multiline'                       => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 type Test {
                     """
                     Description
@@ -514,7 +514,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                         a: Int
                     ): A
                 }
-                STRING,
+                GRAPHQL,
                 $settings->setAlwaysMultilineArguments(true),
                 0,
                 0,
@@ -567,7 +567,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'ast'                                         => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
@@ -576,7 +576,7 @@ class ObjectTypeDefinitionTest extends TestCase {
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setDirectiveFilter(static function (string $directive): bool {

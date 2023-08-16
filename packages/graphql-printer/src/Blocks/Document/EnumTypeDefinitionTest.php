@@ -78,13 +78,13 @@ class EnumTypeDefinitionTest extends TestCase {
 
         return [
             'enum'         => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 enum Test {
                     C
                     B
                     A
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -94,13 +94,13 @@ class EnumTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'indent'       => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 enum Test {
                         C
                         B
                         A
                     }
-                STRING,
+                GRAPHQL,
                 $settings,
                 1,
                 0,
@@ -110,13 +110,13 @@ class EnumTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'normalized'   => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 enum Test {
                     A
                     B
                     C
                 }
-                STRING,
+                GRAPHQL,
                 $settings->setNormalizeEnums(true),
                 0,
                 0,
@@ -126,7 +126,7 @@ class EnumTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'directives'   => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 enum Test
                 @a
                 @b
@@ -134,7 +134,7 @@ class EnumTypeDefinitionTest extends TestCase {
                 {
                     A
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -142,9 +142,9 @@ class EnumTypeDefinitionTest extends TestCase {
                     'name'              => 'Test',
                     'values'            => ['A'],
                     'astNode'           => Parser::enumTypeDefinition(
-                        <<<'STRING'
+                        <<<'GRAPHQL'
                         enum Test @a { A }
-                        STRING,
+                        GRAPHQL,
                     ),
                     'extensionASTNodes' => [
                         Parser::enumTypeExtension('extend enum Test @b'),
@@ -164,13 +164,13 @@ class EnumTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'ast'          => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 enum Test
                 @a
                 {
                     A
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,

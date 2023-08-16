@@ -182,11 +182,11 @@ class DirectiveTest extends TestCase {
         $registry->register($type);
 
         $this->useGraphQLSchema(
-            <<<'GraphQL'
+            <<<'GRAPHQL'
             type Query {
               test(order: _ @sortBy): TestType! @all
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 
@@ -222,7 +222,7 @@ class DirectiveTest extends TestCase {
 
         $this
             ->useGraphQLSchema(
-                <<<GraphQL
+                <<<GRAPHQL
                 type Query {
                     test(input: Test @sortBy): [TestObject!]!
                     @all(model: {$model})
@@ -236,16 +236,16 @@ class DirectiveTest extends TestCase {
                 type TestObject {
                     id: String!
                 }
-                GraphQL,
+                GRAPHQL,
             )
             ->graphQL(
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 query test($input: [SortByClauseTest!]) {
                     test(input: $input) {
                         id
                     }
                 }
-                GraphQL,
+                GRAPHQL,
                 [
                     'input' => $value,
                 ],
@@ -282,7 +282,7 @@ class DirectiveTest extends TestCase {
         $directive = $this->getExposeBuilderDirective($builder);
 
         $this->useGraphQLSchema(
-            <<<GraphQL
+            <<<GRAPHQL
             type Query {
                 test(input: Test @sortBy): [String!]! {$directive::getName()}
             }
@@ -291,7 +291,7 @@ class DirectiveTest extends TestCase {
                 a: Int!
                 b: String @rename(attribute: "renamed")
             }
-            GraphQL,
+            GRAPHQL,
         );
 
         $type = match (true) {
@@ -299,11 +299,11 @@ class DirectiveTest extends TestCase {
             default                          => 'SortByClauseTest',
         };
         $result = $this->graphQL(
-            <<<GraphQL
+            <<<GRAPHQL
             query test(\$query: [{$type}!]) {
                 test(input: \$query)
             }
-            GraphQL,
+            GRAPHQL,
             [
                 'query' => $value,
             ],
@@ -343,7 +343,7 @@ class DirectiveTest extends TestCase {
         }
 
         $this->useGraphQLSchema(
-            <<<GraphQL
+            <<<GRAPHQL
             type Query {
                 test(search: String @search, input: Test @sortBy): [String!]! {$directive::getName()}
             }
@@ -353,15 +353,15 @@ class DirectiveTest extends TestCase {
                 b: String @rename(attribute: "renamed")
                 c: Test
             }
-            GraphQL,
+            GRAPHQL,
         );
 
         $result = $this->graphQL(
-            <<<'GraphQL'
+            <<<'GRAPHQL'
             query test($query: [SortByScoutClauseTest!]) {
                 test(search: "*", input: $query)
             }
-            GraphQL,
+            GRAPHQL,
             [
                 'query' => $value,
             ],

@@ -73,13 +73,13 @@ class EnumTypeExtensionTest extends TestCase {
 
         return [
             'enum'       => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend enum Test {
                     C
                     B
                     A
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -88,13 +88,13 @@ class EnumTypeExtensionTest extends TestCase {
                 ),
             ],
             'indent'     => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend enum Test {
                         A
                         B
                         C
                     }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setNormalizeEnums(true),
                 1,
@@ -104,13 +104,13 @@ class EnumTypeExtensionTest extends TestCase {
                 ),
             ],
             'directives' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 extend enum Test
                 @a
                 {
                     A
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,

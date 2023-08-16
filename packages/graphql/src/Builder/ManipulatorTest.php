@@ -246,7 +246,7 @@ class ManipulatorTest extends TestCase {
         return [
             'field nullable'              => [
                 'Test',
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 type Query {
                     field: Test @mock
                 }
@@ -254,11 +254,11 @@ class ManipulatorTest extends TestCase {
                 type Test {
                     field: Int
                 }
-                GraphQL,
+                GRAPHQL,
             ],
             'field not null'              => [
                 'Test',
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 type Query {
                     field: Test! @mock
                 }
@@ -266,11 +266,11 @@ class ManipulatorTest extends TestCase {
                 type Test {
                     field: Int
                 }
-                GraphQL,
+                GRAPHQL,
             ],
             'list'                        => [
                 'Test',
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 type Query {
                     field: [Test] @mock
                 }
@@ -278,11 +278,11 @@ class ManipulatorTest extends TestCase {
                 type Test {
                     field: Int
                 }
-                GraphQL,
+                GRAPHQL,
             ],
             '@paginate(type: PAGINATOR)'  => [
                 'Test',
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
                     @paginate(
@@ -294,11 +294,11 @@ class ManipulatorTest extends TestCase {
                 type Test {
                     field: Int
                 }
-                GraphQL,
+                GRAPHQL,
             ],
             '@paginate(type: SIMPLE)'     => [
                 'Test',
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
                     @paginate(
@@ -310,11 +310,11 @@ class ManipulatorTest extends TestCase {
                 type Test {
                     field: Int
                 }
-                GraphQL,
+                GRAPHQL,
             ],
             '@paginate(type: CONNECTION)' => [
                 'Test',
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
                     @paginate(
@@ -326,7 +326,7 @@ class ManipulatorTest extends TestCase {
                 type Test {
                     field: Int
                 }
-                GraphQL,
+                GRAPHQL,
             ],
         ];
     }

@@ -171,9 +171,9 @@ class VariableDefinitionTest extends TestCase {
                     '$test: Test! @a @b',
                 ),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     scalar Test
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter: directive'         => [

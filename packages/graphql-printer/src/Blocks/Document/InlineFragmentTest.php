@@ -103,7 +103,7 @@ class InlineFragmentTest extends TestCase {
                 Parser::fragment('... on A @a { a }'),
                 Parser::typeReference('B'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         a: Int
                     }
@@ -111,7 +111,7 @@ class InlineFragmentTest extends TestCase {
                     type B {
                         b: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'anonymous + schema' => [
@@ -122,7 +122,7 @@ class InlineFragmentTest extends TestCase {
                 Parser::fragment('... @a { b }'),
                 Parser::typeReference('B'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type A {
                         a: Int
                     }
@@ -130,7 +130,7 @@ class InlineFragmentTest extends TestCase {
                     type B {
                         b: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'named'              => [
@@ -342,11 +342,11 @@ class InlineFragmentTest extends TestCase {
                 ),
                 null,
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type B {
                         b: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter (no schema, type)'    => [
@@ -384,7 +384,7 @@ class InlineFragmentTest extends TestCase {
                 ),
                 Parser::typeReference('A'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type B {
                         a: Int
                         b(a: Int, b: String): C
@@ -393,7 +393,7 @@ class InlineFragmentTest extends TestCase {
                     type C {
                         c: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
             'filter anonymous'            => [
@@ -415,7 +415,7 @@ class InlineFragmentTest extends TestCase {
                 ),
                 Parser::typeReference('B'),
                 BuildSchema::build(
-                    <<<'STRING'
+                    <<<'GRAPHQL'
                     type B {
                         a: Int
                         b(a: Int, b: String): C
@@ -424,7 +424,7 @@ class InlineFragmentTest extends TestCase {
                     type C {
                         c: String
                     }
-                    STRING,
+                    GRAPHQL,
                 ),
             ],
         ];

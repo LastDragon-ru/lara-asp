@@ -54,9 +54,9 @@ class ScalarTypeDefinitionTest extends TestCase {
 
         return [
             'scalar'                  => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 scalar Test
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -65,12 +65,12 @@ class ScalarTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'scalar + directives'     => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 scalar Test
                 @a
                 @b
                 @c
-                STRING,
+                GRAPHQL,
                 $settings->setPrintDirectives(true),
                 0,
                 0,
@@ -84,7 +84,7 @@ class ScalarTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'indent'                  => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                     Description
                     """
@@ -93,7 +93,7 @@ class ScalarTypeDefinitionTest extends TestCase {
                         value: "very very long value"
                     )
                     @b(value: "b")
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setLineLength(20)
                     ->setPrintDirectives(true),
@@ -103,27 +103,27 @@ class ScalarTypeDefinitionTest extends TestCase {
                     'name'        => 'Test',
                     'description' => 'Description',
                     'astNode'     => Parser::scalarTypeDefinition(
-                        <<<'STRING'
+                        <<<'GRAPHQL'
                         scalar Test @a(value: "very very long value") @b(value: "b")
-                        STRING,
+                        GRAPHQL,
                     ),
                 ]),
             ],
             'indent + no description' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 scalar Test
                     @a(value: "very very long value")
                     @b(value: "b")
-                STRING,
+                GRAPHQL,
                 $settings->setPrintDirectives(true),
                 1,
                 60,
                 new CustomScalarType([
                     'name'    => 'Test',
                     'astNode' => Parser::scalarTypeDefinition(
-                        <<<'STRING'
+                        <<<'GRAPHQL'
                         scalar Test @a(value: "very very long value") @b(value: "b")
-                        STRING,
+                        GRAPHQL,
                     ),
                 ]),
             ],
@@ -138,13 +138,13 @@ class ScalarTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'ast'                     => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
                 scalar Test
                 @a
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setDirectiveFilter(static function (string $directive): bool {

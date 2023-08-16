@@ -90,7 +90,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
 
         return [
             'description + directives'          => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
@@ -98,7 +98,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 @a
                 @b
                 @c
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true),
                 0,
@@ -115,7 +115,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'description + directives + fields' => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
@@ -131,7 +131,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
 
                     a: A
                 }
-                STRING,
+                GRAPHQL,
                 $settings->setPrintDirectives(true),
                 0,
                 0,
@@ -175,11 +175,11 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'fields'                            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 input Test {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings,
                 0,
                 0,
@@ -193,11 +193,11 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'indent'                            => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 input Test {
                         a: String
                     }
-                STRING,
+                GRAPHQL,
                 $settings->setNormalizeInterfaces(true),
                 1,
                 120,
@@ -222,7 +222,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 ]),
             ],
             'ast'                               => [
-                <<<'STRING'
+                <<<'GRAPHQL'
                 """
                 Description
                 """
@@ -231,7 +231,7 @@ class InputObjectTypeDefinitionTest extends TestCase {
                 {
                     a: String
                 }
-                STRING,
+                GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
                     ->setDirectiveFilter(static function (string $directive): bool {

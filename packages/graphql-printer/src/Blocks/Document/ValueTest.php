@@ -83,7 +83,7 @@ class ValueTest extends TestCase {
 
     public function testStatisticsObjectValue(): void {
         $schema    = BuildSchema::build(
-            <<<'STRING'
+            <<<'GRAPHQL'
             type A {
                 a: Int
                 b: Boolean
@@ -98,7 +98,7 @@ class ValueTest extends TestCase {
                 a: Int
                 b: B!
             }
-            STRING,
+            GRAPHQL,
         );
         $context   = new Context(new TestSettings(), null, $schema);
         $collector = new Collector();
