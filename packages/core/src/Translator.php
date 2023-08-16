@@ -14,7 +14,7 @@ use function end;
 /**
  * Special wrapper around Translator to help translate package's messages.
  */
-abstract class Translator implements TranslatorContract {
+abstract class Translator {
     public function __construct(
         protected TranslatorContract $translator,
         protected string $package,
@@ -24,25 +24,26 @@ abstract class Translator implements TranslatorContract {
     }
 
     /**
-     * @inheritDoc
-     *
-     * @param array<string>|string $key
-     * @param array<mixed>         $replace
+     * @param list<string>|string  $key
+     * @param array<string, mixed> $replace
      */
-    public function get($key, array $replace = [], $locale = null): string {
+    public function get(array|string $key, array $replace = [], string $locale = null): string {
         return $this->translate($key, function (string $key) use ($replace, $locale): string {
             return Cast::toString($this->translator->get($this->key($key), $replace, $locale));
         });
     }
 
     /**
-     * @inheritDoc
-     *
-     * @param array<string>|string       $key
-     * @param Countable|int|array<mixed> $number
-     * @param array<mixed>               $replace
+     * @param list<string>|string                   $key
+     * @param Countable|int|array<array-key, mixed> $number
+     * @param array<string, mixed>                  $replace
      */
-    public function choice($key, $number, array $replace = [], $locale = null): string {
+    public function choice(
+        array|string $key,
+        Countable|array|int $number,
+        array $replace = [],
+        string $locale = null,
+    ): string {
         return $this->translate($key, function (string $key) use ($number, $replace, $locale): string {
             return $this->translator->choice($this->key($key), $number, $replace, $locale);
         });
@@ -52,11 +53,10 @@ abstract class Translator implements TranslatorContract {
         return $this->translator->getLocale();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function setLocale($locale) {
+    public function setLocale(string $locale): static {
         $this->translator->setLocale($locale);
+
+        return $this;
     }
 
     protected function key(string $key): string {
@@ -66,7 +66,7 @@ abstract class Translator implements TranslatorContract {
     }
 
     /**
-     * @param array<string>|string    $variants
+     * @param list<string>|string     $variants
      * @param Closure(string): string $callback
      */
     protected function translate(array|string $variants, Closure $callback): string {

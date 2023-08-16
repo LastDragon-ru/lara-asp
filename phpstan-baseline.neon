@@ -31,11 +31,6 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Formatter\\\\Formatter\\:\\:getTranslation\\(\\) should return string but returns \\(array\\|string\\)\\.$#"
-			count: 1
-			path: packages/formatter/src/Formatter.php
-
-		-
 			message: "#^Parameter \\#1 \\$builder of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Eloquent\\\\Builder\\:\\:handle\\(\\) expects Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder given\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Builders/Eloquent/BuilderTest.php

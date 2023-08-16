@@ -406,7 +406,7 @@ class Formatter {
     }
 
     /**
-     * @param array<string>|string $key
+     * @param list<string>|string  $key
      * @param array<string, mixed> $replace
      */
     protected function getTranslation(array|string $key, array $replace = []): string {
