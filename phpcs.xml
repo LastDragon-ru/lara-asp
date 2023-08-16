@@ -112,12 +112,12 @@
         <properties>
             <property name="allowFallbackGlobalFunctions" value="false"/>
             <property name="allowFallbackGlobalConstants" value="false"/>
+            <property name="allowPartialUses" value="false"/>
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference"/>
     <rule ref="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax"/>
     <rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
-    <rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
     <rule ref="SlevomatCodingStandard.Variables.UnusedVariable">
         <properties>
             <property name="ignoreUnusedValuesWhenOnlyKeysAreUsedInForeach" value="true"/>
