@@ -32,14 +32,14 @@ class Stream implements TypeDefinition {
         $aggregator = $manipulator->getType(Aggregator::class, $source);
 
         return Parser::objectTypeDefinition(
-            <<<GraphQL
+            <<<GRAPHQL
             type {$name} {
                 items: [{$type}!]!
                 info: {$info}!
                 navigator: {$navigator}!
                 aggregator: {$aggregator}!
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 }

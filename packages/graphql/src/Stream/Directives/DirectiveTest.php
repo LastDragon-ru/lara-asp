@@ -42,7 +42,7 @@ class DirectiveTest extends TestCase {
         $directives->setResolved('stream', $directive::class);
 
         $this->useGraphQLSchema(
-            <<<'GraphQL'
+            <<<'GRAPHQL'
             type Query {
                 field: [Test] @stream(searchable: false, sortable: false)
             }
@@ -50,7 +50,7 @@ class DirectiveTest extends TestCase {
             type Test {
                 id: ID!
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 
@@ -63,7 +63,7 @@ class DirectiveTest extends TestCase {
         $directives->setResolved('stream', StreamDirective::class);
 
         $this->useGraphQLSchema(
-            <<<'GraphQL'
+            <<<'GRAPHQL'
             type Query {
                 field: Test
             }
@@ -71,7 +71,7 @@ class DirectiveTest extends TestCase {
             type Test {
                 field: Int @stream(searchable: false, sortable: false)
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 
@@ -84,7 +84,7 @@ class DirectiveTest extends TestCase {
         $directives->setResolved('stream', StreamDirective::class);
 
         $this->useGraphQLSchema(
-            <<<'GraphQL'
+            <<<'GRAPHQL'
             type Query {
                 field: Test
             }
@@ -92,7 +92,7 @@ class DirectiveTest extends TestCase {
             type Test {
                 field(where: Int): [Test] @stream
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 }

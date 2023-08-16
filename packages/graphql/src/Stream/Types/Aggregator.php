@@ -26,11 +26,11 @@ class Aggregator implements TypeDefinition {
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
         return Parser::objectTypeDefinition(
-            <<<GraphQL
+            <<<GRAPHQL
             type {$name} {
                 count: Int!
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 }

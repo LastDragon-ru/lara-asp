@@ -32,9 +32,9 @@ class Cursor implements TypeDefinition {
         $class = json_encode(CursorScalar::class, JSON_THROW_ON_ERROR);
 
         return Parser::scalarTypeDefinition(
-            <<<GraphQL
+            <<<GRAPHQL
             scalar {$name} @scalar(class: {$class})
-            GraphQL,
+            GRAPHQL,
         );
     }
 }

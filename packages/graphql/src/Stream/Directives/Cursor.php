@@ -24,9 +24,9 @@ class Cursor extends BaseDirective implements ArgManipulator {
     public static function definition(): string {
         $name = DirectiveLocator::directiveName(static::class);
 
-        return <<<GraphQL
+        return <<<GRAPHQL
             directive @{$name} on ARGUMENT_DEFINITION
-        GraphQL;
+        GRAPHQL;
     }
 
     public function manipulateArgDefinition(

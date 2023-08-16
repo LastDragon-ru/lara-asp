@@ -28,12 +28,12 @@ class Chunk extends BaseDirective implements ArgManipulator {
         $argMax     = self::ArgMax;
         $argDefault = self::ArgDefault;
 
-        return <<<GraphQL
+        return <<<GRAPHQL
             directive @{$name}(
                 {$argDefault}: Int!
                 {$argMax}: Int!
             ) on ARGUMENT_DEFINITION
-        GraphQL;
+        GRAPHQL;
     }
 
     public function manipulateArgDefinition(

@@ -26,13 +26,13 @@ class Info implements TypeDefinition {
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
         return Parser::objectTypeDefinition(
-            <<<GraphQL
+            <<<GRAPHQL
             type {$name} {
                 chunk: Int!
                 where: String! # fixme(graphql/@stream)!: Should be a JSON?
                 order: String!  # fixme(graphql/@stream)!: Should be a JSON?
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 }

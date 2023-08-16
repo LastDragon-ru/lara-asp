@@ -49,7 +49,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $sortable   = static::ArgSortable;
         $searchable = static::ArgSearchable;
 
-        return <<<GraphQL
+        return <<<GRAPHQL
             """
             Splits list of items into the chunks and return one chunk specified by page number or cursor.
             """
@@ -57,7 +57,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 {$searchable}: Boolean
                 {$sortable}: Boolean
             ) on FIELD_DEFINITION
-        GraphQL;
+        GRAPHQL;
     }
 
     // <editor-fold desc="FieldManipulator">

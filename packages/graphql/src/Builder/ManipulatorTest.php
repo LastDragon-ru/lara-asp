@@ -330,7 +330,7 @@ class ManipulatorTest extends TestCase {
             ],
             '@stream'                     => [
                 'Test',
-                <<<'GraphQL'
+                <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
                     @stream
@@ -339,7 +339,7 @@ class ManipulatorTest extends TestCase {
                 type Test {
                     field: Int
                 }
-                GraphQL,
+                GRAPHQL,
             ],
         ];
     }

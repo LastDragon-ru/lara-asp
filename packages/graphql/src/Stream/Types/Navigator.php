@@ -28,13 +28,13 @@ class Navigator implements TypeDefinition {
         $cursor = $manipulator->getType(Cursor::class, $source);
 
         return Parser::objectTypeDefinition(
-            <<<GraphQL
+            <<<GRAPHQL
             type {$name} {
                 previous: {$cursor}!
                 current: {$cursor}!
                 next: {$cursor}!
             }
-            GraphQL,
+            GRAPHQL,
         );
     }
 }
