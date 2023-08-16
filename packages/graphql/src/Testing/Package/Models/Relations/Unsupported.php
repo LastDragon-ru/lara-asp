@@ -32,7 +32,7 @@ class Unsupported extends Relation {
     /**
      * @inheritDoc
      *
-     * @param array<mixed> $models
+     * @param array<array-key, mixed> $models
      */
     public function addEagerConstraints(array $models): void {
         // empty
@@ -41,9 +41,9 @@ class Unsupported extends Relation {
     /**
      * @inheritDoc
      *
-     * @param array<mixed> $models
+     * @param array<array-key, mixed> $models
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public function initRelation(array $models, $relation): array {
         return [];
@@ -52,10 +52,10 @@ class Unsupported extends Relation {
     /**
      * @inheritDoc
      *
-     * @param array<mixed>           $models
-     * @param Collection<int, Model> $results
+     * @param array<array-key, mixed> $models
+     * @param Collection<int, Model>  $results
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public function match(array $models, Collection $results, $relation): array {
         return [];

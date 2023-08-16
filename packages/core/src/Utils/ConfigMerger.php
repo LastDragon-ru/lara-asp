@@ -52,10 +52,10 @@ class ConfigMerger {
      * @see ConfigMerger::Replace
      * @see ConfigMerger::Strict
      *
-     * @param array<mixed> $target
-     * @param array<mixed> $configs
+     * @param array<array-key, mixed> $target
+     * @param array<array-key, mixed> $configs
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public function merge(array $target, array ...$configs): array {
         // Enable strict mode (just for case)
@@ -74,8 +74,8 @@ class ConfigMerger {
     }
 
     /**
-     * @param array<mixed> $target
-     * @param array<mixed> $config
+     * @param array<array-key, mixed> $target
+     * @param array<array-key, mixed> $config
      */
     protected function process(array &$target, array $config, string $path): void {
         // Strict?
@@ -138,7 +138,7 @@ class ConfigMerger {
     }
 
     /**
-     * @param array<mixed> $array
+     * @param array<array-key, mixed> $array
      */
     protected function cleanup(array &$array, bool $recursive = false): void {
         // Remove

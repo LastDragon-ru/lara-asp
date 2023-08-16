@@ -62,7 +62,7 @@ class DateTimeRuleTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderPasses(): array {
         return [
@@ -74,7 +74,7 @@ class DateTimeRuleTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderGetValue(): array {
         return [

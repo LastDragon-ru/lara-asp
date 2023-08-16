@@ -160,7 +160,7 @@ class Kernel extends ConsoleKernel {
     /**
      * The application's command schedule.
      *
-     * @var array<class-string<Cronable>>
+     * @var list<class-string<Cronable>>
      */
     protected array $schedule = [
         MyCronJob::class,

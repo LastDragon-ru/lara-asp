@@ -26,7 +26,7 @@ use const PHP_EOL;
 class XmlMatchesSchema extends Constraint {
     protected SplFileInfo $schema;
     /**
-     * @var array<LibXMLError>
+     * @var array<array-key, LibXMLError>
      */
     protected array $errors = [];
 

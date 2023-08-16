@@ -58,7 +58,7 @@ abstract class Logical extends BaseOperator {
     abstract protected function getBoolean(): string;
 
     /**
-     * @return array<ArgumentSet>
+     * @return array<array-key, ArgumentSet>
      */
     protected function getConditions(Argument $argument): array {
         // ArgumentSet?

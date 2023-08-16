@@ -26,8 +26,8 @@ class BuilderTest extends TestCase {
     /**
      * @dataProvider dataProviderHandle
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param BuilderFactory                                         $builder
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param BuilderFactory                                                    $builder
      */
     public function testHandle(
         array|Exception $expected,
@@ -53,7 +53,7 @@ class BuilderTest extends TestCase {
     // <editor-fold desc="DataProvider">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderHandle(): array {
         return (new CompositeDataProvider(

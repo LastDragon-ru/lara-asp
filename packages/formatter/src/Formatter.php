@@ -173,12 +173,12 @@ class Formatter {
     private IntlTimeZone|DateTimeZone|string|null $timezone = null;
 
     /**
-     * @var array<IntlDateFormatter>
+     * @var array<string, IntlDateFormatter>
      */
     private array $dateFormatters = [];
 
     /**
-     * @var array<NumberFormatter>
+     * @var array<string, NumberFormatter>
      */
     private array $numbersFormatters = [];
 

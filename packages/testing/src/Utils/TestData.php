@@ -52,7 +52,7 @@ class TestData {
     }
 
     /**
-     * @return array<mixed>|string|int|float|bool|null
+     * @return array<array-key, mixed>|string|int|float|bool|null
      */
     public function json(string $path = '.json'): array|string|int|float|bool|null {
         /** @phpstan-ignore-next-line `Args::getJson` cannot return object if second parameter `true` */

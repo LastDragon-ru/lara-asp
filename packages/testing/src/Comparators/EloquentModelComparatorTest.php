@@ -43,7 +43,7 @@ class EloquentModelComparatorTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderAccepts(): array {
         return [
@@ -74,7 +74,7 @@ class EloquentModelComparatorTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderAssertEquals(): array {
         $f = new class() extends Model {

@@ -9,7 +9,7 @@ use function sprintf;
 
 class ConditionTooManyOperators extends ClientException {
     /**
-     * @param array<string> $operators
+     * @param list<string> $operators
      */
     public function __construct(
         protected array $operators,
@@ -22,7 +22,7 @@ class ConditionTooManyOperators extends ClientException {
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getOperators(): array {
         return $this->operators;

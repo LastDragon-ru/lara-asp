@@ -16,7 +16,7 @@ interface DirectiveResolver {
     public function getDefinition(string $name): DirectiveDefinitionNode|Directive|null;
 
     /**
-     * @return array<DirectiveDefinitionNode|Directive>
+     * @return list<DirectiveDefinitionNode|Directive>
      */
     public function getDefinitions(): array;
 }

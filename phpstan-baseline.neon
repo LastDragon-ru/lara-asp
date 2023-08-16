@@ -141,7 +141,7 @@ parameters:
 			path: packages/testing/src/Mixins/TestResponseMixin.php
 
 		-
-			message: "#^Parameter \\#1 \\$items of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Providers\\\\BaseDataProvider\\:\\:replaceExpectedValues\\(\\) expects array\\<int\\|string, array\\>, array\\<T\\> given\\.$#"
+			message: "#^Parameter \\#1 \\$items of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Providers\\\\BaseDataProvider\\:\\:replaceExpectedValues\\(\\) expects array\\<array\\>, array\\<T\\> given\\.$#"
 			count: 1
 			path: packages/testing/src/Providers/TraversableDataProvider.php
 

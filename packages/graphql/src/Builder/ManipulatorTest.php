@@ -168,8 +168,8 @@ class ManipulatorTest extends TestCase {
         ];
         $operators = new class($config, $default) extends Operators {
             /**
-             * @param array<string, array<class-string<Operator>|string>> $operators
-             * @param array<string, array<class-string<Operator>|string>> $default
+             * @param array<string, list<class-string<Operator>|string>> $operators
+             * @param array<string, list<class-string<Operator>|string>> $default
              */
             public function __construct(array $operators = [], array $default = []) {
                 parent::__construct($operators);

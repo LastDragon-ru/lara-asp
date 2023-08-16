@@ -35,7 +35,7 @@ class DatabaseQueryComparator extends ObjectComparator {
     /**
      * @inheritDoc
      *
-     * @param array<mixed> $processed
+     * @param array<array-key, mixed> $processed
      */
     public function assertEquals(
         mixed $expected,

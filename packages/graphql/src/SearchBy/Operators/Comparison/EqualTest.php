@@ -31,9 +31,9 @@ class EqualTest extends TestCase {
     /**
      * @dataProvider dataProviderCall
      *
-     * @param array{query: string, bindings: array<mixed>} $expected
-     * @param BuilderFactory                               $builderFactory
-     * @param Closure(static): Argument                    $argumentFactory
+     * @param array{query: string, bindings: array<array-key, mixed>} $expected
+     * @param BuilderFactory                                          $builderFactory
+     * @param Closure(static): Argument                               $argumentFactory
      */
     public function testCall(
         array $expected,
@@ -84,7 +84,7 @@ class EqualTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderCall(): array {
         return (new CompositeDataProvider(
@@ -115,7 +115,7 @@ class EqualTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderCallScout(): array {
         return (new CompositeDataProvider(

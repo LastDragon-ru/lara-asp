@@ -43,9 +43,9 @@ class OperatorsTest extends TestCase {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * @param array<object> $objects
+     * @param array<array-key, object> $objects
      *
-     * @return array<class-string>
+     * @return list<class-string>
      */
     protected function toClassNames(array $objects): array {
         $classes = [];

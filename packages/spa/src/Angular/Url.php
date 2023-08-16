@@ -30,7 +30,7 @@ use const PHP_URL_PATH;
 class Url {
     private string $template;
     /**
-     * @var array<string>
+     * @var array<array-key, string>
      */
     private array $parameters;
 
@@ -44,7 +44,7 @@ class Url {
     }
 
     /**
-     * @return array<string>
+     * @return array<array-key, string>
      */
     public function getParameters(): array {
         return $this->parameters;
@@ -93,7 +93,7 @@ class Url {
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     private function extract(string $template): array {
         $names = [];
@@ -109,7 +109,7 @@ class Url {
     }
 
     /**
-     * @return string|array<string|array<mixed>>
+     * @return string|array<array-key, string|array<array-key, mixed>>
      */
     private function serialize(mixed $value): string|array {
         if (is_array($value)) {

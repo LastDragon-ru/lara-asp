@@ -105,7 +105,7 @@ class PrinterTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintSchema(): array {
         $schemaFactory    = self::getSchemaFactory();
@@ -491,7 +491,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderExportType(): array {
         $schemaFactory = self::getSchemaFactory();
@@ -594,7 +594,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintType(): array {
         $schemaFactory = self::getSchemaFactory();
@@ -712,7 +712,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintNode(): array {
         $schemaFactory = self::getSchemaFactory();
@@ -776,7 +776,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderExportNode(): array {
         $schemaFactory = self::getSchemaFactory();

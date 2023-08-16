@@ -33,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
 use function array_merge;
 use function array_unique;
+use function array_values;
 use function is_string;
 
 use const SORT_REGULAR;
@@ -64,13 +65,13 @@ class Condition extends InputObject {
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
     ): array {
-        return array_unique(
+        return array_values(array_unique(
             array_merge(
                 parent::getOperators($manipulator, $source),
                 $manipulator->getTypeOperators($this->getScope(), Operators::Extra),
             ),
             SORT_REGULAR,
-        );
+        ));
     }
 
     protected function isFieldConvertable(

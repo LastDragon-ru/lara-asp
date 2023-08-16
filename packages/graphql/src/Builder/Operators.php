@@ -13,6 +13,7 @@ use function array_map;
 use function array_push;
 use function array_shift;
 use function array_unique;
+use function array_values;
 use function is_a;
 
 abstract class Operators {
@@ -25,19 +26,19 @@ abstract class Operators {
     /**
      * Determines default operators available for each type.
      *
-     * @var array<string, array<class-string<Operator>|string>>
+     * @var array<string, list<class-string<Operator>|string>>
      */
     protected array $default = [];
 
     /**
      * Determines actual operators available for each type.
      *
-     * @var array<string, array<class-string<Operator>|string>>
+     * @var array<string, list<class-string<Operator>|string>>
      */
     private array $operators = [];
 
     /**
-     * @param array<string, array<class-string<Operator>|string>> $operators
+     * @param array<string, list<class-string<Operator>|string>> $operators
      */
     public function __construct(array $operators = []) {
         foreach ($operators as $key => $value) {
@@ -67,14 +68,14 @@ abstract class Operators {
     }
 
     /**
-     * @param array<class-string<Operator>|string> $operators
+     * @param list<class-string<Operator>|string> $operators
      */
     public function setOperators(string $type, array $operators): void {
         $this->operators[$type] = $operators;
     }
 
     /**
-     * @return array<Operator>
+     * @return list<Operator>
      */
     public function getOperators(string $type): array {
         // Is known?
@@ -86,14 +87,14 @@ abstract class Operators {
         $operators = $this->findOperators($type);
         $operators = array_map(function (string $operator): Operator {
             return $this->getOperator($operator);
-        }, array_unique($operators));
+        }, array_values(array_unique($operators)));
 
         // Return
         return $operators;
     }
 
     /**
-     * @return array<class-string<Operator>>
+     * @return array<array-key, class-string<Operator>>
      */
     private function findOperators(string $type): array {
         $extends   = $this->operators[$type] ?? $this->default[$type] ?? [];

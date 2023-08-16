@@ -30,7 +30,7 @@ use function is_a;
 
 class Builder {
     /**
-     * @var array<class-string<Relation<Model>>>
+     * @var list<class-string<Relation<Model>>>
      */
     protected array $relations = [
         BelongsTo::class,
@@ -79,8 +79,8 @@ class Builder {
     // <editor-fold desc="Process">
     // =========================================================================
     /**
-     * @param EloquentBuilder<Model>  $builder
-     * @param non-empty-array<string> $relations
+     * @param EloquentBuilder<Model>             $builder
+     * @param non-empty-array<array-key, string> $relations
      *
      * @return EloquentBuilder<Model>
      */

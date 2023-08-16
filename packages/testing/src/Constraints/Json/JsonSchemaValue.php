@@ -9,7 +9,7 @@ use stdClass;
 
 class JsonSchemaValue implements JsonSchema {
     /**
-     * @param JsonSerializable|stdClass|array<mixed>|string $json
+     * @param JsonSerializable|stdClass|array<array-key, mixed>|string $json
      */
     public function __construct(
         protected JsonSerializable|stdClass|array|string $json,

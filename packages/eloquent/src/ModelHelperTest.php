@@ -72,7 +72,7 @@ class ModelHelperTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderGetRelation(): array {
         // todo(eloquent): Add tests for Intersection Types (PHP 8.1)

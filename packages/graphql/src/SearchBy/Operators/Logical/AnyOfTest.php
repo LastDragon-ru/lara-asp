@@ -27,9 +27,9 @@ class AnyOfTest extends TestCase {
     /**
      * @dataProvider dataProviderCall
      *
-     * @param array{query: string, bindings: array<mixed>} $expected
-     * @param BuilderFactory                               $builderFactory
-     * @param Closure(static): Argument                    $argumentFactory
+     * @param array{query: string, bindings: array<array-key, mixed>} $expected
+     * @param BuilderFactory                                          $builderFactory
+     * @param Closure(static): Argument                               $argumentFactory
      */
     public function testCall(
         array $expected,
@@ -51,7 +51,7 @@ class AnyOfTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderCall(): array {
         $factory = static function (self $test): Argument {

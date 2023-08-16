@@ -193,9 +193,9 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderHandleBuilder
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param Closure(static): object                                $builderFactory
-     * @param Closure(static): void|null                             $prepare
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param Closure(static): object                                           $builderFactory
+     * @param Closure(static): void|null                                        $prepare
      */
     public function testDirective(
         array|Exception $expected,
@@ -264,9 +264,9 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderHandleBuilder
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param Closure(static): (QueryBuilder|EloquentBuilder<Model>) $builderFactory
-     * @param Closure(static): void|null                             $prepare
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param Closure(static): (QueryBuilder|EloquentBuilder<Model>)            $builderFactory
+     * @param Closure(static): void|null                                        $prepare
      */
     public function testHandleBuilder(
         array|Exception $expected,
@@ -417,7 +417,7 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderHandleBuilder(): array {
         return (new CompositeDataProvider(
@@ -524,7 +524,7 @@ class DirectiveTest extends TestCase {
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderHandleScoutBuilder(): array {
         return (new CompositeDataProvider(

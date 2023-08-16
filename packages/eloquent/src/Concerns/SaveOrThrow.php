@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 trait SaveOrThrow {
     /**
-     * @param array<mixed> $options
+     * @param array<array-key, mixed> $options
      */
     public function save(array $options = []): bool {
         $result = parent::save($options);

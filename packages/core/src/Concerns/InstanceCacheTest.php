@@ -84,7 +84,7 @@ class InstanceCacheTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderInstanceCacheKey(): array {
         return [
@@ -151,7 +151,7 @@ class InstanceCacheTest_Cache {
 class InstanceCacheTest_QueueableEntity implements QueueableEntity {
     private mixed $id;
     /**
-     * @var array<string>
+     * @var list<string>
      */
     private array   $relations;
     private ?string $connection;
@@ -167,7 +167,7 @@ class InstanceCacheTest_QueueableEntity implements QueueableEntity {
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getQueueableRelations(): array {
         return $this->relations;

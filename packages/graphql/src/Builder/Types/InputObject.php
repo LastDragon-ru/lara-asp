@@ -118,7 +118,7 @@ abstract class InputObject implements TypeDefinition {
     }
 
     /**
-     * @return array<Operator>
+     * @return list<Operator>
      */
     protected function getOperators(
         Manipulator $manipulator,
@@ -239,7 +239,7 @@ abstract class InputObject implements TypeDefinition {
     }
 
     /**
-     * @return array<DirectiveNode>
+     * @return list<DirectiveNode>
      */
     protected function getFieldDirectives(
         Manipulator $manipulator,

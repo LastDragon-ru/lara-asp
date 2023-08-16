@@ -29,9 +29,9 @@ class RelationTest extends TestCase {
     /**
      * @dataProvider dataProviderCall
      *
-     * @param array{query: string, bindings: array<mixed>}|Exception $expected
-     * @param BuilderFactory                                         $builderFactory
-     * @param Closure(static): Argument                              $argumentFactory
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param BuilderFactory                                                    $builderFactory
+     * @param Closure(static): Argument                                         $argumentFactory
      */
     public function testCall(
         array|Exception $expected,
@@ -60,7 +60,7 @@ class RelationTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public static function dataProviderCall(): array {
         $graphql = <<<'GRAPHQL'

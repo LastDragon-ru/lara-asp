@@ -33,7 +33,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritDoc
      *
-     * @return array<mixed>|Arrayable<array-key,mixed>|JsonSerializable
+     * @return array<array-key, mixed>|Arrayable<array-key,mixed>|JsonSerializable
      */
     public function toArray($request): mixed {
         if ($this->resource instanceof Model) {
@@ -48,14 +48,14 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritDoc
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     public function with($request): array {
         return $this->mapResourceData(parent::with($request), []);
     }
 
     /**
-     * @param array<mixed> $data
+     * @param array<array-key, mixed> $data
      */
     public function additional(array $data): static {
         return parent::additional($this->mapResourceData($data, []));
@@ -64,9 +64,9 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritDoc
      *
-     * @param array<mixed> $data
+     * @param array<array-key, mixed> $data
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     protected function filter($data): array {
         // Why do we need this? Resources can contain different types, and we
@@ -86,7 +86,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @inheritDoc
      *
-     * @return AnonymousResourceCollection<mixed>
+     * @return AnonymousResourceCollection<array-key, mixed>
      */
     public static function collection($resource): AnonymousResourceCollection {
         // TODO [spa]: I'm definitely not sure that we need to support $preserveKeys
@@ -106,10 +106,10 @@ abstract class Resource extends JsonResource implements SafeResource {
     // <editor-fold desc="Functions">
     // =========================================================================
     /**
-     * @param array<mixed> $data
-     * @param array<mixed> $path
+     * @param array<array-key, mixed> $data
+     * @param array<array-key, mixed> $path
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     protected function mapResourceData(array $data, array $path): array {
         foreach ($data as $key => $value) {
@@ -120,7 +120,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     }
 
     /**
-     * @param array<string> $path
+     * @param array<array-key, string> $path
      */
     protected function mapResourceValue(string|int $key, mixed $value, array $path): mixed {
         // Scalars, null and our Resources can be returned as is
@@ -165,7 +165,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     }
 
     /**
-     * @param array<string> $path
+     * @param array<array-key, string> $path
      */
     protected function mapResourceIsDate(DateTimeInterface $value, array $path): bool {
         return count($path) === 1

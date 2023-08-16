@@ -217,7 +217,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDire
  *
  * @var array{
  *      search_by: array{
- *          operators: array<string, array<string|class-string<Operator>>>
+ *          operators: array<string, list<string|class-string<Operator>>>
  *      }
  *      } $settings
  */
@@ -347,7 +347,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirecti
  *
  * @var array{
  *      sort_by: array{
- *          operators: array<string, array<string|class-string<Operator>>>
+ *          operators: array<string, list<string|class-string<Operator>>>
  *      },
  *      } $settings
  */

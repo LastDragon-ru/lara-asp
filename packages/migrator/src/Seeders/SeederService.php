@@ -10,11 +10,6 @@ use function in_array;
 use function is_string;
 
 class SeederService {
-    /**
-     * @var array<string>
-     */
-    protected array $seedersPaths = [];
-
     public function __construct() {
         // empty
     }

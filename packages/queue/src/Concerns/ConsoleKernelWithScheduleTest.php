@@ -28,7 +28,7 @@ class ConsoleKernelWithScheduleTest_Impl extends Kernel {
     use ConsoleKernelWithSchedule;
 
     /**
-     * @var array<class-string<Cronable>>
+     * @var list<class-string<Cronable>>
      */
     protected array $schedule = [];
 }

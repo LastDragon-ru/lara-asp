@@ -22,7 +22,7 @@ class DirectivesTest extends TestCase {
     /**
      * @dataProvider dataProviderSerialize
      *
-     * @param array<DirectiveNode> $directives
+     * @param list<DirectiveNode> $directives
      */
     public function testSerialize(
         string $expected,
@@ -59,7 +59,7 @@ class DirectivesTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array{string, Settings, int, int, array<DirectiveNode>, ?string}>
+     * @return array<string,array{string, Settings, int, int, list<DirectiveNode>, ?string}>
      */
     public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())

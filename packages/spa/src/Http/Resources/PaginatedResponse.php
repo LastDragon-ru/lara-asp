@@ -12,7 +12,7 @@ class PaginatedResponse extends PaginatedResourceResponse {
     /**
      * @inheritDoc
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     protected function paginationInformation($request): array {
         return [
@@ -23,9 +23,9 @@ class PaginatedResponse extends PaginatedResourceResponse {
     /**
      * @inheritDoc
      *
-     * @param array<mixed> $paginated
+     * @param array<array-key, mixed> $paginated
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     protected function meta($paginated): array {
         return [
@@ -45,7 +45,7 @@ class PaginatedResponse extends PaginatedResourceResponse {
     /**
      * @inheritDoc
      *
-     * @param array<mixed> $data
+     * @param array<array-key, mixed> $data
      */
     protected function haveDefaultWrapperAndDataIsUnwrapped($data): bool {
         // Our Resources always unwrapped and we always need a wrapper for

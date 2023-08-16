@@ -37,9 +37,9 @@ class EventsDispatcher extends Dispatcher {
      *
      * @inheritDoc
      *
-     * @param array<mixed> $arguments
+     * @param array<array-key, mixed> $arguments
      *
-     * @return array<mixed>
+     * @return array<array-key, mixed>
      */
     protected function createListenerAndJob($class, $method, $arguments): array {
         $listener = $this->container->make($class);

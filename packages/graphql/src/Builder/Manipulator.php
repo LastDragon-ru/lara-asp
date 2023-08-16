@@ -224,7 +224,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * @param array<DirectiveNode> $directives
+     * @param list<DirectiveNode> $directives
      */
     public function getOperatorField(
         Operator $operator,
@@ -271,7 +271,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     /**
-     * @param array<Operator> $operators
+     * @param list<Operator> $operators
      */
     public function getOperatorsFields(array $operators, TypeSource $source): string {
         return implode(
