@@ -24,7 +24,8 @@
     "spa",
     "angular",
     "GraphQL",
-    "lighthouse-php"
+    "lighthouse-php",
+    "serializer"
   ],
   "support": {
     "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
@@ -47,12 +48,17 @@
     "laravel/framework": "^9.0.0|^10.0.0",
     "nuwave/lighthouse": "^6.5.0",
     "opis/json-schema": "^2.3.0",
+    "phpdocumentor/type-resolver": "^1.7",
+    "phpstan/phpdoc-parser": "^1.23",
     "psr/http-message": "^1.0.0|^2.0.0",
     "symfony/filesystem": "^6.3.0",
     "symfony/finder": "^6.3.0",
     "symfony/http-foundation": "^6.3.0",
     "symfony/mime": "^6.3.0",
+    "symfony/property-access": "^6.3.0",
+    "symfony/property-info": "^6.3.0",
     "symfony/psr-http-message-bridge": "^2.0.0",
+    "symfony/serializer": "^6.3.3",
     "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
@@ -93,7 +99,8 @@
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/",
-      "LastDragon_ru\\LaraASP\\GraphQLPrinter\\": "packages/graphql-printer/src/"
+      "LastDragon_ru\\LaraASP\\GraphQLPrinter\\": "packages/graphql-printer/src/",
+      "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/"
     },
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
@@ -104,7 +111,8 @@
       "packages/formatter/src/**Test.php",
       "packages/spa/src/**Test.php",
       "packages/graphql/src/**Test.php",
-      "packages/graphql-printer/src/**Test.php"
+      "packages/graphql-printer/src/**Test.php",
+      "packages/serializer/src/**Test.php"
     ]
   },
   "autoload-dev": {
@@ -119,7 +127,8 @@
         "LastDragon_ru\\LaraASP\\Formatter\\Provider",
         "LastDragon_ru\\LaraASP\\Spa\\Provider",
         "LastDragon_ru\\LaraASP\\GraphQL\\Provider",
-        "LastDragon_ru\\LaraASP\\Queue\\Provider"
+        "LastDragon_ru\\LaraASP\\Queue\\Provider",
+        "LastDragon_ru\\LaraASP\\Serializer\\Provider"
       ]
     }
   },
@@ -168,6 +177,7 @@
     "lastdragon-ru/lara-asp-formatter": "self.version",
     "lastdragon-ru/lara-asp-spa": "self.version",
     "lastdragon-ru/lara-asp-graphql": "self.version",
-    "lastdragon-ru/lara-asp-graphql-printer": "self.version"
+    "lastdragon-ru/lara-asp-graphql-printer": "self.version",
+    "lastdragon-ru/lara-asp-serializer": "self.version"
   }
 }
