@@ -4,8 +4,11 @@ namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Metadata\MetadataFactory;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
+use function class_exists;
 
 /**
  * Special serializer for {@see Serializable}.
@@ -25,6 +28,16 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
         MetadataFactory $metadata,
         array $defaultContext = [],
     ) {
+        if (!class_exists(PropertyAccess::class)) {
+            /**
+             * The class is required for {@see AbstractObjectNormalizer}. We
+             * need to add the package to our 'composer.json' since
+             * `symfony/serializer` doesn't require it directly. But it
+             * will lead to "unused package error" during CI checks. So the
+             * condition needs only for CI :)
+             */
+        }
+
         parent::__construct(
             classMetadataFactory : $metadata,
             propertyTypeExtractor: $metadata,
