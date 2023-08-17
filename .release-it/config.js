@@ -185,7 +185,7 @@ module.exports = {
 
                         for (let scope of scopes) {
                             const parts     = scope.split('/');
-                            const package   = parts[0].trim();
+                            const package   = parts[0].trim() || '*';
                             const component = parts.slice(1).join('/').trim() || null;
                             const byPackage = packages[package] = packages[package] || {
                                 name:  package,
