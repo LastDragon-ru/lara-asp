@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\Traits\WithDefaultContext;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer as SymfonyDateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -16,13 +17,31 @@ use function is_a;
 use function is_string;
 use function sprintf;
 
+/**
+ * Normalizes/Denormalizes an object implementing the {@see DateTimeInterface}
+ * to/from a date string.
+ *
+ * It is designed specially for Laravel and respects how we are usually work
+ * with Dates. Here are few differences/improvements from
+ * {@see SymfonyDateTimeNormalizer}:
+ *
+ * - It supports denormalization for any object that implements {@see DateTimeInterface}.
+ * - It uses {@see Date::createFromFormat()} for denormalization to make sure
+ *   that the proper `DateTime` instance will be used.
+ * - If {@see Date::createFromFormat()} failed and {@see self::ContextFallback}
+ *   enabled the {@see Date::make()} will be used. It may be useful, for example,
+ *   if {@see self::ContextFormat} was changed.
+ *
+ * @see DateTimeNormalizerContextBuilder
+ * @see SymfonyDateTimeNormalizer
+ */
 class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     use WithDefaultContext;
 
-    public const ContextFormat          = self::class.'@format';
-    public const ContextFormatDefault   = DateTimeInterface::RFC3339_EXTENDED;
-    public const ContextFallback        = self::class.'@fallback';
-    public const ContextFallbackDefault = false;
+    final public const ContextFormat          = self::class.'@format';
+    final public const ContextFormatDefault   = DateTimeInterface::RFC3339_EXTENDED;
+    final public const ContextFallback        = self::class.'@fallback';
+    final public const ContextFallbackDefault = false;
 
     /**
      * @param array<string, mixed> $defaultContext

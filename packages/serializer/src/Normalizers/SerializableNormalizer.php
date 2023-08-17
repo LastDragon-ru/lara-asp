@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
  * doesn't supported. If you need it, please consider using one of Symfony's
  * normalizer like {@see ObjectNormalizer}.
  *
+ * @see SerializableNormalizerContextBuilder
  * @see ObjectNormalizer
  */
 class SerializableNormalizer extends AbstractObjectNormalizer {
