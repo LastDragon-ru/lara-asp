@@ -52,7 +52,7 @@ var_dump($deserialized);
 
 <details><summary>Output</summary>
 
-```
+```plain
 Serialized: string(64) "{"id":1,"name":"User","created":"2023-08-17T07:06:26.415+00:00"}"
 
 Deserialized: object(Example\User)#470 (3) {
@@ -110,16 +110,17 @@ Deserialized: object(Example\User)#470 (3) {
   }
 }
 ```
+
 </details>
 
 # Extending
 
 Out of the box, the package supports only the following objects (see [`Factory`](./src/Factory.php) for more details):
 
-- Any object that implement [`Serializable`](./src/Contracts/Serializable.php) (see [`SerializableNormalizer`](./src/Normalizers/SerializableNormalizer.php))
-- Any object that implement `\DateTimeInterface` (see [`DateTimeNormalizer`](./src/Normalizers/DateTimeNormalizer.php))
-- `\DateTimeZone`
-- `\DateInterval`
+* Any object that implement [`Serializable`](./src/Contracts/Serializable.php) (see [`SerializableNormalizer`](./src/Normalizers/SerializableNormalizer.php))
+* Any object that implement `\DateTimeInterface` (see [`DateTimeNormalizer`](./src/Normalizers/DateTimeNormalizer.php))
+* `\DateTimeZone`
+* `\DateInterval`
 
 Publish the config and add normalizers/denormalizers if you need more:
 
