@@ -162,6 +162,7 @@ module.exports = {
                 commitPartial:   commitTemplate,
                 finalizeContext: (context, options, commits, keyCommit) => {
                     // Group commits by package and type, collect summary
+                    const all      = '*';
                     let breaking   = {count: 0, packages: []};
                     let packages   = {};
                     let summary    = {};
@@ -185,7 +186,7 @@ module.exports = {
 
                         for (let scope of scopes) {
                             const parts     = scope.split('/');
-                            const package   = parts[0].trim() || '*';
+                            const package   = parts[0].trim() || all;
                             const component = parts.slice(1).join('/').trim() || null;
                             const byPackage = packages[package] = packages[package] || {
                                 name:  package,
@@ -202,6 +203,11 @@ module.exports = {
                             }));
 
                             pkgs.push(package);
+                        }
+
+                        // No scopes?
+                        if (scopes.length === 0) {
+                            pkgs.push(all);
                         }
 
                         // Summary
@@ -229,6 +235,7 @@ module.exports = {
                     packages
                         .sort((a, b) => compareStrings(a.name, b.name))
                         .forEach((package) => {
+                            package.name  = package.name !== all ? package.name : null; // because no = in handlebars...
                             package.types = Object.values(package.types);
                             package.types
                                 .sort((a, b) => {
