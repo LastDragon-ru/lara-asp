@@ -146,7 +146,7 @@ module.exports = {
     plugins: {
         '@release-it/bumper':                 {
             out: {
-                file: 'packages/*/metadata.json',
+                file: ['metadata.json', 'packages/*/metadata.json'],
             },
         },
         '@release-it/conventional-changelog': {
