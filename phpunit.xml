@@ -6,37 +6,37 @@
          executionOrder="random"
          colors="true">
     <testsuites>
-        <testsuite name="lastdragon-ru/lara-asp-core">
+        <testsuite name="core">
             <directory suffix="Test.php">./packages/core/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/lara-asp-migrator">
+        <testsuite name="migrator">
             <directory suffix="Test.php">./packages/migrator/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/lara-asp-queue">
+        <testsuite name="queue">
             <directory suffix="Test.php">./packages/queue/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/lara-asp-testing">
+        <testsuite name="testing">
             <directory suffix="Test.php">./packages/testing/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/lara-asp-eloquent">
+        <testsuite name="eloquent">
             <directory suffix="Test.php">./packages/eloquent/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/lara-asp-formatter">
+        <testsuite name="formatter">
             <directory suffix="Test.php">./packages/formatter/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/lara-asp-spa">
+        <testsuite name="spa">
             <directory suffix="Test.php">./packages/spa/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/lara-asp-graphql">
+        <testsuite name="graphql">
             <directory suffix="Test.php">./packages/graphql/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/lara-asp-graphql-printer">
+        <testsuite name="graphql-printer">
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/serializer">
+        <testsuite name="serializer">
             <directory suffix="Test.php">./packages/serializer/src</directory>
         </testsuite>
-        <testsuite name="lastdragon-ru/documentator">
+        <testsuite name="documentator">
             <directory suffix="Test.php">./packages/documentator/src</directory>
         </testsuite>
     </testsuites>
