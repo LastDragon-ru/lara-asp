@@ -100,7 +100,8 @@
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/",
       "LastDragon_ru\\LaraASP\\GraphQLPrinter\\": "packages/graphql-printer/src/",
-      "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/"
+      "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/",
+      "LastDragon_ru\\LaraASP\\Documentator\\": "packages/documentator/src/"
     },
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
@@ -112,7 +113,8 @@
       "packages/spa/src/**Test.php",
       "packages/graphql/src/**Test.php",
       "packages/graphql-printer/src/**Test.php",
-      "packages/serializer/src/**Test.php"
+      "packages/serializer/src/**Test.php",
+      "packages/documentator/src/**Test.php"
     ]
   },
   "autoload-dev": {
@@ -128,7 +130,8 @@
         "LastDragon_ru\\LaraASP\\Spa\\Provider",
         "LastDragon_ru\\LaraASP\\GraphQL\\Provider",
         "LastDragon_ru\\LaraASP\\Queue\\Provider",
-        "LastDragon_ru\\LaraASP\\Serializer\\Provider"
+        "LastDragon_ru\\LaraASP\\Serializer\\Provider",
+        "LastDragon_ru\\LaraASP\\Documentator\\Provider"
       ]
     }
   },
@@ -178,6 +181,7 @@
     "lastdragon-ru/lara-asp-spa": "self.version",
     "lastdragon-ru/lara-asp-graphql": "self.version",
     "lastdragon-ru/lara-asp-graphql-printer": "self.version",
-    "lastdragon-ru/lara-asp-serializer": "self.version"
+    "lastdragon-ru/lara-asp-serializer": "self.version",
+    "lastdragon-ru/lara-asp-documentator": "self.version"
   }
 }
