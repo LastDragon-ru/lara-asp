@@ -63,6 +63,12 @@ This package provides a customizable wrapper around Intl formatters.
 
 [Read more](packages/formatter/README.md).
 
+## The Serializer
+
+Customizable wrapper around the [Symfony Serializer Component](https://symfony.com/doc/current/components/serializer.html).
+
+[Read more](packages/serializer/README.md).
+
 ## Testing Helpers
 
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and alternative solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
