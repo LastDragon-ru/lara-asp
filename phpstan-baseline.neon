@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Trait LastDragon_ru\\\\LaraASP\\\\Core\\\\Concerns\\\\ProviderWithViews is used zero times and is not analysed\\.$#"
+			count: 1
+			path: packages/core/src/Concerns/ProviderWithViews.php
+
+		-
 			message: "#^Cannot call method once\\(\\) on mixed\\.$#"
 			count: 1
 			path: packages/core/src/Observer/DispatcherTest.php
