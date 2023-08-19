@@ -5,6 +5,7 @@
     <description>Lara Asp coding standard, based on PSR12</description>
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
     <file>./packages</file>
+    <exclude-pattern>*.blade.php</exclude-pattern>
     <rule ref="PSR12">
         <exclude name="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase"/>
         <exclude name="Squiz.WhiteSpace.ScopeKeywordSpacing"/>

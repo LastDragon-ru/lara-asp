@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
 use function file_get_contents;
 use function file_put_contents;
 use function is_file;
+use function strcmp;
 use function uksort;
 use function usort;
 

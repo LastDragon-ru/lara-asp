@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
 use LastDragon_ru\LaraASP\Documentator\Provider;
+use LastDragon_ru\LaraASP\Serializer\Provider as SerializerProvider;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
 
 /**
@@ -15,6 +16,7 @@ class TestCase extends PackageTestCase {
     protected function getPackageProviders(mixed $app): array {
         return [
             Provider::class,
+            SerializerProvider::class,
         ];
     }
 }

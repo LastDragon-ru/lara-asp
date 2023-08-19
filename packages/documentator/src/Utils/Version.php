@@ -52,7 +52,7 @@ class Version {
     public static function normalize(string $version): string {
         if (str_starts_with($version, 'v')) {
             $version = mb_substr($version, 1);
-        } elseif (str_starts_with($version, 'dev-')) {
+        } elseif ($version === 'HEAD' || str_starts_with($version, 'dev-')) {
             $version = '9999999-dev';
         } else {
             // empty
