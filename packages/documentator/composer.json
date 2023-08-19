@@ -22,7 +22,8 @@
     "ext-mbstring": "*",
     "composer/semver": "^3.2",
     "laravel/framework": "^9.21.0|^10.0.0",
-    "symfony/process": "^6.3.0"
+    "symfony/process": "^6.3.0",
+    "lastdragon-ru/lara-asp-serializer": "self.version"
   },
   "require-dev": {
     "lastdragon-ru/lara-asp-testing": "self.version",
