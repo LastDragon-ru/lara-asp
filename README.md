@@ -4,10 +4,18 @@ The set provides best practices to make development more fun and classes/service
 
 # Requirements
 
-| Package | Version             |
-|---------|---------------------|
-| PHP     | `^8.1.0`            |
-| Laravel | `^9.0.0`, `^10.0.0` |
+| Requirement | Constraint | Supported in     |
+|-------------|------------|------------------|
+| PHP         | `^8.2`     | `HEAD ⋯ 2.0.0`   |
+|             | `^8.1`     | `HEAD ⋯ 2.0.0`   |
+|             | `^8.0`     | `4.5.2 ⋯ 2.0.0`  |
+|             | `^8.0.0`   | `1.1.2 ⋯ 0.12.0` |
+|             | `>=8.0.0`  | `0.11.0 ⋯ 0.4.0` |
+|             | `>=7.4.0`  | `0.3.0 ⋯ 0.1.0`  |
+| Laravel     | `^10.0.0`  | `HEAD ⋯ 2.1.0`   |
+|             | `^9.0.0`   | `HEAD ⋯ 0.12.0`  |
+|             | `^8.22.1`  | `3.0.0 ⋯ 0.2.0`  |
+|             | `^8.0`     | `0.1.0`          |
 
 # Installation
 
