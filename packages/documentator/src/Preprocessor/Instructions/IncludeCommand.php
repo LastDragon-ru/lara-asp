@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 
+use function explode;
 use function sprintf;
 
 class IncludeCommand implements Instruction {
@@ -22,7 +23,10 @@ class IncludeCommand implements Instruction {
 
     public function process(string $path, string $target): string {
         try {
-            return $this->process->run([$target], $path);
+            return $this->process->run(
+                explode(' ', $target, 2), // todo(documentator): Probably we need to parse args?
+                $path,
+            );
         } catch (Exception $exception) {
             throw new PreprocessFailed(
                 sprintf(

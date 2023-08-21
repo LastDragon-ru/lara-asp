@@ -19,7 +19,7 @@ class IncludeCommandTest extends TestCase {
         $process  = Mockery::mock(Process::class);
         $process
             ->shouldReceive('run')
-            ->with([$command], $path)
+            ->with(['command', 'to execute'], $path)
             ->once()
             ->andReturn($expected);
 

@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 use function preg_replace_callback;
 use function sha1;
 use function trim;
+use function urldecode;
 
 use const PREG_UNMATCHED_AS_NULL;
 
@@ -93,7 +94,8 @@ class Preprocessor {
 
                 if ($content === null) {
                     $instruction        = $this->getInstruction($matches['instruction']);
-                    $content            = trim($instruction?->process($path, $matches['target']) ?? '');
+                    $target             = urldecode($matches['target']);
+                    $content            = trim($instruction?->process($path, $target) ?? '');
                     $this->cache[$hash] = $content;
                 }
 
