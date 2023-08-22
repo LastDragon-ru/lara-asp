@@ -18,7 +18,8 @@ use const PREG_UNMATCHED_AS_NULL;
 /**
  * Replaces special instructions in Markdown.
  *
- *      [Link](<target> "<instruction>")
+ *      [<instruction>]: <target>
+ *      [<instruction>=name]: <target>
  *
  * Supported instructions:
  *
@@ -38,10 +39,16 @@ class Preprocessor {
     protected const Warning = 'Generated automatically. Do not edit.';
     protected const Regexp  = <<<'REGEXP'
         /^
-        (?P<preprocess>\[[^]]*?\]\((?P<identifier>(?P<target>.+?)\s+\"(?P<instruction>[^"]+?)\")\))
-        (?P<content>\<!--\sstart:(?P<hash>[\S]+)\s.*?\<!--\send:(?P=hash)\s--\>)?
-        $/iumsx
-    REGEXP;
+        (?P<expression>
+          \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s(?P<target>[^ ]+?)
+        )
+        (?P<content>\R
+          \[\/\/\]:\s\#\s\(start:\s(?P<hash>[^)]+)\)
+          .*?
+          \[\/\/\]:\s\#\s\(end:\s(?P=hash)\)
+        )?
+        $/imsx
+        REGEXP;
 
     /**
      * @var array<string, array{class-string<Instruction>, ?Instruction}>
@@ -88,7 +95,7 @@ class Preprocessor {
         $result = preg_replace_callback(
             pattern : static::Regexp,
             callback: function (array $matches) use ($path): string {
-                $identifier = $matches['identifier'];
+                $identifier = $matches['instruction'].'='.$matches['target'];
                 $hash       = $this->getHash($identifier);
                 $content    = $this->cache[$hash] ?? null;
 
@@ -103,14 +110,16 @@ class Preprocessor {
                 if ($content) {
                     $warning = static::Warning;
                     $content = <<<RESULT
-                        {$matches['preprocess']}<!-- start:{$hash} {$warning} -->
+                        {$matches['expression']}
+                        [//]: # (start: {$hash})
+                        [//]: # (warning: {$warning})
 
                         {$content}
 
-                        <!-- end:{$hash} -->
+                        [//]: # (end: {$hash})
                         RESULT;
                 } else {
-                    $content = $matches['preprocess'];
+                    $content = $matches['expression'];
                 }
 
                 return $content;

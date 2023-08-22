@@ -12,17 +12,18 @@ use PHPUnit\Framework\Attributes\CoversClass;
 class PreprocessorTest extends TestCase {
     public function testProcess(): void {
         $content     = <<<'MARKDOWN'
-            Bla bla bla [Link](./path/to/file "test") should be ignored.
+            Bla bla bla [test]: ./path/to/file should be ignored.
 
-            [Link](./path/to/file "unknown")
+            [unknown]: ./path/to/file
 
-            [Link](./path/to/file "test")
+            [test]: ./path/to/file
 
-            [Link](./path/to/file "test")<!-- start:hash -->
+            [test]: ./path/to/file
+            [//]: # (start: hash)
 
             outdated
 
-            <!-- end:hash -->
+            [//]: # (end: hash)
             MARKDOWN;
         $instruction = Mockery::mock(Instruction::class);
         $instruction
@@ -40,21 +41,25 @@ class PreprocessorTest extends TestCase {
 
         self::assertEquals(
             <<<'MARKDOWN'
-            Bla bla bla [Link](./path/to/file "test") should be ignored.
+            Bla bla bla [test]: ./path/to/file should be ignored.
 
-            [Link](./path/to/file "unknown")
+            [unknown]: ./path/to/file
 
-            [Link](./path/to/file "test")<!-- start:6a49bc25917851bb83f7f7b0c69ffea5774d4ccf Generated automatically. Do not edit. -->
-
-            content
-
-            <!-- end:6a49bc25917851bb83f7f7b0c69ffea5774d4ccf -->
-
-            [Link](./path/to/file "test")<!-- start:6a49bc25917851bb83f7f7b0c69ffea5774d4ccf Generated automatically. Do not edit. -->
+            [test]: ./path/to/file
+            [//]: # (start: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
+            [//]: # (warning: Generated automatically. Do not edit.)
 
             content
 
-            <!-- end:6a49bc25917851bb83f7f7b0c69ffea5774d4ccf -->
+            [//]: # (end: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
+
+            [test]: ./path/to/file
+            [//]: # (start: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            content
+
+            [//]: # (end: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
             MARKDOWN,
             $preprocessor->process('path', $content),
         );
