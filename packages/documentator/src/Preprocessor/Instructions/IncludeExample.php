@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
+use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
-use Symfony\Component\Filesystem\Filesystem;
 
 use function implode;
 use function is_file;
@@ -89,7 +89,7 @@ class IncludeExample extends IncludeFile {
         $file    = isset($info['dirname'])
             ? "{$info['dirname']}/{$info['filename']}.run"
             : "{$info['filename']}.run";
-        $path    = (new Filesystem())->isAbsolutePath($file) ? $file : "{$path}/{$file}";
+        $path    = Path::getPath($path, $file);
         $command = is_file($path) ? [$file] : null;
 
         return $command;

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
-use Symfony\Component\Filesystem\Filesystem;
+use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 
 use function file_get_contents;
 use function sprintf;
@@ -19,7 +19,7 @@ class IncludeFile implements Instruction {
     }
 
     public function process(string $path, string $target): string {
-        $file    = (new Filesystem())->isAbsolutePath($target) ? $target : "{$path}/{$target}";
+        $file    = Path::getPath($path, $target);
         $content = file_get_contents($file);
 
         if ($content === false) {
