@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeCommand;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
@@ -64,6 +65,7 @@ class Preprocessor {
         $this->addInstruction(IncludeCommand::class);
         $this->addInstruction(IncludeExample::class);
         $this->addInstruction(IncludePackageList::class);
+        $this->addInstruction(IncludeDocumentList::class);
     }
 
     /**
