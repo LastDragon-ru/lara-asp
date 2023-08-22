@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeCommand;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
+use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 
 use function preg_replace_callback;
 use function sha1;
@@ -55,11 +56,6 @@ class Preprocessor {
      */
     private array $instructions = [];
 
-    /**
-     * @var array<string, string>
-     */
-    private array $cache = [];
-
     public function __construct() {
         $this->addInstruction(IncludeFile::class);
         $this->addInstruction(IncludeCommand::class);
@@ -92,18 +88,19 @@ class Preprocessor {
     }
 
     public function process(string $path, string $string): string {
+        $path   = Path::normalize($path);
+        $cache  = [];
         $result = preg_replace_callback(
             pattern : static::Regexp,
-            callback: function (array $matches) use ($path): string {
-                $identifier = $matches['instruction'].'='.$matches['target'];
-                $hash       = $this->getHash($identifier);
-                $content    = $this->cache[$hash] ?? null;
+            callback: function (array $matches) use (&$cache, $path): string {
+                $hash    = $this->getHash("{$matches['instruction']}={$matches['target']}");
+                $content = $cache[$hash] ?? null;
 
                 if ($content === null) {
-                    $instruction        = $this->getInstruction($matches['instruction']);
-                    $target             = urldecode($matches['target']);
-                    $content            = trim($instruction?->process($path, $target) ?? '');
-                    $this->cache[$hash] = $content;
+                    $instruction  = $this->getInstruction($matches['instruction']);
+                    $target       = urldecode($matches['target']);
+                    $content      = trim($instruction?->process($path, $target) ?? '');
+                    $cache[$hash] = $content;
                 }
 
                 // Return

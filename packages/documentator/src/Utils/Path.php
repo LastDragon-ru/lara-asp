@@ -9,11 +9,20 @@ use function is_file;
 
 class Path {
     public static function getPath(string $root, string $path): string {
-        $root = is_file($root) ? dirname($root) : $root;
-        $path = static::isAbsolute($path) ? $path : "{$root}/{$path}";
+        $path = static::isRelative($path)
+            ? SymfonyPath::join(static::getDirname($root), $path)
+            : $path;
         $path = static::normalize($path);
 
         return $path;
+    }
+
+    public static function getDirname(string $path): string {
+        return is_file($path) ? dirname($path) : $path;
+    }
+
+    public static function isRelative(string $path): bool {
+        return SymfonyPath::isRelative($path);
     }
 
     public static function isAbsolute(string $path): bool {

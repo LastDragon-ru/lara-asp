@@ -21,7 +21,12 @@ class PreprocessorTest extends TestCase {
             [test]: ./path/to/file
             [//]: # (start: hash)
 
+            [test]: ./path/to/file
+            [//]: # (start: nested-hash)
+
             outdated
+
+            [//]: # (end: nested-hash)
 
             [//]: # (end: hash)
             MARKDOWN;
