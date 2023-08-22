@@ -11,9 +11,9 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageL
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 
 use function preg_replace_callback;
+use function rawurldecode;
 use function sha1;
 use function trim;
-use function urldecode;
 
 use const PREG_UNMATCHED_AS_NULL;
 
@@ -36,6 +36,8 @@ use const PREG_UNMATCHED_AS_NULL;
  *   block) and may give unpredictable results.
  * - `<instruction>` cannot be inside text.
  * - Nested `<instruction>` doesn't supported.
+ *
+ * @todo Use https://github.com/thephpleague/commonmark?
  */
 class Preprocessor {
     protected const Warning = 'Generated automatically. Do not edit.';
@@ -95,27 +97,40 @@ class Preprocessor {
         $result = preg_replace_callback(
             pattern : static::Regexp,
             callback: function (array $matches) use (&$cache, $path): string {
-                $hash    = $this->getHash("{$matches['instruction']}={$matches['target']}");
-                $content = $cache[$hash] ?? null;
+                $hash        = $this->getHash("{$matches['instruction']}={$matches['target']}");
+                $content     = $cache[$hash] ?? null;
+                $instruction = $this->getInstruction($matches['instruction']);
 
                 if ($content === null) {
-                    $instruction  = $this->getInstruction($matches['instruction']);
-                    $target       = urldecode($matches['target']);
+                    $target       = rawurldecode($matches['target']);
                     $content      = trim($instruction?->process($path, $target) ?? '');
                     $cache[$hash] = $content;
                 }
 
                 // Return
+                $warning = static::Warning;
+                $prefix  = <<<RESULT
+                    {$matches['expression']}
+                    [//]: # (start: {$hash})
+                    [//]: # (warning: {$warning})
+                    RESULT;
+                $suffix  = <<<RESULT
+                    [//]: # (end: {$hash})
+                    RESULT;
+
                 if ($content) {
-                    $warning = static::Warning;
                     $content = <<<RESULT
-                        {$matches['expression']}
-                        [//]: # (start: {$hash})
-                        [//]: # (warning: {$warning})
+                        {$prefix}
 
                         {$content}
 
-                        [//]: # (end: {$hash})
+                        {$suffix}
+                        RESULT;
+                } elseif ($instruction) {
+                    $content = <<<RESULT
+                        {$prefix}
+                        [//]: # (empty)
+                        {$suffix}
                         RESULT;
                 } else {
                     $content = $matches['expression'];
