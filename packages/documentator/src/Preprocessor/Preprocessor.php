@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeCommand;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 
 use function preg_replace_callback;
@@ -60,6 +61,7 @@ class Preprocessor {
         $this->addInstruction(IncludeFile::class);
         $this->addInstruction(IncludeCommand::class);
         $this->addInstruction(IncludeExample::class);
+        $this->addInstruction(IncludePackageList::class);
     }
 
     /**
