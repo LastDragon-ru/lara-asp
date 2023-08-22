@@ -64,6 +64,7 @@ class IncludeExampleTest extends TestCase {
             ```
 
             Output:
+
             ```plain
             {$output}
             ```

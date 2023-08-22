@@ -65,6 +65,7 @@ class IncludeExample extends IncludeFile {
             } else {
                 $output = <<<CODE
                 Output:
+
                 ```plain
                 $output
                 ```
