@@ -15,6 +15,8 @@ use function is_array;
 use function is_file;
 use function is_string;
 use function json_decode;
+use function strcmp;
+use function usort;
 use function view;
 
 use const JSON_THROW_ON_ERROR;
@@ -62,13 +64,10 @@ class IncludePackageList implements Instruction {
             $title = Markdown::getTitle($content);
 
             if ($title) {
-                $path = Path::normalize("{$target}/{$directory->getFilename()}");
-
                 $packages[] = [
-                    'path'    => $path,
+                    'path'    => Path::normalize("{$target}/{$directory->getFilename()}/{$readme}"),
                     'title'   => $title,
                     'summary' => Markdown::getSummary($content),
-                    'readme'  => Path::normalize("{$path}/{$readme}"),
                 ];
             }
         }
@@ -77,6 +76,11 @@ class IncludePackageList implements Instruction {
         if (!$packages) {
             return '';
         }
+
+        // Sort
+        usort($packages, static function (array $a, $b): int {
+            return strcmp($a['title'], $b['title']);
+        });
 
         // Render
         $package = Package::Name;

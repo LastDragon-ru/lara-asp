@@ -1,6 +1,6 @@
 <?php
 /**
- * @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages
+ * @var list<array{path: string, title: string, summary: ?string}> $packages
  */
 
 ?>
@@ -11,7 +11,7 @@
 {{ $package['summary'] }}
 @endif
 
-[Read more](<{{ $package['readme'] }}>).
+[Read more](<{{ $package['path'] }}>).
 @if (!$loop->last)
 
 @endif
