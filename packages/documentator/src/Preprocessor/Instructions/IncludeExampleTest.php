@@ -19,7 +19,7 @@ use function trim;
 #[CoversClass(IncludeFile::class)]
 class IncludeExampleTest extends TestCase {
     public function testProcessNoRun(): void {
-        $path     = dirname(self::getTestData()->path('~example.md'));
+        $path     = self::getTestData()->path('~example.md');
         $file     = basename(self::getTestData()->path('~example.md'));
         $expected = trim(self::getTestData()->content('~example.md'));
         $process  = Mockery::mock(Process::class);
@@ -42,14 +42,14 @@ class IncludeExampleTest extends TestCase {
     }
 
     public function testProcess(): void {
-        $path     = dirname(self::getTestData()->path('~runnable.md'));
-        $file     = self::getTestData()->path('~runnable.md');
+        $path     = self::getTestData()->path('~runnable.md');
+        $file     = basename(self::getTestData()->path('~runnable.md'));
         $expected = trim(self::getTestData()->content('~runnable.md'));
         $output   = 'command output';
         $process  = Mockery::mock(Process::class);
         $process
             ->shouldReceive('run')
-            ->with([self::getTestData()->path('~runnable.run')], $path)
+            ->with([self::getTestData()->path('~runnable.run')], dirname($path))
             ->once()
             ->andReturn($output);
 
@@ -74,14 +74,14 @@ class IncludeExampleTest extends TestCase {
     }
 
     public function testProcessLongOutput(): void {
-        $path     = dirname(self::getTestData()->path('~runnable.md'));
+        $path     = self::getTestData()->path('~runnable.md');
         $file     = self::getTestData()->path('~runnable.md');
         $expected = trim(self::getTestData()->content('~runnable.md'));
         $output   = implode("\n", range(0, IncludeExample::Limit + 1));
         $process  = Mockery::mock(Process::class);
         $process
             ->shouldReceive('run')
-            ->with([self::getTestData()->path('~runnable.run')], $path)
+            ->with([self::getTestData()->path('~runnable.run')], dirname($path))
             ->once()
             ->andReturn($output);
 

@@ -32,4 +32,8 @@ class Path {
     public static function normalize(string $path): string {
         return SymfonyPath::canonicalize($path);
     }
+
+    public static function join(string ...$paths): string {
+        return SymfonyPath::join(...$paths);
+    }
 }

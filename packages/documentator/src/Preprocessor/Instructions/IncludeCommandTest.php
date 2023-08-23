@@ -7,19 +7,21 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function dirname;
+
 /**
  * @internal
  */
 #[CoversClass(IncludeFile::class)]
 class IncludeCommandTest extends TestCase {
     public function testProcess(): void {
-        $path     = 'current/working/directory';
+        $path     = 'current/working/directory/file.md';
         $expected = 'result';
         $command  = 'command to execute';
         $process  = Mockery::mock(Process::class);
         $process
             ->shouldReceive('run')
-            ->with(['command', 'to execute'], $path)
+            ->with(['command', 'to execute'], dirname($path))
             ->once()
             ->andReturn($expected);
 

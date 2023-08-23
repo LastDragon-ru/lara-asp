@@ -43,12 +43,12 @@ class Preprocess extends Command {
 
         foreach ($finder as $file) {
             $this->components->task($file->getPathname(), static function () use ($preprocessor, $file): bool {
-                $path    = $file->getPath();
+                $path    = $file->getPathname();
                 $content = $file->getContents();
                 $result  = $preprocessor->process($path, $content);
 
                 return $content === $result
-                    || file_put_contents($file->getPathname(), $result) !== false;
+                    || file_put_contents($path, $result) !== false;
             });
         }
     }

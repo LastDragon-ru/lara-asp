@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function basename;
-use function dirname;
 
 /**
  * @internal
@@ -14,9 +13,9 @@ use function dirname;
 #[CoversClass(IncludePackageList::class)]
 class IncludePackageListTest extends TestCase {
     public function testProcess(): void {
-        $path     = self::getTestData()->path('/');
+        $path     = self::getTestData()->file('.md');
         $instance = $this->app->make(IncludePackageList::class);
-        $actual   = $instance->process(dirname($path), basename($path));
+        $actual   = $instance->process($path->getPathname(), basename(self::getTestData()->path('/')));
 
         self::assertEquals(
             self::getTestData()->content('.md'),

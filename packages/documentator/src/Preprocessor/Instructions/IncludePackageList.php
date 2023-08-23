@@ -4,14 +4,17 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use Symfony\Component\Finder\Finder;
 
 use function assert;
+use function dirname;
 use function file_get_contents;
 use function is_array;
+use function is_dir;
 use function is_file;
 use function is_string;
 use function json_decode;
@@ -31,11 +34,18 @@ class IncludePackageList implements Instruction {
     }
 
     public function process(string $path, string $target): string {
+        // Directory?
+        $root = Path::getPath(dirname($path), $target);
+
+        if (!is_dir($root)) {
+            throw new TargetIsNotDirectory($path, $target);
+        }
+
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
         $directories = Finder::create()
             ->ignoreVCSIgnored(true)
-            ->in(Path::getPath($path, $target))
+            ->in($root)
             ->depth(0)
             ->exclude('vendor')
             ->exclude('node_modules')
@@ -43,20 +53,20 @@ class IncludePackageList implements Instruction {
 
         foreach ($directories as $directory) {
             // Package?
-            $root    = $directory->getPathname();
-            $package = $this->getPackageInfo($root);
+            $packagePath = $directory->getPathname();
+            $packageInfo = $this->getPackageInfo($packagePath);
 
-            if (!$package) {
+            if (!$packageInfo) {
                 continue;
             }
 
             // Readme
-            $readme  = $this->getPackageReadme($root, $package);
+            $readme  = $this->getPackageReadme($packagePath, $packageInfo);
             $content = $readme
-                ? file_get_contents("{$root}/{$readme}")
+                ? file_get_contents(Path::join($packagePath, $readme))
                 : false;
 
-            if ($content === false) {
+            if (!$readme || $content === false) {
                 continue;
             }
 
@@ -65,7 +75,7 @@ class IncludePackageList implements Instruction {
 
             if ($title) {
                 $packages[] = [
-                    'path'    => Path::normalize("{$target}/{$directory->getFilename()}/{$readme}"),
+                    'path'    => Path::join($target, $directory->getFilename(), $readme),
                     'title'   => $title,
                     'summary' => Markdown::getSummary($content),
                 ];
@@ -83,8 +93,8 @@ class IncludePackageList implements Instruction {
         });
 
         // Render
-        $package = Package::Name;
-        $list    = view("{$package}::package-list.markdown", [
+        $packageInfo = Package::Name;
+        $list        = view("{$packageInfo}::package-list.markdown", [
             'packages' => $packages,
         ])->render();
 
@@ -97,7 +107,7 @@ class IncludePackageList implements Instruction {
      */
     protected function getPackageInfo(string $path): ?array {
         try {
-            $file    = "{$path}/composer.json";
+            $file    = Path::join($path, 'composer.json');
             $package = is_file($file) ? file_get_contents($file) : false;
             $package = $package !== false
                 ? json_decode($package, true, flags: JSON_THROW_ON_ERROR)

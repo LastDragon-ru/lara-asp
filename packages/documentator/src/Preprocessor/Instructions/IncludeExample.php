@@ -3,15 +3,14 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetCommandFailed;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 
-use function implode;
+use function dirname;
 use function is_file;
 use function pathinfo;
 use function preg_match_all;
-use function sprintf;
 use function trim;
 
 use const PATHINFO_EXTENSION;
@@ -41,15 +40,9 @@ class IncludeExample extends IncludeFile {
 
         if ($command) {
             try {
-                $output = $this->process->run($command, $path);
+                $output = $this->process->run($command, dirname($path));
             } catch (Exception $exception) {
-                throw new PreprocessFailed(
-                    sprintf(
-                        'Failed to execute command `%s`.',
-                        implode(' ', $command),
-                    ),
-                    $exception,
-                );
+                throw new TargetCommandFailed($path, $target, $exception);
             }
 
             if (preg_match_all('/\R/u', $output) > static::Limit) {
@@ -88,10 +81,10 @@ class IncludeExample extends IncludeFile {
     protected function getCommand(string $path, string $target): ?array {
         $info    = pathinfo($target);
         $file    = isset($info['dirname'])
-            ? "{$info['dirname']}/{$info['filename']}.run"
+            ? Path::join($info['dirname'], "{$info['filename']}.run")
             : "{$info['filename']}.run";
-        $path    = Path::getPath($path, $file);
-        $command = is_file($path) ? [$file] : null;
+        $command = Path::getPath(dirname($path), $file);
+        $command = is_file($command) ? [$command] : null;
 
         return $command;
     }

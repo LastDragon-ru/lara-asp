@@ -3,12 +3,16 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use Symfony\Component\Finder\Finder;
 
+use function basename;
+use function dirname;
 use function file_get_contents;
+use function is_dir;
 use function strcmp;
 use function usort;
 use function view;
@@ -23,16 +27,29 @@ class IncludeDocumentList implements Instruction {
     }
 
     public function process(string $path, string $target): string {
+        // Directory?
+        $root = Path::getPath(dirname($path), $target);
+
+        if (!is_dir($root)) {
+            throw new TargetIsNotDirectory($path, $target);
+        }
+
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
+        $target    = Path::normalize($target);
         $files     = Finder::create()
-            ->in(Path::getPath($path, $target))
+            ->in($root)
             ->depth(0)
             ->name('*.md')
             ->files();
 
         foreach ($files as $file) {
-            // Package?
+            // Same?
+            if ($target === '' && $file->getFilename() === basename($path)) {
+                continue;
+            }
+
+            // Content?
             $content = file_get_contents($file->getPathname());
 
             if (!$content) {
@@ -44,7 +61,7 @@ class IncludeDocumentList implements Instruction {
 
             if ($title) {
                 $documents[] = [
-                    'path'    => Path::normalize("{$target}/{$file->getFilename()}"),
+                    'path'    => Path::join($target, $file->getFilename()),
                     'title'   => $title,
                     'summary' => Markdown::getSummary($content),
                 ];
