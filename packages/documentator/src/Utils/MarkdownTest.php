@@ -48,6 +48,18 @@ class MarkdownTest extends TestCase {
                 MARKDOWN,
             ),
         );
+        self::assertEquals(
+            'Header',
+            Markdown::getTitle(
+                <<<'MARKDOWN'
+                <!-- Comment -->
+
+                # Header
+
+                fsdfsdfsdf
+                MARKDOWN,
+            ),
+        );
     }
 
     public function testGetSummary(): void {
@@ -102,6 +114,24 @@ class MarkdownTest extends TestCase {
                 <<<'MARKDOWN'
 
                 # Header
+
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+            ),
+        );
+        self::assertEquals(
+            <<<'TEXT'
+            fsdfsdfsdf
+            fsdfsdfsdf
+            TEXT,
+            Markdown::getSummary(
+                <<<'MARKDOWN'
+                <!-- Comment -->
+
+                # Header
+
+                <!-- Comment -->
 
                 fsdfsdfsdf
                 fsdfsdfsdf

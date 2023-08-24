@@ -3,16 +3,20 @@
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Block\Paragraph;
+use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\MarkdownParser;
 
 use function array_slice;
 use function implode;
 use function ltrim;
 use function preg_split;
+use function str_ends_with;
+use function str_starts_with;
 use function trim;
 
 class Markdown {
@@ -31,9 +35,10 @@ class Markdown {
      * Returns the first paragraph right after `# Header` if present.
      */
     public static function getSummary(string $string): ?string {
-        $node    = static::getTitleNode($string)?->next();
-        $summary = $node instanceof Paragraph
-            ? static::getText($string, $node)
+        $title   = static::getTitleNode($string);
+        $summary = static::getFirstNode($title?->next(), Paragraph::class);
+        $summary = $summary
+            ? static::getText($string, $summary)
             : null;
 
         return $summary;
@@ -48,10 +53,8 @@ class Markdown {
     }
 
     protected static function getTitleNode(string $string): ?Heading {
-        $node   = static::getDocumentNode($string)->firstChild();
-        $header = $node instanceof Heading && $node->getLevel() === 1
-            ? $node
-            : null;
+        $document = static::getDocumentNode($string);
+        $header   = static::getFirstNode($document, Heading::class, static fn ($n) => $n->getLevel() === 1);
 
         return $header;
     }
@@ -70,5 +73,42 @@ class Markdown {
         $text  = trim(implode("\n", $lines));
 
         return $text;
+    }
+
+    /**
+     * @template T of Node
+     *
+     * @param class-string<T>   $class
+     * @param callable(T): bool $filter
+     *
+     * @return ?T
+     */
+    protected static function getFirstNode(?Node $node, string $class, callable $filter = null): ?Node {
+        // Null?
+        if ($node === null) {
+            return null;
+        }
+
+        // Wanted?
+        if ($node instanceof $class && ($filter === null || $filter($node))) {
+            return $node;
+        }
+
+        // Comment?
+        if (
+            $node instanceof HtmlBlock
+            && str_starts_with($node->getLiteral(), '<!--')
+            && str_ends_with($node->getLiteral(), '-->')
+        ) {
+            return static::getFirstNode($node->next(), $class, $filter);
+        }
+
+        // Document?
+        if ($node instanceof Document) {
+            return static::getFirstNode($node->firstChild(), $class, $filter);
+        }
+
+        // Not found
+        return null;
     }
 }
