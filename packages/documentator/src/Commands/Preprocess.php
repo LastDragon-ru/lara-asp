@@ -8,9 +8,9 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-use function file_put_contents;
 use function getcwd;
 use function implode;
 use function ksort;
@@ -58,7 +58,7 @@ class Preprocess extends Command {
         {path? : directory to process}
     SIGNATURE;
 
-    public function __invoke(Preprocessor $preprocessor): void {
+    public function __invoke(Filesystem $filesystem, Preprocessor $preprocessor): void {
         $cwd    = getcwd();
         $path   = Cast::toString($this->argument('path') ?? $cwd);
         $finder = Finder::create()
@@ -70,14 +70,18 @@ class Preprocess extends Command {
             ->name('*.md');
 
         foreach ($finder as $file) {
-            $this->components->task($file->getPathname(), static function () use ($preprocessor, $file): bool {
-                $path    = $file->getPathname();
-                $content = $file->getContents();
-                $result  = $preprocessor->process($path, $content);
+            $this->components->task(
+                $file->getPathname(),
+                static function () use ($filesystem, $preprocessor, $file): void {
+                    $path    = $file->getPathname();
+                    $content = $file->getContents();
+                    $result  = $preprocessor->process($path, $content);
 
-                return $content === $result
-                    || file_put_contents($path, $result) !== false;
-            });
+                    if ($content !== $result) {
+                        $filesystem->dumpFile($path, $content);
+                    }
+                },
+            );
         }
     }
 
