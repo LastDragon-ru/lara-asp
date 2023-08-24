@@ -36,6 +36,17 @@ class IncludePackageList implements Instruction {
         return 'include:package-list';
     }
 
+    public static function getDescription(): string {
+        return <<<'DESC'
+        Generates package list from `<target>` directory. The readme file will be
+        used to determine package name and summary.
+        DESC;
+    }
+
+    public static function getTargetDescription(): ?string {
+        return 'Directory path.';
+    }
+
     public function process(string $path, string $target): string {
         // Directory?
         $root = Path::getPath(dirname($path), $target);

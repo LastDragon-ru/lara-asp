@@ -18,6 +18,14 @@ class IncludeFile implements Instruction {
         return 'include:file';
     }
 
+    public static function getDescription(): string {
+        return 'Includes the `<target>` file.';
+    }
+
+    public static function getTargetDescription(): ?string {
+        return 'File path.';
+    }
+
     public function process(string $path, string $target): string {
         $file    = Path::getPath(dirname($path), $target);
         $content = file_get_contents($file);

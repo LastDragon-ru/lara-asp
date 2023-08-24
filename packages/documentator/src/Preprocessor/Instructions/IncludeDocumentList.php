@@ -27,6 +27,18 @@ class IncludeDocumentList implements Instruction {
         return 'include:document-list';
     }
 
+    public static function getDescription(): string {
+        return <<<'DESC'
+            Returns the list of `*.md` files in the `<target>` directory. Each file
+            must have `# Header` as the first construction. The first paragraph
+            after the Header will be used as a summary.
+            DESC;
+    }
+
+    public static function getTargetDescription(): ?string {
+        return 'Directory path.';
+    }
+
     public function process(string $path, string $target): string {
         // Directory?
         $root = Path::getPath(dirname($path), $target);

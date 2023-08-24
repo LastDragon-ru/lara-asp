@@ -47,6 +47,14 @@ class PreprocessorTest extends TestCase {
                 return 'empty';
             }
 
+            public static function getDescription(): string {
+                return '';
+            }
+
+            public static function getTargetDescription(): ?string {
+                return '';
+            }
+
             public function process(string $path, string $target): string {
                 return '';
             }

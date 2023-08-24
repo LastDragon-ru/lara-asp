@@ -28,6 +28,18 @@ class IncludeExample extends IncludeFile {
         return 'include:example';
     }
 
+    public static function getDescription(): string {
+        return <<<'DESC'
+        Includes contents of the `<target>` file as an example wrapped into
+        ` ```code block``` `. It also searches for `<target>.run` file, execute
+        it if found, and include its result right after the code block.
+        DESC;
+    }
+
+    public static function getTargetDescription(): ?string {
+        return 'Example file path.';
+    }
+
     public function process(string $path, string $target): string {
         $language = $this->getLanguage($path, $target);
         $content  = trim(parent::process($path, $target));

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use Exception;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
@@ -12,6 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 
+use function array_column;
 use function preg_replace_callback;
 use function rawurldecode;
 use function sha1;
@@ -25,14 +27,6 @@ use const PREG_UNMATCHED_AS_NULL;
  *      [<instruction>]: <target>
  *      [<instruction>=name]: <target>
  *
- * Supported instructions:
- *
- * | `<instruction>`   | `<target>`                     | Description                                              |
- * |-------------------|--------------------------------|----------------------------------------------------------|
- * | `include:file`    | path to the file               | Include content of the file as is.                       |
- * | `include:exec`    | the command to execute         | Execute the command and include output.                  |
- * | `include:example` | path to the example file       | Include file in the code block + its output if possible. |
- *
  * Limitations:
  * - `<instruction>` will be processed everywhere in the file (eg within the code
  *   block) and may give unpredictable results.
@@ -40,6 +34,9 @@ use const PREG_UNMATCHED_AS_NULL;
  * - Nested `<instruction>` doesn't supported.
  *
  * @todo Use https://github.com/thephpleague/commonmark?
+ * @todo Sync with {@see Preprocess} command
+ *
+ * @see Preprocess
  */
 class Preprocessor {
     protected const Warning = 'Generated automatically. Do not edit.';
@@ -67,6 +64,13 @@ class Preprocessor {
         $this->addInstruction(IncludeExample::class);
         $this->addInstruction(IncludePackageList::class);
         $this->addInstruction(IncludeDocumentList::class);
+    }
+
+    /**
+     * @return list<class-string<Instruction>>
+     */
+    public function getInstructions(): array {
+        return array_column($this->instructions, 0);
     }
 
     /**

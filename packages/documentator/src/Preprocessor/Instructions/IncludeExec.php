@@ -21,6 +21,14 @@ class IncludeExec implements Instruction {
         return 'include:exec';
     }
 
+    public static function getDescription(): string {
+        return 'Executes the `<target>` and returns result.';
+    }
+
+    public static function getTargetDescription(): ?string {
+        return 'Path to the executable.';
+    }
+
     public function process(string $path, string $target): string {
         try {
             return $this->process->run(
