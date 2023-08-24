@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeCommand;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
@@ -29,7 +29,7 @@ use const PREG_UNMATCHED_AS_NULL;
  * | `<instruction>`   | `<target>`                     | Description                                              |
  * |-------------------|--------------------------------|----------------------------------------------------------|
  * | `include:file`    | path to the file               | Include content of the file as is.                       |
- * | `include:command` | the command to execute         | Execute the command and include output.                  |
+ * | `include:exec`    | the command to execute         | Execute the command and include output.                  |
  * | `include:example` | path to the example file       | Include file in the code block + its output if possible. |
  *
  * Limitations:
@@ -62,7 +62,7 @@ class Preprocessor {
 
     public function __construct() {
         $this->addInstruction(IncludeFile::class);
-        $this->addInstruction(IncludeCommand::class);
+        $this->addInstruction(IncludeExec::class);
         $this->addInstruction(IncludeExample::class);
         $this->addInstruction(IncludePackageList::class);
         $this->addInstruction(IncludeDocumentList::class);

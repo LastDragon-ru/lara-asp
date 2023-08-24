@@ -13,7 +13,7 @@ use function dirname;
  * @internal
  */
 #[CoversClass(IncludeFile::class)]
-class IncludeCommandTest extends TestCase {
+class IncludeExecTest extends TestCase {
     public function testProcess(): void {
         $path     = 'current/working/directory/file.md';
         $expected = 'result';
@@ -25,7 +25,7 @@ class IncludeCommandTest extends TestCase {
             ->once()
             ->andReturn($expected);
 
-        $instance = $this->app->make(IncludeCommand::class, [
+        $instance = $this->app->make(IncludeExec::class, [
             'process' => $process,
         ]);
 

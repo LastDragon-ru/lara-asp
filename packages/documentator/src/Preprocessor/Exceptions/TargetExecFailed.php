@@ -6,7 +6,7 @@ use Throwable;
 
 use function sprintf;
 
-class TargetCommandFailed extends InstructionFailed {
+class TargetExecFailed extends InstructionFailed {
     public function __construct(string $path, string $target, Throwable $previous = null) {
         parent::__construct(
             $path,

@@ -3,14 +3,14 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetCommandFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 
 use function dirname;
 use function explode;
 
-class IncludeCommand implements Instruction {
+class IncludeExec implements Instruction {
     public function __construct(
         protected readonly Process $process,
     ) {
@@ -18,7 +18,7 @@ class IncludeCommand implements Instruction {
     }
 
     public static function getName(): string {
-        return 'include:command';
+        return 'include:exec';
     }
 
     public function process(string $path, string $target): string {
@@ -28,7 +28,7 @@ class IncludeCommand implements Instruction {
                 dirname($path),
             );
         } catch (Exception $exception) {
-            throw new TargetCommandFailed($path, $target, $exception);
+            throw new TargetExecFailed($path, $target, $exception);
         }
     }
 }

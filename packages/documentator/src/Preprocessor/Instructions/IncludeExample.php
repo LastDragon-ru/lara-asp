@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetCommandFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 
@@ -42,7 +42,7 @@ class IncludeExample extends IncludeFile {
             try {
                 $output = $this->process->run($command, dirname($path));
             } catch (Exception $exception) {
-                throw new TargetCommandFailed($path, $target, $exception);
+                throw new TargetExecFailed($path, $target, $exception);
             }
 
             if (preg_match_all('/\R/u', $output) > static::Limit) {
