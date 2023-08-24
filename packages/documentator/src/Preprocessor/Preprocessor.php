@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
+use Exception;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
@@ -96,53 +97,61 @@ class Preprocessor {
     public function process(string $path, string $string): string {
         $path   = Path::normalize($path);
         $cache  = [];
-        $result = preg_replace_callback(
-            pattern : static::Regexp,
-            callback: function (array $matches) use (&$cache, $path): string {
-                $hash        = $this->getHash("{$matches['instruction']}={$matches['target']}");
-                $content     = $cache[$hash] ?? null;
-                $instruction = $this->getInstruction($matches['instruction']);
+        $result = null;
 
-                if ($content === null) {
-                    $target       = rawurldecode($matches['target']);
-                    $content      = trim($instruction?->process($path, $target) ?? '');
-                    $cache[$hash] = $content;
-                }
+        try {
+            $result = preg_replace_callback(
+                pattern : static::Regexp,
+                callback: function (array $matches) use (&$cache, $path): string {
+                    $hash        = $this->getHash("{$matches['instruction']}={$matches['target']}");
+                    $content     = $cache[$hash] ?? null;
+                    $instruction = $this->getInstruction($matches['instruction']);
 
-                // Return
-                $warning = static::Warning;
-                $prefix  = <<<RESULT
+                    if ($content === null) {
+                        $target       = rawurldecode($matches['target']);
+                        $content      = trim($instruction?->process($path, $target) ?? '');
+                        $cache[$hash] = $content;
+                    }
+
+                    // Return
+                    $warning = static::Warning;
+                    $prefix  = <<<RESULT
                     {$matches['expression']}
                     [//]: # (start: {$hash})
                     [//]: # (warning: {$warning})
                     RESULT;
-                $suffix  = <<<RESULT
+                    $suffix  = <<<RESULT
                     [//]: # (end: {$hash})
                     RESULT;
 
-                if ($content) {
-                    $content = <<<RESULT
+                    if ($content) {
+                        $content = <<<RESULT
                         {$prefix}
 
                         {$content}
 
                         {$suffix}
                         RESULT;
-                } elseif ($instruction) {
-                    $content = <<<RESULT
+                    } elseif ($instruction) {
+                        $content = <<<RESULT
                         {$prefix}
                         [//]: # (empty)
                         {$suffix}
                         RESULT;
-                } else {
-                    $content = $matches['expression'];
-                }
+                    } else {
+                        $content = $matches['expression'];
+                    }
 
-                return $content;
-            },
-            subject : $string,
-            flags   : PREG_UNMATCHED_AS_NULL,
-        );
+                    return $content;
+                },
+                subject : $string,
+                flags   : PREG_UNMATCHED_AS_NULL,
+            );
+        } catch (PreprocessFailed $exception) {
+            throw $exception;
+        } catch (Exception $exception) {
+            throw new PreprocessFailed('Preprocess failed.', $exception);
+        }
 
         if ($result === null) {
             throw new PreprocessFailed('Unexpected error.');

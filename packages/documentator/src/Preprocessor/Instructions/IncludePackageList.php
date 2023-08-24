@@ -4,6 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
@@ -51,13 +54,13 @@ class IncludePackageList implements Instruction {
             ->exclude('node_modules')
             ->directories();
 
-        foreach ($directories as $directory) {
+        foreach ($directories as $package) {
             // Package?
-            $packagePath = $directory->getPathname();
+            $packagePath = $package->getPathname();
             $packageInfo = $this->getPackageInfo($packagePath);
 
             if (!$packageInfo) {
-                continue;
+                throw new PackageComposerJsonIsMissing($path, $target, Path::join($target, $package->getFilename()));
             }
 
             // Readme
@@ -67,18 +70,21 @@ class IncludePackageList implements Instruction {
                 : false;
 
             if (!$readme || $content === false) {
-                continue;
+                throw new PackageReadmeIsMissing($path, $target, Path::join($target, $package->getFilename()));
             }
 
             // Extract
-            $title = Markdown::getTitle($content);
+            $packageTitle = Markdown::getTitle($content);
+            $readmePath   = Path::join($target, $package->getFilename(), $readme);
 
-            if ($title) {
+            if ($packageTitle) {
                 $packages[] = [
-                    'path'    => Path::join($target, $directory->getFilename(), $readme),
-                    'title'   => $title,
+                    'path'    => $readmePath,
+                    'title'   => $packageTitle,
                     'summary' => Markdown::getSummary($content),
                 ];
+            } else {
+                throw new DocumentTitleIsMissing($path, $target, $readmePath);
             }
         }
 

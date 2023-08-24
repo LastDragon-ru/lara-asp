@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
@@ -65,6 +66,8 @@ class IncludeDocumentList implements Instruction {
                     'title'   => $title,
                     'summary' => Markdown::getSummary($content),
                 ];
+            } else {
+                throw new DocumentTitleIsMissing($path, $target, Path::join($target, $file->getFilename()));
             }
         }
 

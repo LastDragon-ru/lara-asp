@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -40,5 +41,21 @@ class IncludeDocumentListTest extends TestCase {
                 {$actual}
                 MARKDOWN,
         );
+    }
+
+    public function testProcessWithoutTitle(): void {
+        $path     = self::getTestData()->file('invalid/Document.md');
+        $target   = './';
+        $instance = $this->app->make(IncludeDocumentList::class);
+
+        self::expectExceptionObject(
+            new DocumentTitleIsMissing(
+                $path->getPathname(),
+                $target,
+                'WithoutTitle.md',
+            ),
+        );
+
+        $instance->process($path->getPathname(), $target);
     }
 }
