@@ -12,15 +12,12 @@ use Symfony\Component\Finder\Finder;
 use function file_put_contents;
 use function getcwd;
 
-#[AsCommand(name: Preprocess::Name)]
+#[AsCommand(
+    name       : Preprocess::Name,
+    description: 'Preprocess Markdown files.',
+)]
 class Preprocess extends Command {
     public const Name = Package::Name.':preprocess';
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var string|null
-     */
-    public $description = 'Preprocess Markdown files.';
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint

@@ -32,15 +32,12 @@ use function view;
 
 use const JSON_THROW_ON_ERROR;
 
-#[AsCommand(name: Requirements::Name)]
+#[AsCommand(
+    name       : Requirements::Name,
+    description: 'Generates a table with the required versions of PHP/Laravel in Markdown format.',
+)]
 class Requirements extends Command {
     public const Name = Package::Name.':requirements';
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var string|null
-     */
-    public $description = 'Generates a table with the required versions of PHP/Laravel in Markdown format.';
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
