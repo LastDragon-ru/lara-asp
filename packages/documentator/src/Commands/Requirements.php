@@ -27,6 +27,7 @@ use function is_array;
 use function json_decode;
 use function range;
 use function reset;
+use function trim;
 use function uksort;
 use function view;
 
@@ -100,6 +101,7 @@ class Requirements extends Command {
             'packages'     => $packages,
             'requirements' => $requirements,
         ])->render();
+        $output  = trim($output);
 
         $this->output->writeln($output);
     }

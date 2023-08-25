@@ -5,6 +5,8 @@
  */
 
 ?>
+# Requirements
+
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
 @foreach ($packages as $key => $title)
