@@ -251,5 +251,10 @@ MD052: true
 MD053:
   # Ignored definitions
   ignored_definitions: [
-    "//"
+    "//",
+    "include:document-list",
+    "include:example",
+    "include:exec",
+    "include:file",
+    "include:package-list",
   ]
