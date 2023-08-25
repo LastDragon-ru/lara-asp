@@ -1,4 +1,4 @@
-# The Serializer
+# Serializer
 
 This package provides a customizable wrapper around the [Symfony Serializer Component](https://symfony.com/doc/current/components/serializer.html).
 

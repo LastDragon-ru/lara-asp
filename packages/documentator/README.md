@@ -1,4 +1,4 @@
-# The Documentator
+# Documentator
 
 This package provides various utilities for documentation generation.
 

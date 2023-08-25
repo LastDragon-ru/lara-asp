@@ -1,6 +1,6 @@
-# The Core
+# Core
 
-This package contains useful utilities and classes. Please see the [source code](./src) to find something interesting 😅
+This package contains useful utilities and classes.
 
 [include:file]: ../../docs/shared/Requirements.md
 [//]: # (start: 4aa299d1fd76a742656b8ab1b15d0ae7f7026ef1)
@@ -29,6 +29,10 @@ This package contains useful utilities and classes. Please see the [source code]
 ```shell
 composer require lastdragon-ru/lara-asp-core
 ```
+
+# Usage
+
+Please see the [source code](./src) to find something interesting 😅
 
 [include:file]: ../../docs/shared/Contributing.md
 [//]: # (start: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)

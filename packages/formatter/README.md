@@ -1,4 +1,4 @@
-# The Formatter
+# Formatter
 
 This package provides a customizable wrapper around Intl formatters.
 
