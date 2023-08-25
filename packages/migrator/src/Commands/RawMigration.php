@@ -6,9 +6,13 @@ use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Support\Composer;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Package;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 use function str_replace;
 
+#[AsCommand(
+    name: RawMigration::Name,
+)]
 class RawMigration extends MigrateMakeCommand {
     protected const Name = Package::Name.':raw-migration';
 
