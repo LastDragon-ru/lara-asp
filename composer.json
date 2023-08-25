@@ -163,6 +163,11 @@
     ],
     "coverage": [
       "@php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-html=.phpunit/coverage.html"
+    ],
+    "docs:rebuild": [
+      "@php artisan lara-asp-documentator:commands lara-asp-documentator ./packages/documentator/docs/commands",
+      "@php artisan lara-asp-documentator:commands lara-asp-migrator ./packages/migrator/docs/commands",
+      "@php artisan lara-asp-documentator:preprocess"
     ]
   },
   "config": {
