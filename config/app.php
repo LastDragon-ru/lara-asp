@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Documentator\Provider as DocumentatorProvider;
+use LastDragon_ru\LaraASP\Migrator\Provider as MigratorProvider;
 use LastDragon_ru\LaraASP\Serializer\Provider as SerializerProvider;
 
 return [
@@ -146,6 +147,7 @@ return [
     'providers'       => ServiceProvider::defaultProviders()->merge([
         SerializerProvider::class,
         DocumentatorProvider::class,
+        MigratorProvider::class,
     ])->toArray(),
 
     /*

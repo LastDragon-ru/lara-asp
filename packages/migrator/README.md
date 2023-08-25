@@ -17,7 +17,7 @@ composer require lastdragon-ru/lara-asp-migrator
 
 # Migrations
 
-To create migration just use the standard command
+To create migration just use the following [command](./docs/commands/raw-migration.md):
 
 ```shell
 php artisan lara-asp-migrator:raw-migration MyMigration
@@ -42,7 +42,7 @@ The Migrator uses a bit different approach compared to standard and provides a f
 * [`SmartSeeder`](./src/Seeders/SmartSeeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
 * [`RawSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
 
-To create raw seeder just use standard command
+To create raw seeder just use the following [command](./docs/commands/raw-seeder.md):
 
 ```shell
 php artisan lara-asp-migrator:raw-seeder MySeeder
