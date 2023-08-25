@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator;
 
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithViews;
+use LastDragon_ru\LaraASP\Documentator\Commands\Commands;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Commands\Requirements;
 
@@ -15,6 +16,7 @@ class Provider extends ServiceProvider {
         $this->commands(
             Requirements::class,
             Preprocess::class,
+            Commands::class,
         );
     }
 
