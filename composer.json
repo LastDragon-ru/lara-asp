@@ -46,6 +46,7 @@
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "http-interop/http-factory-guzzle": "^1.0.0",
     "laravel/framework": "^9.21.0|^10.0.0",
+    "league/commonmark": "^2.4",
     "nuwave/lighthouse": "^6.5.0",
     "opis/json-schema": "^2.3.0",
     "phpdocumentor/type-resolver": "^1.7",
@@ -55,6 +56,7 @@
     "symfony/finder": "^6.3.0",
     "symfony/http-foundation": "^6.3.0",
     "symfony/mime": "^6.3.0",
+    "symfony/process": "^6.3.0",
     "symfony/property-access": "^6.3.0",
     "symfony/property-info": "^6.3.0",
     "symfony/psr-http-message-bridge": "^2.0.0",
@@ -100,7 +102,8 @@
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/",
       "LastDragon_ru\\LaraASP\\GraphQLPrinter\\": "packages/graphql-printer/src/",
-      "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/"
+      "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/",
+      "LastDragon_ru\\LaraASP\\Documentator\\": "packages/documentator/src/"
     },
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
@@ -112,7 +115,8 @@
       "packages/spa/src/**Test.php",
       "packages/graphql/src/**Test.php",
       "packages/graphql-printer/src/**Test.php",
-      "packages/serializer/src/**Test.php"
+      "packages/serializer/src/**Test.php",
+      "packages/documentator/src/**Test.php"
     ]
   },
   "autoload-dev": {
@@ -128,7 +132,8 @@
         "LastDragon_ru\\LaraASP\\Spa\\Provider",
         "LastDragon_ru\\LaraASP\\GraphQL\\Provider",
         "LastDragon_ru\\LaraASP\\Queue\\Provider",
-        "LastDragon_ru\\LaraASP\\Serializer\\Provider"
+        "LastDragon_ru\\LaraASP\\Serializer\\Provider",
+        "LastDragon_ru\\LaraASP\\Documentator\\Provider"
       ]
     }
   },
@@ -178,6 +183,7 @@
     "lastdragon-ru/lara-asp-spa": "self.version",
     "lastdragon-ru/lara-asp-graphql": "self.version",
     "lastdragon-ru/lara-asp-graphql-printer": "self.version",
-    "lastdragon-ru/lara-asp-serializer": "self.version"
+    "lastdragon-ru/lara-asp-serializer": "self.version",
+    "lastdragon-ru/lara-asp-documentator": "self.version"
   }
 }
