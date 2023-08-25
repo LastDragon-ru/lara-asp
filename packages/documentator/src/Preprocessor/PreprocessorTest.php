@@ -20,7 +20,7 @@ class PreprocessorTest extends TestCase {
 
             [test]: ./path/to/file
 
-            [test]: ./path/to/file
+            [test]: <./path/to/file>
             [//]: # (start: hash)
 
             [test]: ./path/to/file
@@ -84,7 +84,7 @@ class PreprocessorTest extends TestCase {
 
             [//]: # (end: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
 
-            [test]: ./path/to/file
+            [test]: <./path/to/file>
             [//]: # (start: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
             [//]: # (warning: Generated automatically. Do not edit.)
 

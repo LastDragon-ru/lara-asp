@@ -14,9 +14,12 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageL
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 
 use function array_column;
+use function mb_substr;
 use function preg_replace_callback;
 use function rawurldecode;
 use function sha1;
+use function str_ends_with;
+use function str_starts_with;
 use function trim;
 
 use const PREG_UNMATCHED_AS_NULL;
@@ -43,7 +46,7 @@ class Preprocessor {
     protected const Regexp  = <<<'REGEXP'
         /^
         (?P<expression>
-          \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s(?P<target>[^ ]+?)
+          \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s(?P<target>(?:[^ ]+?)|(?:<[^>]+?>))
         )
         (?P<content>\R
           \[\/\/\]:\s\#\s\(start:\s(?P<hash>[^)]+)\)
@@ -107,12 +110,15 @@ class Preprocessor {
             $result = preg_replace_callback(
                 pattern : static::Regexp,
                 callback: function (array $matches) use (&$cache, $path): string {
-                    $hash        = $this->getHash("{$matches['instruction']}={$matches['target']}");
+                    $target      = $matches['target'];
+                    $target      = str_starts_with($target, '<') && str_ends_with($target, '>')
+                        ? mb_substr($target, 1, -1)
+                        : rawurldecode($target);
+                    $hash        = $this->getHash("{$matches['instruction']}={$target}");
                     $content     = $cache[$hash] ?? null;
                     $instruction = $this->getInstruction($matches['instruction']);
 
                     if ($content === null) {
-                        $target       = rawurldecode($matches['target']);
                         $content      = trim($instruction?->process($path, $target) ?? '');
                         $cache[$hash] = $content;
                     }
