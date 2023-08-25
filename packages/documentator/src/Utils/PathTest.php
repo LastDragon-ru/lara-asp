@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function dirname;
+use function str_replace;
 
 /**
  * @internal
@@ -15,6 +16,9 @@ class PathTest extends TestCase {
     public function testGetPath(): void {
         self::assertEquals('/absolute/path/to/file', Path::getPath('any/path', '/absolute/path/./to/file'));
         self::assertEquals('/absolute/path/to/file', Path::getPath('/absolute/path', 'to/./file'));
-        self::assertEquals(dirname(__FILE__).'/to/file', Path::getPath(__FILE__, 'to/./file'));
+        self::assertEquals(
+            str_replace('\\', '/', dirname(__FILE__).'/to/file'),
+            Path::getPath(__FILE__, 'to/./file'),
+        );
     }
 }

@@ -10,7 +10,7 @@ use function is_file;
 class Path {
     public static function getPath(string $root, string $path): string {
         $path = static::isRelative($path)
-            ? SymfonyPath::join(static::getDirname($root), $path)
+            ? static::join(static::getDirname($root), $path)
             : $path;
         $path = static::normalize($path);
 
@@ -18,15 +18,15 @@ class Path {
     }
 
     public static function getDirname(string $path): string {
-        return is_file($path) ? dirname($path) : $path;
+        return static::normalize(is_file($path) ? dirname($path) : $path);
     }
 
     public static function isRelative(string $path): bool {
-        return SymfonyPath::isRelative($path);
+        return SymfonyPath::isRelative(static::normalize($path));
     }
 
     public static function isAbsolute(string $path): bool {
-        return SymfonyPath::isAbsolute($path);
+        return SymfonyPath::isAbsolute(static::normalize($path));
     }
 
     public static function normalize(string $path): string {

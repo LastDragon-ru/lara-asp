@@ -37,13 +37,17 @@ class CommandsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testInvoke(): void {
-        $directory = self::getTempDirectory();
+        $directory = Path::normalize(self::getTempDirectory());
 
         self::assertNotFalse(
             file_put_contents(Path::join($directory, 'file.txt'), static::class),
         );
 
-        $this->artisan("lara-asp-documentator:commands test-namespace {$directory}");
+        $result = $this
+            ->withoutMockingConsoleOutput()
+            ->artisan("lara-asp-documentator:commands test-namespace {$directory}");
+
+        self::assertEquals(Command::SUCCESS, $result);
 
         $files = iterator_to_array(Finder::create()->in($directory)->files());
         $files = array_reduce($files, static function (array $combined, SplFileInfo $file): array {
@@ -107,15 +111,27 @@ class CommandsTest_CommandA extends Command {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 #[AsCommand(
-    name       : 'test-namespace:command-b',
-    description: 'Command B description.',
+    name: 'test-namespace:command-b',
 )]
 class CommandsTest_CommandB extends Command {
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string|null
+     */
+    protected $description = 'Command B description.';
+
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      * @var array<array-key, mixed>
      */
     protected $aliases = ['command-b-alias'];
+
+    public function __construct() {
+        parent::__construct();
+
+        // @phpstan-ignore-next-line Required for Laravel v9
+        $this->setAliases((array) $this->aliases);
+    }
 
     public function __invoke(): void {
         throw new Exception('Should not be called.');

@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Utils;
 use Illuminate\Console\Parser;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -16,11 +15,11 @@ use function reset;
  */
 #[CoversClass(ArtisanSerializer::class)]
 class ArtisanSerializerTest extends TestCase {
-    #[TestWith(['user'])]
-    #[TestWith(['user?'])]
-    #[TestWith(['user*?'])]
-    #[TestWith(['user=default'])]
-    #[TestWith(['user=*default'])]
+    // <editor-fold desc="Tests">
+    // =========================================================================
+    /**
+     * @dataProvider dataProviderGetArgumentSignature
+     */
     public function testGetArgumentSignature(string $signature): void {
         $parsed   = Parser::parse("command {{$signature}}")[1] ?? [];
         $argument = reset($parsed);
@@ -29,12 +28,9 @@ class ArtisanSerializerTest extends TestCase {
         self::assertEquals($signature, (new ArtisanSerializer())->getArgumentSignature($argument));
     }
 
-    #[TestWith(['--user'])]
-    #[TestWith(['--u|user'])]
-    #[TestWith(['--user=*'])]
-    #[TestWith(['--u|user=*'])]
-    #[TestWith(['--u|user=default'])]
-    #[TestWith(['--u|user=*default'])]
+    /**
+     * @dataProvider dataProviderGetOptionSignature
+     */
     public function testGetOptionSignature(string $signature): void {
         $parsed = Parser::parse("command {{$signature}}")[2] ?? [];
         $option = reset($parsed);
@@ -42,4 +38,35 @@ class ArtisanSerializerTest extends TestCase {
         self::assertInstanceOf(InputOption::class, $option);
         self::assertEquals($signature, (new ArtisanSerializer())->getOptionSignature($option));
     }
+    // </editor-fold>
+
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<int, array{string}>
+     */
+    public static function dataProviderGetArgumentSignature(): array {
+        return [
+            ['user'],
+            ['user?'],
+            ['user*?'],
+            ['user=default'],
+            ['user=*default'],
+        ];
+    }
+
+    /**
+     * @return array<int, array{string}>
+     */
+    public static function dataProviderGetOptionSignature(): array {
+        return [
+            ['--user'],
+            ['--u|user'],
+            ['--user=*'],
+            ['--u|user=*'],
+            ['--u|user=default'],
+            ['--u|user=*default'],
+        ];
+    }
+    // </editor-fold>
 }
