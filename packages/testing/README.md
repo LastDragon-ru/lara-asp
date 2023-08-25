@@ -1,9 +1,5 @@
 # Testing Helpers
 
-> This package is the part of Awesome Set of Packages for Laravel.
->
-> [Read more](https://github.com/LastDragon-ru/lara-asp).
-
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and alternative solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 
 [include:file]: ../../docs/shared/Requirements.md
@@ -626,3 +622,13 @@ class ExampleTest extends TestCase {
 ```
 
 Enjoy 😸
+
+[include:file]: ../../docs/shared/Contributing.md
+[//]: # (start: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Contributing
+
+This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
+
+[//]: # (end: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)

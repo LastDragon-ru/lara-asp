@@ -1,9 +1,5 @@
 # The Migrator
 
-> This package is the part of Awesome Set of Packages for Laravel.
->
-> [Read more](https://github.com/LastDragon-ru/lara-asp).
-
 This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
 
 | :warning: | The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details. |
@@ -94,3 +90,13 @@ class MySeeder extends RawSeeder {
     }
 }
 ```
+
+[include:file]: ../../docs/shared/Contributing.md
+[//]: # (start: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Contributing
+
+This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
+
+[//]: # (end: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)

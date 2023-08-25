@@ -1,9 +1,5 @@
 # The Documentator
 
-> This package is the part of Awesome Set of Packages for Laravel.
->
-> [Read more](https://github.com/LastDragon-ru/lara-asp).
-
 This package provides various utilities for documentation generation.
 
 [include:file]: ../../docs/shared/Requirements.md
@@ -59,3 +55,13 @@ Generates a table with the required versions of PHP/Laravel in Markdown format.
 [Read more](<docs/commands/requirements.md>).
 
 [//]: # (end: eb736c56d36bfbf743249954931dda71ebb3dec0)
+
+[include:file]: ../../docs/shared/Contributing.md
+[//]: # (start: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Contributing
+
+This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
+
+[//]: # (end: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)
