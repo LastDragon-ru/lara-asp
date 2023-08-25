@@ -30,6 +30,14 @@ class Preprocess extends Command {
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      * @var string
      */
+    public $signature = self::Name.<<<'SIGNATURE'
+        {path? : Directory to process.}
+    SIGNATURE;
+
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string
+     */
     public $help = <<<'HELP'
         Replaces special instructions in Markdown.
 
@@ -38,25 +46,17 @@ class Preprocess extends Command {
         [<instruction>=name]: <target>
         ```
 
-        ### Supported instructions:
+        ### Supported instructions
 
         %instructions%
 
-        ### Limitations:
+        ### Limitations
 
         * `<instruction>` will be processed everywhere in the file (eg within
           the code block) and may give unpredictable results.
         * `<instruction>` cannot be inside text.
         * Nested `<instruction>` doesn't support.
         HELP;
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var string
-     */
-    public $signature = self::Name.<<<'SIGNATURE'
-        {path? : directory to process}
-    SIGNATURE;
 
     public function __invoke(Filesystem $filesystem, Preprocessor $preprocessor): void {
         $cwd    = getcwd();
@@ -78,7 +78,7 @@ class Preprocess extends Command {
                     $result  = $preprocessor->process($path, $content);
 
                     if ($content !== $result) {
-                        $filesystem->dumpFile($path, $content);
+                        $filesystem->dumpFile($path, $result);
                     }
                 },
             );
@@ -86,13 +86,14 @@ class Preprocess extends Command {
     }
 
     public function getProcessedHelp(): string {
+        $preprocessor = Container::getInstance()->make(Preprocessor::class);
+
         return strtr(parent::getProcessedHelp(), [
-            '%instructions%' => $this->getInstructionsHelp(),
+            '%instructions%' => $this->getInstructionsHelp($preprocessor),
         ]);
     }
 
-    protected function getInstructionsHelp(): string {
-        $preprocessor = Container::getInstance()->make(Preprocessor::class);
+    protected function getInstructionsHelp(Preprocessor $preprocessor): string {
         $instructions = $preprocessor->getInstructions();
         $help         = [];
 
@@ -103,7 +104,7 @@ class Preprocess extends Command {
 
             if ($target !== null) {
                 $help[$name] = <<<HELP
-                    #### `{$name}`
+                    #### `[{$name}]: <target>`
 
                     * `<target>` - {$target}
 
@@ -111,7 +112,7 @@ class Preprocess extends Command {
                     HELP;
             } else {
                 $help[$name] = <<<HELP
-                    #### `{$name}`
+                    #### `[{$name}]: .`
 
                     {$desc}
                     HELP;
