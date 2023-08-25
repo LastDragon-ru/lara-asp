@@ -5,11 +5,15 @@ namespace LastDragon_ru\LaraASP\Migrator\Commands;
 use Illuminate\Database\Console\Seeds\SeederMakeCommand;
 use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Package;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 use function basename;
 use function dirname;
 use function trim;
 
+#[AsCommand(
+    name: RawSeeder::Name,
+)]
 class RawSeeder extends SeederMakeCommand {
     protected const Name = Package::Name.':raw-seeder';
 
