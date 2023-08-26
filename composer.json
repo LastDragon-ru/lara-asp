@@ -121,7 +121,6 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "LastDragon_ru\\LaraASP\\PhpStan\\": ".phpstan",
       "LastDragon_ru\\LaraASP\\Dev\\": "dev"
     }
   },
