@@ -63,7 +63,7 @@ class IncludeExampleTest extends TestCase {
             {$expected}
             ```
 
-            Output:
+            Example output:
 
             ```plain
             {$output}
@@ -95,11 +95,71 @@ class IncludeExampleTest extends TestCase {
             {$expected}
             ```
 
-            <details><summary>Output</summary>
+            <details><summary>Example output</summary>
 
             ```plain
             {$output}
             ```
+
+            </details>
+            EXPECTED,
+            $instance->process($path, $file),
+        );
+    }
+
+    public function testProcessMarkdown(): void {
+        $path     = self::getTestData()->path('~runnable.md');
+        $file     = basename(self::getTestData()->path('~runnable.md'));
+        $expected = trim(self::getTestData()->content('~runnable.md'));
+        $output   = 'command output';
+        $process  = Mockery::mock(Process::class);
+        $process
+            ->shouldReceive('run')
+            ->with([self::getTestData()->path('~runnable.run')], dirname($path))
+            ->once()
+            ->andReturn("<markdown>{$output}</markdown>");
+
+        $instance = $this->app->make(IncludeExample::class, [
+            'process' => $process,
+        ]);
+
+        self::assertEquals(
+            <<<EXPECTED
+            ```md
+            {$expected}
+            ```
+
+            {$output}
+            EXPECTED,
+            $instance->process($path, $file),
+        );
+    }
+
+    public function testProcessMarkdownLongOutput(): void {
+        $path     = self::getTestData()->path('~runnable.md');
+        $file     = self::getTestData()->path('~runnable.md');
+        $expected = trim(self::getTestData()->content('~runnable.md'));
+        $output   = implode("\n", range(0, IncludeExample::Limit + 1));
+        $process  = Mockery::mock(Process::class);
+        $process
+            ->shouldReceive('run')
+            ->with([self::getTestData()->path('~runnable.run')], dirname($path))
+            ->once()
+            ->andReturn("<markdown>{$output}</markdown>");
+
+        $instance = $this->app->make(IncludeExample::class, [
+            'process' => $process,
+        ]);
+
+        self::assertEquals(
+            <<<EXPECTED
+            ```md
+            {$expected}
+            ```
+
+            <details><summary>Example output</summary>
+
+            {$output}
 
             </details>
             EXPECTED,

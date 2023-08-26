@@ -35,6 +35,10 @@ Includes contents of the `<target>` file as an example wrapped into
 ` ```code block``` `. It also searches for `<target>.run` file, execute
 it if found, and include its result right after the code block.
 
+By default, output of `<target>.run` will be included as ` ```plain text``` `
+block. You can wrap the output into `<markdown>text</markdown>` tags to
+insert it as is.
+
 #### `[include:exec]: <target>`
 
 * `<target>` - Path to the executable.

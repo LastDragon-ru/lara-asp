@@ -10,13 +10,17 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 use function dirname;
 use function is_file;
 use function pathinfo;
+use function preg_match;
 use function preg_match_all;
+use function preg_replace_callback;
 use function trim;
 
 use const PATHINFO_EXTENSION;
+use const PREG_UNMATCHED_AS_NULL;
 
 class IncludeExample extends IncludeFile {
-    public const Limit = 20;
+    public const    Limit          = 20;
+    protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
 
     public function __construct(
         protected readonly Process $process,
@@ -33,6 +37,10 @@ class IncludeExample extends IncludeFile {
         Includes contents of the `<target>` file as an example wrapped into
         ` ```code block``` `. It also searches for `<target>.run` file, execute
         it if found, and include its result right after the code block.
+
+        By default, output of `<target>.run` will be included as ` ```plain text``` `
+        block. You can wrap the output into `<markdown>text</markdown>` tags to
+        insert it as is.
         DESC;
     }
 
@@ -51,30 +59,61 @@ class IncludeExample extends IncludeFile {
         $command  = $this->getCommand($path, $target);
 
         if ($command) {
+            // Call
             try {
                 $output = $this->process->run($command, dirname($path));
+                $output = trim($output);
             } catch (Exception $exception) {
                 throw new TargetExecFailed($path, $target, $exception);
             }
 
-            if (preg_match_all('/\R/u', $output) > static::Limit) {
+            // Markdown?
+            $isMarkdown = (bool) preg_match(static::MarkdownRegexp, $output);
+
+            if ($isMarkdown) {
+                $output = trim(
+                    (string) preg_replace_callback(
+                        pattern : static::MarkdownRegexp,
+                        callback: static function (array $matches): string {
+                            return $matches['markdown'];
+                        },
+                        subject : $output,
+                        flags   : PREG_UNMATCHED_AS_NULL,
+                    ),
+                );
+            }
+
+            // Format
+            $isTooLong = preg_match_all('/\R/u', $output) > static::Limit;
+
+            if ($isMarkdown && $isTooLong) {
                 $output = <<<CODE
-                <details><summary>Output</summary>
+                    <details><summary>Example output</summary>
 
-                ```plain
-                $output
-                ```
+                    {$output}
 
-                </details>
-                CODE;
+                    </details>
+                    CODE;
+            } elseif ($isMarkdown) {
+                // as is
+            } elseif ($isTooLong) {
+                $output = <<<CODE
+                    <details><summary>Example output</summary>
+
+                    ```plain
+                    {$output}
+                    ```
+
+                    </details>
+                    CODE;
             } else {
                 $output = <<<CODE
-                Output:
+                    Example output:
 
-                ```plain
-                $output
-                ```
-                CODE;
+                    ```plain
+                    $output
+                    ```
+                    CODE;
             }
 
             $content .= "\n\n{$output}";
