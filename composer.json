@@ -121,7 +121,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "LastDragon_ru\\LaraASP\\PhpStan\\": ".phpstan"
+      "LastDragon_ru\\LaraASP\\PhpStan\\": ".phpstan",
+      "LastDragon_ru\\LaraASP\\Dev\\": "dev"
     }
   },
   "extra": {
@@ -164,11 +165,11 @@
     "coverage": [
       "@php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-html=.phpunit/coverage.html"
     ],
-    "docs:rebuild": [
-      "@php artisan lara-asp-documentator:requirements > docs/shared/Requirements.md",
-      "@php artisan lara-asp-documentator:commands lara-asp-documentator ./packages/documentator/docs/commands",
-      "@php artisan lara-asp-documentator:commands lara-asp-migrator ./packages/migrator/docs/commands",
-      "@php artisan lara-asp-documentator:preprocess"
+    "rebuild:docs": [
+      "@php dev/artisan lara-asp-documentator:requirements > docs/shared/Requirements.md",
+      "@php dev/artisan lara-asp-documentator:commands lara-asp-documentator ./packages/documentator/docs/commands",
+      "@php dev/artisan lara-asp-documentator:commands lara-asp-migrator ./packages/migrator/docs/commands",
+      "@php dev/artisan lara-asp-documentator:preprocess"
     ]
   },
   "config": {
