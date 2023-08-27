@@ -26,8 +26,11 @@ use function explode;
 use function getcwd;
 use function is_array;
 use function json_decode;
+use function mb_strlen;
+use function mb_substr;
 use function range;
 use function reset;
+use function str_starts_with;
 use function trim;
 use function uksort;
 use function view;
@@ -152,7 +155,12 @@ class Requirements extends Command {
      */
     protected function getPackageInfo(Git $git, string $tag, string $cwd): ?array {
         try {
-            $package = $git->getFile(Path::join($cwd, 'composer.json'), $tag, $cwd);
+            $root    = Path::normalize($git->getRoot($cwd));
+            $path    = Path::join($cwd, 'composer.json');
+            $path    = str_starts_with($path, $root)
+                ? mb_substr($path, mb_strlen($root) + 1)
+                : $path;
+            $package = $git->getFile($path, $tag, $cwd);
             $package = json_decode($package, true, flags: JSON_THROW_ON_ERROR);
 
             assert(is_array($package));

@@ -34,4 +34,8 @@ class Git {
     public function getBranch(string $root = null): string {
         return $this->process->run(['git', 'rev-parse', '--abbrev-ref=HEAD'], $root);
     }
+
+    public function getRoot(string $root = null): string {
+        return $this->process->run(['git', 'rev-parse', '--show-toplevel'], $root);
+    }
 }
