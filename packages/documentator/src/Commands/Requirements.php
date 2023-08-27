@@ -15,10 +15,12 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use function array_combine;
+use function array_filter;
 use function array_keys;
 use function array_merge;
 use function array_search;
 use function array_unique;
+use function array_values;
 use function assert;
 use function count;
 use function end;
@@ -100,7 +102,9 @@ class Requirements extends Command {
             $metadata->requirements[$tag] = [];
 
             foreach ($packages as $key => $title) {
-                $metadata->requirements[$tag][$key] = explode('|', Cast::toString($package['require'][$key] ?? ''));
+                $required                           = explode('|', Cast::toString($package['require'][$key] ?? ''));
+                $required                           = array_values(array_filter($required));
+                $metadata->requirements[$tag][$key] = $required;
             }
         }
 
