@@ -474,17 +474,292 @@ class CustomDirective implements Directive, BuilderInfoProvider {
 
 The package provides bindings for [`Printer`](../graphql-printer/README.md) so you can simply use:
 
+[include:example]: ./docs/Examples/Printer.php
+[//]: # (start: 5e7cb205b971a4d25e9bf844a6a2c7895be9f127)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 
-$schema  = Container::getInstance()->make(SchemaBuilder::class)->schema();
-$printer = Container::getInstance()->make(Printer::class);
-$printed = $printer->print($schema);
+$schema   = Container::getInstance()->make(SchemaBuilder::class)->schema();
+$printer  = Container::getInstance()->make(Printer::class);
+$settings = new DefaultSettings();
+
+$printer->setSettings(
+    $settings->setDirectiveDefinitionFilter(
+        new class() implements DirectiveFilter {
+            public function isAllowedDirective(string $directive, bool $isStandard): bool {
+                return !in_array($directive, ['eq', 'all', 'find'], true);
+            }
+        },
+    ),
+);
+
+Example::raw($printer->print($schema), 'graphql');
 ```
+
+<details><summary>Example output</summary>
+
+The `$printer->print($schema)` is:
+
+```graphql
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorAnyOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorContains
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEndsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorLike
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNot
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotLike
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorStartsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Available conditions for `type User` (only one property allowed at a time).
+"""
+input SearchByConditionUser {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionUser!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionUser!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorProperty
+
+    """
+    Not.
+    """
+    not: SearchByConditionUser
+    @searchByOperatorNot
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByScalarID {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [ID!]
+    @searchByOperatorIn
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ID
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [ID!]
+    @searchByOperatorNotIn
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByScalarString {
+    """
+    Contains.
+    """
+    contains: String
+    @searchByOperatorContains
+
+    """
+    Ends with a string.
+    """
+    endsWith: String
+    @searchByOperatorEndsWith
+
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+
+    """
+    Like.
+    """
+    like: String
+    @searchByOperatorLike
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: String
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
+    @searchByOperatorNotIn
+
+    """
+    Not like.
+    """
+    notLike: String
+    @searchByOperatorNotLike
+
+    """
+    Starts with a string.
+    """
+    startsWith: String
+    @searchByOperatorStartsWith
+}
+
+type Query {
+    """
+    Find a single user by an identifying attribute.
+    """
+    user(
+        """
+        Search by primary key.
+        """
+        id: ID
+        @eq
+    ): User
+    @find
+
+    """
+    List multiple users.
+    """
+    users(
+        where: SearchByConditionUser
+        @searchBy
+    ): [User!]!
+    @all
+}
+
+"""
+Account of a person who utilizes this application.
+"""
+type User {
+    """
+    Unique primary key.
+    """
+    id: ID!
+
+    """
+    Non-unique name.
+    """
+    name: String!
+}
+```
+
+</details>
+
+[//]: # (end: 5e7cb205b971a4d25e9bf844a6a2c7895be9f127)
 
 There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertions.php).
 

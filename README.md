@@ -60,7 +60,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 
 ## Formatter
 
-This package provides a customizable wrapper around Intl formatters.
+This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters.
 
 [Read more](<packages/formatter/README.md>).
 

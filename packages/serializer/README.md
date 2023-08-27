@@ -26,18 +26,21 @@ composer require lastdragon-ru/lara-asp-serializer
 
 # Usage
 
+[include:example]: ./docs/Examples/Usage.php
+[//]: # (start: 541223f68a5167a71033c91e18d5ca4062e3c768)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
-use DateTimeInterface;
+// phpcs:disable PSR1.Files.SideEffects
+// phpcs:disable PSR1.Classes.ClassDeclaration
+
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Date;
+use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
-
-use function var_dump;
-
-use const PHP_EOL;
 
 class User implements Serializable {
     public function __construct(
@@ -54,76 +57,49 @@ $serializer   = Container::getInstance()->make(Serializer::class);
 $serialized   = $serializer->serialize($user);
 $deserialized = $serializer->deserialize(User::class, $serialized);
 
-echo 'Serialized: ';
-var_dump($serialized);
-echo PHP_EOL;
-
-echo 'Deserialized: ';
-var_dump($deserialized);
+Example::dump($serialized);
+Example::dump($deserialized);
 ```
 
-<details><summary>Output</summary>
+The `$serialized` is:
 
 ```plain
-Serialized: string(64) "{"id":1,"name":"User","created":"2023-08-17T07:06:26.415+00:00"}"
+"{"id":1,"name":"User","created":"2023-08-27T08:30:44.473+00:00"}"
+```
 
-Deserialized: object(Example\User)#470 (3) {
-  ["id"]=>
-  int(1)
-  ["name"]=>
-  string(4) "User"
-  ["created"]=>
-  object(Illuminate\Support\Carbon)#468 (19) {
-    ["endOfTime":protected]=>
-    bool(false)
-    ["startOfTime":protected]=>
-    bool(false)
-    ["constructedObjectId":protected]=>
-    string(32) "00000000000001d40000000000000000"
-    ["localMonthsOverflow":protected]=>
-    NULL
-    ["localYearsOverflow":protected]=>
-    NULL
-    ["localStrictModeEnabled":protected]=>
-    NULL
-    ["localHumanDiffOptions":protected]=>
-    NULL
-    ["localToStringFormat":protected]=>
-    NULL
-    ["localSerializer":protected]=>
-    NULL
-    ["localMacros":protected]=>
-    NULL
-    ["localGenericMacros":protected]=>
-    NULL
-    ["localFormatFunction":protected]=>
-    NULL
-    ["localTranslator":protected]=>
-    NULL
-    ["dumpProperties":protected]=>
-    array(3) {
-      [0]=>
-      string(4) "date"
-      [1]=>
-      string(13) "timezone_type"
-      [2]=>
-      string(8) "timezone"
-    }
-    ["dumpLocale":protected]=>
-    NULL
-    ["dumpDateProperties":protected]=>
-    NULL
-    ["date"]=>
-    string(26) "2023-08-17 07:06:26.415000"
-    ["timezone_type"]=>
-    int(1)
-    ["timezone"]=>
-    string(6) "+00:00"
+The `$deserialized` is:
+
+```plain
+User {#808
+  +id: 1
+  +name: "User"
+  +created: Illuminate\Support\Carbon @1693125044 {#806
+    #endOfTime: false
+    #startOfTime: false
+    #constructedObjectId: "00000000000003260000000000000000"
+    #localMonthsOverflow: null
+    #localYearsOverflow: null
+    #localStrictModeEnabled: null
+    #localHumanDiffOptions: null
+    #localToStringFormat: null
+    #localSerializer: null
+    #localMacros: null
+    #localGenericMacros: null
+    #localFormatFunction: null
+    #localTranslator: null
+    #dumpProperties: [
+      "date",
+      "timezone_type",
+      "timezone",
+    ]
+    #dumpLocale: null
+    #dumpDateProperties: null
+    date: 2023-08-27 08:30:44.473 +00:00
   }
 }
 ```
 
-</details>
+[//]: # (end: 541223f68a5167a71033c91e18d5ca4062e3c768)
 
 # Extending
 
