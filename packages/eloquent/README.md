@@ -2,8 +2,8 @@
 
 This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/eloquent).
 
-[include:file]: ../../docs/shared/Requirements.md
-[//]: # (start: 4aa299d1fd76a742656b8ab1b15d0ae7f7026ef1)
+[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
+[//]: # (start: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -22,7 +22,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 4aa299d1fd76a742656b8ab1b15d0ae7f7026ef1)
+[//]: # (end: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
 
 # Installation
 

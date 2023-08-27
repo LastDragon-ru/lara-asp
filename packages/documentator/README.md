@@ -2,27 +2,20 @@
 
 This package provides various utilities for documentation generation.
 
-[include:file]: ../../docs/shared/Requirements.md
-[//]: # (start: 4aa299d1fd76a742656b8ab1b15d0ae7f7026ef1)
+[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
+[//]: # (start: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.2` |   `HEAD ⋯ 2.0.0`   |
-|  | `^8.1` |   `HEAD ⋯ 2.0.0`   |
-|  | `^8.0` |   `4.5.2 ⋯ 2.0.0`   |
-|  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
-|  | `>=8.0.0` |   `0.11.0 ⋯ 0.4.0`   |
-|  | `>=7.4.0` |   `0.3.0 ⋯ 0.1.0`   |
-|  Laravel  | `^10.0.0` |   `HEAD ⋯ 2.1.0`   |
+|  PHP  | `^8.2` |  `HEAD`   |
+|  | `^8.1` |  `HEAD`   |
+|  Laravel  | `^10.0.0` |  `HEAD`   |
 |  | `^9.21.0` |  `HEAD`   |
-|  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
-|  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
-|  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 4aa299d1fd76a742656b8ab1b15d0ae7f7026ef1)
+[//]: # (end: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
 
 # Installation
 

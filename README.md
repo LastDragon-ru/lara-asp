@@ -2,8 +2,8 @@
 
 The set provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
 
-[include:file]: docs/shared/Requirements.md
-[//]: # (start: 46a0ed5ff9a74c7ad5a40029eb882e1177528507)
+[include:exec]: <./dev/artisan lara-asp-documentator:requirements>
+[//]: # (start: 47823357854a9650b16a8dfa80d0576e7cb9e227)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -22,7 +22,7 @@ The set provides best practices to make development more fun and classes/service
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 46a0ed5ff9a74c7ad5a40029eb882e1177528507)
+[//]: # (end: 47823357854a9650b16a8dfa80d0576e7cb9e227)
 
 # Installation
 

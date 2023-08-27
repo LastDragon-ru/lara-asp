@@ -1,5 +1,6 @@
 {
     "version": "0.15.0",
+    "require": [],
     "requirements": {
         "HEAD": {
             "laravel/framework": [

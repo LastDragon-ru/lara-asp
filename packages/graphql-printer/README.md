@@ -2,6 +2,23 @@
 
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
 
+[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
+[//]: # (start: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Requirements
+
+| Requirement  | Constraint          | Supported by |
+|--------------|---------------------|------------------|
+|  PHP  | `^8.2` |   `HEAD ⋯ 3.0.0`   |
+|  | `^8.1` |   `HEAD ⋯ 3.0.0`   |
+|  | `^8.0` |   `4.5.2 ⋯ 3.0.0`   |
+|  `webonyx/graphql-php`  | `^15.4.0` |   `HEAD ⋯ 4.2.1`   |
+|  | `^15.2.4` |   `4.2.0 ⋯ 4.0.0`   |
+|  | `^14.11.9` |  `3.0.0`   |
+
+[//]: # (end: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
+
 # Installation
 
 ```shell

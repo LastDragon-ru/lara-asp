@@ -167,7 +167,6 @@
       "@php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-html=.phpunit/coverage.html"
     ],
     "rebuild:docs": [
-      "@php dev/artisan lara-asp-documentator:requirements > docs/shared/Requirements.md",
       "@php dev/artisan lara-asp-documentator:commands lara-asp-documentator ./packages/documentator/docs/commands",
       "@php dev/artisan lara-asp-documentator:commands lara-asp-migrator ./packages/migrator/docs/commands",
       "@php dev/artisan lara-asp-documentator:preprocess"
