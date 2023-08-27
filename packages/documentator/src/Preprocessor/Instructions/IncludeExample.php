@@ -19,7 +19,7 @@ use const PATHINFO_EXTENSION;
 use const PREG_UNMATCHED_AS_NULL;
 
 class IncludeExample extends IncludeFile {
-    public const    Limit          = 20;
+    public const    Limit          = 50;
     protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
 
     public function __construct(
