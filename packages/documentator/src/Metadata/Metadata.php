@@ -9,10 +9,12 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
  */
 class Metadata implements Serializable {
     /**
+     * @param array<string, string>                      $require
      * @param array<string, array<string, list<string>>> $requirements
      */
     public function __construct(
         public string $version = '0.0.0',
+        public array $require = [],
         public array $requirements = [],
     ) {
         // empty

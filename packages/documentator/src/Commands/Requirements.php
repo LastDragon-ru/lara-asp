@@ -9,15 +9,16 @@ use LastDragon_ru\LaraASP\Documentator\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Storage;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Utils\Git;
+use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Utils\Version;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use function array_combine;
-use function array_fill_keys;
-use function array_intersect_key;
 use function array_keys;
+use function array_merge;
 use function array_search;
+use function array_unique;
 use function assert;
 use function count;
 use function end;
@@ -48,16 +49,33 @@ class Requirements extends Command {
         {cwd? : working directory (should be a git repository)}
     SIGNATURE;
 
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string
+     */
+    protected $help = <<<'HELP'
+        Requirements will be cached into `<cwd>/metadata.json`. You can also use
+        this file to specify the required requirements. For example, to include
+        PHP only:
+
+        ```json
+        {
+            "require": {
+                "php": "PHP"
+            }
+        }
+        ```
+        HELP;
+
     public function __invoke(Git $git, Serializer $serializer): void {
         // Get Versions
-        $cwd    = Cast::toString($this->argument('cwd') ?? getcwd());
-        $tags   = $git->getTags(Version::isVersion(...), $cwd);
-        $tags[] = 'HEAD';
+        $cwd  = Cast::toString($this->argument('cwd') ?? getcwd());
+        $tags = $this->getPackageVersions($git, $cwd, ['HEAD']);
 
         // Collect requirements
         $storage  = new Storage($serializer, $cwd);
         $metadata = $storage->load();
-        $packages = [
+        $packages = $metadata->require ?: [
             'php'               => 'PHP',
             'laravel/framework' => 'Laravel',
         ];
@@ -72,7 +90,7 @@ class Requirements extends Command {
             $package = $this->getPackageInfo($git, $tag, $cwd);
 
             if (!$package) {
-                continue;
+                break;
             }
 
             // Update
@@ -84,10 +102,18 @@ class Requirements extends Command {
         }
 
         // Cleanup
-        $metadata->requirements = array_intersect_key(
-            $metadata->requirements,
-            array_fill_keys($tags, null),
-        );
+        foreach ($metadata->requirements as $tag => $requirement) {
+            if (!isset($tags[$tag])) {
+                unset($metadata->requirements[$tag]);
+                break;
+            }
+
+            foreach ($requirement as $package => $versions) {
+                if (!isset($packages[$package])) {
+                    unset($metadata->requirements[$tag][$package]);
+                }
+            }
+        }
 
         // Save
         $storage->save($metadata);
@@ -107,11 +133,26 @@ class Requirements extends Command {
     }
 
     /**
+     * @param list<string> $tags
+     *
+     * @return array<string, string>
+     */
+    protected function getPackageVersions(Git $git, string $cwd, array $tags = []): array {
+        $tags = array_merge($tags, $git->getTags(Version::isVersion(...), $cwd));
+        $tags = array_unique($tags);
+        $tags = array_combine($tags, $tags);
+
+        uksort($tags, static fn($a, $b) => -Version::compare($a, $b));
+
+        return $tags;
+    }
+
+    /**
      * @return array<array-key, mixed>|null
      */
     protected function getPackageInfo(Git $git, string $tag, string $cwd): ?array {
         try {
-            $package = $git->getFile('composer.json', $tag, $cwd);
+            $package = $git->getFile(Path::join($cwd, 'composer.json'), $tag, $cwd);
             $package = json_decode($package, true, flags: JSON_THROW_ON_ERROR);
 
             assert(is_array($package));
