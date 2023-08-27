@@ -7,6 +7,7 @@
 ?>
 # Requirements
 
+@if($requirements)
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
 @foreach ($packages as $key => $title)
@@ -15,3 +16,6 @@
 @endforeach |
 @endforeach
 @endforeach
+@else
+_No requirements._
+@endif
