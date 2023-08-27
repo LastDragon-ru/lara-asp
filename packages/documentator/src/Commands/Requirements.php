@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use function array_combine;
+use function array_diff_key;
 use function array_filter;
 use function array_keys;
 use function array_merge;
@@ -87,8 +88,12 @@ class Requirements extends Command {
 
         foreach ($tags as $tag) {
             // Cached?
-            if ($tag !== 'HEAD' && array_keys($metadata->requirements[$tag] ?? []) === array_keys($packages)) {
-                continue;
+            if ($tag !== 'HEAD') {
+                $cached = $metadata->requirements[$tag] ?? [];
+
+                if (array_diff_key($packages, $cached) === [] && array_diff_key($cached, $packages) === []) {
+                    continue;
+                }
             }
 
             // Load
