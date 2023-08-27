@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Dev\App;
 
-use Closure;
 use Illuminate\Console\Command;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LogicException;
@@ -14,10 +13,8 @@ use PhpParser\Node\Name;
 use PhpParser\NodeFinder;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
+use Stringable;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\VarDumper\Cloner\VarCloner;
-use Symfony\Component\VarDumper\Dumper\AbstractDumper;
-use Symfony\Component\VarDumper\Dumper\CliDumper;
 
 use function array_map;
 use function array_slice;
@@ -37,10 +34,7 @@ use const DEBUG_BACKTRACE_IGNORE_ARGS;
 final class Example extends Command {
     private const Name = 'dev:example';
 
-    /**
-     * @var Closure(mixed, string, ?string): void|null
-     */
-    private static ?Closure $dump = null;
+    private static ?Dumper $dumper = null;
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
@@ -50,49 +44,8 @@ final class Example extends Command {
         {file : example file}
     SIGNATURE;
 
-    public function __invoke(): void {
-        $file       = Cast::toString($this->argument('file'));
-        $dumps      = [];
-        $cloner     = new VarCloner();
-        $dumper     = new CliDumper(
-            flags: AbstractDumper::DUMP_LIGHT_ARRAY
-                | AbstractDumper::DUMP_COMMA_SEPARATOR
-                | AbstractDumper::DUMP_TRAILING_COMMA,
-        );
-        self::$dump = static function (
-            mixed $value,
-            string $type,
-            ?string $expression,
-        ) use (
-            $dumper,
-            $cloner,
-            &$dumps,
-        ): void {
-            $dump    = trim((string) $dumper->dump($cloner->cloneVar($value), true));
-            $dump    = ($expression ? "The `{$expression}` is:\n\n" : '')."```{$type}\n{$dump}\n```\n";
-            $dumps[] = $dump;
-        };
-
-        try {
-            // Run
-            (static function () use ($file): void {
-                include $file;
-            })();
-
-            // Output
-            $output = implode("\n\n", array_map(trim(...), $dumps));
-
-            if ($output) {
-                $this->output->writeln("<markdown>{$output}</markdown>");
-            }
-        } finally {
-            self::$dump = null;
-        }
-    }
-
-    public static function dump(mixed $value, string $type = 'plain', string $expression = null): void {
-        // Example?
-        if (!self::$dump) {
+    protected static function getDumper(): Dumper {
+        if (!self::$dumper) {
             throw new LogicException(
                 sprintf(
                     'The `%s` can be called only within example context.',
@@ -101,11 +54,40 @@ final class Example extends Command {
             );
         }
 
-        // Call
-        (self::$dump)($value, $type, $expression ?? self::getExpression());
+        return self::$dumper;
     }
 
-    private static function getExpression(): ?string {
+    public function __invoke(Dumper $dumper): void {
+        $file         = Cast::toString($this->argument('file'));
+        self::$dumper = $dumper;
+
+        try {
+            // Run
+            (static function () use ($file): void {
+                include $file;
+            })();
+
+            // Output
+            $dumps  = $dumper->getDumps();
+            $output = implode("\n\n", array_map(trim(...), $dumps));
+
+            if ($output) {
+                $this->output->writeln("<markdown>{$output}</markdown>");
+            }
+        } finally {
+            self::$dumper = null;
+        }
+    }
+
+    public static function dump(mixed $value, string $expression = null): void {
+        self::getDumper()->dump($value, $expression ?? self::getExpression(__FUNCTION__));
+    }
+
+    public static function raw(Stringable|string $value, string $type, string $expression = null): void {
+        self::getDumper()->raw($value, $expression ?? self::getExpression(__FUNCTION__), $type);
+    }
+
+    private static function getExpression(string $method): ?string {
         // File?
         $context = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         $context = end($context);
@@ -118,12 +100,12 @@ final class Example extends Command {
         $code   = implode("\n", array_slice((array) file($context['file']), $context['line'] - 1));
         $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
         $stmts  = (array) $parser->parse("<?php\n{$code}", new Collecting());
-        $call   = (new NodeFinder())->findFirst($stmts, static function (Node $node): bool {
+        $call   = (new NodeFinder())->findFirst($stmts, static function (Node $node) use ($method): bool {
             return $node instanceof StaticCall
                 && $node->class instanceof Name
                 && $node->name instanceof Identifier
                 && ($node->class->toString() === 'Example' || $node->class->toString() === self::class)
-                && $node->name->toString() === 'dump';
+                && $node->name->toString() === $method;
         });
         $arg    = $call instanceof StaticCall
             ? (new Standard())->prettyPrint(array_slice($call->args, 0, 1))
