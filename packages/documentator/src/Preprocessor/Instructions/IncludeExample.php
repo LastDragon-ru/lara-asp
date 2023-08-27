@@ -84,7 +84,7 @@ class IncludeExample extends IncludeFile {
             }
 
             // Format
-            $isTooLong = preg_match_all('/\R/u', $output) > static::Limit;
+            $isTooLong = preg_match_all('/\R+/u', $output) > static::Limit;
 
             if ($isMarkdown && $isTooLong) {
                 $output = <<<CODE
