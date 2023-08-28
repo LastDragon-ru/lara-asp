@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+use LastDragon_ru\LaraASP\Dev\App\App;
+use Symfony\Component\Console\Input\ArgvInput;
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+App::run(new ArgvInput());

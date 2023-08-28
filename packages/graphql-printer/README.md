@@ -1,10 +1,23 @@
-# The GraphQL Printer
-
-> This package is the part of Awesome Set of Packages for Laravel.
->
-> [Read more](https://github.com/LastDragon-ru/lara-asp).
+# GraphQL Printer
 
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
+
+[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
+[//]: # (start: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Requirements
+
+| Requirement  | Constraint          | Supported by |
+|--------------|---------------------|------------------|
+|  PHP  | `^8.2` |   `HEAD ⋯ 3.0.0`   |
+|  | `^8.1` |   `HEAD ⋯ 3.0.0`   |
+|  | `^8.0` |   `4.5.2 ⋯ 3.0.0`   |
+|  `webonyx/graphql-php`  | `^15.4.0` |   `HEAD ⋯ 4.2.1`   |
+|  | `^15.2.4` |   `4.2.0 ⋯ 4.0.0`   |
+|  | `^14.11.9` |  `3.0.0`   |
+
+[//]: # (end: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
 
 # Installation
 
@@ -14,10 +27,17 @@ composer require lastdragon-ru/lara-asp-graphql-printer
 
 ## Usage
 
+There are two primary methods: `Printer::print()` and `Printer::export()`. The `print()` will print the current type only, meanwhile `export()` will print the current type and all used types/directives:
+
+[include:example]: ./docs/Examples/Usage.php
+[//]: # (start: 541223f68a5167a71033c91e18d5ca4062e3c768)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
 use GraphQL\Utils\BuildSchema;
+use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
@@ -43,14 +63,14 @@ $schema   = BuildSchema::build(
 $type     = $schema->getType('A');
 $settings = new DefaultSettings();
 $printer  = new Printer($settings, null, $schema);
-$printed  = $printer->print($type);
-$exported = $printer->export($type);
 
-echo $printed.PHP_EOL;
-echo $exported.PHP_EOL;
+assert($type !== null);
+
+Example::raw($printer->print($type), 'graphql');
+Example::raw($printer->export($type), 'graphql');
 ```
 
-The `print()` will print the current type only:
+The `$printer->print($type)` is:
 
 ```graphql
 type A
@@ -61,7 +81,7 @@ type A
 }
 ```
 
-The `export()` will print current type and all used types/directives:
+The `$printer->export($type)` is:
 
 ```graphql
 directive @a
@@ -86,6 +106,8 @@ type B
 }
 ```
 
+[//]: # (end: 541223f68a5167a71033c91e18d5ca4062e3c768)
+
 ## Customization
 
 Please see:
@@ -98,11 +120,16 @@ Please see:
 
 The Printer allows filter out types and directives. This may be useful to exclude them from the schema completely. Filtering also works for queries. Please note that types filtering will work only if the schema is known (the schema is required to determine the type of argument nodes). For some AST node types, their type may also be required.
 
+[include:example]: ./docs/Examples/Filtering.php
+[//]: # (start: f1784ed1e70d93869ab3671fcd1057fc270287f3)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
 use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
+use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
@@ -145,18 +172,16 @@ $query  = Parser::parse(
     GRAPHQL,
 );
 
-$settings      = (new DefaultSettings())
+$settings = (new DefaultSettings())
     ->setDirectiveFilter($directiveFilter)
     ->setTypeFilter($typeFilter);
-$printer       = new Printer($settings, null, $schema);
-$printedSchema = $printer->print($schema);
-$printedQuery  = $printer->print($query);
+$printer  = new Printer($settings, null, $schema);
 
-echo $printedSchema.PHP_EOL;
-echo $printedQuery;
+Example::raw($printer->print($schema), 'graphql');
+Example::raw($printer->print($query), 'graphql');
 ```
 
-The `$printedSchema`:
+The `$printer->print($schema)` is:
 
 ```graphql
 directive @allowed
@@ -169,13 +194,15 @@ type Query {
 }
 ```
 
-The `$printedQuery`:
+The `$printer->print($query)` is:
 
 ```graphql
 query {
     allowed
 }
 ```
+
+[//]: # (end: f1784ed1e70d93869ab3671fcd1057fc270287f3)
 
 ## Laravel/Lighthouse
 
@@ -189,3 +216,13 @@ Package also provides few great [GraphQL Assertions](./src/Testing/GraphQLAssert
 |---------------------------------|-----------------------------------------------------------|
 | `assertGraphQLPrintableEquals`  | Prints and compares two GraphQL schemas/types/nodes/etc.  |
 | `assertGraphQLExportableEquals` | Exports and compares two GraphQL schemas/types/nodes/etc. |
+
+[include:file]: ../../docs/shared/Contributing.md
+[//]: # (start: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Contributing
+
+This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
+
+[//]: # (end: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)

@@ -1,10 +1,11 @@
 {
     "version": "0.15.0",
+    "require": [],
     "requirements": {
         "HEAD": {
             "laravel/framework": [
                 "^10.0.0",
-                "^9.0.0"
+                "^9.21.0"
             ],
             "php": [
                 "^8.2",

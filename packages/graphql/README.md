@@ -1,10 +1,32 @@
-# The GraphQL Extensions
-
-> This package is the part of Awesome Set of Packages for Laravel.
->
-> [Read more](https://github.com/LastDragon-ru/lara-asp).
+# GraphQL Extensions for Lighthouse
 
 This package provides highly powerful `@searchBy` and `@sortBy`  directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
+
+[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
+[//]: # (start: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Requirements
+
+| Requirement  | Constraint          | Supported by |
+|--------------|---------------------|------------------|
+|  PHP  | `^8.2` |   `HEAD ⋯ 2.0.0`   |
+|  | `^8.1` |   `HEAD ⋯ 2.0.0`   |
+|  | `^8.0` |   `4.5.2 ⋯ 2.0.0`   |
+|  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
+|  | `>=8.0.0` |   `0.11.0 ⋯ 0.5.0`   |
+|  Laravel  | `^10.0.0` |   `HEAD ⋯ 2.1.0`   |
+|  | `^9.21.0` |  `HEAD`   |
+|  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
+|  | `^8.22.1` |   `3.0.0 ⋯ 0.5.0`   |
+|  Lighthouse  | `^6.5.0` |  `HEAD`  ,  `5.0.0-beta.0`   |
+|  | `^6.0.0` |   `4.5.2 ⋯ 4.0.0`   |
+|  | `^5.68.0` |   `3.0.0 ⋯ 2.0.0`   |
+|  | `^5.8.0` |   `1.1.2 ⋯ 0.13.0`   |
+|  | `^5.6.1` |  `0.12.0`  ,  `0.11.0`   |
+|  | `^5.4` |   `0.10.0 ⋯ 0.5.0`   |
+
+[//]: # (end: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
 
 # Installation
 
@@ -20,367 +42,25 @@ Config can be used, for example, to customize supported operators for each type.
 php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider --tag=config
 ```
 
-# `@searchBy` directive
+# Directives
 
-At this moment this is probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries.
+[include:document-list]: ./docs/Directives
+[//]: # (start: 5ea72e06dbc992a95243c8200f27486ada723a4d)
+[//]: # (warning: Generated automatically. Do not edit.)
 
-## Basic usage
+## `@searchBy`
 
-Out the box directives provides following features:
+Probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries.
 
-* Strictly typed - you can define supported operators for each Scalar;
-* Eloquent Builder, Query Builder and Custom Builder support;
-* Support almost all `where` operators;
-* Enums support;
-* `not (<condition>)` support;
-* Relations support (Eloquent Builder only);
-* Custom operators support
-* easy to use and safe.
+[Read more](<docs/Directives/@searchBy.md>).
 
-Let's start:
+## `@sortBy` directive
 
-```graphql
-scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+Probably the most powerful directive to provide sort (`order by` conditions) for your GraphQL queries.
 
-type Query {
-    users(where: _ @searchBy): [User!]! @all
-    comments(where: CommentsQuery @searchBy): [Comment!]! @all
-}
+[Read more](<docs/Directives/@sortBy.md>).
 
-input UsersQuery {
-    id: ID!
-    name: String!
-}
-
-input CommentsQuery {
-    text: String!
-    user: UsersQuery
-    date: Date
-}
-
-type User {
-    id: ID!
-    name: String!
-}
-
-input Comment {
-    text: String!
-    user: User
-    date: Date
-}
-```
-
-That's all, just search 😃 (or look at [generated GraphQL schema](./src/SearchBy/Directives/DirectiveTest~example-expected.graphql))
-
-```graphql
-query {
-    # WHERE name = "LastDragon"
-    users(where: {
-        name: {equal: "LastDragon"}
-    }) {
-        id
-    }
-
-    # WHERE name != "LastDragon"
-    users(where: {
-        name: {notEqual: "LastDragon"}
-    }) {
-        id
-    }
-
-    # WHERE name = "LastDragon" or name = "Aleksei"
-    users(where: {
-        anyOf: [
-            {name: {equal: "LastDragon"}}
-            {name: {equal: "Aleksei"}}
-        ]
-    }) {
-        id
-    }
-
-    # WHERE NOT (name = "LastDragon" or name = "Aleksei")
-    users(where: {
-        not: {
-            anyOf: [
-                {name: {equal: "LastDragon"}}
-                {name: {equal: "Aleksei"}}
-            ]
-        }
-    }) {
-        id
-    }
-
-    # WHERE date IS NULL
-    users(where: {
-        date: {isNull: yes}
-    }) {
-        id
-    }
-
-    # Relation: WHERE EXIST (related table)
-    comments(where: {
-        user: {
-            where: {
-                date: {between: {min: "2021-01-01", max: "2021-04-01"}}
-            }
-        }
-    }) {
-        id
-    }
-
-    # Relation: WHERE COUNT (related table) = 2
-    comments(where: {
-        user: {
-            where: {
-                date: {between: {min: "2021-01-01", max: "2021-04-01"}}
-            }
-            count: {
-                equal: 2
-            }
-        }
-    }) {
-        id
-    }
-}
-```
-
-## Input type auto-generation
-
-As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@searchBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
-
-* unions
-* with `@field` directive
-* with `@searchByIgnored` directive
-* with any directive that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
-* any `Type` that implements [`Ignored`](./src/SearchBy/Contracts/Ignored.php)
-
-## Operators
-
-There are three types of operators:
-
-* Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to type(s);
-* Extra - used to add additional fields, by default package provides few Logical operators which allow you to do eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](./src/Builder/Contracts/Operator.php) and add it to `Operators::Extra` type;
-* Condition - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. All the same, but these operators should be explicitly added to the fields/input types, by default the [`Relation`](./src/SearchBy/Operators/Complex/Relation.php) operator will be used:
-
-    ```graphql
-    type Query {
-        users(where: UsersQuery @searchBy): ID! @all
-        comments(where: CommentsQuery @searchBy): ID! @all
-    }
-
-    input UsersQuery {
-        id: ID!
-        name: String!
-    }
-
-    input CommentsQuery {
-        text: String!
-        user: UsersQuery @myComplexOperator
-    }
-    ```
-
-## Type Operators
-
-By default, the package provide list of predefined operators for build-in GraphQL and Lighthouse types. To extend/replace the built-in list, you can use config and/or add directives to type/scalar/enum inside the schema. Directives is the recommended way and have priority over the config.
-
-The package also defines a few own types in addition to the standard GraphQL types:
-
-* `SearchByCondition` / [`Operators::Condition`](./src/SearchBy/Operators.php) - List of known Condition operators. If no directive is found, the first supported operator from the list will be used.
-* `SearchByNumber` / [`Operators::Number`](./src/SearchBy/Operators.php) - Any operator for this type will be available for `Int` and `Float`.
-* `SearchByNull` / [`Operators::Null`](./src/SearchBy/Operators.php) - Additional operators available for nullable fields.
-* `SearchByExtra` / [`Operators::Extra`](./src/SearchBy/Operators.php) - List of additional extra operators for all types.
-* `SearchByEnum` / [`Operators::Enum`](./src/SearchBy/Operators.php) - Default operators for enums.
-
-### GraphQL
-
-```graphql
-scalar MyScalar
-@searchByOperators(type: "MyScalar")    # Re-use operators for `MyScalar` from config
-@searchByOperators(type: "Int")         # Re-use operators from `Int` from schema
-@searchByOperatorEqual                  # Package operator
-@myOperator                             # Custom operator
-```
-
-### Schema
-
-```php
-<?php declare(strict_types = 1);
-
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
-
-/**
- * -----------------------------------------------------------------------------
- * GraphQL Settings
- * -----------------------------------------------------------------------------
- *
- * @var array{
- *      search_by: array{
- *          operators: array<string, list<string|class-string<Operator>>>
- *      }
- *      } $settings
- */
-$settings = [
-    'search_by' => [
-        'operators' => [
-            // You can define a list of operators for each type
-            'Date'     => [
-                SearchByOperatorEqualDirective::class,
-                SearchByOperatorBetweenDirective::class,
-                MyCustomOperator::class,
-            ],
-
-            // Or re-use existing type
-            'DateTime' => [
-                'Date',
-            ],
-
-            // Or re-use built-in type
-            'Int' => [
-                'Int',                  // built-in operators for `Int` will be used
-                MyCustomOperator::class,
-            ],
-
-            // You can also use enum name to redefine default operators for it:
-            'MyEnum' => [
-                'Boolean',
-            ],
-        ],
-    ],
-];
-
-return $settings;
-```
-
-# `@sortBy` directive
-
-## Basic usage
-
-How to use (and [generated GraphQL schema](./src/SortBy/Directives/DirectiveTest~example-expected.graphql)):
-
-```graphql
-type Query {
-    "You can use normal input type"
-    users(order: UsersSort @sortBy): ID! @all
-
-    "or `_` to generate type automatically 😛"
-    comments(order: _ @sortBy): [Comment!]! @all
-}
-
-input UsersSort {
-    id: ID!
-    name: String!
-}
-
-type Comment {
-    text: String
-    user: User
-}
-
-type User {
-    id: ID!
-    name: String!
-}
-```
-
-And:
-
-```graphql
-query {
-    # ORDER BY user.name ASC, text DESC
-    comments(order: [
-        {user: {name: asc}}
-        {text: desc}
-    ])
-}
-```
-
-## Input type auto-generation
-
-As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@sortBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
-
-* unions
-* with list/array type
-* with `@field` directive
-* with `@sortByIgnored` directive
-* with any directive that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
-* any `Type` that implements [`Ignored`](./src/SortBy/Contracts/Ignored.php)
-
-## Operators
-
-The package defines only one's own type. To extend/replace the list of its operators, you can use config and/or add directives to scalar/enum inside the schema. Directives is the recommended way and have priority over the config. Please see [`@searchBy`](#type-operators) for examples.
-
-* `SortByExtra` / [`Operators::Extra`](./src/SortBy/Operators.php) - List of additional extra operators for all types. The list is empty by default.
-
-## Eloquent/Database
-
-### Supported Relations
-
-The main feature - the ability to sort results by relation properties, at the moment supported the following relation types:
-
-* `HasOne` (<https://laravel.com/docs/eloquent-relationships#one-to-one>)
-* `HasMany` (<https://laravel.com/docs/eloquent-relationships#one-to-many>)
-* `HasManyThrough` (<https://laravel.com/docs/eloquent-relationships#has-many-through>)
-* `BelongsTo` (<https://laravel.com/docs/eloquent-relationships#one-to-many-inverse>)
-* `BelongsToMany` (<https://laravel.com/docs/eloquent-relationships#many-to-many>)
-* `MorphOne` (<https://laravel.com/docs/eloquent-relationships#one-of-many-polymorphic-relations>)
-* `MorphMany` (<https://laravel.com/docs/eloquent-relationships#one-to-many-polymorphic-relations>)
-* `MorphToMany` (<https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations>)
-* `HasOneThrough` (<https://laravel.com/docs/eloquent-relationships#has-one-through>)
-
-### Order by random
-
-It is also possible to sort records in random order, but it is not enabled by default. To enable it you just need to add [`Random`](./src/SortBy/Operators/Extra/Random.php)/`@sortByOperatorRandom` operator/directive to `Extra` type:
-
-```php
-<?php declare(strict_types = 1);
-
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
-
-/**
- * -----------------------------------------------------------------------------
- * GraphQL Settings
- * -----------------------------------------------------------------------------
- *
- * @var array{
- *      sort_by: array{
- *          operators: array<string, list<string|class-string<Operator>>>
- *      },
- *      } $settings
- */
-$settings = [
-    'sort_by'   => [
-        'operators' => [
-            SortByOperators::Extra => [
-                SortByOperatorRandomDirective::class,
-            ],
-        ],
-    ],
-];
-
-return $settings;
-```
-
-or
-
-```graphql
-scalar SortByExtra
-@sortByOperatorRandom
-```
-
-And after this, you can 🎉
-
-```graphql
-query {
-    # ORDER BY RANDOM()
-    comments(order: [
-        {random: yes}
-    ])
-}
-```
+[//]: # (end: 5ea72e06dbc992a95243c8200f27486ada723a4d)
 
 # Scout
 
@@ -458,20 +138,305 @@ class CustomDirective implements Directive, BuilderInfoProvider {
 
 The package provides bindings for [`Printer`](../graphql-printer/README.md) so you can simply use:
 
+[include:example]: ./docs/Examples/Printer.php
+[//]: # (start: 5e7cb205b971a4d25e9bf844a6a2c7895be9f127)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 
-$schema  = Container::getInstance()->make(SchemaBuilder::class)->schema();
-$printer = Container::getInstance()->make(Printer::class);
-$printed = $printer->print($schema);
+$schema   = Container::getInstance()->make(SchemaBuilder::class)->schema();
+$printer  = Container::getInstance()->make(Printer::class);
+$settings = new DefaultSettings();
+
+$printer->setSettings(
+    $settings->setDirectiveDefinitionFilter(
+        new class() implements DirectiveFilter {
+            public function isAllowedDirective(string $directive, bool $isStandard): bool {
+                return !in_array($directive, ['eq', 'all', 'find'], true);
+            }
+        },
+    ),
+);
+
+Example::raw($printer->print($schema), 'graphql');
 ```
+
+<details><summary>Example output</summary>
+
+The `$printer->print($schema)` is:
+
+```graphql
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorAnyOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorContains
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEndsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorLike
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNot
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotLike
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorStartsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Available conditions for `type User` (only one property allowed at a time).
+"""
+input SearchByConditionUser {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionUser!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionUser!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorProperty
+
+    """
+    Not.
+    """
+    not: SearchByConditionUser
+    @searchByOperatorNot
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByScalarID {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [ID!]
+    @searchByOperatorIn
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ID
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [ID!]
+    @searchByOperatorNotIn
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByScalarString {
+    """
+    Contains.
+    """
+    contains: String
+    @searchByOperatorContains
+
+    """
+    Ends with a string.
+    """
+    endsWith: String
+    @searchByOperatorEndsWith
+
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+
+    """
+    Like.
+    """
+    like: String
+    @searchByOperatorLike
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: String
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
+    @searchByOperatorNotIn
+
+    """
+    Not like.
+    """
+    notLike: String
+    @searchByOperatorNotLike
+
+    """
+    Starts with a string.
+    """
+    startsWith: String
+    @searchByOperatorStartsWith
+}
+
+type Query {
+    """
+    Find a single user by an identifying attribute.
+    """
+    user(
+        """
+        Search by primary key.
+        """
+        id: ID
+        @eq
+    ): User
+    @find
+
+    """
+    List multiple users.
+    """
+    users(
+        where: SearchByConditionUser
+        @searchBy
+    ): [User!]!
+    @all
+}
+
+"""
+Account of a person who utilizes this application.
+"""
+type User {
+    """
+    Unique primary key.
+    """
+    id: ID!
+
+    """
+    Non-unique name.
+    """
+    name: String!
+}
+```
+
+</details>
+
+[//]: # (end: 5e7cb205b971a4d25e9bf844a6a2c7895be9f127)
 
 There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertions.php).
 
 | Name                        | Description              |
 |-----------------------------|--------------------------|
 | `assertGraphQLSchemaEquals` | Compares default schema. |
+
+[include:file]: ../../docs/shared/Contributing.md
+[//]: # (start: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Contributing
+
+This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
+
+[//]: # (end: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)

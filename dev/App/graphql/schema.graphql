@@ -1,0 +1,21 @@
+type Query {
+    "Find a single user by an identifying attribute."
+    user(
+      "Search by primary key."
+      id: ID @eq
+    ): User @find
+
+    "List multiple users."
+    users(
+      where: _ @searchBy
+    ): [User!]! @all
+}
+
+"Account of a person who utilizes this application."
+type User {
+    "Unique primary key."
+    id: ID!
+
+    "Non-unique name."
+    name: String!
+}

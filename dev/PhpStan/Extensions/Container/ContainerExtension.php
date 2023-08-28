@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\PhpStan\Extensions\Container;
+namespace LastDragon_ru\LaraASP\Dev\PhpStan\Extensions\Container;
 
 use Illuminate\Contracts\Container\Container;
-use NunoMaduro\Larastan\Concerns;
+use NunoMaduro\Larastan\Concerns\HasContainer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -24,7 +24,7 @@ use function is_object;
  * @internal
  */
 final class ContainerExtension implements DynamicMethodReturnTypeExtension {
-    use Concerns\HasContainer;
+    use HasContainer;
 
     public function getClass(): string {
         return Container::class;

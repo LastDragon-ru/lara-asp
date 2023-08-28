@@ -1,6 +1,10 @@
 parameters:
     paths:
         - packages
+        - dev
+    excludePaths:
+        - dev/App/bootstrap/cache
+        - dev/App/storage
 
     # The level 9 is the highest level
     level: max
@@ -22,7 +26,7 @@ includes:
     - ./vendor/nunomaduro/larastan/extension.neon
 
     # Package
-    - .phpstan/Extensions/Container/extension.neon
+    - ./dev/PhpStan/Extensions/Container/extension.neon
 
     # Baseline
     - phpstan-baseline-well-known.neon

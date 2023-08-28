@@ -1,8 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
+use LastDragon_ru\LaraASP\Dev\App\Provider;
 use LastDragon_ru\LaraASP\Documentator\Provider as DocumentatorProvider;
+use LastDragon_ru\LaraASP\GraphQL\Provider as GraphQLProvider;
+use LastDragon_ru\LaraASP\Migrator\Provider as MigratorProvider;
 use LastDragon_ru\LaraASP\Serializer\Provider as SerializerProvider;
 
 return [
@@ -144,8 +147,11 @@ return [
     |
     */
     'providers'       => ServiceProvider::defaultProviders()->merge([
+        Provider::class,
         SerializerProvider::class,
         DocumentatorProvider::class,
+        MigratorProvider::class,
+        GraphQLProvider::class,
     ])->toArray(),
 
     /*
