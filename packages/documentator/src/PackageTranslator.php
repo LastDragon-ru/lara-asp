@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator;
 
 use Illuminate\Contracts\Translation\Translator as TranslatorContract;
 use LastDragon_ru\LaraASP\Core\Helpers\Translator;
-use LastDragon_ru\LaraASP\Formatter\Package;
 
 class PackageTranslator extends Translator {
     public function __construct(TranslatorContract $translator) {
