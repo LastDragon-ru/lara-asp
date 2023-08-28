@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Core\Provider;
 
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Core\Translator;
+use LastDragon_ru\LaraASP\Core\Helpers\Translator;
 
 /**
  * @see Translator

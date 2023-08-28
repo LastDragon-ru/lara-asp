@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core;
+namespace LastDragon_ru\LaraASP\Core\Helpers;
 
 use Closure;
 use Countable;
@@ -12,7 +12,7 @@ use function array_values;
 use function end;
 
 /**
- * Special wrapper around Translator to help translate package's messages.
+ * Special wrapper around {@see TranslatorContract} to help translate package's messages.
  */
 abstract class Translator {
     public function __construct(
