@@ -10,6 +10,12 @@ class Provider extends ServiceProvider {
     use ProviderWithConfig;
     use ProviderWithTranslations;
 
+    public function register(): void {
+        parent::register();
+
+        $this->app->scopedIf(Formatter::class);
+    }
+
     public function boot(): void {
         $this->bootConfig();
         $this->bootTranslations();

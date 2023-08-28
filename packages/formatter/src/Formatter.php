@@ -219,11 +219,7 @@ class Formatter {
     }
 
     protected function create(): static {
-        $formatter           = Container::getInstance()->make(static::class);
-        $formatter->locale   = $this->locale;
-        $formatter->timezone = $this->timezone;
-
-        return $formatter;
+        return clone $this;
     }
     // </editor-fold>
 
@@ -655,6 +651,11 @@ class Formatter {
         }
 
         return $formatter;
+    }
+
+    public function __clone(): void {
+        $this->dateFormatters    = [];
+        $this->numbersFormatters = [];
     }
     //</editor-fold>
 }
