@@ -12,7 +12,7 @@ trait WithRoutes {
 
     protected function bootRoutes(): void {
         $this->callAfterBoot(function (): void {
-            $this->loadRoutesFrom($this->getPath('../routes/routes.php'));
+            $this->loadRoutesFrom($this->getPath('../defaults/routes.php'));
         });
     }
 }

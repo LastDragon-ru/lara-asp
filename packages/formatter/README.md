@@ -73,7 +73,7 @@ The `$locale->decimal(123.454321)` is:
 
 [//]: # (end: 541223f68a5167a71033c91e18d5ca4062e3c768)
 
-Please check [source code](./src/Formatter.php) to see available methods and [config example](./config/config.php) to available settings 🤗
+Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
 [include:file]: ../../docs/shared/Contributing.md
 [//]: # (start: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)

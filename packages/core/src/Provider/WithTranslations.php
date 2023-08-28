@@ -15,7 +15,7 @@ trait WithTranslations {
 
     protected function bootTranslations(): void {
         $package = $this->getName();
-        $path    = $this->getPath('../lang');
+        $path    = $this->getPath('../defaults/translations');
 
         $this->loadTranslationsFrom($path, $package);
         $this->publishes([

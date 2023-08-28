@@ -16,7 +16,7 @@ trait WithConfig {
 
     protected function bootConfig(): void {
         $package = $this->getName();
-        $path    = $this->getPath('../config/config.php');
+        $path    = $this->getPath('../defaults/config.php');
 
         $this->loadConfigFrom($path, $package);
         $this->publishes([

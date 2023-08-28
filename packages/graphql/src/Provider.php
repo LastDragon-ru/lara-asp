@@ -6,7 +6,6 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
-use LastDragon_ru\LaraASP\Core\Provider\WithTranslations;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver as ScoutFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scout\DefaultFieldResolver as ScoutDefaultFieldResolver;
@@ -29,7 +28,6 @@ use function implode;
 
 class Provider extends ServiceProvider {
     use WithConfig;
-    use WithTranslations;
 
     public function boot(Dispatcher $dispatcher): void {
         $this->bootConfig();

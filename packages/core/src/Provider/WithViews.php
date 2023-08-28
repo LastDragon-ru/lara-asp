@@ -12,7 +12,7 @@ trait WithViews {
 
     protected function bootViews(): void {
         $package = $this->getName();
-        $path    = $this->getPath('../resources/views');
+        $path    = $this->getPath('../defaults/views');
 
         $this->loadViewsFrom($path, $package);
         $this->publishes([
