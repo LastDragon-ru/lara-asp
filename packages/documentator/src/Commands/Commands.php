@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Utils\ArtisanSerializer;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use Symfony\Component\Console\Application;
@@ -14,7 +15,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 use function is_dir;
-use function view;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
@@ -35,12 +35,12 @@ class Commands extends Command {
         {--defaults : Include application default arguments/options like `--help`, etc.}
     SIGNATURE;
 
-    public function __invoke(Filesystem $filesystem, ArtisanSerializer $serializer): void {
+    public function __invoke(PackageViewer $viewer, Filesystem $filesystem, ArtisanSerializer $serializer): void {
         // Options
         $application = Cast::to(Application::class, $this->getApplication());
         $namespace   = $application->findNamespace(Cast::toString($this->argument('namespace')));
         $target      = Cast::toString($this->argument('target'));
-        $default     = Cast::toBool($this->option('defaults'));
+        $defaults    = Cast::toBool($this->option('defaults'));
         $commands    = $application->all($namespace);
 
         // Cleanup
@@ -65,9 +65,17 @@ class Commands extends Command {
 
             $this->components->task(
                 "Command: {$command->getName()}",
-                static function () use ($filesystem, $serializer, $namespace, $target, $default, $command): void {
+                static function () use (
+                    $filesystem,
+                    $serializer,
+                    $viewer,
+                    $namespace,
+                    $target,
+                    $defaults,
+                    $command,
+                ): void {
                     // Default options?
-                    if ($default) {
+                    if ($defaults) {
                         $command->mergeApplicationDefinition();
                     } else {
                         $command->setDefinition(
@@ -78,11 +86,10 @@ class Commands extends Command {
                     // Render
                     $name    = Str::after((string) $command->getName(), "{$namespace}:");
                     $path    = Path::getPath($target, "{$name}.md");
-                    $package = Package::Name;
-                    $content = view("{$package}::commands.markdown", [
+                    $content = $viewer->render('commands.markdown', [
                         'serializer' => $serializer,
                         'command'    => $command,
-                    ])->render();
+                    ]);
 
                     $filesystem->dumpFile($path, $content);
                 },

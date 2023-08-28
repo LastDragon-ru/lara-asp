@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Storage;
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Utils\Git;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Utils\Version;
@@ -36,7 +37,6 @@ use function reset;
 use function str_starts_with;
 use function trim;
 use function uksort;
-use function view;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -73,7 +73,7 @@ class Requirements extends Command {
         ```
         HELP;
 
-    public function __invoke(Git $git, Serializer $serializer): void {
+    public function __invoke(PackageViewer $viewer, Git $git, Serializer $serializer): void {
         // Get Versions
         $cwd  = Cast::toString($this->argument('cwd') ?? getcwd());
         $tags = $this->getPackageVersions($git, $cwd, ['HEAD']);
@@ -134,12 +134,11 @@ class Requirements extends Command {
         $requirements = $this->getRequirements($packages, $metadata);
 
         // Render
-        $package = Package::Name;
-        $output  = view("{$package}::requirements.markdown", [
+        $output = $viewer->render('requirements.markdown', [
             'packages'     => $packages,
             'requirements' => $requirements,
-        ])->render();
-        $output  = trim($output);
+        ]);
+        $output = trim($output);
 
         $this->output->writeln($output);
     }
@@ -154,7 +153,7 @@ class Requirements extends Command {
         $tags = array_unique($tags);
         $tags = array_combine($tags, $tags);
 
-        uksort($tags, static fn($a, $b) => -Version::compare($a, $b));
+        uksort($tags, static fn ($a, $b) => -Version::compare($a, $b));
 
         return $tags;
     }

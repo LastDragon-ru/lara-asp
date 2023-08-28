@@ -3,8 +3,11 @@
 namespace LastDragon_ru\LaraASP\Core\Provider;
 
 use Illuminate\Support\ServiceProvider;
+use LastDragon_ru\LaraASP\Core\Helpers\Viewer;
 
 /**
+ * @see Viewer
+ *
  * @mixin ServiceProvider
  */
 trait WithViews {

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
-use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
@@ -16,10 +16,11 @@ use function file_get_contents;
 use function is_dir;
 use function strcmp;
 use function usort;
-use function view;
 
 class IncludeDocumentList implements Instruction {
-    public function __construct() {
+    public function __construct(
+        protected readonly PackageViewer $viewer,
+    ) {
         // empty
     }
 
@@ -94,10 +95,9 @@ class IncludeDocumentList implements Instruction {
         });
 
         // Render
-        $package = Package::Name;
-        $list    = view("{$package}::document-list.markdown", [
+        $list = $this->viewer->render('document-list.markdown', [
             'documents' => $documents,
-        ])->render();
+        ]);
 
         // Return
         return $list;

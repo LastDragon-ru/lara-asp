@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
@@ -23,12 +23,13 @@ use function is_string;
 use function json_decode;
 use function strcmp;
 use function usort;
-use function view;
 
 use const JSON_THROW_ON_ERROR;
 
 class IncludePackageList implements Instruction {
-    public function __construct() {
+    public function __construct(
+        protected readonly PackageViewer $viewer,
+    ) {
         // empty
     }
 
@@ -110,10 +111,9 @@ class IncludePackageList implements Instruction {
         });
 
         // Render
-        $packageInfo = Package::Name;
-        $list        = view("{$packageInfo}::package-list.markdown", [
+        $list = $this->viewer->render('package-list.markdown', [
             'packages' => $packages,
-        ])->render();
+        ]);
 
         // Return
         return $list;
