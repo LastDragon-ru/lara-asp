@@ -20,7 +20,7 @@ jobs:
     uses: ./.github/workflows/settings.yml
 
   dependencies:
-    name: Validate composer.json
+    name: Dependencies checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,6 +33,30 @@ jobs:
       - name: Check unused packages
         run: |
           ./vendor/bin/composer-unused
+
+  dependencies-package:
+    name: Dependencies checks
+    needs:
+      - settings
+      - dependencies
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.settings.outputs.packages-names) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install PHP
+        uses: ./.github/actions/php
+      - name: Install package dependencies
+        uses: ramsey/composer-install@v2
+        with:
+          working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
+      - name: Check unused packages
+        working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
+        run: |
+          ../../vendor/bin/composer-unused
 
   phpcs:
     name: PHP CodeSniffer
