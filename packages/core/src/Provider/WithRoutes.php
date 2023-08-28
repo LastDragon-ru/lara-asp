@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Concerns;
+namespace LastDragon_ru\LaraASP\Core\Provider;
 
 use Illuminate\Support\ServiceProvider;
 
 /**
  * @mixin ServiceProvider
  */
-trait ProviderWithRoutes {
-    use ProviderHelper;
+trait WithRoutes {
+    use Helper;
 
     protected function bootRoutes(): void {
         $this->callAfterBoot(function (): void {

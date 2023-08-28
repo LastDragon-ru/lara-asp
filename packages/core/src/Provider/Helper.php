@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Concerns;
+namespace LastDragon_ru\LaraASP\Core\Provider;
 
 use Closure;
 use Illuminate\Foundation\Application;
@@ -13,7 +13,7 @@ use function ltrim;
 /**
  * @mixin ServiceProvider
  */
-trait ProviderHelper {
+trait Helper {
     /**
      * Should return the name of the package.
      */

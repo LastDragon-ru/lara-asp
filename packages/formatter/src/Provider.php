@@ -3,12 +3,12 @@
 namespace LastDragon_ru\LaraASP\Formatter;
 
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
-use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
+use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
+use LastDragon_ru\LaraASP\Core\Provider\WithTranslations;
 
 class Provider extends ServiceProvider {
-    use ProviderWithConfig;
-    use ProviderWithTranslations;
+    use WithConfig;
+    use WithTranslations;
 
     public function boot(): void {
         $this->bootConfig();

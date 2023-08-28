@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Concerns;
+namespace LastDragon_ru\LaraASP\Core\Provider;
 
 use Illuminate\Support\ServiceProvider;
 
 /**
  * @mixin ServiceProvider
  */
-trait ProviderWithViews {
-    use ProviderHelper;
+trait WithViews {
+    use Helper;
 
     protected function bootViews(): void {
         $package = $this->getName();

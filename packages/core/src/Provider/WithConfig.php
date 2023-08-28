@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Concerns;
+namespace LastDragon_ru\LaraASP\Core\Provider;
 
 use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Support\ServiceProvider;
@@ -11,8 +11,8 @@ use function config;
 /**
  * @mixin ServiceProvider
  */
-trait ProviderWithConfig {
-    use ProviderHelper;
+trait WithConfig {
+    use Helper;
 
     protected function bootConfig(): void {
         $package = $this->getName();

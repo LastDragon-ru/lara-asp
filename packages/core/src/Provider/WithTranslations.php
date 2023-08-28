@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Concerns;
+namespace LastDragon_ru\LaraASP\Core\Provider;
 
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Translator;
@@ -10,8 +10,8 @@ use LastDragon_ru\LaraASP\Core\Translator;
  *
  * @mixin ServiceProvider
  */
-trait ProviderWithTranslations {
-    use ProviderHelper;
+trait WithTranslations {
+    use Helper;
 
     protected function bootTranslations(): void {
         $package = $this->getName();

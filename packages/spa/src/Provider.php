@@ -6,16 +6,16 @@ use Exception;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithConfig;
-use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithRoutes;
-use LastDragon_ru\LaraASP\Core\Concerns\ProviderWithTranslations;
+use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
+use LastDragon_ru\LaraASP\Core\Provider\WithRoutes;
+use LastDragon_ru\LaraASP\Core\Provider\WithTranslations;
 use LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Provider extends ServiceProvider {
-    use ProviderWithConfig;
-    use ProviderWithRoutes;
-    use ProviderWithTranslations;
+    use WithConfig;
+    use WithRoutes;
+    use WithTranslations;
 
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
     // =========================================================================
