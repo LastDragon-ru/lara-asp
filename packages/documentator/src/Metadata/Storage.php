@@ -11,6 +11,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function is_file;
 use function strcmp;
+use function trim;
 use function uksort;
 use function usort;
 
@@ -59,7 +60,7 @@ class Storage {
         $metadata = $this->normalize($metadata);
         $context  = (new JsonEncoderContextBuilder())->withEncodeOptions(self::Options)->toArray();
         $content  = $this->serializer->serialize($metadata, self::Format, $context);
-        $result   = file_put_contents($this->getPath(), $content) !== false;
+        $result   = file_put_contents($this->getPath(), trim($content)."\n") !== false;
 
         return $result;
     }
