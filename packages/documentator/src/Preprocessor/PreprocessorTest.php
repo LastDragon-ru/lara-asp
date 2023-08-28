@@ -71,26 +71,26 @@ class PreprocessorTest extends TestCase {
             [unknown]: ./path/to/file
 
             [empty]: ./path/to/file
-            [//]: # (start: a3fab3c67a30d7c1ba21b17c4c0e9e609e78373c)
+            [//]: # (start: 8c371cac4ef3bc60b4480789fd5c8dba395daff5ba46b9d4b0eebab34f1cdecf)
             [//]: # (warning: Generated automatically. Do not edit.)
             [//]: # (empty)
-            [//]: # (end: a3fab3c67a30d7c1ba21b17c4c0e9e609e78373c)
+            [//]: # (end: 8c371cac4ef3bc60b4480789fd5c8dba395daff5ba46b9d4b0eebab34f1cdecf)
 
             [test]: ./path/to/file
-            [//]: # (start: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
+            [//]: # (start: e4812e1f99f65a72f87b6abe2a385b620a824c2d6fb5a18d0704da017d3ab90a)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             content
 
-            [//]: # (end: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
+            [//]: # (end: e4812e1f99f65a72f87b6abe2a385b620a824c2d6fb5a18d0704da017d3ab90a)
 
             [test]: <./path/to/file>
-            [//]: # (start: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
+            [//]: # (start: e4812e1f99f65a72f87b6abe2a385b620a824c2d6fb5a18d0704da017d3ab90a)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             content
 
-            [//]: # (end: 8c3f20586897a62ee759aae56b703dd6cd11a8ad)
+            [//]: # (end: e4812e1f99f65a72f87b6abe2a385b620a824c2d6fb5a18d0704da017d3ab90a)
             MARKDOWN,
             $preprocessor->process('path', $content),
         );

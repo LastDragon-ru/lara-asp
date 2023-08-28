@@ -3,7 +3,7 @@
 The set provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
 
 [include:exec]: <./dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 47823357854a9650b16a8dfa80d0576e7cb9e227)
+[//]: # (start: a4f6ce59cc330441460e69f4e90519a6a9fa6a4cc8db58ad262ddaf2ae08e611)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -22,7 +22,7 @@ The set provides best practices to make development more fun and classes/service
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 47823357854a9650b16a8dfa80d0576e7cb9e227)
+[//]: # (end: a4f6ce59cc330441460e69f4e90519a6a9fa6a4cc8db58ad262ddaf2ae08e611)
 
 # Installation
 
@@ -37,7 +37,7 @@ composer require lastdragon-ru/lara-asp-core
 # Packages
 
 [include:package-list]: ./packages
-[//]: # (start: 0a9fb09f262722ffea6123f723b8453dd3aebdf8)
+[//]: # (start: 8f166b902a268e803fccadcc7da3bdca5f038985a1d91a307c7f35c0b70c2880)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## Core
@@ -104,4 +104,4 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 [Read more](<packages/testing/README.md>).
 
-[//]: # (end: 0a9fb09f262722ffea6123f723b8453dd3aebdf8)
+[//]: # (end: 8f166b902a268e803fccadcc7da3bdca5f038985a1d91a307c7f35c0b70c2880)

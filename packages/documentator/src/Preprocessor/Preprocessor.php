@@ -14,10 +14,10 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageL
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 
 use function array_column;
+use function hash;
 use function mb_substr;
 use function preg_replace_callback;
 use function rawurldecode;
-use function sha1;
 use function str_ends_with;
 use function str_starts_with;
 use function trim;
@@ -171,6 +171,6 @@ class Preprocessor {
     }
 
     protected function getHash(string $identifier): string {
-        return sha1($identifier);
+        return hash('sha256', $identifier);
     }
 }

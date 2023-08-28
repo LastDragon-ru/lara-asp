@@ -3,7 +3,7 @@
 This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
+[//]: # (start: 7345502de8e33b9f2179e1d5e492a19bdc4b3d1012d77ee610aa6205dad3530b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -22,7 +22,7 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 48d8d2e1d13d5a77021bfa28fdd9623872f525d5)
+[//]: # (end: 7345502de8e33b9f2179e1d5e492a19bdc4b3d1012d77ee610aa6205dad3530b)
 
 # Installation
 
@@ -35,7 +35,7 @@ composer require lastdragon-ru/lara-asp-formatter
 Formatter is very simple to use:
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: 541223f68a5167a71033c91e18d5ca4062e3c768)
+[//]: # (start: caf4823c1825389ee306092d37b26a07d291dc0264dff1977be86e61ca455a97)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -71,16 +71,16 @@ The `$locale->decimal(123.454321)` is:
 "123,45"
 ```
 
-[//]: # (end: 541223f68a5167a71033c91e18d5ca4062e3c768)
+[//]: # (end: caf4823c1825389ee306092d37b26a07d291dc0264dff1977be86e61ca455a97)
 
 Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
 [include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)
+[//]: # (start: 0001ad9d31b5a203286c531c6880292795cb49f2074223b60ae12c6faa6c42eb)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 777f7598ee1b1a8c8fe67be6a3b7fce78a6e687e)
+[//]: # (end: 0001ad9d31b5a203286c531c6880292795cb49f2074223b60ae12c6faa6c42eb)

@@ -15,7 +15,7 @@ use Nuwave\Lighthouse\Schema\Values\FieldValue;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
-use function md5;
+use function hash;
 
 /**
  * @internal
@@ -40,7 +40,7 @@ class ExposeBuilderDirective extends BaseDirective implements FieldResolver, Bui
     }
 
     public static function getName(): string {
-        return '@exposeBuilder'.md5(static::class);
+        return '@exposeBuilder'.hash('sha256', static::class);
     }
 
     public function getBuilderInfo(): BuilderInfo|string|null {

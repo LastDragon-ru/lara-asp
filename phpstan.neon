@@ -24,6 +24,11 @@ includes:
     - ./vendor/phpstan/phpstan-phpunit/rules.neon
     - ./vendor/phpstan/phpstan-strict-rules/rules.neon
     - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
 
     # Package
     - ./dev/PhpStan/Extensions/Container/extension.neon
