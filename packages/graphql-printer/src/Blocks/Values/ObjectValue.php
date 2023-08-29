@@ -40,7 +40,8 @@ class ObjectValue extends ListBlock {
     }
 
     protected function isAlwaysMultiline(): bool {
-        return true;
+        return parent::isAlwaysMultiline()
+            || $this->getSettings()->isAlwaysMultilineArguments();
     }
 
     protected function isNormalized(): bool {

@@ -327,13 +327,13 @@ class ValueTest extends TestCase {
                 0,
                 Parser::valueLiteral(
                     <<<'STRING'
-                {
-                    object: {
-                        a: "a"
-                        b: "b"
+                    {
+                        object: {
+                            a: "a"
+                            b: "b"
+                        }
                     }
-                }
-                STRING,
+                    STRING,
                 ),
                 null,
                 null,
@@ -365,6 +365,27 @@ class ValueTest extends TestCase {
                     {
                         b: "b"
                         a: "a"
+                    }
+                    STRING,
+                ),
+                null,
+                null,
+            ],
+            ObjectValueNode::class.' (one line)'                  => [
+                <<<'STRING'
+                {object: {a: "a", b: "b"}}
+                STRING,
+                $settings
+                    ->setAlwaysMultilineArguments(false),
+                0,
+                0,
+                Parser::valueLiteral(
+                    <<<'STRING'
+                    {
+                        object: {
+                            a: "a"
+                            b: "b"
+                        }
                     }
                     STRING,
                 ),
