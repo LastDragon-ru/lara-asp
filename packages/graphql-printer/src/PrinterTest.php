@@ -287,7 +287,7 @@ class PrinterTest extends TestCase {
                         '@directive',
                     ]),
                 (new TestSettings())
-                    ->setNormalizeSchema(false)
+                    ->setNormalizeDefinitions(false)
                     ->setNormalizeUnions(false)
                     ->setNormalizeEnums(false)
                     ->setNormalizeInterfaces(false)

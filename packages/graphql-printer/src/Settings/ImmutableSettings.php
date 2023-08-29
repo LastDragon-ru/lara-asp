@@ -16,7 +16,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $printDirectives                   = true;
     protected bool             $printDirectiveDefinitions         = true;
     protected bool             $printUnusedDefinitions            = false;
-    protected bool             $normalizeSchema                   = true;
+    protected bool             $normalizeDefinitions              = true;
     protected bool             $normalizeUnions                   = true;
     protected bool             $normalizeEnums                    = true;
     protected bool             $normalizeInterfaces               = true;
@@ -118,13 +118,13 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
-    public function isNormalizeSchema(): bool {
-        return $this->normalizeSchema;
+    public function isNormalizeDefinitions(): bool {
+        return $this->normalizeDefinitions;
     }
 
-    public function setNormalizeSchema(bool $value): static {
+    public function setNormalizeDefinitions(bool $value): static {
         return $this->set(static function (self $settings) use ($value): void {
-            $settings->normalizeSchema = $value;
+            $settings->normalizeDefinitions = $value;
         });
     }
 
@@ -311,7 +311,7 @@ abstract class ImmutableSettings implements Settings {
             ->setPrintDirectives($settings->isPrintDirectives())
             ->setPrintDirectiveDefinitions($settings->isPrintDirectiveDefinitions())
             ->setPrintUnusedDefinitions($settings->isPrintUnusedDefinitions())
-            ->setNormalizeSchema($settings->isNormalizeSchema())
+            ->setNormalizeDefinitions($settings->isNormalizeDefinitions())
             ->setNormalizeUnions($settings->isNormalizeUnions())
             ->setNormalizeEnums($settings->isNormalizeEnums())
             ->setNormalizeInterfaces($settings->isNormalizeInterfaces())

@@ -26,7 +26,7 @@ interface Settings {
      * If `false` types and directives in the schema will be printed in the
      * original order if `true` they will be sorted by name.
      */
-    public function isNormalizeSchema(): bool;
+    public function isNormalizeDefinitions(): bool;
 
     /**
      * If `false` members will be printed in the original order if `true` they

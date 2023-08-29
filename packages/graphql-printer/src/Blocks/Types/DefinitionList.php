@@ -34,7 +34,7 @@ class DefinitionList extends ListBlock {
     }
 
     protected function isNormalized(): bool {
-        return $this->getSettings()->isNormalizeSchema();
+        return $this->getSettings()->isNormalizeDefinitions();
     }
 
     protected function isAlwaysMultiline(): bool {

@@ -42,7 +42,7 @@ class PrintableList extends ListBlock implements ArrayAccess {
     }
 
     protected function isNormalized(): bool {
-        return $this->getSettings()->isNormalizeSchema();
+        return $this->getSettings()->isNormalizeDefinitions();
     }
 
     protected function isAlwaysMultiline(): bool {

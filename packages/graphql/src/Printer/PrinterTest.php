@@ -342,7 +342,7 @@ class PrinterTest extends TestCase {
                         '@mock',
                     ]),
                 (new TestSettings())
-                    ->setNormalizeSchema(false)
+                    ->setNormalizeDefinitions(false)
                     ->setNormalizeUnions(false)
                     ->setNormalizeEnums(false)
                     ->setNormalizeInterfaces(false)

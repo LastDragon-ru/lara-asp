@@ -16,7 +16,7 @@ class TestSettings extends ImmutableSettings {
     protected bool             $printDirectives                   = true;
     protected bool             $printDirectiveDefinitions         = true;
     protected bool             $printUnusedDefinitions            = false;
-    protected bool             $normalizeSchema                   = true;
+    protected bool             $normalizeDefinitions              = true;
     protected bool             $normalizeUnions                   = true;
     protected bool             $normalizeEnums                    = true;
     protected bool             $normalizeInterfaces               = true;

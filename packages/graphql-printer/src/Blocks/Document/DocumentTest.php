@@ -101,7 +101,7 @@ class DocumentTest extends TestCase {
     public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
             ->setPrintDirectives(false)
-            ->setNormalizeSchema(false)
+            ->setNormalizeDefinitions(false)
             ->setNormalizeInterfaces(false)
             ->setNormalizeFields(false)
             ->setNormalizeEnums(false)
@@ -267,7 +267,7 @@ class DocumentTest extends TestCase {
                 GRAPHQL,
                 $settings
                     ->setPrintDirectives(true)
-                    ->setNormalizeSchema(true)
+                    ->setNormalizeDefinitions(true)
                     ->setNormalizeInterfaces(true)
                     ->setNormalizeFields(true)
                     ->setNormalizeEnums(true)

@@ -18,7 +18,7 @@ class GraphQLSettings extends ImmutableSettings {
     protected bool             $printDirectives                   = true;
     protected bool             $printDirectiveDefinitions         = false;
     protected bool             $printUnusedDefinitions            = true;
-    protected bool             $normalizeSchema                   = true;
+    protected bool             $normalizeDefinitions              = true;
     protected bool             $normalizeUnions                   = false;
     protected bool             $normalizeEnums                    = false;
     protected bool             $normalizeInterfaces               = false;
