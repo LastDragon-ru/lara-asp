@@ -9,7 +9,7 @@ class Ignored implements Directive, IgnoredContract {
     public static function definition(): string {
         return <<<'GRAPHQL'
             """
-            Marks that field should be excluded from search.
+            Marks that field/definition should be excluded from search.
             """
             directive @searchByIgnored on
                 | FIELD_DEFINITION

@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts;
 
 /**
- * Marks that field/type should be excluded from sort.
+ * Marks that field/definition should be excluded from sort.
  */
 interface Ignored {
     // empty
