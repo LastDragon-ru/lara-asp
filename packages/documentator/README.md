@@ -10,10 +10,10 @@ This package provides various utilities for documentation generation.
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.2` |  `HEAD`   |
-|  | `^8.1` |  `HEAD`   |
-|  Laravel  | `^10.0.0` |  `HEAD`   |
-|  | `^9.21.0` |  `HEAD`   |
+|  PHP  | `^8.2` |  `HEAD`  ,  `5.0.0-beta.1`   |
+|  | `^8.1` |  `HEAD`  ,  `5.0.0-beta.1`   |
+|  Laravel  | `^10.0.0` |  `HEAD`  ,  `5.0.0-beta.1`   |
+|  | `^9.21.0` |  `HEAD`  ,  `5.0.0-beta.1`   |
 
 [//]: # (end: 7345502de8e33b9f2179e1d5e492a19bdc4b3d1012d77ee610aa6205dad3530b)
 

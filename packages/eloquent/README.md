@@ -17,7 +17,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 |  | `>=8.0.0` |   `0.11.0 ⋯ 0.4.0`   |
 |  | `>=7.4.0` |   `0.3.0 ⋯ 0.1.0`   |
 |  Laravel  | `^10.0.0` |   `HEAD ⋯ 2.1.0`   |
-|  | `^9.21.0` |  `HEAD`   |
+|  | `^9.21.0` |  `HEAD`  ,  `5.0.0-beta.1`   |
 |  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
