@@ -27,6 +27,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $alwaysMultilineUnions             = true;
     protected bool             $alwaysMultilineArguments          = true;
     protected bool             $alwaysMultilineInterfaces         = true;
+    protected bool             $alwaysMultilineDirectives         = true;
     protected bool             $alwaysMultilineDirectiveLocations = true;
     protected ?TypeFilter      $typeFilter                        = null;
     protected ?TypeFilter      $typeDefinitionFilter              = null;
@@ -227,6 +228,16 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    public function isAlwaysMultilineDirectives(): bool {
+        return $this->alwaysMultilineDirectives;
+    }
+
+    public function setAlwaysMultilineDirectives(bool $value): static {
+        return $this->set(static function (self $settings) use ($value): void {
+            $settings->alwaysMultilineDirectives = $value;
+        });
+    }
+
     public function isAlwaysMultilineDirectiveLocations(): bool {
         return $this->alwaysMultilineDirectiveLocations;
     }
@@ -311,6 +322,7 @@ abstract class ImmutableSettings implements Settings {
             ->setAlwaysMultilineUnions($settings->isAlwaysMultilineUnions())
             ->setAlwaysMultilineArguments($settings->isAlwaysMultilineArguments())
             ->setAlwaysMultilineInterfaces($settings->isAlwaysMultilineInterfaces())
+            ->setAlwaysMultilineDirectives($settings->isAlwaysMultilineDirectives())
             ->setAlwaysMultilineDirectiveLocations($settings->isAlwaysMultilineDirectiveLocations())
             ->setTypeFilter($settings->getTypeFilter())
             ->setTypeDefinitionFilter($settings->getTypeDefinitionFilter())

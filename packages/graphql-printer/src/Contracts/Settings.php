@@ -82,6 +82,11 @@ interface Settings {
     public function isAlwaysMultilineInterfaces(): bool;
 
     /**
+     * If `true` directives will always be printed multiline.
+     */
+    public function isAlwaysMultilineDirectives(): bool;
+
+    /**
      * If `true` directive locations will always be printed multiline.
      */
     public function isAlwaysMultilineDirectiveLocations(): bool;

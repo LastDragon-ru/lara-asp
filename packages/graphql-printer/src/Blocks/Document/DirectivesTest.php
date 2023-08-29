@@ -63,6 +63,7 @@ class DirectivesTest extends TestCase {
      */
     public static function dataProviderSerialize(): array {
         $settings = (new TestSettings())
+            ->setAlwaysMultilineDirectives(true)
             ->setAlwaysMultilineArguments(false);
 
         return [
@@ -184,6 +185,38 @@ class DirectivesTest extends TestCase {
                 0,
                 [
                     Parser::directive('@a(a: 123)'),
+                ],
+                null,
+            ],
+            'one line'                                  => [
+                <<<'STRING'
+                @b(b: 123) @a
+                STRING,
+                $settings
+                    ->setAlwaysMultilineDirectives(false),
+                0,
+                0,
+                [
+                    Parser::directive('@b(b: 123)'),
+                    Parser::directive('@a'),
+                ],
+                null,
+            ],
+            'one line too long'                         => [
+                <<<'STRING'
+                @b(
+                    b: 123
+                )
+                @a
+                STRING,
+                $settings
+                    ->setLineLength(5)
+                    ->setAlwaysMultilineDirectives(false),
+                0,
+                0,
+                [
+                    Parser::directive('@b(b: 123)'),
+                    Parser::directive('@a'),
                 ],
                 null,
             ],

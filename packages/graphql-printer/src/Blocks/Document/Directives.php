@@ -24,7 +24,6 @@ class Directives extends ListBlock {
         iterable $directives,
         string|null $deprecationReason = null,
     ) {
-
         if ($deprecationReason !== null) {
             $list       = [];
             $name       = GraphQLDirective::DEPRECATED_NAME;
@@ -59,8 +58,13 @@ class Directives extends ListBlock {
         parent::__construct($context, $directives);
     }
 
+    protected function getSeparator(): string {
+        return $this->space();
+    }
+
     protected function isAlwaysMultiline(): bool {
-        return true;
+        return parent::isAlwaysMultiline()
+            || $this->getSettings()->isAlwaysMultilineDirectives();
     }
 
     protected function block(string|int $key, mixed $item): Directive {
