@@ -76,8 +76,15 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="TypeProvider">
     // =========================================================================
     public function getType(string $definition, TypeSource $source): string {
+        // Instance (phpstan is not so smart yet...)
+        $instance = Container::getInstance()->make($definition);
+
+        if (!($instance instanceof TypeDefinition)) {
+            throw new TypeDefinitionImpossibleToCreateType($definition, $source);
+        }
+
         // Exists?
-        $name = $definition::getTypeName($this, $this->getBuilderInfo(), $source);
+        $name = $instance->getTypeName($this, $this->getBuilderInfo(), $source);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
@@ -85,13 +92,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Fake
         $this->addFakeTypeDefinition($name);
-
-        // Instance (phpstan is not so smart yet...)
-        $instance = Container::getInstance()->make($definition);
-
-        if (!($instance instanceof TypeDefinition)) {
-            throw new TypeDefinitionImpossibleToCreateType($definition, $source);
-        }
 
         // Create new
         $node = $instance->getTypeDefinition($this, $name, $source);

@@ -438,7 +438,7 @@ class DirectiveTest extends TestCase {
                             throw new Exception('should not be called');
                         }
 
-                        public static function getTypeName(
+                        public function getTypeName(
                             Manipulator $manipulator,
                             BuilderInfo $builder,
                             TypeSource $source,

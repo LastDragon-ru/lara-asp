@@ -16,7 +16,7 @@ class Range implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $typeName      = $source->getTypeName();
         $directiveName = Directive::Name;
 

@@ -17,7 +17,7 @@ class Enumeration implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
         $typeName      = $source->getTypeName();

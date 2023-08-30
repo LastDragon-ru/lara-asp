@@ -34,7 +34,7 @@ use function array_values;
 use const SORT_REGULAR;
 
 class Clause extends InputObject {
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
         $typeName      = $source->getTypeName();

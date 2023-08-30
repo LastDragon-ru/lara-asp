@@ -39,7 +39,7 @@ use function is_string;
 use const SORT_REGULAR;
 
 class Condition extends InputObject {
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $typeName      = $source->getTypeName();
         $builderName   = $builder->getName();
         $directiveName = Directive::Name;

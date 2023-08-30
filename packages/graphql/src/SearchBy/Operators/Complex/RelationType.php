@@ -19,7 +19,7 @@ class RelationType implements TypeDefinition {
         // empty
     }
 
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $typeName      = $source->getTypeName();
         $builderName   = $builder->getName();
         $operatorName  = Str::studly(Relation::getName());

@@ -13,7 +13,7 @@ interface TypeDefinition {
     /**
      * Returns the type name for given Builder and Source.
      */
-    public static function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string;
+    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string;
 
     /**
      * Returns the type definition for given Source if possible. The name must be equal to `$name`.
