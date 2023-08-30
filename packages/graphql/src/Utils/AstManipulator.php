@@ -19,6 +19,7 @@ use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldDefinition;
@@ -34,6 +35,7 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -45,8 +47,11 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function array_merge;
 use function assert;
+use function json_encode;
 use function reset;
 use function trim;
+
+use const JSON_THROW_ON_ERROR;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
@@ -196,8 +201,19 @@ class AstManipulator {
 
         if ($definition instanceof TypeDefinitionNode && $definition instanceof Node) {
             $this->getDocument()->setTypeDefinition($definition);
+        } elseif ($definition instanceof ScalarType) {
+            $class  = json_encode($definition::class, JSON_THROW_ON_ERROR);
+            $scalar = Parser::scalarTypeDefinition(
+                <<<GRAPHQL
+                scalar {$name} @scalar(class: {$class})
+                GRAPHQL,
+            );
+
+            $this->getDocument()->setTypeDefinition($scalar);
         } elseif ($definition instanceof Type) {
-            $this->getTypes()->register($definition);
+            // Types added while AST transformation will be lost if the Schema
+            // is cached. Not yet sure how to solve it... Any ideas?
+            throw new NotImplemented('`Type` registration');
         } else {
             // empty
         }
