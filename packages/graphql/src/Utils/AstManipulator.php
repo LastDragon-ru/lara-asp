@@ -240,8 +240,19 @@ class AstManipulator {
 
         if ($definition instanceof TypeDefinitionNode && $definition instanceof Node) {
             $this->getDocument()->setTypeDefinition($definition);
+        } elseif ($definition instanceof ScalarType) {
+            $class  = json_encode($definition::class, JSON_THROW_ON_ERROR);
+            $scalar = Parser::scalarTypeDefinition(
+                <<<GRAPHQL
+                scalar {$name} @scalar(class: {$class})
+                GRAPHQL,
+            );
+
+            $this->getDocument()->setTypeDefinition($scalar);
         } elseif ($definition instanceof Type) {
-            $this->getTypes()->register($definition);
+            // Types added while AST transformation will be lost if the Schema
+            // is cached. Not yet sure how to solve it... Any ideas?
+            throw new NotImplemented('`Type` registration');
         } else {
             // empty
         }
