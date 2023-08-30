@@ -223,6 +223,14 @@ interface InterfaceC {
 }
 
 """
+Represents JSON string.
+"""
+scalar JsonString
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Scalars\\JsonString"
+)
+
+"""
 Represents a cursor for the `@stream` directive. The value can be a
 positive `Int` or a `String`. The `Int` value represents the offset
 (zero-based) to navigate to any position within the stream (= cursor
@@ -384,8 +392,8 @@ type StreamAggregator {
 
 type StreamInfo {
     chunk: Int!
-    order: String!
-    where: String!
+    order: JsonString
+    where: JsonString
 }
 
 type StreamNavigator {

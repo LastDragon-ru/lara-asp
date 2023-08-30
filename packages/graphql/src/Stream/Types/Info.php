@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Scalars\JsonString;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
 
 class Info implements TypeDefinition {
@@ -25,12 +26,14 @@ class Info implements TypeDefinition {
         string $name,
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
+        $json = $manipulator->getType(JsonString::class, $source);
+
         return Parser::objectTypeDefinition(
             <<<GRAPHQL
             type {$name} {
                 chunk: Int!
-                where: String! # fixme(graphql/@stream)!: Should be a JSON?
-                order: String!  # fixme(graphql/@stream)!: Should be a JSON?
+                where: {$json}
+                order: {$json}
             }
             GRAPHQL,
         );
