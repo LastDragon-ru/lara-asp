@@ -64,6 +64,17 @@ Probably the most powerful directive to provide sort (`order by` conditions) for
 
 # Scalars
 
+> [!IMPORTANT]
+>
+> You should register the Scalar before use, it can be done via [`AstManipulator`](./src/Utils/AstManipulator.php) (useful while AST manipulation), [`TypeRegistry`](https://lighthouse-php.com/master/digging-deeper/adding-types-programmatically.html#using-the-typeregistry), or as a custom scalar inside the Schema:
+>
+> ```graphql
+> scalar JsonString
+> @scalar(
+>     class: "LastDragon_ru\\LaraASP\\GraphQL\\Scalars\\JsonString"
+> )
+> ```
+
 [include:document-list]: ./docs/Scalars
 [//]: # (start: e3795f388ca164b6568d7e4b8d642c7a6ad049711bb0777e6b09e9b5b19e1e11)
 [//]: # (warning: Generated automatically. Do not edit.)
