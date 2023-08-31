@@ -30,7 +30,11 @@ class JsonStringTest extends TestCase {
         $scalar = new JsonString();
         $actual = $scalar->serialize($value);
 
-        self::assertEquals($value, $actual);
+        if ($value instanceof JsonStringable) {
+            self::assertEquals((string) $value, $actual);
+        } else {
+            self::assertEquals($value, $actual);
+        }
     }
 
     /**
@@ -82,6 +86,20 @@ class JsonStringTest extends TestCase {
             'string and a valid json'     => [
                 null,
                 '{"a": 123, "b": {"c": 45}}',
+            ],
+            JsonStringable::class         => [
+                null,
+                new class('{"a": 123, "b": {"c": 45}}') implements JsonStringable {
+                    public function __construct(
+                        private readonly string $json,
+                    ) {
+                        // empty
+                    }
+
+                    public function __toString(): string {
+                        return $this->json;
+                    }
+                },
             ],
         ];
     }

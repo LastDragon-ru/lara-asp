@@ -58,7 +58,11 @@ class JsonString extends StringType implements TypeDefinition {
      * @phpstan-assert string         $value
      */
     protected function validate(mixed $value, string $error): string {
-        if (!is_string($value) || !json_validate($value)) {
+        if (is_string($value) && json_validate($value)) {
+            // ok
+        } elseif ($value instanceof JsonStringable) {
+            $value = (string) $value;
+        } else {
             throw new $error(
                 sprintf(
                     'The valid JSON string expected, `%s` given.',
