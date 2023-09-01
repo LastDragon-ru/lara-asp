@@ -26,6 +26,7 @@
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-graphql-printer": "self.version",
+    "lastdragon-ru/lara-asp-serializer": "self.version",
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {

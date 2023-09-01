@@ -233,9 +233,10 @@ scalar JsonString
 """
 Represents a cursor for the `@stream` directive. The value can be a
 positive `Int` or a `String`. The `Int` value represents the offset
-(zero-based) to navigate to any position within the stream (= cursor
+(zero-based) to navigate to any position within the stream (= offset
 pagination). And the `String` value represents the cursor and allows
-navigation only to the previous/next pages (= offset pagination).
+navigation only to the previous/current/next pages (= cursor
+pagination).
 """
 scalar StreamCursor
 @scalar(
