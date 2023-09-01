@@ -28,7 +28,13 @@ class JsonString extends StringType implements TypeDefinition {
     // <editor-fold desc="ScalarType">
     // =========================================================================
     public function serialize(mixed $value): string {
-        return $this->validate($value, InvariantViolation::class);
+        if ($value instanceof JsonStringable) {
+            $value = (string) $value;
+        } else {
+            $value = $this->validate($value, InvariantViolation::class);
+        }
+
+        return $value;
     }
 
     public function parseValue(mixed $value): string {
@@ -49,7 +55,7 @@ class JsonString extends StringType implements TypeDefinition {
             );
         }
 
-        return $this->validate($valueNode->value, Error::class);
+        return $this->parseValue($valueNode->value);
     }
 
     /**
@@ -60,8 +66,6 @@ class JsonString extends StringType implements TypeDefinition {
     protected function validate(mixed $value, string $error): string {
         if (is_string($value) && json_validate($value)) {
             // ok
-        } elseif ($value instanceof JsonStringable) {
-            $value = (string) $value;
         } else {
             throw new $error(
                 sprintf(
