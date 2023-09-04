@@ -9,13 +9,14 @@
 # https://superuser.com/questions/104845/permission-to-make-symbolic-links-in-windows-7
 
 require 'json'
+require 'yaml'
 require 'digest/sha1'
 require 'etc'
 
 settings = File.exists?('Vagrant.yml') ? YAML.load_file('Vagrant.yml') : {};
 
 Vagrant.configure(2) do |config|
-  config.vm.box            = "ubuntu/focal64"
+  config.vm.box            = "ubuntu/jammy64"
   config.vm.hostname       = settings['host'] || getDefaultHost()
   config.vm.network       "private_network", type: "dhcp"
   config.vm.synced_folder ".", "/project", mount_options: ["dmode=0775,fmode=0775"]
@@ -175,8 +176,16 @@ EOT
   SHELL
 
   config.vm.provision "npm", type: "shell", privileged: false, inline: <<-SHELL
-    curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-    sudo apt-get install -y nodejs
+    # See https://github.com/nodesource/distributions#debian-and-ubuntu-based-distributions
+    sudo apt-get install -y ca-certificates curl gnupg
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+    NODE_MAJOR=20
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+
+    sudo apt-get update
+    sudo apt-get install nodejs -y
   SHELL
 
   config.vm.provision "npm install", type: "shell", privileged: false, inline: <<-SHELL
