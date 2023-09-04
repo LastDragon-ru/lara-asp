@@ -115,4 +115,4 @@ jobs:
         uses: xt0rted/markdownlint-problem-matcher@v2
       - name: Execute
         run: |
-          npx markdownlint-cli --ignore-path=.gitignore .
+          npm run markdownlint

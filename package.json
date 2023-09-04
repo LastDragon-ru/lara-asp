@@ -2,7 +2,8 @@
   "name": "@lastdragon-ru/lara-asp",
   "license": "MIT",
   "scripts": {
-    "release": "release-it --config=.release-it/config.js"
+    "release": "release-it --config=.release-it/config.js",
+    "markdownlint": "npx markdownlint-cli --ignore-path=.gitignore --ignore=./docs/shared/Links.md ."
   },
   "repository": {
     "url": "https://github.com/LastDragon-ru/lara-asp"
