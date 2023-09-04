@@ -136,7 +136,7 @@ class CustomDirective implements Directive, BuilderInfoProvider {
 
 # Printer
 
-The package provides bindings for [`Printer`](../graphql-printer/README.md) so you can simply use:
+The package provides bindings for [`Printer`][pkg:graphql-printer] so you can simply use:
 
 [include:example]: ./docs/Examples/Printer.php
 [//]: # (start: fe3f65d119ce56b1fa1557c42661c5d2da7093f9190bfc4c41bdf509ab34f755)
@@ -440,3 +440,11 @@ There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertion
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
 [//]: # (end: 0001ad9d31b5a203286c531c6880292795cb49f2074223b60ae12c6faa6c42eb)
+
+[include:file]: ../../docs/shared/Links.md
+[//]: # (start: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
+
+[//]: # (end: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)

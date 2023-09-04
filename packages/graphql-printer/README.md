@@ -206,7 +206,7 @@ query {
 
 ## Laravel/Lighthouse
 
-It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#Printer) package to use the `Printer` within the Laravel/Lighthouse application.
+It is highly recommended to use [`lara-asp-graphql`][pkg:graphql#Printer] package to use the `Printer` within the Laravel/Lighthouse application.
 
 ## Testing Assertions
 
@@ -226,3 +226,11 @@ Package also provides few great [GraphQL Assertions](./src/Testing/GraphQLAssert
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
 [//]: # (end: 0001ad9d31b5a203286c531c6880292795cb49f2074223b60ae12c6faa6c42eb)
+
+[include:file]: ../../docs/shared/Links.md
+[//]: # (start: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[pkg:graphql#Printer]: ttps://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
+
+[//]: # (end: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)
