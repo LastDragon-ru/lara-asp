@@ -16,14 +16,14 @@ abstract class OperatorsDirective extends BaseDirective {
     }
 
     public static function definition(): string {
-        $name      = '@'.DirectiveLocator::directiveName(static::class);
+        $name      = DirectiveLocator::directiveName(static::class);
         $locations = implode(' | ', static::getDirectiveLocations());
 
         return <<<GRAPHQL
             """
             Extends the list of operators by the operators from the specified `type`.
             """
-            directive {$name}(type: String!) on {$locations}
+            directive @{$name}(type: String!) on {$locations}
         GRAPHQL;
     }
 

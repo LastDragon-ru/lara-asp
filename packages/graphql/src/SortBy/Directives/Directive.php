@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorClauseDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
@@ -20,14 +21,16 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use function str_starts_with;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
-    public const Name = 'SortBy';
+    final public const Name = 'SortBy';
 
     public static function definition(): string {
-        return <<<'GRAPHQL'
+        $name = DirectiveLocator::directiveName(static::class);
+
+        return <<<GRAPHQL
             """
             Use Input as Sort Conditions for the current Builder.
             """
-            directive @sortBy on ARGUMENT_DEFINITION
+            directive @{$name} on ARGUMENT_DEFINITION
         GRAPHQL;
     }
 

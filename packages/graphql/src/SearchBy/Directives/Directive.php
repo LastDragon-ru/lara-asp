@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorCondition
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
@@ -23,14 +24,16 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use function str_starts_with;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
-    public const Name = 'SearchBy';
+    final public const Name = 'SearchBy';
 
     public static function definition(): string {
-        return <<<'GRAPHQL'
+        $name = DirectiveLocator::directiveName(static::class);
+
+        return <<<GRAPHQL
             """
             Use Input as Search Conditions for the current Builder.
             """
-            directive @searchBy on ARGUMENT_DEFINITION
+            directive @{$name} on ARGUMENT_DEFINITION
         GRAPHQL;
     }
 
