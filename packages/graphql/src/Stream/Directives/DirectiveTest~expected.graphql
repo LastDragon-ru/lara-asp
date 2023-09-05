@@ -393,6 +393,7 @@ type StreamAggregator {
 
 type StreamInfo {
     chunk: Int!
+    offset: Int
     order: JsonString
     where: JsonString
 }

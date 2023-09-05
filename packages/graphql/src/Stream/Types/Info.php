@@ -31,6 +31,7 @@ class Info implements TypeDefinition {
         return Parser::objectTypeDefinition(
             <<<GRAPHQL
             type {$name} {
+                offset: Int
                 chunk: Int!
                 where: {$json}
                 order: {$json}

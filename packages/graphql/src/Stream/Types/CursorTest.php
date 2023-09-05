@@ -101,7 +101,7 @@ class CursorTest extends TestCase {
                 -1,
             ],
             StreamCursor::class => [
-                '{"key":"123","chunk":null,"where":null,"order":null}',
+                '{"key":"123","offset":null,"chunk":null,"where":null,"order":null}',
                 new StreamCursor(key: '123'),
             ],
         ];
@@ -130,7 +130,7 @@ class CursorTest extends TestCase {
             ],
             StreamCursor::class => [
                 new StreamCursor(key: '123'),
-                '{"key":"123","chunk":null,"where":null,"order":null}',
+                '{"key":"123","offset":null,"chunk":null,"where":null,"order":null}',
             ],
         ];
     }
