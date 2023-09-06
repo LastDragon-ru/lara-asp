@@ -40,22 +40,26 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     use WithManipulator;
     use WithSource;
 
-    public const    Name          = 'Stream';
-    protected const ArgSearchable = 'searchable';
-    protected const ArgSortable   = 'sortable';
+    final public const Name          = 'Stream';
+    final public const Settings      = Package::Name.'.stream';
+    final public const ArgSearchable = 'searchable';
+    final public const ArgSortable   = 'sortable';
+    final public const ArgChunk      = 'chunk';
 
     public static function definition(): string {
-        $name       = DirectiveLocator::directiveName(static::class);
-        $sortable   = static::ArgSortable;
-        $searchable = static::ArgSearchable;
+        $name          = DirectiveLocator::directiveName(static::class);
+        $argSearchable = self::ArgSearchable;
+        $argSortable   = self::ArgSortable;
+        $argChunk      = self::ArgChunk;
 
         return <<<GRAPHQL
             """
             Splits list of items into the chunks and return one chunk specified by page number or cursor.
             """
             directive @{$name}(
-                {$searchable}: Boolean
-                {$sortable}: Boolean
+                {$argSearchable}: Boolean
+                {$argSortable}: Boolean
+                {$argChunk}: Int
             ) on FIELD_DEFINITION
         GRAPHQL;
     }
@@ -71,7 +75,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $builder     = new BuilderInfo('fixme', stdClass::class); // fixme(graphql/@stream)!: BuilderInfo
         $manipulator = $this->getManipulator($documentAST, $builder);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
-        $prefix      = Package::Name.'.stream';
+        $prefix      = self::Settings;
 
         // Updated?
         if (str_starts_with($manipulator->getTypeName($fieldDefinition), self::Name)) {
@@ -84,10 +88,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Searchable?
-        $searchable = $this->directiveArgValue(static::ArgSearchable)
-            ?? (bool) config("{$prefix}.search.enabled");
+        $searchable = Cast::toBool(
+            $this->directiveArgValue(self::ArgSearchable)
+            ?? config("{$prefix}.search.enabled")
+            ?? false,
+        );
 
-        if ($searchable === null || $searchable === true) {
+        if ($searchable) {
             $this->addArgument(
                 $manipulator,
                 $source,
@@ -98,10 +105,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Sortable?
-        $sortable = $this->directiveArgValue(static::ArgSortable)
-            ?? (bool) config("{$prefix}.sort.enabled");
+        $sortable = Cast::toBool(
+            $this->directiveArgValue(self::ArgSortable)
+            ?? config("{$prefix}.sort.enabled")
+            ?? false,
+        );
 
-        if ($sortable === null || $sortable === true) {
+        if ($sortable) {
             $this->addArgument(
                 $manipulator,
                 $source,
@@ -116,14 +126,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $manipulator,
             $source,
             StreamChunkDirective::class,
-            Cast::toString(config("{$prefix}.chunk.name") ?: 'chunk'),
+            StreamChunkDirective::settings()['name'],
             $manipulator::Placeholder,
             null,
             null,
-            [
-                StreamChunkDirective::ArgMax     => config("{$prefix}.chunk.max") ?: 100,
-                StreamChunkDirective::ArgDefault => config("{$prefix}.chunk.default") ?: 25,
-            ],
+            $this->directiveArgValue(self::ArgChunk) !== null
+                ? [Chunk::ArgSize => $this->directiveArgValue(self::ArgChunk)]
+                : [],
         );
 
         // Cursor
@@ -131,7 +140,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $manipulator,
             $source,
             StreamCursorDirective::class,
-            Cast::toString(config("{$prefix}.cursor.name") ?: 'cursor'),
+            StreamCursorDirective::settings()['name'],
             $manipulator::Placeholder,
         );
 

@@ -7,6 +7,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  * GraphQL Settings
  * -----------------------------------------------------------------------------
  *
+ * Note: You need to clear/rebuild the cached schema and IDE helper files after change.
+ *
+ * @see https://lighthouse-php.com/master/api-reference/commands.html#clear-cache
+ * @see https://lighthouse-php.com/master/api-reference/commands.html#ide-helper
+ *
  * @var array{
  *      search_by: array{
  *          operators: array<string, list<string|class-string<Operator>>>,
@@ -25,12 +30,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *          },
  *          chunk: array{
  *              name: string,
- *              default: int<1, max>,
- *              max: int<1, max>,
+ *              size: int<1, max>,
+ *              limit: int<1, max>,
  *          },
  *          cursor: array{
  *              name: string,
- *              encrypted: bool
  *          }
  *      }
  *      } $settings
@@ -89,13 +93,12 @@ $settings = [
             'enabled' => true,
         ],
         'chunk'  => [
-            'name'    => 'chunk',
-            'default' => 25,
-            'max'     => 100,
+            'name'  => 'chunk',
+            'size'  => 25,
+            'limit' => 100,
         ],
         'cursor' => [
-            'name'      => 'cursor',
-            'encrypted' => true,
+            'name' => 'cursor',
         ],
     ],
 ];

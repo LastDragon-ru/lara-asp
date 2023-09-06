@@ -23,7 +23,8 @@ use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthousTestingServiceProvider;
+use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthouseTestingServiceProvider;
+use Nuwave\Lighthouse\Validation\ValidationServiceProvider as LighthouseValidationServiceProvider;
 use ReflectionClass;
 use SplFileInfo;
 
@@ -47,7 +48,8 @@ class TestCase extends PackageTestCase {
             TestProvider::class,
             SerializerProvider::class,
             LighthouseServiceProvider::class,
-            LighthousTestingServiceProvider::class,
+            LighthouseTestingServiceProvider::class,
+            LighthouseValidationServiceProvider::class,
         ];
     }
 

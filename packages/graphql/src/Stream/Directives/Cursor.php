@@ -8,6 +8,7 @@ use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
@@ -17,9 +18,24 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
+use function config;
+
 class Cursor extends BaseDirective implements ArgManipulator {
     use WithManipulator;
     use WithSource;
+
+    private const Settings = Directive::Settings.'.cursor';
+
+    /**
+     * @return array{name: string}
+     */
+    public static function settings(): array {
+        $settings = (array) config(self::Settings);
+
+        return [
+            'name' => Cast::toString($settings['name'] ?? 'cursor'),
+        ];
+    }
 
     public static function definition(): string {
         $name = DirectiveLocator::directiveName(static::class);

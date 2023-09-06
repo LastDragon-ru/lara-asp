@@ -6,9 +6,10 @@ type Query implements InterfaceA & InterfaceB {
     fieldWithDirectives(
         a: _ @searchBy,
         b: _ @sortBy
-        c: _ @streamChunk(
-            default: 5
-            max: 10
+        c: _ = 123
+        @streamChunk(
+            size: 15
+            limit: 10
         )
         d: _ @streamCursor
     ): [Object] @stream
@@ -20,12 +21,16 @@ type Query implements InterfaceA & InterfaceB {
     fieldWithDeprecations(
         a: _ @deprecated @searchBy,
         b: _ @deprecated @sortBy
-        c: _ @deprecated @streamChunk(
-            default: 5
-            max: 10
+        c: _ = 123
+        @deprecated
+        @streamChunk(
+            limit: 123
         )
         d: _ @deprecated @streamCursor
-    ): [Object] @stream
+    ): [Object]
+    @stream(
+        chunk: 15
+    )
 }
 
 type Object {

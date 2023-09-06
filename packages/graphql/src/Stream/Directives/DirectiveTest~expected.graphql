@@ -82,6 +82,7 @@ on
 Splits list of items into the chunks and return one chunk specified by page number or cursor.
 """
 directive @stream(
+    chunk: Int
     searchable: Boolean
     sortable: Boolean
 )
@@ -89,8 +90,8 @@ on
     | FIELD_DEFINITION
 
 directive @streamChunk(
-    default: Int!
-    max: Int!
+    limit: Int
+    size: Int
 )
 on
     | ARGUMENT_DEFINITION
@@ -195,7 +196,7 @@ input SortByClauseObject {
 interface InterfaceA {
     fieldWithArguments(
         argument: String
-        chunk: Int
+        chunk: Int!
         cursor: StreamCursor
         order: [SortByClauseObject!]
         where: SearchByConditionObject
@@ -207,7 +208,7 @@ implements
     & InterfaceC
 {
     fieldNotSearchable(
-        chunk: Int
+        chunk: Int!
         cursor: StreamCursor
         order: [SortByClauseObject!]
     ): ObjectsStream!
@@ -217,7 +218,7 @@ interface InterfaceC {
     fieldWithDirectives(
         a: SearchByConditionObject
         b: [SortByClauseObject!]
-        c: Int
+        c: Int!
         d: StreamCursor
     ): ObjectsStream!
 }
@@ -260,10 +261,10 @@ implements
     & InterfaceB
 {
     fieldNotSearchable(
-        chunk: Int = 25
-        @streamChunk(
-            default: 25
-            max: 100
+        chunk: Int! = 25
+        @streamChunk
+        @rules(
+            apply: ["min:0", "max:100"]
         )
 
         cursor: StreamCursor
@@ -277,10 +278,10 @@ implements
     )
 
     fieldNotSortable(
-        chunk: Int = 25
-        @streamChunk(
-            default: 25
-            max: 100
+        chunk: Int! = 25
+        @streamChunk
+        @rules(
+            apply: ["min:0", "max:100"]
         )
 
         cursor: StreamCursor
@@ -296,10 +297,10 @@ implements
     fieldWithArguments(
         argument: String
 
-        chunk: Int = 25
-        @streamChunk(
-            default: 25
-            max: 100
+        chunk: Int! = 25
+        @streamChunk
+        @rules(
+            apply: ["min:0", "max:100"]
         )
 
         cursor: StreamCursor
@@ -322,17 +323,21 @@ implements
         @deprecated
         @sortBy
 
-        c: Int = 5
+        c: Int! = 25
         @deprecated
         @streamChunk(
-            default: 5
-            max: 10
+            limit: 123
+        )
+        @rules(
+            apply: ["min:0", "max:123"]
         )
 
-        chunk: Int = 25
+        chunk: Int! = 15
         @streamChunk(
-            default: 25
-            max: 100
+            size: 15
+        )
+        @rules(
+            apply: ["min:0", "max:100"]
         )
 
         cursor: StreamCursor
@@ -348,7 +353,9 @@ implements
         where: SearchByConditionObject
         @searchBy
     ): ObjectsStream!
-    @stream
+    @stream(
+        chunk: 15
+    )
 
     fieldWithDirectives(
         a: SearchByConditionObject
@@ -357,10 +364,13 @@ implements
         b: [SortByClauseObject!]
         @sortBy
 
-        c: Int = 5
+        c: Int! = 10
         @streamChunk(
-            default: 5
-            max: 10
+            limit: 10
+            size: 15
+        )
+        @rules(
+            apply: ["min:0", "max:10"]
         )
 
         d: StreamCursor
@@ -369,10 +379,10 @@ implements
     @stream
 
     fieldWithoutArguments(
-        chunk: Int = 25
-        @streamChunk(
-            default: 25
-            max: 100
+        chunk: Int! = 25
+        @streamChunk
+        @rules(
+            apply: ["min:0", "max:100"]
         )
 
         cursor: StreamCursor
