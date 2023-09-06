@@ -23,7 +23,7 @@ class LighthouseDirectiveFilter implements DirectiveFilter {
     public function isAllowedDirective(string $directive, bool $isStandard): bool {
         // Standard?
         if ($isStandard) {
-            return true;
+            return false;
         }
 
         // Lighthouse?
