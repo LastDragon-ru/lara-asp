@@ -1,6 +1,6 @@
 [pkg:graphql]:         https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql
 
-[pkg:graphql#Printer]: ttps://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
+[pkg:graphql#Printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
 
 [pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
 

@@ -231,6 +231,6 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 [//]: # (start: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[pkg:graphql#Printer]: ttps://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
+[pkg:graphql#Printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
 
 [//]: # (end: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)
