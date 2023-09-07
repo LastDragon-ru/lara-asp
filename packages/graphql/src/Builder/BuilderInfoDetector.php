@@ -1,20 +1,20 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Builder\Traits;
+namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -35,11 +35,17 @@ use ReflectionNamedType;
 use function class_exists;
 use function is_a;
 
-trait WithBuilderInfo {
+class BuilderInfoDetector {
     use WithManipulator;
     use WithSource;
 
-    protected function getFieldBuilderInfo(
+    public function __construct(
+        readonly protected DirectiveLocator $locator,
+    ) {
+        // empty
+    }
+
+    public function getFieldBuilderInfo(
         DocumentAST $document,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
         FieldDefinitionNode $field,
@@ -56,7 +62,7 @@ trait WithBuilderInfo {
         return $builder;
     }
 
-    protected function getFieldArgumentBuilderInfo(
+    public function getFieldArgumentBuilderInfo(
         DocumentAST $document,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
         FieldDefinitionNode $field,
@@ -76,8 +82,7 @@ trait WithBuilderInfo {
 
     protected function getBuilderInfo(Node $node): ?BuilderInfo {
         // Provider?
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
-        $provider   = $directives->associated($node)->first(static function (Directive $directive): bool {
+        $provider = $this->locator->associated($node)->first(static function (Directive $directive): bool {
             return $directive instanceof BuilderInfoProvider;
         });
 
@@ -95,7 +100,7 @@ trait WithBuilderInfo {
 
         if ($node instanceof FieldDefinitionNode) {
             foreach ($node->arguments as $argument) {
-                if ($directives->associatedOfType($argument, SearchDirective::class)->isNotEmpty()) {
+                if ($this->locator->associatedOfType($argument, SearchDirective::class)->isNotEmpty()) {
                     $scout = true;
                     break;
                 }
@@ -107,7 +112,7 @@ trait WithBuilderInfo {
         }
 
         // Builder?
-        $directive = $directives->associated($node)->first(static function (Directive $directive): bool {
+        $directive = $this->locator->associated($node)->first(static function (Directive $directive): bool {
             return $directive instanceof AllDirective
                 || $directive instanceof PaginateDirective
                 || $directive instanceof BuilderDirective
@@ -145,10 +150,19 @@ trait WithBuilderInfo {
      * @return class-string|null
      */
     private function getBuilderType(BaseDirective $directive, string ...$arguments): ?string {
-        $type = null;
+        $type   = null;
+        $helper = new class() extends BaseDirective {
+            public static function definition(): string {
+                return '';
+            }
+
+            public function isArgument(BaseDirective $directive, string $argument): bool {
+                return $directive->directiveHasArgument($argument);
+            }
+        };
 
         foreach ($arguments as $argument) {
-            if ($directive->directiveHasArgument($argument)) {
+            if ($helper->isArgument($directive, $argument)) {
                 $resolver = $directive->getResolverFromArgument($argument);
                 $return   = (new ReflectionFunction($resolver))->getReturnType();
                 $return   = $return instanceof ReflectionNamedType

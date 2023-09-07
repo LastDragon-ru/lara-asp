@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Builder\Traits;
+namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use Closure;
 use Exception;
@@ -10,14 +10,12 @@ use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AggregateDirective;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
-use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\Directives\CountDirective;
 use Nuwave\Lighthouse\Schema\Directives\FindDirective;
 use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
@@ -33,8 +31,8 @@ use const JSON_THROW_ON_ERROR;
 /**
  * @internal
  */
-#[CoversClass(WithBuilderInfo::class)]
-class WithBuilderInfoTest extends TestCase {
+#[CoversClass(BuilderInfoDetector::class)]
+class BuilderInfoDetectorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -44,15 +42,11 @@ class WithBuilderInfoTest extends TestCase {
      * @param Closure(DirectiveLocator): Node      $nodeFactory
      */
     public function testGetNodeBuilderInfo(array $expected, Closure $nodeFactory): void {
-        $directives = $this->app->make(DirectiveLocator::class);
-        $node       = $nodeFactory($directives);
-        $directive  = new class() extends BaseDirective {
-            use WithBuilderInfo {
-                getBuilderInfo as public;
-            }
-
-            public static function definition(): string {
-                throw new Exception('should not be called.');
+        $locator   = $this->app->make(DirectiveLocator::class);
+        $node      = $nodeFactory($locator);
+        $directive = new class($locator) extends BuilderInfoDetector {
+            public function getBuilderInfo(Node $node): ?BuilderInfo {
+                return parent::getBuilderInfo($node);
             }
         };
 
@@ -117,7 +111,7 @@ class WithBuilderInfoTest extends TestCase {
                 static function (DirectiveLocator $directives): FieldDefinitionNode {
                     $directives->setResolved('all', AllDirective::class);
 
-                    $class = json_encode(WithBuilderInfoTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
+                    $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @all(builder: {$class})");
 
                     return $field;
@@ -131,7 +125,7 @@ class WithBuilderInfoTest extends TestCase {
                 static function (DirectiveLocator $directives): FieldDefinitionNode {
                     $directives->setResolved('all', AllDirective::class);
 
-                    $class = json_encode(WithBuilderInfoTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
+                    $class = json_encode(BuilderInfoDetectorTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @all(builder: {$class})");
 
                     return $field;
@@ -156,7 +150,7 @@ class WithBuilderInfoTest extends TestCase {
                 static function (DirectiveLocator $directives): FieldDefinitionNode {
                     $directives->setResolved('paginate', PaginateDirective::class);
 
-                    $class = json_encode(WithBuilderInfoTest__PaginatorResolver::class, JSON_THROW_ON_ERROR);
+                    $class = json_encode(BuilderInfoDetectorTest__PaginatorResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(resolver: {$class})");
 
                     return $field;
@@ -170,7 +164,7 @@ class WithBuilderInfoTest extends TestCase {
                 static function (DirectiveLocator $directives): FieldDefinitionNode {
                     $directives->setResolved('paginate', PaginateDirective::class);
 
-                    $class = json_encode(WithBuilderInfoTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
+                    $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(builder: {$class})");
 
                     return $field;
@@ -184,7 +178,7 @@ class WithBuilderInfoTest extends TestCase {
                 static function (DirectiveLocator $directives): FieldDefinitionNode {
                     $directives->setResolved('paginate', PaginateDirective::class);
 
-                    $class = json_encode(WithBuilderInfoTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
+                    $class = json_encode(BuilderInfoDetectorTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(builder: {$class})");
 
                     return $field;
@@ -275,7 +269,7 @@ class WithBuilderInfoTest extends TestCase {
                 static function (DirectiveLocator $directives): FieldDefinitionNode {
                     $directives->setResolved('aggregate', AggregateDirective::class);
 
-                    $class = json_encode(WithBuilderInfoTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
+                    $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @aggregate(builder: {$class})");
 
                     return $field;
@@ -351,7 +345,7 @@ class WithBuilderInfoTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class WithBuilderInfoTest__QueryBuilderResolver {
+class BuilderInfoDetectorTest__QueryBuilderResolver {
     public function __invoke(): QueryBuilder {
         throw new Exception('should not be called.');
     }
@@ -361,8 +355,8 @@ class WithBuilderInfoTest__QueryBuilderResolver {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class WithBuilderInfoTest__CustomBuilderResolver {
-    public function __invoke(): WithBuilderInfoTest__CustomBuilder {
+class BuilderInfoDetectorTest__CustomBuilderResolver {
+    public function __invoke(): BuilderInfoDetectorTest__CustomBuilder {
         throw new Exception('should not be called.');
     }
 }
@@ -371,7 +365,7 @@ class WithBuilderInfoTest__CustomBuilderResolver {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class WithBuilderInfoTest__PaginatorResolver {
+class BuilderInfoDetectorTest__PaginatorResolver {
     public function __invoke(): mixed {
         throw new Exception('should not be called.');
     }
@@ -381,6 +375,6 @@ class WithBuilderInfoTest__PaginatorResolver {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class WithBuilderInfoTest__CustomBuilder extends QueryBuilder {
+class BuilderInfoDetectorTest__CustomBuilder extends QueryBuilder {
     // empty
 }

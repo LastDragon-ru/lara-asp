@@ -10,10 +10,12 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -25,7 +27,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -38,7 +41,8 @@ use function is_array;
 use function reset;
 
 abstract class HandlerDirective extends BaseDirective implements Handler {
-    use WithBuilderInfo;
+    use WithManipulator;
+    use WithSource;
 
     public function __construct(
         private ArgumentFactory $factory,
@@ -191,7 +195,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Converted?
-        $builder     = $this->getFieldArgumentBuilderInfo($documentAST, $parentType, $parentField, $argDefinition);
+        $detector    = Container::getInstance()->make(BuilderInfoDetector::class);
+        $builder     = $detector->getFieldArgumentBuilderInfo($documentAST, $parentType, $parentField, $argDefinition);
         $manipulator = $this->getManipulator($documentAST, $builder);
 
         if ($this->isTypeName($manipulator->getTypeName($argDefinition))) {
