@@ -323,10 +323,11 @@ implements
         @deprecated
         @sortBy
 
-        c: Int! = 25
+        c: Int! = 15
         @deprecated
         @streamChunk(
             limit: 123
+            size: 15
         )
         @rules(
             apply: ["min:0", "max:123"]
@@ -377,6 +378,28 @@ implements
         @streamCursor
     ): ObjectsStream!
     @stream
+
+    fieldWithDirectivesAndDefaults(
+        a: SearchByConditionObject
+        @searchBy
+
+        b: [SortByClauseObject!]
+        @sortBy
+
+        c: Int! = 15
+        @streamChunk(
+            size: 15
+        )
+        @rules(
+            apply: ["min:0", "max:100"]
+        )
+
+        d: StreamCursor
+        @streamCursor
+    ): ObjectsStream!
+    @stream(
+        chunk: 15
+    )
 
     fieldWithoutArguments(
         chunk: Int! = 25

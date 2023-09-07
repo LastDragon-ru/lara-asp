@@ -14,6 +14,19 @@ type Query implements InterfaceA & InterfaceB {
         d: _ @streamCursor
     ): [Object] @stream
 
+    fieldWithDirectivesAndDefaults(
+        a: _ @searchBy,
+        b: _ @sortBy
+        c: _ = 123
+        @streamChunk(
+            size: 123
+        )
+        d: _ @streamCursor
+    ): [Object]
+    @stream(
+        chunk: 15
+    )
+
     fieldNotSearchable: [Object] @stream(searchable: false)
 
     fieldNotSortable: [Object] @stream(sortable: false)
@@ -24,6 +37,7 @@ type Query implements InterfaceA & InterfaceB {
         c: _ = 123
         @deprecated
         @streamChunk(
+            size: 123
             limit: 123
         )
         d: _ @deprecated @streamCursor

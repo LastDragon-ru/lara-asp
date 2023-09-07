@@ -34,7 +34,10 @@ use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use stdClass;
 
 use function config;
+use function json_encode;
 use function str_starts_with;
+
+use const JSON_THROW_ON_ERROR;
 
 class Directive extends BaseDirective implements FieldResolver, FieldManipulator, BuilderInfoProvider {
     use WithManipulator;
@@ -176,6 +179,27 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 return $manipulator->getDirective($argument, $directive) !== null;
             },
         );
+
+        if ($argument && $arguments) {
+            // todo(graphql/@stream): Move to AstManipulator + check definition.
+            $directiveNode = $manipulator->getDirective($argument, $directive);
+            $directiveNode = $directiveNode
+                ? $manipulator->getDirectiveNode($directiveNode)
+                : null;
+
+            if ($directiveNode) {
+                foreach ($arguments as $argName => $argValue) {
+                    $argNode  = $manipulator->getArgument($directiveNode, $argName);
+                    $argValue = json_encode($argValue, JSON_THROW_ON_ERROR);
+
+                    if ($argNode) {
+                        $argNode->value = Parser::valueLiteral($argValue);
+                    } else {
+                        $directiveNode->arguments[] = Parser::argument("{$argName}: {$argValue}");
+                    }
+                }
+            }
+        }
 
         if ($argument && !$manipulator->isDeprecated($argument)) {
             return;
