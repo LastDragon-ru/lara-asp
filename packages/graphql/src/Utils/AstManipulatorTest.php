@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
 use Closure;
 use Exception;
+use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
@@ -367,7 +368,7 @@ class AstManipulatorTest extends TestCase {
         // Test
         $nodeArgument = $manipulator->findArgument(
             $node,
-            static function (InputValueDefinitionNode|Argument $argument) use ($manipulator): bool {
+            static function (mixed $argument) use ($manipulator): bool {
                 return $manipulator->getDirective($argument, AstManipulatorTest_ADirective::class) !== null;
             },
         );
@@ -377,13 +378,23 @@ class AstManipulatorTest extends TestCase {
 
         $fieldArgument = $manipulator->findArgument(
             $field,
-            static function (InputValueDefinitionNode|Argument $argument) use ($manipulator): bool {
+            static function (mixed $argument) use ($manipulator): bool {
                 return $manipulator->getDirective($argument, AstManipulatorTest_ADirective::class) !== null;
             },
         );
 
         self::assertInstanceOf(Argument::class, $fieldArgument);
         self::assertEquals('b', $fieldArgument->name);
+
+        $directiveArgument = $manipulator->findArgument(
+            Parser::directive('@aDirective(a: "a", b: "b")'),
+            static function (mixed $argument) use ($manipulator): bool {
+                return $manipulator->getName($argument) === 'b';
+            },
+        );
+
+        self::assertInstanceOf(ArgumentNode::class, $directiveArgument);
+        self::assertEquals('b', $directiveArgument->name->value);
     }
 
     /**

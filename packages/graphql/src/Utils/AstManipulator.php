@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
 use Closure;
+use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
@@ -400,14 +401,18 @@ class AstManipulator {
     }
 
     /**
-     * @param InputValueDefinitionNode|(TypeDefinitionNode&Node)|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|Type $node
+     * @param InputValueDefinitionNode|(TypeDefinitionNode&Node)|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|ArgumentNode|Type $node
      */
     public function getName(
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|Type $node,
+        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|ArgumentNode|Type $node,
     ): string {
         if ($node instanceof TypeDefinitionNode) {
             $node = $node->getName();
-        } elseif ($node instanceof InputValueDefinitionNode || $node instanceof FieldDefinitionNode) {
+        } elseif (
+            $node instanceof InputValueDefinitionNode
+            || $node instanceof FieldDefinitionNode
+            || $node instanceof ArgumentNode
+        ) {
             $node = $node->name;
         } else {
             // empty
@@ -487,6 +492,9 @@ class AstManipulator {
         return $interfaces;
     }
 
+    /**
+     * @return ($node is HasFieldsType ? FieldDefinition : FieldDefinitionNode)|null
+     */
     public function getField(
         InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|HasFieldsType $node,
         string $name,
@@ -508,14 +516,16 @@ class AstManipulator {
     }
 
     /**
-     * @param callable(InputValueDefinitionNode|Argument): bool $closure
+     * @param callable(InputValueDefinitionNode|Argument|ArgumentNode): bool $closure
+     *
+     * @return ($node is FieldDefinitionNode ? InputValueDefinitionNode : ($node is FieldDefinition ? Argument : ArgumentNode))|null
      */
     public function findArgument(
-        FieldDefinitionNode|FieldDefinition $node,
+        FieldDefinitionNode|FieldDefinition|DirectiveNode $node,
         callable $closure,
-    ): InputValueDefinitionNode|Argument|null {
+    ): InputValueDefinitionNode|Argument|ArgumentNode|null {
         $argument = null;
-        $args     = $node instanceof FieldDefinitionNode
+        $args     = $node instanceof FieldDefinitionNode || $node instanceof DirectiveNode
             ? $node->arguments
             : $node->args;
 
@@ -529,13 +539,16 @@ class AstManipulator {
         return $argument;
     }
 
+    /**
+     * @return ($node is FieldDefinitionNode ? InputValueDefinitionNode : ($node is FieldDefinition ? Argument : ArgumentNode))|null
+     */
     public function getArgument(
-        FieldDefinitionNode|FieldDefinition $node,
+        FieldDefinitionNode|FieldDefinition|DirectiveNode $node,
         string $name,
-    ): InputValueDefinitionNode|Argument|null {
+    ): InputValueDefinitionNode|Argument|ArgumentNode|null {
         return $this->findArgument(
             $node,
-            function (InputValueDefinitionNode|Argument $argument) use ($name): bool {
+            function (mixed $argument) use ($name): bool {
                 return $this->getName($argument) === $name;
             },
         );
@@ -723,6 +736,12 @@ class AstManipulator {
             $interfaceArgument = $this->getArgument($interfaceField, $argumentName);
 
             if ($interfaceArgument === null) {
+                continue;
+            }
+
+            if ($interfaceArgument instanceof ArgumentNode) {
+                // Seems conditional return type is not correct here
+                // https://github.com/phpstan/phpstan/issues/9860
                 continue;
             }
 
