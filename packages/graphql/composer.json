@@ -20,6 +20,7 @@
   "require": {
     "php": "^8.0|^8.1|^8.2",
     "ext-mbstring": "*",
+    "composer/semver": "^3.2",
     "laravel/framework": "^9.0.0|^10.0.0",
     "nuwave/lighthouse": "^6.0.0",
     "lastdragon-ru/lara-asp-core": "self.version",
