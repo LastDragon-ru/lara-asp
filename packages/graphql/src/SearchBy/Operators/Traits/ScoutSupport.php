@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
@@ -24,6 +26,18 @@ trait ScoutSupport {
 
     public function isBuilderSupported(string $builder): bool {
         return parent::isBuilderSupported($builder)
-            || is_a($builder, ScoutBuilder::class, true);
+            || (is_a($builder, ScoutBuilder::class, true) && $this->isScoutSupported());
+    }
+
+    protected function isScoutSupported(): bool {
+        $version   = $this->getScoutVersion();
+        $supported = $version === null
+            || InstalledVersions::satisfies(new VersionParser(), 'laravel/scout', $version);
+
+        return $supported;
+    }
+
+    protected function getScoutVersion(): ?string {
+        return null;
     }
 }

@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Exception;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
@@ -360,9 +362,15 @@ class DirectiveTest extends TestCase {
         return [
             'full'                           => [
                 static function (self $test): GraphQLExpected {
-                    return (new GraphQLExpected(
-                        $test::getTestData()->file('~full-expected.graphql'),
-                    ));
+                    $satisfies = static function (string $version): bool {
+                        return InstalledVersions::satisfies(new VersionParser(), 'laravel/scout', $version);
+                    };
+                    $file      = match (true) {
+                        $satisfies('>=10.3.0') => '~full-expected-scout≥10.3.0.graphql',
+                        default                => '~full-expected.graphql',
+                    };
+
+                    return new GraphQLExpected($test::getTestData()->file($file));
                 },
                 '~full.graphql',
                 static function (TestCase $test): void {
