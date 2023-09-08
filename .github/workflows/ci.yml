@@ -49,6 +49,16 @@ jobs:
         uses: actions/checkout@v3
       - name: Install PHP
         uses: ./.github/actions/php
+      - name: Composer repositories
+        shell: bash
+        working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
+        run: |
+          PACKAGES=$(echo '${{ needs.settings.outputs.packages-names }}' | jq 'map(select(. != "${{ matrix.package }}"))' | jq -c -r '.[]')
+
+          while read -r PKG
+          do
+            composer config "repositories.${PKG}" path "../${PKG}"
+          done <<< "${PACKAGES}"
       - name: Install package dependencies
         uses: ramsey/composer-install@v2
         with:
