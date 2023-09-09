@@ -8,6 +8,7 @@ use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\Parser;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
@@ -324,6 +325,35 @@ class BuilderInfoDetectorTest extends TestCase {
 
                             public function getBuilderInfo(): BuilderInfo|string|null {
                                 return EloquentBuilder::class;
+                            }
+                        })::class,
+                    );
+
+                    $field = Parser::fieldDefinition('field: String @custom');
+
+                    return $field;
+                },
+            ],
+            BuilderInfoProvider::class.' (Model)'        => [
+                [
+                    'name'    => '',
+                    'builder' => EloquentBuilder::class,
+                ],
+                static function (DirectiveLocator $directives): FieldDefinitionNode {
+                    $directives->setResolved(
+                        'custom',
+                        (new class () implements Directive, BuilderInfoProvider {
+                            /** @noinspection PhpMissingParentConstructorInspection */
+                            public function __construct() {
+                                // empty
+                            }
+
+                            public static function definition(): string {
+                                throw new Exception('should not be called.');
+                            }
+
+                            public function getBuilderInfo(): BuilderInfo|string|null {
+                                return EloquentModel::class;
                             }
                         })::class,
                     );

@@ -2,12 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
+use Closure;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -164,12 +166,9 @@ class BuilderInfoDetector {
         foreach ($arguments as $argument) {
             if ($helper->isArgument($directive, $argument)) {
                 $resolver = $directive->getResolverFromArgument($argument);
-                $return   = (new ReflectionFunction($resolver))->getReturnType();
-                $return   = $return instanceof ReflectionNamedType
-                    ? $return->getName()
-                    : null;
+                $return   = $this->getCallableReturnType($resolver);
 
-                if ($return && class_exists($return)) {
+                if ($return) {
                     $type = $return;
                 }
 
@@ -182,12 +181,30 @@ class BuilderInfoDetector {
 
     private function getBuilderInfoInstance(BuilderInfo|string $type): ?BuilderInfo {
         return match (true) {
-            $type instanceof BuilderInfo              => $type,
-            is_a($type, EloquentBuilder::class, true) => new BuilderInfo('', EloquentBuilder::class),
-            is_a($type, ScoutBuilder::class, true)    => new BuilderInfo('Scout', ScoutBuilder::class),
-            is_a($type, QueryBuilder::class, true)    => new BuilderInfo('Query', QueryBuilder::class),
-            is_a($type, Collection::class, true)      => new BuilderInfo('Collection', Collection::class),
-            default                                   => null,
+            $type instanceof BuilderInfo            => $type,
+            is_a($type, EloquentBuilder::class, true),
+            is_a($type, EloquentModel::class, true) => new BuilderInfo('', EloquentBuilder::class),
+            is_a($type, ScoutBuilder::class, true)  => new BuilderInfo('Scout', ScoutBuilder::class),
+            is_a($type, QueryBuilder::class, true)  => new BuilderInfo('Query', QueryBuilder::class),
+            is_a($type, Collection::class, true)    => new BuilderInfo('Collection', Collection::class),
+            default                                 => null,
         };
+    }
+
+    /**
+     * @param Closure():mixed $resolver
+     *
+     * @return class-string|null
+     */
+    private function getCallableReturnType(Closure $resolver): ?string {
+        $return = (new ReflectionFunction($resolver))->getReturnType();
+        $return = $return instanceof ReflectionNamedType
+            ? $return->getName()
+            : null;
+        $return = $return && class_exists($return)
+            ? $return
+            : null;
+
+        return $return;
     }
 }
