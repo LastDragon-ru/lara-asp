@@ -9,6 +9,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\Values\FieldValue;
@@ -43,7 +44,7 @@ class ExposeBuilderDirective extends BaseDirective implements FieldResolver, Bui
         return '@exposeBuilder'.hash('sha256', static::class);
     }
 
-    public function getBuilderInfo(): BuilderInfo|string|null {
+    public function getBuilderInfo(TypeSource $source): BuilderInfo|string|null {
         return static::$builder::class;
     }
 

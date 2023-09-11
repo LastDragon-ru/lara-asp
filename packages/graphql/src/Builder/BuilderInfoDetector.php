@@ -14,6 +14,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
@@ -52,13 +53,12 @@ class BuilderInfoDetector {
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
         FieldDefinitionNode $field,
     ): BuilderInfo {
-        $builder = $this->getBuilderInfo($field);
+        $manipulator = $this->getAstManipulator($document);
+        $fieldSource = $this->getFieldSource($manipulator, $type, $field);
+        $builder     = $this->getBuilderInfo($field, $fieldSource);
 
         if (!$builder) {
-            $manipulator = $this->getAstManipulator($document);
-            $argSource   = $this->getFieldSource($manipulator, $type, $field);
-
-            throw new BuilderUnknown($argSource);
+            throw new BuilderUnknown($fieldSource);
         }
 
         return $builder;
@@ -70,26 +70,25 @@ class BuilderInfoDetector {
         FieldDefinitionNode $field,
         InputValueDefinitionNode $argument,
     ): BuilderInfo {
-        $builder = $this->getBuilderInfo($field);
+        $manipulator = $this->getAstManipulator($document);
+        $argSource   = $this->getFieldArgumentSource($manipulator, $type, $field, $argument);
+        $builder     = $this->getBuilderInfo($field, $argSource);
 
         if (!$builder) {
-            $manipulator = $this->getAstManipulator($document);
-            $argSource   = $this->getFieldArgumentSource($manipulator, $type, $field, $argument);
-
             throw new BuilderUnknown($argSource);
         }
 
         return $builder;
     }
 
-    protected function getBuilderInfo(Node $node): ?BuilderInfo {
+    protected function getBuilderInfo(Node $node, TypeSource $source): ?BuilderInfo {
         // Provider?
         $provider = $this->locator->associated($node)->first(static function (Directive $directive): bool {
             return $directive instanceof BuilderInfoProvider;
         });
 
         if ($provider instanceof BuilderInfoProvider) {
-            $builder  = $provider->getBuilderInfo();
+            $builder  = $provider->getBuilderInfo($source);
             $instance = $builder
                 ? $this->getBuilderInfoInstance($builder)
                 : null;

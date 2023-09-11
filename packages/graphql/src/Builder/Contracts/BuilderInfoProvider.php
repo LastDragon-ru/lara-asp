@@ -21,5 +21,5 @@ interface BuilderInfoProvider {
     /**
      * @return BuilderInfo|class-string<EloquentBuilder<EloquentModel>|EloquentModel|QueryBuilder|ScoutBuilder|Collection<array-key, mixed>>|null
      */
-    public function getBuilderInfo(): BuilderInfo|string|null;
+    public function getBuilderInfo(TypeSource $source): BuilderInfo|string|null;
 }

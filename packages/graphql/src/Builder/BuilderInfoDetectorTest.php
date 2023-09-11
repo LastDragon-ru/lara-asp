@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AggregateDirective;
@@ -44,14 +46,15 @@ class BuilderInfoDetectorTest extends TestCase {
      */
     public function testGetNodeBuilderInfo(array $expected, Closure $nodeFactory): void {
         $locator   = $this->app->make(DirectiveLocator::class);
+        $source    = Mockery::mock(TypeSource::class);
         $node      = $nodeFactory($locator);
         $directive = new class($locator) extends BuilderInfoDetector {
-            public function getBuilderInfo(Node $node): ?BuilderInfo {
-                return parent::getBuilderInfo($node);
+            public function getBuilderInfo(Node $node, TypeSource $source): ?BuilderInfo {
+                return parent::getBuilderInfo($node, $source);
             }
         };
 
-        $actual = $directive->getBuilderInfo($node);
+        $actual = $directive->getBuilderInfo($node, $source);
 
         self::assertEquals(
             $expected,
@@ -294,7 +297,7 @@ class BuilderInfoDetectorTest extends TestCase {
                                 throw new Exception('should not be called.');
                             }
 
-                            public function getBuilderInfo(): BuilderInfo|string|null {
+                            public function getBuilderInfo(TypeSource $source): BuilderInfo|string|null {
                                 return new BuilderInfo('Custom', BuilderInfoProvider::class);
                             }
                         })::class,
@@ -323,7 +326,7 @@ class BuilderInfoDetectorTest extends TestCase {
                                 throw new Exception('should not be called.');
                             }
 
-                            public function getBuilderInfo(): BuilderInfo|string|null {
+                            public function getBuilderInfo(TypeSource $source): BuilderInfo|string|null {
                                 return EloquentBuilder::class;
                             }
                         })::class,
@@ -352,7 +355,7 @@ class BuilderInfoDetectorTest extends TestCase {
                                 throw new Exception('should not be called.');
                             }
 
-                            public function getBuilderInfo(): BuilderInfo|string|null {
+                            public function getBuilderInfo(TypeSource $source): BuilderInfo|string|null {
                                 return EloquentModel::class;
                             }
                         })::class,
