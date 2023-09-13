@@ -4,18 +4,23 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use Closure;
 use Exception;
-use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\Node;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AggregateDirective;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
@@ -32,6 +37,8 @@ use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 /**
  * @internal
  */
@@ -42,20 +49,23 @@ class BuilderInfoDetectorTest extends TestCase {
     /**
      * @dataProvider dataProviderGetNodeBuilderInfo
      *
-     * @param array{name: string, builder: string} $expected
-     * @param Closure(DirectiveLocator): Node      $nodeFactory
+     * @param array{name: string, builder: string}                                                                                                       $expected
+     * @param Closure(DirectiveLocator, AstManipulator): (InterfaceFieldArgumentSource|ObjectFieldArgumentSource|ObjectFieldSource|InterfaceFieldSource) $sourceFactory
      */
-    public function testGetNodeBuilderInfo(array $expected, Closure $nodeFactory): void {
-        $locator   = $this->app->make(DirectiveLocator::class);
-        $source    = Mockery::mock(TypeSource::class);
-        $node      = $nodeFactory($locator);
-        $directive = new class($locator) extends BuilderInfoDetector {
-            public function getBuilderInfo(Node $node, TypeSource $source): ?BuilderInfo {
-                return parent::getBuilderInfo($node, $source);
+    public function testGetNodeBuilderInfo(array $expected, Closure $sourceFactory): void {
+        $manipulator = $this->app->make(AstManipulator::class, ['document' => Mockery::mock(DocumentAST::class)]);
+        $locator     = $this->app->make(DirectiveLocator::class);
+        $source      = $sourceFactory($locator, $manipulator);
+        $directive   = new class() extends BuilderInfoDetector {
+            public function getBuilderInfo(
+                AstManipulator $manipulator,
+                InterfaceFieldArgumentSource|ObjectFieldArgumentSource|ObjectFieldSource|InterfaceFieldSource $source,
+            ): ?BuilderInfo {
+                return parent::getBuilderInfo($manipulator, $source);
             }
         };
 
-        $actual = $directive->getBuilderInfo($node, $source);
+        $actual = $directive->getBuilderInfo($manipulator, $source);
 
         self::assertEquals(
             $expected,
@@ -72,7 +82,7 @@ class BuilderInfoDetectorTest extends TestCase {
     /**
      * @return array<string, array{
      *     array{name: string, builder: string}|array{name: null, builder: null},
-     *     Closure(DirectiveLocator): FieldDefinitionNode,
+     *     Closure(DirectiveLocator, AstManipulator): (InterfaceFieldArgumentSource|ObjectFieldArgumentSource|ObjectFieldSource|InterfaceFieldSource),
      *     }>
      */
     public static function dataProviderGetNodeBuilderInfo(): array {
@@ -82,8 +92,12 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => null,
                     'builder' => null,
                 ],
-                static function (): FieldDefinitionNode {
-                    return Parser::fieldDefinition('field: String');
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String'),
+                    );
                 },
             ],
             '@search'                                                         => [
@@ -91,10 +105,14 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => 'Scout',
                     'builder' => ScoutBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('search', SearchDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('search', SearchDirective::class);
 
-                    return Parser::fieldDefinition('field(search: String @search): String');
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field(search: String @search): String'),
+                    );
                 },
             ],
             '@all'                                                            => [
@@ -102,10 +120,14 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('all', AllDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('all', AllDirective::class);
 
-                    return Parser::fieldDefinition('field: String @all');
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @all'),
+                    );
                 },
             ],
             '@all(query)'                                                     => [
@@ -113,13 +135,17 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('all', AllDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('all', AllDirective::class);
 
                     $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @all(builder: {$class})");
 
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        $field,
+                    );
                 },
             ],
             '@all(custom query)'                                              => [
@@ -127,13 +153,17 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('all', AllDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('all', AllDirective::class);
 
                     $class = json_encode(BuilderInfoDetectorTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @all(builder: {$class})");
 
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        $field,
+                    );
                 },
             ],
             '@paginate'                                                       => [
@@ -141,10 +171,14 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('paginate', PaginateDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('paginate', PaginateDirective::class);
 
-                    return Parser::fieldDefinition('field: String @paginate');
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @paginate'),
+                    );
                 },
             ],
             '@paginate(resolver)'                                             => [
@@ -152,13 +186,17 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('paginate', PaginateDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('paginate', PaginateDirective::class);
 
                     $class = json_encode(BuilderInfoDetectorTest__PaginatorResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(resolver: {$class})");
 
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        $field,
+                    );
                 },
             ],
             '@paginate(query)'                                                => [
@@ -166,13 +204,17 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('paginate', PaginateDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('paginate', PaginateDirective::class);
 
                     $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(builder: {$class})");
 
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        $field,
+                    );
                 },
             ],
             '@paginate(custom query)'                                         => [
@@ -180,13 +222,17 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('paginate', PaginateDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('paginate', PaginateDirective::class);
 
                     $class = json_encode(BuilderInfoDetectorTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(builder: {$class})");
 
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        $field,
+                    );
                 },
             ],
             '@relation'                                                       => [
@@ -194,8 +240,8 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved(
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved(
                         'relation',
                         (new class () extends RelationDirective {
                             /** @noinspection PhpMissingParentConstructorInspection */
@@ -209,9 +255,11 @@ class BuilderInfoDetectorTest extends TestCase {
                         })::class,
                     );
 
-                    $field = Parser::fieldDefinition('field: String @relation');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @relation'),
+                    );
                 },
             ],
             '@find'                                                           => [
@@ -219,12 +267,14 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('find', FindDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('find', FindDirective::class);
 
-                    $field = Parser::fieldDefinition('field: String @find');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @find'),
+                    );
                 },
             ],
             '@first'                                                          => [
@@ -232,12 +282,14 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('first', FirstDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('first', FirstDirective::class);
 
-                    $field = Parser::fieldDefinition('field: String @first');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @first'),
+                    );
                 },
             ],
             '@count'                                                          => [
@@ -245,12 +297,14 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('count', CountDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('count', CountDirective::class);
 
-                    $field = Parser::fieldDefinition('field: String @count');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @count'),
+                    );
                 },
             ],
             '@aggregate'                                                      => [
@@ -258,12 +312,14 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('aggregate', AggregateDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('aggregate', AggregateDirective::class);
 
-                    $field = Parser::fieldDefinition('field: String @aggregate');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @aggregate'),
+                    );
                 },
             ],
             '@aggregate(query)'                                               => [
@@ -271,13 +327,17 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved('aggregate', AggregateDirective::class);
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved('aggregate', AggregateDirective::class);
 
                     $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @aggregate(builder: {$class})");
 
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        $field,
+                    );
                 },
             ],
             BuilderInfoProvider::class                                        => [
@@ -285,8 +345,8 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => 'Custom',
                     'builder' => BuilderInfoProvider::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved(
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved(
                         'custom',
                         (new class () implements Directive, BuilderInfoProvider {
                             /** @noinspection PhpMissingParentConstructorInspection */
@@ -304,9 +364,11 @@ class BuilderInfoDetectorTest extends TestCase {
                         })::class,
                     );
 
-                    $field = Parser::fieldDefinition('field: String @custom');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @custom'),
+                    );
                 },
             ],
             BuilderInfoProvider::class.' (class-string)'                      => [
@@ -314,8 +376,8 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved(
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved(
                         'custom',
                         (new class () implements Directive, BuilderInfoProvider {
                             /** @noinspection PhpMissingParentConstructorInspection */
@@ -333,9 +395,11 @@ class BuilderInfoDetectorTest extends TestCase {
                         })::class,
                     );
 
-                    $field = Parser::fieldDefinition('field: String @custom');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @custom'),
+                    );
                 },
             ],
             BuilderInfoProvider::class.' (class-string<BuilderInfoProvider>)' => [
@@ -343,8 +407,8 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => 'stdClass',
                     'builder' => stdClass::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved(
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved(
                         'custom',
                         (new class () implements Directive, BuilderInfoProvider {
                             /** @noinspection PhpMissingParentConstructorInspection */
@@ -362,9 +426,11 @@ class BuilderInfoDetectorTest extends TestCase {
                         })::class,
                     );
 
-                    $field = Parser::fieldDefinition('field: String @custom');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @custom'),
+                    );
                 },
             ],
             BuilderInfoProvider::class.' (Model)'                             => [
@@ -372,8 +438,8 @@ class BuilderInfoDetectorTest extends TestCase {
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
                 ],
-                static function (DirectiveLocator $directives): FieldDefinitionNode {
-                    $directives->setResolved(
+                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
+                    $locator->setResolved(
                         'custom',
                         (new class () implements Directive, BuilderInfoProvider {
                             /** @noinspection PhpMissingParentConstructorInspection */
@@ -391,9 +457,11 @@ class BuilderInfoDetectorTest extends TestCase {
                         })::class,
                     );
 
-                    $field = Parser::fieldDefinition('field: String @custom');
-
-                    return $field;
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Test', 'fields' => []]),
+                        Parser::fieldDefinition('field: String @custom'),
+                    );
                 },
             ],
         ];

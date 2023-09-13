@@ -3,10 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use Closure;
+use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
-use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -15,13 +15,16 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
-use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\AggregateDirective;
 use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -38,14 +41,13 @@ use ReflectionNamedType;
 
 use function class_exists;
 use function is_a;
+use function reset;
 
 class BuilderInfoDetector {
     use WithManipulator;
     use WithSource;
 
-    public function __construct(
-        readonly protected DirectiveLocator $locator,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -56,11 +58,7 @@ class BuilderInfoDetector {
     ): BuilderInfo {
         $manipulator = $this->getAstManipulator($document);
         $fieldSource = $this->getFieldSource($manipulator, $type, $field);
-        $builder     = $this->getBuilderInfo($field, $fieldSource);
-
-        if (!$builder) {
-            throw new BuilderUnknown($fieldSource);
-        }
+        $builder     = $this->getSourceBuilderInfo($manipulator, $fieldSource);
 
         return $builder;
     }
@@ -73,20 +71,40 @@ class BuilderInfoDetector {
     ): BuilderInfo {
         $manipulator = $this->getAstManipulator($document);
         $argSource   = $this->getFieldArgumentSource($manipulator, $type, $field, $argument);
-        $builder     = $this->getBuilderInfo($field, $argSource);
+        $builder     = $this->getSourceBuilderInfo($manipulator, $argSource);
+
+        return $builder;
+    }
+
+    protected function getSourceBuilderInfo(
+        AstManipulator $manipulator,
+        ObjectFieldSource|InterfaceFieldSource|ObjectFieldArgumentSource|InterfaceFieldArgumentSource $source,
+    ): BuilderInfo {
+        $builder = null;
+        $reason  = null;
+
+        try {
+            $builder = $this->getBuilderInfo($manipulator, $source);
+        } catch (Exception $exception) {
+            $reason = $exception;
+        }
 
         if (!$builder) {
-            throw new BuilderUnknown($argSource);
+            throw new BuilderUnknown($source, $reason);
         }
 
         return $builder;
     }
 
-    protected function getBuilderInfo(Node $node, TypeSource $source): ?BuilderInfo {
+    protected function getBuilderInfo(
+        AstManipulator $manipulator,
+        ObjectFieldSource|InterfaceFieldSource|ObjectFieldArgumentSource|InterfaceFieldArgumentSource $source,
+    ): ?BuilderInfo {
         // Provider?
-        $provider = $this->locator->associated($node)->first(static function (Directive $directive): bool {
-            return $directive instanceof BuilderInfoProvider;
-        });
+        $field    = $source instanceof InterfaceFieldArgumentSource || $source instanceof ObjectFieldArgumentSource
+            ? $source->getParent()
+            : $source;
+        $provider = $manipulator->getDirective($field->getField(), BuilderInfoProvider::class);
 
         if ($provider instanceof BuilderInfoProvider) {
             $builder  = $provider->getBuilderInfo($source);
@@ -98,33 +116,34 @@ class BuilderInfoDetector {
         }
 
         // Scout?
-        $scout = false;
-
-        if ($node instanceof FieldDefinitionNode) {
-            foreach ($node->arguments as $argument) {
-                if ($this->locator->associatedOfType($argument, SearchDirective::class)->isNotEmpty()) {
-                    $scout = true;
-                    break;
-                }
-            }
-        }
+        $scout = $manipulator->findArgument(
+            $field->getField(),
+            static function (mixed $argument) use ($manipulator): bool {
+                return $manipulator->getDirective($argument, SearchDirective::class) !== null;
+            },
+        );
 
         if ($scout) {
             return $this->getBuilderInfoInstance(ScoutBuilder::class);
         }
 
         // Builder?
-        $directive = $this->locator->associated($node)->first(static function (Directive $directive): bool {
-            return $directive instanceof AllDirective
-                || $directive instanceof PaginateDirective
-                || $directive instanceof BuilderDirective
-                || $directive instanceof RelationDirective
-                || $directive instanceof FirstDirective
-                || $directive instanceof FindDirective
-                || $directive instanceof CountDirective
-                || $directive instanceof AggregateDirective
-                || $directive instanceof WithRelationDirective;
-        });
+        $directives = $manipulator->getDirectives(
+            $field->getField(),
+            null,
+            static function (Directive $directive): bool {
+                return $directive instanceof AllDirective
+                    || $directive instanceof PaginateDirective
+                    || $directive instanceof BuilderDirective
+                    || $directive instanceof RelationDirective
+                    || $directive instanceof FirstDirective
+                    || $directive instanceof FindDirective
+                    || $directive instanceof CountDirective
+                    || $directive instanceof AggregateDirective
+                    || $directive instanceof WithRelationDirective;
+            },
+        );
+        $directive  = reset($directives);
 
         if ($directive) {
             $type = null;

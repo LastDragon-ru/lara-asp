@@ -44,4 +44,11 @@ class InterfaceFieldArgumentSource extends Source {
         return $this->argument;
     }
     // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =================================================================================================================
+    public function getParent(): InterfaceFieldSource {
+        return new InterfaceFieldSource($this->getManipulator(), $this->getObject(), $this->getField());
+    }
+    // </editor-fold>
 }
