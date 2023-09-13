@@ -2,6 +2,21 @@
 
 Probably the most powerful directive to provide sort (`order by` conditions) for your GraphQL queries.
 
+[include:exec]: <../../../../dev/artisan dev:directive @sortBy>
+[//]: # (start: d214a747bed8aca5c49b51a5db5fc8bddbda3e8b51c251a9cdf3a531af6574a4)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```graphql
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+```
+
+[//]: # (end: d214a747bed8aca5c49b51a5db5fc8bddbda3e8b51c251a9cdf3a531af6574a4)
+
 ## Basic usage
 
 How to use (and [generated GraphQL schema](../../src/SortBy/Directives/DirectiveTest~example-expected.graphql)):

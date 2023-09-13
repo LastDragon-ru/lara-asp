@@ -2,6 +2,21 @@
 
 Probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries.
 
+[include:exec]: <../../../../dev/artisan dev:directive @searchBy>
+[//]: # (start: 98bbda2e9f12250c977d94e7c1b987a7c6b4fc6a75b7b76fdff7c9d724be5267)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```graphql
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+```
+
+[//]: # (end: 98bbda2e9f12250c977d94e7c1b987a7c6b4fc6a75b7b76fdff7c9d724be5267)
+
 ## Basic usage
 
 Out the box directives provides following features:
