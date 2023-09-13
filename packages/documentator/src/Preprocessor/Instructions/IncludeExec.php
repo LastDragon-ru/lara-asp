@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 
 use function dirname;
-use function explode;
 
 class IncludeExec implements Instruction {
     public function __construct(
@@ -31,10 +30,7 @@ class IncludeExec implements Instruction {
 
     public function process(string $path, string $target): string {
         try {
-            return $this->process->run(
-                explode(' ', $target, 2), // todo(documentator): Probably we need to parse args?
-                dirname($path),
-            );
+            return $this->process->run($target, dirname($path));
         } catch (Exception $exception) {
             throw new TargetExecFailed($path, $target, $exception);
         }

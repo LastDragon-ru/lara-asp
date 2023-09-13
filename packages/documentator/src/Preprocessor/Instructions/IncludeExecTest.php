@@ -21,7 +21,7 @@ class IncludeExecTest extends TestCase {
         $process  = Mockery::mock(Process::class);
         $process
             ->shouldReceive('run')
-            ->with(['command', 'to execute'], dirname($path))
+            ->with('command to execute', dirname($path))
             ->once()
             ->andReturn($expected);
 

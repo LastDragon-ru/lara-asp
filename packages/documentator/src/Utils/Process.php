@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Utils;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
+use function is_string;
 use function trim;
 
 class Process {
@@ -13,10 +14,12 @@ class Process {
     }
 
     /**
-     * @param list<string> $command
+     * @param list<string>|string $command
      */
-    public function run(array $command, string $cwd = null): string {
-        $process = new SymfonyProcess($command, $cwd);
+    public function run(array|string $command, string $cwd = null): string {
+        $process = is_string($command)
+            ? SymfonyProcess::fromShellCommandline($command, $cwd)
+            : new SymfonyProcess($command, $cwd);
 
         $process->run();
 
