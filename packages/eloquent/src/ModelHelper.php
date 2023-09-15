@@ -44,14 +44,16 @@ class ModelHelper {
      * @param Builder<TModel>|TModel|class-string<TModel> $model
      */
     public function __construct(Builder|Model|string $model) {
-        if (is_string($model)) {
-            $model = new $model();
+        if ($model instanceof Builder) {
+            $this->builder = true;
+            $this->model   = $model->getModel();
+        } elseif (is_string($model)) {
+            $this->builder = true;
+            $this->model   = new $model();
+        } else {
+            $this->builder = false;
+            $this->model   = $model;
         }
-
-        $this->builder = $model instanceof Builder;
-        $this->model   = $model instanceof Builder
-            ? $model->getModel()
-            : $model;
     }
 
     protected function isBuilder(): bool {
