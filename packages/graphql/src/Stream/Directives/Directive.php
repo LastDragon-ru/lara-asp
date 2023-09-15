@@ -30,6 +30,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsSubscription;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
@@ -153,6 +154,11 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         // Field is a list?
         if (!$source->isList()) {
             throw new FailedToCreateStreamFieldIsNotList($source);
+        }
+
+        // Union?
+        if ($source->isUnion()) {
+            throw new FailedToCreateStreamFieldIsUnion($source);
         }
 
         // Searchable?

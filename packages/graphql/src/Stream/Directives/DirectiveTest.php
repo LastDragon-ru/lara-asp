@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsSubscription;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -146,6 +147,35 @@ class DirectiveTest extends TestCase {
             <<<'GRAPHQL'
             type Subscription {
                 field: [Int] @stream
+            }
+            GRAPHQL,
+        );
+    }
+
+    public function testManipulateFieldDefinitionFieldIsUnion(): void {
+        self::expectException(FailedToCreateStreamFieldIsUnion::class);
+        self::expectExceptionMessage(
+            'Impossible to create a stream for `type Query { field }` because it is a union.',
+        );
+
+        $directives = $this->app->make(DirectiveLocator::class);
+
+        $directives->setResolved('stream', StreamDirective::class);
+
+        $this->useGraphQLSchema(
+            <<<'GRAPHQL'
+            type Query {
+                field: [AB] @stream
+            }
+
+            union AB = A | B
+
+            type A {
+                id: ID!
+            }
+
+            type B {
+                id: ID!
             }
             GRAPHQL,
         );
