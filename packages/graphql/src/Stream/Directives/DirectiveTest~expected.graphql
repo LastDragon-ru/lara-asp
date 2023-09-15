@@ -79,14 +79,14 @@ on
     | SCALAR
 
 """
-Splits list of items into the chunks and return one chunk specified by a page number or a cursor.
+Splits list of items into the chunks and return one chunk specified
+by a page number or a cursor.
 """
 directive @stream(
     """
     Overrides default builder. Useful if the standard detection
     algorithm doesn't fit/work. By default, the directive will use
-    the field and its type to determine the class name of the model
-    to query.
+    the field and its type to determine the Builder to query.
     """
     builder: StreamBuilder
 

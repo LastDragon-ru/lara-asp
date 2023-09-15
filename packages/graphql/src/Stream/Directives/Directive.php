@@ -79,7 +79,8 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         return <<<GRAPHQL
             """
-            Splits list of items into the chunks and return one chunk specified by a page number or a cursor.
+            Splits list of items into the chunks and return one chunk specified
+            by a page number or a cursor.
             """
             directive @{$name}(
                 """
@@ -95,8 +96,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 """
                 Overrides default builder. Useful if the standard detection
                 algorithm doesn't fit/work. By default, the directive will use
-                the field and its type to determine the class name of the model
-                to query.
+                the field and its type to determine the Builder to query.
                 """
                 {$argBuilder}: {$builder}
 
@@ -285,7 +285,15 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     // =========================================================================
     public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
         // Resolver?
-        $resolver = $this->getResolver($source);
+        $resolver = null;
+
+        if ($source instanceof ObjectFieldArgumentSource || $source instanceof InterfaceFieldArgumentSource) {
+            $resolver = $this->getResolver($source->getParent());
+        } elseif ($source instanceof ObjectFieldSource || $source instanceof InterfaceFieldSource) {
+            $resolver = $this->getResolver($source);
+        } else {
+            // empty
+        }
 
         if ($resolver === null) {
             return null;
@@ -327,18 +335,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     /**
      * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo):mixed|array{class-string, string}|null
      */
-    protected function getResolver(TypeSource $source): Closure|array|null {
-        // Argument?
-        if ($source instanceof ObjectFieldArgumentSource || $source instanceof InterfaceFieldArgumentSource) {
-            $source = $source->getParent();
-        }
-
-        // Field?
-        if (!($source instanceof ObjectFieldSource || $source instanceof InterfaceFieldSource)) {
-            return null;
-        }
-
-        // Resolve
+    protected function getResolver(ObjectFieldSource|InterfaceFieldSource $source): Closure|array|null {
         $resolver = null;
         $builder  = (array) $this->directiveArgValue(self::ArgBuilder);
 
@@ -367,7 +364,6 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             );
         }
 
-        // Return
         return $resolver;
     }
 

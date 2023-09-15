@@ -157,7 +157,7 @@ class DirectiveTest extends TestCase {
      * @param Closure():mixed|array{class-string, string}|null $resolver
      */
     public function testGetBuilderInfo(BuilderInfo|null $expected, Closure|array|null $resolver): void {
-        $source    = Mockery::mock(TypeSource::class);
+        $source    = Mockery::mock(ObjectFieldSource::class);
         $directive = Mockery::mock(Directive::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
