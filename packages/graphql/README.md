@@ -62,6 +62,31 @@ Probably the most powerful directive to provide sort (`order by` conditions) for
 
 [//]: # (end: ac98e04e18d99ce0a6af07947adce086ad2450bda152abe31548ebe09831ec9a)
 
+# Scalars
+
+> [!IMPORTANT]
+>
+> You should register the Scalar before use, it can be done via [`AstManipulator`](./src/Utils/AstManipulator.php) (useful while AST manipulation), [`TypeRegistry`](https://lighthouse-php.com/master/digging-deeper/adding-types-programmatically.html#using-the-typeregistry), or as a custom scalar inside the Schema:
+>
+> ```graphql
+> scalar JsonString
+> @scalar(
+>     class: "LastDragon_ru\\LaraASP\\GraphQL\\Scalars\\JsonString"
+> )
+> ```
+
+[include:document-list]: ./docs/Scalars
+[//]: # (start: e3795f388ca164b6568d7e4b8d642c7a6ad049711bb0777e6b09e9b5b19e1e11)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+## `JsonString`
+
+Represents [JSON](https://json.org) string.
+
+[Read more](<docs/Scalars/JsonString.md>).
+
+[//]: # (end: e3795f388ca164b6568d7e4b8d642c7a6ad049711bb0777e6b09e9b5b19e1e11)
+
 # Scout
 
 [Scout](https://laravel.com/docs/scout) is also supported 🤩. By default `@searchBy`/`@sortBy` will convert nested/related properties into dot string: eg `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`FieldResolver`](./src/Builder/Contracts/Scout/FieldResolver.php):
