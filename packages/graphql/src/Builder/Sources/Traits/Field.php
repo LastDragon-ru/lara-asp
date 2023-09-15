@@ -14,6 +14,10 @@ use function count;
  * @internal
  */
 trait Field {
+    public function getName(): string {
+        return $this->getManipulator()->getName($this->getField());
+    }
+
     public function hasArguments(): bool {
         $node = $this->getField();
         $args = false;
@@ -28,9 +32,8 @@ trait Field {
     }
 
     public function __toString(): string {
-        $manipulator = $this->getManipulator();
-        $field       = $manipulator->getName($this->getField());
-        $type        = $manipulator->getTypeFullName($this->getObject());
+        $field = $this->getName();
+        $type  = $this->getManipulator()->getTypeFullName($this->getObject());
 
         return "{$type} { {$field} }";
     }

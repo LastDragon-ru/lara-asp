@@ -2,17 +2,24 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Directives;
 
+use Closure;
 use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
@@ -22,20 +29,32 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Nuwave\Lighthouse\Schema\ResolverProvider;
+use Nuwave\Lighthouse\Schema\RootType;
 use Nuwave\Lighthouse\Schema\Values\FieldValue;
 use Nuwave\Lighthouse\Support\Contracts\Directive as DirectiveContract;
 use Nuwave\Lighthouse\Support\Contracts\FieldManipulator;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
-use stdClass;
+use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Nuwave\Lighthouse\Support\Contracts\ProvidesResolver;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionFunction;
+use ReflectionNamedType;
 
+use function class_exists;
 use function config;
+use function explode;
+use function is_array;
+use function is_string;
 use function json_encode;
-use function str_starts_with;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -47,23 +66,65 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     final public const Settings      = Package::Name.'.stream';
     final public const ArgSearchable = 'searchable';
     final public const ArgSortable   = 'sortable';
+    final public const ArgBuilder    = 'builder';
     final public const ArgChunk      = 'chunk';
 
     public static function definition(): string {
         $name          = DirectiveLocator::directiveName(static::class);
+        $builder       = self::Name.'Builder';
         $argSearchable = self::ArgSearchable;
         $argSortable   = self::ArgSortable;
+        $argBuilder    = self::ArgBuilder;
         $argChunk      = self::ArgChunk;
 
         return <<<GRAPHQL
             """
-            Splits list of items into the chunks and return one chunk specified by page number or cursor.
+            Splits list of items into the chunks and return one chunk specified by a page number or a cursor.
             """
             directive @{$name}(
+                """
+                Overrides default searchable status.
+                """
                 {$argSearchable}: Boolean
+
+                """
+                Overrides default sortable status.
+                """
                 {$argSortable}: Boolean
+
+                """
+                Overrides default builder. Useful if the standard detection
+                algorithm doesn't fit/work. By default, the directive will use
+                the field and its type to determine the class name of the model
+                to query.
+                """
+                {$argBuilder}: {$builder}
+
+                """
+                Overrides default chunk size.
+                """
                 {$argChunk}: Int
             ) on FIELD_DEFINITION
+
+            """
+            Explicit builder. Only one of fields allowed.
+            """
+            input {$builder} {
+                """
+                The class name of the model to query.
+                """
+                model: String
+
+                """
+                The reference to a function that provides a Builder instance.
+                """
+                builder: String
+
+                """
+                The relation name to query.
+                """
+                relation: String
+            }
         GRAPHQL;
     }
 
@@ -75,14 +136,18 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Prepare
-        $builder     = new BuilderInfo('fixme', stdClass::class); // fixme(graphql/@stream)!: BuilderInfo
-        $manipulator = $this->getManipulator($documentAST, $builder);
+        $manipulator = $this->getAstManipulator($documentAST);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
         $prefix      = self::Settings;
 
         // Updated?
-        if (str_starts_with($manipulator->getTypeName($fieldDefinition), self::Name)) {
+        if (Stream::is($source->getTypeName())) {
             return;
+        }
+
+        // Subscription?
+        if ($source->getParent()->getTypeName() === RootType::SUBSCRIPTION) {
+            throw new FailedToCreateStreamFieldIsSubscription($source);
         }
 
         // Field is a list?
@@ -148,8 +213,10 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         );
 
         // Update type
-        $type = $manipulator->getType(Stream::class, $source);
-        $type = Parser::typeReference("{$type}!");
+        $detector = Container::getInstance()->make(BuilderInfoDetector::class);
+        $builder  = $detector->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
+        $type     = $this->getManipulator($documentAST, $builder)->getType(Stream::class, $source);
+        $type     = Parser::typeReference("{$type}!");
 
         $manipulator->setFieldType(
             $parentType,
@@ -217,9 +284,35 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     // <editor-fold desc="BuilderInfoProvider">
     // =========================================================================
     public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
-        // fixme(graphql)!: Not implemented.
+        // Resolver?
+        $resolver = $this->getResolver($source);
 
-        return BuilderInfo::create(Builder::class);
+        if ($resolver === null) {
+            return null;
+        }
+
+        // Type
+        $type = null;
+
+        try {
+            $type = is_array($resolver)
+                ? (new ReflectionClass($resolver[0]))->getMethod($resolver[1])->getReturnType()
+                : (new ReflectionFunction($resolver))->getReturnType();
+            $type = $type instanceof ReflectionNamedType
+                ? $type->getName()
+                : null;
+            $type = $type && class_exists($type)
+                ? $type
+                : null;
+        } catch (ReflectionException) {
+            // empty
+        }
+
+        if ($type !== null) {
+            $type = BuilderInfo::create($type);
+        }
+
+        return $type;
     }
     // </editor-fold>
 
@@ -229,6 +322,145 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         // fixme(graphql)!: Not implemented.
 
         return static fn () => throw new Exception('Not implemented.');
+    }
+
+    /**
+     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo):mixed|array{class-string, string}|null
+     */
+    protected function getResolver(TypeSource $source): Closure|array|null {
+        // Argument?
+        if ($source instanceof ObjectFieldArgumentSource || $source instanceof InterfaceFieldArgumentSource) {
+            $source = $source->getParent();
+        }
+
+        // Field?
+        if (!($source instanceof ObjectFieldSource || $source instanceof InterfaceFieldSource)) {
+            return null;
+        }
+
+        // Resolve
+        $resolver = null;
+        $builder  = (array) $this->directiveArgValue(self::ArgBuilder);
+
+        if ($builder) {
+            if (isset($builder['builder'])) {
+                $resolver = is_string($builder['builder'])
+                    ? $this->getResolverClass($builder['builder'])
+                    : null;
+            } elseif (isset($builder['model'])) {
+                $resolver = is_string($builder['model'])
+                    ? $this->getResolverModel($builder['model'])
+                    : null;
+            } elseif (isset($builder['relation'])) {
+                $resolver = is_string($builder['relation'])
+                    ? $this->getResolverRelation($source->getParent()->getTypeName(), $builder['relation'])
+                    : null;
+            } else {
+                // empty
+            }
+        } else {
+            $parent   = $source->getParent()->getTypeName();
+            $resolver = $this->getResolverQuery($parent, $source->getName()) ?? (
+                RootType::isRootType($parent)
+                    ? $this->getResolverModel(Stream::getOriginalTypeName($source->getTypeName()))
+                    : $this->getResolverRelation($parent, $source->getName())
+            );
+        }
+
+        // Return
+        return $resolver;
+    }
+
+    /**
+     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): Builder<Model>|null
+     */
+    protected function getResolverRelation(string $model, string $relation): ?Closure {
+        $class    = $this->namespaceModelClass($model);
+        $resolver = null;
+
+        if ((new ModelHelper($class))->isRelation($relation)) {
+            $resolver = static function (mixed $root) use ($class, $relation): Builder {
+                // In runtime, we cannot guarantee that the `$root` is the
+                // expected model. So we are checking it explicitly and return
+                // the empty Builder if the model is wrong.
+                return $root instanceof $class
+                    ? (new ModelHelper($root))->getRelation($relation)->getQuery()
+                    : (new ModelHelper($class))->getRelation($relation)->getQuery()->whereRaw('0 = 1');
+            };
+        }
+
+        return $resolver;
+    }
+
+    /**
+     * @return array{class-string, string}|null
+     */
+    protected function getResolverQuery(string $type, string $field): ?array {
+        // We are mimicking to default Lighthouse resolver resolution, thus
+        // custom implementations may not work.
+        $provider = Container::getInstance()->get(ProvidesResolver::class);
+
+        if (!($provider instanceof ResolverProvider)) {
+            return null;
+        }
+
+        // Determine class
+        $method   = '__invoke';
+        $value    = new class($type, $field) extends FieldValue {
+            /**
+             * @noinspection             PhpMissingParentConstructorInspection
+             * @phpstan-ignore-next-line no need to call parent `__construct`
+             */
+            public function __construct(
+                private readonly string $typeName,
+                private readonly string $fieldName,
+            ) {
+                // no need to call parent
+            }
+
+            public function getParentName(): string {
+                return $this->typeName;
+            }
+
+            public function getFieldName(): string {
+                return $this->fieldName;
+            }
+        };
+        $helper   = new class() extends ResolverProvider {
+            /**
+             * @return class-string|null
+             */
+            public function getResolverClass(ResolverProvider $provider, FieldValue $value, string $method): ?string {
+                return $provider->findResolverClass($value, $method);
+            }
+        };
+        $class    = $helper->getResolverClass($provider, $value, $method);
+        $resolver = $class ? [$class, $method] : null;
+
+        return $resolver;
+    }
+
+    /**
+     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): Builder<Model>
+     */
+    protected function getResolverModel(string $model): Closure {
+        $class    = $this->namespaceModelClass($model);
+        $resolver = static function () use ($class): Builder {
+            return $class::query();
+        };
+
+        return $resolver;
+    }
+
+    /**
+     * @return array{class-string, string}
+     */
+    protected function getResolverClass(string $class): array {
+        [$class, $method] = explode('@', $class, 2) + [null, null];
+        $class            = $this->namespaceClassName($class ?? '');
+        $resolver         = [$class, $method ?? '__invoke'];
+
+        return $resolver;
     }
     // </editor-fold>
 }

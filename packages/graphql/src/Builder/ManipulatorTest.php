@@ -333,7 +333,11 @@ class ManipulatorTest extends TestCase {
                 <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
-                    @stream
+                    @stream(
+                        builder: {
+                            model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        }
+                    )
                 }
 
                 type Test {

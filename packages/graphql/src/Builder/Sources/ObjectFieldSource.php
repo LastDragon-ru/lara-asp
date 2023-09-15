@@ -42,6 +42,10 @@ class ObjectFieldSource extends Source {
 
     // <editor-fold desc="Helpers">
     // =================================================================================================================
+    public function getParent(): ObjectSource {
+        return new ObjectSource($this->getManipulator(), $this->getObject());
+    }
+
     public function getArgument(InputValueDefinitionNode|Argument $argument): ObjectFieldArgumentSource {
         return new ObjectFieldArgumentSource($this->getManipulator(), $this->getObject(), $this->getField(), $argument);
     }

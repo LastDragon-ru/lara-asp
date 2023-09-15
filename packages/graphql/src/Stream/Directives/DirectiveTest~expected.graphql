@@ -79,11 +79,30 @@ on
     | SCALAR
 
 """
-Splits list of items into the chunks and return one chunk specified by page number or cursor.
+Splits list of items into the chunks and return one chunk specified by a page number or a cursor.
 """
 directive @stream(
+    """
+    Overrides default builder. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the field and its type to determine the class name of the model
+    to query.
+    """
+    builder: StreamBuilder
+
+    """
+    Overrides default chunk size.
+    """
     chunk: Int
+
+    """
+    Overrides default searchable status.
+    """
     searchable: Boolean
+
+    """
+    Overrides default sortable status.
+    """
     sortable: Boolean
 )
 on
@@ -113,19 +132,19 @@ enum SortByTypeDirection {
 }
 
 """
-Available conditions for `type Object` (only one property allowed at a time).
+Available conditions for `type Car` (only one property allowed at a time).
 """
-input SearchByConditionObject {
+input SearchByConditionCar {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByConditionObject!]
+    allOf: [SearchByConditionCar!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByConditionObject!]
+    anyOf: [SearchByConditionCar!]
     @searchByOperatorAnyOf
 
     """
@@ -137,7 +156,7 @@ input SearchByConditionObject {
     """
     Not.
     """
-    not: SearchByConditionObject
+    not: SearchByConditionCar
     @searchByOperatorNot
 }
 
@@ -183,9 +202,9 @@ input SearchByScalarIDOrNull {
 }
 
 """
-Sort clause for `type Object` (only one property allowed at a time).
+Sort clause for `type Car` (only one property allowed at a time).
 """
-input SortByClauseObject {
+input SortByClauseCar {
     """
     Property clause.
     """
@@ -193,14 +212,34 @@ input SortByClauseObject {
     @sortByOperatorField
 }
 
+"""
+Explicit builder. Only one of fields allowed.
+"""
+input StreamBuilder {
+    """
+    The reference to a function that provides a Builder instance.
+    """
+    builder: String
+
+    """
+    The class name of the model to query.
+    """
+    model: String
+
+    """
+    The relation name to query.
+    """
+    relation: String
+}
+
 interface InterfaceA {
     fieldWithArguments(
         argument: String
         chunk: Int!
         cursor: StreamCursor
-        order: [SortByClauseObject!]
-        where: SearchByConditionObject
-    ): ObjectsStream!
+        order: [SortByClauseCar!]
+        where: SearchByConditionCar
+    ): CarsStream!
 }
 
 interface InterfaceB
@@ -210,17 +249,17 @@ implements
     fieldNotSearchable(
         chunk: Int!
         cursor: StreamCursor
-        order: [SortByClauseObject!]
-    ): ObjectsStream!
+        order: [SortByClauseCar!]
+    ): CarsStream!
 }
 
 interface InterfaceC {
     fieldWithDirectives(
-        a: SearchByConditionObject
-        b: [SortByClauseObject!]
+        a: SearchByConditionCar
+        b: [SortByClauseCar!]
         c: Int!
         d: StreamCursor
-    ): ObjectsStream!
+    ): CarsStream!
 }
 
 """
@@ -228,7 +267,7 @@ Represents JSON string.
 """
 scalar JsonString
 @scalar(
-    class: "LastDragon_ru\\LaraASP\\GraphQL\\Scalars\\JsonString"
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Scalars\\JsonStringType"
 )
 
 """
@@ -244,14 +283,14 @@ scalar StreamCursor
     class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Cursor"
 )
 
-type Object {
+type Car {
     id: ID
 }
 
-type ObjectsStream {
+type CarsStream {
     aggregator: StreamAggregator!
     info: StreamInfo!
-    items: [Object!]!
+    items: [Car!]!
     navigator: StreamNavigator!
 }
 
@@ -270,9 +309,9 @@ implements
         cursor: StreamCursor
         @streamCursor
 
-        order: [SortByClauseObject!]
+        order: [SortByClauseCar!]
         @sortBy
-    ): ObjectsStream!
+    ): CarsStream!
     @stream(
         searchable: false
     )
@@ -287,9 +326,9 @@ implements
         cursor: StreamCursor
         @streamCursor
 
-        where: SearchByConditionObject
+        where: SearchByConditionCar
         @searchBy
-    ): ObjectsStream!
+    ): CarsStream!
     @stream(
         sortable: false
     )
@@ -306,20 +345,20 @@ implements
         cursor: StreamCursor
         @streamCursor
 
-        order: [SortByClauseObject!]
+        order: [SortByClauseCar!]
         @sortBy
 
-        where: SearchByConditionObject
+        where: SearchByConditionCar
         @searchBy
-    ): ObjectsStream!
+    ): CarsStream!
     @stream
 
     fieldWithDeprecations(
-        a: SearchByConditionObject
+        a: SearchByConditionCar
         @deprecated
         @searchBy
 
-        b: [SortByClauseObject!]
+        b: [SortByClauseCar!]
         @deprecated
         @sortBy
 
@@ -348,21 +387,21 @@ implements
         @deprecated
         @streamCursor
 
-        order: [SortByClauseObject!]
+        order: [SortByClauseCar!]
         @sortBy
 
-        where: SearchByConditionObject
+        where: SearchByConditionCar
         @searchBy
-    ): ObjectsStream!
+    ): CarsStream!
     @stream(
         chunk: 15
     )
 
     fieldWithDirectives(
-        a: SearchByConditionObject
+        a: SearchByConditionCar
         @searchBy
 
-        b: [SortByClauseObject!]
+        b: [SortByClauseCar!]
         @sortBy
 
         c: Int! = 10
@@ -376,14 +415,14 @@ implements
 
         d: StreamCursor
         @streamCursor
-    ): ObjectsStream!
+    ): CarsStream!
     @stream
 
     fieldWithDirectivesAndDefaults(
-        a: SearchByConditionObject
+        a: SearchByConditionCar
         @searchBy
 
-        b: [SortByClauseObject!]
+        b: [SortByClauseCar!]
         @sortBy
 
         c: Int! = 15
@@ -396,7 +435,7 @@ implements
 
         d: StreamCursor
         @streamCursor
-    ): ObjectsStream!
+    ): CarsStream!
     @stream(
         chunk: 15
     )
@@ -411,12 +450,12 @@ implements
         cursor: StreamCursor
         @streamCursor
 
-        order: [SortByClauseObject!]
+        order: [SortByClauseCar!]
         @sortBy
 
-        where: SearchByConditionObject
+        where: SearchByConditionCar
         @searchBy
-    ): ObjectsStream!
+    ): CarsStream!
     @stream
 }
 

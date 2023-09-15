@@ -1,7 +1,7 @@
 type Query implements InterfaceA & InterfaceB {
-    fieldWithoutArguments: [Object] @stream
+    fieldWithoutArguments: [Car] @stream
 
-    fieldWithArguments(argument: String): [Object] @stream
+    fieldWithArguments(argument: String): [Car] @stream
 
     fieldWithDirectives(
         a: _ @searchBy,
@@ -12,7 +12,7 @@ type Query implements InterfaceA & InterfaceB {
             limit: 10
         )
         d: _ @streamCursor
-    ): [Object] @stream
+    ): [Car] @stream
 
     fieldWithDirectivesAndDefaults(
         a: _ @searchBy,
@@ -22,14 +22,14 @@ type Query implements InterfaceA & InterfaceB {
             size: 123
         )
         d: _ @streamCursor
-    ): [Object]
+    ): [Car]
     @stream(
         chunk: 15
     )
 
-    fieldNotSearchable: [Object] @stream(searchable: false)
+    fieldNotSearchable: [Car] @stream(searchable: false)
 
-    fieldNotSortable: [Object] @stream(sortable: false)
+    fieldNotSortable: [Car] @stream(sortable: false)
 
     fieldWithDeprecations(
         a: _ @deprecated @searchBy,
@@ -41,22 +41,22 @@ type Query implements InterfaceA & InterfaceB {
             limit: 123
         )
         d: _ @deprecated @streamCursor
-    ): [Object]
+    ): [Car]
     @stream(
         chunk: 15
     )
 }
 
-type Object {
+type Car {
     id: ID
 }
 
 interface InterfaceA {
-    fieldWithArguments(argument: String): [Object]
+    fieldWithArguments(argument: String): [Car]
 }
 
 interface InterfaceB implements InterfaceC {
-    fieldNotSearchable: [Object]
+    fieldNotSearchable: [Car]
 }
 
 interface InterfaceC {
@@ -65,5 +65,5 @@ interface InterfaceC {
         b: TypeDoesntMatter,
         c: TypeDoesntMatter,
         d: TypeDoesntMatter,
-    ): [Object]
+    ): [Car]
 }
