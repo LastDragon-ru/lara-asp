@@ -26,4 +26,6 @@ interface TypeSource extends Stringable {
     public function isNullable(): bool;
 
     public function isList(): bool;
+
+    public function isUnion(): bool;
 }

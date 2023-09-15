@@ -65,6 +65,10 @@ class Source implements TypeSource {
         return $this->getManipulator()->isList($this->getType());
     }
 
+    public function isUnion(): bool {
+        return $this->getManipulator()->isUnion($this->getType());
+    }
+
     public function __toString(): string {
         return $this->getManipulator()->getTypeFullName($this->getType());
     }

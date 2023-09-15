@@ -137,7 +137,7 @@ abstract class InputObject implements TypeDefinition {
         }
 
         // Union?
-        if ($manipulator->isUnion($field->getType())) {
+        if ($field->isUnion()) {
             return false;
         }
 
