@@ -491,6 +491,28 @@ class AstManipulator {
     }
 
     /**
+     * @param Closure(FieldDefinitionNode|FieldDefinition): bool $closure
+     */
+    public function findField(
+        InterfaceTypeDefinitionNode|ObjectTypeDefinitionNode|HasFieldsType $node,
+        Closure $closure,
+    ): FieldDefinitionNode|FieldDefinition|null {
+        $found  = null;
+        $fields = $node instanceof HasFieldsType
+            ? $node->getFields()
+            : $node->fields;
+
+        foreach ($fields as $field) {
+            if ($closure($field)) {
+                $found = $field;
+                break;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * @return ($node is HasFieldsType ? FieldDefinition : FieldDefinitionNode)|null
      */
     public function getField(
@@ -502,12 +524,9 @@ class AstManipulator {
         if ($node instanceof HasFieldsType) {
             $field = $node->hasField($name) ? $node->getField($name) : null;
         } else {
-            foreach ($node->fields as $nodeField) {
-                if ($this->getName($nodeField) === $name) {
-                    $field = $nodeField;
-                    break;
-                }
-            }
+            $field = $this->findField($node, function (mixed $field) use ($name): bool {
+                return $this->getName($field) === $name;
+            });
         }
 
         return $field;
@@ -576,12 +595,14 @@ class AstManipulator {
     ): InputValueDefinitionNode|Argument {
         // Added?
         if ($this->getArgument($field, $name)) {
-            throw new ArgumentAlreadyDefined(sprintf(
-                '%s { %s(%s) }',
-                $this->getTypeFullName($definition),
-                $this->getName($field),
-                $name,
-            ));
+            throw new ArgumentAlreadyDefined(
+                sprintf(
+                    '%s { %s(%s) }',
+                    $this->getTypeFullName($definition),
+                    $this->getName($field),
+                    $name,
+                ),
+            );
         }
 
         // Add

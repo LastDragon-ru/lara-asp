@@ -501,6 +501,60 @@ class AstManipulatorTest extends TestCase {
             $this->assertGraphQLExportableEquals($expected, $definition);
         }
     }
+
+    public function testFindField(): void {
+        // Prepare
+        $manipulator = $this->getManipulator();
+        $node        = Parser::objectTypeDefinition(
+            <<<'GRAPHQL'
+            type Test {
+                a: Int
+                b: String
+                c: Boolean
+            }
+            GRAPHQL,
+        );
+        $type        = new ObjectType([
+            'name'    => 'Test',
+            'fields'  => [
+                new FieldDefinition([
+                    'name' => 'a',
+                    'type' => Type::int(),
+                ]),
+                new FieldDefinition([
+                    'name' => 'b',
+                    'type' => Type::string(),
+                ]),
+                new FieldDefinition([
+                    'name' => 'c',
+                    'type' => Type::boolean(),
+                ]),
+            ],
+            'astNode' => $node,
+        ]);
+
+        // Test
+        $nodeField = $manipulator->findField(
+            $node,
+            static function (mixed $field) use ($manipulator): bool {
+                return $manipulator->getTypeName($field) === Type::INT;
+            },
+        );
+
+        self::assertInstanceOf(FieldDefinitionNode::class, $nodeField);
+        self::assertEquals('a', $nodeField->name->value);
+
+        $typeField = $manipulator->findField(
+            $type,
+            static function (mixed $field) use ($manipulator): bool {
+                return $manipulator->getTypeName($field) === Type::BOOLEAN;
+            },
+        );
+
+        self::assertInstanceOf(FieldDefinition::class, $typeField);
+        self::assertEquals('c', $typeField->name);
+    }
+
     //</editor-fold>
 
     // <editor-fold desc="Helpers">
