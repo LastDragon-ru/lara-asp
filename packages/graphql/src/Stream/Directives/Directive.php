@@ -9,8 +9,10 @@ use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
@@ -53,6 +55,7 @@ use ReflectionNamedType;
 use function class_exists;
 use function config;
 use function explode;
+use function is_a;
 use function is_array;
 use function is_string;
 use function json_encode;
@@ -315,7 +318,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $type = $type instanceof ReflectionNamedType
                 ? $type->getName()
                 : null;
-            $type = $type && class_exists($type)
+            $type = $type && class_exists($type) && $this->isBuilderSupported($type)
                 ? $type
                 : null;
         } catch (ReflectionException) {
@@ -327,6 +330,17 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         return $type;
+    }
+
+    /**
+     * @phpstan-assert-if-true class-string<EloquentBuilder<Model>|QueryBuilder|ScoutBuilder> $builder
+     *
+     * @param class-string $builder
+     */
+    protected function isBuilderSupported(string $builder): bool {
+        return is_a($builder, EloquentBuilder::class, true)
+            || is_a($builder, QueryBuilder::class, true)
+            || is_a($builder, ScoutBuilder::class, true);
     }
     // </editor-fold>
 
@@ -374,14 +388,14 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     }
 
     /**
-     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): Builder<Model>|null
+     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): EloquentBuilder<Model>|null
      */
     protected function getResolverRelation(string $model, string $relation): ?Closure {
         $class    = $this->namespaceModelClass($model);
         $resolver = null;
 
         if ((new ModelHelper($class))->isRelation($relation)) {
-            $resolver = static function (mixed $root) use ($class, $relation): Builder {
+            $resolver = static function (mixed $root) use ($class, $relation): EloquentBuilder {
                 // In runtime, we cannot guarantee that the `$root` is the
                 // expected model. So we are checking it explicitly and return
                 // the empty Builder if the model is wrong.
@@ -443,11 +457,11 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     }
 
     /**
-     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): Builder<Model>
+     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): EloquentBuilder<Model>
      */
     protected function getResolverModel(string $model): Closure {
         $class    = $this->namespaceModelClass($model);
-        $resolver = static function () use ($class): Builder {
+        $resolver = static function () use ($class): EloquentBuilder {
             return $class::query();
         };
 
