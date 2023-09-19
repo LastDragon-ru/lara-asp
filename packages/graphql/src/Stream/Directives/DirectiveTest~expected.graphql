@@ -267,7 +267,6 @@ type Car {
 }
 
 type CarsStream {
-    aggregator: StreamAggregator!
     info: StreamInfo!
     items: [Car!]!
     navigator: StreamNavigator!
@@ -438,12 +437,9 @@ implements
     @stream
 }
 
-type StreamAggregator {
-    count: Int!
-}
-
 type StreamInfo {
     chunk: Int!
+    count: Int!
     offset: Int
     order: JsonString
     where: JsonString

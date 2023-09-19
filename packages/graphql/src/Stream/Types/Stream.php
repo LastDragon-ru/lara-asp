@@ -37,10 +37,9 @@ class Stream implements TypeDefinition {
         string $name,
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
-        $type       = $source->getTypeName();
-        $info       = $manipulator->getType(Info::class, $source);
-        $navigator  = $manipulator->getType(Navigator::class, $source);
-        $aggregator = $manipulator->getType(Aggregator::class, $source);
+        $type      = $source->getTypeName();
+        $info      = $manipulator->getType(Info::class, $source);
+        $navigator = $manipulator->getType(Navigator::class, $source);
 
         return Parser::objectTypeDefinition(
             <<<GRAPHQL
@@ -48,7 +47,6 @@ class Stream implements TypeDefinition {
                 items: [{$type}!]!
                 info: {$info}!
                 navigator: {$navigator}!
-                aggregator: {$aggregator}!
             }
             GRAPHQL,
         );

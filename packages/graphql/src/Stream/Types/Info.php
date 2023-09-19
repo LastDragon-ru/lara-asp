@@ -35,6 +35,7 @@ class Info implements TypeDefinition {
                 chunk: Int!
                 where: {$json}
                 order: {$json}
+                count: Int!
             }
             GRAPHQL,
         );
