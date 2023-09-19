@@ -7,14 +7,14 @@ use Throwable;
 
 use function sprintf;
 
-class FailedToCreateStreamFieldIsSubscription extends StreamException {
+class FieldIsSubscription extends StreamException {
     public function __construct(
         protected Stringable|string $source,
         Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Impossible to create a stream for `%s` because it is a Subscription.',
+                'The `%s` is a Subscription. Subscriptions are not supported.',
                 $this->source,
             ),
             $previous,

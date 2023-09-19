@@ -7,14 +7,14 @@ use Throwable;
 
 use function sprintf;
 
-class FailedToCreateStreamKeyUnknown extends StreamException {
+class KeyUnknown extends StreamException {
     public function __construct(
         protected Stringable|string $source,
         Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Impossible to create a stream for `%s` because the `key` is unknown.',
+                'The `key` is unknown for `%s`.',
                 $this->source,
             ),
             $previous,

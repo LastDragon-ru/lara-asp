@@ -32,10 +32,10 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsSubscription;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsUnion;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamKeyUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
@@ -164,17 +164,17 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         // Subscription?
         if ($source->getParent()->getTypeName() === RootType::SUBSCRIPTION) {
-            throw new FailedToCreateStreamFieldIsSubscription($source);
+            throw new FieldIsSubscription($source);
         }
 
         // Field is a list?
         if (!$source->isList()) {
-            throw new FailedToCreateStreamFieldIsNotList($source);
+            throw new FieldIsNotList($source);
         }
 
         // Union?
         if ($source->isUnion()) {
-            throw new FailedToCreateStreamFieldIsUnion($source);
+            throw new FieldIsUnion($source);
         }
 
         // Searchable?
@@ -507,7 +507,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         if ($key !== null) {
             if (!is_string($key) || $key === '') {
-                throw new FailedToCreateStreamKeyUnknown($source);
+                throw new KeyUnknown($source);
             }
 
             return $key;
@@ -540,7 +540,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         // Found?
         if (!$key) {
-            throw new FailedToCreateStreamKeyUnknown($source);
+            throw new KeyUnknown($source);
         }
 
         // Return

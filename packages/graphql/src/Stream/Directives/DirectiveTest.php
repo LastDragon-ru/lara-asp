@@ -19,10 +19,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsSubscription;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsUnion;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamKeyUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -96,9 +96,9 @@ class DirectiveTest extends TestCase {
     }
 
     public function testManipulateFieldDefinitionFieldIsNotList(): void {
-        self::expectException(FailedToCreateStreamFieldIsNotList::class);
+        self::expectException(FieldIsNotList::class);
         self::expectExceptionMessage(
-            'Impossible to create a stream for `type Test { field }` because it is not a list.',
+            'The `type Test { field }` is not a list.',
         );
 
         $directives = $this->app->make(DirectiveLocator::class);
@@ -140,9 +140,9 @@ class DirectiveTest extends TestCase {
     }
 
     public function testManipulateFieldDefinitionFieldIsSubscription(): void {
-        self::expectException(FailedToCreateStreamFieldIsSubscription::class);
+        self::expectException(FieldIsSubscription::class);
         self::expectExceptionMessage(
-            'Impossible to create a stream for `type Subscription { field }` because it is a Subscription.',
+            'The `type Subscription { field }` is a Subscription. Subscriptions are not supported.',
         );
 
         $directives = $this->app->make(DirectiveLocator::class);
@@ -159,9 +159,9 @@ class DirectiveTest extends TestCase {
     }
 
     public function testManipulateFieldDefinitionFieldIsUnion(): void {
-        self::expectException(FailedToCreateStreamFieldIsUnion::class);
+        self::expectException(FieldIsUnion::class);
         self::expectExceptionMessage(
-            'Impossible to create a stream for `type Query { field }` because it is a union.',
+            'The `type Query { field }` us a union. Unions are not supported.',
         );
 
         $directives = $this->app->make(DirectiveLocator::class);
@@ -710,7 +710,7 @@ class DirectiveTest extends TestCase {
                 $factory,
             ],
             'Explicit (invalid)' => [
-                new FailedToCreateStreamKeyUnknown('type ObjectA { test }'),
+                new KeyUnknown('type ObjectA { test }'),
                 $schema,
                 Parser::directive('@stream(key: "")'),
                 $factory,
@@ -728,7 +728,7 @@ class DirectiveTest extends TestCase {
                 },
             ],
             'Invalid type'       => [
-                new FailedToCreateStreamKeyUnknown('type ObjectA { test }'),
+                new KeyUnknown('type ObjectA { test }'),
                 $schema,
                 Parser::directive('@stream'),
                 static function (AstManipulator $manipulator): ObjectFieldSource {

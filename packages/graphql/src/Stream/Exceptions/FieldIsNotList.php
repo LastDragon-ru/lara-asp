@@ -7,14 +7,14 @@ use Throwable;
 
 use function sprintf;
 
-class FailedToCreateStreamFieldIsUnion extends StreamException {
+class FieldIsNotList extends StreamException {
     public function __construct(
         protected Stringable|string $source,
         Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Impossible to create a stream for `%s` because it is a union.',
+                'The `%s` is not a list.',
                 $this->source,
             ),
             $previous,
