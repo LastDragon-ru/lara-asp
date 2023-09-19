@@ -334,6 +334,7 @@ class ManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @stream(
+                        key: "id"
                         builder: {
                             model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
                         }

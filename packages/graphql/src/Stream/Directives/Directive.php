@@ -8,6 +8,8 @@ use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\HasFieldsType;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -33,12 +35,14 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsUnion;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamKeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Schema\ResolverProvider;
 use Nuwave\Lighthouse\Schema\RootType;
 use Nuwave\Lighthouse\Schema\Values\FieldValue;
@@ -72,6 +76,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     final public const ArgSortable   = 'sortable';
     final public const ArgBuilder    = 'builder';
     final public const ArgChunk      = 'chunk';
+    final public const ArgKey        = 'key';
 
     public static function definition(): string {
         $name          = DirectiveLocator::directiveName(static::class);
@@ -80,6 +85,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $argSortable   = self::ArgSortable;
         $argBuilder    = self::ArgBuilder;
         $argChunk      = self::ArgChunk;
+        $argKey        = self::ArgKey;
 
         return <<<GRAPHQL
             """
@@ -108,6 +114,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 Overrides default chunk size.
                 """
                 {$argChunk}: Int
+
+                """
+                Overrides default unique key. Useful if the standard detection
+                algorithm doesn't fit/work. By default, the directive will use
+                the name of field with `ID!` type.
+                """
+                {$argKey}: String
             ) on FIELD_DEFINITION
 
             """
@@ -232,6 +245,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $fieldDefinition,
             $type,
         );
+
+        // Key? (required)
+        $this->getArgKey($manipulator, $source);
     }
 
     /**
@@ -479,4 +495,56 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         return $resolver;
     }
     // </editor-fold>
+
+    // <editor-fold desc="Arguments">
+    // =========================================================================
+    protected function getArgKey(
+        AstManipulator $manipulator,
+        ObjectFieldSource|InterfaceFieldSource $source,
+    ): string {
+        // Explicit?
+        $key = $this->directiveArgValue(self::ArgKey);
+
+        if ($key !== null) {
+            if (!is_string($key) || $key === '') {
+                throw new FailedToCreateStreamKeyUnknown($source);
+            }
+
+            return $key;
+        }
+
+        // Search for field with `ID!` type
+        $type  = Stream::getOriginalTypeName($source->getTypeName());
+        $type  = $manipulator->getTypeDefinition($type);
+        $field = null;
+
+        if (
+            $type instanceof HasFieldsType
+            || $type instanceof InterfaceTypeDefinitionNode
+            || $type instanceof ObjectTypeDefinitionNode
+        ) {
+            $field = $manipulator->findField($type, static function (mixed $field) use ($manipulator): bool {
+                return !$manipulator->isList($field)
+                    && !$manipulator->isNullable($field)
+                    && $manipulator->getTypeName($field) === Type::ID;
+            });
+        }
+
+        // Key
+        if ($field) {
+            $rename = $manipulator->getDirective($field, RenameDirective::class);
+            $key    = $rename
+                ? $rename->attributeArgValue()
+                : $manipulator->getName($field);
+        }
+
+        // Found?
+        if (!$key) {
+            throw new FailedToCreateStreamKeyUnknown($source);
+        }
+
+        // Return
+        return $key;
+    }
+    //</editor-fold>
 }

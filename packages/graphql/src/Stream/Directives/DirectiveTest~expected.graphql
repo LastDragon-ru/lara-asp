@@ -29,18 +29,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorIsNotNull
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorIsNull
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorNot
 on
     | ENUM
@@ -96,6 +84,13 @@ directive @stream(
     chunk: Int
 
     """
+    Overrides default unique key. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the name of field with `ID!` type.
+    """
+    key: String
+
+    """
     Overrides default searchable status.
     """
     searchable: Boolean
@@ -118,10 +113,6 @@ on
 directive @streamCursor
 on
     | ARGUMENT_DEFINITION
-
-enum SearchByTypeFlag {
-    yes
-}
 
 """
 Sort direction.
@@ -150,7 +141,7 @@ input SearchByConditionCar {
     """
     Property condition.
     """
-    id: SearchByScalarIDOrNull
+    id: SearchByScalarID
     @searchByOperatorProperty
 
     """
@@ -163,7 +154,7 @@ input SearchByConditionCar {
 """
 Available operators for `scalar ID` (only one operator allowed at a time).
 """
-input SearchByScalarIDOrNull {
+input SearchByScalarID {
     """
     Equal (`=`).
     """
@@ -175,18 +166,6 @@ input SearchByScalarIDOrNull {
     """
     in: [ID!]
     @searchByOperatorIn
-
-    """
-    Is NOT NULL?
-    """
-    isNotNull: SearchByTypeFlag
-    @searchByOperatorIsNotNull
-
-    """
-    Is NULL?
-    """
-    isNull: SearchByTypeFlag
-    @searchByOperatorIsNull
 
     """
     Not Equal (`!=`).
@@ -284,7 +263,7 @@ scalar StreamCursor
 )
 
 type Car {
-    id: ID
+    id: ID!
 }
 
 type CarsStream {

@@ -4,13 +4,17 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
@@ -18,6 +22,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamFieldIsUnion;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FailedToCreateStreamKeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -28,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Mockery;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -522,6 +528,44 @@ class DirectiveTest extends TestCase {
             $directive->getResolverClass(stdClass::class.'@method'),
         );
     }
+
+    /**
+     * @dataProvider dataProviderGetArgKey
+     *
+     * @param Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource) $sourceFactory
+     */
+    public function testGetArgKey(
+        Exception|string $expected,
+        string $schema,
+        DirectiveNode $directiveNode,
+        Closure $sourceFactory,
+    ): void {
+        $manipulator = Container::getInstance()->make(AstManipulator::class, [
+            'document' => Mockery::mock(DocumentAST::class),
+        ]);
+        $source      = $sourceFactory($manipulator);
+        $field       = $source->getField();
+        $directive   = new class() extends Directive {
+            public function getArgKey(
+                AstManipulator $manipulator,
+                ObjectFieldSource|InterfaceFieldSource $source,
+            ): string {
+                return parent::getArgKey($manipulator, $source);
+            }
+        };
+
+        self::assertInstanceOf(FieldDefinitionNode::class, $field);
+
+        $directive->hydrate($directiveNode, $field);
+
+        if ($expected instanceof Exception) {
+            self::expectExceptionObject($expected);
+        }
+
+        $this->useGraphQLSchema($schema);
+
+        self::assertEquals($expected, $directive->getArgKey($manipulator, $source));
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -624,6 +668,100 @@ class DirectiveTest extends TestCase {
                     ],
                 ],
                 '{relation: "engine"}',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{
+     *      Exception|string,
+     *      string,
+     *      DirectiveNode,
+     *      Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource)
+     *      }>
+     */
+    public static function dataProviderGetArgKey(): array {
+        $schema  = <<<'GRAPHQL'
+            type ObjectA {
+                id: ID!
+            }
+
+            type ObjectB {
+                id: ID
+            }
+
+            type ObjectC {
+                id: ID! @rename(attribute: "renamed")
+            }
+            GRAPHQL;
+        $factory = static function (AstManipulator $manipulator): ObjectFieldSource {
+            return new ObjectFieldSource(
+                $manipulator,
+                new ObjectType(['name' => 'ObjectA', 'fields' => []]),
+                Parser::fieldDefinition('test: String'),
+            );
+        };
+
+        return [
+            'Explicit'           => [
+                'explicitKey',
+                $schema,
+                Parser::directive('@stream(key: "explicitKey")'),
+                $factory,
+            ],
+            'Explicit (invalid)' => [
+                new FailedToCreateStreamKeyUnknown('type ObjectA { test }'),
+                $schema,
+                Parser::directive('@stream(key: "")'),
+                $factory,
+            ],
+            'Implicit'           => [
+                'id',
+                $schema,
+                Parser::directive('@stream'),
+                static function (AstManipulator $manipulator): ObjectFieldSource {
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'Object', 'fields' => []]),
+                        Parser::fieldDefinition('test: ObjectA'),
+                    );
+                },
+            ],
+            'Invalid type'       => [
+                new FailedToCreateStreamKeyUnknown('type ObjectA { test }'),
+                $schema,
+                Parser::directive('@stream'),
+                static function (AstManipulator $manipulator): ObjectFieldSource {
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'ObjectA', 'fields' => []]),
+                        Parser::fieldDefinition('test: ObjectB'),
+                    );
+                },
+            ],
+            'Converted'          => [
+                'id',
+                $schema,
+                Parser::directive('@stream'),
+                static function (AstManipulator $manipulator): ObjectFieldSource {
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'ObjectB', 'fields' => []]),
+                        Parser::fieldDefinition('test: ObjectAsStream'),
+                    );
+                },
+            ],
+            '@rename'            => [
+                'renamed',
+                $schema,
+                Parser::directive('@stream'),
+                static function (AstManipulator $manipulator): ObjectFieldSource {
+                    return new ObjectFieldSource(
+                        $manipulator,
+                        new ObjectType(['name' => 'ObjectB', 'fields' => []]),
+                        Parser::fieldDefinition('test: ObjectC'),
+                    );
+                },
             ],
         ];
     }
