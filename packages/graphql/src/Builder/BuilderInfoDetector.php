@@ -8,7 +8,6 @@ use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -201,7 +200,6 @@ class BuilderInfoDetector {
     private function getBuilderInfoInstance(BuilderInfo|string $type): ?BuilderInfo {
         return match (true) {
             $type instanceof BuilderInfo            => $type,
-            is_a($type, BuilderInfo::class, true)   => Container::getInstance()->get($type),
             is_a($type, EloquentBuilder::class, true),
             is_a($type, EloquentModel::class, true) => new BuilderInfo('', EloquentBuilder::class),
             is_a($type, ScoutBuilder::class, true)  => new BuilderInfo('Scout', ScoutBuilder::class),

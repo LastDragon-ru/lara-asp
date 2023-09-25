@@ -31,7 +31,6 @@ use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use PHPUnit\Framework\Attributes\CoversClass;
-use stdClass;
 
 use function json_encode;
 
@@ -87,7 +86,7 @@ class BuilderInfoDetectorTest extends TestCase {
      */
     public static function dataProviderGetNodeBuilderInfo(): array {
         return [
-            'unknown'                                                         => [
+            'unknown'                                           => [
                 [
                     'name'    => null,
                     'builder' => null,
@@ -100,7 +99,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@search'                                                         => [
+            '@search'                                           => [
                 [
                     'name'    => 'Scout',
                     'builder' => ScoutBuilder::class,
@@ -115,7 +114,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@all'                                                            => [
+            '@all'                                              => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -130,7 +129,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@all(query)'                                                     => [
+            '@all(query)'                                       => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -148,7 +147,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@all(custom query)'                                              => [
+            '@all(custom query)'                                => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -166,7 +165,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@paginate'                                                       => [
+            '@paginate'                                         => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -181,7 +180,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@paginate(resolver)'                                             => [
+            '@paginate(resolver)'                               => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -199,7 +198,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@paginate(query)'                                                => [
+            '@paginate(query)'                                  => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -217,7 +216,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@paginate(custom query)'                                         => [
+            '@paginate(custom query)'                           => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -235,7 +234,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@relation'                                                       => [
+            '@relation'                                         => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -262,7 +261,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@find'                                                           => [
+            '@find'                                             => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -277,7 +276,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@first'                                                          => [
+            '@first'                                            => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -292,7 +291,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@count'                                                          => [
+            '@count'                                            => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -307,7 +306,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@aggregate'                                                      => [
+            '@aggregate'                                        => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -322,7 +321,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            '@aggregate(query)'                                               => [
+            '@aggregate(query)'                                 => [
                 [
                     'name'    => 'Query',
                     'builder' => QueryBuilder::class,
@@ -340,7 +339,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            BuilderInfoProvider::class                                        => [
+            BuilderInfoProvider::class                          => [
                 [
                     'name'    => 'Custom',
                     'builder' => BuilderInfoProvider::class,
@@ -371,7 +370,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            BuilderInfoProvider::class.' (class-string)'                      => [
+            BuilderInfoProvider::class.' (class-string)'        => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -402,38 +401,7 @@ class BuilderInfoDetectorTest extends TestCase {
                     );
                 },
             ],
-            BuilderInfoProvider::class.' (class-string<BuilderInfoProvider>)' => [
-                [
-                    'name'    => 'stdClass',
-                    'builder' => stdClass::class,
-                ],
-                static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
-                    $locator->setResolved(
-                        'custom',
-                        (new class () implements Directive, BuilderInfoProvider {
-                            /** @noinspection PhpMissingParentConstructorInspection */
-                            public function __construct() {
-                                // empty
-                            }
-
-                            public static function definition(): string {
-                                throw new Exception('should not be called.');
-                            }
-
-                            public function getBuilderInfo(TypeSource $source): BuilderInfo|string|null {
-                                return BuilderInfoDetectorTest__BuilderInfo::class;
-                            }
-                        })::class,
-                    );
-
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @custom'),
-                    );
-                },
-            ],
-            BuilderInfoProvider::class.' (Model)'                             => [
+            BuilderInfoProvider::class.' (class-string<Model>)' => [
                 [
                     'name'    => '',
                     'builder' => EloquentBuilder::class,
@@ -508,14 +476,4 @@ class BuilderInfoDetectorTest__PaginatorResolver {
  */
 class BuilderInfoDetectorTest__CustomBuilder extends QueryBuilder {
     // empty
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class BuilderInfoDetectorTest__BuilderInfo extends BuilderInfo {
-    public function __construct() {
-        parent::__construct('stdClass', stdClass::class);
-    }
 }
