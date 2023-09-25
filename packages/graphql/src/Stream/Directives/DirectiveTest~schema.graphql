@@ -45,6 +45,8 @@ type Query implements InterfaceA & InterfaceB {
     @stream(
         chunk: 15
     )
+
+    fieldWithSearch(search: String! @search): [Car] @stream
 }
 
 type Car {

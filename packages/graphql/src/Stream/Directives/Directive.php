@@ -46,6 +46,8 @@ use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Schema\ResolverProvider;
 use Nuwave\Lighthouse\Schema\RootType;
 use Nuwave\Lighthouse\Schema\Values\FieldValue;
+use Nuwave\Lighthouse\Scout\ScoutEnhancer;
+use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive as DirectiveContract;
 use Nuwave\Lighthouse\Support\Contracts\FieldManipulator;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
@@ -309,16 +311,23 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     // <editor-fold desc="BuilderInfoProvider">
     // =========================================================================
     public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
-        // Resolver?
-        $resolver = null;
+        // Field?
+        $field = null;
 
         if ($source instanceof ObjectFieldArgumentSource || $source instanceof InterfaceFieldArgumentSource) {
-            $resolver = $this->getResolver($source->getParent());
+            $field = $source->getParent();
         } elseif ($source instanceof ObjectFieldSource || $source instanceof InterfaceFieldSource) {
-            $resolver = $this->getResolver($source);
+            $field = $source;
         } else {
             // empty
         }
+
+        if ($field === null) {
+            return null;
+        }
+
+        // Resolver?
+        $resolver = $this->getResolver($field);
 
         if ($resolver === null) {
             return null;
@@ -337,6 +346,22 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $type = $type && class_exists($type) && $this->isBuilderSupported($type)
                 ? $type
                 : null;
+
+            // Scout?
+            if ($type && !is_a($type, ScoutBuilder::class, true)) {
+                $scout = $field->hasArgument(
+                    static function (mixed $argument, AstManipulator $manipulator): bool {
+                        return $manipulator->getDirective($argument, SearchDirective::class) !== null;
+                    },
+                );
+
+                if ($scout) {
+                    /** @see ScoutEnhancer */
+                    $type = is_a($type, EloquentBuilder::class, true)
+                        ? ScoutBuilder::class
+                        : null;
+                }
+            }
         } catch (ReflectionException) {
             // empty
         }

@@ -11,6 +11,8 @@ use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
@@ -35,11 +37,13 @@ use Mockery;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Scout\ScoutServiceProvider;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionClass;
 use stdClass;
 
+use function array_merge;
 use function config;
 use function json_encode;
 
@@ -50,6 +54,18 @@ use const JSON_THROW_ON_ERROR;
  */
 #[CoversClass(Directive::class)]
 class DirectiveTest extends TestCase {
+    // <editor-fold desc="Prepare">
+    // =========================================================================
+    /**
+     * @inheritDoc
+     */
+    protected function getPackageProviders(mixed $app): array {
+        return array_merge(parent::getPackageProviders($app), [
+            ScoutServiceProvider::class,
+        ]);
+    }
+
+    // </editor-fold>
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testManipulateFieldDefinition(): void {
@@ -190,11 +206,19 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderGetBuilderInfo
      *
-     * @param Closure():mixed|array{class-string, string}|null $resolver
+     * @param Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource) $sourceFactory
+     * @param Closure():mixed|array{class-string, string}|null                  $resolver
      */
-    public function testGetBuilderInfo(BuilderInfo|null $expected, Closure|array|null $resolver): void {
-        $source    = Mockery::mock(ObjectFieldSource::class);
-        $directive = Mockery::mock(Directive::class);
+    public function testGetBuilderInfo(
+        BuilderInfo|null $expected,
+        Closure $sourceFactory,
+        Closure|array|null $resolver,
+    ): void {
+        $manipulator = Container::getInstance()->make(AstManipulator::class, [
+            'document' => Mockery::mock(DocumentAST::class),
+        ]);
+        $source      = $sourceFactory($manipulator);
+        $directive   = Mockery::mock(Directive::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -571,10 +595,14 @@ class DirectiveTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{BuilderInfo|null, Closure():mixed|array{string, string}|null}>
+     * @return array<string, array{
+     *      BuilderInfo|null,
+     *      Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource),
+     *      Closure():mixed|array{string, string}|null
+     *      }>
      */
     public static function dataProviderGetBuilderInfo(): array {
-        $class = new class() {
+        $class   = new class() {
             /**
              * @return EloquentBuilder<EloquentModel>
              */
@@ -586,45 +614,76 @@ class DirectiveTest extends TestCase {
                 throw new Exception('Should not be called.');
             }
         };
+        $factory = static function (bool $search): Closure {
+            return static function (AstManipulator $manipulator) use ($search): ObjectFieldSource {
+                return new ObjectFieldSource(
+                    $manipulator,
+                    new ObjectType(['name' => 'ObjectA', 'fields' => []]),
+                    $search
+                        ? Parser::fieldDefinition('test(search: String! @search): String')
+                        : Parser::fieldDefinition('test: String'),
+                );
+            };
+        };
 
         return [
-            'null'                        => [
+            'null'                                   => [
                 null,
+                $factory(false),
                 null,
             ],
-            'Closure(): mixed'            => [
+            'Closure(): mixed'                       => [
                 null,
+                $factory(false),
                 static function (): mixed {
                     return null;
                 },
             ],
-            'Closure(): class'            => [
+            'Closure(): class'                       => [
                 BuilderInfo::create(EloquentBuilder::class),
+                $factory(false),
                 static function (): EloquentBuilder {
                     throw new Exception('Should not be called.');
                 },
             ],
-            'Closure(): union'            => [
+            'Closure(): union'                       => [
                 null,
+                $factory(false),
                 static function () use ($class): stdClass|self {
                     return $class->union();
                 },
             ],
-            'array(Unknown, method)'      => [
+            'array(Unknown, method)'                 => [
                 null,
+                $factory(false),
                 ['Unknown', 'method'],
             ],
-            'array(Class, unknownMethod)' => [
+            'array(Class, unknownMethod)'            => [
                 null,
+                $factory(false),
                 [stdClass::class, 'unknownMethod'],
             ],
-            'array(Class, method: union)' => [
+            'array(Class, method: union)'            => [
                 null,
+                $factory(false),
                 [$class::class, 'union'],
             ],
-            'array(Class, method)'        => [
+            'array(Class, method)'                   => [
                 BuilderInfo::create(EloquentBuilder::class),
+                $factory(false),
                 [$class::class, 'method'],
+            ],
+            '@search/Eloquent: array(Class, method)' => [
+                BuilderInfo::create(ScoutBuilder::class),
+                $factory(true),
+                [$class::class, 'method'],
+            ],
+            '@search: Closure(): class'              => [
+                null,
+                $factory(true),
+                static function (): QueryBuilder {
+                    throw new Exception('Should not be called.');
+                },
             ],
         ];
     }

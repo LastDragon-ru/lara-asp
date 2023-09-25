@@ -106,12 +106,9 @@ class BuilderInfoDetector {
         }
 
         // Scout?
-        $scout = $manipulator->findArgument(
-            $field->getField(),
-            static function (mixed $argument) use ($manipulator): bool {
-                return $manipulator->getDirective($argument, SearchDirective::class) !== null;
-            },
-        );
+        $scout = $field->hasArgument(static function (mixed $argument) use ($manipulator): bool {
+            return $manipulator->getDirective($argument, SearchDirective::class) !== null;
+        });
 
         if ($scout) {
             return $this->getBuilderInfoInstance(ScoutBuilder::class);
