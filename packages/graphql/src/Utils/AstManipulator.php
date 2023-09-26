@@ -535,6 +535,29 @@ class AstManipulator {
     /**
      * @param callable(InputValueDefinitionNode|Argument|ArgumentNode): bool $closure
      *
+     * @return array<string, ($node is FieldDefinitionNode ? InputValueDefinitionNode : ($node is FieldDefinition ? Argument : ArgumentNode))>
+     */
+    public function findArguments(
+        FieldDefinitionNode|FieldDefinition|DirectiveNode $node,
+        callable $closure,
+    ): array {
+        $arguments = [];
+        $args      = $node instanceof FieldDefinitionNode || $node instanceof DirectiveNode
+            ? $node->arguments
+            : $node->args;
+
+        foreach ($args as $arg) {
+            if ($closure($arg)) {
+                $arguments[$this->getName($arg)] = $arg;
+            }
+        }
+
+        return $arguments;
+    }
+
+    /**
+     * @param callable(InputValueDefinitionNode|Argument|ArgumentNode): bool $closure
+     *
      * @return ($node is FieldDefinitionNode ? InputValueDefinitionNode : ($node is FieldDefinition ? Argument : ArgumentNode))|null
      */
     public function findArgument(
