@@ -12,7 +12,6 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
@@ -674,7 +673,7 @@ class DirectiveTest extends TestCase {
                 [$class::class, 'method'],
             ],
             '@search/Eloquent: array(Class, method)' => [
-                BuilderInfo::create(ScoutBuilder::class),
+                null,
                 $factory(true),
                 [$class::class, 'method'],
             ],

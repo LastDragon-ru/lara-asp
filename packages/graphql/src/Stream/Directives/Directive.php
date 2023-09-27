@@ -343,7 +343,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $type = $type instanceof ReflectionNamedType
                 ? $type->getName()
                 : null;
-            $type = $type && class_exists($type) && $this->isBuilderSupported($type)
+            $type = $type && class_exists($type)
                 ? $type
                 : null;
 
@@ -362,6 +362,11 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                         : null;
                 }
             }
+
+            // Not supported?
+            if ($type !== null && !$this->isBuilderSupported($type)) {
+                $type = null;
+            }
         } catch (ReflectionException) {
             // empty
         }
@@ -374,14 +379,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     }
 
     /**
-     * @phpstan-assert-if-true class-string<EloquentBuilder<Model>|QueryBuilder|ScoutBuilder> $builder
+     * @phpstan-assert-if-true class-string<EloquentBuilder<Model>|QueryBuilder> $builder
      *
      * @param class-string $builder
      */
     protected function isBuilderSupported(string $builder): bool {
         return is_a($builder, EloquentBuilder::class, true)
-            || is_a($builder, QueryBuilder::class, true)
-            || is_a($builder, ScoutBuilder::class, true);
+            || is_a($builder, QueryBuilder::class, true);
     }
     // </editor-fold>
 

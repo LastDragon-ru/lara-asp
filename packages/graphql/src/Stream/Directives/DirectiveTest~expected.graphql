@@ -181,60 +181,9 @@ input SearchByScalarID {
 }
 
 """
-Available conditions for `type Car` (only one property allowed at a time).
-"""
-input SearchByScoutConditionCar {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutConditionCar!]
-    @searchByOperatorAllOf
-
-    """
-    Property condition.
-    """
-    id: SearchByScoutScalarID
-    @searchByOperatorProperty
-}
-
-"""
-Available operators for `scalar ID` (only one operator allowed at a time).
-"""
-input SearchByScoutScalarID {
-    """
-    Equal (`=`).
-    """
-    equal: ID
-    @searchByOperatorEqual
-
-    """
-    Within a set of values.
-    """
-    in: [ID!]
-    @searchByOperatorIn
-
-    """
-    Outside a set of values.
-    """
-    notIn: [ID!]
-    @searchByOperatorNotIn
-}
-
-"""
 Sort clause for `type Car` (only one property allowed at a time).
 """
 input SortByClauseCar {
-    """
-    Property clause.
-    """
-    id: SortByTypeDirection
-    @sortByOperatorField
-}
-
-"""
-Sort clause for `type Car` (only one property allowed at a time).
-"""
-input SortByScoutClauseCar {
     """
     Property clause.
     """
@@ -468,27 +417,6 @@ implements
     @stream(
         chunk: 15
     )
-
-    fieldWithSearch(
-        chunk: Int! = 25
-        @streamChunk
-        @rules(
-            apply: ["min:0", "max:100"]
-        )
-
-        cursor: StreamCursor
-        @streamCursor
-
-        order: [SortByScoutClauseCar!]
-        @sortBy
-
-        search: String!
-        @search
-
-        where: SearchByScoutConditionCar
-        @searchBy
-    ): CarsStream!
-    @stream
 
     fieldWithoutArguments(
         chunk: Int! = 25
