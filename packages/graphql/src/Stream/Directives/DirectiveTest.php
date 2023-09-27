@@ -727,6 +727,10 @@ class DirectiveTest extends TestCase {
                 ],
                 '{relation: "engine"}',
             ],
+            'multiple' => [
+                null,
+                '{relation: "engine", model: "ModelClass"}',
+            ],
         ];
     }
 

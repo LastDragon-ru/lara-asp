@@ -60,6 +60,7 @@ use ReflectionNamedType;
 
 use function class_exists;
 use function config;
+use function count;
 use function explode;
 use function is_a;
 use function is_array;
@@ -405,7 +406,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $builder  = (array) $this->directiveArgValue(self::ArgBuilder);
 
         if ($builder) {
-            if (isset($builder['builder'])) {
+            if (count($builder) > 1) {
+                // empty
+            } elseif (isset($builder['builder'])) {
                 $resolver = is_string($builder['builder'])
                     ? $this->getResolverClass($builder['builder'])
                     : null;
