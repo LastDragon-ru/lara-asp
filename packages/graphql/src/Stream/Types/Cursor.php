@@ -69,6 +69,9 @@ class Cursor extends ScalarType implements TypeDefinition {
         return $value;
     }
 
+    /**
+     * @return StreamCursor|int<0, max>
+     */
     public function parseValue(mixed $value): StreamCursor|int {
         if (is_string($value)) {
             try {
@@ -86,6 +89,7 @@ class Cursor extends ScalarType implements TypeDefinition {
 
     /**
      * @inheritDoc
+     * @return StreamCursor|int<0, max>
      */
     public function parseLiteral(Node $valueNode, array $variables = null): StreamCursor|int {
         $value = null;

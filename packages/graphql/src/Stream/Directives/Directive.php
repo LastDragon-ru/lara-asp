@@ -30,13 +30,16 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\Client\ArgumentsMutuallyExclusive;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Stream;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream as StreamType;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -58,14 +61,22 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionNamedType;
 
+use function array_key_exists;
+use function array_keys;
+use function assert;
 use function class_exists;
 use function config;
 use function count;
 use function explode;
 use function is_a;
 use function is_array;
+use function is_callable;
+use function is_int;
+use function is_null;
+use function is_object;
 use function is_string;
 use function json_encode;
+use function reset;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -161,7 +172,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $prefix      = self::Settings;
 
         // Updated?
-        if (Stream::is($source->getTypeName())) {
+        if (StreamType::is($source->getTypeName())) {
             return;
         }
 
@@ -240,7 +251,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         // Update type
         $detector = Container::getInstance()->make(BuilderInfoDetector::class);
         $builder  = $detector->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
-        $type     = $this->getManipulator($documentAST, $builder)->getType(Stream::class, $source);
+        $type     = $this->getManipulator($documentAST, $builder)->getType(StreamType::class, $source);
         $type     = Parser::typeReference("{$type}!");
 
         $manipulator->setFieldType(
@@ -380,11 +391,15 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     }
 
     /**
-     * @phpstan-assert-if-true class-string<EloquentBuilder<Model>|QueryBuilder> $builder
+     * @phpstan-assert-if-true (
+     *      $builder is object
+     *          ? EloquentBuilder<Model>|QueryBuilder
+     *          : class-string<EloquentBuilder<Model>|QueryBuilder>
+     *      ) $builder
      *
-     * @param class-string $builder
+     * @param object|class-string $builder
      */
-    protected function isBuilderSupported(string $builder): bool {
+    protected function isBuilderSupported(object|string $builder): bool {
         return is_a($builder, EloquentBuilder::class, true)
             || is_a($builder, QueryBuilder::class, true);
     }
@@ -393,9 +408,30 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     // <editor-fold desc="FieldResolver">
     // =========================================================================
     public function resolveField(FieldValue $fieldValue): callable {
-        // fixme(graphql)!: Not implemented.
+        return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): Stream {
+            // Builder
+            $manipulator = $this->getAstManipulator(new DocumentAST());
+            $source      = new ObjectFieldSource($manipulator, $info->parentType, $info->fieldDefinition);
+            $resolver    = $this->getResolver($source);
+            $builder     = $resolver !== null && is_callable($resolver)
+                ? $resolver($root, $args, $context, $info)
+                : null;
 
-        return static fn () => throw new Exception('Not implemented.');
+            if (!$builder || !is_object($builder) || !$this->isBuilderSupported($builder)) {
+                throw new Exception('FIXME'); // fixme(graphql)!: Builder unsupported
+            }
+
+            // Stream
+            $chunk  = $this->getFieldChunk($manipulator, $source, $args);
+            $cursor = $this->getFieldCursor($manipulator, $source, $args);
+            $search = $this->getFieldSearch($manipulator, $source, $args);
+            $sort   = $this->getFieldSort($manipulator, $source, $args);
+            $key    = $this->getArgKey($manipulator, $source);
+            $cursor = $this->getCursor($cursor, $key, $chunk, $search, $sort);
+            $stream = new Stream($builder, $cursor);
+
+            return $stream;
+        };
     }
 
     /**
@@ -427,7 +463,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $parent   = $source->getParent()->getTypeName();
             $resolver = $this->getResolverQuery($parent, $source->getName()) ?? (
                 RootType::isRootType($parent)
-                    ? $this->getResolverModel(Stream::getOriginalTypeName($source->getTypeName()))
+                    ? $this->getResolverModel(StreamType::getOriginalTypeName($source->getTypeName()))
                     : $this->getResolverRelation($parent, $source->getName())
             );
         }
@@ -526,6 +562,27 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         return $resolver;
     }
+
+    /**
+     * @param StreamCursor|int<0, max>|null $cursor
+     * @param int<0, max>|null              $chunk
+     * @param array<array-key, mixed>|null  $search
+     * @param array<array-key, mixed>|null  $sort
+     */
+    protected function getCursor(
+        StreamCursor|int|null $cursor,
+        string $key,
+        ?int $chunk,
+        ?array $search,
+        ?array $sort,
+    ): StreamCursor {
+        // fixme(graphql)!: Not implemented
+        // fixme(graphql)!: if `$search`/`$sort` and `$cursor` given, we need
+        //      to compare them with the values from `$cursor` and throw an
+        //      error if doesn't match.
+
+        return new StreamCursor($key, $chunk ?? 25);
+    }
     // </editor-fold>
 
     // <editor-fold desc="Arguments">
@@ -546,7 +603,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Search for field with `ID!` type
-        $type  = Stream::getOriginalTypeName($source->getTypeName());
+        $type  = StreamType::getOriginalTypeName($source->getTypeName());
         $type  = $manipulator->getTypeDefinition($type);
         $field = null;
 
@@ -577,6 +634,114 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         // Return
         return $key;
+    }
+
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return int<0, max>|null
+     */
+    protected function getFieldChunk(
+        AstManipulator $manipulator,
+        ObjectFieldSource $source,
+        array $args,
+    ): ?int {
+        $chunk = $this->getFieldArgument($manipulator, $source, StreamChunkDirective::class, $args);
+
+        assert(is_null($chunk) || is_int($chunk) && $chunk >= 0);
+
+        return $chunk;
+    }
+
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return StreamCursor|int<0, max>|null
+     */
+    protected function getFieldCursor(
+        AstManipulator $manipulator,
+        ObjectFieldSource $source,
+        array $args,
+    ): StreamCursor|int|null {
+        $cursor = $this->getFieldArgument($manipulator, $source, StreamCursorDirective::class, $args);
+
+        assert($cursor === null || $cursor instanceof StreamCursor || (is_int($cursor) && $cursor >= 0));
+
+        return $cursor;
+    }
+
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array-key, mixed>|null
+     */
+    protected function getFieldSearch(
+        AstManipulator $manipulator,
+        ObjectFieldSource $source,
+        array $args,
+    ): array|null {
+        $search = $this->getFieldArgument($manipulator, $source, SearchByDirective::class, $args);
+
+        assert($search === null || is_array($search));
+
+        return $search;
+    }
+
+    /**
+     * @param array<string, mixed> $args
+     *
+     * @return array<array-key, mixed>|null
+     */
+    protected function getFieldSort(
+        AstManipulator $manipulator,
+        ObjectFieldSource $source,
+        array $args,
+    ): array|null {
+        $sort = $this->getFieldArgument($manipulator, $source, SortByDirective::class, $args);
+
+        assert($sort === null || is_array($sort));
+
+        return $sort;
+    }
+
+    /**
+     * @param class-string<DirectiveContract> $directive
+     * @param array<string, mixed>            $args
+     */
+    protected function getFieldArgument(
+        AstManipulator $manipulator,
+        ObjectFieldSource $source,
+        string $directive,
+        array $args,
+    ): mixed {
+        // Determine arguments
+        $arguments = $manipulator->findArguments(
+            $source->getField(),
+            static function (mixed $argument) use ($manipulator, $directive, $args): bool {
+                return array_key_exists($manipulator->getName($argument), $args)
+                    && $manipulator->getDirective($argument, $directive) !== null;
+            },
+        );
+
+        // Get the value
+        $value  = null;
+        $values = [];
+
+        foreach ($arguments as $name => $argument) {
+            if (array_key_exists($name, $args)) {
+                $values[$name] = $args[$name];
+            }
+        }
+
+        if (count($values) > 1) {
+            throw new ArgumentsMutuallyExclusive($source, array_keys($values));
+        } elseif ($values) {
+            $value = reset($values);
+        } else {
+            // empty
+        }
+
+        return $value;
     }
     //</editor-fold>
 }
