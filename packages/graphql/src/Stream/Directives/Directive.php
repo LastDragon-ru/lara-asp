@@ -235,7 +235,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             null,
             null,
             $this->directiveArgValue(self::ArgChunk) !== null
-                ? [Chunk::ArgSize => $this->directiveArgValue(self::ArgChunk)]
+                ? [StreamChunkDirective::ArgSize => $this->directiveArgValue(self::ArgChunk)]
                 : [],
         );
 

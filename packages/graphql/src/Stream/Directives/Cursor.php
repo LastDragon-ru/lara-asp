@@ -24,13 +24,11 @@ class Cursor extends BaseDirective implements ArgManipulator {
     use WithManipulator;
     use WithSource;
 
-    private const Settings = Directive::Settings.'.cursor';
-
     /**
      * @return array{name: string}
      */
-    public static function settings(): array {
-        $settings = (array) config(self::Settings);
+    final public static function settings(): array {
+        $settings = (array) config(Directive::Settings.'.cursor');
 
         return [
             'name' => Cast::toString($settings['name'] ?? 'cursor'),

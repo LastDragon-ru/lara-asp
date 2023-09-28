@@ -24,15 +24,14 @@ use const JSON_THROW_ON_ERROR;
 class Chunk extends BaseDirective implements ArgManipulator {
     use WithManipulator;
 
-    private const      Settings = Directive::Settings.'.chunk';
     final public const ArgSize  = 'size';
     final public const ArgLimit = 'limit';
 
     /**
      * @return array{name: string, size: int, limit: int}
      */
-    public static function settings(): array {
-        $settings = (array) config(self::Settings);
+    final public static function settings(): array {
+        $settings = (array) config(Directive::Settings.'.chunk');
 
         return [
             'name'  => Cast::toString($settings['name'] ?? 'chunk'),
@@ -61,7 +60,7 @@ class Chunk extends BaseDirective implements ArgManipulator {
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Update type
-        $settings      = static::settings();
+        $settings      = self::settings();
         $manipulator   = $this->getAstManipulator($documentAST);
         $argDefinition = $manipulator->setArgumentType(
             $parentType,
