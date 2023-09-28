@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
+
 use function str_ends_with;
 
 class Stream implements TypeDefinition {
@@ -18,12 +19,12 @@ class Stream implements TypeDefinition {
         // empty
     }
 
-    public static function is(string $type): bool {
+    public function is(string $type): bool {
         return str_ends_with($type, Directive::Name);
     }
 
-    public static function getOriginalTypeName(string $type): string {
-        return static::is($type)
+    public function getOriginalTypeName(string $type): string {
+        return $this->is($type)
             ? Str::singular(Str::beforeLast($type, Directive::Name))
             : $type;
     }

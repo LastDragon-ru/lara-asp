@@ -172,7 +172,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $prefix      = self::Settings;
 
         // Updated?
-        if (StreamType::is($source->getTypeName())) {
+        if (Container::getInstance()->make(StreamType::class)->is($source->getTypeName())) {
             return;
         }
 
@@ -463,7 +463,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $parent   = $source->getParent()->getTypeName();
             $resolver = $this->getResolverQuery($parent, $source->getName()) ?? (
                 RootType::isRootType($parent)
-                    ? $this->getResolverModel(StreamType::getOriginalTypeName($source->getTypeName()))
+                    ? $this->getResolverModel(
+                        Container::getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName()),
+                    )
                     : $this->getResolverRelation($parent, $source->getName())
             );
         }
@@ -603,7 +605,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Search for field with `ID!` type
-        $type  = StreamType::getOriginalTypeName($source->getTypeName());
+        $type  = Container::getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName());
         $type  = $manipulator->getTypeDefinition($type);
         $field = null;
 
