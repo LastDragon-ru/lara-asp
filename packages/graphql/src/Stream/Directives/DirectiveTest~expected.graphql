@@ -214,7 +214,7 @@ input StreamBuilder {
 interface InterfaceA {
     fieldWithArguments(
         argument: String
-        chunk: Int!
+        chunk: Int
         cursor: StreamCursor
         order: [SortByClauseCar!]
         where: SearchByConditionCar
@@ -226,7 +226,7 @@ implements
     & InterfaceC
 {
     fieldNotSearchable(
-        chunk: Int!
+        chunk: Int
         cursor: StreamCursor
         order: [SortByClauseCar!]
     ): CarsStream!
@@ -236,7 +236,7 @@ interface InterfaceC {
     fieldWithDirectives(
         a: SearchByConditionCar
         b: [SortByClauseCar!]
-        c: Int!
+        c: Int
         d: StreamCursor
     ): CarsStream!
 }
@@ -278,10 +278,14 @@ implements
     & InterfaceB
 {
     fieldNotSearchable(
-        chunk: Int! = 25
+        """
+        The default value comes from the cursor, or equal to `25` if no cursor.
+        The value must be between `1` and `100`.
+        """
+        chunk: Int
         @streamChunk
         @rules(
-            apply: ["min:0", "max:100"]
+            apply: ["min:1", "max:100"]
         )
 
         cursor: StreamCursor
@@ -295,10 +299,14 @@ implements
     )
 
     fieldNotSortable(
-        chunk: Int! = 25
+        """
+        The default value comes from the cursor, or equal to `25` if no cursor.
+        The value must be between `1` and `100`.
+        """
+        chunk: Int
         @streamChunk
         @rules(
-            apply: ["min:0", "max:100"]
+            apply: ["min:1", "max:100"]
         )
 
         cursor: StreamCursor
@@ -314,10 +322,14 @@ implements
     fieldWithArguments(
         argument: String
 
-        chunk: Int! = 25
+        """
+        The default value comes from the cursor, or equal to `25` if no cursor.
+        The value must be between `1` and `100`.
+        """
+        chunk: Int
         @streamChunk
         @rules(
-            apply: ["min:0", "max:100"]
+            apply: ["min:1", "max:100"]
         )
 
         cursor: StreamCursor
@@ -340,22 +352,30 @@ implements
         @deprecated
         @sortBy
 
-        c: Int! = 15
+        """
+        The default value comes from the cursor, or equal to `15` if no cursor.
+        The value must be between `1` and `123`.
+        """
+        c: Int
         @deprecated
         @streamChunk(
             limit: 123
             size: 15
         )
         @rules(
-            apply: ["min:0", "max:123"]
+            apply: ["min:1", "max:123"]
         )
 
-        chunk: Int! = 15
+        """
+        The default value comes from the cursor, or equal to `15` if no cursor.
+        The value must be between `1` and `100`.
+        """
+        chunk: Int
         @streamChunk(
             size: 15
         )
         @rules(
-            apply: ["min:0", "max:100"]
+            apply: ["min:1", "max:100"]
         )
 
         cursor: StreamCursor
@@ -382,13 +402,17 @@ implements
         b: [SortByClauseCar!]
         @sortBy
 
-        c: Int! = 10
+        """
+        The default value comes from the cursor, or equal to `10` if no cursor.
+        The value must be between `1` and `10`.
+        """
+        c: Int
         @streamChunk(
             limit: 10
             size: 15
         )
         @rules(
-            apply: ["min:0", "max:10"]
+            apply: ["min:1", "max:10"]
         )
 
         d: StreamCursor
@@ -403,12 +427,16 @@ implements
         b: [SortByClauseCar!]
         @sortBy
 
-        c: Int! = 15
+        """
+        The default value comes from the cursor, or equal to `15` if no cursor.
+        The value must be between `1` and `100`.
+        """
+        c: Int
         @streamChunk(
             size: 15
         )
         @rules(
-            apply: ["min:0", "max:100"]
+            apply: ["min:1", "max:100"]
         )
 
         d: StreamCursor
@@ -419,10 +447,14 @@ implements
     )
 
     fieldWithoutArguments(
-        chunk: Int! = 25
+        """
+        The default value comes from the cursor, or equal to `25` if no cursor.
+        The value must be between `1` and `100`.
+        """
+        chunk: Int
         @streamChunk
         @rules(
-            apply: ["min:0", "max:100"]
+            apply: ["min:1", "max:100"]
         )
 
         cursor: StreamCursor

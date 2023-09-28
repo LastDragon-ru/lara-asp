@@ -16,10 +16,8 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use Nuwave\Lighthouse\Validation\RulesDirective;
 
 use function config;
-use function json_encode;
 use function min;
-
-use const JSON_THROW_ON_ERROR;
+use function strtr;
 
 class Chunk extends BaseDirective implements ArgManipulator {
     use WithManipulator;
@@ -59,29 +57,36 @@ class Chunk extends BaseDirective implements ArgManipulator {
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
-        // Update type
-        $settings      = self::settings();
+        // Type
         $manipulator   = $this->getAstManipulator($documentAST);
         $argDefinition = $manipulator->setArgumentType(
             $parentType,
             $parentField,
             $argDefinition,
-            Parser::typeReference('Int!'),
+            Parser::typeReference('Int'),
         );
 
         // Default
-        $argLimitValue               = Cast::toInt(
-            $this->directiveArgValue(self::ArgLimit) ?? $settings['limit'],
+        // (required to be able to use value from the cursor)
+        $argDefinition->defaultValue = null;
+
+        // Description
+        $argMin                            = 1;
+        $argSize                           = $this->getArgSize();
+        $argLimit                          = $this->getArgLimit();
+        $argDefinition->description      ??= Parser::stringLiteral(
+            <<<'STRING'
+            """
+            The default value comes from the cursor, or equal to `${size}` if no cursor.
+            The value must be between `${min}` and `${limit}`.
+            """
+            STRING,
         );
-        $argSizeValue                = min(
-            $argLimitValue,
-            Cast::toInt(
-                $this->directiveArgValue(self::ArgSize) ?? $settings['size'],
-            ),
-        );
-        $argDefinition->defaultValue = Parser::valueLiteral(
-            json_encode($argSizeValue, JSON_THROW_ON_ERROR),
-        );
+        $argDefinition->description->value = strtr($argDefinition->description->value, [
+            '${min}'   => $argMin,
+            '${size}'  => $argSize,
+            '${limit}' => $argLimit,
+        ]);
 
         // Validation
         // todo(graphql/@stream): Not sure that validation works for queries, need to check.
@@ -89,8 +94,23 @@ class Chunk extends BaseDirective implements ArgManipulator {
             $argDefinition,
             RulesDirective::class,
             [
-                'apply' => ['min:0', "max:{$argLimitValue}"],
+                'apply' => ["min:{$argMin}", "max:{$this->getArgLimit()}"],
             ],
+        );
+    }
+
+    protected function getArgLimit(): int {
+        return Cast::toInt(
+            $this->directiveArgValue(self::ArgLimit) ?? static::settings()['limit'],
+        );
+    }
+
+    protected function getArgSize(): int {
+        return min(
+            $this->getArgLimit(),
+            Cast::toInt(
+                $this->directiveArgValue(self::ArgSize) ?? static::settings()['size'],
+            ),
         );
     }
 }

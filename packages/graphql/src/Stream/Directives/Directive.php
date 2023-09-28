@@ -233,7 +233,6 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             StreamChunkDirective::settings()['name'],
             $manipulator::Placeholder,
             null,
-            null,
             $this->directiveArgValue(self::ArgChunk) !== null
                 ? [StreamChunkDirective::ArgSize => $this->directiveArgValue(self::ArgChunk)]
                 : [],
@@ -275,7 +274,6 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         string $name,
         string $type,
         string $value = null,
-        string $description = null,
         array $arguments = [],
     ): void {
         // Arguments with directive already exists?
@@ -313,7 +311,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         // Nope
         $manipulator->addDirective(
-            $manipulator->addArgument($field->getObject(), $field->getField(), $name, $type, $value, $description),
+            $manipulator->addArgument($field->getObject(), $field->getField(), $name, $type, $value),
             $directive,
             $arguments,
         );
