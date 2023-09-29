@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 
 class Cursor implements Serializable {
     /**
-     * @param int<0, max>                               $chunk
+     * @param int<1, max>                               $chunk
      * @param non-empty-array<string, scalar|null>|null $cursor
      * @param int<0, max>|null                          $offset
      * @param array<string, mixed>|null                 $where

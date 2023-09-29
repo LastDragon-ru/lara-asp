@@ -565,7 +565,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
     /**
      * @param StreamCursor|int<0, max>|null $cursor
-     * @param int<0, max>|null              $chunk
+     * @param int<1, max>|null              $chunk
      * @param array<array-key, mixed>|null  $search
      * @param array<array-key, mixed>|null  $sort
      */
@@ -639,7 +639,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     /**
      * @param array<string, mixed> $args
      *
-     * @return int<0, max>|null
+     * @return int<1, max>|null
      */
     protected function getFieldChunk(
         AstManipulator $manipulator,
@@ -648,7 +648,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     ): ?int {
         $chunk = $this->getFieldArgument($manipulator, $source, StreamChunkDirective::class, $args);
 
-        assert(is_null($chunk) || is_int($chunk) && $chunk >= 0);
+        assert(is_null($chunk) || is_int($chunk) && $chunk >= 1);
 
         return $chunk;
     }
