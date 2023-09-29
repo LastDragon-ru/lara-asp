@@ -250,12 +250,10 @@ class AstManipulator {
             );
 
             $this->getDocument()->setTypeDefinition($scalar);
-        } elseif ($definition instanceof Type) {
+        } else {
             // Types added while AST transformation will be lost if the Schema
             // is cached. Not yet sure how to solve it... Any ideas?
             throw new NotImplemented('`Type` registration');
-        } else {
-            // empty
         }
 
         return $definition;
@@ -736,12 +734,6 @@ class AstManipulator {
             $interfaceArgument = $this->getArgument($interfaceField, $argumentName);
 
             if ($interfaceArgument === null) {
-                continue;
-            }
-
-            if ($interfaceArgument instanceof ArgumentNode) {
-                // Seems conditional return type is not correct here
-                // https://github.com/phpstan/phpstan/issues/9860
                 continue;
             }
 

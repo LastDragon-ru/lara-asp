@@ -56,6 +56,11 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
 
 		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\) should return TDefinition of \\(GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\)\\|\\(GraphQL\\\\Type\\\\Definition\\\\NamedType&GraphQL\\\\Type\\\\Definition\\\\Type\\) but returns GraphQL\\\\Type\\\\Definition\\\\ScalarType\\|TDefinition of GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\.$#"
+			count: 1
+			path: packages/graphql/src/Utils/AstManipulator.php
+
+		-
 			message: "#^Parameter \\#1 \\$expression of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:cron\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: packages/queue/src/CronableRegistrator.php
