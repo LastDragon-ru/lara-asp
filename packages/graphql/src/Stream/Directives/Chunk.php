@@ -9,6 +9,7 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -16,10 +17,14 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use Nuwave\Lighthouse\Validation\RulesDirective;
 
 use function config;
+use function max;
 use function min;
 use function strtr;
 
-class Chunk extends BaseDirective implements ArgManipulator {
+/**
+ * @implements FieldArgumentDirective<int<1, max>>
+ */
+class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
     use WithManipulator;
 
     final public const ArgSize  = 'size';
@@ -99,18 +104,38 @@ class Chunk extends BaseDirective implements ArgManipulator {
         );
     }
 
+    /**
+     * @return int<1, max>
+     */
     protected function getArgLimit(): int {
-        return Cast::toInt(
-            $this->directiveArgValue(self::ArgLimit) ?? static::settings()['limit'],
+        return max(
+            1,
+            Cast::toInt(
+                $this->directiveArgValue(self::ArgLimit) ?? static::settings()['limit'],
+            ),
         );
     }
 
+    /**
+     * @return int<1, max>
+     */
     protected function getArgSize(): int {
         return min(
             $this->getArgLimit(),
-            Cast::toInt(
-                $this->directiveArgValue(self::ArgSize) ?? static::settings()['size'],
+            max(
+                1,
+                Cast::toInt(
+                    $this->directiveArgValue(self::ArgSize) ?? static::settings()['size'],
+                ),
             ),
         );
+    }
+
+    public function getFieldArgumentValue(mixed $value): mixed {
+        return $value !== null ? max(1, Cast::toInt($value)) : null;
+    }
+
+    public function getFieldArgumentDefault(): mixed {
+        return $this->getArgSize();
     }
 }

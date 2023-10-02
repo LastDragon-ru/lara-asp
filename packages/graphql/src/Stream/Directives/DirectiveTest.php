@@ -19,13 +19,15 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\ArgumentMissed;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\Client\ArgumentsMutuallyExclusive;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Misc\FieldArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -602,7 +604,7 @@ class DirectiveTest extends TestCase {
         self::markTestIncomplete();
     }
 
-    public function testGetFieldChunk(): void {
+    public function testGetFieldValue(): void {
         // Prepare
         $manipulator = Container::getInstance()->make(AstManipulator::class, [
             'document' => Mockery::mock(DocumentAST::class),
@@ -611,255 +613,159 @@ class DirectiveTest extends TestCase {
             /**
              * @inheritDoc
              */
-            public function getFieldChunk(AstManipulator $manipulator, ObjectFieldSource $source, array $args): ?int {
-                return parent::getFieldChunk($manipulator, $source, $args);
-            }
-        };
-        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
-        $args        = [
-            'a' => null,
-            'b' => ['b'],
-            'c' => 123,
-        ];
-
-        // No arg
-        self::assertNull(
-            $directive->getFieldChunk(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test: String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-
-        // Arg
-        self::assertEquals(
-            $args['c'],
-            $directive->getFieldChunk(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test(a: Int, c: String @streamChunk): String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-    }
-
-    public function testGetFieldCursor(): void {
-        // Prepare
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
-        $directive   = new class() extends Directive {
-            /**
-             * @inheritDoc
-             */
-            public function getFieldCursor(
+            public function getFieldValue(
                 AstManipulator $manipulator,
                 ObjectFieldSource $source,
                 array $args,
-            ): StreamCursor|int|null {
-                return parent::getFieldCursor($manipulator, $source, $args);
-            }
-        };
-        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
-        $args        = [
-            'a' => null,
-            'b' => Mockery::mock(StreamCursor::class),
-            'c' => 123,
-        ];
-
-        // No arg
-        self::assertNull(
-            $directive->getFieldCursor(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test: String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-
-        // Arg
-        self::assertEquals(
-            $args['c'],
-            $directive->getFieldCursor(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test(a: Int, c: String @streamCursor): String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-        self::assertEquals(
-            $args['b'],
-            $directive->getFieldCursor(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test(a: Int, b: String @streamCursor): String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-    }
-
-    public function testGetFieldSearch(): void {
-        // Prepare
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
-        $directive   = new class() extends Directive {
-            /**
-             * @inheritDoc
-             */
-            public function getFieldSearch(
-                AstManipulator $manipulator,
-                ObjectFieldSource $source,
-                array $args,
-            ): array|null {
-                return parent::getFieldSearch($manipulator, $source, $args);
-            }
-        };
-        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
-        $args        = [
-            'a' => null,
-            'b' => ['b'],
-            'c' => 123,
-        ];
-
-        // No arg
-        self::assertNull(
-            $directive->getFieldSearch(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test: String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-
-        // Arg
-        self::assertEquals(
-            $args['b'],
-            $directive->getFieldSearch(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test(a: Int, b: String @searchBy): String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-    }
-
-    public function testGetFieldSort(): void {
-        // Prepare
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
-        $directive   = new class() extends Directive {
-            /**
-             * @inheritDoc
-             */
-            public function getFieldSort(
-                AstManipulator $manipulator,
-                ObjectFieldSource $source,
-                array $args,
-            ): array|null {
-                return parent::getFieldSort($manipulator, $source, $args);
-            }
-        };
-        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
-        $args        = [
-            'a' => null,
-            'b' => ['b'],
-            'c' => 123,
-        ];
-
-        // No arg
-        self::assertNull(
-            $directive->getFieldSort(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test: String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-
-        // Arg
-        self::assertEquals(
-            $args['b'],
-            $directive->getFieldSort(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test(a: Int, b: String @sortBy): String',
-                    ),
-                ),
-                $args,
-            ),
-        );
-    }
-
-    public function testGetFieldArgument(): void {
-        // Prepare
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
-        $directive   = new class() extends Directive {
-            /**
-             * @inheritDoc
-             */
-            public function getFieldArgument(
-                AstManipulator $manipulator,
-                ObjectFieldSource $source,
                 string $directive,
-                array $args,
-            ): mixed {
-                return parent::getFieldArgument(
+            ): FieldArgumentValue {
+                return parent::getFieldValue(
                     $manipulator,
                     $source,
-                    $directive,
                     $args,
+                    $directive,
                 );
             }
         };
-        $marker      = Mockery::mock(DirectiveContract::class);
+        $marker      = new class() implements DirectiveContract, FieldArgumentDirective {
+            public static function definition(): string {
+                throw new Exception('Should not be called');
+            }
+
+            public function getFieldArgumentValue(mixed $value): mixed {
+                return $value;
+            }
+
+            public function getFieldArgumentDefault(): mixed {
+                return 'default';
+            }
+        };
+        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $args        = [
+            'a' => null,
+            'b' => 'b',
+        ];
+
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('marker', $marker::class);
+        Container::getInstance()->make(TypeRegistry::class)
+            ->register($object);
+
+        // Arg
+        $value = $directive->getFieldValue(
+            $manipulator,
+            new ObjectFieldSource(
+                $manipulator,
+                $object,
+                Parser::fieldDefinition(
+                    'test(d: Int @marker, b: String @marker @deprecated): String',
+                ),
+            ),
+            $args,
+            $marker::class,
+        );
+
+        self::assertTrue($value->isPassed());
+        self::assertEquals($args['b'], $value->getValue());
+        self::assertEquals('default', $value->getDefaultValue());
+
+        // No Arg
+        $value = $directive->getFieldValue(
+            $manipulator,
+            new ObjectFieldSource(
+                $manipulator,
+                $object,
+                Parser::fieldDefinition(
+                    'test(d: Int @marker, b: String @marker @deprecated): String',
+                ),
+            ),
+            [],
+            $marker::class,
+        );
+
+        self::assertFalse($value->isPassed());
+        self::assertEquals(null, $value->getValue());
+        self::assertEquals('default', $value->getDefaultValue());
+    }
+
+    public function testGetFieldValueNoAttribute(): void {
+        self::expectException(ArgumentMissed::class);
+        self::expectExceptionMessageMatches(
+            '/The `type Object { test }` must have at least one argument marked by `[^`]+` directive./',
+        );
+
+        $manipulator = Container::getInstance()->make(AstManipulator::class, [
+            'document' => Mockery::mock(DocumentAST::class),
+        ]);
+        $directive   = new class() extends Directive {
+            /**
+             * @inheritDoc
+             */
+            public function getFieldValue(
+                AstManipulator $manipulator,
+                ObjectFieldSource $source,
+                array $args,
+                string $directive,
+            ): FieldArgumentValue {
+                return parent::getFieldValue(
+                    $manipulator,
+                    $source,
+                    $args,
+                    $directive,
+                );
+            }
+        };
+        $marker      = Mockery::mock(DirectiveContract::class, FieldArgumentDirective::class);
+        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $args        = [
+            'a' => null,
+            'b' => 'b',
+            'c' => 123,
+        ];
+
+        Container::getInstance()->make(TypeRegistry::class)
+            ->register($object);
+
+        $directive->getFieldValue(
+            $manipulator,
+            new ObjectFieldSource(
+                $manipulator,
+                $object,
+                Parser::fieldDefinition(
+                    'test(a: Int, b: String): String',
+                ),
+            ),
+            $args,
+            $marker::class,
+        );
+    }
+
+    public function testGetFieldValueMultipleAttributes(): void {
+        self::expectException(ArgumentsMutuallyExclusive::class);
+        self::expectExceptionMessage('The arguments `a`, `b` of `type Object { test }` are mutually exclusive.');
+
+        $manipulator = Container::getInstance()->make(AstManipulator::class, [
+            'document' => Mockery::mock(DocumentAST::class),
+        ]);
+        $directive   = new class() extends Directive {
+            /**
+             * @inheritDoc
+             */
+            public function getFieldValue(
+                AstManipulator $manipulator,
+                ObjectFieldSource $source,
+                array $args,
+                string $directive,
+            ): FieldArgumentValue {
+                return parent::getFieldValue(
+                    $manipulator,
+                    $source,
+                    $args,
+                    $directive,
+                );
+            }
+        };
+        $marker      = Mockery::mock(DirectiveContract::class, FieldArgumentDirective::class);
         $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
         $args        = [
             'a' => null,
@@ -872,61 +778,7 @@ class DirectiveTest extends TestCase {
         Container::getInstance()->make(TypeRegistry::class)
             ->register($object);
 
-        // No arg
-        self::assertNull(
-            $directive->getFieldArgument(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test: String',
-                    ),
-                ),
-                StreamDirective::class,
-                $args,
-            ),
-        );
-
-        // Arg
-        self::assertEquals(
-            $args['b'],
-            $directive->getFieldArgument(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test(a: Int, b: String @marker): String',
-                    ),
-                ),
-                $marker::class,
-                $args,
-            ),
-        );
-
-        // Deprecated
-        self::assertEquals(
-            $args['c'],
-            $directive->getFieldArgument(
-                $manipulator,
-                new ObjectFieldSource(
-                    $manipulator,
-                    $object,
-                    Parser::fieldDefinition(
-                        'test(d: Int @marker, c: String @marker @deprecated): String',
-                    ),
-                ),
-                $marker::class,
-                $args,
-            ),
-        );
-
-        // Two fields
-        self::expectException(ArgumentsMutuallyExclusive::class);
-        self::expectExceptionMessage('The arguments `a`, `b` of `type Object { test }` are mutually exclusive.');
-
-        $directive->getFieldArgument(
+        $directive->getFieldValue(
             $manipulator,
             new ObjectFieldSource(
                 $manipulator,
@@ -935,8 +787,8 @@ class DirectiveTest extends TestCase {
                     'test(a: Int @marker, b: String @marker @deprecated): String',
                 ),
             ),
-            $marker::class,
             $args,
+            $marker::class,
         );
     }
     // </editor-fold>

@@ -12,6 +12,8 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Cursor as CursorType;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -19,8 +21,12 @@ use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
 use function config;
+use function max;
 
-class Cursor extends BaseDirective implements ArgManipulator {
+/**
+ * @implements FieldArgumentDirective<StreamCursor|int<0, max>|null>
+ */
+class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
     use WithManipulator;
     use WithSource;
 
@@ -61,5 +67,13 @@ class Cursor extends BaseDirective implements ArgManipulator {
             $argDefinition,
             $type,
         );
+    }
+
+    public function getFieldArgumentValue(mixed $value): mixed {
+        return $value instanceof StreamCursor ? $value : ($value !== null ? max(0, Cast::toInt($value)) : null);
+    }
+
+    public function getFieldArgumentDefault(): mixed {
+        return null;
     }
 }
