@@ -3,8 +3,10 @@
 namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use DOMDocument;
+use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use JsonException;
 use JsonSerializable;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
@@ -19,7 +21,6 @@ use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentXml;
 use Psr\Http\Message\ResponseInterface;
 use SplFileInfo;
 use stdClass;
-use Throwable;
 
 use function file_get_contents;
 use function is_array;
@@ -28,8 +29,11 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 
+use const JSON_BIGINT_AS_STRING;
+use const JSON_PRESERVE_ZERO_FRACTION;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_LINE_TERMINATORS;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
@@ -66,47 +70,54 @@ class Args {
         JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $json,
         bool $associative = false,
     ): stdClass|array|string|int|float|bool|null {
-        if ($json instanceof SplFileInfo) {
-            $json = static::content($json);
-        }
-
-        if (is_array($json) || $json instanceof JsonSerializable) {
-            $json = json_encode($json);
-        }
-
-        if (is_string($json)) {
-            try {
-                $json = json_decode($json, $associative, flags: JSON_THROW_ON_ERROR);
-            } catch (Throwable $exception) {
-                throw new InvalidArgumentJson('$json', $json, $exception);
+        try {
+            if ($json instanceof SplFileInfo) {
+                $json = static::content($json);
             }
-        } elseif (is_scalar($json)) {
-            // no action
-        } else {
-            throw new InvalidArgumentJson('$json', $json);
+
+            if (is_array($json) || $json instanceof JsonSerializable) {
+                $json = json_encode($json, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
+            }
+
+            if (is_string($json)) {
+                $json = json_decode($json, $associative, flags: JSON_THROW_ON_ERROR);
+            } elseif (is_scalar($json)) {
+                // no action
+            } else {
+                throw new InvalidArgumentJson('$json', $json);
+            }
+        } catch (InvalidArgumentJson $exception) {
+            throw $exception;
+        } catch (Exception $exception) {
+            throw new InvalidArgumentJson('$json', $json, $exception);
         }
 
         return $json;
     }
 
     public static function getJsonString(mixed $json): string {
-        $json = json_encode($json);
-
-        if ($json === false) {
-            throw new InvalidArgumentJson('$json', $json);
+        try {
+            return json_encode($json, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            throw new InvalidArgumentJson('$json', $json, $exception);
         }
-
-        return $json;
     }
 
     public static function getJsonPrettyString(mixed $json): string {
-        $json = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
-        if ($json === false) {
-            throw new InvalidArgumentJson('$json', $json);
+        try {
+            return json_encode(
+                $json,
+                JSON_PRETTY_PRINT
+                | JSON_UNESCAPED_SLASHES
+                | JSON_UNESCAPED_UNICODE
+                | JSON_UNESCAPED_LINE_TERMINATORS
+                | JSON_BIGINT_AS_STRING
+                | JSON_PRESERVE_ZERO_FRACTION
+                | JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $exception) {
+            throw new InvalidArgumentJson('$json', $json, $exception);
         }
-
-        return $json;
     }
 
     public static function getFile(mixed $file): SplFileInfo {
