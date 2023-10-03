@@ -267,9 +267,11 @@ type Car {
 }
 
 type CarsStream {
-    info: StreamInfo!
+    arguments: JsonString!
     items: [Car!]!
+    length: Int!
     navigator: StreamNavigator!
+    offset: Int
 }
 
 type Query
@@ -467,14 +469,6 @@ implements
         @searchBy
     ): CarsStream!
     @stream
-}
-
-type StreamInfo {
-    chunk: Int!
-    count: Int!
-    offset: Int
-    order: JsonString
-    where: JsonString
 }
 
 type StreamNavigator {
