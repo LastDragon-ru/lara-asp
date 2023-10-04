@@ -29,7 +29,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -41,10 +40,7 @@ use function count;
 use function is_array;
 use function reset;
 
-/**
- * @implements FieldArgumentDirective<Argument|null>
- */
-abstract class HandlerDirective extends BaseDirective implements Handler, FieldArgumentDirective {
+abstract class HandlerDirective extends BaseDirective implements Handler {
     use WithManipulator;
     use WithSource;
 
@@ -92,7 +88,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler, FieldA
      */
     protected function handleAnyBuilder(object $builder, mixed $value): object {
         if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
-            $argument   = $this->getFieldArgumentValue($value) ?? new Argument();
+            $argument   = !($value instanceof Argument)
+                ? $this->getFactory()->getArgument($this->definitionNode, $value)
+                : $value;
             $isList     = $this->definitionNode->type instanceof ListTypeNode;
             $conditions = $isList && is_array($argument->value)
                 ? $argument->value
@@ -250,23 +248,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler, FieldA
         }
 
         return $type;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="FieldArgumentDirective">
-    // =========================================================================
-    public function getFieldArgumentValue(mixed $value): mixed {
-        if ($value === null || $value instanceof Argument) {
-            return $value;
-        }
-
-        return $this->definitionNode instanceof InputValueDefinitionNode
-            ? $this->getFactory()->getArgument($this->definitionNode, $value)
-            : null;
-    }
-
-    public function getFieldArgumentDefault(): mixed {
-        return null;
     }
     // </editor-fold>
 }

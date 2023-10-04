@@ -10,6 +10,7 @@ use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
+use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -131,11 +132,9 @@ class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirect
         );
     }
 
-    public function getFieldArgumentValue(mixed $value): mixed {
-        return $value !== null ? max(1, Cast::toInt($value)) : null;
-    }
-
-    public function getFieldArgumentDefault(): mixed {
-        return $this->getArgSize();
+    public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
+        return $value !== null
+            ? max(1, Cast::toInt($value))
+            : $this->getArgSize();
     }
 }

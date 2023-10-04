@@ -27,7 +27,6 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Misc\FieldArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -614,30 +613,31 @@ class DirectiveTest extends TestCase {
              * @inheritDoc
              */
             public function getFieldValue(
+                string $directive,
                 AstManipulator $manipulator,
                 ObjectFieldSource $source,
+                ResolveInfo $info,
                 array $args,
-                string $directive,
-            ): FieldArgumentValue {
+            ): mixed {
                 return parent::getFieldValue(
+                    $directive,
                     $manipulator,
                     $source,
+                    $info,
                     $args,
-                    $directive,
                 );
             }
         };
-        $markerA     = new class() extends DirectiveTest_Operators {
-            public function getFieldArgumentDefault(): mixed {
-                return 'default-a';
-            }
+        $markerA     = new class() extends DirectiveTest_Directive {
+            // empty
         };
-        $markerB     = new class() extends DirectiveTest_Operators {
-            public function getFieldArgumentDefault(): mixed {
-                return 'default-b';
+        $markerB     = new class() extends DirectiveTest_Directive {
+            public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
+                return parent::getFieldArgumentValue($info, $value) ?? 'default-b';
             }
         };
         $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $info        = Mockery::mock(ResolveInfo::class);
         $args        = [
             'a' => null,
             'b' => 'b',
@@ -651,6 +651,7 @@ class DirectiveTest extends TestCase {
 
         // Arg
         $value = $directive->getFieldValue(
+            DirectiveTest_Directive::class,
             $manipulator,
             new ObjectFieldSource(
                 $manipulator,
@@ -659,33 +660,28 @@ class DirectiveTest extends TestCase {
                     'test(d: Int @markerA, b: String @markerA @deprecated): String',
                 ),
             ),
+            $info,
             $args,
-            DirectiveTest_Operators::class,
         );
 
-        self::assertTrue($value->hasValue());
-        self::assertTrue($manipulator->isDeprecated($value->getArgument()));
-        self::assertEquals($args['b'], $value->getValue());
-        self::assertEquals('default-a', $value->getDefaultValue());
+        self::assertEquals($args['b'], $value);
 
         // No Arg
         $value = $directive->getFieldValue(
+            DirectiveTest_Directive::class,
             $manipulator,
             new ObjectFieldSource(
                 $manipulator,
                 $object,
                 Parser::fieldDefinition(
-                    'test(b: String @markerA @deprecated, d: Int @markerB): String',
+                    'test(a: String @markerA @deprecated, b: Int @markerB): String',
                 ),
             ),
+            $info,
             [],
-            DirectiveTest_Operators::class,
         );
 
-        self::assertFalse($value->hasValue());
-        self::assertFalse($manipulator->isDeprecated($value->getArgument()));
-        self::assertEquals('default-b', $value->getValue());
-        self::assertEquals('default-b', $value->getDefaultValue());
+        self::assertEquals('default-b', $value);
     }
 
     public function testGetFieldValueNoAttribute(): void {
@@ -702,20 +698,23 @@ class DirectiveTest extends TestCase {
              * @inheritDoc
              */
             public function getFieldValue(
+                string $directive,
                 AstManipulator $manipulator,
                 ObjectFieldSource $source,
+                ResolveInfo $info,
                 array $args,
-                string $directive,
-            ): FieldArgumentValue {
+            ): mixed {
                 return parent::getFieldValue(
+                    $directive,
                     $manipulator,
                     $source,
+                    $info,
                     $args,
-                    $directive,
                 );
             }
         };
         $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $info        = Mockery::mock(ResolveInfo::class);
         $args        = [
             'a' => null,
             'b' => 'b',
@@ -726,6 +725,7 @@ class DirectiveTest extends TestCase {
             ->register($object);
 
         $directive->getFieldValue(
+            DirectiveTest_Directive::class,
             $manipulator,
             new ObjectFieldSource(
                 $manipulator,
@@ -734,8 +734,8 @@ class DirectiveTest extends TestCase {
                     'test(a: Int, b: String): String',
                 ),
             ),
+            $info,
             $args,
-            DirectiveTest_Operators::class,
         );
     }
 
@@ -751,21 +751,24 @@ class DirectiveTest extends TestCase {
              * @inheritDoc
              */
             public function getFieldValue(
+                string $directive,
                 AstManipulator $manipulator,
                 ObjectFieldSource $source,
+                ResolveInfo $info,
                 array $args,
-                string $directive,
-            ): FieldArgumentValue {
+            ): mixed {
                 return parent::getFieldValue(
+                    $directive,
                     $manipulator,
                     $source,
+                    $info,
                     $args,
-                    $directive,
                 );
             }
         };
         $marker      = Mockery::mock(DirectiveContract::class, FieldArgumentDirective::class);
         $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $info        = Mockery::mock(ResolveInfo::class);
         $args        = [
             'a' => null,
             'b' => 'b',
@@ -778,6 +781,7 @@ class DirectiveTest extends TestCase {
             ->register($object);
 
         $directive->getFieldValue(
+            $marker::class,
             $manipulator,
             new ObjectFieldSource(
                 $manipulator,
@@ -786,8 +790,8 @@ class DirectiveTest extends TestCase {
                     'test(a: Int @marker, b: String @marker @deprecated): String',
                 ),
             ),
+            $info,
             $args,
-            $marker::class,
         );
     }
     // </editor-fold>
@@ -1039,12 +1043,12 @@ class DirectiveTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  * @implements FieldArgumentDirective<mixed>
  */
-abstract class DirectiveTest_Operators implements DirectiveContract, FieldArgumentDirective {
+abstract class DirectiveTest_Directive implements DirectiveContract, FieldArgumentDirective {
     public static function definition(): string {
         throw new Exception('Should not be called.');
     }
 
-    public function getFieldArgumentValue(mixed $value): mixed {
+    public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
         return $value;
     }
 }

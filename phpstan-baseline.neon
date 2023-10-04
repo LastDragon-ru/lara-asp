@@ -46,16 +46,6 @@ parameters:
 			path: packages/graphql/src/SortBy/Builders/Query/BuilderTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$cursor of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\:\\:getCursor\\(\\) expects LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Misc\\\\FieldArgumentValue\\<int\\<0, max\\>\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Cursor\\|null\\>, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Misc\\\\FieldArgumentValue\\<int\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Cursor\\|null\\> given\\.$#"
-			count: 1
-			path: packages/graphql/src/Stream/Directives/Directive.php
-
-		-
-			message: "#^Parameter \\#3 \\$chunk of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\:\\:getCursor\\(\\) expects LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Misc\\\\FieldArgumentValue\\<int\\<1, max\\>\\>, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Misc\\\\FieldArgumentValue\\<int\\> given\\.$#"
-			count: 1
-			path: packages/graphql/src/Stream/Directives/Directive.php
-
-		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\:\\:imageable\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Role\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\User, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\>\\.$#"
 			count: 1
 			path: packages/graphql/src/Testing/Package/Models/Image.php

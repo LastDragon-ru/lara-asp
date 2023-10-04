@@ -40,11 +40,9 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Misc\FieldArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream as StreamType;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
-use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -66,6 +64,7 @@ use ReflectionFunction;
 use ReflectionNamedType;
 
 use function array_key_exists;
+use function array_key_first;
 use function class_exists;
 use function config;
 use function count;
@@ -77,7 +76,7 @@ use function is_object;
 use function is_string;
 use function json_encode;
 use function reset;
-use function usort;
+use function uksort;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -265,8 +264,8 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     }
 
     /**
-     * @param class-string<DirectiveContract&FieldArgumentDirective<*>> $directive
-     * @param array<string, mixed>                                      $arguments
+     * @param class-string<DirectiveContract> $directive
+     * @param array<string, mixed>            $arguments
      */
     protected function addArgument(
         AstManipulator $manipulator,
@@ -421,13 +420,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
 
             // Stream
-            $chunk  = $this->getFieldValue($manipulator, $source, $args, StreamChunkDirective::class);
-            $cursor = $this->getFieldValue($manipulator, $source, $args, StreamCursorDirective::class);
-            $search = $this->getFieldValue($manipulator, $source, $args, SearchByDirective::class);
-            $sort   = $this->getFieldValue($manipulator, $source, $args, SortByDirective::class);
-            $key    = $this->getArgKey($manipulator, $source);
-            $cursor = $this->getCursor($key, $cursor, $chunk, $search, $sort);
-            $stream = new Stream($builder, $cursor);
+            $manipulator = $this->getAstManipulator(new DocumentAST());
+            $source      = new ObjectFieldSource($manipulator, $info->parentType, $info->fieldDefinition);
+            $chunk       = $this->getFieldValue(StreamChunkDirective::class, $manipulator, $source, $info, $args);
+            $cursor      = $this->getFieldValue(StreamCursorDirective::class, $manipulator, $source, $info, $args);
+            $key         = $this->getArgKey($manipulator, $source);
+            $cursor      = $this->getCursor($key, $cursor, $chunk);
+            $stream      = new Stream($builder, $cursor);
 
             return $stream;
         };
@@ -564,18 +563,10 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         return $resolver;
     }
 
-    /**
-     * @param FieldArgumentValue<StreamCursor|int<0, max>|null> $cursor
-     * @param FieldArgumentValue<int<1, max>>                   $chunk
-     * @param FieldArgumentValue<Argument|null>                 $search
-     * @param FieldArgumentValue<Argument|null>                 $sort
-     */
     protected function getCursor(
         string $key,
-        FieldArgumentValue $cursor,
-        FieldArgumentValue $chunk,
-        FieldArgumentValue $search,
-        FieldArgumentValue $sort,
+        mixed $cursor,
+        mixed $chunk,
     ): StreamCursor {
         // fixme(graphql)!: Not implemented
         // fixme(graphql)!: if `$search`/`$sort` and `$cursor` given, we need
@@ -640,21 +631,22 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     /**
      * @template T
      *
-     * @param array<string, mixed>                                      $args
      * @param class-string<DirectiveContract&FieldArgumentDirective<T>> $directive
+     * @param array<string, mixed>                                      $args
      *
-     * @return FieldArgumentValue<T>
+     * @return T
      */
     protected function getFieldValue(
+        string $directive,
         AstManipulator $manipulator,
         ObjectFieldSource $source,
+        ResolveInfo $info,
         array $args,
-        string $directive,
-    ): FieldArgumentValue {
+    ): mixed {
+        // Collect
         $arguments = $manipulator->findArguments($source->getField(), static fn (): bool => true);
-        $passed    = [];
+        $instances = [];
         $values    = [];
-        $value     = null;
 
         foreach ($arguments as $name => $argument) {
             // Directive?
@@ -665,29 +657,34 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
 
             // Value
-            $isPassed      = array_key_exists($name, $args);
-            $values[$name] = new FieldArgumentValue($argument, $instance, $args[$name] ?? null, $isPassed);
+            $instances[$name] = $instance;
 
-            if ($isPassed) {
-                $passed[] = $name;
+            if (array_key_exists($name, $args)) {
+                $values[] = $name;
             }
         }
 
-        if (count($passed) > 1) {
-            throw new ArgumentsMutuallyExclusive($source, $passed);
-        } elseif (count($values) === 0) {
+        // Value
+        $argument = null;
+        $instance = null;
+
+        if (count($values) > 1) {
+            throw new ArgumentsMutuallyExclusive($source, $values);
+        } elseif (count($instances) === 0) {
             throw new ArgumentMissed($source, $directive);
-        } elseif (count($passed) === 1) {
-            $value = $values[reset($passed)];
+        } elseif (count($values) === 1) {
+            $argument = reset($values);
+            $instance = $instances[$argument];
         } else {
-            usort($values, static function (mixed $a, mixed $b) use ($manipulator): int {
-                return $manipulator->isDeprecated($a->getArgument()) <=> $manipulator->isDeprecated($b->getArgument());
+            uksort($instances, static function (mixed $a, mixed $b) use ($manipulator, $arguments): int {
+                return $manipulator->isDeprecated($arguments[$a]) <=> $manipulator->isDeprecated($arguments[$b]);
             });
 
-            $value = reset($values);
+            $argument = array_key_first($instances);
+            $instance = $instances[$argument];
         }
 
-        return $value;
+        return $instance->getFieldArgumentValue($info, $args[$argument] ?? null);
     }
     //</editor-fold>
 }

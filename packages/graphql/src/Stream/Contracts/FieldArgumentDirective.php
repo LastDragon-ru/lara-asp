@@ -2,17 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Contracts;
 
+use Nuwave\Lighthouse\Execution\ResolveInfo;
+
 /**
  * @template-covariant TValue
  */
 interface FieldArgumentDirective {
     /**
-     * @return ($value is null ? null : TValue)
-     */
-    public function getFieldArgumentValue(mixed $value): mixed;
-
-    /**
      * @return TValue
      */
-    public function getFieldArgumentDefault(): mixed;
+    public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed;
 }
