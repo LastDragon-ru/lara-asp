@@ -22,11 +22,17 @@ class FieldArgumentValue {
         // empty
     }
 
+    public function getName(): string {
+        return $this->argument instanceof InputValueDefinitionNode
+            ? $this->argument->name->value
+            : $this->argument->name;
+    }
+
     public function getArgument(): Argument|InputValueDefinitionNode {
         return $this->argument;
     }
 
-    public function isPassed(): bool {
+    public function hasValue(): bool {
         return $this->passed;
     }
 
@@ -34,13 +40,13 @@ class FieldArgumentValue {
      * @return TValue|null
      */
     public function getValue(): mixed {
-        return $this->isPassed()
+        return $this->hasValue()
             ? $this->directive->getFieldArgumentValue($this->value)
-            : null;
+            : $this->getDefaultValue();
     }
 
     /**
-     * @return TValue|null
+     * @return TValue
      */
     public function getDefaultValue(): mixed {
         return $this->directive->getFieldArgumentDefault();

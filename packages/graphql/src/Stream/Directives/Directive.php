@@ -665,10 +665,10 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
 
             // Value
-            $defined       = array_key_exists($name, $args);
-            $values[$name] = new FieldArgumentValue($argument, $instance, $args[$name] ?? null, $defined);
+            $isPassed      = array_key_exists($name, $args);
+            $values[$name] = new FieldArgumentValue($argument, $instance, $args[$name] ?? null, $isPassed);
 
-            if ($defined) {
+            if ($isPassed) {
                 $passed[] = $name;
             }
         }
@@ -681,7 +681,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $value = $values[reset($passed)];
         } else {
             usort($values, static function (mixed $a, mixed $b) use ($manipulator): int {
-                return $manipulator->isDeprecated($b->getArgument()) <=> $manipulator->isDeprecated($a->getArgument());
+                return $manipulator->isDeprecated($a->getArgument()) <=> $manipulator->isDeprecated($b->getArgument());
             });
 
             $value = reset($values);

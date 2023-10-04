@@ -627,17 +627,14 @@ class DirectiveTest extends TestCase {
                 );
             }
         };
-        $marker      = new class() implements DirectiveContract, FieldArgumentDirective {
-            public static function definition(): string {
-                throw new Exception('Should not be called');
-            }
-
-            public function getFieldArgumentValue(mixed $value): mixed {
-                return $value;
-            }
-
+        $markerA     = new class() extends DirectiveTest_Operators {
             public function getFieldArgumentDefault(): mixed {
-                return 'default';
+                return 'default-a';
+            }
+        };
+        $markerB     = new class() extends DirectiveTest_Operators {
+            public function getFieldArgumentDefault(): mixed {
+                return 'default-b';
             }
         };
         $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
@@ -647,7 +644,8 @@ class DirectiveTest extends TestCase {
         ];
 
         Container::getInstance()->make(DirectiveLocator::class)
-            ->setResolved('marker', $marker::class);
+            ->setResolved('markerA', $markerA::class)
+            ->setResolved('markerB', $markerB::class);
         Container::getInstance()->make(TypeRegistry::class)
             ->register($object);
 
@@ -658,16 +656,17 @@ class DirectiveTest extends TestCase {
                 $manipulator,
                 $object,
                 Parser::fieldDefinition(
-                    'test(d: Int @marker, b: String @marker @deprecated): String',
+                    'test(d: Int @markerA, b: String @markerA @deprecated): String',
                 ),
             ),
             $args,
-            $marker::class,
+            DirectiveTest_Operators::class,
         );
 
-        self::assertTrue($value->isPassed());
+        self::assertTrue($value->hasValue());
+        self::assertTrue($manipulator->isDeprecated($value->getArgument()));
         self::assertEquals($args['b'], $value->getValue());
-        self::assertEquals('default', $value->getDefaultValue());
+        self::assertEquals('default-a', $value->getDefaultValue());
 
         // No Arg
         $value = $directive->getFieldValue(
@@ -676,16 +675,17 @@ class DirectiveTest extends TestCase {
                 $manipulator,
                 $object,
                 Parser::fieldDefinition(
-                    'test(d: Int @marker, b: String @marker @deprecated): String',
+                    'test(b: String @markerA @deprecated, d: Int @markerB): String',
                 ),
             ),
             [],
-            $marker::class,
+            DirectiveTest_Operators::class,
         );
 
-        self::assertFalse($value->isPassed());
-        self::assertEquals(null, $value->getValue());
-        self::assertEquals('default', $value->getDefaultValue());
+        self::assertFalse($value->hasValue());
+        self::assertFalse($manipulator->isDeprecated($value->getArgument()));
+        self::assertEquals('default-b', $value->getValue());
+        self::assertEquals('default-b', $value->getDefaultValue());
     }
 
     public function testGetFieldValueNoAttribute(): void {
@@ -715,7 +715,6 @@ class DirectiveTest extends TestCase {
                 );
             }
         };
-        $marker      = Mockery::mock(DirectiveContract::class, FieldArgumentDirective::class);
         $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
         $args        = [
             'a' => null,
@@ -736,7 +735,7 @@ class DirectiveTest extends TestCase {
                 ),
             ),
             $args,
-            $marker::class,
+            DirectiveTest_Operators::class,
         );
     }
 
@@ -1030,4 +1029,22 @@ class DirectiveTest extends TestCase {
         ];
     }
     //</editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ * @implements FieldArgumentDirective<mixed>
+ */
+abstract class DirectiveTest_Operators implements DirectiveContract, FieldArgumentDirective {
+    public static function definition(): string {
+        throw new Exception('Should not be called.');
+    }
+
+    public function getFieldArgumentValue(mixed $value): mixed {
+        return $value;
+    }
 }
