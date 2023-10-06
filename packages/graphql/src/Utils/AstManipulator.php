@@ -436,8 +436,15 @@ class AstManipulator {
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
         $name   = $this->getTypeName($node);
-        $node   = $this->getTypeDefinition($name);
         $prefix = null;
+
+        if ($node instanceof WrappingType) {
+            $node = $node->getInnermostType();
+        }
+
+        if (!($node instanceof Type || $node instanceof TypeDefinitionNode)) {
+            $node = $this->getTypeDefinition($name);
+        }
 
         if ($node instanceof InputObjectTypeDefinitionNode || $node instanceof InputObjectType) {
             $prefix = 'input';
