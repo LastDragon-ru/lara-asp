@@ -5,8 +5,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Directives;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
+use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
@@ -64,26 +67,25 @@ class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirect
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Type
+        $type          = Type::nonNull(Type::int());
         $manipulator   = $this->getAstManipulator($documentAST);
         $argDefinition = $manipulator->setArgumentType(
             $parentType,
             $parentField,
             $argDefinition,
-            Parser::typeReference('Int'),
+            $type,
         );
 
         // Default
-        // (required to be able to use value from the cursor)
-        $argDefinition->defaultValue = null;
+        $argSize                     = $this->getArgSize();
+        $argDefinition->defaultValue = Cast::to(IntValueNode::class, AST::astFromValue($argSize, $type));
 
         // Description
         $argMin                            = 1;
-        $argSize                           = $this->getArgSize();
         $argLimit                          = $this->getArgLimit();
         $argDefinition->description      ??= Parser::stringLiteral(
             <<<'STRING'
             """
-            The default value comes from the cursor, or equal to `${size}` if no cursor.
             The value must be between `${min}` and `${limit}`.
             """
             STRING,

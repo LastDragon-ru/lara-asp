@@ -573,7 +573,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         //      to compare them with the values from `$cursor` and throw an
         //      error if doesn't match.
 
-        return new StreamCursor($key, 25);
+        return new StreamCursor($key);
     }
     // </editor-fold>
 

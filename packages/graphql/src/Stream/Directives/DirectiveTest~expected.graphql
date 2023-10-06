@@ -214,7 +214,7 @@ input StreamBuilder {
 interface InterfaceA {
     fieldWithArguments(
         argument: String
-        chunk: Int
+        chunk: Int!
         cursor: StreamCursor
         order: [SortByClauseCar!]
         where: SearchByConditionCar
@@ -226,7 +226,7 @@ implements
     & InterfaceC
 {
     fieldNotSearchable(
-        chunk: Int
+        chunk: Int!
         cursor: StreamCursor
         order: [SortByClauseCar!]
     ): CarsStream!
@@ -236,7 +236,7 @@ interface InterfaceC {
     fieldWithDirectives(
         a: SearchByConditionCar
         b: [SortByClauseCar!]
-        c: Int
+        c: Int!
         d: StreamCursor
     ): CarsStream!
 }
@@ -281,10 +281,9 @@ implements
 {
     fieldNotSearchable(
         """
-        The default value comes from the cursor, or equal to `25` if no cursor.
         The value must be between `1` and `100`.
         """
-        chunk: Int
+        chunk: Int! = 25
         @streamChunk
         @rules(
             apply: ["min:1", "max:100"]
@@ -302,10 +301,9 @@ implements
 
     fieldNotSortable(
         """
-        The default value comes from the cursor, or equal to `25` if no cursor.
         The value must be between `1` and `100`.
         """
-        chunk: Int
+        chunk: Int! = 25
         @streamChunk
         @rules(
             apply: ["min:1", "max:100"]
@@ -325,10 +323,9 @@ implements
         argument: String
 
         """
-        The default value comes from the cursor, or equal to `25` if no cursor.
         The value must be between `1` and `100`.
         """
-        chunk: Int
+        chunk: Int! = 25
         @streamChunk
         @rules(
             apply: ["min:1", "max:100"]
@@ -355,10 +352,9 @@ implements
         @sortBy
 
         """
-        The default value comes from the cursor, or equal to `15` if no cursor.
         The value must be between `1` and `123`.
         """
-        c: Int
+        c: Int! = 15
         @deprecated
         @streamChunk(
             limit: 123
@@ -369,10 +365,9 @@ implements
         )
 
         """
-        The default value comes from the cursor, or equal to `15` if no cursor.
         The value must be between `1` and `100`.
         """
-        chunk: Int
+        chunk: Int! = 15
         @streamChunk(
             size: 15
         )
@@ -405,10 +400,9 @@ implements
         @sortBy
 
         """
-        The default value comes from the cursor, or equal to `10` if no cursor.
         The value must be between `1` and `10`.
         """
-        c: Int
+        c: Int! = 10
         @streamChunk(
             limit: 10
             size: 15
@@ -430,10 +424,9 @@ implements
         @sortBy
 
         """
-        The default value comes from the cursor, or equal to `15` if no cursor.
         The value must be between `1` and `100`.
         """
-        c: Int
+        c: Int! = 15
         @streamChunk(
             size: 15
         )
@@ -450,10 +443,9 @@ implements
 
     fieldWithoutArguments(
         """
-        The default value comes from the cursor, or equal to `25` if no cursor.
         The value must be between `1` and `100`.
         """
-        chunk: Int
+        chunk: Int! = 25
         @streamChunk
         @rules(
             apply: ["min:1", "max:100"]
