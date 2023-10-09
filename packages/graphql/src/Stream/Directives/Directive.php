@@ -12,7 +12,6 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
@@ -41,6 +40,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Stream;
+use LastDragon_ru\LaraASP\GraphQL\Stream\StreamFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream as StreamType;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
@@ -93,6 +93,14 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     final public const ArgChunk      = 'chunk';
     final public const ArgKey        = 'key';
 
+    public function __construct(
+        private readonly StreamFactory $streamFactory,
+    ) {
+        // empty
+    }
+
+    // <editor-fold desc="Directive">
+    // =========================================================================
     public static function definition(): string {
         $name          = DirectiveLocator::directiveName(static::class);
         $builder       = self::Name.'Builder';
@@ -159,6 +167,14 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
         GRAPHQL;
     }
+    //</editor-fold>
+
+    // <editor-fold desc="Getters / Setters">
+    // =========================================================================
+    protected function getStreamFactory(): StreamFactory {
+        return $this->streamFactory;
+    }
+    // </editor-fold>
 
     // <editor-fold desc="FieldManipulator">
     // =========================================================================
@@ -375,7 +391,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
 
             // Not supported?
-            if ($type !== null && !$this->isBuilderSupported($type)) {
+            if ($type !== null && !$this->getStreamFactory()->isBuilderSupported($type)) {
                 throw new BuilderUnsupported($source, $type);
             }
         } catch (ReflectionException) {
@@ -389,20 +405,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         return $type;
     }
 
-    /**
-     * @phpstan-assert-if-true (
-     *      $builder is object
-     *          ? EloquentBuilder<Model>|QueryBuilder|ScoutBuilder
-     *          : class-string<EloquentBuilder<Model>|QueryBuilder|ScoutBuilder>
-     *      ) $builder
-     *
-     * @param object|class-string $builder
-     */
-    protected function isBuilderSupported(object|string $builder): bool {
-        return is_a($builder, EloquentBuilder::class, true)
-            || is_a($builder, QueryBuilder::class, true)
-            || is_a($builder, ScoutBuilder::class, true);
-    }
+
     // </editor-fold>
 
     // <editor-fold desc="FieldResolver">
@@ -422,8 +425,6 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
             if (!is_object($builder)) {
                 throw new BuilderInvalid($source, gettype($builder));
-            } elseif (!$this->isBuilderSupported($builder)) {
-                throw new BuilderUnsupported($source, $builder::class);
             } else {
                 // ok
             }
@@ -431,7 +432,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             // Stream
             $key    = $this->getArgKey($manipulator, $source);
             $chunk  = $this->getFieldValue(StreamChunkDirective::class, $manipulator, $source, $info, $args);
-            $stream = new Stream($info, $builder, $key, $cursor, $chunk);
+            $stream = $this->getStreamFactory()->create($source, $info, $builder, $key, $cursor, $chunk);
 
             return $stream;
         };
