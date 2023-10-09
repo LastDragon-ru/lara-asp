@@ -101,8 +101,8 @@ class CursorTest extends TestCase {
                 -1,
             ],
             StreamCursor::class => [
-                '{"key":"123","cursor":null,"offset":null,"where":null,"order":null}',
-                new StreamCursor(key: '123'),
+                '{"path":"path.to.field","cursor":null,"offset":null}',
+                new StreamCursor(path: 'path.to.field'),
             ],
         ];
     }
@@ -129,8 +129,8 @@ class CursorTest extends TestCase {
                 'invalid',
             ],
             StreamCursor::class => [
-                new StreamCursor(key: '123'),
-                '{"key":"123","offset":null,"where":null,"order":null}',
+                new StreamCursor('path.to.field'),
+                '{"path":"path.to.field","offset":null}',
             ],
         ];
     }
@@ -157,8 +157,8 @@ class CursorTest extends TestCase {
                 new StringValueNode(['value' => 'invalid']),
             ],
             StreamCursor::class => [
-                new StreamCursor(key: '123'),
-                new StringValueNode(['value' => '{"key":"123","where":null,"order":null}']),
+                new StreamCursor('path.to.field'),
+                new StringValueNode(['value' => '{"path":"path.to.field"}']),
             ],
         ];
     }

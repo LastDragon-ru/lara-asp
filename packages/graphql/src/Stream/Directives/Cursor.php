@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\Client\CursorInvalidPath;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Cursor as CursorType;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -21,11 +22,14 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 
+use function array_map;
 use function config;
+use function implode;
+use function is_int;
 use function max;
 
 /**
- * @implements FieldArgumentDirective<StreamCursor|int<0, max>|null>
+ * @implements FieldArgumentDirective<StreamCursor>
  */
 class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
     use WithManipulator;
@@ -71,6 +75,37 @@ class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirec
     }
 
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
-        return $value instanceof StreamCursor ? $value : ($value !== null ? max(0, Cast::toInt($value)) : null);
+        $path = $this->getPath($info);
+
+        if ($value instanceof StreamCursor) {
+            if ($path !== $value->path) {
+                throw new CursorInvalidPath($path, $value->path);
+            }
+
+            // fixme(graphql)!: if args given, probable we need to compare hash
+            //      of them with the hash from `$cursor` and throw an error if
+            //      doesn't match.
+        } elseif (is_int($value)) {
+            $value = new StreamCursor(
+                path  : $path,
+                cursor: null,
+                offset: max(0, Cast::toInt($value)),
+            );
+        } else {
+            $value = new StreamCursor(
+                path  : $path,
+                cursor: null,
+                offset: 0,
+            );
+        }
+
+        return $value;
+    }
+
+    protected function getPath(ResolveInfo $info): string {
+        $path = array_map(static fn ($path) => is_int($path) ? '*' : $path, $info->path);
+        $path = implode('.', $path);
+
+        return $path;
     }
 }

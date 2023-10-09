@@ -7,11 +7,14 @@ use Exception;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
@@ -20,13 +23,17 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\ArgumentMissed;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderInvalid;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\Client\ArgumentsMutuallyExclusive;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -40,6 +47,7 @@ use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Nuwave\Lighthouse\Schema\Values\FieldValue;
 use Nuwave\Lighthouse\Scout\ScoutServiceProvider;
 use Nuwave\Lighthouse\Support\Contracts\Directive as DirectiveContract;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
@@ -214,10 +222,14 @@ class DirectiveTest extends TestCase {
      * @param Closure():mixed|array{class-string, string}|null                  $resolver
      */
     public function testGetBuilderInfo(
-        BuilderInfo|null $expected,
+        Exception|BuilderInfo|null $expected,
         Closure $sourceFactory,
         Closure|array|null $resolver,
     ): void {
+        if ($expected instanceof Exception) {
+            self::expectExceptionObject($expected);
+        }
+
         $manipulator = Container::getInstance()->make(AstManipulator::class, [
             'document' => Mockery::mock(DocumentAST::class),
         ]);
@@ -596,11 +608,171 @@ class DirectiveTest extends TestCase {
     }
 
     public function testResolveField(): void {
-        self::markTestIncomplete();
+        config([
+            'lighthouse.namespaces.models' => [
+                (new ReflectionClass(Car::class))->getNamespaceName(),
+            ],
+        ]);
+
+        $this->useGraphQLSchema(
+            <<<'GRAPHQL'
+            type Query {
+                field: [Car] @stream(chunk: 10)
+            }
+
+            type Car {
+                carKey: ID!
+            }
+            GRAPHQL,
+        );
+
+        $type  = $this->getGraphQLSchema()->getQueryType();
+        $field = $type?->findField('field');
+
+        self::assertNotNull($type);
+        self::assertNotNull($field);
+        self::assertNotNull($field->astNode);
+
+        $root                  = 123;
+        $args                  = ['a' => 'a'];
+        $info                  = Mockery::mock(ResolveInfo::class);
+        $info->path            = ['field'];
+        $info->parentType      = $type;
+        $info->fieldDefinition = $field;
+        $value                 = Mockery::mock(FieldValue::class);
+        $context               = Mockery::mock(GraphQLContext::class);
+        $builder               = Mockery::mock(EloquentBuilder::class);
+        $directive             = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $directive->hydrate(
+            Parser::directive('@stream'),
+            $field->astNode,
+        );
+
+        $directive
+            ->shouldReceive('getResolver')
+            ->once()
+            ->andReturn(
+                static fn () => $builder,
+            );
+
+        $stream = $directive->resolveField($value)($root, $args, $context, $info);
+        $helper = new class() extends Stream {
+            /** @noinspection PhpMissingParentConstructorInspection */
+            public function __construct() {
+                // empty
+            }
+
+            public function getInternalInfo(Stream $stream): ResolveInfo {
+                return $stream->info;
+            }
+
+            public function getInternalBuilder(Stream $stream): object {
+                return $stream->builder;
+            }
+
+            public function getInternalKey(Stream $stream): string {
+                return $stream->key;
+            }
+
+            public function getInternalCursor(Stream $stream): StreamCursor {
+                return $stream->cursor;
+            }
+
+            public function getInternalChunk(Stream $stream): int {
+                return $stream->chunk;
+            }
+        };
+
+        self::assertInstanceOf(Stream::class, $stream);
+        self::assertEquals('carKey', $helper->getInternalKey($stream));
+        self::assertEquals(10, $helper->getInternalChunk($stream));
+        self::assertSame($builder, $helper->getInternalBuilder($stream));
+        self::assertSame($info, $helper->getInternalInfo($stream));
+        self::assertEquals(
+            new StreamCursor('field', null, 0),
+            $helper->getInternalCursor($stream),
+        );
     }
 
-    public function testGetCursor(): void {
-        self::markTestIncomplete();
+    public function testResolveFieldBuilderInvalid(): void {
+        $root                  = 123;
+        $args                  = ['a' => 'a'];
+        $info                  = Mockery::mock(ResolveInfo::class);
+        $info->parentType      = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $info->fieldDefinition = new FieldDefinition(['name' => 'field', 'type' => Type::string()]);
+        $value                 = Mockery::mock(FieldValue::class);
+        $context               = Mockery::mock(GraphQLContext::class);
+        $directive             = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $directive->hydrate(
+            Parser::directive('@stream'),
+            Parser::fieldDefinition('field: String'),
+        );
+
+        $directive
+            ->shouldReceive('getFieldValue')
+            ->once()
+            ->andReturn(
+                Mockery::mock(StreamCursor::class),
+            );
+        $directive
+            ->shouldReceive('getResolver')
+            ->once()
+            ->andReturn(null);
+
+        self::expectException(BuilderInvalid::class);
+        self::expectExceptionMessage(
+            'The builder must be an object instance, `NULL` given (`type Object { field }`).',
+        );
+
+        $directive->resolveField($value)($root, $args, $context, $info);
+    }
+
+    public function testResolveFieldBuilderUnsupported(): void {
+        $root                  = 123;
+        $args                  = ['a' => 'a'];
+        $info                  = Mockery::mock(ResolveInfo::class);
+        $info->parentType      = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $info->fieldDefinition = new FieldDefinition(['name' => 'field', 'type' => Type::string()]);
+        $value                 = Mockery::mock(FieldValue::class);
+        $context               = Mockery::mock(GraphQLContext::class);
+        $directive             = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $directive->hydrate(
+            Parser::directive('@stream'),
+            Parser::fieldDefinition('field: String'),
+        );
+
+        $directive
+            ->shouldReceive('getFieldValue')
+            ->once()
+            ->andReturn(
+                Mockery::mock(StreamCursor::class),
+            );
+        $directive
+            ->shouldReceive('getResolver')
+            ->once()
+            ->andReturn(
+                static fn () => new stdClass(),
+            );
+        $directive
+            ->shouldReceive('isBuilderSupported')
+            ->once()
+            ->andReturn(false);
+
+        self::expectException(BuilderUnsupported::class);
+        self::expectExceptionMessage(
+            'The `stdClass` builder is not supported (`type Object { field }`).',
+        );
+
+        $directive->resolveField($value)($root, $args, $context, $info);
     }
 
     public function testGetFieldValue(): void {
@@ -800,7 +972,7 @@ class DirectiveTest extends TestCase {
     // =========================================================================
     /**
      * @return array<string, array{
-     *      BuilderInfo|null,
+     *      Exception|BuilderInfo|null,
      *      Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource),
      *      Closure():mixed|array{string, string}|null
      *      }>
@@ -878,7 +1050,7 @@ class DirectiveTest extends TestCase {
                 [$class::class, 'method'],
             ],
             '@search/Eloquent: array(Class, method)' => [
-                null,
+                new BuilderUnsupported('type ObjectA { test }', ScoutBuilder::class),
                 $factory(true),
                 [$class::class, 'method'],
             ],

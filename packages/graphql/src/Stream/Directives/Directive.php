@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Directives;
 
 use Closure;
-use Exception;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
@@ -31,10 +30,11 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\ArgumentMissed;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderInvalid;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\Client\ArgumentsMutuallyExclusive;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
@@ -69,6 +69,7 @@ use function class_exists;
 use function config;
 use function count;
 use function explode;
+use function gettype;
 use function is_a;
 use function is_array;
 use function is_callable;
@@ -375,7 +376,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
             // Not supported?
             if ($type !== null && !$this->isBuilderSupported($type)) {
-                $type = null;
+                throw new BuilderUnsupported($source, $type);
             }
         } catch (ReflectionException) {
             // empty
@@ -407,26 +408,29 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     // =========================================================================
     public function resolveField(FieldValue $fieldValue): callable {
         return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): Stream {
-            // Builder
+            // Cursor
             $manipulator = $this->getAstManipulator(new DocumentAST());
             $source      = new ObjectFieldSource($manipulator, $info->parentType, $info->fieldDefinition);
-            $resolver    = $this->getResolver($source);
-            $builder     = $resolver !== null && is_callable($resolver)
+            $cursor      = $this->getFieldValue(StreamCursorDirective::class, $manipulator, $source, $info, $args);
+
+            // Builder
+            $resolver = $this->getResolver($source);
+            $builder  = $resolver !== null && is_callable($resolver)
                 ? $resolver($root, $args, $context, $info)
                 : null;
 
-            if (!$builder || !is_object($builder) || !$this->isBuilderSupported($builder)) {
-                throw new Exception('FIXME'); // fixme(graphql)!: Builder unsupported
+            if (!is_object($builder)) {
+                throw new BuilderInvalid($source, gettype($builder));
+            } elseif (!$this->isBuilderSupported($builder)) {
+                throw new BuilderUnsupported($source, $builder::class);
+            } else {
+                // ok
             }
 
             // Stream
-            $manipulator = $this->getAstManipulator(new DocumentAST());
-            $source      = new ObjectFieldSource($manipulator, $info->parentType, $info->fieldDefinition);
-            $chunk       = $this->getFieldValue(StreamChunkDirective::class, $manipulator, $source, $info, $args);
-            $cursor      = $this->getFieldValue(StreamCursorDirective::class, $manipulator, $source, $info, $args);
-            $key         = $this->getArgKey($manipulator, $source);
-            $cursor      = $this->getCursor($key, $cursor, $chunk);
-            $stream      = new Stream($builder, $cursor);
+            $key    = $this->getArgKey($manipulator, $source);
+            $chunk  = $this->getFieldValue(StreamChunkDirective::class, $manipulator, $source, $info, $args);
+            $stream = new Stream($info, $builder, $key, $cursor, $chunk);
 
             return $stream;
         };
@@ -561,19 +565,6 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $resolver         = [$class, $method ?? '__invoke'];
 
         return $resolver;
-    }
-
-    protected function getCursor(
-        string $key,
-        mixed $cursor,
-        mixed $chunk,
-    ): StreamCursor {
-        // fixme(graphql)!: Not implemented
-        // fixme(graphql)!: if `$search`/`$sort` and `$cursor` given, we need
-        //      to compare them with the values from `$cursor` and throw an
-        //      error if doesn't match.
-
-        return new StreamCursor($key);
     }
     // </editor-fold>
 
