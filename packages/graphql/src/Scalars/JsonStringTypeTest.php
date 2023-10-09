@@ -15,8 +15,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(JsonString::class)]
-class JsonStringTest extends TestCase {
+#[CoversClass(JsonStringType::class)]
+class JsonStringTypeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -27,7 +27,7 @@ class JsonStringTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $scalar = new JsonString();
+        $scalar = new JsonStringType();
         $actual = $scalar->serialize($value);
 
         if ($value instanceof JsonStringable) {
@@ -45,7 +45,7 @@ class JsonStringTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $scalar = new JsonString();
+        $scalar = new JsonStringType();
         $actual = $scalar->parseValue($value);
 
         self::assertIsString($value);
@@ -60,7 +60,7 @@ class JsonStringTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $scalar = new JsonString();
+        $scalar = new JsonStringType();
         $actual = $scalar->parseLiteral($value);
 
         self::assertInstanceOf(StringValueNode::class, $value);

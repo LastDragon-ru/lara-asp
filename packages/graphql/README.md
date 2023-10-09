@@ -71,7 +71,7 @@ Probably the most powerful directive to provide sort (`order by` conditions) for
 > ```graphql
 > scalar JsonString
 > @scalar(
->     class: "LastDragon_ru\\LaraASP\\GraphQL\\Scalars\\JsonString"
+>     class: "LastDragon_ru\\LaraASP\\GraphQL\\Scalars\\JsonStringType"
 > )
 > ```
 

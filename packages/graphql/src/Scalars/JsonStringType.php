@@ -21,7 +21,7 @@ use function is_string;
 use function json_validate;
 use function sprintf;
 
-class JsonString extends StringType implements TypeDefinition {
+class JsonStringType extends StringType implements TypeDefinition {
     public string  $name        = 'JsonString';
     public ?string $description = 'Represents JSON string.';
 
