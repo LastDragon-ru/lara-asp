@@ -10,7 +10,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Scalars\JsonStringType;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
 
 use function str_ends_with;
@@ -39,9 +38,8 @@ class Stream implements TypeDefinition {
         string $name,
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
-        $type       = $source->getTypeName();
-        $navigator  = $manipulator->getType(Navigator::class, $source);
-        $jsonString = $manipulator->getType(JsonStringType::class, $source);
+        $type      = $source->getTypeName();
+        $navigator = $manipulator->getType(Navigator::class, $source);
 
         return Parser::objectTypeDefinition(
             <<<GRAPHQL
@@ -49,7 +47,6 @@ class Stream implements TypeDefinition {
                 items: [{$type}!]!
                 offset: Int
                 length: Int!
-                arguments: {$jsonString}!
                 navigator: {$navigator}!
             }
             GRAPHQL,
