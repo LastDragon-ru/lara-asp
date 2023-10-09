@@ -1050,7 +1050,7 @@ class DirectiveTest extends TestCase {
                 [$class::class, 'method'],
             ],
             '@search/Eloquent: array(Class, method)' => [
-                new BuilderUnsupported('type ObjectA { test }', ScoutBuilder::class),
+                BuilderInfo::create(ScoutBuilder::class),
                 $factory(true),
                 [$class::class, 'method'],
             ],

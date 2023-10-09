@@ -392,15 +392,16 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     /**
      * @phpstan-assert-if-true (
      *      $builder is object
-     *          ? EloquentBuilder<Model>|QueryBuilder
-     *          : class-string<EloquentBuilder<Model>|QueryBuilder>
+     *          ? EloquentBuilder<Model>|QueryBuilder|ScoutBuilder
+     *          : class-string<EloquentBuilder<Model>|QueryBuilder|ScoutBuilder>
      *      ) $builder
      *
      * @param object|class-string $builder
      */
     protected function isBuilderSupported(object|string $builder): bool {
         return is_a($builder, EloquentBuilder::class, true)
-            || is_a($builder, QueryBuilder::class, true);
+            || is_a($builder, QueryBuilder::class, true)
+            || is_a($builder, ScoutBuilder::class, true);
     }
     // </editor-fold>
 
