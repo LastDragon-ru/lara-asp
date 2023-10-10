@@ -44,8 +44,8 @@ class ExposeBuilderDirective extends BaseDirective implements FieldResolver, Bui
         return '@exposeBuilder'.hash('sha256', static::class);
     }
 
-    public function getBuilderInfo(TypeSource $source): BuilderInfo|string|null {
-        return static::$builder::class;
+    public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
+        return BuilderInfo::create(static::$builder::class);
     }
 
     public function resolveField(FieldValue $fieldValue): callable {

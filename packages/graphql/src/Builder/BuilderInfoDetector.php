@@ -9,9 +9,6 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Collection;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
@@ -39,7 +36,6 @@ use ReflectionFunction;
 use ReflectionNamedType;
 
 use function class_exists;
-use function is_a;
 use function reset;
 
 class BuilderInfoDetector {
@@ -106,12 +102,7 @@ class BuilderInfoDetector {
         $provider = $manipulator->getDirective($field->getField(), BuilderInfoProvider::class);
 
         if ($provider instanceof BuilderInfoProvider) {
-            $builder  = $provider->getBuilderInfo($source);
-            $instance = $builder
-                ? $this->getBuilderInfoInstance($builder)
-                : null;
-
-            return $instance;
+            return $provider->getBuilderInfo($source);
         }
 
         // Scout?
@@ -197,16 +188,11 @@ class BuilderInfoDetector {
         return $type;
     }
 
-    private function getBuilderInfoInstance(BuilderInfo|string $type): ?BuilderInfo {
-        return match (true) {
-            $type instanceof BuilderInfo            => $type,
-            is_a($type, EloquentBuilder::class, true),
-            is_a($type, EloquentModel::class, true) => new BuilderInfo('', EloquentBuilder::class),
-            is_a($type, ScoutBuilder::class, true)  => new BuilderInfo('Scout', ScoutBuilder::class),
-            is_a($type, QueryBuilder::class, true)  => new BuilderInfo('Query', QueryBuilder::class),
-            is_a($type, Collection::class, true)    => new BuilderInfo('Collection', Collection::class),
-            default                                 => null,
-        };
+    /**
+     * @param class-string $type
+     */
+    private function getBuilderInfoInstance(string $type): ?BuilderInfo {
+        return BuilderInfo::create($type);
     }
 
     /**
