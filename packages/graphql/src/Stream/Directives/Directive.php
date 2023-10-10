@@ -11,7 +11,7 @@ use GraphQL\Type\Definition\HasFieldsType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
@@ -29,6 +29,8 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\Stream;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\ArgumentMissed;
@@ -39,8 +41,6 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Stream;
-use LastDragon_ru\LaraASP\GraphQL\Stream\StreamFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream as StreamType;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
@@ -93,6 +93,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     final public const ArgChunk      = 'chunk';
     final public const ArgKey        = 'key';
 
+    /**
+     * @param StreamFactory<object> $streamFactory
+     */
     public function __construct(
         private readonly StreamFactory $streamFactory,
     ) {
@@ -171,6 +174,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
+    /**
+     * @return StreamFactory<object>
+     */
     protected function getStreamFactory(): StreamFactory {
         return $this->streamFactory;
     }
@@ -391,7 +397,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
 
             // Not supported?
-            if ($type !== null && !$this->getStreamFactory()->isBuilderSupported($type)) {
+            if ($type !== null && !$this->getStreamFactory()->isSupported($type)) {
                 throw new BuilderUnsupported($source, $type);
             }
         } catch (ReflectionException) {
@@ -418,6 +424,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $cursor      = $this->getFieldValue(StreamCursorDirective::class, $manipulator, $source, $info, $args);
 
             // Builder
+            $factory  = $this->getStreamFactory();
             $resolver = $this->getResolver($source);
             $builder  = $resolver !== null && is_callable($resolver)
                 ? $resolver($root, $args, $context, $info)
@@ -425,14 +432,17 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
             if (!is_object($builder)) {
                 throw new BuilderInvalid($source, gettype($builder));
+            } elseif (!$factory->isSupported($builder)) {
+                throw new BuilderUnsupported($source, $builder::class);
             } else {
                 // ok
             }
 
             // Stream
-            $key    = $this->getArgKey($manipulator, $source);
-            $chunk  = $this->getFieldValue(StreamChunkDirective::class, $manipulator, $source, $info, $args);
-            $stream = $this->getStreamFactory()->create($source, $info, $builder, $key, $cursor, $chunk);
+            $key     = $this->getArgKey($manipulator, $source);
+            $chunk   = $this->getFieldValue(StreamChunkDirective::class, $manipulator, $source, $info, $args);
+            $builder = $factory->enhance($builder, $root, $args, $context, $info);
+            $stream  = $factory->create($builder, $key, $cursor, $chunk);
 
             return $stream;
         };
@@ -478,7 +488,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     }
 
     /**
-     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): EloquentBuilder<Model>|null
+     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): EloquentBuilder<EloquentModel>|null
      */
     protected function getResolverRelation(string $model, string $relation): ?Closure {
         $class    = $this->namespaceModelClass($model);
@@ -547,7 +557,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     }
 
     /**
-     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): EloquentBuilder<Model>
+     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): EloquentBuilder<EloquentModel>
      */
     protected function getResolverModel(string $model): Closure {
         $class    = $this->namespaceModelClass($model);

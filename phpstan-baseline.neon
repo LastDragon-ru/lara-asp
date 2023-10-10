@@ -46,7 +46,7 @@ parameters:
 			path: packages/graphql/src/SortBy/Builders/Query/BuilderTest.php
 
 		-
-			message: "#^Parameter \\#6 \\$chunk of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\StreamFactory\\:\\:create\\(\\) expects int\\<1, max\\>, int given\\.$#"
+			message: "#^Parameter \\#4 \\$chunk of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Contracts\\\\StreamFactory\\<object\\>\\:\\:create\\(\\) expects int\\<1, max\\>, int given\\.$#"
 			count: 1
 			path: packages/graphql/src/Stream/Directives/Directive.php
 

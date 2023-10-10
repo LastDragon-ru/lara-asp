@@ -23,8 +23,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\ArgumentMissed;
@@ -36,7 +36,6 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Stream;
-use LastDragon_ru\LaraASP\GraphQL\Stream\StreamFactory;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -643,17 +642,24 @@ class DirectiveTest extends TestCase {
         self::assertNotNull($field);
         self::assertNotNull($field->astNode);
 
-        $root                  = 123;
-        $args                  = ['a' => 'a'];
         $info                  = Mockery::mock(ResolveInfo::class);
         $info->path            = ['field'];
         $info->parentType      = $type;
         $info->fieldDefinition = $field;
-        $value                 = Mockery::mock(FieldValue::class);
-        $context               = Mockery::mock(GraphQLContext::class);
-        $builder               = Mockery::mock(EloquentBuilder::class);
-        $factory               = Container::getInstance()->make(StreamFactory::class);
-        $directive             = Mockery::mock(Directive::class, [$factory]);
+        $info
+            ->shouldReceive('enhanceBuilder')
+            ->once()
+            ->andReturnUsing(
+                static fn (mixed $builder) => $builder,
+            );
+
+        $root      = 123;
+        $args      = ['a' => 'a'];
+        $value     = Mockery::mock(FieldValue::class);
+        $context   = Mockery::mock(GraphQLContext::class);
+        $builder   = Mockery::mock(EloquentBuilder::class);
+        $factory   = Container::getInstance()->make(StreamFactory::class);
+        $directive = Mockery::mock(Directive::class, [$factory]);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
 
@@ -674,10 +680,6 @@ class DirectiveTest extends TestCase {
             /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct() {
                 // empty
-            }
-
-            public function getInternalInfo(Stream $stream): ResolveInfo {
-                return $stream->info;
             }
 
             public function getInternalBuilder(Stream $stream): object {
@@ -701,7 +703,6 @@ class DirectiveTest extends TestCase {
         self::assertEquals('carKey', $helper->getInternalKey($stream));
         self::assertEquals(10, $helper->getInternalChunk($stream));
         self::assertSame($builder, $helper->getInternalBuilder($stream));
-        self::assertSame($info, $helper->getInternalInfo($stream));
         self::assertEquals(
             new StreamCursor('field', null, 0),
             $helper->getInternalCursor($stream),
@@ -716,7 +717,8 @@ class DirectiveTest extends TestCase {
         $info->fieldDefinition = new FieldDefinition(['name' => 'field', 'type' => Type::string()]);
         $value                 = Mockery::mock(FieldValue::class);
         $context               = Mockery::mock(GraphQLContext::class);
-        $directive             = Mockery::mock(Directive::class);
+        $factory               = Mockery::mock(StreamFactory::class);
+        $directive             = Mockery::mock(Directive::class, [$factory]);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
 
@@ -763,22 +765,11 @@ class DirectiveTest extends TestCase {
         );
 
         $directive
-            ->shouldReceive('getArgKey')
-            ->once()
-            ->andReturn('id');
-        $directive
             ->shouldReceive('getFieldValue')
             ->with(StreamCursorDirective::class, Mockery::andAnyOtherArgs())
             ->once()
             ->andReturn(
                 Mockery::mock(StreamCursor::class),
-            );
-        $directive
-            ->shouldReceive('getFieldValue')
-            ->with(StreamChunkDirective::class, Mockery::andAnyOtherArgs())
-            ->once()
-            ->andReturn(
-                10,
             );
         $directive
             ->shouldReceive('getResolver')
@@ -787,7 +778,7 @@ class DirectiveTest extends TestCase {
                 static fn () => new stdClass(),
             );
         $factory
-            ->shouldReceive('isBuilderSupported')
+            ->shouldReceive('isSupported')
             ->once()
             ->andReturn(false);
 

@@ -14,7 +14,9 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators as SearchByOperators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory as StreamFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\StreamFactory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver as DirectiveResolverContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings as SettingsContract;
@@ -38,6 +40,7 @@ class Provider extends ServiceProvider {
     public function register(): void {
         parent::register();
 
+        $this->registerBindings();
         $this->registerDirectives();
         $this->registerSchemaPrinter();
     }
@@ -61,6 +64,10 @@ class Provider extends ServiceProvider {
                 return implode('\\', array_slice(explode('\\', StreamDirective::class), 0, -1));
             },
         );
+    }
+
+    protected function registerBindings(): void {
+        $this->app->bindIf(StreamFactoryContract::class, StreamFactory::class);
     }
 
     protected function registerDirectives(): void {
