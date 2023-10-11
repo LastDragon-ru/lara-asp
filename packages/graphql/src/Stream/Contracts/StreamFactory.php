@@ -33,7 +33,7 @@ interface StreamFactory {
 
     /**
      * @param TBuilder    $builder
-     * @param int<1, max> $chunk
+     * @param int<1, max> $limit
      *
      * @return Stream<TBuilder>
      */
@@ -41,6 +41,6 @@ interface StreamFactory {
         object $builder,
         string $key,
         Cursor $cursor,
-        int $chunk,
+        int $limit,
     ): Stream;
 }

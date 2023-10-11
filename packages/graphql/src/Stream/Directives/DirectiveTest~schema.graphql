@@ -7,9 +7,9 @@ type Query implements InterfaceA & InterfaceB {
         a: _ @searchBy,
         b: _ @sortBy
         c: _ = 123
-        @streamChunk(
-            size: 15
-            limit: 10
+        @streamLimit(
+            default: 15
+            max: 10
         )
         d: _ @streamCursor
     ): [Car] @stream
@@ -18,13 +18,13 @@ type Query implements InterfaceA & InterfaceB {
         a: _ @searchBy,
         b: _ @sortBy
         c: _ = 123
-        @streamChunk(
-            size: 123
+        @streamLimit(
+            default: 123
         )
         d: _ @streamCursor
     ): [Car]
     @stream(
-        chunk: 15
+        limit: 15
     )
 
     fieldNotSearchable: [Car] @stream(searchable: false)
@@ -36,14 +36,14 @@ type Query implements InterfaceA & InterfaceB {
         b: _ @deprecated @sortBy
         c: _ = 123
         @deprecated
-        @streamChunk(
-            size: 123
-            limit: 123
+        @streamLimit(
+            default: 123
+            max: 123
         )
         d: _ @deprecated @streamCursor
     ): [Car]
     @stream(
-        chunk: 15
+        limit: 15
     )
 
     fieldWithSearch(search: String! @search): [Car] @stream

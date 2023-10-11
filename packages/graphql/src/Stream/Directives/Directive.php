@@ -30,8 +30,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamLimitDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\ArgumentMissed;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderInvalid;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderUnsupported;
@@ -90,7 +90,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     final public const ArgSearchable = 'searchable';
     final public const ArgSortable   = 'sortable';
     final public const ArgBuilder    = 'builder';
-    final public const ArgChunk      = 'chunk';
+    final public const ArgLimit      = 'limit';
     final public const ArgKey        = 'key';
 
     /**
@@ -110,7 +110,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $argSearchable = self::ArgSearchable;
         $argSortable   = self::ArgSortable;
         $argBuilder    = self::ArgBuilder;
-        $argChunk      = self::ArgChunk;
+        $argLimit      = self::ArgLimit;
         $argKey        = self::ArgKey;
 
         return <<<GRAPHQL
@@ -137,9 +137,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 {$argBuilder}: {$builder}
 
                 """
-                Overrides default chunk size.
+                Overrides default limit.
                 """
-                {$argChunk}: Int
+                {$argLimit}: Int
 
                 """
                 Overrides default unique key. Useful if the standard detection
@@ -248,16 +248,16 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             );
         }
 
-        // Chunk
+        // Limit
         $this->addArgument(
             $manipulator,
             $source,
-            StreamChunkDirective::class,
-            StreamChunkDirective::settings()['name'],
+            StreamLimitDirective::class,
+            StreamLimitDirective::settings()['name'],
             $manipulator::Placeholder,
             null,
-            $this->directiveArgValue(self::ArgChunk) !== null
-                ? [StreamChunkDirective::ArgSize => $this->directiveArgValue(self::ArgChunk)]
+            $this->directiveArgValue(self::ArgLimit) !== null
+                ? [StreamLimitDirective::ArgDefault => $this->directiveArgValue(self::ArgLimit)]
                 : [],
         );
 
@@ -443,9 +443,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
             // Stream
             $key     = $this->getArgKey($manipulator, $source);
-            $chunk   = $this->getFieldValue(StreamChunkDirective::class, $manipulator, $source, $info, $args);
+            $limit   = $this->getFieldValue(StreamLimitDirective::class, $manipulator, $source, $info, $args);
             $builder = $factory->enhance($builder, $root, $args, $context, $info);
-            $stream  = $factory->create($builder, $key, $cursor, $chunk);
+            $stream  = $factory->create($builder, $key, $cursor, $limit);
             $stream  = new StreamValue($stream);
 
             return $stream;

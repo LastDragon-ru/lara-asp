@@ -16,13 +16,13 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\Stream as StreamContract;
 class Stream implements StreamContract {
     /**
      * @param TBuilder    $builder
-     * @param int<1, max> $chunk
+     * @param int<1, max> $limit
      */
     public function __construct(
         protected readonly object $builder,
         protected readonly string $key,
         protected readonly Cursor $cursor,
-        protected readonly int $chunk,
+        protected readonly int $limit,
     ) {
         // empty
     }

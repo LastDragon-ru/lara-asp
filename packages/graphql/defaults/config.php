@@ -28,10 +28,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *              name: string,
  *              enabled: bool,
  *          },
- *          chunk: array{
+ *          limit: array{
  *              name: string,
- *              size: int<1, max>,
- *              limit: int<1, max>,
+ *              default: int<1, max>,
+ *              max: int<1, max>,
  *          },
  *          cursor: array{
  *              name: string,
@@ -92,10 +92,10 @@ $settings = [
             'name'    => 'order',
             'enabled' => true,
         ],
-        'chunk'  => [
-            'name'  => 'chunk',
-            'size'  => 25,
-            'limit' => 100,
+        'limit'  => [
+            'name'    => 'limit',
+            'default' => 25,
+            'max'     => 100,
         ],
         'cursor' => [
             'name' => 'cursor',

@@ -28,34 +28,34 @@ use function strtr;
 /**
  * @implements FieldArgumentDirective<int<1, max>>
  */
-class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
+class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
     use WithManipulator;
 
-    final public const ArgSize  = 'size';
-    final public const ArgLimit = 'limit';
+    final public const ArgDefault = 'default';
+    final public const ArgMax     = 'max';
 
     /**
-     * @return array{name: string, size: int, limit: int}
+     * @return array{name: string, default: int, max: int}
      */
     final public static function settings(): array {
-        $settings = (array) config(Directive::Settings.'.chunk');
+        $settings = (array) config(Directive::Settings.'.limit');
 
         return [
-            'name'  => Cast::toString($settings['name'] ?? 'chunk'),
-            'size'  => Cast::toInt($settings['size'] ?? 25),
-            'limit' => Cast::toInt($settings['limit'] ?? 100),
+            'name'    => Cast::toString($settings['name'] ?? 'limit'),
+            'default' => Cast::toInt($settings['default'] ?? 25),
+            'max'     => Cast::toInt($settings['max'] ?? 100),
         ];
     }
 
     public static function definition(): string {
-        $name     = DirectiveLocator::directiveName(static::class);
-        $argSize  = self::ArgSize;
-        $argLimit = self::ArgLimit;
+        $name       = DirectiveLocator::directiveName(static::class);
+        $argMax     = self::ArgMax;
+        $argDefault = self::ArgDefault;
 
         return <<<GRAPHQL
             directive @{$name}(
-                {$argSize}: Int
-                {$argLimit}: Int
+                {$argDefault}: Int
+                {$argMax}: Int
             ) on ARGUMENT_DEFINITION
         GRAPHQL;
     }
@@ -77,23 +77,23 @@ class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirect
         );
 
         // Default
-        $argSize                     = $this->getArgSize();
-        $argDefinition->defaultValue = Cast::to(IntValueNode::class, AST::astFromValue($argSize, $type));
+        $argDefault                  = $this->getArgDefault();
+        $argDefinition->defaultValue = Cast::to(IntValueNode::class, AST::astFromValue($argDefault, $type));
 
         // Description
         $argMin                            = 1;
-        $argLimit                          = $this->getArgLimit();
+        $argMax                            = $this->getArgMax();
         $argDefinition->description      ??= Parser::stringLiteral(
             <<<'STRING'
             """
-            The value must be between `${min}` and `${limit}`.
+            The value must be between `${min}` and `${max}`.
             """
             STRING,
         );
         $argDefinition->description->value = strtr($argDefinition->description->value, [
-            '${min}'   => $argMin,
-            '${size}'  => $argSize,
-            '${limit}' => $argLimit,
+            '${min}'     => $argMin,
+            '${max}'     => $argMax,
+            '${default}' => $argDefault,
         ]);
 
         // Validation
@@ -102,7 +102,7 @@ class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirect
             $argDefinition,
             RulesDirective::class,
             [
-                'apply' => ["min:{$argMin}", "max:{$this->getArgLimit()}"],
+                'apply' => ["min:{$argMin}", "max:{$argMax}"],
             ],
         );
     }
@@ -110,11 +110,11 @@ class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirect
     /**
      * @return int<1, max>
      */
-    protected function getArgLimit(): int {
+    protected function getArgMax(): int {
         return max(
             1,
             Cast::toInt(
-                $this->directiveArgValue(self::ArgLimit) ?? static::settings()['limit'],
+                $this->directiveArgValue(self::ArgMax) ?? static::settings()['max'],
             ),
         );
     }
@@ -122,13 +122,13 @@ class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirect
     /**
      * @return int<1, max>
      */
-    protected function getArgSize(): int {
+    protected function getArgDefault(): int {
         return min(
-            $this->getArgLimit(),
+            $this->getArgMax(),
             max(
                 1,
                 Cast::toInt(
-                    $this->directiveArgValue(self::ArgSize) ?? static::settings()['size'],
+                    $this->directiveArgValue(self::ArgDefault) ?? static::settings()['default'],
                 ),
             ),
         );
@@ -137,6 +137,6 @@ class Chunk extends BaseDirective implements ArgManipulator, FieldArgumentDirect
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
         return $value !== null
             ? max(1, Cast::toInt($value))
-            : $this->getArgSize();
+            : $this->getArgDefault();
     }
 }

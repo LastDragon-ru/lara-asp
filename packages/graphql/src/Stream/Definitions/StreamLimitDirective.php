@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Definitions;
 
-use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Chunk;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Limit;
 
-class StreamChunkDirective extends Chunk {
+class StreamLimitDirective extends Limit {
     // Lighthouse loads all classes from directive namespace this leads to
     // 'Class "Orchestra\Testbench\TestCase" not found' error for our *Test
     // classes. This class required to avoid this error.

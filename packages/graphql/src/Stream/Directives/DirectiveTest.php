@@ -626,7 +626,7 @@ class DirectiveTest extends TestCase {
         $this->useGraphQLSchema(
             <<<'GRAPHQL'
             type Query {
-                field: [Car] @stream(chunk: 10)
+                field: [Car] @stream(limit: 10)
             }
 
             type Car {
@@ -706,14 +706,14 @@ class DirectiveTest extends TestCase {
             /**
              * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
              */
-            public function getInternalChunk(Stream $stream): int {
-                return $stream->chunk;
+            public function getInternalLimit(Stream $stream): int {
+                return $stream->limit;
             }
         };
 
         self::assertInstanceOf(Stream::class, $stream);
         self::assertEquals('carKey', $helper->getInternalKey($stream));
-        self::assertEquals(10, $helper->getInternalChunk($stream));
+        self::assertEquals(10, $helper->getInternalLimit($stream));
         self::assertSame($builder, $helper->getInternalBuilder($stream));
         self::assertEquals(
             new StreamCursor('field', null, 0),

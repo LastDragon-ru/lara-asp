@@ -79,16 +79,16 @@ directive @stream(
     builder: StreamBuilder
 
     """
-    Overrides default chunk size.
-    """
-    chunk: Int
-
-    """
     Overrides default unique key. Useful if the standard detection
     algorithm doesn't fit/work. By default, the directive will use
     the name of field with `ID!` type.
     """
     key: String
+
+    """
+    Overrides default limit.
+    """
+    limit: Int
 
     """
     Overrides default searchable status.
@@ -103,14 +103,14 @@ directive @stream(
 on
     | FIELD_DEFINITION
 
-directive @streamChunk(
-    limit: Int
-    size: Int
-)
+directive @streamCursor
 on
     | ARGUMENT_DEFINITION
 
-directive @streamCursor
+directive @streamLimit(
+    default: Int
+    max: Int
+)
 on
     | ARGUMENT_DEFINITION
 
@@ -265,8 +265,8 @@ input StreamBuilder {
 interface InterfaceA {
     fieldWithArguments(
         argument: String
-        chunk: Int!
         cursor: StreamCursor
+        limit: Int!
         order: [SortByClauseCar!]
         where: SearchByConditionCar
     ): CarsStream!
@@ -277,8 +277,8 @@ implements
     & InterfaceC
 {
     fieldNotSearchable(
-        chunk: Int!
         cursor: StreamCursor
+        limit: Int!
         order: [SortByClauseCar!]
     ): CarsStream!
 }
@@ -322,17 +322,17 @@ implements
     & InterfaceB
 {
     fieldNotSearchable(
+        cursor: StreamCursor
+        @streamCursor
+
         """
         The value must be between `1` and `100`.
         """
-        chunk: Int! = 25
-        @streamChunk
+        limit: Int! = 25
+        @streamLimit
         @rules(
             apply: ["min:1", "max:100"]
         )
-
-        cursor: StreamCursor
-        @streamCursor
 
         order: [SortByClauseCar!]
         @sortBy
@@ -342,17 +342,17 @@ implements
     )
 
     fieldNotSortable(
+        cursor: StreamCursor
+        @streamCursor
+
         """
         The value must be between `1` and `100`.
         """
-        chunk: Int! = 25
-        @streamChunk
+        limit: Int! = 25
+        @streamLimit
         @rules(
             apply: ["min:1", "max:100"]
         )
-
-        cursor: StreamCursor
-        @streamCursor
 
         where: SearchByConditionCar
         @searchBy
@@ -364,17 +364,17 @@ implements
     fieldWithArguments(
         argument: String
 
+        cursor: StreamCursor
+        @streamCursor
+
         """
         The value must be between `1` and `100`.
         """
-        chunk: Int! = 25
-        @streamChunk
+        limit: Int! = 25
+        @streamLimit
         @rules(
             apply: ["min:1", "max:100"]
         )
-
-        cursor: StreamCursor
-        @streamCursor
 
         order: [SortByClauseCar!]
         @sortBy
@@ -398,23 +398,12 @@ implements
         """
         c: Int! = 15
         @deprecated
-        @streamChunk(
-            limit: 123
-            size: 15
+        @streamLimit(
+            default: 15
+            max: 123
         )
         @rules(
             apply: ["min:1", "max:123"]
-        )
-
-        """
-        The value must be between `1` and `100`.
-        """
-        chunk: Int! = 15
-        @streamChunk(
-            size: 15
-        )
-        @rules(
-            apply: ["min:1", "max:100"]
         )
 
         cursor: StreamCursor
@@ -424,6 +413,17 @@ implements
         @deprecated
         @streamCursor
 
+        """
+        The value must be between `1` and `100`.
+        """
+        limit: Int! = 15
+        @streamLimit(
+            default: 15
+        )
+        @rules(
+            apply: ["min:1", "max:100"]
+        )
+
         order: [SortByClauseCar!]
         @sortBy
 
@@ -431,7 +431,7 @@ implements
         @searchBy
     ): CarsStream!
     @stream(
-        chunk: 15
+        limit: 15
     )
 
     fieldWithDirectives(
@@ -445,9 +445,9 @@ implements
         The value must be between `1` and `10`.
         """
         c: Int! = 10
-        @streamChunk(
-            limit: 10
-            size: 15
+        @streamLimit(
+            default: 15
+            max: 10
         )
         @rules(
             apply: ["min:1", "max:10"]
@@ -469,8 +469,8 @@ implements
         The value must be between `1` and `100`.
         """
         c: Int! = 15
-        @streamChunk(
-            size: 15
+        @streamLimit(
+            default: 15
         )
         @rules(
             apply: ["min:1", "max:100"]
@@ -480,21 +480,21 @@ implements
         @streamCursor
     ): CarsStream!
     @stream(
-        chunk: 15
+        limit: 15
     )
 
     fieldWithSearch(
+        cursor: StreamCursor
+        @streamCursor
+
         """
         The value must be between `1` and `100`.
         """
-        chunk: Int! = 25
-        @streamChunk
+        limit: Int! = 25
+        @streamLimit
         @rules(
             apply: ["min:1", "max:100"]
         )
-
-        cursor: StreamCursor
-        @streamCursor
 
         order: [SortByScoutClauseCar!]
         @sortBy
@@ -508,17 +508,17 @@ implements
     @stream
 
     fieldWithoutArguments(
+        cursor: StreamCursor
+        @streamCursor
+
         """
         The value must be between `1` and `100`.
         """
-        chunk: Int! = 25
-        @streamChunk
+        limit: Int! = 25
+        @streamLimit
         @rules(
             apply: ["min:1", "max:100"]
         )
-
-        cursor: StreamCursor
-        @streamCursor
 
         order: [SortByClauseCar!]
         @sortBy

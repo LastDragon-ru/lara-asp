@@ -46,7 +46,7 @@ class StreamFactory implements StreamFactoryContract {
         return $builder;
     }
 
-    public function create(object $builder, string $key, Cursor $cursor, int $chunk): StreamContract {
-        return new Stream($builder, $key, $cursor, $chunk);
+    public function create(object $builder, string $key, Cursor $cursor, int $limit): StreamContract {
+        return new Stream($builder, $key, $cursor, $limit);
     }
 }
