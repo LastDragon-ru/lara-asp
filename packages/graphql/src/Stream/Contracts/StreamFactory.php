@@ -32,6 +32,7 @@ interface StreamFactory {
     ): object;
 
     /**
+     * @param TBuilder    $builder
      * @param int<1, max> $chunk
      *
      * @return Stream<TBuilder>

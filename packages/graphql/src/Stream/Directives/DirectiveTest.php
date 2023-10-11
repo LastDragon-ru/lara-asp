@@ -682,18 +682,30 @@ class DirectiveTest extends TestCase {
                 // empty
             }
 
+            /**
+             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
+             */
             public function getInternalBuilder(Stream $stream): object {
                 return $stream->builder;
             }
 
+            /**
+             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
+             */
             public function getInternalKey(Stream $stream): string {
                 return $stream->key;
             }
 
+            /**
+             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
+             */
             public function getInternalCursor(Stream $stream): StreamCursor {
                 return $stream->cursor;
             }
 
+            /**
+             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
+             */
             public function getInternalChunk(Stream $stream): int {
                 return $stream->chunk;
             }

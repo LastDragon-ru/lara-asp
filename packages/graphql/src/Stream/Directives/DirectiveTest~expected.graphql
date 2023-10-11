@@ -311,7 +311,7 @@ type Car {
 
 type CarsStream {
     items: [Car!]!
-    length: Int!
+    length: Int
     navigator: StreamNavigator!
     offset: Int
 }
@@ -531,6 +531,6 @@ implements
 
 type StreamNavigator {
     current: StreamCursor!
-    next: StreamCursor!
-    previous: StreamCursor!
+    next: StreamCursor
+    previous: StreamCursor
 }

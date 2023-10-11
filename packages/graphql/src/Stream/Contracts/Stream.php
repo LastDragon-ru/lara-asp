@@ -2,11 +2,30 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Contracts;
 
-use Countable;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
 
 /**
  * @template TBuilder of object
  */
-interface Stream extends Countable {
-    // empty
+interface Stream {
+    /**
+     * @return iterable<array-key, mixed>
+     */
+    public function getItems(): iterable;
+
+    /**
+     * @return int<0, max>|null
+     */
+    public function getLength(): ?int;
+
+    /**
+     * @return int<0, max>|null
+     */
+    public function getOffset(): ?int;
+
+    public function getNextCursor(): ?Cursor;
+
+    public function getCurrentCursor(): Cursor;
+
+    public function getPreviousCursor(): ?Cursor;
 }

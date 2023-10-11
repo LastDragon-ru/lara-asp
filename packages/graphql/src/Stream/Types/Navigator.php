@@ -30,9 +30,9 @@ class Navigator implements TypeDefinition {
         return Parser::objectTypeDefinition(
             <<<GRAPHQL
             type {$name} {
-                previous: {$cursor}!
+                previous: {$cursor}
                 current: {$cursor}!
-                next: {$cursor}!
+                next: {$cursor}
             }
             GRAPHQL,
         );

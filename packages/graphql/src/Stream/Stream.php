@@ -9,10 +9,13 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\Stream as StreamContract;
 
 /**
- * @implements StreamContract<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder>
+ * @template TBuilder of EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder
+ *
+ * @implements StreamContract<TBuilder>
  */
 class Stream implements StreamContract {
     /**
+     * @param TBuilder    $builder
      * @param int<1, max> $chunk
      */
     public function __construct(
@@ -24,7 +27,30 @@ class Stream implements StreamContract {
         // empty
     }
 
-    public function count(): int {
+    /**
+     * @inheritDoc
+     */
+    public function getItems(): iterable {
+        return [];  // fixme(graphql)!: Not implemented.
+    }
+
+    public function getLength(): ?int {
         return 0; // fixme(graphql)!: Not implemented.
+    }
+
+    public function getOffset(): ?int {
+        return $this->cursor->offset;
+    }
+
+    public function getNextCursor(): ?Cursor {
+        return null; // fixme(graphql)!: Not implemented.
+    }
+
+    public function getCurrentCursor(): Cursor {
+        return $this->cursor;
+    }
+
+    public function getPreviousCursor(): ?Cursor {
+        return null; // fixme(graphql)!: Not implemented.
     }
 }
