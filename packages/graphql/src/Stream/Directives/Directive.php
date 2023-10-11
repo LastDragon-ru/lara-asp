@@ -29,7 +29,6 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamChunkDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
@@ -41,6 +40,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Stream\StreamValue;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream as StreamType;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
@@ -416,8 +416,11 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
     // <editor-fold desc="FieldResolver">
     // =========================================================================
+    /**
+     * @return callable(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): StreamValue
+     */
     public function resolveField(FieldValue $fieldValue): callable {
-        return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): Stream {
+        return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): StreamValue {
             // Cursor
             $manipulator = $this->getAstManipulator(new DocumentAST());
             $source      = new ObjectFieldSource($manipulator, $info->parentType, $info->fieldDefinition);
@@ -443,6 +446,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $chunk   = $this->getFieldValue(StreamChunkDirective::class, $manipulator, $source, $info, $args);
             $builder = $factory->enhance($builder, $root, $args, $context, $info);
             $stream  = $factory->create($builder, $key, $cursor, $chunk);
+            $stream  = new StreamValue($stream);
 
             return $stream;
         };

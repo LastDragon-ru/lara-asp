@@ -675,7 +675,7 @@ class DirectiveTest extends TestCase {
                 static fn () => $builder,
             );
 
-        $stream = $directive->resolveField($value)($root, $args, $context, $info);
+        $stream = $directive->resolveField($value)($root, $args, $context, $info)->stream;
         $helper = new class() extends Stream {
             /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct() {
