@@ -38,10 +38,6 @@ class Stream implements StreamContract {
         return 0; // fixme(graphql)!: Not implemented.
     }
 
-    public function getOffset(): ?int {
-        return $this->cursor->offset;
-    }
-
     public function getNextCursor(): ?Cursor {
         return null; // fixme(graphql)!: Not implemented.
     }

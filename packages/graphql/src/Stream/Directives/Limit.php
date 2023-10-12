@@ -86,7 +86,7 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
         $argDefinition->description      ??= Parser::stringLiteral(
             <<<'STRING'
             """
-            The value must be between `${min}` and `${max}`.
+            Maximum count of items to return. The value must be between `${min}` and `${max}`.
             """
             STRING,
         );

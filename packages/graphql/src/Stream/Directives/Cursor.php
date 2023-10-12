@@ -72,6 +72,14 @@ class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirec
             $argDefinition,
             $type,
         );
+
+        $argDefinition->description ??= Parser::stringLiteral(
+            <<<'STRING'
+            """
+            The cursor or offset within the stream to start.
+            """
+            STRING,
+        );
     }
 
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {

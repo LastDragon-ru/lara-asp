@@ -67,8 +67,8 @@ on
     | SCALAR
 
 """
-Splits list of items into the chunks and return one chunk specified
-by a page number or a cursor.
+Splits list of items into the chunks and returns one chunk specified
+by an offset or a cursor.
 """
 directive @stream(
     """
@@ -313,7 +313,6 @@ type CarsStream {
     items: [Car!]!
     length: Int
     navigator: StreamNavigator!
-    offset: Int
 }
 
 type Query
@@ -322,11 +321,14 @@ implements
     & InterfaceB
 {
     fieldNotSearchable(
+        """
+        The cursor or offset within the stream to start.
+        """
         cursor: StreamCursor
         @streamCursor
 
         """
-        The value must be between `1` and `100`.
+        Maximum count of items to return. The value must be between `1` and `100`.
         """
         limit: Int! = 25
         @streamLimit
@@ -342,11 +344,14 @@ implements
     )
 
     fieldNotSortable(
+        """
+        The cursor or offset within the stream to start.
+        """
         cursor: StreamCursor
         @streamCursor
 
         """
-        The value must be between `1` and `100`.
+        Maximum count of items to return. The value must be between `1` and `100`.
         """
         limit: Int! = 25
         @streamLimit
@@ -364,11 +369,14 @@ implements
     fieldWithArguments(
         argument: String
 
+        """
+        The cursor or offset within the stream to start.
+        """
         cursor: StreamCursor
         @streamCursor
 
         """
-        The value must be between `1` and `100`.
+        Maximum count of items to return. The value must be between `1` and `100`.
         """
         limit: Int! = 25
         @streamLimit
@@ -394,7 +402,7 @@ implements
         @sortBy
 
         """
-        The value must be between `1` and `123`.
+        Maximum count of items to return. The value must be between `1` and `123`.
         """
         c: Int! = 15
         @deprecated
@@ -406,15 +414,21 @@ implements
             apply: ["min:1", "max:123"]
         )
 
+        """
+        The cursor or offset within the stream to start.
+        """
         cursor: StreamCursor
         @streamCursor
 
+        """
+        The cursor or offset within the stream to start.
+        """
         d: StreamCursor
         @deprecated
         @streamCursor
 
         """
-        The value must be between `1` and `100`.
+        Maximum count of items to return. The value must be between `1` and `100`.
         """
         limit: Int! = 15
         @streamLimit(
@@ -442,7 +456,7 @@ implements
         @sortBy
 
         """
-        The value must be between `1` and `10`.
+        Maximum count of items to return. The value must be between `1` and `10`.
         """
         c: Int! = 10
         @streamLimit(
@@ -453,6 +467,9 @@ implements
             apply: ["min:1", "max:10"]
         )
 
+        """
+        The cursor or offset within the stream to start.
+        """
         d: StreamCursor
         @streamCursor
     ): CarsStream!
@@ -466,7 +483,7 @@ implements
         @sortBy
 
         """
-        The value must be between `1` and `100`.
+        Maximum count of items to return. The value must be between `1` and `100`.
         """
         c: Int! = 15
         @streamLimit(
@@ -476,6 +493,9 @@ implements
             apply: ["min:1", "max:100"]
         )
 
+        """
+        The cursor or offset within the stream to start.
+        """
         d: StreamCursor
         @streamCursor
     ): CarsStream!
@@ -484,11 +504,14 @@ implements
     )
 
     fieldWithSearch(
+        """
+        The cursor or offset within the stream to start.
+        """
         cursor: StreamCursor
         @streamCursor
 
         """
-        The value must be between `1` and `100`.
+        Maximum count of items to return. The value must be between `1` and `100`.
         """
         limit: Int! = 25
         @streamLimit
@@ -508,11 +531,14 @@ implements
     @stream
 
     fieldWithoutArguments(
+        """
+        The cursor or offset within the stream to start.
+        """
         cursor: StreamCursor
         @streamCursor
 
         """
-        The value must be between `1` and `100`.
+        Maximum count of items to return. The value must be between `1` and `100`.
         """
         limit: Int! = 25
         @streamLimit

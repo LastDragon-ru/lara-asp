@@ -45,7 +45,6 @@ class Stream implements TypeDefinition {
             <<<GRAPHQL
             type {$name} {
                 items: [{$type}!]!
-                offset: Int
                 length: Int
                 navigator: {$navigator}!
             }

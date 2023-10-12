@@ -17,7 +17,6 @@ class StreamValue {
     public function __isset(string $name): bool {
         return match ($name) {
             'items'     => true,
-            'offset'    => true,
             'length'    => true,
             'navigator' => true,
             'previous'  => true,
@@ -30,7 +29,6 @@ class StreamValue {
     public function __get(string $name): mixed {
         return match ($name) {
             'items'     => $this->stream->getItems(),
-            'offset'    => $this->stream->getOffset(),
             'length'    => $this->stream->getLength(),
             'navigator' => $this,
             'previous'  => $this->stream->getPreviousCursor(),

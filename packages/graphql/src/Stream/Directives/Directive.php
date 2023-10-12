@@ -115,8 +115,8 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         return <<<GRAPHQL
             """
-            Splits list of items into the chunks and return one chunk specified
-            by a page number or a cursor.
+            Splits list of items into the chunks and returns one chunk specified
+            by an offset or a cursor.
             """
             directive @{$name}(
                 """

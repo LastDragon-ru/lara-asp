@@ -18,11 +18,6 @@ interface Stream {
      */
     public function getLength(): ?int;
 
-    /**
-     * @return int<0, max>|null
-     */
-    public function getOffset(): ?int;
-
     public function getNextCursor(): ?Cursor;
 
     public function getCurrentCursor(): Cursor;
