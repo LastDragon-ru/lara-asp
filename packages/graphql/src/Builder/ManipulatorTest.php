@@ -286,7 +286,7 @@ class ManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
                         type: PAGINATOR
                     )
                 }
@@ -302,7 +302,7 @@ class ManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
                         type: SIMPLE
                     )
                 }
@@ -318,7 +318,7 @@ class ManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Model"
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
                         type: CONNECTION
                     )
                 }

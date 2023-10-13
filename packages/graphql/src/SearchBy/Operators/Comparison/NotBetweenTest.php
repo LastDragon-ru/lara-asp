@@ -57,7 +57,7 @@ class NotBetweenTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" not between ? and ?',
+                        'query'    => 'select * from "test_objects" where "property" not between ? and ?',
                         'bindings' => [1, 2],
                     ],
                     new Property('property'),
@@ -67,7 +67,7 @@ class NotBetweenTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" not between ? and ?',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" not between ? and ?',
                         'bindings' => [1, 2],
                     ],
                     new Property('path', 'to', 'property'),

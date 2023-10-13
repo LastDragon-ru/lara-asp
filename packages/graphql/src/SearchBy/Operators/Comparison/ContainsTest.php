@@ -73,7 +73,7 @@ class ContainsTest extends TestCase {
             new ArrayDataProvider([
                 MySqlGrammar::class     => [
                     [
-                        'query'    => 'select * from `tmp` where `property` LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from `test_objects` where `property` LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     MySqlGrammar::class,
@@ -84,7 +84,7 @@ class ContainsTest extends TestCase {
                 ],
                 SQLiteGrammar::class    => [
                     [
-                        'query'    => 'select * from "tmp" where "property" LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from "test_objects" where "property" LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     SQLiteGrammar::class,
@@ -95,7 +95,7 @@ class ContainsTest extends TestCase {
                 ],
                 PostgresGrammar::class  => [
                     [
-                        'query'    => 'select * from "tmp" where "property" LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from "test_objects" where "property" LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     PostgresGrammar::class,
@@ -106,7 +106,7 @@ class ContainsTest extends TestCase {
                 ],
                 SqlServerGrammar::class => [
                     [
-                        'query'    => 'select * from [tmp] where [property] LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from [test_objects] where [property] LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a![!_!]c!!!%%'],
                     ],
                     SqlServerGrammar::class,

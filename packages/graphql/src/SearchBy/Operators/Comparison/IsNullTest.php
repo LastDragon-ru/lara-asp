@@ -57,7 +57,7 @@ class IsNullTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" is null',
+                        'query'    => 'select * from "test_objects" where "property" is null',
                         'bindings' => [],
                     ],
                     new Property('property'),
@@ -67,7 +67,7 @@ class IsNullTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" is null',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" is null',
                         'bindings' => [],
                     ],
                     new Property('path', 'to', 'property'),

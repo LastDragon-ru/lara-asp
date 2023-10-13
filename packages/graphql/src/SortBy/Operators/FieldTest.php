@@ -154,7 +154,7 @@ class FieldTest extends TestCase {
             new ArrayDataProvider([
                 'property' => [
                     [
-                        'query'    => 'select * from "tmp" order by "a" desc',
+                        'query'    => 'select * from "test_objects" order by "a" desc',
                         'bindings' => [],
                     ],
                     new Property('a'),

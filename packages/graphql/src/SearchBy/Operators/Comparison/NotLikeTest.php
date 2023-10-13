@@ -57,7 +57,7 @@ class NotLikeTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" not like ?',
+                        'query'    => 'select * from "test_objects" where "property" not like ?',
                         'bindings' => ['abc'],
                     ],
                     new Property('property'),
@@ -67,7 +67,7 @@ class NotLikeTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" not like ?',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" not like ?',
                         'bindings' => ['abc'],
                     ],
                     new Property('path', 'to', 'property'),

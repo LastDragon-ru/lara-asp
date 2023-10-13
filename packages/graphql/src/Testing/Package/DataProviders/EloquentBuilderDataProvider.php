@@ -3,8 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Model;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 
@@ -16,8 +15,8 @@ class EloquentBuilderDataProvider extends ArrayDataProvider {
         parent::__construct([
             'Builder' => [
                 new UnknownValue(),
-                static function (TestCase $test): EloquentBuilder {
-                    return Model::query();
+                static function (): EloquentBuilder {
+                    return TestObject::query();
                 },
             ],
         ]);

@@ -92,7 +92,7 @@ class InTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" in (?, ?, ?)',
+                        'query'    => 'select * from "test_objects" where "property" in (?, ?, ?)',
                         'bindings' => [1, 2, 3],
                     ],
                     new Property('property'),
@@ -102,7 +102,7 @@ class InTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" in (?, ?, ?)',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" in (?, ?, ?)',
                         'bindings' => ['a', 'b', 'c'],
                     ],
                     new Property('path', 'to', 'property'),

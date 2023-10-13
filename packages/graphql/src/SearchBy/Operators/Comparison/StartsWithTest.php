@@ -57,7 +57,7 @@ class StartsWithTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from "test_objects" where "property" LIKE ? ESCAPE \'!\'',
                         'bindings' => ['!%a[!_]c!!!%%'],
                     ],
                     new Property('property'),
@@ -67,7 +67,7 @@ class StartsWithTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" LIKE ? ESCAPE \'!\'',
                         'bindings' => ['abc%'],
                     ],
                     new Property('path', 'to', 'property'),

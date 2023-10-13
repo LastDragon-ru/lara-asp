@@ -10,8 +10,6 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
@@ -22,9 +20,9 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Model;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
@@ -52,6 +50,7 @@ use const JSON_THROW_ON_ERROR;
  */
 #[CoversClass(Directive::class)]
 class DirectiveTest extends TestCase {
+    use WithTestObject;
     use MakesGraphQLRequests;
 
     // <editor-fold desc="Tests">
@@ -207,40 +206,26 @@ class DirectiveTest extends TestCase {
             $prepare($this);
         }
 
-        $model = json_encode(Model::class, JSON_THROW_ON_ERROR);
-        $path  = is_array($expected) ? 'data.test' : 'errors.0.message';
-        $body  = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
-        $table = (new Model())->getTable();
-
-        if (!Schema::hasTable($table)) {
-            Schema::create($table, static function (Blueprint $table): void {
-                $table->increments('id');
-                $table->string('a')->nullable();
-                $table->string('b')->nullable();
-            });
-        }
+        $path = is_array($expected) ? 'data.test' : 'errors.0.message';
+        $body = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
 
         $this
             ->useGraphQLSchema(
-                <<<GRAPHQL
+                <<<'GRAPHQL'
                 type Query {
-                    test(input: Test @sortBy): [TestObject!]!
-                    @all(model: {$model})
-                }
-
-                input Test {
-                    a: Int!
-                    b: String
+                    test(input: _ @sortBy): [TestObject!]!
+                    @all
                 }
 
                 type TestObject {
-                    id: String!
+                    id: ID!
+                    value: String
                 }
                 GRAPHQL,
             )
             ->graphQL(
                 <<<'GRAPHQL'
-                query test($input: [SortByClauseTest!]) {
+                query test($input: [SortByClauseTestObject!]) {
                     test(input: $input) {
                         id
                     }
@@ -265,7 +250,7 @@ class DirectiveTest extends TestCase {
      * @dataProvider dataProviderHandleBuilder
      *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
-     * @param Closure(static): (QueryBuilder|EloquentBuilder<Model>)            $builderFactory
+     * @param Closure(static): (QueryBuilder|EloquentBuilder<EloquentModel>)    $builderFactory
      * @param Closure(static): void|null                                        $prepare
      */
     public function testHandleBuilder(
@@ -288,8 +273,8 @@ class DirectiveTest extends TestCase {
             }
 
             input Test {
-                a: Int!
-                b: String @rename(attribute: "renamed")
+                id: Int!
+                value: String @rename(attribute: "renamed")
             }
             GRAPHQL,
         );
@@ -429,7 +414,7 @@ class DirectiveTest extends TestCase {
                             select
                                 *
                             from
-                                "tmp"
+                                "test_objects"
                         SQL
                         ,
                         'bindings' => [],
@@ -445,7 +430,7 @@ class DirectiveTest extends TestCase {
                             select
                                 *
                             from
-                                "tmp"
+                                "test_objects"
                         SQL
                         ,
                         'bindings' => [],
@@ -458,11 +443,11 @@ class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many properties' => [
-                    new ConditionTooManyProperties(['a', 'b']),
+                    new ConditionTooManyProperties(['id', 'value']),
                     [
                         [
-                            'a' => 'asc',
-                            'b' => 'desc',
+                            'id'    => 'asc',
+                            'value' => 'desc',
                         ],
                     ],
                     null,
@@ -473,7 +458,7 @@ class DirectiveTest extends TestCase {
                             select
                                 *
                             from
-                                "tmp"
+                                "test_objects"
                         SQL
                         ,
                         'bindings' => [],
@@ -487,9 +472,9 @@ class DirectiveTest extends TestCase {
                             select
                                 *
                             from
-                                "tmp"
+                                "test_objects"
                             order by
-                                "a" asc,
+                                "id" asc,
                                 "renamed" desc,
                                 RANDOM()
                         SQL
@@ -498,10 +483,10 @@ class DirectiveTest extends TestCase {
                     ],
                     [
                         [
-                            'a' => 'asc',
+                            'id' => 'asc',
                         ],
                         [
-                            'b' => 'desc',
+                            'value' => 'desc',
                         ],
                         [
                             'random' => 'yes',

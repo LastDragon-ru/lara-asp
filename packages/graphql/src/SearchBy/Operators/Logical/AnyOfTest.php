@@ -91,7 +91,7 @@ class AnyOfTest extends TestCase {
                 new ArrayDataProvider([
                     'property'   => [
                         [
-                            'query'    => 'select * from "tmp" where (("a" = ?) or ("b" != ?))',
+                            'query'    => 'select * from "test_objects" where (("a" = ?) or ("b" != ?))',
                             'bindings' => [
                                 2,
                                 22,
@@ -102,7 +102,10 @@ class AnyOfTest extends TestCase {
                     ],
                     'with alias' => [
                         [
-                            'query'    => 'select * from "tmp" where (("alias"."a" = ?) or ("alias"."b" != ?))',
+                            'query'    => <<<'SQL'
+                                select * from "test_objects" where (("alias"."a" = ?) or ("alias"."b" != ?))
+                            SQL
+                            ,
                             'bindings' => [
                                 2,
                                 22,
@@ -118,7 +121,12 @@ class AnyOfTest extends TestCase {
                 new ArrayDataProvider([
                     'property'   => [
                         [
-                            'query'    => 'select * from "tmp" where (("tmp"."a" = ?) or ("tmp"."b" != ?))',
+                            'query'    => <<<'SQL'
+                                select *
+                                from "test_objects"
+                                where (("test_objects"."a" = ?) or ("test_objects"."b" != ?))
+                            SQL
+                            ,
                             'bindings' => [
                                 2,
                                 22,
@@ -129,7 +137,10 @@ class AnyOfTest extends TestCase {
                     ],
                     'with alias' => [
                         [
-                            'query'    => 'select * from "tmp" where (("alias"."a" = ?) or ("alias"."b" != ?))',
+                            'query'    => <<<'SQL'
+                                select * from "test_objects" where (("alias"."a" = ?) or ("alias"."b" != ?))
+                            SQL
+                            ,
                             'bindings' => [
                                 2,
                                 22,

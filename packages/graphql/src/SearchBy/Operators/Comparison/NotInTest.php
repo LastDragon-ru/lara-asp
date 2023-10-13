@@ -106,7 +106,7 @@ class NotInTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" not in (?, ?, ?)',
+                        'query'    => 'select * from "test_objects" where "property" not in (?, ?, ?)',
                         'bindings' => [1, 2, 3],
                     ],
                     new Property('property'),
@@ -116,7 +116,7 @@ class NotInTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" not in (?, ?, ?)',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" not in (?, ?, ?)',
                         'bindings' => ['a', 'b', 'c'],
                     ],
                     new Property('path', 'to', 'property'),

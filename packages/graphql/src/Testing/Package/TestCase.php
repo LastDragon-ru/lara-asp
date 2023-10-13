@@ -5,11 +5,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 use GraphQL\Type\Schema;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\ExposeBuilderDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\LighthouseDirectiveFilter;
@@ -22,8 +23,10 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthousTestingServiceProvider;
+use ReflectionClass;
 use SplFileInfo;
 
+use function config;
 use function mb_substr;
 
 /**
@@ -44,6 +47,19 @@ class TestCase extends PackageTestCase {
             LighthouseServiceProvider::class,
             LighthousTestingServiceProvider::class,
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getEnvironmentSetUp($app): void {
+        parent::getEnvironmentSetUp($app);
+
+        config([
+            'lighthouse.namespaces.models' => [
+                (new ReflectionClass(TestObject::class))->getNamespaceName(),
+            ],
+        ]);
     }
 
     public function getContainer(): Container {
@@ -78,7 +94,7 @@ class TestCase extends PackageTestCase {
     }
 
     /**
-     * @template M of Model
+     * @template M of EloquentModel
      *
      * @param QueryBuilder|EloquentBuilder<M>|ScoutBuilder $builder
      */

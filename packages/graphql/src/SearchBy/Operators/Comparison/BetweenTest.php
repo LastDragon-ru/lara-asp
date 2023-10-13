@@ -57,7 +57,7 @@ class BetweenTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" between ? and ?',
+                        'query'    => 'select * from "test_objects" where "property" between ? and ?',
                         'bindings' => [1, 2],
                     ],
                     new Property('property'),
@@ -67,7 +67,7 @@ class BetweenTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" between ? and ?',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" between ? and ?',
                         'bindings' => [1, 2],
                     ],
                     new Property('path', 'to', 'property'),

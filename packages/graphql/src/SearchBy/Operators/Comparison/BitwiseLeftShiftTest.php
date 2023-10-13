@@ -57,7 +57,7 @@ class BitwiseLeftShiftTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" << ?',
+                        'query'    => 'select * from "test_objects" where "property" << ?',
                         'bindings' => ['abc'],
                     ],
                     new Property('property'),
@@ -67,7 +67,7 @@ class BitwiseLeftShiftTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" << ?',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" << ?',
                         'bindings' => [123],
                     ],
                     new Property('path', 'to', 'property'),

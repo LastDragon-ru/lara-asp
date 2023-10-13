@@ -57,7 +57,7 @@ class RandomTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" order by RANDOM()',
+                        'query'    => 'select * from "test_objects" order by RANDOM()',
                         'bindings' => [],
                     ],
                     new Property('property'),
@@ -67,7 +67,7 @@ class RandomTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" order by RANDOM()',
+                        'query'    => 'select * from "test_objects" order by RANDOM()',
                         'bindings' => [],
                     ],
                     new Property('path', 'to', 'property'),

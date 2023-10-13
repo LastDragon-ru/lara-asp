@@ -61,7 +61,7 @@ class BuilderTest extends TestCase {
             new ArrayDataProvider([
                 'simple condition'     => [
                     [
-                        'query'    => 'select * from "tmp" order by "a" asc',
+                        'query'    => 'select * from "test_objects" order by "a" asc',
                         'bindings' => [],
                     ],
                     new Property('a'),
@@ -69,7 +69,7 @@ class BuilderTest extends TestCase {
                 ],
                 'nested not supported' => [
                     [
-                        'query'    => 'select * from "tmp" order by "test"."name" asc',
+                        'query'    => 'select * from "test_objects" order by "test"."name" asc',
                         'bindings' => [],
                     ],
                     new Property('test', 'name'),

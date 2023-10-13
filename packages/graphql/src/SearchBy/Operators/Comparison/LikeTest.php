@@ -57,7 +57,7 @@ class LikeTest extends TestCase {
             new ArrayDataProvider([
                 'property'      => [
                     [
-                        'query'    => 'select * from "tmp" where "property" like ?',
+                        'query'    => 'select * from "test_objects" where "property" like ?',
                         'bindings' => ['abc'],
                     ],
                     new Property('property'),
@@ -67,7 +67,7 @@ class LikeTest extends TestCase {
                 ],
                 'property.path' => [
                     [
-                        'query'    => 'select * from "tmp" where "path"."to"."property" like ?',
+                        'query'    => 'select * from "test_objects" where "path"."to"."property" like ?',
                         'bindings' => ['abc'],
                     ],
                     new Property('path', 'to', 'property'),

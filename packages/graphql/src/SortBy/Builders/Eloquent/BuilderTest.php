@@ -79,7 +79,7 @@ class BuilderTest extends TestCase {
                 new ArrayDataProvider([
                     'simple condition' => [
                         [
-                            'query'    => 'select * from "tmp" order by "name" desc',
+                            'query'    => 'select * from "test_objects" order by "name" desc',
                             'bindings' => [],
                         ],
                         new Property('name'),

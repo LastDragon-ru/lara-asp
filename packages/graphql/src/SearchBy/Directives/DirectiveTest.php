@@ -14,11 +14,8 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
@@ -36,11 +33,11 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Model;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
@@ -188,40 +185,26 @@ class DirectiveTest extends TestCase {
         Closure $builderFactory,
         mixed $value,
     ): void {
-        $model = json_encode(Model::class, JSON_THROW_ON_ERROR);
-        $path  = is_array($expected) ? 'data.test' : 'errors.0.message';
-        $body  = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
-        $table = (new Model())->getTable();
-
-        if (!Schema::hasTable($table)) {
-            Schema::create($table, static function (Blueprint $table): void {
-                $table->increments('id');
-                $table->string('a')->nullable();
-                $table->string('b')->nullable();
-            });
-        }
+        $path = is_array($expected) ? 'data.test' : 'errors.0.message';
+        $body = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
 
         $this
             ->useGraphQLSchema(
-                <<<GRAPHQL
+                <<<'GRAPHQL'
                 type Query {
-                    test(input: Test @searchBy): [TestObject!]!
-                    @all(model: {$model})
-                }
-
-                input Test {
-                    a: Int!
-                    b: String
+                    test(input: _ @searchBy): [TestObject!]!
+                    @all
                 }
 
                 type TestObject {
-                    id: String!
+                    id: ID!
+                    value: String
                 }
                 GRAPHQL,
             )
             ->graphQL(
                 <<<'GRAPHQL'
-                query test($input: SearchByConditionTest) {
+                query test($input: SearchByConditionTestObject) {
                     test(input: $input) {
                         id
                     }
@@ -263,8 +246,8 @@ class DirectiveTest extends TestCase {
             }
 
             input Test {
-                a: Int!
-                b: String @rename(attribute: "renamed")
+                id: Int!
+                value: String @rename(attribute: "renamed")
             }
             GRAPHQL,
         );
@@ -495,7 +478,7 @@ class DirectiveTest extends TestCase {
                                 select
                                     *
                                 from
-                                    "tmp"
+                                    "test_objects"
                             SQL
                             ,
                             'bindings' => [],
@@ -507,18 +490,18 @@ class DirectiveTest extends TestCase {
                     'empty operators'     => [
                         new ConditionEmpty(),
                         [
-                            'a' => [
+                            'id' => [
                                 // empty
                             ],
                         ],
                     ],
                     'too many properties' => [
-                        new ConditionTooManyProperties(['a', 'b']),
+                        new ConditionTooManyProperties(['id', 'value']),
                         [
-                            'a' => [
+                            'id'    => [
                                 'notEqual' => 1,
                             ],
-                            'b' => [
+                            'value' => [
                                 'notEqual' => 'a',
                             ],
                         ],
@@ -526,7 +509,7 @@ class DirectiveTest extends TestCase {
                     'too many operators'  => [
                         new ConditionTooManyOperators(['equal', 'notEqual']),
                         [
-                            'a' => [
+                            'id' => [
                                 'equal'    => 1,
                                 'notEqual' => 1,
                             ],
@@ -538,7 +521,7 @@ class DirectiveTest extends TestCase {
                                 select
                                     *
                                 from
-                                    "tmp"
+                                    "test_objects"
                             SQL
                             ,
                             'bindings' => [],
@@ -556,15 +539,15 @@ class DirectiveTest extends TestCase {
                                 select
                                     *
                                 from
-                                    "tmp"
+                                    "test_objects"
                                 where
                                     (
                                         not (
                                             (
-                                                ("a" != ?)
+                                                ("id" != ?)
                                                 and (
                                                     (
-                                                        ("a" = ?)
+                                                        ("id" = ?)
                                                         or ("renamed" != ?)
                                                     )
                                                 )
@@ -579,19 +562,19 @@ class DirectiveTest extends TestCase {
                             'not' => [
                                 'allOf' => [
                                     [
-                                        'a' => [
+                                        'id' => [
                                             'notEqual' => 1,
                                         ],
                                     ],
                                     [
                                         'anyOf' => [
                                             [
-                                                'a' => [
+                                                'id' => [
                                                     'equal' => 2,
                                                 ],
                                             ],
                                             [
-                                                'b' => [
+                                                'value' => [
                                                     'notEqual' => 'a',
                                                 ],
                                             ],
@@ -612,16 +595,16 @@ class DirectiveTest extends TestCase {
                                 select
                                     *
                                 from
-                                    "tmp"
+                                    "test_objects"
                                 where
                                     (
                                         not (
                                             (
-                                                ("tmp"."a" != ?)
+                                                ("test_objects"."id" != ?)
                                                 and (
                                                     (
-                                                        ("tmp"."a" = ?)
-                                                        or ("tmp"."renamed" != ?)
+                                                        ("test_objects"."id" = ?)
+                                                        or ("test_objects"."renamed" != ?)
                                                     )
                                                 )
                                             )
@@ -635,19 +618,19 @@ class DirectiveTest extends TestCase {
                             'not' => [
                                 'allOf' => [
                                     [
-                                        'a' => [
+                                        'id' => [
                                             'notEqual' => 1,
                                         ],
                                     ],
                                     [
                                         'anyOf' => [
                                             [
-                                                'a' => [
+                                                'id' => [
                                                     'equal' => 2,
                                                 ],
                                             ],
                                             [
-                                                'b' => [
+                                                'value' => [
                                                     'notEqual' => 'a',
                                                 ],
                                             ],
