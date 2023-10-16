@@ -7,8 +7,10 @@ use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\TestCase;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use WeakMap;
 
+use function array_map;
 use function is_a;
 use function is_string;
 use function sprintf;
@@ -81,5 +83,21 @@ trait WithQueryLog {
 
         // Return
         return $log;
+    }
+
+    /**
+     * @param QueryLog|array<array-key, Query|array{query: string, bindings: array<array-key, mixed>}|string> $expected
+     * @param QueryLog|array<array-key, Query|array{query: string, bindings: array<array-key, mixed>}>        $actual
+     */
+    public static function assertQueryLogEquals(
+        QueryLog|array $expected,
+        QueryLog|array $actual,
+        string $message = '',
+    ): void {
+        $prepare  = Args::getDatabaseQuery(...);
+        $expected = array_map($prepare, $expected instanceof QueryLog ? $expected->get() : $expected);
+        $actual   = array_map($prepare, $actual instanceof QueryLog ? $actual->get() : $actual);
+
+        self::assertEquals($expected, $actual, $message);
     }
 }
