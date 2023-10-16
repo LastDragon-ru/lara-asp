@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Schema;
@@ -26,8 +27,8 @@ trait WithTestObject {
                 return;
             }
 
-            Schema::create($table, static function ($table): void {
-                $table->increments('id');
+            Schema::create($table, static function (Blueprint $table): void {
+                $table->string('id')->primary();
                 $table->string('value', 40)->nullable();
             });
         });
