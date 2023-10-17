@@ -97,12 +97,11 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
         ]);
 
         // Validation
-        // todo(graphql/@stream): Not sure that validation works for queries, need to check.
         $manipulator->addDirective(
             $argDefinition,
             RulesDirective::class,
             [
-                'apply' => ["min:{$argMin}", "max:{$argMax}"],
+                'apply' => ['integer', "min:{$argMin}", "max:{$argMax}"],
             ],
         );
     }

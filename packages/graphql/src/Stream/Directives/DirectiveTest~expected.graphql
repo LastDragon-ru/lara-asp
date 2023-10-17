@@ -333,7 +333,7 @@ implements
         limit: Int! = 25
         @streamLimit
         @rules(
-            apply: ["min:1", "max:100"]
+            apply: ["integer", "min:1", "max:100"]
         )
 
         order: [SortByClauseCar!]
@@ -342,6 +342,7 @@ implements
     @stream(
         searchable: false
     )
+    @validate
 
     fieldNotSortable(
         """
@@ -356,7 +357,7 @@ implements
         limit: Int! = 25
         @streamLimit
         @rules(
-            apply: ["min:1", "max:100"]
+            apply: ["integer", "min:1", "max:100"]
         )
 
         where: SearchByConditionCar
@@ -365,6 +366,7 @@ implements
     @stream(
         sortable: false
     )
+    @validate
 
     fieldWithArguments(
         argument: String
@@ -381,7 +383,7 @@ implements
         limit: Int! = 25
         @streamLimit
         @rules(
-            apply: ["min:1", "max:100"]
+            apply: ["integer", "min:1", "max:100"]
         )
 
         order: [SortByClauseCar!]
@@ -391,6 +393,7 @@ implements
         @searchBy
     ): CarsStream!
     @stream
+    @validate
 
     fieldWithDeprecations(
         a: SearchByConditionCar
@@ -411,7 +414,7 @@ implements
             max: 123
         )
         @rules(
-            apply: ["min:1", "max:123"]
+            apply: ["integer", "min:1", "max:123"]
         )
 
         """
@@ -435,7 +438,7 @@ implements
             default: 15
         )
         @rules(
-            apply: ["min:1", "max:100"]
+            apply: ["integer", "min:1", "max:100"]
         )
 
         order: [SortByClauseCar!]
@@ -447,6 +450,7 @@ implements
     @stream(
         limit: 15
     )
+    @validate
 
     fieldWithDirectives(
         a: SearchByConditionCar
@@ -464,7 +468,7 @@ implements
             max: 10
         )
         @rules(
-            apply: ["min:1", "max:10"]
+            apply: ["integer", "min:1", "max:10"]
         )
 
         """
@@ -474,6 +478,7 @@ implements
         @streamCursor
     ): CarsStream!
     @stream
+    @validate
 
     fieldWithDirectivesAndDefaults(
         a: SearchByConditionCar
@@ -490,7 +495,7 @@ implements
             default: 15
         )
         @rules(
-            apply: ["min:1", "max:100"]
+            apply: ["integer", "min:1", "max:100"]
         )
 
         """
@@ -502,6 +507,7 @@ implements
     @stream(
         limit: 15
     )
+    @validate
 
     fieldWithSearch(
         """
@@ -516,7 +522,7 @@ implements
         limit: Int! = 25
         @streamLimit
         @rules(
-            apply: ["min:1", "max:100"]
+            apply: ["integer", "min:1", "max:100"]
         )
 
         order: [SortByScoutClauseCar!]
@@ -529,6 +535,7 @@ implements
         @searchBy
     ): CarsStream!
     @stream
+    @validate
 
     fieldWithoutArguments(
         """
@@ -543,7 +550,7 @@ implements
         limit: Int! = 25
         @streamLimit
         @rules(
-            apply: ["min:1", "max:100"]
+            apply: ["integer", "min:1", "max:100"]
         )
 
         order: [SortByClauseCar!]
@@ -553,6 +560,7 @@ implements
         @searchBy
     ): CarsStream!
     @stream
+    @validate
 }
 
 type StreamNavigator {

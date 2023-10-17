@@ -11,6 +11,7 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Encryption\StringEncrypter;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -37,6 +38,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType\Field;
@@ -44,6 +46,11 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\CarEngine;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
+use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use Mockery;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -53,12 +60,14 @@ use Nuwave\Lighthouse\Schema\Values\FieldValue;
 use Nuwave\Lighthouse\Scout\ScoutServiceProvider;
 use Nuwave\Lighthouse\Support\Contracts\Directive as DirectiveContract;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionClass;
 use stdClass;
 
 use function array_merge;
 use function config;
+use function is_string;
 use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
@@ -68,6 +77,9 @@ use const JSON_THROW_ON_ERROR;
  */
 #[CoversClass(Directive::class)]
 class DirectiveTest extends TestCase {
+    use WithTestObject;
+    use MakesGraphQLRequests;
+
     // <editor-fold desc="Prepare">
     // =========================================================================
     /**
@@ -78,11 +90,199 @@ class DirectiveTest extends TestCase {
             ScoutServiceProvider::class,
         ]);
     }
-
     // </editor-fold>
 
     // <editor-fold desc="Tests">
     // =========================================================================
+    /**
+     * @dataProvider dataProviderDirective
+     *
+     * @param array<string,mixed>|string $expected
+     * @param Closure(static): void      $factory
+     * @param array<string, mixed>|null  $where
+     * @param array<int, mixed>|null     $order
+     */
+    public function testDirective(
+        array|string $expected,
+        Closure $factory,
+        ?array $where,
+        ?array $order,
+        int $limit,
+        string|int|null $cursor,
+    ): void {
+        // Dependencies
+        $encrypter = new class() implements StringEncrypter {
+            public function encryptString(mixed $value): string {
+                return $value;
+            }
+
+            public function decryptString(mixed $payload): string {
+                return $payload;
+            }
+        };
+
+        $this->app->bind(StringEncrypter::class, $encrypter::class);
+
+        // Prepare
+        $path = is_string($expected) ? 'errors.0.message' : 'data.test';
+        $body = is_string($expected)
+            ? json_encode($expected, JSON_THROW_ON_ERROR)
+            : $expected;
+
+        $factory($this);
+
+        // Dependencies
+        $this
+            ->useGraphQLSchema(
+                <<<'GRAPHQL'
+                type Query {
+                    test: [TestObject!]! @stream
+                }
+
+                type TestObject {
+                    id: ID!
+                    value: String
+                }
+                GRAPHQL,
+            )
+            ->graphQL(
+                <<<'GRAPHQL'
+                query test(
+                    $where: SearchByConditionTestObject,
+                    $order: [SortByClauseTestObject!],
+                    $limit: Int!,
+                    $cursor: StreamCursor,
+                ) {
+                    test(where: $where, order: $order, limit: $limit, cursor: $cursor) {
+                        items {
+                            id
+                            value
+                        }
+                        length
+                        navigator {
+                            previous
+                            current
+                            next
+                        }
+                    }
+                }
+                GRAPHQL,
+                [
+                    'where'  => $where,
+                    'order'  => $order,
+                    'limit'  => $limit,
+                    'cursor' => $cursor,
+                ],
+            )
+            ->assertThat(
+                new Response(
+                    new Ok(),
+                    new JsonContentType(),
+                    new JsonBody(
+                        new JsonMatchesFragment($path, $body),
+                    ),
+                ),
+            );
+    }
+
+    /**
+     * @dataProvider dataProviderDirective
+     *
+     * @param array<string,mixed>|string $expected
+     * @param Closure(static): void      $factory
+     * @param array<string, mixed>|null  $where
+     * @param array<int, mixed>|null     $order
+     */
+    public function testDirectiveScout(
+        array|string $expected,
+        Closure $factory,
+        ?array $where,
+        ?array $order,
+        int $limit,
+        string|int|null $cursor,
+    ): void {
+        // Config
+        config([
+            'scout.driver' => 'database',
+        ]);
+
+        // Dependencies
+        $encrypter = new class() implements StringEncrypter {
+            public function encryptString(mixed $value): string {
+                return $value;
+            }
+
+            public function decryptString(mixed $payload): string {
+                return $payload;
+            }
+        };
+
+        $this->app->bind(StringEncrypter::class, $encrypter::class);
+
+        // Prepare
+        $path = is_string($expected) ? 'errors.0.message' : 'data.test';
+        $body = is_string($expected)
+            ? json_encode($expected, JSON_THROW_ON_ERROR)
+            : $expected;
+
+        $factory($this);
+
+        // Dependencies
+        $this
+            ->useGraphQLSchema(
+                <<<'GRAPHQL'
+                type Query {
+                    test(search: String! @search): [TestObject!]! @stream
+                }
+
+                type TestObject {
+                    id: ID!
+                    value: String
+                }
+                GRAPHQL,
+            )
+            ->graphQL(
+                <<<'GRAPHQL'
+                query test(
+                    $search: String!,
+                    $where: SearchByScoutConditionTestObject,
+                    $order: [SortByScoutClauseTestObject!],
+                    $limit: Int!,
+                    $cursor: StreamCursor,
+                ) {
+                    test(search: $search, where: $where, order: $order, limit: $limit, cursor: $cursor) {
+                        items {
+                            id
+                            value
+                        }
+                        length
+                        navigator {
+                            previous
+                            current
+                            next
+                        }
+                    }
+                }
+                GRAPHQL,
+                [
+                    'search' => '*',
+                    'where'  => $where,
+                    'order'  => $order,
+                    'limit'  => $limit,
+                    'cursor' => $cursor,
+                ],
+            )
+            ->assertThat(
+                new Response(
+                    new Ok(),
+                    new JsonContentType(),
+                    new JsonBody(
+                        new JsonMatchesFragment($path, $body),
+                    ),
+                ),
+            );
+    }
+
     public function testManipulateFieldDefinition(): void {
         config([
             'lighthouse.namespaces.models' => [
@@ -1020,6 +1220,243 @@ class DirectiveTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<string, array{
+     *      Exception|array<string,mixed>|string,
+     *      Closure(static): void,
+     *      array<string, mixed>|null,
+     *      array<int, mixed>|null,
+     *      int,
+     *      string|int|null,
+     *      }>
+     */
+    public static function dataProviderDirective(): array {
+        return [
+            'invalid limit: too low'         => [
+                'Validation failed for the field [test].',
+                static function (): void {
+                    // empty
+                },
+                null,
+                null,
+                -123,
+                null,
+            ],
+            'invalid limit: too big'         => [
+                'Validation failed for the field [test].',
+                static function (): void {
+                    // empty
+                },
+                null,
+                null,
+                12_345,
+                null,
+            ],
+            'invalid cursor: negative value' => [
+                'Variable "$cursor" got invalid value -1; The offset must be greater or equal to 0.',
+                static function (): void {
+                    // empty
+                },
+                null,
+                null,
+                25,
+                -1,
+            ],
+            'invalid cursor: not a cursor'   => [
+                'Variable "$cursor" got invalid value "not a cursor"; The Cursor is not valid.',
+                static function (): void {
+                    // empty
+                },
+                null,
+                null,
+                25,
+                'not a cursor',
+            ],
+            'first page'                     => [
+                [
+                    'items'     => [
+                        [
+                            'id'    => '2dd0bb15-6df9-4490-8b95-4af55f6e0c7a',
+                            'value' => 'b',
+                        ],
+                        [
+                            'id'    => '3254df8a-c3ad-4a52-b664-d24807402d76',
+                            'value' => 'c',
+                        ],
+                    ],
+                    'length'    => 3,
+                    'navigator' => [
+                        'previous' => null,
+                        'current'  => '{"path":"test","cursor":null,"offset":0}',
+                        'next'     => '{"path":"test","cursor":null,"offset":2}',
+                    ],
+                ],
+                static function (): void {
+                    TestObject::factory()->create([
+                        'id'    => '99187829-9c6c-4f4f-a206-54dc8a552165',
+                        'value' => 'a',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => '2dd0bb15-6df9-4490-8b95-4af55f6e0c7a',
+                        'value' => 'b',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => '3254df8a-c3ad-4a52-b664-d24807402d76',
+                        'value' => 'c',
+                    ]);
+                },
+                null,
+                null,
+                2,
+                null,
+            ],
+            'second page: cursor'            => [
+                [
+                    'items'     => [
+                        [
+                            'id'    => '99187829-9c6c-4f4f-a206-54dc8a552165',
+                            'value' => 'a',
+                        ],
+                    ],
+                    'length'    => 3,
+                    'navigator' => [
+                        'previous' => '{"path":"test","cursor":null,"offset":0}',
+                        'current'  => '{"path":"test","cursor":null,"offset":2}',
+                        'next'     => null,
+                    ],
+                ],
+                static function (): void {
+                    TestObject::factory()->create([
+                        'id'    => '99187829-9c6c-4f4f-a206-54dc8a552165',
+                        'value' => 'a',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => '2dd0bb15-6df9-4490-8b95-4af55f6e0c7a',
+                        'value' => 'b',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => '3254df8a-c3ad-4a52-b664-d24807402d76',
+                        'value' => 'c',
+                    ]);
+                },
+                null,
+                null,
+                2,
+                '{"path":"test","cursor":null,"offset":2}',
+            ],
+            'second page: offset'            => [
+                [
+                    'items'     => [
+                        [
+                            'id'    => '99187829-9c6c-4f4f-a206-54dc8a552165',
+                            'value' => 'a',
+                        ],
+                    ],
+                    'length'    => 3,
+                    'navigator' => [
+                        'previous' => '{"path":"test","cursor":null,"offset":0}',
+                        'current'  => '{"path":"test","cursor":null,"offset":2}',
+                        'next'     => null,
+                    ],
+                ],
+                static function (): void {
+                    TestObject::factory()->create([
+                        'id'    => '99187829-9c6c-4f4f-a206-54dc8a552165',
+                        'value' => 'a',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => '2dd0bb15-6df9-4490-8b95-4af55f6e0c7a',
+                        'value' => 'b',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => '3254df8a-c3ad-4a52-b664-d24807402d76',
+                        'value' => 'c',
+                    ]);
+                },
+                null,
+                null,
+                2,
+                2,
+            ],
+            'search'                         => [
+                [
+                    'items'     => [
+                        [
+                            'id'    => '6aea881f-2b50-4295-ac4f-afed3430e6cd',
+                            'value' => 'b',
+                        ],
+                    ],
+                    'length'    => 1,
+                    'navigator' => [
+                        'previous' => null,
+                        'current'  => '{"path":"test","cursor":null,"offset":0}',
+                        'next'     => null,
+                    ],
+                ],
+                static function (): void {
+                    TestObject::factory()->create([
+                        'id'    => '19d56286-0bb6-4b3a-a808-896a157b1f0f',
+                        'value' => 'a',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => '6aea881f-2b50-4295-ac4f-afed3430e6cd',
+                        'value' => 'b',
+                    ]);
+                },
+                [
+                    'value' => ['equal' => 'b'],
+                ],
+                null,
+                25,
+                null,
+            ],
+            'sort'                           => [
+                [
+                    'items'     => [
+                        [
+                            'id'    => '8f1a92ce-2da3-4119-8a87-1395d86fe4eb',
+                            'value' => 'a',
+                        ],
+                        [
+                            'id'    => 'b7af5747-5ac7-437e-8f6f-341c4df17aea',
+                            'value' => 'b',
+                        ],
+                        [
+                            'id'    => 'dea39eea-c033-4ce0-bbdd-ac22afe25bc5',
+                            'value' => 'b',
+                        ],
+                    ],
+                    'length'    => 3,
+                    'navigator' => [
+                        'previous' => null,
+                        'current'  => '{"path":"test","cursor":null,"offset":0}',
+                        'next'     => null,
+                    ],
+                ],
+                static function (): void {
+                    TestObject::factory()->create([
+                        'id'    => 'dea39eea-c033-4ce0-bbdd-ac22afe25bc5',
+                        'value' => 'b',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => '8f1a92ce-2da3-4119-8a87-1395d86fe4eb',
+                        'value' => 'a',
+                    ]);
+                    TestObject::factory()->create([
+                        'id'    => 'b7af5747-5ac7-437e-8f6f-341c4df17aea',
+                        'value' => 'b',
+                    ]);
+                },
+                null,
+                [
+                    ['value' => 'asc'],
+                ],
+                25,
+                null,
+            ],
+        ];
+    }
+
     /**
      * @return array<string, array{
      *      Exception|BuilderInfo|null,

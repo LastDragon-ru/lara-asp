@@ -77,8 +77,8 @@ class Cursor extends ScalarType implements TypeDefinition {
             try {
                 $value = $this->decrypt($value);
                 $value = $this->getSerializer()->deserialize(StreamCursor::class, $value, 'json');
-            } catch (Exception $exception) {
-                throw new Error('The Cursor is not valid.', previous: $exception);
+            } catch (Exception) {
+                throw new Error('The Cursor is not valid.');
             }
         } else {
             $value = $this->validate($value, Error::class);

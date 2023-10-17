@@ -58,6 +58,7 @@ use Nuwave\Lighthouse\Support\Contracts\FieldManipulator;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use Nuwave\Lighthouse\Support\Contracts\ProvidesResolver;
+use Nuwave\Lighthouse\Validation\ValidateDirective;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -268,6 +269,12 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             StreamCursorDirective::class,
             StreamCursorDirective::settings()['name'],
             $manipulator::Placeholder,
+        );
+
+        // @validate (required to validation)
+        $manipulator->addDirective(
+            $fieldDefinition,
+            ValidateDirective::class,
         );
 
         // Update type
