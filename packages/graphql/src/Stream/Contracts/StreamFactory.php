@@ -34,8 +34,6 @@ interface StreamFactory {
     /**
      * @param TBuilder    $builder
      * @param int<1, max> $limit
-     *
-     * @return Stream<TBuilder>
      */
     public function create(
         object $builder,

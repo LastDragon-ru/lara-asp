@@ -35,7 +35,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Stream;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -80,6 +80,7 @@ class DirectiveTest extends TestCase {
     }
 
     // </editor-fold>
+
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testManipulateFieldDefinition(): void {
@@ -680,6 +681,25 @@ class DirectiveTest extends TestCase {
             /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct() {
                 // empty
+            }
+
+            /**
+             * @inheritDoc
+             */
+            public function getItems(): iterable {
+                return [];
+            }
+
+            public function getLength(): ?int {
+                return null;
+            }
+
+            public function getNextCursor(): ?StreamCursor {
+                return null;
+            }
+
+            public function getPreviousCursor(): ?StreamCursor {
+                return null;
             }
 
             /**

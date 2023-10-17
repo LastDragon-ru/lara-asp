@@ -9,12 +9,15 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\Stream as StreamContract;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory as StreamFactoryContract;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Database;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Scout;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 use function is_a;
 
 /**
+ * @internal
  * @implements StreamFactoryContract<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder>
  */
 class StreamFactory implements StreamFactoryContract {
@@ -47,6 +50,8 @@ class StreamFactory implements StreamFactoryContract {
     }
 
     public function create(object $builder, string $key, Cursor $cursor, int $limit): StreamContract {
-        return new Stream($builder, $key, $cursor, $limit);
+        return $builder instanceof ScoutBuilder
+            ? new Scout($builder, $key, $cursor, $limit)
+            : new Database($builder, $key, $cursor, $limit);
     }
 }

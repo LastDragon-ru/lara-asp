@@ -4,9 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Contracts;
 
 use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
 
-/**
- * @template TBuilder of object
- */
 interface Stream {
     /**
      * @return iterable<array-key, mixed>
