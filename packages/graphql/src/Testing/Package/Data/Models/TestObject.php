@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutTimestamps;
 
 /**
@@ -15,6 +16,7 @@ use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutTimestamps;
  */
 class TestObject extends Model {
     use HasFactory;
+    use Searchable;
     use WithoutTimestamps;
 
     /**

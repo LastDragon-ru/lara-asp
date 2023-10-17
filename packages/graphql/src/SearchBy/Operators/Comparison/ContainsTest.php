@@ -47,7 +47,7 @@ class ContainsTest extends TestCase {
         $grammar = new $grammar();
 
         if ($builder instanceof EloquentBuilder) {
-            $builder->toBase()->grammar = $grammar;
+            $builder->getQuery()->grammar = $grammar;
         } else {
             $builder->grammar = $grammar;
         }
