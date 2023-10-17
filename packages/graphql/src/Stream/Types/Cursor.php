@@ -14,7 +14,7 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\Utils;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Contracts\Encryption\StringEncrypter;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
@@ -44,8 +44,8 @@ class Cursor extends ScalarType implements TypeDefinition {
 
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
-    protected function getEncrypter(): Encrypter {
-        return Container::getInstance()->make(Encrypter::class);
+    protected function getEncrypter(): StringEncrypter {
+        return Container::getInstance()->make(StringEncrypter::class);
     }
 
     protected function getSerializer(): Serializer {
@@ -138,11 +138,11 @@ class Cursor extends ScalarType implements TypeDefinition {
     }
 
     protected function encrypt(string $value): string {
-        return $this->getEncrypter()->encrypt($value, false);
+        return $this->getEncrypter()->encryptString($value);
     }
 
     protected function decrypt(string $value): string {
-        return Cast::toString($this->getEncrypter()->decrypt($value, false));
+        return Cast::toString($this->getEncrypter()->decryptString($value));
     }
     // </editor-fold>
 
