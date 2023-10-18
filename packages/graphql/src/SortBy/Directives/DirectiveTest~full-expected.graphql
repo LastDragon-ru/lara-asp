@@ -557,8 +557,8 @@ interface Placeholder {
 
 interface Scout {
     scout(
-        order: [SortByScoutClauseProperties!]
         search: String
+        order: [SortByScoutClauseProperties!]
     ): ID!
 }
 
@@ -671,11 +671,11 @@ implements
     )
 
     scout(
-        order: [SortByScoutClauseProperties!]
-        @sortBy
-
         search: String
         @search
+
+        order: [SortByScoutClauseProperties!]
+        @sortBy
     ): ID!
     @all
 }

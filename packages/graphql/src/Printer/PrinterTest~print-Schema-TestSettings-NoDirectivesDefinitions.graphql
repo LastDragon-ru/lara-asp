@@ -131,17 +131,17 @@ type Query {
 
     c(
         a: SchemaInput = {
-            a: "aaa"
-            b: A
-            c: "ccc"
-            d: A
             e: {
-                a: "aaa"
-                b: A
-                c: "ccc"
-                d: A
                 f: ["aaa", "bbb", "ccc", "ddd"]
+                d: A
+                c: "ccc"
+                b: A
+                a: "aaa"
             }
+            d: A
+            c: "ccc"
+            b: A
+            a: "aaa"
         }
     ): CodeScalar
     @mock

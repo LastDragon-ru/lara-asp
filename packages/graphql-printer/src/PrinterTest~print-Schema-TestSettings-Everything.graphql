@@ -17,8 +17,8 @@ on
 Directive description
 """
 directive @directive(
-    hidden: InputHidden
     location: String
+    hidden: InputHidden
 )
 repeatable on
     | ARGUMENT_DEFINITION
@@ -174,12 +174,12 @@ scalar String
 
 type Mutation {
     mutate(
-        a: InputA
-
         scalar: Int! = 123
         @directive(
             location: "argument"
         )
+
+        a: InputA
     ): [TypeB!]
 }
 
@@ -196,13 +196,13 @@ type Query {
     scalar: Scalar
 
     type(
-        a: InputA
-
         scalar: Int! = 123
         @directive(
-            hidden: null
             location: "argument"
+            hidden: null
         )
+
+        a: InputA
     ): TypeA!
 
     union: Union

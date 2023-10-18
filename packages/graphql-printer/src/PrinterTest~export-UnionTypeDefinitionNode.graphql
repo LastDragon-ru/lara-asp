@@ -5,8 +5,8 @@
     Directive description
     """
     directive @directive(
-        hidden: InputHidden
         location: String
+        hidden: InputHidden
     )
     repeatable on
         | ARGUMENT_DEFINITION

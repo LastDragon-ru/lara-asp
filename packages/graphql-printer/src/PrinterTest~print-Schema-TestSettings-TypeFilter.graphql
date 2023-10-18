@@ -132,12 +132,12 @@ scalar Scalar
 
 type Mutation {
     mutate(
-        a: InputA
-
         scalar: Int! = 123
         @directive(
             location: "argument"
         )
+
+        a: InputA
     ): [TypeB!]
 }
 
@@ -149,12 +149,12 @@ type Query {
     scalar: Scalar
 
     type(
-        a: InputA
-
         scalar: Int! = 123
         @directive(
             location: "argument"
         )
+
+        a: InputA
     ): TypeA!
 
     union: Union

@@ -54,25 +54,6 @@ by an offset or a cursor.
 """
 directive @stream(
     """
-    Overrides default builder. Useful if the standard detection
-    algorithm doesn't fit/work. By default, the directive will use
-    the field and its type to determine the Builder to query.
-    """
-    builder: StreamBuilder
-
-    """
-    Overrides default unique key. Useful if the standard detection
-    algorithm doesn't fit/work. By default, the directive will use
-    the name of field with `ID!` type.
-    """
-    key: String
-
-    """
-    Overrides default limit.
-    """
-    limit: Int
-
-    """
     Overrides default searchable status.
     """
     searchable: Boolean
@@ -81,6 +62,25 @@ directive @stream(
     Overrides default sortable status.
     """
     sortable: Boolean
+
+    """
+    Overrides default builder. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the field and its type to determine the Builder to query.
+    """
+    builder: StreamBuilder
+
+    """
+    Overrides default limit.
+    """
+    limit: Int
+
+    """
+    Overrides default unique key. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the name of field with `ID!` type.
+    """
+    key: String
 )
 on
     | FIELD_DEFINITION
@@ -217,10 +217,10 @@ input StreamBuilder {
 interface InterfaceA {
     fieldWithArguments(
         argument: String
-        cursor: StreamCursor
-        limit: Int!
-        order: [SortByClauseTestObject!]
         where: SearchByConditionTestObject
+        order: [SortByClauseTestObject!]
+        limit: Int!
+        cursor: StreamCursor
     ): TestObjectsStream!
 }
 
@@ -229,9 +229,9 @@ implements
     & InterfaceC
 {
     fieldNotSearchable(
-        cursor: StreamCursor
-        limit: Int!
         order: [SortByClauseTestObject!]
+        limit: Int!
+        cursor: StreamCursor
     ): TestObjectsStream!
 }
 
@@ -263,11 +263,8 @@ implements
     & InterfaceB
 {
     fieldNotSearchable(
-        """
-        The cursor or offset within the stream to start.
-        """
-        cursor: StreamCursor
-        @streamCursor
+        order: [SortByClauseTestObject!]
+        @sortBy
 
         """
         Maximum count of items to return. The value must be between `1` and `100`.
@@ -278,8 +275,11 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        order: [SortByClauseTestObject!]
-        @sortBy
+        """
+        The cursor or offset within the stream to start.
+        """
+        cursor: StreamCursor
+        @streamCursor
     ): TestObjectsStream!
     @stream(
         searchable: false
@@ -287,11 +287,8 @@ implements
     @validate
 
     fieldNotSortable(
-        """
-        The cursor or offset within the stream to start.
-        """
-        cursor: StreamCursor
-        @streamCursor
+        where: SearchByConditionTestObject
+        @searchBy
 
         """
         Maximum count of items to return. The value must be between `1` and `100`.
@@ -302,8 +299,11 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        where: SearchByConditionTestObject
-        @searchBy
+        """
+        The cursor or offset within the stream to start.
+        """
+        cursor: StreamCursor
+        @streamCursor
     ): TestObjectsStream!
     @stream(
         sortable: false
@@ -313,11 +313,11 @@ implements
     fieldWithArguments(
         argument: String
 
-        """
-        The cursor or offset within the stream to start.
-        """
-        cursor: StreamCursor
-        @streamCursor
+        where: SearchByConditionTestObject
+        @searchBy
+
+        order: [SortByClauseTestObject!]
+        @sortBy
 
         """
         Maximum count of items to return. The value must be between `1` and `100`.
@@ -328,11 +328,11 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        order: [SortByClauseTestObject!]
-        @sortBy
-
-        where: SearchByConditionTestObject
-        @searchBy
+        """
+        The cursor or offset within the stream to start.
+        """
+        cursor: StreamCursor
+        @streamCursor
     ): TestObjectsStream!
     @stream
     @validate
@@ -362,15 +362,15 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        cursor: StreamCursor
-        @streamCursor
-
-        """
-        The cursor or offset within the stream to start.
-        """
         d: StreamCursor
         @deprecated
         @streamCursor
+
+        where: SearchByConditionTestObject
+        @searchBy
+
+        order: [SortByClauseTestObject!]
+        @sortBy
 
         """
         Maximum count of items to return. The value must be between `1` and `100`.
@@ -383,11 +383,11 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        order: [SortByClauseTestObject!]
-        @sortBy
-
-        where: SearchByConditionTestObject
-        @searchBy
+        """
+        The cursor or offset within the stream to start.
+        """
+        cursor: StreamCursor
+        @streamCursor
     ): TestObjectsStream!
     @stream(
         limit: 15
@@ -452,39 +452,14 @@ implements
     @validate
 
     fieldWithSearch(
-        """
-        The cursor or offset within the stream to start.
-        """
-        cursor: StreamCursor
-        @streamCursor
-
-        """
-        Maximum count of items to return. The value must be between `1` and `100`.
-        """
-        limit: Int! = 25
-        @streamLimit
-        @rules(
-            apply: ["integer", "min:1", "max:100"]
-        )
-
-        order: [SortByScoutClauseTestObject!]
-        @sortBy
-
         search: String!
         @search
 
         where: SearchByScoutConditionTestObject
         @searchBy
-    ): TestObjectsStream!
-    @stream
-    @validate
 
-    fieldWithoutArguments(
-        """
-        The cursor or offset within the stream to start.
-        """
-        cursor: StreamCursor
-        @streamCursor
+        order: [SortByScoutClauseTestObject!]
+        @sortBy
 
         """
         Maximum count of items to return. The value must be between `1` and `100`.
@@ -495,11 +470,36 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
+        """
+        The cursor or offset within the stream to start.
+        """
+        cursor: StreamCursor
+        @streamCursor
+    ): TestObjectsStream!
+    @stream
+    @validate
+
+    fieldWithoutArguments(
+        where: SearchByConditionTestObject
+        @searchBy
+
         order: [SortByClauseTestObject!]
         @sortBy
 
-        where: SearchByConditionTestObject
-        @searchBy
+        """
+        Maximum count of items to return. The value must be between `1` and `100`.
+        """
+        limit: Int! = 25
+        @streamLimit
+        @rules(
+            apply: ["integer", "min:1", "max:100"]
+        )
+
+        """
+        The cursor or offset within the stream to start.
+        """
+        cursor: StreamCursor
+        @streamCursor
     ): TestObjectsStream!
     @stream
     @validate
