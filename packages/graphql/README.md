@@ -60,6 +60,12 @@ Probably the most powerful directive to provide sort (`order by` conditions) for
 
 [Read more](<docs/Directives/@sortBy.md>).
 
+## `@stream` 🧪
+
+Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform way to perform Offset/Limit and Cursor pagination of Eloquent/Query/Scout builders. Filtering and sorting enabled by default via [`@searchBy`][pkg:graphql#@searchBy] and [`@sortBy`][pkg:graphql#@sortBy] directives.
+
+[Read more](<docs/Directives/@stream.md>).
+
 [//]: # (end: ac98e04e18d99ce0a6af07947adce086ad2450bda152abe31548ebe09831ec9a)
 
 # Scalars
@@ -468,6 +474,10 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 [//]: # (start: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
+[pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
+
+[pkg:graphql#@sortBy]:   https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
+
+[pkg:graphql-printer]:   https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
 
 [//]: # (end: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)
