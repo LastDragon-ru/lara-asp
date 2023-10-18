@@ -7,6 +7,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  * GraphQL Settings
  * -----------------------------------------------------------------------------
  *
+ * Note: You need to clear/rebuild the cached schema and IDE helper files after change.
+ *
+ * @see https://lighthouse-php.com/master/api-reference/commands.html#clear-cache
+ * @see https://lighthouse-php.com/master/api-reference/commands.html#ide-helper
+ *
  * @var array{
  *      search_by: array{
  *          operators: array<string, list<string|class-string<Operator>>>,
@@ -14,6 +19,24 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *      sort_by: array{
  *          operators: array<string, list<string|class-string<Operator>>>,
  *      },
+ *      stream: array{
+ *          search: array{
+ *              name: string,
+ *              enabled: bool,
+ *          },
+ *          sort: array{
+ *              name: string,
+ *              enabled: bool,
+ *          },
+ *          limit: array{
+ *              name: string,
+ *              default: int<1, max>,
+ *              max: int<1, max>,
+ *          },
+ *          cursor: array{
+ *              name: string,
+ *          }
+ *      }
  *      } $settings
  */
 $settings = [
@@ -54,6 +77,28 @@ $settings = [
          */
         'operators' => [
             // empty
+        ],
+    ],
+
+    /**
+     * Settings for {@see \LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective @stream} directive.
+     */
+    'stream'    => [
+        'search' => [
+            'name'    => 'where',
+            'enabled' => true,
+        ],
+        'sort'   => [
+            'name'    => 'order',
+            'enabled' => true,
+        ],
+        'limit'  => [
+            'name'    => 'limit',
+            'default' => 25,
+            'max'     => 100,
+        ],
+        'cursor' => [
+            'name' => 'cursor',
         ],
     ],
 ];

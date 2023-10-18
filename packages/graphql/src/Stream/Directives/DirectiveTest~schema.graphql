@@ -1,0 +1,71 @@
+type Query implements InterfaceA & InterfaceB {
+    fieldWithoutArguments: [TestObject] @stream
+
+    fieldWithArguments(argument: String): [TestObject] @stream
+
+    fieldWithDirectives(
+        a: _ @searchBy,
+        b: _ @sortBy
+        c: _ = 123
+        @streamLimit(
+            default: 15
+            max: 10
+        )
+        d: _ @streamCursor
+    ): [TestObject] @stream
+
+    fieldWithDirectivesAndDefaults(
+        a: _ @searchBy,
+        b: _ @sortBy
+        c: _ = 123
+        @streamLimit(
+            default: 123
+        )
+        d: _ @streamCursor
+    ): [TestObject]
+    @stream(
+        limit: 15
+    )
+
+    fieldNotSearchable: [TestObject] @stream(searchable: false)
+
+    fieldNotSortable: [TestObject] @stream(sortable: false)
+
+    fieldWithDeprecations(
+        a: _ @deprecated @searchBy,
+        b: _ @deprecated @sortBy
+        c: _ = 123
+        @deprecated
+        @streamLimit(
+            default: 123
+            max: 123
+        )
+        d: _ @deprecated @streamCursor
+    ): [TestObject]
+    @stream(
+        limit: 15
+    )
+
+    fieldWithSearch(search: String! @search): [TestObject] @stream
+}
+
+type TestObject {
+    id: ID!
+}
+
+interface InterfaceA {
+    fieldWithArguments(argument: String): [TestObject]
+}
+
+interface InterfaceB implements InterfaceC {
+    fieldNotSearchable: [TestObject]
+}
+
+interface InterfaceC {
+    fieldWithDirectives(
+        a: TypeDoesntMatter,
+        b: TypeDoesntMatter,
+        c: TypeDoesntMatter,
+        d: TypeDoesntMatter,
+    ): [TestObject]
+}

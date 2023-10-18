@@ -328,6 +328,24 @@ class ManipulatorTest extends TestCase {
                 }
                 GRAPHQL,
             ],
+            '@stream'                     => [
+                'Test',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @stream(
+                        key: "id"
+                        builder: {
+                            model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        }
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
         ];
     }
     //</editor-fold>

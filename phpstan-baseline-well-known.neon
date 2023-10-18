@@ -58,6 +58,13 @@ parameters:
                 - packages/testing/src/Package/TestCase.php
                 - packages/testing/src/TestCase.php
 
+        # False positive
+        # https://github.com/phpstan/phpstan-mockery/issues/18
+        -
+            message: "#^Call to protected method getResolver\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
+            paths:
+                - packages/graphql/src/Stream/Directives/DirectiveTest.php
+
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149
         # https://github.com/phpstan/phpstan/issues/8904

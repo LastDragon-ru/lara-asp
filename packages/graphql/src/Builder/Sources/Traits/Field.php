@@ -2,10 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits;
 
+use Closure;
+use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Type\Definition\Argument;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 use function count;
 
@@ -14,6 +19,10 @@ use function count;
  * @internal
  */
 trait Field {
+    public function getName(): string {
+        return $this->getManipulator()->getName($this->getField());
+    }
+
     public function hasArguments(): bool {
         $node = $this->getField();
         $args = false;
@@ -27,10 +36,25 @@ trait Field {
         return $args;
     }
 
-    public function __toString(): string {
+    /**
+     * @param Closure(InputValueDefinitionNode|Argument|ArgumentNode, AstManipulator): bool $closure
+     */
+    public function hasArgument(Closure $closure): bool {
         $manipulator = $this->getManipulator();
-        $field       = $manipulator->getName($this->getField());
-        $type        = $manipulator->getTypeFullName($this->getObject());
+        $node        = $this->getField();
+        $arg         = $manipulator->findArgument(
+            $node,
+            static function (mixed $argument) use ($manipulator, $closure): bool {
+                return $closure($argument, $manipulator);
+            },
+        );
+
+        return $arg !== null;
+    }
+
+    public function __toString(): string {
+        $field = $this->getName();
+        $type  = $this->getManipulator()->getTypeFullName($this->getObject());
 
         return "{$type} { {$field} }";
     }

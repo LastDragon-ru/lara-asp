@@ -2,11 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
+use Closure;
+use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
@@ -38,6 +41,13 @@ class InputFieldSource extends Source {
     }
 
     public function hasArguments(): bool {
+        return false;
+    }
+
+    /**
+     * @param Closure(InputValueDefinitionNode|Argument|ArgumentNode, AstManipulator): bool $closure
+     */
+    public function hasArgument(Closure $closure): bool {
         return false;
     }
     // </editor-fold>

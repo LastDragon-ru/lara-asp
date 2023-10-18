@@ -18,11 +18,13 @@ use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
+use LastDragon_ru\LaraASP\Serializer\Provider as SerializerProvider;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthousTestingServiceProvider;
+use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthouseTestingServiceProvider;
+use Nuwave\Lighthouse\Validation\ValidationServiceProvider as LighthouseValidationServiceProvider;
 use ReflectionClass;
 use SplFileInfo;
 
@@ -44,8 +46,10 @@ class TestCase extends PackageTestCase {
         return [
             Provider::class,
             TestProvider::class,
+            SerializerProvider::class,
             LighthouseServiceProvider::class,
-            LighthousTestingServiceProvider::class,
+            LighthouseTestingServiceProvider::class,
+            LighthouseValidationServiceProvider::class,
         ];
     }
 

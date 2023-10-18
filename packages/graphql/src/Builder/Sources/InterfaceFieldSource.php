@@ -3,10 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
+use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\Type;
@@ -35,6 +37,22 @@ class InterfaceFieldSource extends Source {
 
     public function getField(): FieldDefinition|FieldDefinitionNode {
         return $this->field;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Helpers">
+    // =================================================================================================================
+    public function getParent(): InterfaceSource {
+        return new InterfaceSource($this->getManipulator(), $this->getObject());
+    }
+
+    public function getArgument(InputValueDefinitionNode|Argument $argument): InterfaceFieldArgumentSource {
+        return new InterfaceFieldArgumentSource(
+            $this->getManipulator(),
+            $this->getObject(),
+            $this->getField(),
+            $argument,
+        );
     }
     // </editor-fold>
 }
