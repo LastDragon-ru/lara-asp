@@ -159,7 +159,7 @@ class DirectiveTest extends TestCase {
                             value
                         }
                         length
-                        navigator {
+                        navigation {
                             previous
                             current
                             next
@@ -256,7 +256,7 @@ class DirectiveTest extends TestCase {
                             value
                         }
                         length
-                        navigator {
+                        navigation {
                             previous
                             current
                             next
@@ -1274,7 +1274,7 @@ class DirectiveTest extends TestCase {
             ],
             'first page'                     => [
                 [
-                    'items'     => [
+                    'items'      => [
                         [
                             'id'    => '2dd0bb15-6df9-4490-8b95-4af55f6e0c7a',
                             'value' => 'b',
@@ -1284,8 +1284,8 @@ class DirectiveTest extends TestCase {
                             'value' => 'c',
                         ],
                     ],
-                    'length'    => 3,
-                    'navigator' => [
+                    'length'     => 3,
+                    'navigation' => [
                         'previous' => null,
                         'current'  => '{"path":"test","cursor":null,"offset":0}',
                         'next'     => '{"path":"test","cursor":null,"offset":2}',
@@ -1312,14 +1312,14 @@ class DirectiveTest extends TestCase {
             ],
             'second page: cursor'            => [
                 [
-                    'items'     => [
+                    'items'      => [
                         [
                             'id'    => '99187829-9c6c-4f4f-a206-54dc8a552165',
                             'value' => 'a',
                         ],
                     ],
-                    'length'    => 3,
-                    'navigator' => [
+                    'length'     => 3,
+                    'navigation' => [
                         'previous' => '{"path":"test","cursor":null,"offset":0}',
                         'current'  => '{"path":"test","cursor":null,"offset":2}',
                         'next'     => null,
@@ -1346,14 +1346,14 @@ class DirectiveTest extends TestCase {
             ],
             'second page: offset'            => [
                 [
-                    'items'     => [
+                    'items'      => [
                         [
                             'id'    => '99187829-9c6c-4f4f-a206-54dc8a552165',
                             'value' => 'a',
                         ],
                     ],
-                    'length'    => 3,
-                    'navigator' => [
+                    'length'     => 3,
+                    'navigation' => [
                         'previous' => '{"path":"test","cursor":null,"offset":0}',
                         'current'  => '{"path":"test","cursor":null,"offset":2}',
                         'next'     => null,
@@ -1380,14 +1380,14 @@ class DirectiveTest extends TestCase {
             ],
             'search'                         => [
                 [
-                    'items'     => [
+                    'items'      => [
                         [
                             'id'    => '6aea881f-2b50-4295-ac4f-afed3430e6cd',
                             'value' => 'b',
                         ],
                     ],
-                    'length'    => 1,
-                    'navigator' => [
+                    'length'     => 1,
+                    'navigation' => [
                         'previous' => null,
                         'current'  => '{"path":"test","cursor":null,"offset":0}',
                         'next'     => null,
@@ -1412,7 +1412,7 @@ class DirectiveTest extends TestCase {
             ],
             'sort'                           => [
                 [
-                    'items'     => [
+                    'items'      => [
                         [
                             'id'    => '8f1a92ce-2da3-4119-8a87-1395d86fe4eb',
                             'value' => 'a',
@@ -1426,8 +1426,8 @@ class DirectiveTest extends TestCase {
                             'value' => 'b',
                         ],
                     ],
-                    'length'    => 3,
-                    'navigator' => [
+                    'length'     => 3,
+                    'navigation' => [
                         'previous' => null,
                         'current'  => '{"path":"test","cursor":null,"offset":0}',
                         'next'     => null,

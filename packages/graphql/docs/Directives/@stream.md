@@ -117,7 +117,7 @@ query example(
             value
         }
         length
-        navigator {
+        navigation {
             previous
             current
             next

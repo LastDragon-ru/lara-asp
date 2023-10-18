@@ -11,13 +11,13 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
 
-class Navigator implements TypeDefinition {
+class Navigation implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
-        return Directive::Name.'Navigator';
+        return Directive::Name.'Navigation';
     }
 
     public function getTypeDefinition(

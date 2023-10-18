@@ -310,9 +310,21 @@ type Car {
 }
 
 type CarsStream {
+    """
+    Requested items.
+    """
     items: [Car!]!
+
+    """
+    Total number of items. Not recommended querying it in each query
+    due to performance.
+    """
     length: Int
-    navigator: StreamNavigator!
+
+    """
+    Cursors to navigate within the stream.
+    """
+    navigation: StreamNavigation!
 }
 
 type Query
@@ -563,7 +575,7 @@ implements
     @validate
 }
 
-type StreamNavigator {
+type StreamNavigation {
     current: StreamCursor!
     next: StreamCursor
     previous: StreamCursor

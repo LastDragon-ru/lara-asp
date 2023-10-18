@@ -38,15 +38,27 @@ class Stream implements TypeDefinition {
         string $name,
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
-        $type      = $source->getTypeName();
-        $navigator = $manipulator->getType(Navigator::class, $source);
+        $type       = $source->getTypeName();
+        $navigation = $manipulator->getType(Navigation::class, $source);
 
         return Parser::objectTypeDefinition(
             <<<GRAPHQL
             type {$name} {
+                """
+                Requested items.
+                """
                 items: [{$type}!]!
+
+                """
+                Total number of items. Not recommended querying it in each query
+                due to performance.
+                """
                 length: Int
-                navigator: {$navigator}!
+
+                """
+                Cursors to navigate within the stream.
+                """
+                navigation: {$navigation}!
             }
             GRAPHQL,
         );
