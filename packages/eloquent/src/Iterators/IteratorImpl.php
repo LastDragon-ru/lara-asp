@@ -174,7 +174,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     protected function getDefaultLimit(): ?int {
-        $builder = $this->getBuilder()->toBase();
+        $builder = $this->getBuilder()->getQuery();
         $limit   = $builder->unions
             ? $builder->unionLimit
             : $builder->limit;
@@ -183,7 +183,7 @@ abstract class IteratorImpl implements Iterator {
     }
 
     protected function getDefaultOffset(): ?int {
-        $builder = $this->getBuilder()->toBase();
+        $builder = $this->getBuilder()->getQuery();
         $offset  = $builder->unions
             ? $builder->unionOffset
             : $builder->offset;
@@ -200,7 +200,7 @@ abstract class IteratorImpl implements Iterator {
 
     public function count(): int {
         $limit = $this->getLimit();
-        $count = $this->getBuilder()->toBase()->count();
+        $count = $this->getBuilder()->getQuery()->count();
         $count = $limit !== null ? min($limit, $count) : $count;
         $count = max(0, $count);
 

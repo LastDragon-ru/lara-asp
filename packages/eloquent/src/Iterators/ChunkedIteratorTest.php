@@ -98,7 +98,7 @@ class ChunkedIteratorTest extends TestCase {
 
         $query    = TestObject::query()->where('value', '<', 4)->limit(2)->orderByDesc('value');
         $second   = TestObject::query()->where('value', '>=', 4)->limit(2)->orderByDesc('value');
-        $iterator = new ChunkedIterator($query->union($second->toBase()));
+        $iterator = new ChunkedIterator($query->union($second->getQuery()));
         $actual   = iterator_to_array($iterator);
         $count    = (clone $query)->count();
         $expected = (clone $query)->get()->all();
@@ -117,7 +117,7 @@ class ChunkedIteratorTest extends TestCase {
 
         $query    = TestObject::query()->where('value', '<', 4)->limit(2)->orderByDesc('value');
         $second   = TestObject::query()->where('value', '>=', 4)->limit(2)->orderByDesc('value');
-        $iterator = new ChunkedIterator($query->union($second->toBase())->limit(3)->offset(1));
+        $iterator = new ChunkedIterator($query->union($second->getQuery())->limit(3)->offset(1));
         $actual   = iterator_to_array($iterator);
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();

@@ -28,7 +28,7 @@ class IteratorImplTest extends TestCase {
 
         $builder = Mockery::mock(EloquentBuilder::class);
         $builder
-            ->shouldReceive('toBase')
+            ->shouldReceive('getQuery')
             ->atLeast()
             ->once()
             ->andReturn($query);

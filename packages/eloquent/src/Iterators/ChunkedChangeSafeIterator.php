@@ -97,7 +97,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     }
 
     protected function hasUnions(): bool {
-        return (bool) $this->getBuilder()->toBase()->unions;
+        return (bool) $this->getBuilder()->getQuery()->unions;
     }
 
     protected function getDefaultOffset(): ?int {

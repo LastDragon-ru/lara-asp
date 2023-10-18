@@ -120,7 +120,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
     public function testGetIteratorUnion(): void {
         self::expectExceptionObject(new InvalidArgumentException('Query with UNION is not supported.'));
 
-        new ChunkedChangeSafeIterator(TestObject::query()->union(TestObject::query()->toBase()));
+        new ChunkedChangeSafeIterator(TestObject::query()->union(TestObject::query()->getQuery()));
     }
 
     /**

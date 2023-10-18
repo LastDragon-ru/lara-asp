@@ -87,7 +87,7 @@ class Relation extends BaseOperator {
         $operator = '>=';
 
         if ($hasCount instanceof Argument) {
-            $query    = $builder->toBase()->newQuery();
+            $query    = $builder->getQuery()->newQuery();
             $query    = $this->property->call($handler, $query, new Property(), $hasCount);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
