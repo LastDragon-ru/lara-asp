@@ -30,7 +30,7 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
-    "laravel/scout": "^9.2.1|^10.0.0",
+    "laravel/scout": "^9.8.0|^10.0.0",
     "mockery/mockery": "^1.4.4",
     "phpunit/phpunit": "^9.5.0|^10.1.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
