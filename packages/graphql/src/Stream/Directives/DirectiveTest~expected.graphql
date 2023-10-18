@@ -23,25 +23,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorIn
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorNot
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorNotEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorNotIn
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -160,24 +142,6 @@ input SearchByScalarID {
     """
     equal: ID
     @searchByOperatorEqual
-
-    """
-    Within a set of values.
-    """
-    in: [ID!]
-    @searchByOperatorIn
-
-    """
-    Not Equal (`!=`).
-    """
-    notEqual: ID
-    @searchByOperatorNotEqual
-
-    """
-    Outside a set of values.
-    """
-    notIn: [ID!]
-    @searchByOperatorNotIn
 }
 
 """
@@ -206,18 +170,6 @@ input SearchByScoutScalarID {
     """
     equal: ID
     @searchByOperatorEqual
-
-    """
-    Within a set of values.
-    """
-    in: [ID!]
-    @searchByOperatorIn
-
-    """
-    Outside a set of values.
-    """
-    notIn: [ID!]
-    @searchByOperatorNotIn
 }
 
 """

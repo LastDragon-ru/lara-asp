@@ -23,6 +23,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
+use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
@@ -285,8 +288,13 @@ class DirectiveTest extends TestCase {
 
     public function testManipulateFieldDefinition(): void {
         config([
-            'lighthouse.namespaces.models' => [
+            'lighthouse.namespaces.models'       => [
                 (new ReflectionClass(TestObject::class))->getNamespaceName(),
+            ],
+            Package::Name.'.search_by.operators' => [
+                Operators::ID => [
+                    SearchByOperatorEqualDirective::class,
+                ],
             ],
         ]);
 
