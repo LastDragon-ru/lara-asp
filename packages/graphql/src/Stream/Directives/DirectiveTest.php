@@ -286,7 +286,7 @@ class DirectiveTest extends TestCase {
     public function testManipulateFieldDefinition(): void {
         config([
             'lighthouse.namespaces.models' => [
-                (new ReflectionClass(Car::class))->getNamespaceName(),
+                (new ReflectionClass(TestObject::class))->getNamespaceName(),
             ],
         ]);
 

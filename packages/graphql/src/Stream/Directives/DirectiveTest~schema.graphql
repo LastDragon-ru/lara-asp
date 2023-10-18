@@ -1,7 +1,7 @@
 type Query implements InterfaceA & InterfaceB {
-    fieldWithoutArguments: [Car] @stream
+    fieldWithoutArguments: [TestObject] @stream
 
-    fieldWithArguments(argument: String): [Car] @stream
+    fieldWithArguments(argument: String): [TestObject] @stream
 
     fieldWithDirectives(
         a: _ @searchBy,
@@ -12,7 +12,7 @@ type Query implements InterfaceA & InterfaceB {
             max: 10
         )
         d: _ @streamCursor
-    ): [Car] @stream
+    ): [TestObject] @stream
 
     fieldWithDirectivesAndDefaults(
         a: _ @searchBy,
@@ -22,14 +22,14 @@ type Query implements InterfaceA & InterfaceB {
             default: 123
         )
         d: _ @streamCursor
-    ): [Car]
+    ): [TestObject]
     @stream(
         limit: 15
     )
 
-    fieldNotSearchable: [Car] @stream(searchable: false)
+    fieldNotSearchable: [TestObject] @stream(searchable: false)
 
-    fieldNotSortable: [Car] @stream(sortable: false)
+    fieldNotSortable: [TestObject] @stream(sortable: false)
 
     fieldWithDeprecations(
         a: _ @deprecated @searchBy,
@@ -41,24 +41,24 @@ type Query implements InterfaceA & InterfaceB {
             max: 123
         )
         d: _ @deprecated @streamCursor
-    ): [Car]
+    ): [TestObject]
     @stream(
         limit: 15
     )
 
-    fieldWithSearch(search: String! @search): [Car] @stream
+    fieldWithSearch(search: String! @search): [TestObject] @stream
 }
 
-type Car {
+type TestObject {
     id: ID!
 }
 
 interface InterfaceA {
-    fieldWithArguments(argument: String): [Car]
+    fieldWithArguments(argument: String): [TestObject]
 }
 
 interface InterfaceB implements InterfaceC {
-    fieldNotSearchable: [Car]
+    fieldNotSearchable: [TestObject]
 }
 
 interface InterfaceC {
@@ -67,5 +67,5 @@ interface InterfaceC {
         b: TypeDoesntMatter,
         c: TypeDoesntMatter,
         d: TypeDoesntMatter,
-    ): [Car]
+    ): [TestObject]
 }

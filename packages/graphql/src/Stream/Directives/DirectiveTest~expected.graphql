@@ -123,19 +123,19 @@ enum SortByTypeDirection {
 }
 
 """
-Available conditions for `type Car` (only one property allowed at a time).
+Available conditions for `type TestObject` (only one property allowed at a time).
 """
-input SearchByConditionCar {
+input SearchByConditionTestObject {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByConditionCar!]
+    allOf: [SearchByConditionTestObject!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByConditionCar!]
+    anyOf: [SearchByConditionTestObject!]
     @searchByOperatorAnyOf
 
     """
@@ -147,7 +147,7 @@ input SearchByConditionCar {
     """
     Not.
     """
-    not: SearchByConditionCar
+    not: SearchByConditionTestObject
     @searchByOperatorNot
 }
 
@@ -181,13 +181,13 @@ input SearchByScalarID {
 }
 
 """
-Available conditions for `type Car` (only one property allowed at a time).
+Available conditions for `type TestObject` (only one property allowed at a time).
 """
-input SearchByScoutConditionCar {
+input SearchByScoutConditionTestObject {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionCar!]
+    allOf: [SearchByScoutConditionTestObject!]
     @searchByOperatorAllOf
 
     """
@@ -221,9 +221,9 @@ input SearchByScoutScalarID {
 }
 
 """
-Sort clause for `type Car` (only one property allowed at a time).
+Sort clause for `type TestObject` (only one property allowed at a time).
 """
-input SortByClauseCar {
+input SortByClauseTestObject {
     """
     Property clause.
     """
@@ -232,9 +232,9 @@ input SortByClauseCar {
 }
 
 """
-Sort clause for `type Car` (only one property allowed at a time).
+Sort clause for `type TestObject` (only one property allowed at a time).
 """
-input SortByScoutClauseCar {
+input SortByScoutClauseTestObject {
     """
     Property clause.
     """
@@ -267,9 +267,9 @@ interface InterfaceA {
         argument: String
         cursor: StreamCursor
         limit: Int!
-        order: [SortByClauseCar!]
-        where: SearchByConditionCar
-    ): CarsStream!
+        order: [SortByClauseTestObject!]
+        where: SearchByConditionTestObject
+    ): TestObjectsStream!
 }
 
 interface InterfaceB
@@ -279,17 +279,17 @@ implements
     fieldNotSearchable(
         cursor: StreamCursor
         limit: Int!
-        order: [SortByClauseCar!]
-    ): CarsStream!
+        order: [SortByClauseTestObject!]
+    ): TestObjectsStream!
 }
 
 interface InterfaceC {
     fieldWithDirectives(
-        a: SearchByConditionCar
-        b: [SortByClauseCar!]
+        a: SearchByConditionTestObject
+        b: [SortByClauseTestObject!]
         c: Int!
         d: StreamCursor
-    ): CarsStream!
+    ): TestObjectsStream!
 }
 
 """
@@ -304,28 +304,6 @@ scalar StreamCursor
 @scalar(
     class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Cursor"
 )
-
-type Car {
-    id: ID!
-}
-
-type CarsStream {
-    """
-    Requested items.
-    """
-    items: [Car!]!
-
-    """
-    Total number of items. Not recommended querying it in each query
-    due to performance.
-    """
-    length: Int
-
-    """
-    Cursors to navigate within the stream.
-    """
-    navigation: StreamNavigation!
-}
 
 type Query
 implements
@@ -348,9 +326,9 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        order: [SortByClauseCar!]
+        order: [SortByClauseTestObject!]
         @sortBy
-    ): CarsStream!
+    ): TestObjectsStream!
     @stream(
         searchable: false
     )
@@ -372,9 +350,9 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        where: SearchByConditionCar
+        where: SearchByConditionTestObject
         @searchBy
-    ): CarsStream!
+    ): TestObjectsStream!
     @stream(
         sortable: false
     )
@@ -398,21 +376,21 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        order: [SortByClauseCar!]
+        order: [SortByClauseTestObject!]
         @sortBy
 
-        where: SearchByConditionCar
+        where: SearchByConditionTestObject
         @searchBy
-    ): CarsStream!
+    ): TestObjectsStream!
     @stream
     @validate
 
     fieldWithDeprecations(
-        a: SearchByConditionCar
+        a: SearchByConditionTestObject
         @deprecated
         @searchBy
 
-        b: [SortByClauseCar!]
+        b: [SortByClauseTestObject!]
         @deprecated
         @sortBy
 
@@ -453,22 +431,22 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        order: [SortByClauseCar!]
+        order: [SortByClauseTestObject!]
         @sortBy
 
-        where: SearchByConditionCar
+        where: SearchByConditionTestObject
         @searchBy
-    ): CarsStream!
+    ): TestObjectsStream!
     @stream(
         limit: 15
     )
     @validate
 
     fieldWithDirectives(
-        a: SearchByConditionCar
+        a: SearchByConditionTestObject
         @searchBy
 
-        b: [SortByClauseCar!]
+        b: [SortByClauseTestObject!]
         @sortBy
 
         """
@@ -488,15 +466,15 @@ implements
         """
         d: StreamCursor
         @streamCursor
-    ): CarsStream!
+    ): TestObjectsStream!
     @stream
     @validate
 
     fieldWithDirectivesAndDefaults(
-        a: SearchByConditionCar
+        a: SearchByConditionTestObject
         @searchBy
 
-        b: [SortByClauseCar!]
+        b: [SortByClauseTestObject!]
         @sortBy
 
         """
@@ -515,7 +493,7 @@ implements
         """
         d: StreamCursor
         @streamCursor
-    ): CarsStream!
+    ): TestObjectsStream!
     @stream(
         limit: 15
     )
@@ -537,15 +515,15 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        order: [SortByScoutClauseCar!]
+        order: [SortByScoutClauseTestObject!]
         @sortBy
 
         search: String!
         @search
 
-        where: SearchByScoutConditionCar
+        where: SearchByScoutConditionTestObject
         @searchBy
-    ): CarsStream!
+    ): TestObjectsStream!
     @stream
     @validate
 
@@ -565,12 +543,12 @@ implements
             apply: ["integer", "min:1", "max:100"]
         )
 
-        order: [SortByClauseCar!]
+        order: [SortByClauseTestObject!]
         @sortBy
 
-        where: SearchByConditionCar
+        where: SearchByConditionTestObject
         @searchBy
-    ): CarsStream!
+    ): TestObjectsStream!
     @stream
     @validate
 }
@@ -579,4 +557,26 @@ type StreamNavigation {
     current: StreamCursor!
     next: StreamCursor
     previous: StreamCursor
+}
+
+type TestObject {
+    id: ID!
+}
+
+type TestObjectsStream {
+    """
+    Requested items.
+    """
+    items: [TestObject!]!
+
+    """
+    Total number of items. Not recommended querying it in each query
+    due to performance.
+    """
+    length: Int
+
+    """
+    Cursors to navigate within the stream.
+    """
+    navigation: StreamNavigation!
 }
