@@ -88,10 +88,17 @@ abstract class ListBlock extends Block {
         // Sort
         if (count($blocks) > 0 && $this->isNormalized()) {
             usort($blocks, static function (Block $a, Block $b): int {
-                $aName = $a instanceof NamedBlock ? $a->getName() : '';
-                $bName = $b instanceof NamedBlock ? $b->getName() : '';
+                if ($a instanceof NamedBlock && $b instanceof NamedBlock) {
+                    return strnatcmp($a->getName(), $b->getName());
+                } elseif ($a instanceof NamedBlock) {
+                    return -1;
+                } elseif ($b instanceof NamedBlock) {
+                    return 1;
+                } else {
+                    // empty
+                }
 
-                return strnatcmp($aName, $bName);
+                return 0;
             });
         }
 

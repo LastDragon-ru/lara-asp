@@ -139,7 +139,7 @@ class Printer implements PrinterContract {
                 }
             }
         } else {
-            $this->process($collector, $context, $content, $level, $used);
+            $content[] = $this->process($collector, $context, $content, $level, $used);
         }
 
         return new ResultImpl($collector, $content->serialize($collector, $level, $used));
@@ -172,6 +172,8 @@ class Printer implements PrinterContract {
 
     /**
      * @param Block&ArrayAccess<Block, Block> $root
+     *
+     * @return Block&ArrayAccess<Block, Block>
      */
     protected function process(
         Collector $collector,
@@ -179,9 +181,10 @@ class Printer implements PrinterContract {
         Block $root,
         int $level,
         int $used,
-    ): void {
+    ): Block {
         $root       = $this->analyze($collector, $root, $level, $used);
         $stack      = $collector->getUsedDirectives() + $collector->getUsedTypes();
+        $output     = $this->getList($context);
         $printed    = [];
         $directives = $context->getSettings()->isPrintDirectiveDefinitions();
 
@@ -217,15 +220,17 @@ class Printer implements PrinterContract {
             }
 
             // Stack
-            if ($block && !isset($root[$block])) {
+            if ($block && !isset($output[$block]) && !isset($root[$block])) {
                 $statistics = new Collector();
-                $root[]     = $this->analyze($statistics, $block, $level, $used);
+                $output[]   = $this->analyze($statistics, $block, $level, $used);
                 $statistics = $collector->addUsed($statistics);
                 $stack      = $stack
                     + $statistics->getUsedDirectives()
                     + $statistics->getUsedTypes();
             }
         }
+
+        return $output;
     }
 
     /**

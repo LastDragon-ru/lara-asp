@@ -1,3 +1,19 @@
+    interface InterfaceC
+    implements
+        & InterfaceA
+        & InterfaceB
+    {
+        a: Int
+        b: [String!]
+        c: [Float!]!
+        d: TypeHidden!
+
+        e(
+            a: Int
+            b: InputHidden
+        ): Int
+    }
+
     """
     Directive description
     """
@@ -57,22 +73,6 @@
         @directive(
             location: "field"
         )
-    }
-
-    interface InterfaceC
-    implements
-        & InterfaceA
-        & InterfaceB
-    {
-        a: Int
-        b: [String!]
-        c: [Float!]!
-        d: TypeHidden!
-
-        e(
-            a: Int
-            b: InputHidden
-        ): Int
     }
 
     type TypeHidden {

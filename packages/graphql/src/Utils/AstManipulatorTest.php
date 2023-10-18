@@ -676,6 +676,22 @@ class AstManipulatorTest extends TestCase {
             ],
             'argument without description and default' => [
                 <<<'GRAPHQL'
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a(
+                        a: Int
+                    ): Int
+                    @mock
+
+                    b(
+                        argument: Boolean
+                    ): Boolean
+                    @mock
+                }
+
                 interface InterfaceA {
                     a(
                         a: Int
@@ -699,22 +715,6 @@ class AstManipulatorTest extends TestCase {
                     a(
                         a: Int
                     ): Int
-                }
-
-                type Query
-                implements
-                    & InterfaceB
-                    & InterfaceC
-                {
-                    a(
-                        a: Int
-                    ): Int
-                    @mock
-
-                    b(
-                        argument: Boolean
-                    ): Boolean
-                    @mock
                 }
 
                 GRAPHQL,
@@ -728,6 +728,22 @@ class AstManipulatorTest extends TestCase {
             ],
             'argument without description'             => [
                 <<<'GRAPHQL'
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a(
+                        a: Int
+                    ): Int
+                    @mock
+
+                    b(
+                        argument: String = "String value"
+                    ): Boolean
+                    @mock
+                }
+
                 interface InterfaceA {
                     a(
                         a: Int
@@ -751,22 +767,6 @@ class AstManipulatorTest extends TestCase {
                     a(
                         a: Int
                     ): Int
-                }
-
-                type Query
-                implements
-                    & InterfaceB
-                    & InterfaceC
-                {
-                    a(
-                        a: Int
-                    ): Int
-                    @mock
-
-                    b(
-                        argument: String = "String value"
-                    ): Boolean
-                    @mock
                 }
 
                 GRAPHQL,
@@ -780,6 +780,27 @@ class AstManipulatorTest extends TestCase {
             ],
             'argument'                                 => [
                 <<<'GRAPHQL'
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a(
+                        a: Int
+                    ): Int
+                    @mock
+
+                    b(
+                        """
+                        Description \"""
+                        "multiline"
+                        with \\
+                        """
+                        argument: Int = 123
+                    ): Boolean
+                    @mock
+                }
+
                 interface InterfaceA {
                     a(
                         a: Int
@@ -808,27 +829,6 @@ class AstManipulatorTest extends TestCase {
                     a(
                         a: Int
                     ): Int
-                }
-
-                type Query
-                implements
-                    & InterfaceB
-                    & InterfaceC
-                {
-                    a(
-                        a: Int
-                    ): Int
-                    @mock
-
-                    b(
-                        """
-                        Description \"""
-                        "multiline"
-                        with \\
-                        """
-                        argument: Int = 123
-                    ): Boolean
-                    @mock
                 }
 
                 GRAPHQL,
@@ -1029,6 +1029,15 @@ class AstManipulatorTest extends TestCase {
         return [
             'type'      => [
                 <<<'GRAPHQL'
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a: Boolean
+                    @mock
+                }
+
                 interface InterfaceA {
                     a: Boolean
                 }
@@ -1042,15 +1051,6 @@ class AstManipulatorTest extends TestCase {
 
                 interface InterfaceC {
                     a: Boolean
-                }
-
-                type Query
-                implements
-                    & InterfaceB
-                    & InterfaceC
-                {
-                    a: Boolean
-                    @mock
                 }
 
                 GRAPHQL,
@@ -1106,6 +1106,18 @@ class AstManipulatorTest extends TestCase {
         return [
             'type'      => [
                 <<<'GRAPHQL'
+                type Query
+                implements
+                    & InterfaceB
+                    & InterfaceC
+                {
+                    a(
+                        a: Int
+                        b: Int
+                    ): Int
+                    @mock
+                }
+
                 interface InterfaceA {
                     a(
                         a: Int
@@ -1128,18 +1140,6 @@ class AstManipulatorTest extends TestCase {
                         a: Int
                         b: Int
                     ): Int
-                }
-
-                type Query
-                implements
-                    & InterfaceB
-                    & InterfaceC
-                {
-                    a(
-                        a: Int
-                        b: Int
-                    ): Int
-                    @mock
                 }
 
                 GRAPHQL,

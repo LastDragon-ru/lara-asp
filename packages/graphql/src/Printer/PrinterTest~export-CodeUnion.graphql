@@ -1,3 +1,6 @@
+    union CodeUnion =
+        | CodeType
+
     """
     Directive
     """
@@ -25,6 +28,3 @@
     {
         a: Boolean
     }
-
-    union CodeUnion =
-        | CodeType

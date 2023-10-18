@@ -14,7 +14,7 @@ use GraphQL\Type\Schema;
 
 interface Printer {
     /**
-     * Print the current type only.
+     * Print the current type/note/etc only.
      *
      * Please note:
      * - types filtering will work only if the schema is known
@@ -32,9 +32,11 @@ interface Printer {
     ): Result;
 
     /**
-     * Print current type and all used types/directives.
+     * Print current type/note/etc and all used types/directives.
      *
      * Please note:
+     * - the exported object will be on the top of document
+     * - the document may be not valid GraphQL document for some objects (fields/arguments/etc)
      * - the Schema is required to determine the type (and used types) of argument/variable/etc nodes
      * - types filtering will work only if the schema is known
      * - for some AST node types, their type may also be required

@@ -1,3 +1,6 @@
+    union Union =
+        | TypeA
+
     """
     Directive description
     """
@@ -108,6 +111,3 @@
     type TypeHidden {
         a: Int
     }
-
-    union Union =
-        | TypeA

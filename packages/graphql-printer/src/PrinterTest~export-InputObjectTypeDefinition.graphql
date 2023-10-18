@@ -1,4 +1,11 @@
 """
+Description
+"""
+input InputUnused {
+    a: InputA
+}
+
+"""
 Directive description
 """
 directive @directive(
@@ -55,11 +62,4 @@ input InputA
 
 input InputHidden {
     a: Int
-}
-
-"""
-Description
-"""
-input InputUnused {
-    a: InputA
 }
