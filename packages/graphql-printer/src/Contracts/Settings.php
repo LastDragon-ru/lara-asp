@@ -61,6 +61,12 @@ interface Settings {
     public function isNormalizeDescription(): bool;
 
     /**
+     * If `false` node directives will be printed in the original order if
+     * `true` they will be sorted by name.
+     */
+    public function isNormalizeDirectives(): bool;
+
+    /**
      * If `false` directive locations will be printed in the original order if
      * `true` they will be sorted by name.
      */

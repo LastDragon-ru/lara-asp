@@ -62,6 +62,10 @@ class Directives extends ListBlock {
         return $this->space();
     }
 
+    protected function isNormalized(): bool {
+        return $this->getSettings()->isNormalizeDirectives();
+    }
+
     protected function isAlwaysMultiline(): bool {
         return parent::isAlwaysMultiline()
             || $this->getSettings()->isAlwaysMultilineDirectives();

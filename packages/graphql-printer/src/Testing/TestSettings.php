@@ -23,6 +23,7 @@ class TestSettings extends ImmutableSettings {
     protected bool             $normalizeFields                   = true;
     protected bool             $normalizeArguments                = false;
     protected bool             $normalizeDescription              = true;
+    protected bool             $normalizeDirectives               = false;
     protected bool             $normalizeDirectiveLocations       = true;
     protected bool             $alwaysMultilineUnions             = true;
     protected bool             $alwaysMultilineArguments          = true;

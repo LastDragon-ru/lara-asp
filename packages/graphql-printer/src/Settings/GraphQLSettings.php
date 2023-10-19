@@ -25,6 +25,7 @@ class GraphQLSettings extends ImmutableSettings {
     protected bool             $normalizeFields                   = false;
     protected bool             $normalizeArguments                = false;
     protected bool             $normalizeDescription              = false;
+    protected bool             $normalizeDirectives               = false;
     protected bool             $normalizeDirectiveLocations       = false;
     protected bool             $alwaysMultilineUnions             = false;
     protected bool             $alwaysMultilineArguments          = false;

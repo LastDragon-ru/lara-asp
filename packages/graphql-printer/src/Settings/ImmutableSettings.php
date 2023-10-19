@@ -23,6 +23,7 @@ abstract class ImmutableSettings implements Settings {
     protected bool             $normalizeFields                   = true;
     protected bool             $normalizeArguments                = false;
     protected bool             $normalizeDescription              = true;
+    protected bool             $normalizeDirectives               = false;
     protected bool             $normalizeDirectiveLocations       = true;
     protected bool             $alwaysMultilineUnions             = true;
     protected bool             $alwaysMultilineArguments          = true;
@@ -188,6 +189,16 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    public function isNormalizeDirectives(): bool {
+        return $this->normalizeDirectives;
+    }
+
+    public function setNormalizeDirectives(bool $value): static {
+        return $this->set(static function (self $settings) use ($value): void {
+            $settings->normalizeDirectives = $value;
+        });
+    }
+
     public function isNormalizeDirectiveLocations(): bool {
         return $this->normalizeDirectiveLocations;
     }
@@ -318,6 +329,7 @@ abstract class ImmutableSettings implements Settings {
             ->setNormalizeFields($settings->isNormalizeFields())
             ->setNormalizeArguments($settings->isNormalizeArguments())
             ->setNormalizeDescription($settings->isNormalizeDescription())
+            ->setNormalizeDirectives($settings->isNormalizeDirectives())
             ->setNormalizeDirectiveLocations($settings->isNormalizeDirectiveLocations())
             ->setAlwaysMultilineUnions($settings->isAlwaysMultilineUnions())
             ->setAlwaysMultilineArguments($settings->isAlwaysMultilineArguments())
