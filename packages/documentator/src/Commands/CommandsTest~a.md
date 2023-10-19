@@ -4,7 +4,7 @@
 
 ## Usages
 
-* `test-namespace:command-a [-a|--option-a] [--option-b [OPTION-B]] [--] <arg-a> [<arg-b>]`
+* `artisan test-namespace:command-a [-a|--option-a] [--option-b [OPTION-B]] [--] <arg-a> [<arg-b>]`
 
 ## Arguments
 

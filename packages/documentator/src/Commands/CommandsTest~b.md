@@ -6,5 +6,5 @@ Command B description.
 
 ## Usages
 
-* `test-namespace:command-b`
-* `command-b-alias`
+* `artisan test-namespace:command-b`
+* `artisan command-b-alias`

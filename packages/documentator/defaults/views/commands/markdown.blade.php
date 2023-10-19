@@ -16,7 +16,7 @@
 ## Usages
 
 @foreach(array_merge([$command->getSynopsis()], $command->getAliases(), $command->getUsages()) as $usage)
-* `{!! $usage !!}`
+* `artisan {!! $usage !!}`
 @endforeach
 @if($command->getDescription() !== ($help = $command->getProcessedHelp()))
 

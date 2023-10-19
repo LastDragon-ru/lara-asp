@@ -6,7 +6,7 @@ Generates a table with the required versions of PHP/Laravel in Markdown format.
 
 ## Usages
 
-* `lara-asp-documentator:requirements [<cwd>]`
+* `artisan lara-asp-documentator:requirements [<cwd>]`
 
 ## Description
 

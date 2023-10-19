@@ -6,7 +6,7 @@ Saves help for each command in the `namespace` into a separate file in the `targ
 
 ## Usages
 
-* `lara-asp-documentator:commands [--defaults] [--] <namespace> <target>`
+* `artisan lara-asp-documentator:commands [--defaults] [--] <namespace> <target>`
 
 ## Arguments
 

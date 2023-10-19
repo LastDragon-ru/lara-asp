@@ -54,7 +54,7 @@ Probably the most powerful directive to provide search (`where` conditions) for 
 
 [Read more](<docs/Directives/@searchBy.md>).
 
-## `@sortBy` directive
+## `@sortBy`
 
 Probably the most powerful directive to provide sort (`order by` conditions) for your GraphQL queries.
 

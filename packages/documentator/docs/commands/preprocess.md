@@ -6,7 +6,7 @@ Preprocess Markdown files.
 
 ## Usages
 
-* `lara-asp-documentator:preprocess [<path>]`
+* `artisan lara-asp-documentator:preprocess [<path>]`
 
 ## Description
 

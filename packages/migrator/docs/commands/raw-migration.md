@@ -6,7 +6,7 @@ Create a new migration file
 
 ## Usages
 
-* `lara-asp-migrator:raw-migration [--create [CREATE]] [--table [TABLE]] [--path [PATH]] [--realpath] [--fullpath] [--] <name>`
+* `artisan lara-asp-migrator:raw-migration [--create [CREATE]] [--table [TABLE]] [--path [PATH]] [--realpath] [--fullpath] [--] <name>`
 
 ## Arguments
 

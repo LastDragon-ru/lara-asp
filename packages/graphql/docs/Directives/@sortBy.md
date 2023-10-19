@@ -1,4 +1,4 @@
-# `@sortBy` directive
+# `@sortBy`
 
 Probably the most powerful directive to provide sort (`order by` conditions) for your GraphQL queries.
 
