@@ -5,10 +5,10 @@
 
 ?>
 @foreach ($packages as $package)
-## {{ $package['title'] }}
+## {!! $package['title'] !!}
 @if($package['summary'])
 
-{{ $package['summary'] }}
+{!! $package['summary'] !!}
 @endif
 
 [Read more](<{{ $package['path'] }}>).

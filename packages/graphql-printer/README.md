@@ -84,6 +84,13 @@ type A
 The `$printer->export($type)` is:
 
 ```graphql
+type A
+@a
+{
+    b: [B!]
+    id: ID!
+}
+
 directive @a
 on
     | OBJECT
@@ -91,13 +98,6 @@ on
 directive @b
 on
     | OBJECT
-
-type A
-@a
-{
-    b: [B!]
-    id: ID!
-}
 
 type B
 @b

@@ -1,4 +1,4 @@
-# Document B
+# `<` Document B `>`
 
 Summary text.
 

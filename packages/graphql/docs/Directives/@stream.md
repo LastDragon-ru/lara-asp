@@ -17,25 +17,6 @@ by an offset or a cursor.
 """
 directive @stream(
     """
-    Overrides default builder. Useful if the standard detection
-    algorithm doesn't fit/work. By default, the directive will use
-    the field and its type to determine the Builder to query.
-    """
-    builder: StreamBuilder
-
-    """
-    Overrides default unique key. Useful if the standard detection
-    algorithm doesn't fit/work. By default, the directive will use
-    the name of field with `ID!` type.
-    """
-    key: String
-
-    """
-    Overrides default limit.
-    """
-    limit: Int
-
-    """
     Overrides default searchable status.
     """
     searchable: Boolean
@@ -44,6 +25,25 @@ directive @stream(
     Overrides default sortable status.
     """
     sortable: Boolean
+
+    """
+    Overrides default builder. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the field and its type to determine the Builder to query.
+    """
+    builder: StreamBuilder
+
+    """
+    Overrides default limit.
+    """
+    limit: Int
+
+    """
+    Overrides default unique key. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the name of field with `ID!` type.
+    """
+    key: String
 )
 on
     | FIELD_DEFINITION
@@ -181,6 +181,6 @@ Keep in mind:
 
 [pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
 
-[pkg:graphql#@sortBy]:   https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
+[pkg:graphql#@sortBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
 
 [//]: # (end: a170145c7adc0561ead408b0ea3a4b46e2e8f45ebc2744984ceb8c1b49822cd1)

@@ -8,11 +8,11 @@ Document summary.
 
 ## Document A
 
-Summary text.
+Summary text with special characters `<`, `>`, `&`.
 
 [Read more](<IncludeDocumentListTest/Document A.md>).
 
-## Document B
+## `<` Document B `>`
 
 Summary text.
 

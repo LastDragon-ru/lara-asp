@@ -5,10 +5,10 @@
 
 ?>
 @foreach ($documents as $document)
-## {{ $document['title'] }}
+## {!! $document['title'] !!}
 @if($document['summary'])
 
-{{ $document['summary'] }}
+{!! $document['summary'] !!}
 @endif
 
 [Read more](<{{ $document['path'] }}>).

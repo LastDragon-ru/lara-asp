@@ -476,8 +476,8 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
 
-[pkg:graphql#@sortBy]:   https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
+[pkg:graphql#@sortBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
 
-[pkg:graphql-printer]:   https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
+[pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
 
 [//]: # (end: d8baa2418c8dbf3ba09f9b223885c4326bee3e69a2dc0873e243f0d34e002a85)

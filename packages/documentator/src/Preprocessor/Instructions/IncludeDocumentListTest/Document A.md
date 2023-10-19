@@ -1,5 +1,5 @@
 # Document A
 
-Summary text.
+Summary text with special characters `<`, `>`, `&`.
 
 Another text.

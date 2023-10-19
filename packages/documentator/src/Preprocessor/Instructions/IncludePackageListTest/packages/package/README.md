@@ -1,3 +1,3 @@
-# The Package
+# The `<` Package `>`
 
-Summary text.
+Summary text with special characters `<`, `>`, `&`.

@@ -2,11 +2,11 @@
 
 ## Document A
 
-Summary text.
+Summary text with special characters `<`, `>`, `&`.
 
 [Read more](<Document A.md>).
 
-## Document B
+## `<` Document B `>`
 
 Summary text.
 
