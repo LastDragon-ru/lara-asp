@@ -23,7 +23,7 @@ jobs:
       packages-directory: ${{ env.PACKAGES_DIRECTORY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Detect packages
         id: packages
         working-directory: ${{ env.PACKAGES_DIRECTORY }}
