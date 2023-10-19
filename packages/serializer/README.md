@@ -70,31 +70,13 @@ The `$serialized` is:
 The `$deserialized` is:
 
 ```plain
-User {#814
+User {
   +id: 1
   +name: "User"
-  +created: Illuminate\Support\Carbon @1693125044 {#812
-    #endOfTime: false
-    #startOfTime: false
-    #constructedObjectId: "000000000000032c0000000000000000"
-    #localMonthsOverflow: null
-    #localYearsOverflow: null
-    #localStrictModeEnabled: null
-    #localHumanDiffOptions: null
-    #localToStringFormat: null
-    #localSerializer: null
-    #localMacros: null
-    #localGenericMacros: null
-    #localFormatFunction: null
-    #localTranslator: null
-    #dumpProperties: [
-      "date",
-      "timezone_type",
-      "timezone",
-    ]
-    #dumpLocale: null
-    #dumpDateProperties: null
-    date: 2023-08-27 08:30:44.473 +00:00
+  +created: Illuminate\Support\Carbon {
+    +"date": "2023-08-27 08:30:44.473000"
+    +"timezone_type": 1
+    +"timezone": "+00:00"
   }
 }
 ```
