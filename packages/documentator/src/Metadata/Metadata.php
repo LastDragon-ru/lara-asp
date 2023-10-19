@@ -13,7 +13,7 @@ class Metadata implements Serializable {
      * @param array<string, array<string, list<string>>> $requirements
      */
     public function __construct(
-        public string $version = '0.0.0',
+        public ?string $version = null,
         public array $require = [],
         public array $requirements = [],
     ) {

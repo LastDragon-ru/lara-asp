@@ -45,7 +45,8 @@ use const JSON_THROW_ON_ERROR;
     description: 'Generates a table with the required versions of PHP/Laravel in Markdown format.',
 )]
 class Requirements extends Command {
-    public const Name = Package::Name.':requirements';
+    public const Name  = Package::Name.':requirements';
+    private const HEAD = 'HEAD';
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
@@ -76,7 +77,7 @@ class Requirements extends Command {
     public function __invoke(PackageViewer $viewer, Git $git, Serializer $serializer): void {
         // Get Versions
         $cwd  = Cast::toString($this->argument('cwd') ?? getcwd());
-        $tags = $this->getPackageVersions($git, $cwd, ['HEAD']);
+        $tags = $this->getPackageVersions($git, $cwd, [self::HEAD]);
 
         // Collect requirements
         $storage  = new Storage($serializer, $cwd);
@@ -88,7 +89,7 @@ class Requirements extends Command {
 
         foreach ($tags as $tag) {
             // Cached?
-            if ($tag !== 'HEAD') {
+            if ($tag !== self::HEAD) {
                 $cached = $metadata->requirements[$tag] ?? [];
 
                 if (array_diff_key($packages, $cached) === [] && array_diff_key($cached, $packages) === []) {
@@ -125,6 +126,15 @@ class Requirements extends Command {
                     unset($metadata->requirements[$tag][$package]);
                 }
             }
+        }
+
+        // Unreleased
+        if (
+            $metadata->version
+            && !isset($metadata->requirements[$metadata->version])
+            && isset($metadata->requirements[self::HEAD])
+        ) {
+            $metadata->requirements[$metadata->version] = $metadata->requirements[self::HEAD];
         }
 
         // Save
