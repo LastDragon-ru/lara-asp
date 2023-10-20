@@ -17,7 +17,7 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.1|^8.2",
+    "php": "^8.1|^8.2|^8.3",
     "laravel/framework": "^9.21.0|^10.0.0",
     "lastdragon-ru/lara-asp-core": "self.version"
   },

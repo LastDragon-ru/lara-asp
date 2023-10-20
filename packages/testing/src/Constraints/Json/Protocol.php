@@ -47,7 +47,7 @@ class Protocol {
 
         // Build
         $scheme = static::Scheme;
-        $query  = http_build_query($parameters, encoding_type: PHP_QUERY_RFC3986);
+        $query  = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
         $path   = implode('/', array_map(rawurlencode(...), explode('/', ltrim($path, '/'))));
         $uri    = new Uri((array) parse_url("{$scheme}://{$host}/{$path}?{$query}"));
 
