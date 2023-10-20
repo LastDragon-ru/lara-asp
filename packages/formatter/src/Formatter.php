@@ -37,14 +37,28 @@ class Formatter {
     use Macroable;
 
     /**
+     * @see NumberFormatter::setSymbol()
+     */
+    final public const IntlSymbols = 'intl_symbols';
+
+    /**
+     * @see NumberFormatter::setAttribute()
+     */
+    final public const IntlAttributes = 'intl_attributes';
+
+    /**
+     * @see NumberFormatter::setTextAttribute()
+     */
+    final public const IntlTextAttributes = 'intl_text_attributes';
+
+    /**
      * Options:
      * - none
      *
      * Locales options:
-     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
-     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
-     *      except {@link NumberFormatter::FRACTION_DIGITS}
-     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     * - {@link Formatter::IntlTextAttributes}
+     * - {@link Formatter::IntlAttributes} (except {@link NumberFormatter::FRACTION_DIGITS})
+     * - {@link Formatter::IntlSymbols}
      */
     public const Integer = 'integer';
 
@@ -53,9 +67,9 @@ class Formatter {
      * - none
      *
      * Locales options:
-     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
-     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()}
-     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     * - {@link Formatter::IntlTextAttributes}
+     * - {@link Formatter::IntlAttributes}
+     * - {@link Formatter::IntlSymbols}
      */
     public const Scientific = 'scientific';
 
@@ -64,9 +78,9 @@ class Formatter {
      * - none
      *
      * Locales options:
-     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
-     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()}
-     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     * - {@link Formatter::IntlTextAttributes}
+     * - {@link Formatter::IntlAttributes}
+     * - {@link Formatter::IntlSymbols}
      */
     public const Spellout = 'spellout';
 
@@ -75,9 +89,9 @@ class Formatter {
      * - none
      *
      * Locales options:
-     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
-     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()}
-     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     * - {@link Formatter::IntlTextAttributes}
+     * - {@link Formatter::IntlAttributes}
+     * - {@link Formatter::IntlSymbols}
      */
     public const Ordinal = 'ordinal';
 
@@ -86,9 +100,9 @@ class Formatter {
      * - none
      *
      * Locales options:
-     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
-     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()}
-     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     * - {@link Formatter::IntlTextAttributes}
+     * - {@link Formatter::IntlAttributes}
+     * - {@link Formatter::IntlSymbols}
      */
     public const Duration = 'duration';
 
@@ -97,10 +111,9 @@ class Formatter {
      * - `int`: fraction digits
      *
      * Locales options:
-     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
-     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
-     *      except {@link NumberFormatter::FRACTION_DIGITS}
-     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     * - {@link Formatter::IntlTextAttributes}
+     * - {@link Formatter::IntlAttributes} (except {@link NumberFormatter::FRACTION_DIGITS})
+     * - {@link Formatter::IntlSymbols}
      */
     public const Decimal = 'decimal';
 
@@ -109,10 +122,9 @@ class Formatter {
      * - `string`: default currency
      *
      * Locales options:
-     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
-     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
-     *      except {@link NumberFormatter::FRACTION_DIGITS}
-     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     * - {@link Formatter::IntlTextAttributes}
+     * - {@link Formatter::IntlAttributes} (except {@link NumberFormatter::FRACTION_DIGITS})
+     * - {@link Formatter::IntlSymbols}
      */
     public const Currency = 'currency';
 
@@ -121,10 +133,9 @@ class Formatter {
      * - `int`: fraction digits
      *
      * Locales options:
-     * - 'intl_text_attributes' `array` {@link NumberFormatter::setTextAttribute()}
-     * - 'intl_attributes' `array` {@link NumberFormatter::setAttribute()},
-     *      except {@link NumberFormatter::FRACTION_DIGITS}
-     * - 'intl_symbols' `array` {@link NumberFormatter::setSymbol()}
+     * - {@link Formatter::IntlTextAttributes}
+     * - {@link Formatter::IntlAttributes} (except {@link NumberFormatter::FRACTION_DIGITS})
+     * - {@link Formatter::IntlSymbols}
      */
     public const Percent = 'percent';
 
@@ -604,14 +615,14 @@ class Formatter {
 
         if ($formatter) {
             $attributes = $attributes
-                + (array) $this->getLocaleOptions($type, 'intl_attributes')
-                + (array) $this->getOptions('intl_attributes');
+                + (array) $this->getLocaleOptions($type, self::IntlAttributes)
+                + (array) $this->getOptions(self::IntlAttributes);
             $symbols    = $symbols
-                + (array) $this->getLocaleOptions($type, 'intl_symbols')
-                + (array) $this->getOptions('intl_symbols');
+                + (array) $this->getLocaleOptions($type, self::IntlSymbols)
+                + (array) $this->getOptions(self::IntlSymbols);
             $texts      = $texts
-                + (array) $this->getLocaleOptions($type, 'intl_text_attributes')
-                + (array) $this->getOptions('intl_text_attributes');
+                + (array) $this->getLocaleOptions($type, self::IntlTextAttributes)
+                + (array) $this->getOptions(self::IntlTextAttributes);
 
             foreach ($attributes as $attribute => $value) {
                 if (!is_int($attribute) || !$formatter->setAttribute($attribute, Cast::toNumber($value))) {

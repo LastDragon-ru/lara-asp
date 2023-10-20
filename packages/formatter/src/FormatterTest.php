@@ -71,8 +71,8 @@ class FormatterTest extends TestCase {
 
     public function testDecimalConfig(): void {
         config([
-            Package::Name.'.options.'.Formatter::Decimal                          => 4,
-            Package::Name.'.locales.ru_RU.'.Formatter::Decimal.'.intl_attributes' => [
+            Package::Name.'.options.'.Formatter::Decimal                                     => 4,
+            Package::Name.'.locales.ru_RU.'.Formatter::Decimal.'.'.Formatter::IntlAttributes => [
                 NumberFormatter::FRACTION_DIGITS => 9, // should be ignored
                 NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_FLOOR,
             ],

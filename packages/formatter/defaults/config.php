@@ -18,7 +18,7 @@ return [
      */
     'options' => [
         // This value has no effect inside the published config.
-        ConfigMerger::Strict => false,
+        ConfigMerger::Strict      => false,
 
         // Fraction digits for decimal()
         // Formatter::Decimal => 2,
@@ -31,17 +31,17 @@ return [
         // Formatter::Time => 'custom',
 
         // Global Attributes for {@link \NumberFormatter::setAttribute()}
-        'intl_attributes'    => [
+        Formatter::IntlAttributes => [
             NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
         ],
 
         // Global Symbols for {@link \NumberFormatter::setSymbol()}
-        // 'intl_symbols' => [
+        // Formatter::IntlSymbols => [
         //     // ...
         // ],
 
         // Global Attributes for {@link \NumberFormatter::setTextAttribute()}
-        // 'intl_text_attributes' => [
+        // Formatter::IntlTextAttributes => [
         //     // ...
         // ],
     ],
@@ -65,9 +65,9 @@ return [
 
         // Intl properties for all locales (will be merged with `options`)
         // Formatter::Decimal => [
-        //     'intl_attributes'      => [],
-        //     'intl_symbols'         => [],
-        //     'intl_text_attributes' => [],
+        //     Formatter::IntlSymbols        => [],
+        //     Formatter::IntlAttributes     => [],
+        //     Formatter::IntlTextAttributes => [],
         // ],
     ],
 
@@ -89,9 +89,9 @@ return [
         //
         //     // Intl properties for specific Locale (will be merged with all`)
         //     Formatter::Decimal => [
-        //         'intl_attributes'      => [],
-        //         'intl_symbols'         => [],
-        //         'intl_text_attributes' => [],
+        //         Formatter::IntlSymbols        => [],
+        //         Formatter::IntlAttributes     => [],
+        //         Formatter::IntlTextAttributes => [],
         //     ],
         // ],
     ],
