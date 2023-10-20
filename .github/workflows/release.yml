@@ -80,7 +80,8 @@ jobs:
             --release.name='${{ inputs.name }}' \
             --release.description='${{ inputs.description }}' \
             --dump.version="$VERSION" \
-            --dump.changelog="$CHANGELOG"
+            --dump.changelog="$CHANGELOG" \
+            --verbose
 
           echo "version=$(cat $VERSION)" >> $GITHUB_OUTPUT
           cat "$CHANGELOG" >> $GITHUB_STEP_SUMMARY
