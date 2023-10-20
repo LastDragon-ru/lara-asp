@@ -62,6 +62,10 @@ jobs:
       - name: Install Node.js
         uses: ./.github/actions/npm
 
+      - name: Install PHP
+        if: ${{ !inputs.dry-run }}
+        uses: ./.github/actions/php
+
       - name: Release
         id: release
         env:

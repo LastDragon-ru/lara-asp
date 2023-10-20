@@ -107,6 +107,9 @@ const breakingMark = {
 
 module.exports = {
     npm:     false,
+    hooks: {
+        "after:bump": "composer run rebuild:docs",
+    },
     git:     {
         tagArgs:        '-s',
         commitArgs:     '-S',
