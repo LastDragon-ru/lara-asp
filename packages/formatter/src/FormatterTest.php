@@ -9,6 +9,7 @@ use NumberFormatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
+use function str_replace;
 
 /**
  * @internal
@@ -125,8 +126,11 @@ class FormatterTest extends TestCase {
     public function testTime(): void {
         $time = DateTime::createFromFormat('H:i:s', '23:24:59') ?: null;
 
-        self::assertEquals('11:24 PM', $this->formatter->time($time));
-        self::assertEquals('2:24 AM', $this->formatter->time($time, null, 'Europe/Moscow'));
+        self::assertEquals('11:24 PM', str_replace("\u{202F}", ' ', $this->formatter->time($time)));
+        self::assertEquals(
+            '2:24 AM',
+            str_replace("\u{202F}", ' ', $this->formatter->time($time, null, 'Europe/Moscow')),
+        );
     }
 
     public function testTimeConfig(): void {
@@ -136,7 +140,7 @@ class FormatterTest extends TestCase {
 
         $time = DateTime::createFromFormat('H:i:s', '23:24:59') ?: null;
 
-        self::assertEquals('11:24:59 PM', $this->formatter->time($time));
+        self::assertEquals('11:24:59 PM', str_replace("\u{202F}", ' ', $this->formatter->time($time)));
     }
 
     public function testTimeCustomFormat(): void {
@@ -185,8 +189,11 @@ class FormatterTest extends TestCase {
     public function testDatetime(): void {
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
 
-        self::assertEquals('5/12/05, 11:00 PM', $this->formatter->datetime($datetime));
-        self::assertEquals('5/13/05, 3:00 AM', $this->formatter->datetime($datetime, null, 'Europe/Moscow'));
+        self::assertEquals('5/12/05, 11:00 PM', str_replace("\u{202F}", ' ', $this->formatter->datetime($datetime)));
+        self::assertEquals(
+            '5/13/05, 3:00 AM',
+            str_replace("\u{202F}", ' ', $this->formatter->datetime($datetime, null, 'Europe/Moscow')),
+        );
     }
 
     public function testDatetimeConfig(): void {
@@ -196,7 +203,10 @@ class FormatterTest extends TestCase {
 
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
 
-        self::assertEquals('May 12, 2005, 11:00:00 PM', $this->formatter->datetime($datetime));
+        self::assertEquals(
+            'May 12, 2005, 11:00:00 PM',
+            str_replace("\u{202F}", ' ', $this->formatter->datetime($datetime)),
+        );
     }
 
     public function testDatetimeCustomFormat(): void {
