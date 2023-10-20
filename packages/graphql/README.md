@@ -10,7 +10,8 @@ This package provides highly powerful `@searchBy` and `@sortBy`  directives for 
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.2` |   `HEAD ⋯ 2.0.0`   |
+|  PHP  | `^8.3` |  `HEAD`   |
+|  | `^8.2` |   `HEAD ⋯ 2.0.0`   |
 |  | `^8.1` |   `HEAD ⋯ 2.0.0`   |
 |  | `^8.0` |   `4.6.0 ⋯ 2.0.0`   |
 |  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
