@@ -77,8 +77,8 @@ jobs:
           npm run release -- \
             ${{ inputs.type != 'stable' && format('--preRelease="{0}"', inputs.type) || ''}} \
             ${{ inputs.dry-run && '--dry-run' || ''}} \
-            --release.name="${{ inputs.name }}" \
-            --release.description="${{ inputs.description }}" \
+            --release.name='${{ inputs.name }}' \
+            --release.description='${{ inputs.description }}' \
             --dump.version="$VERSION" \
             --dump.changelog="$CHANGELOG"
 
