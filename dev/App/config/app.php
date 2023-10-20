@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Provider as DocumentatorProvider;
 use LastDragon_ru\LaraASP\GraphQL\Provider as GraphQLProvider;
 use LastDragon_ru\LaraASP\Migrator\Provider as MigratorProvider;
 use LastDragon_ru\LaraASP\Serializer\Provider as SerializerProvider;
+use Nuwave\Lighthouse\LighthouseServiceProvider;
 
 return [
     /*
@@ -147,6 +148,7 @@ return [
     |
     */
     'providers'       => ServiceProvider::defaultProviders()->merge([
+        LighthouseServiceProvider::class,
         Provider::class,
         SerializerProvider::class,
         DocumentatorProvider::class,
