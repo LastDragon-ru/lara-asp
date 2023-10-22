@@ -10,7 +10,7 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.3` |  `HEAD`   |
+|  PHP  | `^8.3` |  `HEAD`  ,  `5.0.0`   |
 |  | `^8.2` |   `HEAD ⋯ 3.0.0`   |
 |  | `^8.1` |   `HEAD ⋯ 3.0.0`   |
 |  | `^8.0` |   `4.6.0 ⋯ 3.0.0`   |
