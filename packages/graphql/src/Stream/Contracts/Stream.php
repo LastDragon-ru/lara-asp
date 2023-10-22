@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Contracts;
 
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 
 interface Stream {
     /**
@@ -15,9 +15,9 @@ interface Stream {
      */
     public function getLength(): ?int;
 
-    public function getNextCursor(): ?Cursor;
+    public function getNextOffset(): ?Offset;
 
-    public function getCurrentCursor(): Cursor;
+    public function getCurrentOffset(): Offset;
 
-    public function getPreviousCursor(): ?Cursor;
+    public function getPreviousOffset(): ?Offset;
 }

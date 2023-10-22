@@ -20,8 +20,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 
 use function filter_var;
@@ -31,10 +31,10 @@ use function sprintf;
 
 use const FILTER_VALIDATE_INT;
 
-class Cursor extends ScalarType implements TypeDefinition {
-    public string  $name        = Directive::Name.'Cursor';
+class Offset extends ScalarType implements TypeDefinition {
+    public string  $name        = Directive::Name.'Offset';
     public ?string $description = <<<'DESCRIPTION'
-        Represents a cursor for the `@stream` directive. The value can be a
+        Represents a offset for the `@stream` directive. The value can be a
         positive `Int` or a `String`. The `Int` value represents the offset
         (zero-based) to navigate to any position within the stream (= offset
         pagination). And the `String` value represents the cursor and allows
@@ -61,7 +61,7 @@ class Cursor extends ScalarType implements TypeDefinition {
     public function serialize(mixed $value): string|int {
         $value = $this->validate($value, InvariantViolation::class);
 
-        if ($value instanceof StreamCursor) {
+        if ($value instanceof StreamOffset) {
             $value = $this->getSerializer()->serialize($value, 'json');
             $value = $this->encrypt($value);
         }
@@ -70,15 +70,15 @@ class Cursor extends ScalarType implements TypeDefinition {
     }
 
     /**
-     * @return StreamCursor|int<0, max>
+     * @return StreamOffset|int<0, max>
      */
-    public function parseValue(mixed $value): StreamCursor|int {
+    public function parseValue(mixed $value): StreamOffset|int {
         if (is_string($value)) {
             try {
                 $value = $this->decrypt($value);
-                $value = $this->getSerializer()->deserialize(StreamCursor::class, $value, 'json');
+                $value = $this->getSerializer()->deserialize(StreamOffset::class, $value, 'json');
             } catch (Exception) {
-                throw new Error('The Cursor is not valid.');
+                throw new Error('The cursor is not valid.');
             }
         } else {
             $value = $this->validate($value, Error::class);
@@ -89,9 +89,9 @@ class Cursor extends ScalarType implements TypeDefinition {
 
     /**
      * @inheritDoc
-     * @return StreamCursor|int<0, max>
+     * @return StreamOffset|int<0, max>
      */
-    public function parseLiteral(Node $valueNode, array $variables = null): StreamCursor|int {
+    public function parseLiteral(Node $valueNode, array $variables = null): StreamOffset|int {
         $value = null;
 
         if ($valueNode instanceof StringValueNode) {
@@ -116,10 +116,10 @@ class Cursor extends ScalarType implements TypeDefinition {
     /**
      * @param class-string<Exception>           $error
      *
-     * @phpstan-assert StreamCursor|int<0, max> $value
+     * @phpstan-assert StreamOffset|int<0, max> $value
      */
-    protected function validate(mixed $value, string $error): StreamCursor|int {
-        if ($value instanceof StreamCursor) {
+    protected function validate(mixed $value, string $error): StreamOffset|int {
+        if ($value instanceof StreamOffset) {
             // ok
         } elseif (is_int($value)) {
             if ($value < 0) {
@@ -128,7 +128,7 @@ class Cursor extends ScalarType implements TypeDefinition {
         } else {
             throw new $error(
                 sprintf(
-                    'The valid Cursor expected, `%s` given.',
+                    'The valid cursor/offset expected, `%s` given.',
                     Utils::printSafe($value),
                 ),
             );

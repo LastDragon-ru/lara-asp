@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Collection;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -28,9 +28,13 @@ class DatabaseTest extends TestCase {
     public function testGetItems(): void {
         $limit   = max(1, $this->faker->numberBetween(1, 4));
         $offset  = max(0, $this->faker->numberBetween(0, 2));
-        $cursor  = new Cursor('path', null, $offset);
         $builder = TestObject::query();
-        $stream  = new Database($builder, $builder->getModel()->getKeyName(), $cursor, $limit);
+        $stream  = new Database(
+            $builder,
+            $builder->getModel()->getKeyName(),
+            $limit,
+            new Offset('path', $offset, null),
+        );
         $objects = [
             TestObject::factory()->create(),
             TestObject::factory()->create(),
@@ -62,7 +66,7 @@ class DatabaseTest extends TestCase {
     public function testGetLength(): void {
         $count   = $this->faker->numberBetween(1, 5);
         $builder = TestObject::query();
-        $stream  = new Database($builder, 'key', new Cursor('path', null, 0), 1);
+        $stream  = new Database($builder, 'key', 1, new Offset('path', 0, null));
 
         for ($i = 0; $i < $count; $i++) {
             TestObject::factory()->create();
@@ -85,37 +89,37 @@ class DatabaseTest extends TestCase {
         );
     }
 
-    public function testGetCurrentCursor(): void {
+    public function testGetCurrentOffset(): void {
         $builder = TestObject::query();
-        $cursor  = new Cursor('path', null, 0);
-        $stream  = new Database($builder, 'key', $cursor, 2);
+        $offset  = new Offset('path', 0, null);
+        $stream  = new Database($builder, 'key', 2, $offset);
 
-        self::assertSame($cursor, $stream->getCurrentCursor());
+        self::assertSame($offset, $stream->getCurrentOffset());
     }
 
-    public function testGetPreviousCursor(): void {
+    public function testGetPreviousOffset(): void {
         // Offset = 0
         $builder = TestObject::query();
-        $cursor  = new Cursor('path', null, 0);
-        $stream  = new Database($builder, 'key', $cursor, 2);
+        $offset  = new Offset('path', 0, null);
+        $stream  = new Database($builder, 'key', 2, $offset);
 
-        self::assertNull($stream->getPreviousCursor());
+        self::assertNull($stream->getPreviousOffset());
 
         // Offset > 0
-        $cursor = new Cursor('path', null, 1);
-        $stream = new Database($builder, 'key', $cursor, 2);
+        $offset = new Offset('path', 1, null);
+        $stream = new Database($builder, 'key', 2, $offset);
 
         self::assertEquals(
-            new Cursor('path', null, 0),
-            $stream->getPreviousCursor(),
+            new Offset('path', 0, null),
+            $stream->getPreviousOffset(),
         );
     }
 
-    public function testGetNextCursor(): void {
+    public function testGetNextOffset(): void {
         // Prepare
         $builder = TestObject::query();
-        $cursor  = new Cursor('path', null, 0);
-        $stream  = Mockery::mock(Database::class, [$builder, 'key', $cursor, 2]);
+        $offset  = new Offset('path', 0, null);
+        $stream  = Mockery::mock(Database::class, [$builder, 'key', 2, $offset]);
         $stream->shouldAllowMockingProtectedMethods();
         $stream->makePartial();
 
@@ -129,7 +133,7 @@ class DatabaseTest extends TestCase {
                 ]),
             );
 
-        self::assertNull($stream->getNextCursor());
+        self::assertNull($stream->getNextOffset());
 
         // Items.length = limit
         $stream
@@ -143,8 +147,8 @@ class DatabaseTest extends TestCase {
             );
 
         self::assertEquals(
-            new Cursor('path', null, 2),
-            $stream->getNextCursor(),
+            new Offset('path', 2, null),
+            $stream->getNextOffset(),
         );
     }
 }

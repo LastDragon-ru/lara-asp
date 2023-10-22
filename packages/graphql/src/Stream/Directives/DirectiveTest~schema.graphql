@@ -11,7 +11,7 @@ type Query implements InterfaceA & InterfaceB {
             default: 15
             max: 10
         )
-        d: _ @streamCursor
+        d: _ @streamOffset
     ): [TestObject] @stream
 
     fieldWithDirectivesAndDefaults(
@@ -21,7 +21,7 @@ type Query implements InterfaceA & InterfaceB {
         @streamLimit(
             default: 123
         )
-        d: _ @streamCursor
+        d: _ @streamOffset
     ): [TestObject]
     @stream(
         limit: 15
@@ -40,7 +40,7 @@ type Query implements InterfaceA & InterfaceB {
             default: 123
             max: 123
         )
-        d: _ @deprecated @streamCursor
+        d: _ @deprecated @streamOffset
     ): [TestObject]
     @stream(
         limit: 15

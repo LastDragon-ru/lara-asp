@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Utils\Page;
 
 use function array_slice;
@@ -22,10 +22,10 @@ class Scout extends Stream {
 
     protected readonly Page $page;
 
-    public function __construct(object $builder, string $key, Cursor $cursor, int $limit) {
-        parent::__construct($builder, $key, $cursor, $limit);
+    public function __construct(object $builder, string $key, int $limit, Offset $offset) {
+        parent::__construct($builder, $key, $limit, $offset);
 
-        $this->page = new Page($limit, max(0, Cast::toInt($cursor->offset)));
+        $this->page = new Page($limit, max(0, Cast::toInt($offset->offset)));
     }
 
     /**
@@ -42,15 +42,15 @@ class Scout extends Stream {
         return max(0, $this->getPaginator()->total());
     }
 
-    public function getNextCursor(): ?Cursor {
+    public function getNextOffset(): ?Offset {
         return $this->page->end > 0 || $this->getPaginator()->hasMorePages()
-            ? new Cursor($this->cursor->path, $this->cursor->cursor, (int) $this->cursor->offset + $this->limit)
+            ? new Offset($this->offset->path, (int) $this->offset->offset + $this->limit, $this->offset->cursor)
             : null;
     }
 
-    public function getPreviousCursor(): ?Cursor {
-        return (int) $this->cursor->offset > 0
-            ? new Cursor($this->cursor->path, $this->cursor->cursor, 0)
+    public function getPreviousOffset(): ?Offset {
+        return (int) $this->offset->offset > 0
+            ? new Offset($this->offset->path, 0, $this->offset->cursor)
             : null;
     }
 

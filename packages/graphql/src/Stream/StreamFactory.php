@@ -49,9 +49,9 @@ class StreamFactory implements StreamFactoryContract {
         return $builder;
     }
 
-    public function create(object $builder, string $key, Cursor $cursor, int $limit): StreamContract {
+    public function create(object $builder, string $key, int $limit, Offset $offset): StreamContract {
         return $builder instanceof ScoutBuilder
-            ? new Scout($builder, $key, $cursor, $limit)
-            : new Database($builder, $key, $cursor, $limit);
+            ? new Scout($builder, $key, $limit, $offset)
+            : new Database($builder, $key, $limit, $offset);
     }
 }

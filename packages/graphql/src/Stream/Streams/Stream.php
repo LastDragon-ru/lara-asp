@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\Stream as StreamContract;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 
 /**
  * @template TBuilder of object
@@ -16,13 +16,13 @@ abstract class Stream implements StreamContract {
     public function __construct(
         protected readonly object $builder,
         protected readonly string $key,
-        protected readonly Cursor $cursor,
         protected readonly int $limit,
+        protected readonly Offset $offset,
     ) {
         // empty
     }
 
-    public function getCurrentCursor(): Cursor {
-        return $this->cursor;
+    public function getCurrentOffset(): Offset {
+        return $this->offset;
     }
 }

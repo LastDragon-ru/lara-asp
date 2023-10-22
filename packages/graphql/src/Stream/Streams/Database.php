@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use stdClass;
 
 use function max;
@@ -41,15 +41,15 @@ class Database extends Stream {
         return $this->length;
     }
 
-    public function getNextCursor(): ?Cursor {
+    public function getNextOffset(): ?Offset {
         return $this->getCollection()->count() >= $this->limit
-            ? new Cursor($this->cursor->path, $this->cursor->cursor, (int) $this->cursor->offset + $this->limit)
+            ? new Offset($this->offset->path, (int) $this->offset->offset + $this->limit, $this->offset->cursor)
             : null;
     }
 
-    public function getPreviousCursor(): ?Cursor {
-        return (int) $this->cursor->offset > 0
-            ? new Cursor($this->cursor->path, $this->cursor->cursor, 0)
+    public function getPreviousOffset(): ?Offset {
+        return (int) $this->offset->offset > 0
+            ? new Offset($this->offset->path, 0, $this->offset->cursor)
             : null;
     }
 
@@ -60,7 +60,7 @@ class Database extends Stream {
         if ($this->collection === null) {
             $this->collection = (clone $this->builder)
                 ->orderBy($this->key)
-                ->offset(Cast::toInt($this->cursor->offset))
+                ->offset(Cast::toInt($this->offset->offset))
                 ->limit($this->limit)
                 ->get();
         }

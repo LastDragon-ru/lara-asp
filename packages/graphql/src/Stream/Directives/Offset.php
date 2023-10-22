@@ -13,9 +13,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\Client\CursorInvalidPath;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Cursor as CursorType;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Offset as OffsetType;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -29,9 +29,9 @@ use function is_int;
 use function max;
 
 /**
- * @implements FieldArgumentDirective<StreamCursor>
+ * @implements FieldArgumentDirective<StreamOffset>
  */
-class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
+class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
     use WithManipulator;
     use WithSource;
 
@@ -39,10 +39,10 @@ class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirec
      * @return array{name: string}
      */
     final public static function settings(): array {
-        $settings = (array) config(Directive::Settings.'.cursor');
+        $settings = (array) config(Directive::Settings.'.offset');
 
         return [
-            'name' => Cast::toString($settings['name'] ?? 'cursor'),
+            'name' => Cast::toString($settings['name'] ?? 'offset'),
         ];
     }
 
@@ -64,7 +64,7 @@ class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirec
         $builder     = $detector->getFieldBuilderInfo($documentAST, $parentType, $parentField);
         $manipulator = $this->getManipulator($documentAST, $builder);
         $source      = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
-        $type        = Parser::typeReference($manipulator->getType(CursorType::class, $source));
+        $type        = Parser::typeReference($manipulator->getType(OffsetType::class, $source));
 
         $manipulator->setArgumentType(
             $parentType,
@@ -85,7 +85,7 @@ class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirec
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
         $path = $this->getPath($info);
 
-        if ($value instanceof StreamCursor) {
+        if ($value instanceof StreamOffset) {
             if ($path !== $value->path) {
                 throw new CursorInvalidPath($path, $value->path);
             }
@@ -94,17 +94,9 @@ class Cursor extends BaseDirective implements ArgManipulator, FieldArgumentDirec
             //      of them with the hash from `$cursor` and throw an error if
             //      doesn't match.
         } elseif (is_int($value)) {
-            $value = new StreamCursor(
-                path  : $path,
-                cursor: null,
-                offset: max(0, Cast::toInt($value)),
-            );
+            $value = new StreamOffset($path, max(0, Cast::toInt($value)));
         } else {
-            $value = new StreamCursor(
-                path  : $path,
-                cursor: null,
-                offset: 0,
-            );
+            $value = new StreamOffset($path, 0);
         }
 
         return $value;

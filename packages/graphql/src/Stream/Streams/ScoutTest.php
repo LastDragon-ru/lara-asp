@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Foundation\Testing\WithFaker;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Utils\Page;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
@@ -46,9 +46,8 @@ class ScoutTest extends TestCase {
     public function testGetItems(): void {
         $limit   = max(1, $this->faker->numberBetween(1, 4));
         $offset  = max(0, $this->faker->numberBetween(0, 2));
-        $cursor  = new Cursor('path', null, $offset);
         $builder = TestObject::search();
-        $stream  = new Scout($builder, $builder->model->getKeyName(), $cursor, $limit);
+        $stream  = new Scout($builder, $builder->model->getKeyName(), $limit, new Offset('path', $offset, null));
         $objects = [
             TestObject::factory()->create(),
             TestObject::factory()->create(),
@@ -93,7 +92,7 @@ class ScoutTest extends TestCase {
     public function testGetLength(): void {
         $count   = $this->faker->numberBetween(1, 5);
         $builder = TestObject::search();
-        $stream  = new Scout($builder, $builder->model->getKeyName(), new Cursor('path', null, 0), 1);
+        $stream  = new Scout($builder, $builder->model->getKeyName(), 1, new Offset('path', 0, null));
 
         for ($i = 0; $i < $count; $i++) {
             TestObject::factory()->create();
@@ -126,42 +125,42 @@ class ScoutTest extends TestCase {
         );
     }
 
-    public function testGetCurrentCursor(): void {
+    public function testGetCurrentOffset(): void {
         $builder = TestObject::search();
-        $cursor  = new Cursor('path', null, 0);
-        $stream  = new Scout($builder, 'key', $cursor, 2);
+        $offset  = new Offset('path', 0, null);
+        $stream  = new Scout($builder, 'key', 2, $offset);
 
-        self::assertSame($cursor, $stream->getCurrentCursor());
+        self::assertSame($offset, $stream->getCurrentOffset());
     }
 
-    public function testGetPreviousCursor(): void {
+    public function testGetPreviousOffset(): void {
         // Offset = 0
         $builder = TestObject::search();
-        $cursor  = new Cursor('path', null, 0);
-        $stream  = new Scout($builder, 'key', $cursor, 2);
+        $offset  = new Offset('path', 0, null);
+        $stream  = new Scout($builder, 'key', 2, $offset);
 
-        self::assertNull($stream->getPreviousCursor());
+        self::assertNull($stream->getPreviousOffset());
 
         // Offset > 0
-        $cursor = new Cursor('path', null, 1);
-        $stream = new Scout($builder, 'key', $cursor, 2);
+        $offset = new Offset('path', 1, null);
+        $stream = new Scout($builder, 'key', 2, $offset);
 
         self::assertEquals(
-            new Cursor('path', null, 0),
-            $stream->getPreviousCursor(),
+            new Offset('path', 0, null),
+            $stream->getPreviousOffset(),
         );
     }
 
-    public function testGetNextCursor(): void {
+    public function testGetNextOffset(): void {
         // Page.end = 0 & no more pages
         $builder   = TestObject::search();
-        $cursor    = new Cursor('path', null, 0);
+        $offset    = new Offset('path', 0, null);
         $paginator = Mockery::mock(LengthAwarePaginator::class);
         $paginator
             ->shouldReceive('hasMorePages')
             ->once()
             ->andReturn(false);
-        $stream = Mockery::mock(Scout::class, [$builder, 'key', $cursor, 2]);
+        $stream = Mockery::mock(Scout::class, [$builder, 'key', 2, $offset]);
         $stream->shouldAllowMockingProtectedMethods();
         $stream->makePartial();
         $stream
@@ -169,12 +168,12 @@ class ScoutTest extends TestCase {
             ->once()
             ->andReturn($paginator);
 
-        self::assertNull($stream->getNextCursor());
+        self::assertNull($stream->getNextOffset());
 
         // Page.end > 0 & no more pages
         $builder = TestObject::search();
-        $cursor  = new Cursor('path', null, 1234);
-        $stream  = Mockery::mock(Scout::class, [$builder, 'key', $cursor, 123]);
+        $offset  = new Offset('path', 1234, null);
+        $stream  = Mockery::mock(Scout::class, [$builder, 'key', 123, $offset]);
         $stream->shouldAllowMockingProtectedMethods();
         $stream->makePartial();
         $stream
@@ -182,19 +181,19 @@ class ScoutTest extends TestCase {
             ->never();
 
         self::assertEquals(
-            new Cursor('path', null, 1234 + 123),
-            $stream->getNextCursor(),
+            new Offset('path', 1234 + 123, null),
+            $stream->getNextOffset(),
         );
 
         // Page.end = 0 & has more pages
         $builder   = TestObject::search();
-        $cursor    = new Cursor('path', null, 0);
+        $offset    = new Offset('path', 0, null);
         $paginator = Mockery::mock(LengthAwarePaginator::class);
         $paginator
             ->shouldReceive('hasMorePages')
             ->once()
             ->andReturn(true);
-        $stream = Mockery::mock(Scout::class, [$builder, 'key', $cursor, 2]);
+        $stream = Mockery::mock(Scout::class, [$builder, 'key', 2, $offset]);
         $stream->shouldAllowMockingProtectedMethods();
         $stream->makePartial();
         $stream
@@ -203,8 +202,8 @@ class ScoutTest extends TestCase {
             ->andReturn($paginator);
 
         self::assertEquals(
-            new Cursor('path', null, 2),
-            $stream->getNextCursor(),
+            new Offset('path', 2, null),
+            $stream->getNextOffset(),
         );
     }
     // </editor-fold>

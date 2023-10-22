@@ -56,7 +56,7 @@ class Stream implements TypeDefinition {
                 length: Int
 
                 """
-                Cursors to navigate within the stream.
+                Offsets/Cursors to navigate within the stream.
                 """
                 navigation: {$navigation}!
             }

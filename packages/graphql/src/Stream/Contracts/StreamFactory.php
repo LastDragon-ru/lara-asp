@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Contracts;
 
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
@@ -38,7 +38,7 @@ interface StreamFactory {
     public function create(
         object $builder,
         string $key,
-        Cursor $cursor,
         int $limit,
+        Offset $offset,
     ): Stream;
 }

@@ -33,7 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *              default: int<1, max>,
  *              max: int<1, max>,
  *          },
- *          cursor: array{
+ *          offset: array{
  *              name: string,
  *          }
  *      }
@@ -97,8 +97,8 @@ $settings = [
             'default' => 25,
             'max'     => 100,
         ],
-        'cursor' => [
-            'name' => 'cursor',
+        'offset' => [
+            'name' => 'offset',
         ],
     ],
 ];

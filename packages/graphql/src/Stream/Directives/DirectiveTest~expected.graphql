@@ -85,14 +85,14 @@ directive @stream(
 on
     | FIELD_DEFINITION
 
-directive @streamCursor
-on
-    | ARGUMENT_DEFINITION
-
 directive @streamLimit(
     default: Int
     max: Int
 )
+on
+    | ARGUMENT_DEFINITION
+
+directive @streamOffset
 on
     | ARGUMENT_DEFINITION
 
@@ -220,7 +220,7 @@ interface InterfaceA {
         where: SearchByConditionTestObject
         order: [SortByClauseTestObject!]
         limit: Int!
-        cursor: StreamCursor
+        offset: StreamOffset
     ): TestObjectsStream!
 }
 
@@ -231,7 +231,7 @@ implements
     fieldNotSearchable(
         order: [SortByClauseTestObject!]
         limit: Int!
-        cursor: StreamCursor
+        offset: StreamOffset
     ): TestObjectsStream!
 }
 
@@ -240,21 +240,21 @@ interface InterfaceC {
         a: SearchByConditionTestObject
         b: [SortByClauseTestObject!]
         c: Int!
-        d: StreamCursor
+        d: StreamOffset
     ): TestObjectsStream!
 }
 
 """
-Represents a cursor for the `@stream` directive. The value can be a
+Represents a offset for the `@stream` directive. The value can be a
 positive `Int` or a `String`. The `Int` value represents the offset
 (zero-based) to navigate to any position within the stream (= offset
 pagination). And the `String` value represents the cursor and allows
 navigation only to the previous/current/next pages (= cursor
 pagination).
 """
-scalar StreamCursor
+scalar StreamOffset
 @scalar(
-    class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Cursor"
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Offset"
 )
 
 type Query
@@ -278,8 +278,8 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        cursor: StreamCursor
-        @streamCursor
+        offset: StreamOffset
+        @streamOffset
     ): TestObjectsStream!
     @stream(
         searchable: false
@@ -302,8 +302,8 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        cursor: StreamCursor
-        @streamCursor
+        offset: StreamOffset
+        @streamOffset
     ): TestObjectsStream!
     @stream(
         sortable: false
@@ -331,8 +331,8 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        cursor: StreamCursor
-        @streamCursor
+        offset: StreamOffset
+        @streamOffset
     ): TestObjectsStream!
     @stream
     @validate
@@ -362,9 +362,9 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        d: StreamCursor
+        d: StreamOffset
         @deprecated
-        @streamCursor
+        @streamOffset
 
         where: SearchByConditionTestObject
         @searchBy
@@ -386,8 +386,8 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        cursor: StreamCursor
-        @streamCursor
+        offset: StreamOffset
+        @streamOffset
     ): TestObjectsStream!
     @stream(
         limit: 15
@@ -416,8 +416,8 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        d: StreamCursor
-        @streamCursor
+        d: StreamOffset
+        @streamOffset
     ): TestObjectsStream!
     @stream
     @validate
@@ -443,8 +443,8 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        d: StreamCursor
-        @streamCursor
+        d: StreamOffset
+        @streamOffset
     ): TestObjectsStream!
     @stream(
         limit: 15
@@ -473,8 +473,8 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        cursor: StreamCursor
-        @streamCursor
+        offset: StreamOffset
+        @streamOffset
     ): TestObjectsStream!
     @stream
     @validate
@@ -498,17 +498,17 @@ implements
         """
         The cursor or offset within the stream to start.
         """
-        cursor: StreamCursor
-        @streamCursor
+        offset: StreamOffset
+        @streamOffset
     ): TestObjectsStream!
     @stream
     @validate
 }
 
 type StreamNavigation {
-    current: StreamCursor!
-    next: StreamCursor
-    previous: StreamCursor
+    current: StreamOffset!
+    next: StreamOffset
+    previous: StreamOffset
 }
 
 type TestObject {
@@ -528,7 +528,7 @@ type TestObjectsStream {
     length: Int
 
     """
-    Cursors to navigate within the stream.
+    Offsets/Cursors to navigate within the stream.
     """
     navigation: StreamNavigation!
 }

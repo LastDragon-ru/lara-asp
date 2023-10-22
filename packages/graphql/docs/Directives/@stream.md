@@ -76,7 +76,7 @@ input StreamBuilder {
 Out the box Laravel and so Lighthouse supporting the following pagination types:
 
 * Page pagination (default) - page/size pagination with counting
-* Simple pagination - page/size, but without counting
+* Simple pagination - page/size, but without counting at all
 * Cursor pagination - previous/next only
 
 Probably still most used "Page pagination" is always performing counting of items, even if the count of items is not needed and not queried. For huge datasets counting may be extremely slow, especially with filtering/sorting. In modern single-page application (SPA) we can query `count` only ones to render pagination and just navigate between pages after.
@@ -107,11 +107,11 @@ Query:
 ```graphql
 query example(
     $limit: Int!,
-    $cursor: StreamCursor,
+    $offset: StreamOffset,
     $where: SearchByConditionObject,
     $order: [SortByClauseObject!],
 ) {
-    objects(where: $where, order: $order, limit: $limit, cursor: $cursor) {
+    objects(where: $where, order: $order, limit: $limit, offset: $offset) {
         items {
             id
             value
@@ -131,7 +131,7 @@ Offset/Limit pagination:
 ```json
 {
     "limit": 10,
-    "cursor": 5,
+    "offset": 5,
     "where": null,
     "order": null
 }
@@ -142,7 +142,7 @@ Cursor pagination:
 ```json
 {
     "limit": 10,
-    "cursor": "... cursor string ...",
+    "offset": "... cursor string ...",
     "where": null,
     "order": null
 }

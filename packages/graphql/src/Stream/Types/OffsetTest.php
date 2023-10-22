@@ -11,7 +11,7 @@ use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Encryption\Encrypter;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -20,8 +20,8 @@ use function is_string;
 /**
  * @internal
  */
-#[CoversClass(Cursor::class)]
-class CursorTest extends TestCase {
+#[CoversClass(Offset::class)]
+class OffsetTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -32,7 +32,7 @@ class CursorTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $scalar = new Cursor();
+        $scalar = new Offset();
         $actual = $scalar->serialize($value);
         $actual = is_string($expected)
             ? Container::getInstance()->make(Encrypter::class)->decrypt($actual, false)
@@ -44,7 +44,7 @@ class CursorTest extends TestCase {
     /**
      * @dataProvider dataProviderParseValue
      */
-    public function testParseValue(Exception|StreamCursor|int $expected, mixed $value): void {
+    public function testParseValue(Exception|StreamOffset|int $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
@@ -52,7 +52,7 @@ class CursorTest extends TestCase {
         $value  = is_string($value)
             ? Container::getInstance()->make(Encrypter::class)->encrypt($value, false)
             : $value;
-        $scalar = new Cursor();
+        $scalar = new Offset();
         $actual = $scalar->parseValue($value);
 
         self::assertEquals($expected, $actual);
@@ -61,7 +61,7 @@ class CursorTest extends TestCase {
     /**
      * @dataProvider dataProviderParseLiteral
      */
-    public function testParseLiteral(Exception|StreamCursor|int $expected, Node&ValueNode $value): void {
+    public function testParseLiteral(Exception|StreamOffset|int $expected, Node&ValueNode $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
@@ -70,7 +70,7 @@ class CursorTest extends TestCase {
             $value->value = Container::getInstance()->make(Encrypter::class)->encrypt($value->value, false);
         }
 
-        $scalar = new Cursor();
+        $scalar = new Offset();
         $actual = $scalar->parseLiteral($value);
 
         self::assertEquals($expected, $actual);
@@ -85,7 +85,7 @@ class CursorTest extends TestCase {
     public static function dataProviderSerialize(): array {
         return [
             'invalid'           => [
-                new InvariantViolation('The valid Cursor expected, `"invalid"` given.'),
+                new InvariantViolation('The valid cursor/offset expected, `"invalid"` given.'),
                 'invalid',
             ],
             'offset (= 0)'      => [
@@ -100,15 +100,15 @@ class CursorTest extends TestCase {
                 new InvariantViolation('The offset must be greater or equal to 0.'),
                 -1,
             ],
-            StreamCursor::class => [
-                '{"path":"path.to.field","cursor":null,"offset":null}',
-                new StreamCursor(path: 'path.to.field'),
+            StreamOffset::class => [
+                '{"path":"path.to.field","offset":null,"cursor":null}',
+                new StreamOffset(path: 'path.to.field'),
             ],
         ];
     }
 
     /**
-     * @return array<string, array{Exception|StreamCursor|int, mixed}>
+     * @return array<string, array{Exception|StreamOffset|int, mixed}>
      */
     public static function dataProviderParseValue(): array {
         return [
@@ -125,18 +125,18 @@ class CursorTest extends TestCase {
                 -1,
             ],
             'invalid'           => [
-                new Error('The Cursor is not valid.'),
+                new Error('The cursor is not valid.'),
                 'invalid',
             ],
-            StreamCursor::class => [
-                new StreamCursor('path.to.field'),
+            StreamOffset::class => [
+                new StreamOffset('path.to.field'),
                 '{"path":"path.to.field","offset":null}',
             ],
         ];
     }
 
     /**
-     * @return array<string, array{Exception|StreamCursor|int, Node&ValueNode}>
+     * @return array<string, array{Exception|StreamOffset|int, Node&ValueNode}>
      */
     public static function dataProviderParseLiteral(): array {
         return [
@@ -153,11 +153,11 @@ class CursorTest extends TestCase {
                 new IntValueNode(['value' => '-1']),
             ],
             'invalid'           => [
-                new Error('The Cursor is not valid.'),
+                new Error('The cursor is not valid.'),
                 new StringValueNode(['value' => 'invalid']),
             ],
-            StreamCursor::class => [
-                new StreamCursor('path.to.field'),
+            StreamOffset::class => [
+                new StreamOffset('path.to.field'),
                 new StringValueNode(['value' => '{"path":"path.to.field"}']),
             ],
         ];

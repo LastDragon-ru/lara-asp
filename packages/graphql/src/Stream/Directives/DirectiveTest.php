@@ -28,9 +28,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDire
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Cursor as StreamCursor;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamOffsetDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\ArgumentMissed;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderInvalid;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderUnsupported;
@@ -39,6 +38,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsNotList;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsSubscription;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
@@ -111,7 +111,7 @@ class DirectiveTest extends TestCase {
         ?array $where,
         ?array $order,
         int $limit,
-        string|int|null $cursor,
+        string|int|null $offset,
     ): void {
         // Dependencies
         $encrypter = new class() implements StringEncrypter {
@@ -154,9 +154,9 @@ class DirectiveTest extends TestCase {
                     $where: SearchByConditionTestObject,
                     $order: [SortByClauseTestObject!],
                     $limit: Int!,
-                    $cursor: StreamCursor,
+                    $offset: StreamOffset,
                 ) {
-                    test(where: $where, order: $order, limit: $limit, cursor: $cursor) {
+                    test(where: $where, order: $order, limit: $limit, offset: $offset) {
                         items {
                             id
                             value
@@ -174,7 +174,7 @@ class DirectiveTest extends TestCase {
                     'where'  => $where,
                     'order'  => $order,
                     'limit'  => $limit,
-                    'cursor' => $cursor,
+                    'offset' => $offset,
                 ],
             )
             ->assertThat(
@@ -202,7 +202,7 @@ class DirectiveTest extends TestCase {
         ?array $where,
         ?array $order,
         int $limit,
-        string|int|null $cursor,
+        string|int|null $offset,
     ): void {
         // Config
         config([
@@ -251,9 +251,9 @@ class DirectiveTest extends TestCase {
                     $where: SearchByScoutConditionTestObject,
                     $order: [SortByScoutClauseTestObject!],
                     $limit: Int!,
-                    $cursor: StreamCursor,
+                    $offset: StreamOffset,
                 ) {
-                    test(search: $search, where: $where, order: $order, limit: $limit, cursor: $cursor) {
+                    test(search: $search, where: $where, order: $order, limit: $limit, offset: $offset) {
                         items {
                             id
                             value
@@ -272,7 +272,7 @@ class DirectiveTest extends TestCase {
                     'where'  => $where,
                     'order'  => $order,
                     'limit'  => $limit,
-                    'cursor' => $cursor,
+                    'offset' => $offset,
                 ],
             )
             ->assertThat(
@@ -902,11 +902,11 @@ class DirectiveTest extends TestCase {
                 return null;
             }
 
-            public function getNextCursor(): ?StreamCursor {
+            public function getNextOffset(): ?StreamOffset {
                 return null;
             }
 
-            public function getPreviousCursor(): ?StreamCursor {
+            public function getPreviousOffset(): ?StreamOffset {
                 return null;
             }
 
@@ -927,8 +927,8 @@ class DirectiveTest extends TestCase {
             /**
              * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
              */
-            public function getInternalCursor(Stream $stream): StreamCursor {
-                return $stream->cursor;
+            public function getInternalOffset(Stream $stream): StreamOffset {
+                return $stream->offset;
             }
 
             /**
@@ -944,8 +944,8 @@ class DirectiveTest extends TestCase {
         self::assertEquals(10, $helper->getInternalLimit($stream));
         self::assertSame($builder, $helper->getInternalBuilder($stream));
         self::assertEquals(
-            new StreamCursor('field', null, 0),
-            $helper->getInternalCursor($stream),
+            new StreamOffset('field', 0, null),
+            $helper->getInternalOffset($stream),
         );
     }
 
@@ -971,7 +971,7 @@ class DirectiveTest extends TestCase {
             ->shouldReceive('getFieldValue')
             ->once()
             ->andReturn(
-                Mockery::mock(StreamCursor::class),
+                Mockery::mock(StreamOffset::class),
             );
         $directive
             ->shouldReceive('getResolver')
@@ -1006,10 +1006,10 @@ class DirectiveTest extends TestCase {
 
         $directive
             ->shouldReceive('getFieldValue')
-            ->with(StreamCursorDirective::class, Mockery::andAnyOtherArgs())
+            ->with(StreamOffsetDirective::class, Mockery::andAnyOtherArgs())
             ->once()
             ->andReturn(
-                Mockery::mock(StreamCursor::class),
+                Mockery::mock(StreamOffset::class),
             );
         $directive
             ->shouldReceive('getResolver')
@@ -1260,8 +1260,8 @@ class DirectiveTest extends TestCase {
                 12_345,
                 null,
             ],
-            'invalid cursor: negative value' => [
-                'Variable "$cursor" got invalid value -1; The offset must be greater or equal to 0.',
+            'invalid offset: negative value' => [
+                'Variable "$offset" got invalid value -1; The offset must be greater or equal to 0.',
                 static function (): void {
                     // empty
                 },
@@ -1271,7 +1271,7 @@ class DirectiveTest extends TestCase {
                 -1,
             ],
             'invalid cursor: not a cursor'   => [
-                'Variable "$cursor" got invalid value "not a cursor"; The Cursor is not valid.',
+                'Variable "$offset" got invalid value "not a cursor"; The cursor is not valid.',
                 static function (): void {
                     // empty
                 },
@@ -1295,8 +1295,8 @@ class DirectiveTest extends TestCase {
                     'length'     => 3,
                     'navigation' => [
                         'previous' => null,
-                        'current'  => '{"path":"test","cursor":null,"offset":0}',
-                        'next'     => '{"path":"test","cursor":null,"offset":2}',
+                        'current'  => '{"path":"test","offset":0,"cursor":null}',
+                        'next'     => '{"path":"test","offset":2,"cursor":null}',
                     ],
                 ],
                 static function (): void {
@@ -1328,8 +1328,8 @@ class DirectiveTest extends TestCase {
                     ],
                     'length'     => 3,
                     'navigation' => [
-                        'previous' => '{"path":"test","cursor":null,"offset":0}',
-                        'current'  => '{"path":"test","cursor":null,"offset":2}',
+                        'previous' => '{"path":"test","offset":0,"cursor":null}',
+                        'current'  => '{"path":"test","offset":2,"cursor":null}',
                         'next'     => null,
                     ],
                 ],
@@ -1362,8 +1362,8 @@ class DirectiveTest extends TestCase {
                     ],
                     'length'     => 3,
                     'navigation' => [
-                        'previous' => '{"path":"test","cursor":null,"offset":0}',
-                        'current'  => '{"path":"test","cursor":null,"offset":2}',
+                        'previous' => '{"path":"test","offset":0,"cursor":null}',
+                        'current'  => '{"path":"test","offset":2,"cursor":null}',
                         'next'     => null,
                     ],
                 ],
@@ -1397,7 +1397,7 @@ class DirectiveTest extends TestCase {
                     'length'     => 1,
                     'navigation' => [
                         'previous' => null,
-                        'current'  => '{"path":"test","cursor":null,"offset":0}',
+                        'current'  => '{"path":"test","offset":0,"cursor":null}',
                         'next'     => null,
                     ],
                 ],
@@ -1437,7 +1437,7 @@ class DirectiveTest extends TestCase {
                     'length'     => 3,
                     'navigation' => [
                         'previous' => null,
-                        'current'  => '{"path":"test","cursor":null,"offset":0}',
+                        'current'  => '{"path":"test","offset":0,"cursor":null}',
                         'next'     => null,
                     ],
                 ],

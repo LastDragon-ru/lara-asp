@@ -28,9 +28,9 @@ class StreamValue {
             'items'      => $this->stream->getItems(),
             'length'     => $this->stream->getLength(),
             'navigation' => $this,
-            'previous'   => $this->stream->getPreviousCursor(),
-            'current'    => $this->stream->getCurrentCursor(),
-            'next'       => $this->stream->getNextCursor(),
+            'previous'   => $this->stream->getPreviousOffset(),
+            'current'    => $this->stream->getCurrentOffset(),
+            'next'       => $this->stream->getNextOffset(),
             default      => null,
         };
     }

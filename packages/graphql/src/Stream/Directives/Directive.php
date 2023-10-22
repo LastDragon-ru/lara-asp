@@ -30,8 +30,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamCursorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamLimitDirective;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamOffsetDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\ArgumentMissed;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderInvalid;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\BuilderUnsupported;
@@ -262,12 +262,12 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 : [],
         );
 
-        // Cursor
+        // Offset
         $this->addArgument(
             $manipulator,
             $source,
-            StreamCursorDirective::class,
-            StreamCursorDirective::settings()['name'],
+            StreamOffsetDirective::class,
+            StreamOffsetDirective::settings()['name'],
             $manipulator::Placeholder,
         );
 
@@ -428,10 +428,10 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
      */
     public function resolveField(FieldValue $fieldValue): callable {
         return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): StreamValue {
-            // Cursor
+            // Offset
             $manipulator = $this->getAstManipulator(new DocumentAST());
             $source      = new ObjectFieldSource($manipulator, $info->parentType, $info->fieldDefinition);
-            $cursor      = $this->getFieldValue(StreamCursorDirective::class, $manipulator, $source, $info, $args);
+            $offset      = $this->getFieldValue(StreamOffsetDirective::class, $manipulator, $source, $info, $args);
 
             // Builder
             $factory  = $this->getStreamFactory();
@@ -452,7 +452,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $key     = $this->getArgKey($manipulator, $source);
             $limit   = $this->getFieldValue(StreamLimitDirective::class, $manipulator, $source, $info, $args);
             $builder = $factory->enhance($builder, $root, $args, $context, $info);
-            $stream  = $factory->create($builder, $key, $cursor, $limit);
+            $stream  = $factory->create($builder, $key, $limit, $offset);
             $stream  = new StreamValue($stream);
 
             return $stream;

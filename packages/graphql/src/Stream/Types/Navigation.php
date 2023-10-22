@@ -25,14 +25,14 @@ class Navigation implements TypeDefinition {
         string $name,
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
-        $cursor = $manipulator->getType(Cursor::class, $source);
+        $offset = $manipulator->getType(Offset::class, $source);
 
         return Parser::objectTypeDefinition(
             <<<GRAPHQL
             type {$name} {
-                previous: {$cursor}
-                current: {$cursor}!
-                next: {$cursor}
+                previous: {$offset}
+                current: {$offset}!
+                next: {$offset}
             }
             GRAPHQL,
         );
