@@ -39,12 +39,20 @@ class Preprocess extends Command {
      * @var string
      */
     public $help = <<<'HELP'
-        Replaces special instructions in Markdown.
+        Replaces special instructions in Markdown. Instruction is the [link
+        reference definition](https://github.github.com/gfm/#link-reference-definitions),
+        so the syntax is:
 
         ```plain
         [<instruction>]: <target>
+        [<instruction>]: <target> (<params>)
         [<instruction>=name]: <target>
         ```
+
+        Where:
+        - `<instruction>` the instruction name (unknown instructions will be ignored)
+        - `<target>` usually the path to the file or directory, but see the instruction description
+        - `<params>` optional JSON string with additional parameters (can be wrapped by `(...)`, `"..."`, or `'...'`)
 
         ### Supported instructions
 
