@@ -21,4 +21,9 @@ class PathTest extends TestCase {
             Path::getPath(__FILE__, 'to/./file'),
         );
     }
+
+    public function testGetRelativePath(): void {
+        self::assertEquals('../to/file', Path::getRelativePath('/any/path', '/any/path/../to/file'));
+        self::assertEquals('to/file', Path::getRelativePath('/absolute/path', 'to/./file'));
+    }
 }

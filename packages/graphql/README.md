@@ -46,7 +46,7 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider 
 # Directives
 
 [include:document-list]: ./docs/Directives
-[//]: # (start: 7dd4876e71995d78accac2c3a350de453699da676a426a273fb2410b5b5bb705)
+[//]: # (start: 257502a37e55716cbdb2b243dc8d1434df3a26b7322e2f60d6a056d4c587df20)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `@searchBy`
@@ -67,7 +67,7 @@ Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform
 
 [Read more](<docs/Directives/@stream.md>).
 
-[//]: # (end: 7dd4876e71995d78accac2c3a350de453699da676a426a273fb2410b5b5bb705)
+[//]: # (end: 257502a37e55716cbdb2b243dc8d1434df3a26b7322e2f60d6a056d4c587df20)
 
 # Scalars
 
@@ -83,7 +83,7 @@ Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform
 > ```
 
 [include:document-list]: ./docs/Scalars
-[//]: # (start: d577163bf50e09242e3792319ae4453860693d9cb9020da93f7f2940d72a3daf)
+[//]: # (start: 77b523f6a23bfaccd43e0fbed83fca84973e01872d17907178e713d9a74e21b4)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `JsonString`
@@ -92,7 +92,7 @@ Represents [JSON](https://json.org) string.
 
 [Read more](<docs/Scalars/JsonString.md>).
 
-[//]: # (end: d577163bf50e09242e3792319ae4453860693d9cb9020da93f7f2940d72a3daf)
+[//]: # (end: 77b523f6a23bfaccd43e0fbed83fca84973e01872d17907178e713d9a74e21b4)
 
 # Scout
 

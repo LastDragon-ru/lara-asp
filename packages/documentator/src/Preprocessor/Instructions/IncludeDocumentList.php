@@ -3,11 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Symfony\Component\Finder\Finder;
 
 use function basename;
@@ -17,7 +18,10 @@ use function is_dir;
 use function strcmp;
 use function usort;
 
-class IncludeDocumentList implements ProcessableInstruction {
+/**
+ * @implements ParameterizableInstruction<IncludeDocumentListParameters>
+ */
+class IncludeDocumentList implements ParameterizableInstruction {
     public function __construct(
         protected readonly PackageViewer $viewer,
     ) {
@@ -40,9 +44,23 @@ class IncludeDocumentList implements ProcessableInstruction {
         return 'Directory path.';
     }
 
-    public function process(string $path, string $target): string {
+    public static function getParameters(): string {
+        return IncludeDocumentListParameters::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getParametersDescription(): array {
+        return [
+            'depth' => 'Default is `0` (no nested directories). The `null` removes limits.',
+        ];
+    }
+
+    public function process(string $path, string $target, Serializable $parameters): string {
         // Directory?
-        $root = Path::getPath(dirname($path), $target);
+        $base = dirname($path);
+        $root = Path::getPath($base, $target);
 
         if (!is_dir($root)) {
             throw new TargetIsNotDirectory($path, $target);
@@ -51,13 +69,13 @@ class IncludeDocumentList implements ProcessableInstruction {
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
         $target    = Path::normalize($target);
-        $files     = Finder::create()
-            ->in($root)
-            ->depth(0)
-            ->name('*.md')
-            ->files();
+        $finder    = Finder::create()->in($root)->name('*.md');
 
-        foreach ($files as $file) {
+        if ($parameters->depth !== null) {
+            $finder->depth($parameters->depth);
+        }
+
+        foreach ($finder->files() as $file) {
             // Same?
             if ($target === '' && $file->getFilename() === basename($path)) {
                 continue;
@@ -71,16 +89,17 @@ class IncludeDocumentList implements ProcessableInstruction {
             }
 
             // Extract
-            $title = Markdown::getTitle($content);
+            $docTitle = Markdown::getTitle($content);
+            $docPath  = Path::getRelativePath($base, $file->getPathname());
 
-            if ($title) {
+            if ($docTitle) {
                 $documents[] = [
-                    'path'    => Path::join($target, $file->getFilename()),
-                    'title'   => $title,
+                    'path'    => $docPath,
+                    'title'   => $docTitle,
                     'summary' => Markdown::getSummary($content),
                 ];
             } else {
-                throw new DocumentTitleIsMissing($path, $target, Path::join($target, $file->getFilename()));
+                throw new DocumentTitleIsMissing($path, $target, $docPath);
             }
         }
 

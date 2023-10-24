@@ -17,6 +17,16 @@ class Path {
         return $path;
     }
 
+    public static function getRelativePath(string $root, string $path): string {
+        $path = static::isRelative($path)
+            ? static::join(static::getDirname($root), $path)
+            : $path;
+        $path = SymfonyPath::makeRelative($path, $root);
+        $path = static::normalize($path);
+
+        return $path;
+    }
+
     public static function getDirname(string $path): string {
         return static::normalize(is_file($path) ? dirname($path) : $path);
     }

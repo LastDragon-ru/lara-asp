@@ -27,7 +27,7 @@ composer require lastdragon-ru/lara-asp-documentator
 # Commands
 
 [include:document-list]: ./docs/commands
-[//]: # (start: 350255d9b4e69e2d32877243b3ce1ed38a62b303bd0298c41b7dda70f977de98)
+[//]: # (start: 8990fe25b87da51dd6e1c57530caf8d895f452e4ddc9740f117bc1bd61a3805e)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `lara-asp-documentator:commands`
@@ -48,7 +48,7 @@ Generates a table with the required versions of PHP/Laravel in Markdown format.
 
 [Read more](<docs/commands/requirements.md>).
 
-[//]: # (end: 350255d9b4e69e2d32877243b3ce1ed38a62b303bd0298c41b7dda70f977de98)
+[//]: # (end: 8990fe25b87da51dd6e1c57530caf8d895f452e4ddc9740f117bc1bd61a3805e)
 
 [include:file]: ../../docs/shared/Contributing.md
 [//]: # (start: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)

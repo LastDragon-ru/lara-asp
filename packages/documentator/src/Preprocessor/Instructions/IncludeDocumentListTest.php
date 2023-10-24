@@ -15,8 +15,9 @@ use function basename;
 class IncludeDocumentListTest extends TestCase {
     public function testProcessSameDirectory(): void {
         $path     = self::getTestData()->file('Document.md');
+        $params   = new IncludeDocumentListParameters();
         $instance = $this->app->make(IncludeDocumentList::class);
-        $actual   = $instance->process($path->getPathname(), './');
+        $actual   = $instance->process($path->getPathname(), './', $params);
 
         self::assertEquals(
             self::getTestData()->content('~SameDirectory.md'),
@@ -30,22 +31,40 @@ class IncludeDocumentListTest extends TestCase {
 
     public function testProcessAnotherDirectory(): void {
         $path     = self::getTestData()->file('~AnotherDirectory.md');
+        $params   = new IncludeDocumentListParameters();
         $instance = $this->app->make(IncludeDocumentList::class);
-        $actual   = $instance->process($path->getPathname(), basename(self::getTestData()->path('/')));
+        $actual   = $instance->process($path->getPathname(), basename(self::getTestData()->path('/')), $params);
 
         self::assertEquals(
             self::getTestData()->content('~AnotherDirectory.md'),
             <<<MARKDOWN
-                <!-- markdownlint-disable -->
+            <!-- markdownlint-disable -->
 
-                {$actual}
-                MARKDOWN,
+            {$actual}
+            MARKDOWN,
+        );
+    }
+
+    public function testProcessNestedDirectories(): void {
+        $path     = self::getTestData()->file('nested/Document.md');
+        $params   = new IncludeDocumentListParameters(null);
+        $instance = $this->app->make(IncludeDocumentList::class);
+        $actual   = $instance->process($path->getPathname(), './', $params);
+
+        self::assertEquals(
+            self::getTestData()->content('~NestedDirectories.md'),
+            <<<MARKDOWN
+            <!-- markdownlint-disable -->
+
+            {$actual}
+            MARKDOWN,
         );
     }
 
     public function testProcessWithoutTitle(): void {
         $path     = self::getTestData()->file('invalid/Document.md');
         $target   = './';
+        $params   = new IncludeDocumentListParameters();
         $instance = $this->app->make(IncludeDocumentList::class);
 
         self::expectExceptionObject(
@@ -56,6 +75,6 @@ class IncludeDocumentListTest extends TestCase {
             ),
         );
 
-        $instance->process($path->getPathname(), $target);
+        $instance->process($path->getPathname(), $target, $params);
     }
 }
