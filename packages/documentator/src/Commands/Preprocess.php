@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,8 +14,10 @@ use Symfony\Component\Finder\Finder;
 
 use function getcwd;
 use function implode;
+use function is_a;
 use function ksort;
 use function strtr;
+use function trim;
 
 /**
  * @see Preprocessor
@@ -45,20 +48,21 @@ class Preprocess extends Command {
 
         ```plain
         [<instruction>]: <target>
-        [<instruction>]: <target> (<params>)
+        [<instruction>]: <target> (<parameters>)
         [<instruction>=name]: <target>
         ```
 
         Where:
-        - `<instruction>` the instruction name (unknown instructions will be ignored)
-        - `<target>` usually the path to the file or directory, but see the instruction description
-        - `<params>` optional JSON string with additional parameters (can be wrapped by `(...)`, `"..."`, or `'...'`)
+        * `<instruction>` the instruction name (unknown instructions will be ignored)
+        * `<target>` usually the path to the file or directory, but see the instruction description
+        * `<parameters>` optional JSON string with additional parameters
+            (can be wrapped by `(...)`, `"..."`, or `'...'`)
 
-        ### Supported instructions
+        ## Instructions
 
         %instructions%
 
-        ### Limitations
+        ## Limitations
 
         * `<instruction>` will be processed everywhere in the file (eg within
           the code block) and may give unpredictable results.
@@ -109,10 +113,33 @@ class Preprocess extends Command {
             $name   = $instruction::getName();
             $desc   = $instruction::getDescription();
             $target = $instruction::getTargetDescription();
+            $params = is_a($instruction, ParameterizableInstruction::class, true)
+                ? $instruction::getParametersDescription()
+                : null;
 
-            if ($target !== null) {
+            if ($target !== null && $params !== null) {
+                $parameters = [];
+
+                foreach ($params as $paramName => $paramDescription) {
+                    $paramName        = trim($paramName);
+                    $paramDescription = trim($paramDescription);
+                    $parameters[]     = "`{$paramName}` - {$paramDescription}";
+                }
+
+                $prefix      = '  * ';
+                $parameters  = $prefix.implode($prefix, $parameters);
                 $help[$name] = <<<HELP
-                    #### `[{$name}]: <target>`
+                    ### `[{$name}]: <target> <parameters>`
+
+                    * `<target>` - {$target}
+                    * `<parameters>` - additional parameters
+                    {$parameters}
+
+                    {$desc}
+                    HELP;
+            } elseif ($target !== null) {
+                $help[$name] = <<<HELP
+                    ### `[{$name}]: <target>`
 
                     * `<target>` - {$target}
 
@@ -120,7 +147,7 @@ class Preprocess extends Command {
                     HELP;
             } else {
                 $help[$name] = <<<HELP
-                    #### `[{$name}]: .`
+                    ### `[{$name}]: .`
 
                     {$desc}
                     HELP;

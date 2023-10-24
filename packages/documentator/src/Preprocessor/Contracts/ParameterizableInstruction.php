@@ -14,6 +14,11 @@ interface ParameterizableInstruction extends Instruction {
     public static function getParameters(): string;
 
     /**
+     * @return non-empty-array<string, string>
+     */
+    public static function getParametersDescription(): array;
+
+    /**
      * @param TParameters $parameters
      */
     public function process(string $path, string $target, Serializable $parameters): string;

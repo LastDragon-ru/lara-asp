@@ -16,7 +16,7 @@ so the syntax is:
 
 ```plain
 [<instruction>]: <target>
-[<instruction>]: <target> (<params>)
+[<instruction>]: <target> (<parameters>)
 [<instruction>=name]: <target>
 ```
 
@@ -24,11 +24,12 @@ Where:
 
 * `<instruction>` the instruction name (unknown instructions will be ignored)
 * `<target>` usually the path to the file or directory, but see the instruction description
-* `<params>` optional JSON string with additional parameters (can be wrapped by `(...)`, `"..."`, or `'...'`)
+* `<parameters>` optional JSON string with additional parameters
+    (can be wrapped by `(...)`, `"..."`, or `'...'`)
 
-### Supported instructions
+## Instructions
 
-#### `[include:document-list]: <target>`
+### `[include:document-list]: <target>`
 
 * `<target>` - Directory path.
 
@@ -36,7 +37,7 @@ Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph
 after the Header will be used as a summary.
 
-#### `[include:example]: <target>`
+### `[include:example]: <target>`
 
 * `<target>` - Example file path.
 
@@ -48,26 +49,26 @@ By default, output of `<target>.run` will be included as ` ```plain text``` `
 block. You can wrap the output into `<markdown>text</markdown>` tags to
 insert it as is.
 
-#### `[include:exec]: <target>`
+### `[include:exec]: <target>`
 
 * `<target>` - Path to the executable.
 
 Executes the `<target>` and returns result.
 
-#### `[include:file]: <target>`
+### `[include:file]: <target>`
 
 * `<target>` - File path.
 
 Includes the `<target>` file.
 
-#### `[include:package-list]: <target>`
+### `[include:package-list]: <target>`
 
 * `<target>` - Directory path.
 
 Generates package list from `<target>` directory. The readme file will be
 used to determine package name and summary.
 
-### Limitations
+## Limitations
 
 * `<instruction>` will be processed everywhere in the file (eg within
   the code block) and may give unpredictable results.
