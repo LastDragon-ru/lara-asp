@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 use Exception;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
@@ -119,7 +121,12 @@ class Preprocessor {
                     $instruction = $this->getInstruction($matches['instruction']);
 
                     if ($content === null) {
-                        $content      = trim($instruction?->process($path, $target) ?? '');
+                        if ($instruction instanceof ProcessableInstruction) {
+                            $content = trim($instruction->process($path, $target));
+                        } else {
+                            $content = '';
+                        }
+
                         $cache[$hash] = $content;
                     }
 

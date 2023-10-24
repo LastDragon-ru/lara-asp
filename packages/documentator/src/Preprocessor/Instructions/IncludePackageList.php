@@ -4,11 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use Symfony\Component\Finder\Finder;
@@ -26,7 +26,7 @@ use function usort;
 
 use const JSON_THROW_ON_ERROR;
 
-class IncludePackageList implements Instruction {
+class IncludePackageList implements ProcessableInstruction {
     public function __construct(
         protected readonly PackageViewer $viewer,
     ) {

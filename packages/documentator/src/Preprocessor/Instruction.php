@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
-interface Instruction {
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
+
+interface Instruction extends ProcessableInstruction {
     public static function getName(): string;
 
     public static function getDescription(): string;

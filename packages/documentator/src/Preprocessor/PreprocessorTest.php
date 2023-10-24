@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -11,19 +13,19 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Preprocessor::class)]
 class PreprocessorTest extends TestCase {
     public function testProcess(): void {
-        $content         = <<<'MARKDOWN'
-            Bla bla bla [test]: ./path/to/file should be ignored.
+        $content                = <<<'MARKDOWN'
+            Bla bla bla [processable]: ./path/to/file should be ignored.
 
             [unknown]: ./path/to/file
 
             [empty]: ./path/to/file
 
-            [test]: ./path/to/file
+            [processable]: ./path/to/file
 
-            [test]: <./path/to/file>
+            [processable]: <./path/to/file>
             [//]: # (start: hash)
 
-            [test]: ./path/to/file
+            [processable]: ./path/to/file
             [//]: # (start: nested-hash)
 
             outdated
@@ -32,12 +34,12 @@ class PreprocessorTest extends TestCase {
 
             [//]: # (end: hash)
             MARKDOWN;
-        $testInstruction = Mockery::mock(Instruction::class);
-        $testInstruction
+        $processableInstruction = Mockery::mock(ProcessableInstruction::class);
+        $processableInstruction
             ->shouldReceive('getName')
             ->once()
-            ->andReturn('test');
-        $testInstruction
+            ->andReturn('processable');
+        $processableInstruction
             ->shouldReceive('process')
             ->with('path', './path/to/file')
             ->once()
@@ -56,17 +58,17 @@ class PreprocessorTest extends TestCase {
             }
 
             public function process(string $path, string $target): string {
-                return '';
+                return 'should be ignored';
             }
         };
 
         $preprocessor = (new Preprocessor())
-            ->addInstruction($testInstruction)
+            ->addInstruction($processableInstruction)
             ->addInstruction($emptyInstruction);
 
         self::assertEquals(
             <<<'MARKDOWN'
-            Bla bla bla [test]: ./path/to/file should be ignored.
+            Bla bla bla [processable]: ./path/to/file should be ignored.
 
             [unknown]: ./path/to/file
 
@@ -76,21 +78,21 @@ class PreprocessorTest extends TestCase {
             [//]: # (empty)
             [//]: # (end: 8c371cac4ef3bc60b4480789fd5c8dba395daff5ba46b9d4b0eebab34f1cdecf)
 
-            [test]: ./path/to/file
-            [//]: # (start: e4812e1f99f65a72f87b6abe2a385b620a824c2d6fb5a18d0704da017d3ab90a)
+            [processable]: ./path/to/file
+            [//]: # (start: 15315c7cc8004bec2bb9b2707e8033d107007b6ca4b841181f6c17aef8f15bbc)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             content
 
-            [//]: # (end: e4812e1f99f65a72f87b6abe2a385b620a824c2d6fb5a18d0704da017d3ab90a)
+            [//]: # (end: 15315c7cc8004bec2bb9b2707e8033d107007b6ca4b841181f6c17aef8f15bbc)
 
-            [test]: <./path/to/file>
-            [//]: # (start: e4812e1f99f65a72f87b6abe2a385b620a824c2d6fb5a18d0704da017d3ab90a)
+            [processable]: <./path/to/file>
+            [//]: # (start: 15315c7cc8004bec2bb9b2707e8033d107007b6ca4b841181f6c17aef8f15bbc)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             content
 
-            [//]: # (end: e4812e1f99f65a72f87b6abe2a385b620a824c2d6fb5a18d0704da017d3ab90a)
+            [//]: # (end: 15315c7cc8004bec2bb9b2707e8033d107007b6ca4b841181f6c17aef8f15bbc)
             MARKDOWN,
             $preprocessor->process('path', $content),
         );

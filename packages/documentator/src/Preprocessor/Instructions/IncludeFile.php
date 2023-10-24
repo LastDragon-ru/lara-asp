@@ -2,14 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 
 use function dirname;
 use function file_get_contents;
 
-class IncludeFile implements Instruction {
+class IncludeFile implements ProcessableInstruction {
     public function __construct() {
         // empty
     }
