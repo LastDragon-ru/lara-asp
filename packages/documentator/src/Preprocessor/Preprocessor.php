@@ -5,6 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 use Exception;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
@@ -12,6 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 
 use function array_column;
 use function hash;
@@ -25,10 +29,19 @@ use function trim;
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
- * Replaces special instructions in Markdown.
+ * Replaces special instructions in Markdown. Instruction is the link  reference
+ * definition, so the syntax is:
  *
  *      [<instruction>]: <target>
+ *      [<instruction>]: <target> (<params>)
  *      [<instruction>=name]: <target>
+ *
+ * Where:
+ *  - `<instruction>` the instruction name (unknown instructions will be ignored)
+ *  - `<target>` usually the path to the file or directory, but see the
+ *      instruction description
+ *  - `<params>` optional JSON string with additional parameters (can be wrapped
+ *      by `(...)`, `"..."`, or `'...'`)
  *
  * Limitations:
  * - `<instruction>` will be processed everywhere in the file (eg within the code
@@ -47,6 +60,7 @@ class Preprocessor {
         /^
         (?P<expression>
           \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s(?P<target>(?:[^ ]+?)|(?:<[^>]+?>))
+          (?P<pBlock>\s(?:\(|(?P<pStart>['"]))(?P<parameters>.+?)(?:\)|(?P=pStart)))?
         )
         (?P<content>\R
           \[\/\/\]:\s\#\s\(start:\s(?P<hash>[^)]+)\)
@@ -61,7 +75,9 @@ class Preprocessor {
      */
     private array $instructions = [];
 
-    public function __construct() {
+    public function __construct(
+        protected readonly Serializer $serializer,
+    ) {
         $this->addInstruction(IncludeFile::class);
         $this->addInstruction(IncludeExec::class);
         $this->addInstruction(IncludeExample::class);
@@ -110,16 +126,35 @@ class Preprocessor {
             $result = preg_replace_callback(
                 pattern : static::Regexp,
                 callback: function (array $matches) use (&$cache, $path): string {
+                    // Hash
+                    $instruction = $this->getInstruction($matches['instruction']);
                     $target      = $matches['target'];
                     $target      = str_starts_with($target, '<') && str_ends_with($target, '>')
                         ? mb_substr($target, 1, -1)
                         : rawurldecode($target);
-                    $hash        = $this->getHash("{$matches['instruction']}={$target}");
-                    $content     = $cache[$hash] ?? null;
-                    $instruction = $this->getInstruction($matches['instruction']);
+                    $params      = null;
+                    $hash        = $this->getHash("{$matches['instruction']}({$target})");
+
+                    if ($instruction instanceof ParameterizableInstruction) {
+                        $params = $matches['parameters'] ?: '{}';
+                        $params = $this->serializer->deserialize($instruction::getParameters(), $params, 'json');
+                        $json   = $this->serializer->serialize($params, 'json');
+                        $hash   = $this->getHash("{$matches['instruction']}({$target}, {$json})");
+                    }
+
+                    // Content
+                    $content = $cache[$hash] ?? null;
 
                     if ($content === null) {
-                        $content      = trim($instruction?->process($path, $target) ?? '');
+                        if ($instruction instanceof ParameterizableInstruction) {
+                            $content = $instruction->process($path, $target, $params);
+                        } elseif ($instruction instanceof ProcessableInstruction) {
+                            $content = $instruction->process($path, $target);
+                        } else {
+                            $content = '';
+                        }
+
+                        $content      = trim($content);
                         $cache[$hash] = $content;
                     }
 

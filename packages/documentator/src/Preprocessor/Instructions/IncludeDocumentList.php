@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use Symfony\Component\Finder\Finder;
@@ -17,7 +17,7 @@ use function is_dir;
 use function strcmp;
 use function usort;
 
-class IncludeDocumentList implements Instruction {
+class IncludeDocumentList implements ProcessableInstruction {
     public function __construct(
         protected readonly PackageViewer $viewer,
     ) {

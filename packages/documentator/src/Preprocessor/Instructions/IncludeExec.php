@@ -3,13 +3,13 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 
 use function dirname;
 
-class IncludeExec implements Instruction {
+class IncludeExec implements ProcessableInstruction {
     public function __construct(
         protected readonly Process $process,
     ) {

@@ -3,7 +3,7 @@
 This package provides various utilities for documentation generation.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 7345502de8e33b9f2179e1d5e492a19bdc4b3d1012d77ee610aa6205dad3530b)
+[//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -16,7 +16,7 @@ This package provides various utilities for documentation generation.
 |  Laravel  | `^10.0.0` |   `HEAD ⋯ 5.0.0-beta.1`   |
 |  | `^9.21.0` |   `HEAD ⋯ 5.0.0-beta.1`   |
 
-[//]: # (end: 7345502de8e33b9f2179e1d5e492a19bdc4b3d1012d77ee610aa6205dad3530b)
+[//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
 # Installation
 
@@ -27,7 +27,7 @@ composer require lastdragon-ru/lara-asp-documentator
 # Commands
 
 [include:document-list]: ./docs/commands
-[//]: # (start: 3ebaa0184b7895226e3959b6e04fd7167ab4504a9e1ab3470521f38a24c1716f)
+[//]: # (start: 350255d9b4e69e2d32877243b3ce1ed38a62b303bd0298c41b7dda70f977de98)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `lara-asp-documentator:commands`
@@ -48,14 +48,14 @@ Generates a table with the required versions of PHP/Laravel in Markdown format.
 
 [Read more](<docs/commands/requirements.md>).
 
-[//]: # (end: 3ebaa0184b7895226e3959b6e04fd7167ab4504a9e1ab3470521f38a24c1716f)
+[//]: # (end: 350255d9b4e69e2d32877243b3ce1ed38a62b303bd0298c41b7dda70f977de98)
 
 [include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 0001ad9d31b5a203286c531c6880292795cb49f2074223b60ae12c6faa6c42eb)
+[//]: # (start: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 0001ad9d31b5a203286c531c6880292795cb49f2074223b60ae12c6faa6c42eb)
+[//]: # (end: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)

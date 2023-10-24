@@ -2,12 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
-interface Instruction {
-    public static function getName(): string;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 
-    public static function getDescription(): string;
-
-    public static function getTargetDescription(): ?string;
-
-    public function process(string $path, string $target): string;
+/**
+ * @deprecated 5.0.0 Please use {@see InstructionContract} and its subclasses instead.
+ *
+ * @see InstructionContract
+ */
+interface Instruction extends ProcessableInstruction {
+    // empty
 }
