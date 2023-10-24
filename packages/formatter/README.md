@@ -3,7 +3,7 @@
 This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 7345502de8e33b9f2179e1d5e492a19bdc4b3d1012d77ee610aa6205dad3530b)
+[//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -23,7 +23,7 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 7345502de8e33b9f2179e1d5e492a19bdc4b3d1012d77ee610aa6205dad3530b)
+[//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
 # Installation
 
@@ -36,7 +36,7 @@ composer require lastdragon-ru/lara-asp-formatter
 Formatter is very simple to use:
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: caf4823c1825389ee306092d37b26a07d291dc0264dff1977be86e61ca455a97)
+[//]: # (start: 25c8cf0ee2862aeda3cd8ff6bf8d2d3592fee1c00042550be5ee7686ead4cc44)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -72,16 +72,16 @@ The `$locale->decimal(123.454321)` is:
 "123,45"
 ```
 
-[//]: # (end: caf4823c1825389ee306092d37b26a07d291dc0264dff1977be86e61ca455a97)
+[//]: # (end: 25c8cf0ee2862aeda3cd8ff6bf8d2d3592fee1c00042550be5ee7686ead4cc44)
 
 Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
 [include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 0001ad9d31b5a203286c531c6880292795cb49f2074223b60ae12c6faa6c42eb)
+[//]: # (start: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 0001ad9d31b5a203286c531c6880292795cb49f2074223b60ae12c6faa6c42eb)
+[//]: # (end: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)

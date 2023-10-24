@@ -3,7 +3,7 @@
 Probably the most powerful directive to provide sort (`order by` conditions) for your GraphQL queries.
 
 [include:exec]: <../../../../dev/artisan dev:directive @sortBy>
-[//]: # (start: d214a747bed8aca5c49b51a5db5fc8bddbda3e8b51c251a9cdf3a531af6574a4)
+[//]: # (start: 43598e15e6936de056c8a256e3edb09c54520b27272d7b94115993712e8bec0b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -15,7 +15,7 @@ on
     | ARGUMENT_DEFINITION
 ```
 
-[//]: # (end: d214a747bed8aca5c49b51a5db5fc8bddbda3e8b51c251a9cdf3a531af6574a4)
+[//]: # (end: 43598e15e6936de056c8a256e3edb09c54520b27272d7b94115993712e8bec0b)
 
 ## Basic usage
 
