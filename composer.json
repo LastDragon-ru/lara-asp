@@ -69,7 +69,7 @@
     "composer/class-map-generator": "^1.0",
     "icanhazstring/composer-unused": "^0.8.10",
     "laravel/scout": "^9.8.0|^10.0.0",
-    "mockery/mockery": "^1.4.4",
+    "mockery/mockery": "^1.6.2",
     "nikic/php-parser": "^4.15",
     "nunomaduro/larastan": "2.6.4",
     "orchestra/testbench": "^7.0.0|^8.0.0",
