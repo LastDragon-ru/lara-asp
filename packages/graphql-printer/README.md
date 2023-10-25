@@ -219,19 +219,19 @@ Package also provides few great [GraphQL Assertions](./src/Testing/GraphQLAssert
 | `assertGraphQLExportableEquals` | Exports and compares two GraphQL schemas/types/nodes/etc. |
 
 [include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)
+[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)
+[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
 
 [include:file]: ../../docs/shared/Links.md
-[//]: # (start: b6b77378b623605b4ba306bec00acbf55e2211cd51d88f159aa7d2aa183501fb)
+[//]: # (start: 28b1c4123cedeab4819b5caa8b6ec3d866d4a1acfd649754f3f72ea15fbf63a3)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#Printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
 
-[//]: # (end: b6b77378b623605b4ba306bec00acbf55e2211cd51d88f159aa7d2aa183501fb)
+[//]: # (end: 28b1c4123cedeab4819b5caa8b6ec3d866d4a1acfd649754f3f72ea15fbf63a3)

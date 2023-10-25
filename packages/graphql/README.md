@@ -46,7 +46,7 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider 
 # Directives
 
 [include:document-list]: ./docs/Directives
-[//]: # (start: 257502a37e55716cbdb2b243dc8d1434df3a26b7322e2f60d6a056d4c587df20)
+[//]: # (start: 73f7f4a1d86b7731354837c827f1b9f9aa729879639aeab4fe63985913469f48)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `@searchBy`
@@ -67,7 +67,7 @@ Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform
 
 [Read more](<docs/Directives/@stream.md>).
 
-[//]: # (end: 257502a37e55716cbdb2b243dc8d1434df3a26b7322e2f60d6a056d4c587df20)
+[//]: # (end: 73f7f4a1d86b7731354837c827f1b9f9aa729879639aeab4fe63985913469f48)
 
 # Scalars
 
@@ -83,7 +83,7 @@ Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform
 > ```
 
 [include:document-list]: ./docs/Scalars
-[//]: # (start: 77b523f6a23bfaccd43e0fbed83fca84973e01872d17907178e713d9a74e21b4)
+[//]: # (start: 12e162fc2ab7e9e247529882b53731fb8f8aacc4c5532610d40d36e90977b8f2)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `JsonString`
@@ -92,7 +92,7 @@ Represents [JSON](https://json.org) string.
 
 [Read more](<docs/Scalars/JsonString.md>).
 
-[//]: # (end: 77b523f6a23bfaccd43e0fbed83fca84973e01872d17907178e713d9a74e21b4)
+[//]: # (end: 12e162fc2ab7e9e247529882b53731fb8f8aacc4c5532610d40d36e90977b8f2)
 
 # Scout
 
@@ -462,17 +462,17 @@ There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertion
 | `assertGraphQLSchemaEquals` | Compares default schema. |
 
 [include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)
+[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: cae7e7502f2c7b127592891350e66e5e0ae5ad3840f6d3774165b8243c4522b0)
+[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
 
 [include:file]: ../../docs/shared/Links.md
-[//]: # (start: b6b77378b623605b4ba306bec00acbf55e2211cd51d88f159aa7d2aa183501fb)
+[//]: # (start: 28b1c4123cedeab4819b5caa8b6ec3d866d4a1acfd649754f3f72ea15fbf63a3)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
@@ -481,4 +481,4 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
 
-[//]: # (end: b6b77378b623605b4ba306bec00acbf55e2211cd51d88f159aa7d2aa183501fb)
+[//]: # (end: 28b1c4123cedeab4819b5caa8b6ec3d866d4a1acfd649754f3f72ea15fbf63a3)
