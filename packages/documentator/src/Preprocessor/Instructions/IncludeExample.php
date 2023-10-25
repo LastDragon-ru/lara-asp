@@ -3,11 +3,14 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 
 use function dirname;
+use function file_get_contents;
 use function is_file;
 use function pathinfo;
 use function preg_match;
@@ -18,14 +21,14 @@ use function trim;
 use const PATHINFO_EXTENSION;
 use const PREG_UNMATCHED_AS_NULL;
 
-class IncludeExample extends IncludeFile {
+class IncludeExample implements ProcessableInstruction {
     public const    Limit          = 50;
     protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
 
     public function __construct(
         protected readonly Process $process,
     ) {
-        parent::__construct();
+        // empty
     }
 
     public static function getName(): string {
@@ -49,8 +52,17 @@ class IncludeExample extends IncludeFile {
     }
 
     public function process(string $path, string $target): string {
+        // Content
+        $file    = Path::getPath(dirname($path), $target);
+        $content = file_get_contents($file);
+
+        if ($content === false) {
+            throw new TargetIsNotFile($path, $target);
+        }
+
+        // Process
         $language = $this->getLanguage($path, $target);
-        $content  = trim(parent::process($path, $target));
+        $content  = trim($content);
         $content  = <<<CODE
             ```{$language}
             $content
@@ -119,6 +131,7 @@ class IncludeExample extends IncludeFile {
             $content .= "\n\n{$output}";
         }
 
+        // Return
         return $content;
     }
 

@@ -57,9 +57,11 @@ insert it as is.
 
 Executes the `<target>` and returns result.
 
-### `[include:file]: <target>`
+### `[include:file]: <target> <parameters>`
 
 * `<target>` - File path.
+* `<parameters>` - additional parameters
+  * `variables` - Array of variables (`${name}`) to replace.
 
 Includes the `<target>` file.
 

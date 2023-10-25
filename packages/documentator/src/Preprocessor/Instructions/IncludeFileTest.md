@@ -1,3 +1,3 @@
-# File
+# File ${a}
 
-content of the file
+Content of the file ${a} with variable "${b}"
