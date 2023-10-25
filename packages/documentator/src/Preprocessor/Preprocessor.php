@@ -19,6 +19,10 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 
 use function array_column;
 use function hash;
+use function is_array;
+use function json_decode;
+use function json_encode;
+use function ksort;
 use function mb_substr;
 use function preg_replace_callback;
 use function rawurldecode;
@@ -26,6 +30,7 @@ use function str_ends_with;
 use function str_starts_with;
 use function trim;
 
+use const JSON_THROW_ON_ERROR;
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
@@ -136,10 +141,13 @@ class Preprocessor {
                     $hash        = $this->getHash("{$matches['instruction']}({$target})");
 
                     if ($instruction instanceof ParameterizableInstruction) {
-                        $params = $matches['parameters'] ?: '{}';
-                        $params = $this->serializer->deserialize($instruction::getParameters(), $params, 'json');
-                        $json   = $this->serializer->serialize($params, 'json');
+                        $json   = $this->getParametersJson($matches['parameters'] ?: '{}');
                         $hash   = $this->getHash("{$matches['instruction']}({$target}, {$json})");
+                        $params = $this->serializer->deserialize(
+                            $instruction::getParameters(),
+                            $matches['parameters'] ?: '{}',
+                            'json',
+                        );
                     }
 
                     // Content
@@ -207,5 +215,24 @@ class Preprocessor {
 
     protected function getHash(string $identifier): string {
         return hash('sha256', $identifier);
+    }
+
+    private function getParametersJson(string $json): string {
+        return json_encode(
+            $this->getParametersJsonNormalize(json_decode($json, true, flags: JSON_THROW_ON_ERROR)),
+            JSON_THROW_ON_ERROR,
+        );
+    }
+
+    private function getParametersJsonNormalize(mixed $value): mixed {
+        if (is_array($value)) {
+            foreach ($value as $k => $v) {
+                $value[$k] = $this->getParametersJsonNormalize($v);
+            }
+
+            ksort($value);
+        }
+
+        return $value;
     }
 }

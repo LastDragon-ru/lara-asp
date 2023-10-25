@@ -41,9 +41,9 @@ class PreprocessorTest extends TestCase {
 
             [parameterizable]: ./path/to/file
 
-            [parameterizable]: ./path/to/file/parametrized ({"a": "aa", "b": "bb"})
+            [parameterizable]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
 
-            [parameterizable]: ./path/to/file/parametrized ({"a":"aa","b":"bb"})
+            [parameterizable]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
             MARKDOWN;
         $parameterizableInstruction = Mockery::mock(ParameterizableInstruction::class);
         $parameterizableInstruction
@@ -61,7 +61,13 @@ class PreprocessorTest extends TestCase {
             ->andReturn('parameterizable()');
         $parameterizableInstruction
             ->shouldReceive('process')
-            ->with('path', './path/to/file/parametrized', new IsEqual(new PreprocessorTest__Parameters('aa', 'bb')))
+            ->with(
+                'path',
+                './path/to/file/parametrized',
+                new IsEqual(
+                    new PreprocessorTest__Parameters('aa', ['a' => 'a', 'b' => 'b']),
+                ),
+            )
             ->once()
             ->andReturn('parameterizable(aa, bb)');
 
@@ -116,36 +122,36 @@ class PreprocessorTest extends TestCase {
             [//]: # (end: 378a07bc67ecbe88f5d2f642e70681461f61d3f2f5e83379015b879110c83947)
 
             [parameterizable]: ./path/to/file
-            [//]: # (start: 9067b51752787f145e0397d27c7efdc24efa41f0403b92649b3f2d76decdacd9)
+            [//]: # (start: 5d070af95e5691621d63e901616cc0fa03d3253c24d1dcf27023d8a1ce01d9fb)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             parameterizable()
 
-            [//]: # (end: 9067b51752787f145e0397d27c7efdc24efa41f0403b92649b3f2d76decdacd9)
+            [//]: # (end: 5d070af95e5691621d63e901616cc0fa03d3253c24d1dcf27023d8a1ce01d9fb)
 
             [parameterizable]: ./path/to/file
-            [//]: # (start: 9067b51752787f145e0397d27c7efdc24efa41f0403b92649b3f2d76decdacd9)
+            [//]: # (start: 5d070af95e5691621d63e901616cc0fa03d3253c24d1dcf27023d8a1ce01d9fb)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             parameterizable()
 
-            [//]: # (end: 9067b51752787f145e0397d27c7efdc24efa41f0403b92649b3f2d76decdacd9)
+            [//]: # (end: 5d070af95e5691621d63e901616cc0fa03d3253c24d1dcf27023d8a1ce01d9fb)
 
-            [parameterizable]: ./path/to/file/parametrized ({"a": "aa", "b": "bb"})
-            [//]: # (start: 731f61b0b6cc1a6592f352c5fd1bf9219c75d5fc1826d01ca06b47758ffca736)
+            [parameterizable]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
+            [//]: # (start: a91869c99598538f0f98ed293004603fd2c24d938c8c6d5a8e7267ba56aeb86e)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             parameterizable(aa, bb)
 
-            [//]: # (end: 731f61b0b6cc1a6592f352c5fd1bf9219c75d5fc1826d01ca06b47758ffca736)
+            [//]: # (end: a91869c99598538f0f98ed293004603fd2c24d938c8c6d5a8e7267ba56aeb86e)
 
-            [parameterizable]: ./path/to/file/parametrized ({"a":"aa","b":"bb"})
-            [//]: # (start: 731f61b0b6cc1a6592f352c5fd1bf9219c75d5fc1826d01ca06b47758ffca736)
+            [parameterizable]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
+            [//]: # (start: a91869c99598538f0f98ed293004603fd2c24d938c8c6d5a8e7267ba56aeb86e)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             parameterizable(aa, bb)
 
-            [//]: # (end: 731f61b0b6cc1a6592f352c5fd1bf9219c75d5fc1826d01ca06b47758ffca736)
+            [//]: # (end: a91869c99598538f0f98ed293004603fd2c24d938c8c6d5a8e7267ba56aeb86e)
             MARKDOWN,
             $preprocessor->process('path', $content),
         );
@@ -160,9 +166,12 @@ class PreprocessorTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class PreprocessorTest__Parameters implements Serializable {
+    /**
+     * @param array<string, string> $b
+     */
     public function __construct(
         public string $a = 'a',
-        public string $b = 'b',
+        public array $b = [],
     ) {
         // empty
     }
