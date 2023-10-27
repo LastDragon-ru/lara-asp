@@ -14,6 +14,9 @@ use function mb_strtolower;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @deprecated 5.0.0
+ */
 trait InstanceCache {
     /**
      * @var array<string, mixed>
