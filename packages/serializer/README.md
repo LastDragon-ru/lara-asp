@@ -19,11 +19,17 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
+[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "serializer"}})
+[//]: # (start: dd8c29bdeec9d81b1d93920937d13e41d495fe9a005145d4e84c80695ca79cd2)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-serializer
 ```
+
+[//]: # (end: dd8c29bdeec9d81b1d93920937d13e41d495fe9a005145d4e84c80695ca79cd2)
 
 # Usage
 

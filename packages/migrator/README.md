@@ -28,11 +28,17 @@ This package improves standard laravel migrations to add support for raw SQL fil
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
+[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "migrator"}})
+[//]: # (start: d2405e81754bcb6d1ee007a8865dc2e011dd63a65d69b2040c795dc1260e75a4)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-migrator
 ```
+
+[//]: # (end: d2405e81754bcb6d1ee007a8865dc2e011dd63a65d69b2040c795dc1260e75a4)
 
 # Migrations
 

@@ -18,11 +18,17 @@ This package provides various utilities for documentation generation.
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
+[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "documentator"}})
+[//]: # (start: ed45f1fe8f967475b276f0de04cf90a00c862781991d1b764b632c2ad374dc79)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-documentator
 ```
+
+[//]: # (end: ed45f1fe8f967475b276f0de04cf90a00c862781991d1b764b632c2ad374dc79)
 
 # Commands
 

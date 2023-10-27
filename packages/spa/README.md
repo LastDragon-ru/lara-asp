@@ -21,11 +21,17 @@
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
+[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "spa"}})
+[//]: # (start: 8ae5a6dcf8acfba5d5b123a78763a14912a5812acf13bcd1649b10fe4e1205e5)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-spa
 ```
+
+[//]: # (end: 8ae5a6dcf8acfba5d5b123a78763a14912a5812acf13bcd1649b10fe4e1205e5)
 
 [include:file]: ../../docs/shared/Contributing.md
 [//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)

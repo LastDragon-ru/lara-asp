@@ -29,11 +29,17 @@ This package provides highly powerful `@searchBy` and `@sortBy`  directives for 
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
+[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "graphql"}})
+[//]: # (start: c2e89595b9190d35840e01140bcafd8c8eb1ec4eea401724185cbddd32f81cf6)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-graphql
 ```
+
+[//]: # (end: c2e89595b9190d35840e01140bcafd8c8eb1ec4eea401724185cbddd32f81cf6)
 
 # Configuration
 

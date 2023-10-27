@@ -25,11 +25,17 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
+[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "testing"}})
+[//]: # (start: c8d775f253547605c3adf1dd6afe855d76e5fe2a738b10d01be0f20cfb1bbec3)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-testing
 ```
+
+[//]: # (end: c8d775f253547605c3adf1dd6afe855d76e5fe2a738b10d01be0f20cfb1bbec3)
 
 # Usage
 

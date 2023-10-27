@@ -25,11 +25,17 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
+[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "eloquent"}})
+[//]: # (start: 5d1d0154852c254bd75bdd865c5b387d84cf598c02a276603e38e6d22ca29015)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/lara-asp-eloquent
 ```
+
+[//]: # (end: 5d1d0154852c254bd75bdd865c5b387d84cf598c02a276603e38e6d22ca29015)
 
 # Iterators
 
