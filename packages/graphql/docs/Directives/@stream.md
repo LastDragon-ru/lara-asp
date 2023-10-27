@@ -175,12 +175,12 @@ Keep in mind:
 * There is no way to use limit/offset, so the directive converts them into page/size and then slice results
 * Some engines may perform counting (seems actual for `Database` only)
 
-[include:file]: ../../../../docs/shared/Links.md
-[//]: # (start: c547d87b81d5d2374a87eb96d259e596f8b6f4727b3c63dd1817a792e641887d)
+[include:file]: ../../../../docs/Shared/Links.md
+[//]: # (start: a1d73b35e4ad53ef7c5e723c17abd87804cf0221167e796513476212788cd826)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
 
 [pkg:graphql#@sortBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
 
-[//]: # (end: c547d87b81d5d2374a87eb96d259e596f8b6f4727b3c63dd1817a792e641887d)
+[//]: # (end: a1d73b35e4ad53ef7c5e723c17abd87804cf0221167e796513476212788cd826)

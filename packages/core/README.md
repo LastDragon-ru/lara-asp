@@ -24,8 +24,8 @@ This package contains useful utilities and classes.
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "core"}})
-[//]: # (start: 4c5b30ba0c0e8c83671a8c41216cc4a9bb85c1f1867ab539992328a08bc1d25a)
+[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "core"}})
+[//]: # (start: 806f9fe8a8f0b1e90524f78f3bd278fe7df58b792b5410eff117e8567ba0f859)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -34,18 +34,18 @@ This package contains useful utilities and classes.
 composer require lastdragon-ru/lara-asp-core
 ```
 
-[//]: # (end: 4c5b30ba0c0e8c83671a8c41216cc4a9bb85c1f1867ab539992328a08bc1d25a)
+[//]: # (end: 806f9fe8a8f0b1e90524f78f3bd278fe7df58b792b5410eff117e8567ba0f859)
 
 # Usage
 
 Please see the [source code](./src) to find something interesting 😅
 
-[include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[include:file]: ../../docs/Shared/Contributing.md
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)

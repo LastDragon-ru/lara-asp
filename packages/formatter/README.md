@@ -25,8 +25,8 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "formatter"}})
-[//]: # (start: 31beac77eaabc46ac90806eba7de0bf78e768f38db26907dad393b54c7cfb341)
+[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "formatter"}})
+[//]: # (start: 36090e155ecfcd0e3f98e99fff0584d22c18525e4787ad301e52e11bcbc25ce1)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -35,7 +35,7 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 composer require lastdragon-ru/lara-asp-formatter
 ```
 
-[//]: # (end: 31beac77eaabc46ac90806eba7de0bf78e768f38db26907dad393b54c7cfb341)
+[//]: # (end: 36090e155ecfcd0e3f98e99fff0584d22c18525e4787ad301e52e11bcbc25ce1)
 
 # Usage
 
@@ -82,12 +82,12 @@ The `$locale->decimal(123.454321)` is:
 
 Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
-[include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[include:file]: ../../docs/Shared/Contributing.md
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)

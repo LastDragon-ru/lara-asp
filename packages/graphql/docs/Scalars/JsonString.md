@@ -6,10 +6,10 @@ By default, the type validates the string and throws an error if it is not a val
 
 Please note that the scalar doesn't encode/decode value to/from JSON, it just contains a valid JSON string. If you want automatically convert value to/from JSON, you can use the `JSON` type from [`mll-lab/graphql-php-scalars`](https://github.com/mll-lab/graphql-php-scalars) package. If you need something more typesafe, consider using [`Serializer`][pkg:serializer].
 
-[include:file]: ../../../../docs/shared/Links.md
-[//]: # (start: c547d87b81d5d2374a87eb96d259e596f8b6f4727b3c63dd1817a792e641887d)
+[include:file]: ../../../../docs/Shared/Links.md
+[//]: # (start: a1d73b35e4ad53ef7c5e723c17abd87804cf0221167e796513476212788cd826)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:serializer]:      https://github.com/LastDragon-ru/lara-asp/tree/main/packages/serializer
 
-[//]: # (end: c547d87b81d5d2374a87eb96d259e596f8b6f4727b3c63dd1817a792e641887d)
+[//]: # (end: a1d73b35e4ad53ef7c5e723c17abd87804cf0221167e796513476212788cd826)

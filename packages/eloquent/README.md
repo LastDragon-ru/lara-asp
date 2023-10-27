@@ -25,8 +25,8 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "eloquent"}})
-[//]: # (start: 5d1d0154852c254bd75bdd865c5b387d84cf598c02a276603e38e6d22ca29015)
+[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "eloquent"}})
+[//]: # (start: 0245fa9f7962d71b38aef6974b54df73efd70bda501dfd226e0e5f1e60e1707f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -35,7 +35,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 composer require lastdragon-ru/lara-asp-eloquent
 ```
 
-[//]: # (end: 5d1d0154852c254bd75bdd865c5b387d84cf598c02a276603e38e6d22ca29015)
+[//]: # (end: 0245fa9f7962d71b38aef6974b54df73efd70bda501dfd226e0e5f1e60e1707f)
 
 # Iterators
 
@@ -98,12 +98,12 @@ foreach ($query->getChangeSafeIterator() as $user) {
 | `getChunkedIterator()`                  | Return [`ChunkedIterator`](./src/Iterators/ChunkedIterator.php) instance.                     |
 | `getChangeSafeIteratorIterator()`       | Return [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) instance. |
 
-[include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[include:file]: ../../docs/Shared/Contributing.md
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)

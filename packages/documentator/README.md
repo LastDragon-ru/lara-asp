@@ -18,8 +18,8 @@ This package provides various utilities for documentation generation.
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "documentator"}})
-[//]: # (start: ed45f1fe8f967475b276f0de04cf90a00c862781991d1b764b632c2ad374dc79)
+[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "documentator"}})
+[//]: # (start: 960258c46390f1b54fc9f01c44248c6a5cef29cc5356984a609fd1f73accefc5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -28,40 +28,40 @@ This package provides various utilities for documentation generation.
 composer require lastdragon-ru/lara-asp-documentator
 ```
 
-[//]: # (end: ed45f1fe8f967475b276f0de04cf90a00c862781991d1b764b632c2ad374dc79)
+[//]: # (end: 960258c46390f1b54fc9f01c44248c6a5cef29cc5356984a609fd1f73accefc5)
 
 # Commands
 
-[include:document-list]: ./docs/commands
-[//]: # (start: a42126805290bae24d26f9a5bcf2d2241851e4efb321f32da54119b1043df1ec)
+[include:document-list]: ./docs/Commands
+[//]: # (start: 3183e17484393f086cbec523de70a97446749151d781d55ef8f480075e5c75b9)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `lara-asp-documentator:commands`
 
 Saves help for each command in the `namespace` into a separate file in the `target` directory.
 
-[Read more](<docs/commands/commands.md>).
+[Read more](<docs/Commands/commands.md>).
 
 ## `lara-asp-documentator:preprocess`
 
 Preprocess Markdown files.
 
-[Read more](<docs/commands/preprocess.md>).
+[Read more](<docs/Commands/preprocess.md>).
 
 ## `lara-asp-documentator:requirements`
 
 Generates a table with the required versions of PHP/Laravel in Markdown format.
 
-[Read more](<docs/commands/requirements.md>).
+[Read more](<docs/Commands/requirements.md>).
 
-[//]: # (end: a42126805290bae24d26f9a5bcf2d2241851e4efb321f32da54119b1043df1ec)
+[//]: # (end: 3183e17484393f086cbec523de70a97446749151d781d55ef8f480075e5c75b9)
 
-[include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[include:file]: ../../docs/Shared/Contributing.md
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)

@@ -21,8 +21,8 @@
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "spa"}})
-[//]: # (start: 8ae5a6dcf8acfba5d5b123a78763a14912a5812acf13bcd1649b10fe4e1205e5)
+[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "spa"}})
+[//]: # (start: 605dcb5564b3afe2c3ebf4e9547eb8415ebfd673e4029ed435d890b4a1696a46)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -31,14 +31,14 @@
 composer require lastdragon-ru/lara-asp-spa
 ```
 
-[//]: # (end: 8ae5a6dcf8acfba5d5b123a78763a14912a5812acf13bcd1649b10fe4e1205e5)
+[//]: # (end: 605dcb5564b3afe2c3ebf4e9547eb8415ebfd673e4029ed435d890b4a1696a46)
 
-[include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[include:file]: ../../docs/Shared/Contributing.md
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)

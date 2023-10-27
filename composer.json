@@ -169,8 +169,8 @@
       "@php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-html=.phpunit/coverage.html"
     ],
     "rebuild:docs": [
-      "@php dev/artisan lara-asp-documentator:commands lara-asp-documentator ./packages/documentator/docs/commands",
-      "@php dev/artisan lara-asp-documentator:commands lara-asp-migrator ./packages/migrator/docs/commands",
+      "@php dev/artisan lara-asp-documentator:commands lara-asp-documentator packages/documentator/docs/Commands",
+      "@php dev/artisan lara-asp-documentator:commands lara-asp-migrator packages/migrator/docs/Commands",
       "@php dev/artisan lara-asp-documentator:preprocess",
       "npm run markdownlint -- --fix || npm run markdownlint -- --fix"
     ]

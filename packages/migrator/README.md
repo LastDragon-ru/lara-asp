@@ -28,8 +28,8 @@ This package improves standard laravel migrations to add support for raw SQL fil
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "migrator"}})
-[//]: # (start: d2405e81754bcb6d1ee007a8865dc2e011dd63a65d69b2040c795dc1260e75a4)
+[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "migrator"}})
+[//]: # (start: 152d72ddfe12246c53a9653dee6e906a91096a59fd58fa4f439abf0986e09e69)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -38,11 +38,11 @@ This package improves standard laravel migrations to add support for raw SQL fil
 composer require lastdragon-ru/lara-asp-migrator
 ```
 
-[//]: # (end: d2405e81754bcb6d1ee007a8865dc2e011dd63a65d69b2040c795dc1260e75a4)
+[//]: # (end: 152d72ddfe12246c53a9653dee6e906a91096a59fd58fa4f439abf0986e09e69)
 
 # Migrations
 
-To create migration just use the following [command](./docs/commands/raw-migration.md):
+To create migration just use the following [command](docs/Commands/raw-migration.md):
 
 ```shell
 php artisan lara-asp-migrator:raw-migration MyMigration
@@ -67,7 +67,7 @@ The Migrator uses a bit different approach compared to standard and provides a f
 * [`SmartSeeder`](./src/Seeders/SmartSeeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
 * [`RawSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
 
-To create raw seeder just use the following [command](./docs/commands/raw-seeder.md):
+To create raw seeder just use the following [command](docs/Commands/raw-seeder.md):
 
 ```shell
 php artisan lara-asp-migrator:raw-seeder MySeeder
@@ -98,12 +98,12 @@ class MySeeder extends RawSeeder {
 }
 ```
 
-[include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[include:file]: ../../docs/Shared/Contributing.md
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)

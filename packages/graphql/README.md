@@ -29,8 +29,8 @@ This package provides highly powerful `@searchBy` and `@sortBy`  directives for 
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/shared/Installation.md ({"variables": {"package": "graphql"}})
-[//]: # (start: c2e89595b9190d35840e01140bcafd8c8eb1ec4eea401724185cbddd32f81cf6)
+[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "graphql"}})
+[//]: # (start: 38a9c89a92ec3ee7d70a21be89def61fce4b0fad3c1f3fa44184f280226e3e17)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -39,7 +39,7 @@ This package provides highly powerful `@searchBy` and `@sortBy`  directives for 
 composer require lastdragon-ru/lara-asp-graphql
 ```
 
-[//]: # (end: c2e89595b9190d35840e01140bcafd8c8eb1ec4eea401724185cbddd32f81cf6)
+[//]: # (end: 38a9c89a92ec3ee7d70a21be89def61fce4b0fad3c1f3fa44184f280226e3e17)
 
 # Configuration
 
@@ -476,18 +476,18 @@ There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertion
 |-----------------------------|--------------------------|
 | `assertGraphQLSchemaEquals` | Compares default schema. |
 
-[include:file]: ../../docs/shared/Contributing.md
-[//]: # (start: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[include:file]: ../../docs/Shared/Contributing.md
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 21d1c0ff32b89d1508ce07add4ae61fdd338a164c18db77ffa9baf126a1c2d7d)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 
-[include:file]: ../../docs/shared/Links.md
-[//]: # (start: 28b1c4123cedeab4819b5caa8b6ec3d866d4a1acfd649754f3f72ea15fbf63a3)
+[include:file]: ../../docs/Shared/Links.md
+[//]: # (start: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
@@ -496,4 +496,4 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
 
-[//]: # (end: 28b1c4123cedeab4819b5caa8b6ec3d866d4a1acfd649754f3f72ea15fbf63a3)
+[//]: # (end: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
