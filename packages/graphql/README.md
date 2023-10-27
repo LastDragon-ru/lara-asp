@@ -139,6 +139,10 @@ class Comment extends Model {
 
 If you implement custom directives which internally enhance the Builder (like standard directives do), you may get `BuilderUnknown` error because the proper/expected builder type was not detected. In this case, your directive should implement [`BuilderInfoProvider`](./src/Builder/Contracts/BuilderInfoProvider.php) interface and to specify the builder type explicitly.
 
+[include:example]: docs/Examples/BuilderInfoProvider.php
+[//]: # (start: 1484174aafe709bdcddfbae43df1e4400693ef8a41420873835aea07d36a63b3)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
@@ -147,6 +151,7 @@ namespace App\GraphQL\Directives;
 use Illuminate\Database\Eloquent\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 class CustomDirective implements Directive, BuilderInfoProvider {
@@ -154,15 +159,19 @@ class CustomDirective implements Directive, BuilderInfoProvider {
         return 'directive @custom';
     }
 
-    public function getBuilderInfo(): BuilderInfo|string {
-        return Builder::class;
+    public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
+        return BuilderInfo::create(Builder::class);
     }
 
     public function __invoke(): mixed {
         // TODO: Implement __invoke() method.
+
+        return null;
     }
 }
 ```
+
+[//]: # (end: 1484174aafe709bdcddfbae43df1e4400693ef8a41420873835aea07d36a63b3)
 
 # Printer
 
