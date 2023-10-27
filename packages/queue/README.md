@@ -45,30 +45,26 @@ This package provides additional capabilities for queued jobs and queued listene
 
 To add the configuration for job/listener/mailable you just need extends one the [base classes](https://github.com/LastDragon-ru/lara-asp/tree/master/packages/queue/src/Queueables):
 
+[include:example]: ./docs/Examples/Job.php
+[//]: # (start: 3cd947b41ad3328b5336549ba1d9af58d6a6913a6eb2bead617fc5af102f47a2)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
 namespace App\Jobs;
 
-use Illuminate\Foundation\Application;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Queue\QueueableConfigurator;
 use LastDragon_ru\LaraASP\Queue\Queueables\Job;
 
 class MyJobWithConfig extends Job {
     /**
-     * As a small bonus you can inject dependencies into the constructor, but
-     * keep in mind that you, probably, should not assign them to class
-     * properties (even private) or they will be serialized.
-     */
-    public function __construct(QueueableConfigurator $configurator, Application $app) {
-        // $app ...
-
-        parent::__construct($configurator);
-    }
-
-    /**
      * Default config.
+     *
+     * @inheritDoc
      */
     public function getQueueConfig(): array {
         return [
@@ -79,18 +75,20 @@ class MyJobWithConfig extends Job {
             ] + parent::getQueueConfig();
     }
 
-    public function handle(QueueableConfigurator $configurator): void {
+    public function __invoke(QueueableConfigurator $configurator): void {
         // This is how we can get access to the actual config inside `handle`
         $config = $configurator->config($this);
-        $expire = $config->setting('expire');
+        $expire = Cast::toString($config->setting('expire'));
         $expire = Date::now()->sub($expire);
 
-        Job::query()
+        Model::query()
             ->where('updated_at', '<', $expire)
             ->delete();
     }
 }
 ```
+
+[//]: # (end: 3cd947b41ad3328b5336549ba1d9af58d6a6913a6eb2bead617fc5af102f47a2)
 
 Configurations have the following priority  (last win):
 
@@ -101,8 +99,14 @@ Configurations have the following priority  (last win):
 
 Thus, you can easily set settings for your jobs in app config, for example, we can set the `expire` setting on `8 hours`:
 
+[include:example]: ./docs/Examples/JobConfig.php
+[//]: # (start: 1c17e54b9495db6c881e2873b2d93d6a5cad28896fb5791b6d2176dbac425db9)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
+
+use App\Jobs\MyJobWithConfig;
 
 // config/queue.php
 
@@ -118,7 +122,7 @@ return [
     |
     */
     'queueables' => [
-        \App\Jobs\MyJobWithConfig::class => [
+        MyJobWithConfig::class => [
             'settings' => [
                 'expire' => '8 hours',
             ],
@@ -127,19 +131,27 @@ return [
 ];
 ```
 
+[//]: # (end: 1c17e54b9495db6c881e2873b2d93d6a5cad28896fb5791b6d2176dbac425db9)
+
 # Cron jobs
 
 Creating the cron jobs is similar. They just have two additional settings:
+
+[include:example]: ./docs/Examples/CronJob.php
+[//]: # (start: 35b6bcd4d6008a44fe3958797034035afe226ce97b0769934b552ff0403229ba)
+[//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
 <?php declare(strict_types = 1);
 
 namespace App\Jobs;
 
-use LastDragon_ru\LaraASP\Queue\QueueableConfigurator;
 use LastDragon_ru\LaraASP\Queue\Queueables\CronJob;
 
 class MyCronJob extends CronJob {
+    /**
+     * @inheritDoc
+     */
     public function getQueueConfig(): array {
         return [
                 'cron'    => '0 * * * *', // Cron expression
@@ -147,13 +159,19 @@ class MyCronJob extends CronJob {
             ] + parent::getQueueConfig();
     }
 
-    public function handle(QueueableConfigurator $configurator): void {
+    public function __invoke(): void {
         // ....
     }
 }
 ```
 
+[//]: # (end: 35b6bcd4d6008a44fe3958797034035afe226ce97b0769934b552ff0403229ba)
+
 But the registration of the jobs a slightly different. For `Kernel` you should use following way:
+
+[include:example]: ./docs/Examples/CronJobRegistractionKernel.php
+[//]: # (start: 66050e315130d2df632b9f7b4ba31cb6dd05ba89be1c58b386733a37dc90b8fa)
+[//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
 <?php declare(strict_types = 1);
@@ -163,17 +181,13 @@ namespace App\Console;
 use App\Jobs\MyCronJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use LastDragon_ru\LaraASP\Queue\Concerns\ConsoleKernelWithSchedule;
+use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
+
+use function base_path;
 
 class Kernel extends ConsoleKernel {
     // !!! Add this trait
     use ConsoleKernelWithSchedule;
-
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var string[]
-     */
-    protected $commands = [];
 
     // !!! Add this property and put all cron jobs inside
     /**
@@ -187,10 +201,8 @@ class Kernel extends ConsoleKernel {
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
-    protected function commands() {
+    protected function commands(): void {
         $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
@@ -198,27 +210,36 @@ class Kernel extends ConsoleKernel {
 }
 ```
 
+[//]: # (end: 66050e315130d2df632b9f7b4ba31cb6dd05ba89be1c58b386733a37dc90b8fa)
+
 And for package providers:
+
+[include:example]: ./docs/Examples/CronJobRegistractionProvider.php
+[//]: # (start: a896db9ade3e0cf5196026e5985b14ebbd559c3b45974c29810e137fbd5c7a7d)
+[//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
 <?php declare(strict_types = 1);
 
 namespace LastDragon_ru\LaraASP\Migrator;
 
+use App\Jobs\MyCronJob;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Queue\Concerns\ProviderWithSchedule;
 
 class Provider extends ServiceProvider {
     use ProviderWithSchedule;
 
-    public function boot() {
-        $this->bootSchedule([
+    public function boot(): void {
+        $this->bootSchedule(
             // Put all cron jobs provided in the package here
-            PackageCronJob::class,
-        ]);
+            MyCronJob::class,
+        );
     }
 }
 ```
+
+[//]: # (end: a896db9ade3e0cf5196026e5985b14ebbd559c3b45974c29810e137fbd5c7a7d)
 
 Finally, the package also discloses all settings in the job description:
 
@@ -237,72 +258,105 @@ $ php artisan schedule:list
 
 # Overriding package Jobs
 
-The most interesting and useful thing for package developers is the ability to extend all package's jobs in the application. For example, our package provides the `PackageCronJob` and `UpdateSomethingJob`, their setting can be easily changed through the config, but can we extend it in the app? Yes!
+The most interesting and useful thing for package developers is the ability to extend all package's jobs in the application. For example, our package provides the `DoSomethingPackageJob`, its settings can be easily changed through the config, but can we extend it in the app? Yes!
 
-We no need additional actions for `CronJob`, but should use `Container::make()` for `Job` and `Mails`:
+First, we are no need additional actions for `CronJob`, but should use `Container::make()` for `Job` and `Mails`:
+
+[include:example]: ./docs/Examples/OverridingDispatch.php
+[//]: # (start: 5d62194b843f0f973ce2be1a8092dd5a1c2e25384902ab56535dc7db2f89eb42)
+[//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
+<?php declare(strict_types = 1);
+
+use Illuminate\Container\Container;
+use Package\Jobs\DoSomethingPackageJob;
+
 // Use
-$this->app->make(UpdateSomethingJob::class)->dispatch();
+Container::getInstance()->make(DoSomethingPackageJob::class)->dispatch();
 
 // Instead of
-UpdateSomethingJob::dispatch();
+// @phpstan-ignore-next-line
+DoSomethingPackageJob::dispatch();
 ```
+
+[//]: # (end: 5d62194b843f0f973ce2be1a8092dd5a1c2e25384902ab56535dc7db2f89eb42)
 
 then inside the app
 
+[include:example]: ./docs/Examples/OverridingExtend.php
+[//]: # (start: 793aa204932b1906e880117a27c0dafe7e25f4c2b1c5df93d97846c6b92ae265)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
-<?php  declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace App\Jobs;
 
-class CustomUpdateSomethingJob extends UpdateSomethingJob {
-    public function handle(): void {
+use Package\Jobs\DoSomethingPackageJob;
+
+class DoSomethingAppJob extends DoSomethingPackageJob {
+    public function __invoke(): void {
         // our implementation
     }
 }
 ```
 
+[//]: # (end: 793aa204932b1906e880117a27c0dafe7e25f4c2b1c5df93d97846c6b92ae265)
+
 and finally, register it:
+
+[include:example]: ./docs/Examples/OverridingRegister.php
+[//]: # (start: 73fc6e94eac317140747a3b6b1cab5b01ab1b58929a9895f227f086951b97f85)
+[//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
 <?php declare(strict_types = 1);
 
 namespace App\Providers;
 
+use App\Jobs\DoSomethingAppJob;
 use Illuminate\Support\ServiceProvider;
+use Package\Jobs\DoSomethingPackageJob;
 
 class AppServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register() {
-        $this->app->bind(UpdateSomethingJob::class, CustomUpdateSomethingJob:class);
+    public function register(): void {
+        $this->app->bind(DoSomethingAppJob::class, DoSomethingPackageJob::class);
     }
 }
 ```
+
+[//]: # (end: 73fc6e94eac317140747a3b6b1cab5b01ab1b58929a9895f227f086951b97f85)
 
 🥳
 
 The `CustomUpdateSomethingJob` will use the same settings name in `config/queue.php` as `UpdateSomethingJob`. Sometimes you may want to create a new job with its own config, in this case, you should break the config chain:
 
+[include:example]: ./docs/Examples/OverridingOwnConfig.php
+[//]: # (start: 36fcaf761a2bf7347c56fa167669ac6832d3383ba7dfba74c30f3880723737a9)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
-<?php  declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace App\Jobs;
 
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
+use Package\Jobs\DoSomethingPackageJob;
 
-class CustomUpdateSomethingJobWithOwnConfig extends UpdateSomethingJob {
+class DoSomethingAppJob extends DoSomethingPackageJob {
     use WithConfig; // Indicates that the job has its own config
 
-    public function handle(): void {
+    public function __invoke(): void {
         // our implementation
     }
 }
 ```
+
+[//]: # (end: 36fcaf761a2bf7347c56fa167669ac6832d3383ba7dfba74c30f3880723737a9)
 
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
