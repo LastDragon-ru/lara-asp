@@ -105,6 +105,72 @@ Publish the config and add normalizers/denormalizers if you need more:
 php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Serializer\\Provider --tag=config
 ```
 
+# Eloquent Cast[^1]
+
+You can use the [`LastDragon_ru\LaraASP\Serializer\Casts\AsSerializable`](./src/Casts/AsSerializable.php) cast class to cast a model string attribute to an object:
+
+[include:example]: ./docs/Examples/AsSerializable.php
+[//]: # (start: 17152ed9d4094e5a2bb12c34f6fdb2f223a90f75c9ae440580dded1082fe6dec)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+// phpcs:disable PSR1.Files.SideEffects
+// phpcs:disable PSR1.Classes.ClassDeclaration
+
+use Illuminate\Database\Eloquent\Model;
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\Serializer\Casts\AsSerializable;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+
+class UserSettings implements Serializable {
+    public function __construct(
+        public int $perPage,
+        public bool $showSidebar,
+    ) {
+        // empty
+    }
+}
+
+/**
+ * @property UserSettings|null $settings
+ */
+class User extends Model {
+    /**
+     * @inheritDoc
+     */
+    protected $casts = [
+        'settings' => AsSerializable::class.':'.UserSettings::class,
+    ];
+}
+
+$user           = new User();
+$user->settings = new UserSettings(35, false);
+
+Example::dump($user->settings);
+Example::dump($user->getAttributes());
+```
+
+The `$user->settings` is:
+
+```plain
+UserSettings {
+  +perPage: 35
+  +showSidebar: false
+}
+```
+
+The `$user->getAttributes()` is:
+
+```plain
+[
+  "settings" => "{"perPage":35,"showSidebar":false}",
+]
+```
+
+[//]: # (end: 17152ed9d4094e5a2bb12c34f6fdb2f223a90f75c9ae440580dded1082fe6dec)
+
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
@@ -114,3 +180,5 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Serializer\\Provid
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
 [//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+
+[^1]: <https://laravel.com/docs/eloquent-mutators>

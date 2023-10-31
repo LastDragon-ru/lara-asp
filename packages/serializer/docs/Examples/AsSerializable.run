@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+../../dev/artisan dev:example "${BASH_SOURCE[0]%.*}.php"
