@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Serializer\Exceptions;
 
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\PackageException;
 use Throwable;
 
@@ -13,7 +12,7 @@ class FailedToSerialize extends PackageException {
      * @param array<string, mixed> $context
      */
     public function __construct(
-        private Serializable $serializable,
+        private object $object,
         private string $format,
         private array $context,
         Throwable $previous = null,
@@ -21,15 +20,15 @@ class FailedToSerialize extends PackageException {
         parent::__construct(
             sprintf(
                 'Failed to serialize `%s` into `%s`.',
-                $serializable::class,
+                $object::class,
                 $format,
             ),
             $previous,
         );
     }
 
-    public function getSerializable(): Serializable {
-        return $this->serializable;
+    public function getObject(): object {
+        return $this->object;
     }
 
     public function getFormat(): string {

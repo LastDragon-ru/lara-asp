@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Serializer\Exceptions;
 
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\PackageException;
 use Throwable;
 
@@ -10,11 +9,11 @@ use function sprintf;
 
 class FailedToDeserialize extends PackageException {
     /**
-     * @param class-string<Serializable> $serializable
-     * @param array<string, mixed>       $context
+     * @param class-string         $object
+     * @param array<string, mixed> $context
      */
     public function __construct(
-        private string $serializable,
+        private string $object,
         private string $data,
         private string $format,
         private array $context,
@@ -23,7 +22,7 @@ class FailedToDeserialize extends PackageException {
         parent::__construct(
             sprintf(
                 'Failed to deserialize `%s` from `%s`.',
-                $serializable,
+                $object,
                 $format,
             ),
             $previous,
@@ -31,10 +30,10 @@ class FailedToDeserialize extends PackageException {
     }
 
     /**
-     * @return class-string<Serializable>
+     * @return class-string
      */
-    public function getSerializable(): string {
-        return $this->serializable;
+    public function getObject(): string {
+        return $this->object;
     }
 
     public function getData(): string {

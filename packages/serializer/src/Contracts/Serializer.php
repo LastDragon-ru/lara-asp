@@ -6,20 +6,20 @@ interface Serializer {
     /**
      * @param array<string, mixed> $context
      */
-    public function serialize(Serializable $serializable, string $format = null, array $context = []): string;
+    public function serialize(object $object, string $format = null, array $context = []): string;
 
     /**
-     * @template T of Serializable
+     * @template T of object
      *
-     * @param class-string<T>      $serializable
+     * @param class-string<T>      $object
      * @param array<string, mixed> $context
      *
      * @return T
      */
     public function deserialize(
-        string $serializable,
+        string $object,
         string $data,
         string $format = null,
         array $context = [],
-    ): Serializable;
+    ): object;
 }
