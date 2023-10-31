@@ -3,6 +3,9 @@
 // phpcs:disable PSR1.Files.SideEffects
 // phpcs:disable PSR1.Classes.ClassDeclaration
 
+namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples\Usage;
+
+use DateTimeInterface;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Dev\App\Example;
