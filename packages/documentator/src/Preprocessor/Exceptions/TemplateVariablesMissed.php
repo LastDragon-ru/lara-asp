@@ -7,7 +7,7 @@ use Throwable;
 use function implode;
 use function sprintf;
 
-class VariablesUnused extends InstructionFailed {
+class TemplateVariablesMissed extends InstructionFailed {
     /**
      * @param non-empty-list<string> $variables
      */
@@ -21,7 +21,7 @@ class VariablesUnused extends InstructionFailed {
             $path,
             $target,
             sprintf(
-                'Variables `%s` are not used in `%s`.',
+                'Variables `%s` required in `%s`, but missed.',
                 '`'.implode('`, `', $this->variables).'`',
                 $path,
             ),

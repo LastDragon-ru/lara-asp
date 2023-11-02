@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 
@@ -86,6 +87,7 @@ class Preprocessor {
         $this->addInstruction(IncludeFile::class);
         $this->addInstruction(IncludeExec::class);
         $this->addInstruction(IncludeExample::class);
+        $this->addInstruction(IncludeTemplate::class);
         $this->addInstruction(IncludePackageList::class);
         $this->addInstruction(IncludeDocumentList::class);
     }

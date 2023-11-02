@@ -57,11 +57,9 @@ insert it as is.
 
 Executes the `<target>` and returns result.
 
-### `[include:file]: <target> <parameters>`
+### `[include:file]: <target>`
 
 * `<target>` - File path.
-* `<parameters>` - additional parameters
-  * `variables` - Array of variables (`${name}`) to replace.
 
 Includes the `<target>` file.
 
@@ -71,6 +69,14 @@ Includes the `<target>` file.
 
 Generates package list from `<target>` directory. The readme file will be
 used to determine package name and summary.
+
+### `[include:template]: <target> <parameters>`
+
+* `<target>` - File path.
+* `<parameters>` - additional parameters
+  * `data` - Array of variables (`${name}`) to replace (required).
+
+Includes the `<target>` as a template.
 
 ## Limitations
 
