@@ -6,6 +6,7 @@ use JsonSerializable;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\PropertyInfo\Type;
+use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
 
 /**
@@ -23,8 +24,9 @@ class MetadataFactoryTest extends TestCase {
     }
 
     public function testGetMetadataFor(): void {
-        $factory    = new MetadataFactory();
-        $properties = $factory->getMetadataFor(MetadataFactoryTest_B::class)->getAttributesMetadata();
+        $factory = new MetadataFactory();
+        $a       = $factory->getMetadataFor(MetadataFactoryTest_A::class);
+        $b       = $factory->getMetadataFor(MetadataFactoryTest_B::class);
 
         self::assertEquals(
             [
@@ -33,7 +35,30 @@ class MetadataFactoryTest extends TestCase {
                 'array'    => new AttributeMetadata('array'),
                 'promoted' => new AttributeMetadata('promoted'),
             ],
-            $properties,
+            $b->getAttributesMetadata(),
+        );
+        self::assertEquals(
+            [
+                'property' => 'version',
+                'mapping'  => [
+                    'a' => MetadataFactoryTest_A::class,
+                    'b' => MetadataFactoryTest_B::class,
+                ],
+            ],
+            [
+                'property' => $a->getClassDiscriminatorMapping()?->getTypeProperty(),
+                'mapping'  => $a->getClassDiscriminatorMapping()?->getTypesMapping(),
+            ],
+        );
+        self::assertEquals(
+            [
+                'property' => null,
+                'mapping'  => null,
+            ],
+            [
+                'property' => $b->getClassDiscriminatorMapping()?->getTypeProperty(),
+                'mapping'  => $b->getClassDiscriminatorMapping()?->getTypesMapping(),
+            ],
         );
     }
 
@@ -100,6 +125,7 @@ class MetadataFactoryTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
+#[DiscriminatorMap('version', ['b' => MetadataFactoryTest_B::class, 'a' => MetadataFactoryTest_A::class])]
 class MetadataFactoryTest_A implements JsonSerializable {
     public int           $a = 123;
     public bool          $b; // @phpstan-ignore-line required for tests

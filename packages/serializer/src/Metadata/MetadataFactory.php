@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Serializer\Metadata;
 use InvalidArgumentException;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use ReflectionAttribute;
 use ReflectionClass;
 use Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
@@ -12,7 +13,9 @@ use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractorInterface;
 use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 use Symfony\Component\PropertyInfo\Type;
+use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
+use Symfony\Component\Serializer\Mapping\ClassDiscriminatorMapping;
 use Symfony\Component\Serializer\Mapping\ClassMetadata;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
 
@@ -56,6 +59,10 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
             $class                 = new ReflectionClass($value);
             $metadata              = new ClassMetadata($name);
             $this->metadata[$name] = $metadata;
+
+            $metadata->setClassDiscriminatorMapping(
+                $this->getDiscriminatorMapping($class),
+            );
 
             foreach ($class->getProperties() as $property) {
                 if ($property->isPublic() && !$property->isStatic()) {
@@ -119,5 +126,25 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
         }
 
         return $this->extractor;
+    }
+
+    /**
+     * @param ReflectionClass<object> $class
+     */
+    protected function getDiscriminatorMapping(ReflectionClass $class): ?ClassDiscriminatorMapping {
+        $attributes = $class->getAttributes(DiscriminatorMap::class, ReflectionAttribute::IS_INSTANCEOF);
+        $mapping    = null;
+
+        foreach ($attributes as $attribute) {
+            $instance = $attribute->newInstance();
+            $mapping  = new ClassDiscriminatorMapping(
+                $instance->getTypeProperty(),
+                $instance->getMapping(),
+            );
+
+            break;
+        }
+
+        return $mapping;
     }
 }

@@ -8,12 +8,14 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Carbon;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToDeserialize;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToSerialize;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Stringable;
+use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
 use Symfony\Component\Serializer\Exception\ExtraAttributesException;
 use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
@@ -27,13 +29,15 @@ use function sprintf;
  * @internal
  */
 #[CoversClass(Provider::class)]
+#[CoversClass(Serializer::class)]
+#[CoversClass(SerializableNormalizer::class)]
 class ProviderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testRegister(): void {
         self::assertSame(
-            Container::getInstance()->make(Serializer::class),
-            Container::getInstance()->make(Serializer::class),
+            Container::getInstance()->make(SerializerContract::class),
+            Container::getInstance()->make(SerializerContract::class),
         );
     }
 
@@ -42,7 +46,7 @@ class ProviderTest extends TestCase {
      */
     public function testSerialization(Exception|string $expected, Serializable $serializable): void {
         try {
-            $serializer = Container::getInstance()->make(Serializer::class);
+            $serializer = Container::getInstance()->make(SerializerContract::class);
             $serialized = $serializer->serialize($serializable);
 
             if (is_string($expected)) {
@@ -69,7 +73,7 @@ class ProviderTest extends TestCase {
      */
     public function testDeserialization(Exception|Serializable $expected, string $class, string $serialized): void {
         try {
-            $serializer   = Container::getInstance()->make(Serializer::class);
+            $serializer   = Container::getInstance()->make(SerializerContract::class);
             $deserialized = $serializer->deserialize($class, $serialized);
 
             if ($expected instanceof Serializable) {
@@ -129,11 +133,11 @@ class ProviderTest extends TestCase {
         $curcular->a  = $curcular;
 
         return [
-            'empty object'       => [
+            'empty object'                    => [
                 '{}',
                 new ProviderTest__Empty(),
             ],
-            'simple object'      => [
+            'simple object'                   => [
                 <<<'JSON'
                 {
                     "a": 123,
@@ -142,7 +146,7 @@ class ProviderTest extends TestCase {
                 JSON,
                 $serializable,
             ],
-            'complex object'     => [
+            'complex object'                  => [
                 <<<'JSON'
                 {
                     "a": 123,
@@ -158,7 +162,7 @@ class ProviderTest extends TestCase {
                 JSON,
                 new ProviderTest__Complex($datetime, $serializable, [$datetime, $datetime], null),
             ],
-            'unsupported object' => [
+            'unsupported object'              => [
                 new FailedToSerialize($invalid, 'json', [], new NotNormalizableValueException(
                     sprintf(
                         'Could not normalize object of type "%s", no supporting normalizer found.',
@@ -167,7 +171,7 @@ class ProviderTest extends TestCase {
                 )),
                 $invalid,
             ],
-            'circular reference' => [
+            'circular reference'              => [
                 new FailedToSerialize($curcular, 'json', [], new CircularReferenceException(
                     sprintf(
                         'A circular reference has been detected when serializing the'
@@ -177,6 +181,24 @@ class ProviderTest extends TestCase {
                     ),
                 )),
                 $curcular,
+            ],
+            'abstract: without discriminator' => [
+                <<<'JSON'
+                {
+                    "discriminator": "a",
+                    "property": "a"
+                }
+                JSON,
+                new ProviderTest__A('a'),
+            ],
+            'abstract: with discriminator'    => [
+                <<<'JSON'
+                {
+                    "discriminator": "c",
+                    "property": "c"
+                }
+                JSON,
+                new ProviderTest__C('invalid', 'c'),
             ],
         ];
     }
@@ -270,6 +292,48 @@ class ProviderTest extends TestCase {
                 }
                 JSON,
             ],
+            'abstract: without discriminator'    => [
+                new ProviderTest__B('a', 'b'),
+                ProviderTest__Abstract::class,
+                <<<'JSON'
+                {
+                    "discriminator": "b",
+                    "property": "a",
+                    "another": "b"
+                }
+                JSON,
+            ],
+            'abstract: with discriminator'       => [
+                new ProviderTest__C('c', 'c'),
+                ProviderTest__Abstract::class,
+                <<<'JSON'
+                {
+                    "discriminator": "c",
+                    "property": "c"
+                }
+                JSON,
+            ],
+            'abstract: missed discriminator'     => [
+                new FailedToDeserialize(
+                    ProviderTest__Abstract::class,
+                    '',
+                    'json',
+                    [],
+                    new NotNormalizableValueException(
+                        sprintf(
+                            'Type property "%s" not found for the abstract object "%s".',
+                            'discriminator',
+                            ProviderTest__Abstract::class,
+                        ),
+                    ),
+                ),
+                ProviderTest__Abstract::class,
+                <<<'JSON'
+                {
+                    "property": "c"
+                }
+                JSON,
+            ],
         ];
     }
     // </editor-fold>
@@ -345,4 +409,55 @@ class ProviderTest__Empty implements Serializable {
  */
 class ProviderTest__Class {
     // empty
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+#[DiscriminatorMap('discriminator', [
+    'a' => ProviderTest__A::class,
+    'b' => ProviderTest__B::class,
+    'c' => ProviderTest__C::class,
+])]
+class ProviderTest__Abstract implements Serializable {
+    public function __construct(
+        public string $property,
+    ) {
+        // empty
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ProviderTest__A extends ProviderTest__Abstract {
+    // empty
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ProviderTest__B extends ProviderTest__Abstract {
+    public function __construct(
+        string $property,
+        public string $another,
+    ) {
+        parent::__construct($property);
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ProviderTest__C extends ProviderTest__Abstract {
+    public function __construct(
+        public string $discriminator,
+        string $property,
+    ) {
+        parent::__construct($property);
+    }
 }
