@@ -25,8 +25,8 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "testing"}})
-[//]: # (start: 40bf44db539b33a21602f7cd71696112f264273222e217eedc42c5b63e2b3613)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "testing"}})
+[//]: # (start: 5a3ab424b5419398e67a76495351503570fa33421481357861dc96f3ac4d841d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -35,7 +35,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 composer require lastdragon-ru/lara-asp-testing
 ```
 
-[//]: # (end: 40bf44db539b33a21602f7cd71696112f264273222e217eedc42c5b63e2b3613)
+[//]: # (end: 5a3ab424b5419398e67a76495351503570fa33421481357861dc96f3ac4d841d)
 
 # Usage
 
@@ -632,11 +632,11 @@ class ExampleTest extends TestCase {
 Enjoy 😸
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (end: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)

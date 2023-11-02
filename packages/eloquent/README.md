@@ -25,8 +25,8 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "eloquent"}})
-[//]: # (start: 0245fa9f7962d71b38aef6974b54df73efd70bda501dfd226e0e5f1e60e1707f)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "eloquent"}})
+[//]: # (start: 1c6aa4607fbf4f4c0efb2249a42271075a45316e15a4fe7f914d8bb883f71ea2)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -35,7 +35,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 composer require lastdragon-ru/lara-asp-eloquent
 ```
 
-[//]: # (end: 0245fa9f7962d71b38aef6974b54df73efd70bda501dfd226e0e5f1e60e1707f)
+[//]: # (end: 1c6aa4607fbf4f4c0efb2249a42271075a45316e15a4fe7f914d8bb883f71ea2)
 
 # Iterators
 
@@ -99,11 +99,11 @@ foreach ($query->getChangeSafeIterator() as $user) {
 | `getChangeSafeIteratorIterator()`       | Return [`ChunkedChangeSafeIterator`](./src/Iterators/ChunkedChangeSafeIterator.php) instance. |
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (end: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)

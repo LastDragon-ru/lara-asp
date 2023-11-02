@@ -257,4 +257,5 @@ MD053:
     "include:exec",
     "include:file",
     "include:package-list",
+    "include:template",
   ]

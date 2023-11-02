@@ -20,8 +20,8 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:file]: ../../docs/Shared/Installation.md ({"variables": {"package": "graphql-printer"}})
-[//]: # (start: f2b3abb477077c8c69008f5315c8acb5703164c23218297cd4f12a3ecf05c1d4)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql-printer"}})
+[//]: # (start: dcf3043aff3a50970117872a9bba432cb3ef84a034a0fc88bcdc6d9dcae2ec06)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -30,7 +30,7 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 composer require lastdragon-ru/lara-asp-graphql-printer
 ```
 
-[//]: # (end: f2b3abb477077c8c69008f5315c8acb5703164c23218297cd4f12a3ecf05c1d4)
+[//]: # (end: dcf3043aff3a50970117872a9bba432cb3ef84a034a0fc88bcdc6d9dcae2ec06)
 
 ## Usage
 
@@ -225,19 +225,19 @@ Package also provides few great [GraphQL Assertions](./src/Testing/GraphQLAssert
 | `assertGraphQLExportableEquals` | Exports and compares two GraphQL schemas/types/nodes/etc. |
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (end: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
 
 [include:file]: ../../docs/Shared/Links.md
-[//]: # (start: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
+[//]: # (start: 6c180b37114202a8766bad1a59a3c0699948cc875617c85fd14a024e3bca64fe)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#Printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
 
-[//]: # (end: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
+[//]: # (end: 6c180b37114202a8766bad1a59a3c0699948cc875617c85fd14a024e3bca64fe)
