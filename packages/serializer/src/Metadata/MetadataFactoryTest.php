@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Serializer\Metadata;
 
 use JsonSerializable;
+use LastDragon_ru\LaraASP\Serializer\Attributes\VersionMap;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\PropertyInfo\Type;
@@ -27,6 +28,7 @@ class MetadataFactoryTest extends TestCase {
         $factory = new MetadataFactory();
         $a       = $factory->getMetadataFor(MetadataFactoryTest_A::class);
         $b       = $factory->getMetadataFor(MetadataFactoryTest_B::class);
+        $c       = $factory->getMetadataFor(MetadataFactoryTest_C::class);
 
         self::assertEquals(
             [
@@ -58,6 +60,19 @@ class MetadataFactoryTest extends TestCase {
             [
                 'property' => $b->getClassDiscriminatorMapping()?->getTypeProperty(),
                 'mapping'  => $b->getClassDiscriminatorMapping()?->getTypesMapping(),
+            ],
+        );
+        self::assertEquals(
+            [
+                'property' => '$v',
+                'mapping'  => [
+                    'a' => MetadataFactoryTest_A::class,
+                    'b' => MetadataFactoryTest_B::class,
+                ],
+            ],
+            [
+                'property' => $c->getClassDiscriminatorMapping()?->getTypeProperty(),
+                'mapping'  => $c->getClassDiscriminatorMapping()?->getTypesMapping(),
             ],
         );
     }
@@ -138,6 +153,10 @@ class MetadataFactoryTest_A implements JsonSerializable {
     }
 }
 
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
 class MetadataFactoryTest_B extends MetadataFactoryTest_A {
     /**
      * @phpstan-ignore-next-line required for tests
@@ -154,4 +173,13 @@ class MetadataFactoryTest_B extends MetadataFactoryTest_A {
     ) {
         // empty
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+#[VersionMap(['b' => MetadataFactoryTest_B::class, 'a' => MetadataFactoryTest_A::class])]
+class MetadataFactoryTest_C {
+    // empty
 }
