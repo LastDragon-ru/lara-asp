@@ -10,7 +10,7 @@ This package provides various utilities for documentation generation.
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.3` |  `HEAD`  ,  `5.0.0`   |
+|  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `HEAD ⋯ 5.0.0-beta.1`   |
 |  | `^8.1` |   `HEAD ⋯ 5.0.0-beta.1`   |
 |  Laravel  | `^10.0.0` |   `HEAD ⋯ 5.0.0-beta.1`   |
