@@ -55,6 +55,8 @@ class Dispatcher implements Subject {
     }
 
     /**
+     * @deprecated 5.1.0
+     *
      * @return list<Closure(TContext):void>
      */
     public function getObservers(): array {
