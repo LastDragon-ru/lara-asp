@@ -12,14 +12,15 @@ use function is_string;
 // todo(laravel): [update] Update methods signatures after remove v9.x support.
 
 /**
- * @template TType of object
+ * @template TGet of object
+ * @template TSet of object
  *
- * @implements CastsAttributes<TType, TType>
+ * @implements CastsAttributes<TGet, TGet|TSet>
  */
 class AsSerializable implements CastsAttributes {
     public function __construct(
         /**
-         * @var class-string<TType>
+         * @var class-string<TGet>
          */
         protected readonly string $class,
         protected readonly string $format = 'json',
