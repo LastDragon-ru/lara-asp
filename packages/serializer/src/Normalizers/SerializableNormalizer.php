@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use function array_fill_keys;
 use function array_map;
+use function array_unshift;
 use function class_exists;
 use function is_array;
 use function is_object;
@@ -123,7 +124,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
                 $this->discriminators[$class] = $property;
 
                 if (!isset($this->attributes[$class][$property])) {
-                    $attributes[] = $attributesAsString ? $property : new AttributeMetadata($property);
+                    array_unshift($attributes, $attributesAsString ? $property : new AttributeMetadata($property));
                 }
             }
         }
