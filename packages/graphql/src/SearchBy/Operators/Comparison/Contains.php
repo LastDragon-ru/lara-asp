@@ -29,12 +29,13 @@ class Contains extends BaseOperator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
+        $character = $this->getEscapeCharacter();
         $property  = $builder->getGrammar()->wrap((string) $property->getParent());
         $value     = (string) Cast::toStringable($argument->toPlain());
-        $character = $this->getEscapeCharacter();
+        $not       = $this->isNegated() ? ' NOT' : '';
 
         $builder->whereRaw(
-            "{$property} LIKE ? ESCAPE '{$character}'",
+            "{$property}{$not} LIKE ? ESCAPE '{$character}'",
             [
                 $this->value($this->escape($builder, $value)),
             ],
@@ -81,5 +82,9 @@ class Contains extends BaseOperator {
 
     protected function getEscapeCharacter(): string {
         return '!';
+    }
+
+    protected function isNegated(): bool {
+        return false;
     }
 }

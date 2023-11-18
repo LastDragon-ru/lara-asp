@@ -26,10 +26,13 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorLessThanD
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorLessThanOrEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorLikeDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotBetweenDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotContainsDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotEndsWithDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotInDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotLikeDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotStartsWithDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorRelationDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorStartsWithDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
@@ -77,8 +80,11 @@ class Operators extends BuilderOperators {
             SearchByOperatorInDirective::class,
             SearchByOperatorNotInDirective::class,
             SearchByOperatorContainsDirective::class,
+            SearchByOperatorNotContainsDirective::class,
             SearchByOperatorStartsWithDirective::class,
+            SearchByOperatorNotStartsWithDirective::class,
             SearchByOperatorEndsWithDirective::class,
+            SearchByOperatorNotEndsWithDirective::class,
         ],
 
         // Special types
