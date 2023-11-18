@@ -274,6 +274,18 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorNotContains
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotEndsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorNotEqual
 on
     | ENUM
@@ -287,6 +299,12 @@ on
     | SCALAR
 
 directive @searchByOperatorNotLike
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotStartsWith
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -403,6 +421,18 @@ input SearchByScalarString {
     @searchByOperatorLike
 
     """
+    Not contains.
+    """
+    notContains: String
+    @searchByOperatorNotContains
+
+    """
+    Not ends with a string.
+    """
+    notEndsWith: String
+    @searchByOperatorNotEndsWith
+
+    """
     Not Equal (`!=`).
     """
     notEqual: String
@@ -419,6 +449,12 @@ input SearchByScalarString {
     """
     notLike: String
     @searchByOperatorNotLike
+
+    """
+    Not starts with a string.
+    """
+    notStartsWith: String
+    @searchByOperatorNotStartsWith
 
     """
     Starts with a string.

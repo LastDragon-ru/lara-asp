@@ -1,8 +1,19 @@
 {
-    "version": "5.1.0",
+    "version": "5.2.0",
     "require": [],
     "requirements": {
         "HEAD": {
+            "laravel/framework": [
+                "^10.0.0",
+                "^9.21.0"
+            ],
+            "php": [
+                "^8.3",
+                "^8.2",
+                "^8.1"
+            ]
+        },
+        "5.2.0": {
             "laravel/framework": [
                 "^10.0.0",
                 "^9.21.0"
