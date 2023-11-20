@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use InvalidArgumentException;
+use Override;
 
 use function is_a;
 use function sprintf;
@@ -29,6 +30,7 @@ class ResourceCollection extends AnonymousResourceCollection implements SafeReso
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function preparePaginatedResponse($request) {
         // Our PaginatedResponse does not return any links, so we shouldn't
         // worry about query parameters like the parent method do.

@@ -6,6 +6,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use LastDragon_ru\LaraASP\Spa\Package;
+use Override;
 
 use function config;
 
@@ -13,6 +14,7 @@ use function config;
  * ISO 8601 DateTime.
  */
 class DateTimeRule extends DateRule {
+    #[Override]
     public function getValue(mixed $value): DateTimeInterface|null {
         $value = parent::getValue($value);
         $tz    = config('app.timezone') ?: 'UTC';
@@ -24,6 +26,7 @@ class DateTimeRule extends DateRule {
         return $value;
     }
 
+    #[Override]
     protected function getFormat(): string {
         return Package::DateTimeFormat;
     }

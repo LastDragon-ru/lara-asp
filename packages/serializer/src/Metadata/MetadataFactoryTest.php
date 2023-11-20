@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Serializer\Metadata;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Serializer\Attributes\VersionMap;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\PropertyInfo\Type;
 use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
@@ -148,6 +149,7 @@ class MetadataFactoryTest_A implements JsonSerializable {
     private string       $d = 'should be ignored';
     public static string $e = 'should be ignored';
 
+    #[Override]
     public function jsonSerialize(): mixed {
         return ['d' => $this->d];
     }

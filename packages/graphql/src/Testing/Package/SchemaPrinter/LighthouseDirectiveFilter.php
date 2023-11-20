@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use Nuwave\Lighthouse\Exceptions\DirectiveException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Override;
 
 use function explode;
 use function str_starts_with;
@@ -20,6 +21,7 @@ class LighthouseDirectiveFilter implements DirectiveFilter {
         // empty
     }
 
+    #[Override]
     public function isAllowedDirective(string $directive, bool $isStandard): bool {
         // Standard?
         if ($isStandard) {

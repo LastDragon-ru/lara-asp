@@ -10,6 +10,7 @@ use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -27,27 +28,33 @@ class ObjectValue extends ListBlock {
         parent::__construct($context, $definition->fields);
     }
 
+    #[Override]
     protected function getPrefix(): string {
         return '{';
     }
 
+    #[Override]
     protected function getSuffix(): string {
         return '}';
     }
 
+    #[Override]
     protected function getEmptyValue(): string {
         return "{$this->getPrefix()}{$this->getSuffix()}";
     }
 
+    #[Override]
     protected function isAlwaysMultiline(): bool {
         return parent::isAlwaysMultiline()
             || $this->getSettings()->isAlwaysMultilineArguments();
     }
 
+    #[Override]
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeArguments();
     }
 
+    #[Override]
     protected function block(string|int $key, mixed $item): Block {
         $name = $item->name->value;
         $type = $this->type

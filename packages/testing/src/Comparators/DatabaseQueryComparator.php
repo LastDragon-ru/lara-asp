@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Comparators;
 use Doctrine\SqlFormatter\NullHighlighter;
 use Doctrine\SqlFormatter\SqlFormatter;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
+use Override;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ObjectComparator;
 
@@ -27,6 +28,7 @@ use const PREG_SET_ORDER;
  * Compares two {@link Query}.
  */
 class DatabaseQueryComparator extends ObjectComparator {
+    #[Override]
     public function accepts(mixed $expected, mixed $actual): bool {
         return $expected instanceof Query
             && $actual instanceof Query;
@@ -37,6 +39,7 @@ class DatabaseQueryComparator extends ObjectComparator {
      *
      * @param array<array-key, mixed> $processed
      */
+    #[Override]
     public function assertEquals(
         mixed $expected,
         mixed $actual,

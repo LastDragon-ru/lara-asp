@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSetFactory as LighthouseArgumentSetFactory;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
+use Override;
 
 /**
  * @internal
@@ -13,6 +14,7 @@ class ArgumentSetFactory extends LighthouseArgumentSetFactory {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function makeDefinitionMap(iterable $argumentDefinitions): array {
         $argumentDefinitionMap = [];
 

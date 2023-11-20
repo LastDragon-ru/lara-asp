@@ -32,6 +32,7 @@ use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\Directives\WithRelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
+use Override;
 use ReflectionFunction;
 use ReflectionNamedType;
 
@@ -160,6 +161,7 @@ class BuilderInfoDetector {
     private function getBuilderType(BaseDirective $directive, string ...$arguments): ?string {
         $type   = null;
         $helper = new class() extends BaseDirective {
+            #[Override]
             public static function definition(): string {
                 return '';
             }

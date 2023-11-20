@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Queue\QueueableConfigurator;
 use LastDragon_ru\LaraASP\Queue\Queueables\Job;
+use Override;
 
 class MyJobWithConfig extends Job {
     /**
@@ -14,6 +15,7 @@ class MyJobWithConfig extends Job {
      *
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [
                 'queue'    => 'queue',

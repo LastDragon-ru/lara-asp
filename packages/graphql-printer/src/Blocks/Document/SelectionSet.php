@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -34,26 +35,32 @@ class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
         parent::__construct($context, $definition->selections);
     }
 
+    #[Override]
     protected function getPrefix(): string {
         return '{';
     }
 
+    #[Override]
     protected function getSuffix(): string {
         return '}';
     }
 
+    #[Override]
     protected function isWrapped(): bool {
         return true;
     }
 
+    #[Override]
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeFields();
     }
 
+    #[Override]
     protected function isAlwaysMultiline(): bool {
         return true;
     }
 
+    #[Override]
     protected function block(string|int $key, mixed $item): Block {
         return match (true) {
             $item instanceof FieldNode          => new Field($this->getContext(), $item, $this->type),

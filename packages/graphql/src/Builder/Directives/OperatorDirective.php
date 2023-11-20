@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Override;
 
 use function implode;
 use function is_a;
@@ -16,6 +17,7 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
         // empty
     }
 
+    #[Override]
     public static function definition(): string {
         $name      = '@'.DirectiveLocator::directiveName(static::class);
         $locations = implode('|', static::getDirectiveLocations());

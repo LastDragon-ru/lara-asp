@@ -2,10 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
+use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 use Psr\Http\Message\ResponseInterface;
 
 class Body extends Response {
+    #[Override]
     protected function isConstraintMatches(
         ResponseInterface $other,
         Constraint $constraint,

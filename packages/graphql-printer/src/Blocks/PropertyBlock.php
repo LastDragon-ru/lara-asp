@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 use function mb_strlen;
 
@@ -24,6 +25,7 @@ class PropertyBlock extends Block implements NamedBlock {
         parent::__construct($context);
     }
 
+    #[Override]
     public function getName(): string {
         return $this->name;
     }
@@ -39,6 +41,7 @@ class PropertyBlock extends Block implements NamedBlock {
         return ':';
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         $prefix  = "{$this->getName()}{$this->getSeparator()}{$this->space()}";
         $block   = $this->getBlock()->serialize($collector, $level, $used + mb_strlen($prefix));

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
 use LastDragon_ru\LaraASP\Queue\Contracts\Initializable;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -16,7 +17,14 @@ use function sprintf;
 class DispatchableTest extends TestCase {
     public function testDispatchUninitializedInitializable(): void {
         $job = new class() implements Initializable {
-            use Dispatchable;
+            use Dispatchable {
+                isInitialized as traitIsInitialized;
+            }
+
+            #[Override]
+            public function isInitialized(): bool {
+                return $this->traitIsInitialized();
+            }
         };
 
         self::expectExceptionObject(new RuntimeException(sprintf('The `%s` is not initialized.', $job::class)));
@@ -25,7 +33,14 @@ class DispatchableTest extends TestCase {
     }
     public function testRunUninitializedInitializable(): void {
         $job = new class() implements Initializable {
-            use Dispatchable;
+            use Dispatchable {
+                isInitialized as traitIsInitialized;
+            }
+
+            #[Override]
+            public function isInitialized(): bool {
+                return $this->traitIsInitialized();
+            }
         };
 
         self::expectExceptionObject(new RuntimeException(sprintf('The `%s` is not initialized.', $job::class)));

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
+use Override;
 
 use function count;
 use function max;
@@ -49,46 +50,55 @@ abstract class IteratorImpl implements Iterator {
         $this->setOffset($this->getDefaultOffset());
     }
 
+    #[Override]
     public function getIndex(): int {
         return $this->index;
     }
 
+    #[Override]
     public function setIndex(int $index): static {
         $this->index = $index;
 
         return $this;
     }
 
+    #[Override]
     public function getLimit(): ?int {
         return $this->limit;
     }
 
+    #[Override]
     public function setLimit(?int $limit): static {
         $this->limit = $limit;
 
         return $this;
     }
 
+    #[Override]
     public function getChunkSize(): int {
         return $this->chunk;
     }
 
+    #[Override]
     public function setChunkSize(int $chunk): static {
         $this->chunk = $chunk;
 
         return $this;
     }
 
+    #[Override]
     public function getOffset(): string|int|null {
         return $this->offset;
     }
 
+    #[Override]
     public function setOffset(string|int|null $offset): static {
         $this->offset = $offset;
 
         return $this;
     }
 
+    #[Override]
     public function onBeforeChunk(?Closure $closure): static {
         if ($closure) {
             $this->beforeChunk->attach($closure);
@@ -99,6 +109,7 @@ abstract class IteratorImpl implements Iterator {
         return $this;
     }
 
+    #[Override]
     public function onAfterChunk(?Closure $closure): static {
         if ($closure) {
             $this->afterChunk->attach($closure);
@@ -112,6 +123,7 @@ abstract class IteratorImpl implements Iterator {
     /**
      * @return Generator<int,TItem>
      */
+    #[Override]
     public function getIterator(): Generator {
         // Prepare
         $index = $this->getIndex();
@@ -198,6 +210,7 @@ abstract class IteratorImpl implements Iterator {
         return $this->builder;
     }
 
+    #[Override]
     public function count(): int {
         $limit = $this->getLimit();
         $count = $this->getBuilder()->getQuery()->count();

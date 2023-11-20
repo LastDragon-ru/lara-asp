@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function count;
@@ -135,6 +136,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
                 // empty
             }
 
+            #[Override]
             public function getDefaultColumn(Builder $builder): string {
                 return parent::getDefaultColumn($builder);
             }

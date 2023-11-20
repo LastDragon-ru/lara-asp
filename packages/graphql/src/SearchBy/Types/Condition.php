@@ -30,6 +30,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+use Override;
 
 use function array_merge;
 use function array_unique;
@@ -39,6 +40,7 @@ use function is_string;
 use const SORT_REGULAR;
 
 class Condition extends InputObject {
+    #[Override]
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $typeName      = $source->getTypeName();
         $builderName   = $builder->getName();
@@ -47,10 +49,12 @@ class Condition extends InputObject {
         return "{$directiveName}{$builderName}Condition{$typeName}";
     }
 
+    #[Override]
     protected function getScope(): string {
         return Directive::getScope();
     }
 
+    #[Override]
     protected function getDescription(
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
@@ -61,6 +65,7 @@ class Condition extends InputObject {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getOperators(
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
@@ -74,6 +79,7 @@ class Condition extends InputObject {
         ));
     }
 
+    #[Override]
     protected function isFieldConvertable(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
@@ -102,6 +108,7 @@ class Condition extends InputObject {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getFieldOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,

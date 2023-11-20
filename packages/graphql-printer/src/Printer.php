@@ -27,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\ResultImpl;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
+use Override;
 
 use function array_pop;
 use function str_starts_with;
@@ -49,30 +50,36 @@ class Printer implements PrinterContract {
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
+    #[Override]
     public function getSettings(): Settings {
         return $this->settings;
     }
 
+    #[Override]
     public function setSettings(?Settings $settings): static {
         $this->settings = $settings ?? new DefaultSettings();
 
         return $this;
     }
 
+    #[Override]
     public function getDirectiveResolver(): ?DirectiveResolver {
         return $this->directiveResolver;
     }
 
+    #[Override]
     public function setDirectiveResolver(?DirectiveResolver $directiveResolver): static {
         $this->directiveResolver = $directiveResolver;
 
         return $this;
     }
 
+    #[Override]
     public function getSchema(): ?Schema {
         return $this->schema;
     }
 
+    #[Override]
     public function setSchema(?Schema $schema): static {
         $this->schema = $schema;
 
@@ -85,6 +92,7 @@ class Printer implements PrinterContract {
     /**
      * @param (TypeNode&Node)|Type|null $type
      */
+    #[Override]
     public function print(
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
         int $level = 0,
@@ -109,6 +117,7 @@ class Printer implements PrinterContract {
     /**
      * @param (TypeNode&Node)|Type|null $type
      */
+    #[Override]
     public function export(
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
         int $level = 0,

@@ -159,12 +159,15 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
+use Override;
 
 class CustomDirective implements Directive, BuilderInfoProvider {
+    #[Override]
     public static function definition(): string {
         return 'directive @custom';
     }
 
+    #[Override]
     public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
         return BuilderInfo::create(Builder::class);
     }
@@ -204,6 +207,7 @@ $settings = new DefaultSettings();
 $printer->setSettings(
     $settings->setDirectiveDefinitionFilter(
         new class() implements DirectiveFilter {
+            #[Override]
             public function isAllowedDirective(string $directive, bool $isStandard): bool {
                 return !in_array($directive, ['eq', 'all', 'find'], true);
             }

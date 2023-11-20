@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Override;
 
 /**
  * Disable models events during make/create.
@@ -14,6 +15,7 @@ trait WithoutModelEvents {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function make($attributes = [], ?Model $parent = null) {
         return $this->callWithoutModelEvents(function () use ($attributes, $parent) {
             return parent::make($attributes, $parent);
@@ -23,6 +25,7 @@ trait WithoutModelEvents {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function create($attributes = [], ?Model $parent = null) {
         return $this->callWithoutModelEvents(function () use ($attributes, $parent) {
             return parent::create($attributes, $parent);

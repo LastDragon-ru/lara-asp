@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LogicException;
+use Override;
 
 use function array_merge;
 use function count;
@@ -35,6 +36,7 @@ abstract class Resource extends JsonResource implements SafeResource {
      *
      * @return array<array-key, mixed>|Arrayable<array-key,mixed>|JsonSerializable
      */
+    #[Override]
     public function toArray($request): mixed {
         if ($this->resource instanceof Model) {
             throw new LogicException(
@@ -50,6 +52,7 @@ abstract class Resource extends JsonResource implements SafeResource {
      *
      * @return array<array-key, mixed>
      */
+    #[Override]
     public function with($request): array {
         return $this->mapResourceData(parent::with($request), []);
     }
@@ -57,6 +60,7 @@ abstract class Resource extends JsonResource implements SafeResource {
     /**
      * @param array<array-key, mixed> $data
      */
+    #[Override]
     public function additional(array $data): static {
         return parent::additional($this->mapResourceData($data, []));
     }
@@ -68,6 +72,7 @@ abstract class Resource extends JsonResource implements SafeResource {
      *
      * @return array<array-key, mixed>
      */
+    #[Override]
     protected function filter($data): array {
         // Why do we need this? Resources can contain different types, and we
         // cannot be sure that all of them will be serialized properly :(
@@ -88,6 +93,7 @@ abstract class Resource extends JsonResource implements SafeResource {
      *
      * @return AnonymousResourceCollection<array-key, mixed>
      */
+    #[Override]
     public static function collection($resource): AnonymousResourceCollection {
         // TODO [spa]: I'm definitely not sure that we need to support $preserveKeys
         //      (see parent method) because:

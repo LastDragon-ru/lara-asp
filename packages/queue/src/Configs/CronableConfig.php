@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Queue\Configs;
 
+use Override;
+
 class CronableConfig extends QueueableConfig {
     public const Cron     = 'cron';
     public const Enabled  = 'enabled';
@@ -10,6 +12,7 @@ class CronableConfig extends QueueableConfig {
     /**
      * @return array<string,mixed>
      */
+    #[Override]
     public function getDefaultConfig(): array {
         return parent::getDefaultConfig() + [
                 (string) static::Cron     => '* * * * *', // = every minute

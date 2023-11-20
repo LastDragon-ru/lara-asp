@@ -8,6 +8,7 @@ use Illuminate\Contracts\Config\Repository as ConfigContract;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use Nuwave\Lighthouse\Schema\AST\ASTCache;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Override;
 
 use function implode;
 
@@ -29,18 +30,22 @@ class SchemaCache extends ASTCache {
 
     // <editor-fold desc="ASTCache">
     // =========================================================================
+    #[Override]
     public function isEnabled(): bool {
         return true;
     }
 
+    #[Override]
     public function set(DocumentAST $documentAST): void {
         $this->cache->set($this->getKey(), $documentAST);
     }
 
+    #[Override]
     public function clear(): void {
         $this->cache->delete($this->getKey());
     }
 
+    #[Override]
     public function fromCacheOrBuild(callable $build): DocumentAST {
         return $this->cache->remember($this->key, null, Closure::fromCallable($build));
     }

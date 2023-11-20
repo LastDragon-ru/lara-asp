@@ -16,6 +16,7 @@ use JsonSerializable;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LogicException;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function get_class;
@@ -71,6 +72,7 @@ class ResourceTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function toArray($request): mixed {
                 if ($this->resource instanceof Model) {
                     $properties = [];
@@ -116,6 +118,7 @@ class ResourceTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             protected function mapResourceData(array $data, array $path): array {
                 throw new Exception(__FUNCTION__);
             }
@@ -133,6 +136,7 @@ class ResourceTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             protected function mapResourceData(array $data, array $path): array {
                 throw new Exception(__FUNCTION__);
             }
@@ -199,6 +203,7 @@ class ResourceTest extends TestCase {
                     /**
                      * @inheritDoc
                      */
+                    #[Override]
                     public function toArray() {
                         return [];
                     }
@@ -243,6 +248,7 @@ class ResourceTest extends TestCase {
                         /**
                          * @return array<array-key, mixed>
                          */
+                        #[Override]
                         public function jsonSerialize(): array {
                             return [
                                 'string' => '123',
@@ -264,6 +270,7 @@ class ResourceTest extends TestCase {
                         /**
                          * @return array<array-key, mixed>
                          */
+                        #[Override]
                         public function jsonSerialize(): array {
                             return [
                                 'bool' => true,
@@ -342,6 +349,7 @@ class ResourceTest extends TestCase {
                 new LogicException('Value cannot be converted to JSON.'),
                 [
                     'resource' => new class() implements Jsonable {
+                        #[Override]
                         public function toJson(mixed $options = 0): mixed {
                             return 'null';
                         }

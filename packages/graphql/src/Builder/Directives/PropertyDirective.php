@@ -12,22 +12,27 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
+use Override;
 
 use function count;
 
 abstract class PropertyDirective extends OperatorDirective {
+    #[Override]
     public static function getName(): string {
         return 'property';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $source->getTypeName();
     }
 
+    #[Override]
     public function isBuilderSupported(string $builder): bool {
         return true;
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         if (!($argument->value instanceof ArgumentSet)) {
             throw new HandlerInvalidConditions($handler);

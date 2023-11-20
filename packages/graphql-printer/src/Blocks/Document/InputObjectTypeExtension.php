@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputObjectDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -22,6 +23,7 @@ class InputObjectTypeExtension extends InputObjectDefinitionBlock implements Ext
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function prefix(): ?string {
         return 'extend input';
     }

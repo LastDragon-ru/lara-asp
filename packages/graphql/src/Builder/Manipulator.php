@@ -43,6 +43,7 @@ use Nuwave\Lighthouse\Pagination\PaginationType;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Override;
 
 use function array_map;
 use function array_push;
@@ -77,6 +78,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="TypeProvider">
     // =========================================================================
+    #[Override]
     public function getType(string $definition, TypeSource $source): string {
         // Instance (phpstan is not so smart yet...)
         $instance = Container::getInstance()->make($definition);
@@ -114,6 +116,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         return $name;
     }
 
+    #[Override]
     public function getTypeSource(
         TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type $type,
     ): TypeSource {

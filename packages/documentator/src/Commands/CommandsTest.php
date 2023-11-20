@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Finder\Finder;
@@ -27,6 +28,7 @@ class CommandsTest extends TestCase {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
             CommandsTest_Provider::class,

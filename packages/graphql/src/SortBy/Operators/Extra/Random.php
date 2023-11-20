@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Flag;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 use function array_merge;
 
@@ -22,6 +23,7 @@ class Random extends BaseOperator {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected static function getDirectiveLocations(): array {
         return array_merge(parent::getDirectiveLocations(), [
             DirectiveLocation::FIELD_DEFINITION,
@@ -31,18 +33,22 @@ class Random extends BaseOperator {
 
     // <editor-fold desc="Operator">
     // =========================================================================
+    #[Override]
     public static function getName(): string {
         return 'random';
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'By random';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $provider->getType(Flag::class, $source);
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

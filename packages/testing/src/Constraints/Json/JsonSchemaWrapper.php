@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use Opis\JsonSchema\Uri;
+use Override;
 use SplFileInfo;
 
 use function array_merge;
@@ -29,6 +30,7 @@ class JsonSchemaWrapper implements JsonSchema {
         ]));
     }
 
+    #[Override]
     public function getSchema(): Uri {
         return $this->schema;
     }

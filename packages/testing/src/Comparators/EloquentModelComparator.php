@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
 use Illuminate\Database\Eloquent\Model;
+use Override;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ObjectComparator;
 
@@ -23,6 +24,7 @@ use function substr_replace;
  * @see https://github.com/laravel/ideas/issues/1914
  */
 class EloquentModelComparator extends ObjectComparator {
+    #[Override]
     public function accepts(mixed $expected, mixed $actual): bool {
         return $expected instanceof Model
             && $actual instanceof Model;
@@ -33,6 +35,7 @@ class EloquentModelComparator extends ObjectComparator {
      *
      * @param array<array-key, mixed> $processed
      */
+    #[Override]
     public function assertEquals(
         mixed $expected,
         mixed $actual,

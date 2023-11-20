@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
+use Override;
 
 use function str_ends_with;
 
@@ -29,10 +30,12 @@ class Stream implements TypeDefinition {
             : $type;
     }
 
+    #[Override]
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         return Str::plural(Str::studly($source->getTypeName())).Directive::Name;
     }
 
+    #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,

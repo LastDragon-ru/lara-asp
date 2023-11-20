@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -29,10 +30,12 @@ class Argument extends Block implements NamedBlock {
         parent::__construct($context);
     }
 
+    #[Override]
     public function getName(): string {
         return $this->argument->name->value;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         if (!$this->isTypeAllowed($this->type)) {

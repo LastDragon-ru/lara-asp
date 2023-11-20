@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers;
 
 use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlSchemaMatcher;
+use Override;
 use RuntimeException;
 use SplFileInfo;
 use XMLReader;
@@ -14,6 +15,7 @@ use function sprintf;
  * @internal
  */
 abstract class XmlFileSchemaMatcher implements XmlSchemaMatcher {
+    #[Override]
     public function isMatchesSchema(SplFileInfo $schema, SplFileInfo|DOMDocument $xml): bool {
         // Can?
         if (!($xml instanceof SplFileInfo)) {

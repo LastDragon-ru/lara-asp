@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Factory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -29,18 +30,22 @@ class DefinitionList extends ListBlock {
         parent::__construct($context, $items);
     }
 
+    #[Override]
     protected function isWrapped(): bool {
         return true;
     }
 
+    #[Override]
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeDefinitions();
     }
 
+    #[Override]
     protected function isAlwaysMultiline(): bool {
         return true;
     }
 
+    #[Override]
     protected function block(int|string $key, mixed $item): Block {
         return Factory::create($this->getContext(), $item, ($this->type)($item));
     }

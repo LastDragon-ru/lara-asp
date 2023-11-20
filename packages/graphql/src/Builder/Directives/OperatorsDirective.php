@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 use GraphQL\Language\DirectiveLocation;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Override;
 
 use function assert;
 use function implode;
@@ -15,6 +16,7 @@ abstract class OperatorsDirective extends BaseDirective {
         // empty
     }
 
+    #[Override]
     public static function definition(): string {
         $name      = DirectiveLocator::directiveName(static::class);
         $locations = implode(' | ', static::getDirectiveLocations());

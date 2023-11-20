@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
 use LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories\Factory;
+use Override;
 
 /**
  * @internal
@@ -18,6 +19,7 @@ class TestObjectFactory extends Factory {
     /**
      * @return array<string,mixed>
      */
+    #[Override]
     public function definition(): array {
         return [
             'value' => $this->faker->word(),

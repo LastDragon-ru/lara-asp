@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -25,6 +26,7 @@ class Directive extends Block implements NamedBlock {
         parent::__construct($context);
     }
 
+    #[Override]
     public function getName(): string {
         return "@{$this->getDefinition()->name->value}";
     }
@@ -33,6 +35,7 @@ class Directive extends Block implements NamedBlock {
         return $this->definition;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         if (!$this->isDirectiveAllowed($this->getDefinition()->name->value)) {

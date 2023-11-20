@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
+use Override;
+
 /**
  * @internal
  * @template TBlock of Block
@@ -10,14 +12,17 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
  * @extends ListBlock<TBlock, TKey, TItem>
  */
 abstract class ObjectBlockList extends ListBlock {
+    #[Override]
     protected function getPrefix(): string {
         return '{';
     }
 
+    #[Override]
     protected function getSuffix(): string {
         return '}';
     }
 
+    #[Override]
     protected function isAlwaysMultiline(): bool {
         return true;
     }

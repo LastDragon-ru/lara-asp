@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue;
 use AllowDynamicProperties;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -32,6 +33,7 @@ class ProviderTest_ConfigurableQueueable implements ConfigurableQueueable {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [
             'queue' => 'test',

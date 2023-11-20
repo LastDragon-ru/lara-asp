@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\FieldsDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ImplementsInterfaces;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
@@ -33,6 +34,7 @@ abstract class ObjectDefinitionBlock extends DefinitionBlock implements TypeDefi
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function body(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $implements = new ImplementsInterfaces(
@@ -45,6 +47,7 @@ abstract class ObjectDefinitionBlock extends DefinitionBlock implements TypeDefi
         return $implements;
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $fields     = new FieldsDefinition(

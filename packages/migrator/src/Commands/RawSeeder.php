@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Commands;
 use Illuminate\Database\Console\Seeds\SeederMakeCommand;
 use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Package;
+use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use function basename;
@@ -23,6 +24,7 @@ class RawSeeder extends SeederMakeCommand {
         parent::__construct($filesystem);
     }
 
+    #[Override]
     public static function getDefaultName(): ?string {
         return self::Name;
     }
@@ -31,6 +33,7 @@ class RawSeeder extends SeederMakeCommand {
      * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection
      */
+    #[Override]
     protected function resolveStubPath($stub) {
         $custom = $this->laravel->basePath(trim($stub, '/'));
         $path   = !$this->files->exists($custom)
@@ -44,6 +47,7 @@ class RawSeeder extends SeederMakeCommand {
      * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection
      */
+    #[Override]
     protected function makeDirectory($path) {
         // FIXME [migrator] `make:seeder` hack: would be good to use another
         //      way to add file(s) after the command finished.

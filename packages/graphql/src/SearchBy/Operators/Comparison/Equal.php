@@ -11,18 +11,22 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 class Equal extends BaseOperator {
     use ScoutSupport;
 
+    #[Override]
     public static function getName(): string {
         return 'equal';
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'Equal (`=`).';
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         $property = $property->getParent();
         $value    = $argument->toPlain();

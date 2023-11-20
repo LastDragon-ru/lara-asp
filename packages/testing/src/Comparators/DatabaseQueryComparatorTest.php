@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Comparator\ComparisonFailure;
@@ -42,6 +43,7 @@ class DatabaseQueryComparatorTest extends TestCase {
 
     public function testNormalize(): void {
         $comparator = new class() extends DatabaseQueryComparator {
+            #[Override]
             public function normalize(Query $query): Query {
                 return parent::normalize($query);
             }

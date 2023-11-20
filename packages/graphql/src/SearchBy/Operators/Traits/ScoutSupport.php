@@ -7,6 +7,7 @@ use Composer\Semver\VersionParser;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
+use Override;
 
 use function is_a;
 
@@ -24,6 +25,7 @@ trait ScoutSupport {
         return $this->fieldResolver;
     }
 
+    #[Override]
     public function isBuilderSupported(string $builder): bool {
         return parent::isBuilderSupported($builder)
             || (is_a($builder, ScoutBuilder::class, true) && $this->isScoutSupported());

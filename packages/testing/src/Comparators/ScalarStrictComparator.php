@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
+use Override;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ScalarComparator;
 use SebastianBergmann\Exporter\Exporter;
@@ -11,6 +12,7 @@ use function is_bool;
 use function is_float;
 
 class ScalarStrictComparator extends ScalarComparator {
+    #[Override]
     public function assertEquals(
         mixed $expected,
         mixed $actual,

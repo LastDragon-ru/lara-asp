@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Metadata\MetadataFactory;
+use Override;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -75,6 +76,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     /**
      * @param array<array-key, mixed> $context
      */
+    #[Override]
     public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed {
         /**
          * I'm not sure if it is bug or not, but out the box symfony call
@@ -101,6 +103,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     /**
      * @param array<array-key, mixed> $context
      */
+    #[Override]
     protected function getAllowedAttributes(
         object|string $classOrObject,
         array $context,
@@ -137,6 +140,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
      *
      * @return array<array-key, string>
      */
+    #[Override]
     protected function extractAttributes(object $object, string $format = null, array $context = []): array {
         return [
             /**
@@ -148,6 +152,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     /**
      * @param array<array-key, mixed> $context
      */
+    #[Override]
     protected function getAttributeValue(
         object $object,
         string $attribute,
@@ -162,6 +167,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     /**
      * @param array<array-key, mixed> $context
      */
+    #[Override]
     protected function setAttributeValue(
         object $object,
         string $attribute,

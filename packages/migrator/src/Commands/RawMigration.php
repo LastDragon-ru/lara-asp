@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Support\Composer;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Package;
+use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use function str_replace;
@@ -22,6 +23,7 @@ class RawMigration extends MigrateMakeCommand {
         parent::__construct($creator, $composer);
     }
 
+    #[Override]
     public static function getDefaultName(): ?string {
         return self::Name;
     }

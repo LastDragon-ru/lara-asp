@@ -29,6 +29,7 @@ use Nuwave\Lighthouse\Schema\Directives\FirstDirective;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function json_encode;
@@ -55,6 +56,7 @@ class BuilderInfoDetectorTest extends TestCase {
         $locator     = $this->app->make(DirectiveLocator::class);
         $source      = $sourceFactory($locator, $manipulator);
         $directive   = new class() extends BuilderInfoDetector {
+            #[Override]
             public function getBuilderInfo(
                 AstManipulator $manipulator,
                 InterfaceFieldArgumentSource|ObjectFieldArgumentSource|ObjectFieldSource|InterfaceFieldSource $source,
@@ -247,6 +249,7 @@ class BuilderInfoDetectorTest extends TestCase {
                                 // empty
                             }
 
+                            #[Override]
                             public static function definition(): string {
                                 throw new Exception('should not be called.');
                             }
@@ -352,10 +355,12 @@ class BuilderInfoDetectorTest extends TestCase {
                                 // empty
                             }
 
+                            #[Override]
                             public static function definition(): string {
                                 throw new Exception('should not be called.');
                             }
 
+                            #[Override]
                             public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
                                 return new BuilderInfo('Custom', BuilderInfoProvider::class);
                             }

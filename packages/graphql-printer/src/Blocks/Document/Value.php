@@ -25,6 +25,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 use function json_encode;
 use function property_exists;
@@ -57,6 +58,7 @@ class Value extends Block {
         parent::__construct($context);
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Content
         $context = $this->getContext();

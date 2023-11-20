@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Override;
 
 /**
  * After creating the model will have `wasRecentlyCreated = true`, in most
@@ -17,6 +18,7 @@ trait FixRecentlyCreated {
      *
      * @param Collection<array-key,Model> $instances
      */
+    #[Override]
     protected function callAfterCreating(Collection $instances, ?Model $parent = null) {
         $this->fixRecentlyCreated($instances);
         parent::callAfterCreating($instances, $parent);

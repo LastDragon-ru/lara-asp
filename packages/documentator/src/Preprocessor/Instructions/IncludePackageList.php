@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMi
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
+use Override;
 use Symfony\Component\Finder\Finder;
 
 use function assert;
@@ -33,10 +34,12 @@ class IncludePackageList implements ProcessableInstruction {
         // empty
     }
 
+    #[Override]
     public static function getName(): string {
         return 'include:package-list';
     }
 
+    #[Override]
     public static function getDescription(): string {
         return <<<'DESC'
         Generates package list from `<target>` directory. The readme file will be
@@ -44,10 +47,12 @@ class IncludePackageList implements ProcessableInstruction {
         DESC;
     }
 
+    #[Override]
     public static function getTargetDescription(): ?string {
         return 'Directory path.';
     }
 
+    #[Override]
     public function process(string $path, string $target): string {
         // Directory?
         $root = Path::getPath(dirname($path), $target);

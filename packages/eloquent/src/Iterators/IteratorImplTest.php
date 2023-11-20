@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use Mockery;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -34,6 +35,7 @@ class IteratorImplTest extends TestCase {
             ->andReturn($query);
 
         $iterator = new class($builder) extends IteratorImpl {
+            #[Override]
             protected function getChunk(EloquentBuilder $builder, int $chunk): Collection {
                 return new Collection();
             }

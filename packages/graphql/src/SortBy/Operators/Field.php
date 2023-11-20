@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query\Builder as QueryHandler;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder as ScoutHandler;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 class Field extends BaseOperator {
     public function __construct(
@@ -26,18 +27,22 @@ class Field extends BaseOperator {
         parent::__construct();
     }
 
+    #[Override]
     public static function getName(): string {
         return 'field';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $provider->getType(Direction::class, $source);
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'Property clause.';
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         $direction = Cast::toString($argument->value);
 

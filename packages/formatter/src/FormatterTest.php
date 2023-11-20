@@ -6,6 +6,7 @@ use DateTime;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use NumberFormatter;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
@@ -20,12 +21,14 @@ class FormatterTest extends TestCase {
 
     // <editor-fold desc="Setup">
     // =========================================================================
+    #[Override]
     public function setUp(): void {
         parent::setUp();
 
         $this->formatter = $this->app->make(Formatter::class);
     }
 
+    #[Override]
     public function tearDown(): void {
         parent::tearDown();
 

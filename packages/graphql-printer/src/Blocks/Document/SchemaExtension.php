@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -23,10 +24,12 @@ class SchemaExtension extends DefinitionBlock implements ExtensionDefinitionBloc
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function prefix(): ?string {
         return 'extend schema';
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $operations = [];

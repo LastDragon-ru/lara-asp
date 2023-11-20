@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
+use Override;
 
 /**
  * @internal
@@ -25,6 +26,7 @@ class Collector implements Statistics {
     /**
      * @return array<string,string>
      */
+    #[Override]
     public function getUsedTypes(): array {
         return $this->usedTypes;
     }
@@ -32,6 +34,7 @@ class Collector implements Statistics {
     /**
      * @return array<string,string>
      */
+    #[Override]
     public function getUsedDirectives(): array {
         return $this->usedDirectives;
     }

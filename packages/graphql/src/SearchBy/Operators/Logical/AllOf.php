@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 /**
  * @internal Must not be used directly.
@@ -17,22 +18,27 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 class AllOf extends Logical {
     use ScoutSupport;
 
+    #[Override]
     public static function getName(): string {
         return 'allOf';
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'All of the conditions must be true.';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return "[{$provider->getType(Condition::class, $source)}!]";
     }
 
+    #[Override]
     protected function getBoolean(): string {
         return 'and';
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         // Scout?
         if (!($builder instanceof ScoutBuilder)) {

@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
 use LastDragon_ru\LaraASP\Core\Provider\WithRoutes;
 use LastDragon_ru\LaraASP\Core\Provider\WithTranslations;
 use LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException;
+use Override;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Provider extends ServiceProvider {
@@ -29,6 +30,7 @@ class Provider extends ServiceProvider {
 
     // <editor-fold desc="Functions">
     // =========================================================================
+    #[Override]
     protected function getName(): string {
         return Package::Name;
     }

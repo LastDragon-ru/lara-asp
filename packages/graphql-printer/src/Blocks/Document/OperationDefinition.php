@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -31,10 +32,12 @@ class OperationDefinition extends DefinitionBlock implements ExecutableDefinitio
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function prefix(): ?string {
         return $this->getDefinition()->operation;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         $type = $this->getType();
@@ -55,6 +58,7 @@ class OperationDefinition extends DefinitionBlock implements ExecutableDefinitio
         return $content;
     }
 
+    #[Override]
     protected function arguments(bool $multiline): ?Block {
         return new VariablesDefinition(
             $this->getContext(),
@@ -62,6 +66,7 @@ class OperationDefinition extends DefinitionBlock implements ExecutableDefinitio
         );
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         return new SelectionSet(
             $this->getContext(),

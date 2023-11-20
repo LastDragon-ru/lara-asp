@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use Override;
 
 use function array_fill_keys;
 use function array_filter;
@@ -38,10 +39,12 @@ class SchemaDefinition extends DefinitionBlock {
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function prefix(): ?string {
         return 'schema';
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         $content = parent::content($collector, $level, $used);
 
@@ -52,6 +55,7 @@ class SchemaDefinition extends DefinitionBlock {
         return $content;
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         return new RootOperationTypesDefinition(
             $this->getContext(),

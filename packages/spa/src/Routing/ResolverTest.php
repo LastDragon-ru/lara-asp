@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -19,6 +20,7 @@ class ResolverTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             protected function resolve(mixed $value, array $parameters): mixed {
                 return (object) [
                     'id'         => $value,
@@ -29,6 +31,7 @@ class ResolverTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             protected function resolveParameters(Request $request = null, Route $route = null): array {
                 return [
                     'property' => 'value',
@@ -54,6 +57,7 @@ class ResolverTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             protected function resolve(mixed $value, array $parameters): mixed {
                 return null;
             }

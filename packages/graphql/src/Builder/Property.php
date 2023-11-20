@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
+use Override;
 use Stringable;
 
 use function array_slice;
@@ -46,6 +47,7 @@ class Property implements Stringable {
         return $parent;
     }
 
+    #[Override]
     public function __toString(): string {
         return implode(static::Separator, $this->path);
     }

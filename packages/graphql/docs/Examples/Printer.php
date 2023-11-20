@@ -14,6 +14,7 @@ $settings = new DefaultSettings();
 $printer->setSettings(
     $settings->setDirectiveDefinitionFilter(
         new class() implements DirectiveFilter {
+            #[Override]
             public function isAllowedDirective(string $directive, bool $isStandard): bool {
                 return !in_array($directive, ['eq', 'all', 'find'], true);
             }

@@ -10,6 +10,7 @@ use Mockery;
 use Mockery\Exception\InvalidCountException;
 use Mockery\MockInterface;
 use OutOfBoundsException;
+use Override as OverrideAttribute;
 
 use function is_callable;
 use function sprintf;
@@ -31,6 +32,7 @@ trait Override {
         $this->overrides = [];
     }
 
+    #[OverrideAttribute]
     protected function assertPostConditions(): void {
         foreach ($this->overrides as $class => $spy) {
             try {

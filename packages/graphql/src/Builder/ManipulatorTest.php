@@ -19,6 +19,7 @@ use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
@@ -36,6 +37,7 @@ class ManipulatorTest extends TestCase {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
             PaginationServiceProvider::class,
@@ -62,14 +64,17 @@ class ManipulatorTest extends TestCase {
                 // empty
             }
 
+            #[Override]
             protected function getDirectiveLocator(): DirectiveLocator {
                 return $this->directiveLocator;
             }
 
+            #[Override]
             public function getDocument(): DocumentAST {
                 return $this->document;
             }
 
+            #[Override]
             protected function getTypes(): TypeRegistry {
                 return $this->types;
             }
@@ -177,6 +182,7 @@ class ManipulatorTest extends TestCase {
                 $this->default = $default;
             }
 
+            #[Override]
             public function getScope(): string {
                 return Scope::class;
             }
@@ -367,22 +373,27 @@ class ManipulatorTest_Operators extends OperatorsDirective implements Scope {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, Scope {
+    #[Override]
     public static function getName(): string {
         return 'a';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $source->getTypeName();
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return '';
     }
 
+    #[Override]
     public function isBuilderSupported(string $builder): bool {
         return is_a($builder, stdClass::class, true);
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         return $builder;
     }
@@ -393,22 +404,27 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
+    #[Override]
     public static function getName(): string {
         return 'b';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $source->getTypeName();
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return '';
     }
 
+    #[Override]
     public function isBuilderSupported(string $builder): bool {
         return false;
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         return $builder;
     }
@@ -419,22 +435,27 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
+    #[Override]
     public static function getName(): string {
         return 'c';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $source->getTypeName();
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return '';
     }
 
+    #[Override]
     public function isBuilderSupported(string $builder): bool {
         return is_a($builder, stdClass::class, true);
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         return $builder;
     }

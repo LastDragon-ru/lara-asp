@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use Override;
 
 use function is_string;
 use function json_validate;
@@ -27,6 +28,7 @@ class JsonStringType extends StringType implements TypeDefinition {
 
     // <editor-fold desc="ScalarType">
     // =========================================================================
+    #[Override]
     public function serialize(mixed $value): string {
         if ($value instanceof JsonStringable) {
             $value = (string) $value;
@@ -37,6 +39,7 @@ class JsonStringType extends StringType implements TypeDefinition {
         return $value;
     }
 
+    #[Override]
     public function parseValue(mixed $value): string {
         return $this->validate($value, Error::class);
     }
@@ -44,6 +47,7 @@ class JsonStringType extends StringType implements TypeDefinition {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function parseLiteral(Node $valueNode, array $variables = null): string {
         if (!($valueNode instanceof StringValueNode)) {
             throw new Error(
@@ -81,10 +85,12 @@ class JsonStringType extends StringType implements TypeDefinition {
 
     // <editor-fold desc="TypeDefinition">
     // =========================================================================
+    #[Override]
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         return $this->name();
     }
 
+    #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,

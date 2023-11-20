@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariables
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesUnused;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use Override;
 
 use function array_diff;
 use function array_key_exists;
@@ -29,18 +30,22 @@ class IncludeTemplate implements ParameterizableInstruction {
         // empty
     }
 
+    #[Override]
     public static function getName(): string {
         return 'include:template';
     }
 
+    #[Override]
     public static function getDescription(): string {
         return 'Includes the `<target>` as a template.';
     }
 
+    #[Override]
     public static function getTargetDescription(): ?string {
         return 'File path.';
     }
 
+    #[Override]
     public static function getParameters(): string {
         return IncludeTemplateParameters::class;
     }
@@ -48,12 +53,14 @@ class IncludeTemplate implements ParameterizableInstruction {
     /**
      * @inheritDoc
      */
+    #[Override]
     public static function getParametersDescription(): array {
         return [
             'data' => 'Array of variables (`${name}`) to replace (required).',
         ];
     }
 
+    #[Override]
     public function process(string $path, string $target, Serializable $parameters): string {
         // Content
         $file    = Path::getPath(dirname($path), $target);

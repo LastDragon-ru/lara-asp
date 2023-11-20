@@ -24,6 +24,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
+use Override;
 
 use function array_slice;
 use function explode;
@@ -37,6 +38,7 @@ class Provider extends ServiceProvider {
         $this->bootDirectives($dispatcher);
     }
 
+    #[Override]
     public function register(): void {
         parent::register();
 
@@ -94,6 +96,7 @@ class Provider extends ServiceProvider {
         });
     }
 
+    #[Override]
     protected function getName(): string {
         return Package::Name;
     }

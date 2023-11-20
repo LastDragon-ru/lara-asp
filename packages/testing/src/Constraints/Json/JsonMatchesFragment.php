@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 use Illuminate\Support\Arr;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\JsonMatches;
 use SplFileInfo;
@@ -24,6 +25,7 @@ class JsonMatchesFragment extends Constraint {
         // empty
     }
 
+    #[Override]
     public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         if (parent::evaluate($other, $description, $returnResult) === false) {
             return false;
@@ -42,6 +44,7 @@ class JsonMatchesFragment extends Constraint {
         return $result;
     }
 
+    #[Override]
     protected function matches(mixed $other): bool {
         $json    = Args::getJson($other, true);
         $matches = is_array($json) && Arr::has($json, $this->path);
@@ -49,6 +52,7 @@ class JsonMatchesFragment extends Constraint {
         return $matches;
     }
 
+    #[Override]
     public function toString(): string {
         return sprintf(
             'contains fragment "%s" matches JSON string "%s"',

@@ -11,6 +11,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Schema\Source\SchemaSourceProvider;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Override;
 
 use function spl_object_hash;
 
@@ -36,6 +37,7 @@ class SchemaBuilderWrapper extends SchemaBuilder {
         return $this->current ?? $this->builder;
     }
 
+    #[Override]
     public function schema(): Schema {
         return $this->getSchemaBuilder()->schema();
     }

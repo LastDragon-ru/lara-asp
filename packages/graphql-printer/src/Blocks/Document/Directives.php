@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 use function array_unshift;
 use function json_encode;
@@ -58,19 +59,23 @@ class Directives extends ListBlock {
         parent::__construct($context, $directives);
     }
 
+    #[Override]
     protected function getSeparator(): string {
         return $this->space();
     }
 
+    #[Override]
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeDirectives();
     }
 
+    #[Override]
     protected function isAlwaysMultiline(): bool {
         return parent::isAlwaysMultiline()
             || $this->getSettings()->isAlwaysMultilineDirectives();
     }
 
+    #[Override]
     protected function block(string|int $key, mixed $item): Directive {
         return new Directive($this->getContext(), $item);
     }

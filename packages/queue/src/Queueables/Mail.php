@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithInitialization;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
+use Override;
 
 #[AllowDynamicProperties]
 abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueable {
@@ -28,6 +29,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [];
     }
@@ -38,6 +40,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
     /**
      * @inheritDoc
      */
+    #[Override]
     public function send($mailer) {
         $this->ifInitialized(function () use ($mailer): mixed {
             parent::send($mailer);
@@ -47,6 +50,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
     /**
      * @inheritDoc
      */
+    #[Override]
     public function queue(Factory $queue) {
         return $this->ifInitialized(function () use ($queue): mixed {
             return parent::queue($queue);
@@ -56,6 +60,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
     /**
      * @inheritDoc
      */
+    #[Override]
     public function later($delay, Factory $queue) {
         return $this->ifInitialized(function () use ($delay, $queue): mixed {
             return parent::later($delay, $queue);
@@ -65,6 +70,7 @@ abstract class Mail extends Mailable implements ShouldQueue, ConfigurableQueueab
 
     // <editor-fold desc="\Illuminate\Contracts\Support\Renderable">
     // =========================================================================
+    #[Override]
     public function render(): string {
         return $this->ifInitialized(function (): string {
             return parent::render();

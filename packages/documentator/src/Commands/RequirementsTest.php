@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -17,6 +18,7 @@ class RequirementsTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getMergedVersions(array $versions, array $merge): array {
                 return parent::getMergedVersions($versions, $merge);
             }
@@ -74,6 +76,7 @@ class RequirementsTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getRequirements(array $packages, Metadata $metadata): array {
                 return parent::getRequirements($packages, $metadata);
             }

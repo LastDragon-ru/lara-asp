@@ -14,6 +14,7 @@ use Nuwave\Lighthouse\Exceptions\DirectiveException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive as LighthouseDirective;
+use Override;
 
 use function array_key_exists;
 
@@ -43,6 +44,7 @@ class DirectiveResolver implements DirectiveResolverContract {
         // empty
     }
 
+    #[Override]
     public function getDefinition(string $name): DirectiveDefinitionNode|GraphQLDirective|null {
         if (!array_key_exists($name, $this->definitions)) {
             // Definition can also contain types but seems these types are not
@@ -76,6 +78,7 @@ class DirectiveResolver implements DirectiveResolverContract {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getDefinitions(): array {
         return [];
     }

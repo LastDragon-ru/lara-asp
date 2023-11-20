@@ -13,18 +13,22 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 class NotIn extends BaseOperator {
     use ScoutSupport;
 
+    #[Override]
     public static function getName(): string {
         return 'notIn';
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'Outside a set of values.';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return "[{$source->getTypeName()}!]";
     }
@@ -33,6 +37,7 @@ class NotIn extends BaseOperator {
         return '>=10.3.0';
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         $property = $property->getParent();
         $value    = (array) $argument->toPlain();

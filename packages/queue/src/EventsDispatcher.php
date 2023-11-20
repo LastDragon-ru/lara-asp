@@ -6,6 +6,7 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Queue\Factory;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Events\Dispatcher;
+use Override;
 
 // TODO [laravel] [update] \Illuminate\Events\Dispatcher
 
@@ -41,6 +42,7 @@ class EventsDispatcher extends Dispatcher {
      *
      * @return array<array-key, mixed>
      */
+    #[Override]
     protected function createListenerAndJob($class, $method, $arguments): array {
         $listener = $this->container->make($class);
         $options  = $this->propagateListenerOptions(

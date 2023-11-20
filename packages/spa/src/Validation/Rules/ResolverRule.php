@@ -6,6 +6,7 @@ use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Spa\Http\ValueProvider;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException;
+use Override;
 
 use function array_merge;
 use function get_class;
@@ -24,6 +25,7 @@ class ResolverRule extends Rule implements ValueProvider {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function passes($attribute, $value) {
         try {
             return (bool) $this->getValue($value);
@@ -37,6 +39,7 @@ class ResolverRule extends Rule implements ValueProvider {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getMessageReplace(): array {
         return array_merge(parent::getMessageReplace(), [
             'resolver' => get_class($this->resolver),
@@ -46,6 +49,7 @@ class ResolverRule extends Rule implements ValueProvider {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getMessageVariants(): array {
         $defaults   = parent::getMessageVariants();
         $resolver   = get_class($this->resolver);
@@ -63,6 +67,7 @@ class ResolverRule extends Rule implements ValueProvider {
 
     // <editor-fold desc="ValueProvider">
     // =========================================================================
+    #[Override]
     public function getValue(mixed $value): mixed {
         return $this->resolver->get($value);
     }

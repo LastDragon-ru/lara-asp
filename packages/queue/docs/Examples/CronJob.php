@@ -3,11 +3,13 @@
 namespace App\Jobs;
 
 use LastDragon_ru\LaraASP\Queue\Queueables\CronJob;
+use Override;
 
 class MyCronJob extends CronJob {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [
                 'cron'    => '0 * * * *', // Cron expression

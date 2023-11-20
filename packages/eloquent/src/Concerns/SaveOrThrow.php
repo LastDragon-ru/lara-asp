@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Override;
 
 /**
  * @mixin Model|Pivot
@@ -13,6 +14,7 @@ trait SaveOrThrow {
     /**
      * @param array<array-key, mixed> $options
      */
+    #[Override]
     public function save(array $options = []): bool {
         $result = parent::save($options);
 
@@ -24,6 +26,7 @@ trait SaveOrThrow {
     }
 
     /* @phpstan-ignore-next-line `Model::delete()` and `Pivot::::delete()` return different types. */
+    #[Override]
     public function delete(): bool|int|null {
         $result = parent::delete();
 

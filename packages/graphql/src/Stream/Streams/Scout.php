@@ -7,6 +7,7 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Utils\Page;
+use Override;
 
 use function array_slice;
 use function max;
@@ -31,6 +32,7 @@ class Scout extends Stream {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getItems(): iterable {
         $items = $this->getPaginator()->items();
         $items = array_slice($items, $this->page->start, $this->page->length);
@@ -38,16 +40,19 @@ class Scout extends Stream {
         return $items;
     }
 
+    #[Override]
     public function getLength(): ?int {
         return max(0, $this->getPaginator()->total());
     }
 
+    #[Override]
     public function getNextOffset(): ?Offset {
         return $this->page->end > 0 || $this->getPaginator()->hasMorePages()
             ? new Offset($this->offset->path, (int) $this->offset->offset + $this->limit, $this->offset->cursor)
             : null;
     }
 
+    #[Override]
     public function getPreviousOffset(): ?Offset {
         return (int) $this->offset->offset > 0
             ? new Offset($this->offset->path, 0, $this->offset->cursor)

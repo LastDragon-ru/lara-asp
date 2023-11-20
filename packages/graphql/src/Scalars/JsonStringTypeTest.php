@@ -10,6 +10,7 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -96,6 +97,7 @@ class JsonStringTypeTest extends TestCase {
                         // empty
                     }
 
+                    #[Override]
                     public function __toString(): string {
                         return $this->json;
                     }

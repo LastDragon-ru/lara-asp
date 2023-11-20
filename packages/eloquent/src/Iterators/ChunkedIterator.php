@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Override;
 
 use function count;
 
@@ -24,6 +25,7 @@ use function count;
  * @extends IteratorImpl<TItem>
  */
 class ChunkedIterator extends IteratorImpl {
+    #[Override]
     protected function getChunk(Builder $builder, int $chunk): Collection {
         $builder
             ->offset($this->getOffset())
@@ -32,12 +34,14 @@ class ChunkedIterator extends IteratorImpl {
         return $builder->get();
     }
 
+    #[Override]
     protected function chunkProcessed(Collection $items): bool {
         $this->setOffset($this->getOffset() + count($items));
 
         return parent::chunkProcessed($items);
     }
 
+    #[Override]
     public function getOffset(): int {
         return (int) parent::getOffset();
     }

@@ -59,6 +59,7 @@ use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use Nuwave\Lighthouse\Support\Contracts\ProvidesResolver;
 use Nuwave\Lighthouse\Validation\ValidateDirective;
+use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -105,6 +106,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
     // <editor-fold desc="Directive">
     // =========================================================================
+    #[Override]
     public static function definition(): string {
         $name          = DirectiveLocator::directiveName(static::class);
         $builder       = self::Name.'Builder';
@@ -185,6 +187,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
     // <editor-fold desc="FieldManipulator">
     // =========================================================================
+    #[Override]
     public function manipulateFieldDefinition(
         DocumentAST &$documentAST,
         FieldDefinitionNode &$fieldDefinition,
@@ -350,6 +353,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
     // <editor-fold desc="BuilderInfoProvider">
     // =========================================================================
+    #[Override]
     public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
         // Field?
         $field = null;
@@ -426,6 +430,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     /**
      * @return callable(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): StreamValue
      */
+    #[Override]
     public function resolveField(FieldValue $fieldValue): callable {
         return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): StreamValue {
             // Offset
@@ -545,10 +550,12 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 // no need to call parent
             }
 
+            #[Override]
             public function getParentName(): string {
                 return $this->typeName;
             }
 
+            #[Override]
             public function getFieldName(): string {
                 return $this->fieldName;
             }

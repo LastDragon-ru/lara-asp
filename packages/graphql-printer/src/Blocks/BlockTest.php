@@ -22,6 +22,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLMarker;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use Mockery;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use ReflectionAttribute;
@@ -226,6 +227,7 @@ class BlockTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class BlockTest__Block extends Block {
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         return '';
     }

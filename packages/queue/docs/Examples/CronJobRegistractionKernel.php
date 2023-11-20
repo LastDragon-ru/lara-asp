@@ -6,6 +6,7 @@ use App\Jobs\MyCronJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use LastDragon_ru\LaraASP\Queue\Concerns\ConsoleKernelWithSchedule;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
+use Override;
 
 use function base_path;
 
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel {
     /**
      * Register the commands for the application.
      */
+    #[Override]
     protected function commands(): void {
         $this->load(__DIR__.'/Commands');
 

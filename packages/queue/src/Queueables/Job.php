@@ -9,6 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use LastDragon_ru\LaraASP\Queue\Concerns\Dispatchable;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
+use Override;
 
 #[AllowDynamicProperties]
 abstract class Job implements ShouldQueue, ConfigurableQueueable {
@@ -24,6 +25,7 @@ abstract class Job implements ShouldQueue, ConfigurableQueueable {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [];
     }

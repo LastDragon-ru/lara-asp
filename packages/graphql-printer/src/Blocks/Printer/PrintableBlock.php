@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Factory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -39,6 +40,7 @@ class PrintableBlock extends Block implements NamedBlock {
         $this->block = Factory::create($context, $definition, $type);
     }
 
+    #[Override]
     public function getName(): string {
         $name  = '';
         $block = $this->getBlock();
@@ -68,6 +70,7 @@ class PrintableBlock extends Block implements NamedBlock {
         return $this->block;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         return $this->getBlock()->serialize($collector, $level, $used);
     }

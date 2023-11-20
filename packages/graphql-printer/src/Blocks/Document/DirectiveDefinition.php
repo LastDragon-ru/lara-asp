@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use Override;
 
 /**
  * @internal
@@ -25,14 +26,17 @@ class DirectiveDefinition extends DefinitionBlock {
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function prefix(): ?string {
         return 'directive';
     }
 
+    #[Override]
     protected function name(): string {
         return '@'.parent::name();
     }
 
+    #[Override]
     protected function arguments(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $arguments  = new ArgumentsDefinition(
@@ -45,6 +49,7 @@ class DirectiveDefinition extends DefinitionBlock {
         return $arguments;
     }
 
+    #[Override]
     protected function body(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $locations  = new DirectiveLocations(

@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
+use Override;
 
 use function dirname;
 use function file_get_contents;
@@ -31,10 +32,12 @@ class IncludeExample implements ProcessableInstruction {
         // empty
     }
 
+    #[Override]
     public static function getName(): string {
         return 'include:example';
     }
 
+    #[Override]
     public static function getDescription(): string {
         return <<<'DESC'
         Includes contents of the `<target>` file as an example wrapped into
@@ -47,10 +50,12 @@ class IncludeExample implements ProcessableInstruction {
         DESC;
     }
 
+    #[Override]
     public static function getTargetDescription(): ?string {
         return 'Example file path.';
     }
 
+    #[Override]
     public function process(string $path, string $target): string {
         // Content
         $file    = Path::getPath(dirname($path), $target);

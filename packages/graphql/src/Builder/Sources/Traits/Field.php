@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use Override;
 
 use function count;
 
@@ -52,6 +53,7 @@ trait Field {
         return $arg !== null;
     }
 
+    #[Override]
     public function __toString(): string {
         $field = $this->getName();
         $type  = $this->getManipulator()->getTypeFullName($this->getObject());

@@ -10,6 +10,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use Override;
 
 /**
  * @template TType of (TypeDefinitionNode&Node)|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type
@@ -37,10 +38,12 @@ class Source implements TypeSource {
     /**
      * @return TType
      */
+    #[Override]
     public function getType(): TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type {
         return $this->type;
     }
 
+    #[Override]
     public function getTypeName(): string {
         return $this->getManipulator()->getTypeName($this->getType());
     }
@@ -48,6 +51,7 @@ class Source implements TypeSource {
     /**
      * @return (TypeDefinitionNode&Node)|Type
      */
+    #[Override]
     public function getTypeDefinition(): TypeDefinitionNode|Type {
         $type       = $this->getType();
         $definition = !($type instanceof TypeDefinitionNode)
@@ -57,18 +61,22 @@ class Source implements TypeSource {
         return $definition;
     }
 
+    #[Override]
     public function isNullable(): bool {
         return $this->getManipulator()->isNullable($this->getType());
     }
 
+    #[Override]
     public function isList(): bool {
         return $this->getManipulator()->isList($this->getType());
     }
 
+    #[Override]
     public function isUnion(): bool {
         return $this->getManipulator()->isUnion($this->getType());
     }
 
+    #[Override]
     public function __toString(): string {
         return $this->getManipulator()->getTypeFullName($this->getType());
     }

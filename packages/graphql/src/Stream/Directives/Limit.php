@@ -19,6 +19,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use Nuwave\Lighthouse\Validation\RulesDirective;
+use Override;
 
 use function config;
 use function max;
@@ -47,6 +48,7 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
         ];
     }
 
+    #[Override]
     public static function definition(): string {
         $name       = DirectiveLocator::directiveName(static::class);
         $argMax     = self::ArgMax;
@@ -60,6 +62,7 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
         GRAPHQL;
     }
 
+    #[Override]
     public function manipulateArgDefinition(
         DocumentAST &$documentAST,
         InputValueDefinitionNode &$argDefinition,
@@ -133,6 +136,7 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
         );
     }
 
+    #[Override]
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
         return $value !== null
             ? max(1, Cast::toInt($value))

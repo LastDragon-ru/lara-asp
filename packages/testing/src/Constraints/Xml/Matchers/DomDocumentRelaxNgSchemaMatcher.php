@@ -3,12 +3,14 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers;
 
 use DOMDocument;
+use Override;
 use SplFileInfo;
 
 /**
  * @internal
  */
 class DomDocumentRelaxNgSchemaMatcher extends DomDocumentSchemaMatcher {
+    #[Override]
     protected function isMatchesSchemaValidate(SplFileInfo $schema, DOMDocument $document): bool {
         return @$document->relaxNGValidate($schema->getPathname());
     }

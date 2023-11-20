@@ -20,12 +20,14 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgBuilderDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
+use Override;
 
 use function str_starts_with;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
     final public const Name = 'SearchBy';
 
+    #[Override]
     public static function definition(): string {
         $name = DirectiveLocator::directiveName(static::class);
 
@@ -39,6 +41,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
+    #[Override]
     public static function getScope(): string {
         return Scope::class;
     }
@@ -46,10 +49,12 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
 
     // <editor-fold desc="Manipulate">
     // =========================================================================
+    #[Override]
     protected function isTypeName(string $name): bool {
         return str_starts_with($name, self::Name);
     }
 
+    #[Override]
     protected function getArgDefinitionType(
         Manipulator $manipulator,
         DocumentAST $document,
@@ -72,6 +77,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
 
     // <editor-fold desc="Handle">
     // =========================================================================
+    #[Override]
     public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
         // Some relations (eg `HasManyThrough`) require a table name prefix to
         // avoid "SQLSTATE[23000]: Integrity constraint violation: 1052 Column

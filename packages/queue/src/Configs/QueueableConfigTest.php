@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\Queue\Queueables\Job;
 use LastDragon_ru\LaraASP\Queue\Queueables\Listener;
 use LastDragon_ru\LaraASP\Queue\Queueables\Mail;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
@@ -35,6 +36,7 @@ class QueueableConfigTest extends TestCase {
         $properties   = [];
         $queueable    = new $class($configurator);
         $config       = new class($queueable, $properties) extends QueueableConfig {
+            #[Override]
             public function getQueueClass(): string {
                 return parent::getQueueClass();
             }
@@ -56,6 +58,7 @@ class QueueableConfigTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getQueueableProperties(): array {
                 return parent::getQueueableProperties();
             }
@@ -74,6 +77,7 @@ class QueueableConfigTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getQueueConfig(): array {
                 return $this->config;
             }
@@ -82,10 +86,12 @@ class QueueableConfigTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function config(): array {
                 return parent::config();
             }
 
+            #[Override]
             public function getApplicationConfig(): string {
                 return parent::getApplicationConfig();
             }
@@ -245,6 +251,7 @@ class QueueableConfigTest_getQueueClass implements ConfigurableQueueable {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [];
     }

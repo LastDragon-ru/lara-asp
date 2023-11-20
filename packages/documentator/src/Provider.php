@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Provider\WithViews;
 use LastDragon_ru\LaraASP\Documentator\Commands\Commands;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Commands\Requirements;
+use Override;
 
 class Provider extends ServiceProvider {
     use WithViews;
@@ -20,6 +21,7 @@ class Provider extends ServiceProvider {
         );
     }
 
+    #[Override]
     protected function getName(): string {
         return Package::Name;
     }

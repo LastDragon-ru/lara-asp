@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
+use Override;
+
 class ArrayDataProvider extends BaseDataProvider {
     /**
      * @var array<array-key, array<array-key, mixed>>
@@ -18,6 +20,7 @@ class ArrayDataProvider extends BaseDataProvider {
     /**
      * @return array<array-key, array<array-key, mixed>>
      */
+    #[Override]
     public function getData(bool $raw = false): array {
         return $this->replaceExpectedValues($this->data, $raw);
     }

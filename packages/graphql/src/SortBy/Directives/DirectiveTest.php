@@ -36,6 +36,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
@@ -619,6 +620,7 @@ class DirectiveTest extends TestCase {
                             /**
                              * @inheritDoc
                              */
+                            #[Override]
                             public function getField(
                                 EloquentModel $model,
                                 Property $property,

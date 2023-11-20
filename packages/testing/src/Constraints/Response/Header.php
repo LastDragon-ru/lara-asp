@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
+use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 use Psr\Http\Message\ResponseInterface;
 
@@ -23,18 +24,21 @@ class Header extends Response {
         return $this->name;
     }
 
+    #[Override]
     protected function matches(mixed $other): bool {
         return parent::matches($other)
             && $other instanceof ResponseInterface
             && $other->hasHeader($this->getName());
     }
 
+    #[Override]
     public function toString(): string {
         return "has {$this->getName()} header".(
             $this->getConstraints() ? ' that '.parent::toString() : ''
             );
     }
 
+    #[Override]
     protected function isConstraintMatches(
         ResponseInterface $other,
         Constraint $constraint,

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
 use Illuminate\Database\Migrations\MigrationCreator;
+use Override;
 
 use function basename;
 use function dirname;
@@ -14,6 +15,7 @@ class RawMigrationCreator extends MigrationCreator {
      * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection
      */
+    #[Override]
     public function create($name, $path, $table = null, $create = false) {
         $path = parent::create($name, $path, $table, $create);
         $raws = $this->getRawFiles($path);
@@ -29,6 +31,7 @@ class RawMigrationCreator extends MigrationCreator {
      * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection
      */
+    #[Override]
     protected function getStub($table, $create) {
         $path = $this->customStubPath.'/migration.stub';
 
