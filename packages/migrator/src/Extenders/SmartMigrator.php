@@ -46,6 +46,9 @@ class SmartMigrator extends Migrator {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
+    /**
+     * @deprecated 5.2.0 Not used anymore and will be removed soon.
+     */
     public static function isAnonymousMigrationsSupported(): bool {
         return InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=8.40.0');
     }
