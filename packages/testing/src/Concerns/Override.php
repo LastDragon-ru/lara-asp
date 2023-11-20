@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
-use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Foundation\Testing\TestCase;
 use LogicException;
@@ -91,7 +90,7 @@ trait Override {
 
         Container::getInstance()->bind(
             $class,
-            Closure::fromCallable($this->overrides[$class]),
+            ($this->overrides[$class])(...),
         );
 
         // Return

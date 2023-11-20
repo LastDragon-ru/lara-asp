@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
-use Closure;
 use Illuminate\Cache\Repository as CacheContract;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use LastDragon_ru\LaraASP\GraphQL\Package;
@@ -47,7 +46,7 @@ class SchemaCache extends ASTCache {
 
     #[Override]
     public function fromCacheOrBuild(callable $build): DocumentAST {
-        return $this->cache->remember($this->key, null, Closure::fromCallable($build));
+        return $this->cache->remember($this->key, null, $build(...));
     }
     //</editor-fold>
 }

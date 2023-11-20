@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
-use Closure;
 use Illuminate\Database\ConnectionResolverInterface;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
@@ -36,10 +35,10 @@ class ChunkedIteratorTest extends TestCase {
         $count     = count($log);
         $iterator  = (new ChunkedIterator($query))
             ->onBeforeChunk(
-                Closure::fromCallable($spyBefore),
+                $spyBefore(...),
             )
             ->onAfterChunk(
-                Closure::fromCallable($spyAfter),
+                $spyAfter(...),
             );
 
         $actual = iterator_to_array($iterator);

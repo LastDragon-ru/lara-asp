@@ -52,7 +52,7 @@ parameters:
         # False positive
         # https://github.com/phpstan/phpstan-mockery/issues/34
         -
-            message: "#^Parameter \\#1 \\$callback of static method Closure\\:\\:fromCallable\\(\\) expects callable\\(\\)\\: mixed, Mockery\\\\MockInterface given\\.$#"
+            message: "#^Creating callable from Mockery\\\\MockInterface but it might not be a callable\\.$#"
             paths:
                 - packages/**/*Test.php
                 - packages/testing/src/Package/TestCase.php

@@ -42,10 +42,10 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
         $iterator  = (new ChunkedChangeSafeIterator($query))
             ->setChunkSize(2)
             ->onBeforeChunk(
-                Closure::fromCallable($spyBefore),
+                $spyBefore(...),
             )
             ->onAfterChunk(
-                Closure::fromCallable($spyAfter),
+                $spyAfter(...),
             );
 
         $actual = [];

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Core\Observer;
 
-use Closure;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,7 +15,7 @@ class DispatcherTest extends TestCase {
     public function testSubject(): void {
         $spy      = Mockery::spy(static fn(stdClass $context) => null);
         $context  = new stdClass();
-        $observer = Closure::fromCallable($spy);
+        $observer = $spy(...);
         $subject  = new Dispatcher();
 
         $subject->attach($observer);
@@ -37,7 +36,7 @@ class DispatcherTest extends TestCase {
     public function testReset(): void {
         $spy      = Mockery::spy(static fn(stdClass $context) => null);
         $context  = new stdClass();
-        $observer = Closure::fromCallable($spy);
+        $observer = $spy(...);
         $subject  = new Dispatcher();
 
         $subject->attach($observer);
