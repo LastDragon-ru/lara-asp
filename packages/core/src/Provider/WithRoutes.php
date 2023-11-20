@@ -11,8 +11,6 @@ trait WithRoutes {
     use Helper;
 
     protected function bootRoutes(): void {
-        $this->callAfterBoot(function (): void {
-            $this->loadRoutesFrom($this->getPath('../defaults/routes.php'));
-        });
+        $this->loadRoutesFrom($this->getPath('../defaults/routes.php'));
     }
 }

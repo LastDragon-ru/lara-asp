@@ -30,8 +30,9 @@ trait Helper {
     }
 
     /**
-     * @param Closure(mixed...): mixed $callback
+     * @deprecated 5.2.0 Not used anymore and will be removed soon.
      *
+     * @param Closure(mixed...): mixed $callback
      */
     protected function callAfterBoot(Closure $callback): void {
         if ($this->app instanceof Application && $this->app->isBooted()) {
