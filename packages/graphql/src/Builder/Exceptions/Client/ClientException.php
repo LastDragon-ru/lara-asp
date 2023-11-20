@@ -13,6 +13,9 @@ abstract class ClientException extends BuilderException implements ClientAware {
         return true;
     }
 
+    /**
+     * @deprecated 5.2.0 Not needed anymore and will be removed soon.
+     */
     public function getCategory(): string {
         return Package::Name;
     }
