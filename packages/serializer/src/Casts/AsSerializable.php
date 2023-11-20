@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToCast;
+use Override;
 
 use function is_string;
 
@@ -35,6 +36,7 @@ class AsSerializable implements CastsAttributes {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function get(mixed $model, string $key, mixed $value, array $attributes): ?object {
         if ($value === null || $value instanceof $this->class) {
             // no action
@@ -55,6 +57,7 @@ class AsSerializable implements CastsAttributes {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function set(mixed $model, string $key, mixed $value, array $attributes): mixed {
         if ($value !== null) {
             $value = Container::getInstance()->make(Serializer::class)->serialize(

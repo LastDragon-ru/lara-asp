@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use Opis\JsonSchema\Uri;
+use Override;
 use SplFileInfo;
 
 class JsonSchemaFile implements JsonSchema {
@@ -16,6 +17,7 @@ class JsonSchemaFile implements JsonSchema {
         // empty
     }
 
+    #[Override]
     public function getSchema(): Uri {
         return Protocol::getUri($this->schema, $this->parameters);
     }

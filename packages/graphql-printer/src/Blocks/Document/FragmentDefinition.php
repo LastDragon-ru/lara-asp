@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -17,10 +18,12 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
  */
 #[GraphQLAstNode(FragmentDefinitionNode::class)]
 class FragmentDefinition extends DefinitionBlock implements ExecutableDefinitionBlock {
+    #[Override]
     protected function prefix(): ?string {
         return 'fragment';
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         if (!$this->isTypeAllowed($this->getDefinition()->typeCondition)) {
@@ -39,6 +42,7 @@ class FragmentDefinition extends DefinitionBlock implements ExecutableDefinition
         return $content;
     }
 
+    #[Override]
     protected function body(bool $multiline): ?Block {
         return new class($this->getContext(), $this->getDefinition()) extends Block {
             public function __construct(
@@ -48,6 +52,7 @@ class FragmentDefinition extends DefinitionBlock implements ExecutableDefinition
                 parent::__construct($context);
             }
 
+            #[Override]
             protected function content(Collector $collector, int $level, int $used): string {
                 $type    = $this->definition->typeCondition->name->value;
                 $content = "on {$type}";
@@ -59,6 +64,7 @@ class FragmentDefinition extends DefinitionBlock implements ExecutableDefinition
         };
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $fields     = new SelectionSet(

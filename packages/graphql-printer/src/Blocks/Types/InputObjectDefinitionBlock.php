@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\InputFieldsDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -24,6 +25,7 @@ abstract class InputObjectDefinitionBlock extends DefinitionBlock implements Typ
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $fields     = new InputFieldsDefinition(

@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\DefinitionList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -25,6 +26,7 @@ class Document extends Block {
         return $this->document;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         $context     = $this->getContext();
         $document    = $this->getDocument();

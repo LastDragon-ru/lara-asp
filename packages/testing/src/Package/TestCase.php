@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
+use Override;
 
 /**
  * Special test case for packages with application.
@@ -26,6 +27,7 @@ abstract class TestCase extends TestbenchTestCase {
     use WithTempDirectory;
     use WithTranslations;
 
+    #[Override]
     protected function getContainer(): Container {
         return $this->app;
     }

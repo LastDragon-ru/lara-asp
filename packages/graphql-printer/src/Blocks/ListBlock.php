@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 use function count;
 use function mb_strlen;
@@ -105,6 +106,7 @@ abstract class ListBlock extends Block {
         return $blocks;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Serialize
         /** @var array<int, array{bool, non-empty-string}> $serialized */

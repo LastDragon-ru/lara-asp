@@ -13,22 +13,27 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 class In extends BaseOperator {
     use ScoutSupport;
 
+    #[Override]
     public static function getName(): string {
         return 'in';
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'Within a set of values.';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return "[{$source->getTypeName()}!]";
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         $property = $property->getParent();
         $value    = (array) $argument->toPlain();

@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
+use Override;
+
 /**
  * The data provider allows merging several data providers into one. It works in
  * the following way:
@@ -52,6 +54,7 @@ class MergeDataProvider extends BaseDataProvider {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getData(bool $raw = false): array {
         $data = [];
 

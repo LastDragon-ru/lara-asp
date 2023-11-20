@@ -24,6 +24,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
+use Override;
 
 use function count;
 use function trim;
@@ -46,6 +47,7 @@ abstract class InputObject implements TypeDefinition {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,

@@ -6,6 +6,7 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -23,6 +24,7 @@ class RootOperationTypeDefinition extends Type {
         return $this->operation;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         $content = '';
 

@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
+use Override;
+
 use function array_merge;
 use function array_reduce;
 use function array_reverse;
@@ -60,6 +62,7 @@ class CompositeDataProvider extends BaseDataProvider {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getData(bool $raw = false): array {
         $array    = array_reverse($this->getProviders());
         $callback = function (array $previous, DataProvider $current): array {

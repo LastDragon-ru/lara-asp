@@ -7,6 +7,7 @@ use DateInterval;
 use Illuminate\Bus\Queueable;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -50,6 +51,7 @@ class QueueableConfiguratorTest_ConfigurableQueueable implements ConfigurableQue
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [
             'maxExceptions' => 345,

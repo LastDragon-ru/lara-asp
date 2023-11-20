@@ -10,16 +10,20 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 class Like extends BaseOperator {
+    #[Override]
     public static function getName(): string {
         return 'like';
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'Like.';
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

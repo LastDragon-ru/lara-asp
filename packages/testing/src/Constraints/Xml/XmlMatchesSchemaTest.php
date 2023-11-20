@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 
 use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
@@ -24,6 +25,7 @@ class XmlMatchesSchemaTest extends TestCase {
      */
     public function testEvaluate(bool|string $expected, SplFileInfo $schema, DOMDocument|SplFileInfo $xml): void {
         $constraint = new class($schema) extends XmlMatchesSchema {
+            #[Override]
             public function additionalFailureDescription(mixed $other): string {
                 return parent::additionalFailureDescription($other);
             }

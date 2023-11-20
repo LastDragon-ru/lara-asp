@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\LogicalAnd;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -42,6 +43,7 @@ class Response extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
+    #[Override]
     public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         $other        = Args::getResponse($other);
         $success      = $this->matches($other);
@@ -76,16 +78,19 @@ class Response extends Constraint {
         return null;
     }
 
+    #[Override]
     protected function matches(mixed $other): bool {
         return true;
     }
 
+    #[Override]
     public function toString(): string {
         return is_null($this->failed)
             ? LogicalAnd::fromConstraints(...$this->getConstraints())->toString()
             : $this->failed->toString();
     }
 
+    #[Override]
     protected function additionalFailureDescription(mixed $other, bool $root = true): string {
         if (!$other instanceof ResponseInterface) {
             return '';

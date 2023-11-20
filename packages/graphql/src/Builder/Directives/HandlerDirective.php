@@ -34,6 +34,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Override;
 
 use function array_map;
 use function count;
@@ -115,6 +116,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      *
      * @return T
      */
+    #[Override]
     public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
         // Empty?
         if (count($conditions->arguments) === 0) {

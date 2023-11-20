@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use JsonSerializable;
+use Override;
 
 use function is_string;
 
@@ -20,6 +21,7 @@ use function is_string;
  * @mixin Model
  */
 trait WithDateSerialization {
+    #[Override]
     protected function serializeDate(DateTimeInterface $date): string {
         $serialized = null;
 

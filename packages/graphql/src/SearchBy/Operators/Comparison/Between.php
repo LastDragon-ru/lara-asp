@@ -13,20 +13,25 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 class Between extends BaseOperator {
+    #[Override]
     public static function getName(): string {
         return 'between';
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'Within a range.';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $provider->getType(Range::class, $source);
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

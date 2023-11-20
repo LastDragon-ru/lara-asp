@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
+use Override;
+
 use function is_bool;
 
 /**
@@ -11,6 +13,7 @@ class BoolRule extends Rule {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function passes($attribute, $value) {
         return is_bool($value);
     }

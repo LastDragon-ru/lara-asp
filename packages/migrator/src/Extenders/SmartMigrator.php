@@ -6,6 +6,7 @@ use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Illuminate\Database\Migrations\Migrator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use Override;
 use Symfony\Component\Finder\Finder;
 
 use function is_string;
@@ -27,6 +28,7 @@ class SmartMigrator extends Migrator {
      *
      * @return array<array-key, string>
      */
+    #[Override]
     public function getMigrationFiles($paths): array {
         if (is_string($paths)) {
             $paths = [$paths];

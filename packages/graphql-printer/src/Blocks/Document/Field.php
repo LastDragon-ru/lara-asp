@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -32,10 +33,12 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function name(): string {
         return $this->getDefinition()->name->value;
     }
 
+    #[Override]
     protected function prefix(): ?string {
         $definition = $this->getDefinition();
         $type       = $definition->alias
@@ -45,6 +48,7 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
         return $type;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         $parent = $this->type;
@@ -74,6 +78,7 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
         return $content;
     }
 
+    #[Override]
     protected function arguments(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $context    = $this->getContext();
@@ -95,6 +100,7 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
         return $args;
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $type       = $this->type

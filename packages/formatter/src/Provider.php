@@ -5,11 +5,13 @@ namespace LastDragon_ru\LaraASP\Formatter;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
 use LastDragon_ru\LaraASP\Core\Provider\WithTranslations;
+use Override;
 
 class Provider extends ServiceProvider {
     use WithConfig;
     use WithTranslations;
 
+    #[Override]
     public function register(): void {
         parent::register();
 
@@ -21,6 +23,7 @@ class Provider extends ServiceProvider {
         $this->bootTranslations();
     }
 
+    #[Override]
     protected function getName(): string {
         return Package::Name;
     }

@@ -36,6 +36,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotStarts
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorRelationDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorStartsWithDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use Override;
 
 use function config;
 
@@ -142,6 +143,7 @@ class Operators extends BuilderOperators {
         parent::__construct($operators);
     }
 
+    #[Override]
     public function getScope(): string {
         return Directive::getScope();
     }

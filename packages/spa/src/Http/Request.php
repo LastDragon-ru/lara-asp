@@ -5,11 +5,13 @@ namespace LastDragon_ru\LaraASP\Spa\Http;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Validator;
+use Override;
 
 use function data_get;
 use function is_null;
 
 abstract class Request extends FormRequest {
+    #[Override]
     public function validated(mixed $key = null, mixed $default = null): mixed {
         // We need `\Illuminate\Validation\Validator::getRules()` but it doesn't
         // exists in `\Illuminate\Contracts\Validation\Validator`.

@@ -4,8 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored as IgnoredContract;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
+use Override;
 
 class Ignored implements Directive, IgnoredContract {
+    #[Override]
     public static function definition(): string {
         return <<<'GRAPHQL'
             """

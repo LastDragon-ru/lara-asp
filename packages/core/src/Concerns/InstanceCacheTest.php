@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Core\Concerns;
 
 use Illuminate\Contracts\Queue\QueueableEntity;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -162,6 +163,7 @@ class InstanceCacheTest_QueueableEntity implements QueueableEntity {
         $this->connection = $connection;
     }
 
+    #[Override]
     public function getQueueableId(): mixed {
         return $this->id;
     }
@@ -169,10 +171,12 @@ class InstanceCacheTest_QueueableEntity implements QueueableEntity {
     /**
      * @return list<string>
      */
+    #[Override]
     public function getQueueableRelations(): array {
         return $this->relations;
     }
 
+    #[Override]
     public function getQueueableConnection(): ?string {
         return $this->connection;
     }

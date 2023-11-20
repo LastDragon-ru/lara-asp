@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 use function mb_strlen;
 
@@ -28,6 +29,7 @@ abstract class UsageList extends ListBlock {
         parent::__construct($context, $items);
     }
 
+    #[Override]
     protected function isAlwaysMultiline(): bool {
         return $this->isAlwaysMultiline;
     }
@@ -36,14 +38,17 @@ abstract class UsageList extends ListBlock {
 
     abstract protected function prefix(): string;
 
+    #[Override]
     protected function getSeparator(): string {
         return "{$this->space()}{$this->separator()}{$this->space()}";
     }
 
+    #[Override]
     protected function getMultilineItemPrefix(): string {
         return "{$this->separator()}{$this->space()}";
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         $space   = $this->space();
         $prefix  = $this->prefix();

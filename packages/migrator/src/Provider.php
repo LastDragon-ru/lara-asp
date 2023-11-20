@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Migrator\Commands\RawMigration;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
+use Override;
 
 use function array_merge;
 
@@ -24,6 +25,7 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function register() {
         parent::register();
 
@@ -44,6 +46,7 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     /**
      * @return array<array-key, string>
      */
+    #[Override]
     public function provides(): array {
         return array_merge(parent::provides(), ['migrator', 'command.seeder.make', RawMigrationCreator::class]);
     }

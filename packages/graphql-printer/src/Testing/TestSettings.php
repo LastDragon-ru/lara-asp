@@ -6,6 +6,7 @@ use Closure;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
+use Override;
 
 class TestSettings extends ImmutableSettings {
     protected string           $space                             = ' ';
@@ -37,6 +38,7 @@ class TestSettings extends ImmutableSettings {
     /**
      * @param TypeFilter|Closure(string,bool):bool|null $value
      */
+    #[Override]
     public function setTypeFilter(TypeFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
             $value = $this->makeTypeFilter($value);
@@ -48,6 +50,7 @@ class TestSettings extends ImmutableSettings {
     /**
      * @param TypeFilter|Closure(string,bool):bool|null $value
      */
+    #[Override]
     public function setTypeDefinitionFilter(TypeFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
             $value = $this->makeTypeFilter($value);
@@ -59,6 +62,7 @@ class TestSettings extends ImmutableSettings {
     /**
      * @param DirectiveFilter|Closure(string,bool):bool|null $value
      */
+    #[Override]
     public function setDirectiveFilter(DirectiveFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
             $value = $this->makeDirectiveFilter($value);
@@ -70,6 +74,7 @@ class TestSettings extends ImmutableSettings {
     /**
      * @param DirectiveFilter|Closure(string,bool):bool|null $value
      */
+    #[Override]
     public function setDirectiveDefinitionFilter(DirectiveFilter|Closure|null $value): static {
         if ($value instanceof Closure) {
             $value = $this->makeDirectiveFilter($value);
@@ -92,6 +97,7 @@ class TestSettings extends ImmutableSettings {
                 // empty
             }
 
+            #[Override]
             public function isAllowedType(string $type, bool $isStandard): bool {
                 return ($this->filter)($type, $isStandard);
             }
@@ -112,6 +118,7 @@ class TestSettings extends ImmutableSettings {
                 // empty
             }
 
+            #[Override]
             public function isAllowedDirective(string $directive, bool $isStandard): bool {
                 return ($this->filter)($directive, $isStandard);
             }

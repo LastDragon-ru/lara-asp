@@ -6,6 +6,7 @@ use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
@@ -23,6 +24,7 @@ class ResolverRuleTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             protected function resolve(mixed $value, array $parameters): mixed {
                 return new stdClass();
             }
@@ -39,6 +41,7 @@ class ResolverRuleTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             protected function resolve(mixed $value, array $parameters): mixed {
                 return null;
             }
@@ -55,6 +58,7 @@ class ResolverRuleTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             protected function resolve(mixed $value, array $parameters): mixed {
                 return new stdClass();
             }

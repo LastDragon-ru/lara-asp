@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
 
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
+use Override;
 
 /**
  * @internal
@@ -15,6 +16,7 @@ class ResultImpl implements Result {
         // empty
     }
 
+    #[Override]
     public function __toString(): string {
         return $this->content;
     }
@@ -22,6 +24,7 @@ class ResultImpl implements Result {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getUsedTypes(): array {
         return $this->collector->getUsedTypes();
     }
@@ -29,6 +32,7 @@ class ResultImpl implements Result {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getUsedDirectives(): array {
         return $this->collector->getUsedDirectives();
     }

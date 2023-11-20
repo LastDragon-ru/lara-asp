@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 use LogicException;
 use Mockery;
 use Mockery\MockInterface;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -30,6 +31,7 @@ class CronableRegistratorTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getQueueConfig(): array {
                 return [];
             }
@@ -89,6 +91,7 @@ class CronableRegistratorTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getQueueConfig(): array {
                 return [];
             }
@@ -117,6 +120,7 @@ class CronableRegistratorTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getQueueConfig(): array {
                 return [];
             }
@@ -139,6 +143,7 @@ class CronableRegistratorTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getQueueConfig(): array {
                 return [];
             }

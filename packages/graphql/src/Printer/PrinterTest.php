@@ -30,6 +30,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;
 
@@ -843,6 +844,7 @@ class PrinterTest extends TestCase {
             $directives = $test->getContainer()->make(DirectiveLocator::class);
             $registry   = $test->getContainer()->make(TypeRegistry::class);
             $directive  = (new class() extends BaseDirective {
+                #[Override]
                 public static function definition(): string {
                     throw new Exception('Should not be called.');
                 }
@@ -897,6 +899,7 @@ class PrinterTest extends TestCase {
             $directives->setResolved(
                 'codeDirective',
                 (new class() extends BaseDirective {
+                    #[Override]
                     public static function definition(): string {
                         return <<<'GRAPHQL'
                     directive @codeDirective(

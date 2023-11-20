@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\Stream as StreamContract;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
+use Override;
 
 /**
  * @template TBuilder of object
@@ -22,6 +23,7 @@ abstract class Stream implements StreamContract {
         // empty
     }
 
+    #[Override]
     public function getCurrentOffset(): Offset {
         return $this->offset;
     }

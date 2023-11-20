@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use Illuminate\Support\Arr;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use Override;
 
 use function is_array;
 use function sprintf;
@@ -24,6 +25,7 @@ class JsonFragmentMatchesSchema extends JsonMatchesSchema {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
+    #[Override]
     public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         $actual = Args::getJson($other, true);
         $actual = is_array($actual) ? Arr::get($actual, $this->path) : null;
@@ -32,6 +34,7 @@ class JsonFragmentMatchesSchema extends JsonMatchesSchema {
         return $result;
     }
 
+    #[Override]
     public function toString(): string {
         return sprintf(
             'fragment "%s" matches JSON schema',

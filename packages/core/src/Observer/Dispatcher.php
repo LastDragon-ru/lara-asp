@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Core\Observer;
 
 use Closure;
+use Override;
 use SplObjectStorage;
 use function array_values;
 use function iterator_to_array;
@@ -21,18 +22,21 @@ class Dispatcher implements Subject {
         $this->reset();
     }
 
+    #[Override]
     public function attach(Closure $observer): static {
         $this->observers->attach($observer);
 
         return $this;
     }
 
+    #[Override]
     public function detach(Closure $observer): static {
         $this->observers->detach($observer);
 
         return $this;
     }
 
+    #[Override]
     public function reset(): static {
         $this->observers = new SplObjectStorage();
 

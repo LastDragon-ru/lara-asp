@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Serializer\Metadata;
 
 use InvalidArgumentException;
+use Override;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use ReflectionAttribute;
@@ -39,10 +40,12 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
     /**
      * @phpstan-assert-if-true object|class-string $value
      */
+    #[Override]
     public function hasMetadataFor(mixed $value): bool {
         return is_object($value) || (is_string($value) && class_exists($value));
     }
 
+    #[Override]
     public function getMetadataFor(object|string $value): ClassMetadata {
         if (!$this->hasMetadataFor($value)) {
             throw new InvalidArgumentException(
@@ -81,6 +84,7 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
      *
      * @return array<array-key, Type>|null
      */
+    #[Override]
     public function getTypes(string $class, string $property, array $context = []): ?array {
         /**
          * todo(serializer): Should we add types to {@see AttributeMetadata}?

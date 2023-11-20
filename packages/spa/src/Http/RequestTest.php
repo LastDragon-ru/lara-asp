@@ -9,6 +9,7 @@ use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Spa\Validation\Rules\ResolverRule;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -25,6 +26,7 @@ class RequestTest extends TestCase {
                 /**
                  * @inheritDoc
                  */
+                #[Override]
                 protected function resolve(mixed $value, array $parameters): mixed {
                     return ['a' => $value];
                 }
@@ -36,6 +38,7 @@ class RequestTest extends TestCase {
                 /**
                  * @inheritDoc
                  */
+                #[Override]
                 protected function resolve(mixed $value, array $parameters): mixed {
                     return ['b' => $value];
                 }
@@ -45,10 +48,12 @@ class RequestTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function passes($attribute, $value): bool {
                 return (bool) $value;
             }
 
+            #[Override]
             public function message(): string {
                 return static::class;
             }

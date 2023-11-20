@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Scout;
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use Override;
 
 use function implode;
 
@@ -16,6 +17,7 @@ class DefaultFieldResolver implements FieldResolver {
         // empty
     }
 
+    #[Override]
     public function getField(Model $model, Property $property): string {
         return implode('.', $property->getPath());
     }

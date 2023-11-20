@@ -6,10 +6,12 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use Override;
 
 class Provider extends ServiceProvider {
     use WithConfig;
 
+    #[Override]
     public function register(): void {
         parent::register();
 
@@ -22,6 +24,7 @@ class Provider extends ServiceProvider {
         $this->bootConfig();
     }
 
+    #[Override]
     protected function getName(): string {
         return Package::Name;
     }

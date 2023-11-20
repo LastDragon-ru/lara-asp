@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirect
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use Override;
 use Symfony\Component\Finder\Finder;
 
 use function basename;
@@ -28,10 +29,12 @@ class IncludeDocumentList implements ParameterizableInstruction {
         // empty
     }
 
+    #[Override]
     public static function getName(): string {
         return 'include:document-list';
     }
 
+    #[Override]
     public static function getDescription(): string {
         return <<<'DESC'
             Returns the list of `*.md` files in the `<target>` directory. Each file
@@ -40,10 +43,12 @@ class IncludeDocumentList implements ParameterizableInstruction {
             DESC;
     }
 
+    #[Override]
     public static function getTargetDescription(): ?string {
         return 'Directory path.';
     }
 
+    #[Override]
     public static function getParameters(): string {
         return IncludeDocumentListParameters::class;
     }
@@ -51,12 +56,14 @@ class IncludeDocumentList implements ParameterizableInstruction {
     /**
      * @inheritDoc
      */
+    #[Override]
     public static function getParametersDescription(): array {
         return [
             'depth' => 'Default is `0` (no nested directories). The `null` removes limits.',
         ];
     }
 
+    #[Override]
     public function process(string $path, string $target, Serializable $parameters): string {
         // Directory?
         $base = dirname($path);

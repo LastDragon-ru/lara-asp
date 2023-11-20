@@ -25,6 +25,7 @@ use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthouseTestingServiceProvider;
 use Nuwave\Lighthouse\Validation\ValidationServiceProvider as LighthouseValidationServiceProvider;
+use Override;
 use ReflectionClass;
 use SplFileInfo;
 
@@ -42,6 +43,7 @@ class TestCase extends PackageTestCase {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getPackageProviders(mixed $app): array {
         return [
             Provider::class,
@@ -56,6 +58,7 @@ class TestCase extends PackageTestCase {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);
 
@@ -66,6 +69,7 @@ class TestCase extends PackageTestCase {
         ]);
     }
 
+    #[Override]
     public function getContainer(): Container {
         return parent::getContainer();
     }

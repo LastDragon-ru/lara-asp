@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Relations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
+use Override;
 
 /**
  * @template TModel of Model
@@ -25,6 +26,7 @@ class Unsupported extends Relation {
         );
     }
 
+    #[Override]
     public function addConstraints(): void {
         // empty
     }
@@ -34,6 +36,7 @@ class Unsupported extends Relation {
      *
      * @param array<array-key, mixed> $models
      */
+    #[Override]
     public function addEagerConstraints(array $models): void {
         // empty
     }
@@ -45,6 +48,7 @@ class Unsupported extends Relation {
      *
      * @return array<array-key, mixed>
      */
+    #[Override]
     public function initRelation(array $models, $relation): array {
         return [];
     }
@@ -57,10 +61,12 @@ class Unsupported extends Relation {
      *
      * @return array<array-key, mixed>
      */
+    #[Override]
     public function match(array $models, Collection $results, $relation): array {
         return [];
     }
 
+    #[Override]
     public function getResults(): mixed {
         return null;
     }

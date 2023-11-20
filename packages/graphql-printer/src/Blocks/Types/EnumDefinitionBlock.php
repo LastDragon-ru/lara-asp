@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\EnumType;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\EnumValuesDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -24,6 +25,7 @@ abstract class EnumDefinitionBlock extends DefinitionBlock implements TypeDefini
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
         $values     = new EnumValuesDefinition(

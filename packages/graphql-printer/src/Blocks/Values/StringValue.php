@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 use function json_encode;
 use function mb_strlen;
@@ -34,6 +35,7 @@ class StringValue extends Block {
         return false;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Begin
         $eol     = $this->eol();

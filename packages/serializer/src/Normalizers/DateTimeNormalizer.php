@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Exception;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\Traits\WithDefaultContext;
+use Override;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer as SymfonyDateTimeNormalizer;
@@ -64,6 +65,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     /**
      * @param array<array-key, mixed> $context
      */
+    #[Override]
     public function normalize(mixed $object, string $format = null, array $context = []): string {
         if (!($object instanceof DateTimeInterface)) {
             throw new InvalidArgumentException(
@@ -80,6 +82,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
         );
     }
 
+    #[Override]
     public function supportsNormalization(mixed $data, string $format = null): bool {
         return $data instanceof DateTimeInterface;
     }
@@ -87,6 +90,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     /**
      * @param array<array-key, mixed> $context
      */
+    #[Override]
     public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed {
         // Just for the case
         if (!is_string($data)) {
@@ -145,6 +149,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
         return $result;
     }
 
+    #[Override]
     public function supportsDenormalization(mixed $data, string $type, string $format = null): bool {
         return is_a($type, DateTimeInterface::class, true);
     }

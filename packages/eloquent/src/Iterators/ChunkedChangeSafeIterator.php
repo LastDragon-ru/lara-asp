@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
+use Override;
 
 use function end;
 use function explode;
@@ -53,6 +54,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         return $this->column;
     }
 
+    #[Override]
     protected function getChunk(Builder $builder, int $chunk): Collection {
         $column = $this->getColumn();
 
@@ -70,6 +72,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         return $builder->get();
     }
 
+    #[Override]
     protected function chunkProcessed(Collection $items): bool {
         $last = $this->column($items->last());
 
@@ -100,6 +103,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         return (bool) $this->getBuilder()->getQuery()->unions;
     }
 
+    #[Override]
     protected function getDefaultOffset(): ?int {
         // Because Builder contains SQL offset, not column value.
         return null;

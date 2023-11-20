@@ -13,12 +13,14 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
+use Override;
 
 class RelationType implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
+    #[Override]
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $typeName      = $source->getTypeName();
         $builderName   = $builder->getName();
@@ -28,6 +30,7 @@ class RelationType implements TypeDefinition {
         return "{$directiveName}{$builderName}Complex{$operatorName}{$typeName}";
     }
 
+    #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,

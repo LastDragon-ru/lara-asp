@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints;
 
 use Closure;
+use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 
 /**
@@ -28,10 +29,12 @@ class ClosureConstraint extends Constraint {
         return $this->closure;
     }
 
+    #[Override]
     protected function matches(mixed $other): bool {
         return $this->getClosure()($other);
     }
 
+    #[Override]
     public function toString(): string {
         return 'matches closure';
     }

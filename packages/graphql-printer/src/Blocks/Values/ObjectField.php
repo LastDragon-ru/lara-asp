@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -29,10 +30,12 @@ class ObjectField extends Block implements NamedBlock {
         parent::__construct($context);
     }
 
+    #[Override]
     public function getName(): string {
         return $this->definition->name->value;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         if (!$this->isTypeAllowed($this->type)) {
             return '';

@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -37,14 +38,17 @@ class PrintableList extends ListBlock implements ArrayAccess {
 
     // <editor-fold desc="Settings">
     // =========================================================================
+    #[Override]
     protected function isWrapped(): bool {
         return true;
     }
 
+    #[Override]
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeDefinitions();
     }
 
+    #[Override]
     protected function isAlwaysMultiline(): bool {
         return true;
     }
@@ -55,10 +59,12 @@ class PrintableList extends ListBlock implements ArrayAccess {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getItems(): iterable {
         return $this->blocks;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         $content = parent::content($collector, $level, $used);
 
@@ -73,6 +79,7 @@ class PrintableList extends ListBlock implements ArrayAccess {
         return $content;
     }
 
+    #[Override]
     protected function block(int|string $key, mixed $item): Block {
         return $item;
     }
@@ -83,6 +90,7 @@ class PrintableList extends ListBlock implements ArrayAccess {
     /**
      * @param Block $offset
      */
+    #[Override]
     public function offsetExists(mixed $offset): bool {
         return isset($this->blocks[$this->offset($offset)]);
     }
@@ -90,6 +98,7 @@ class PrintableList extends ListBlock implements ArrayAccess {
     /**
      * @param Block $offset
      */
+    #[Override]
     public function offsetGet(mixed $offset): Block {
         return $this->blocks[$this->offset($offset)];
     }
@@ -98,6 +107,7 @@ class PrintableList extends ListBlock implements ArrayAccess {
      * @param Block|null $offset
      * @param Block $value
      */
+    #[Override]
     public function offsetSet(mixed $offset, mixed $value): void {
         $offset = $this->offset($offset ?? $value);
 
@@ -113,6 +123,7 @@ class PrintableList extends ListBlock implements ArrayAccess {
     /**
      * @param Block $offset
      */
+    #[Override]
     public function offsetUnset(mixed $offset): void {
         unset($this->blocks[$this->offset($offset)]);
 

@@ -3,11 +3,13 @@
 namespace App\Jobs;
 
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
+use Override;
 use Package\Jobs\DoSomethingPackageJob;
 
 class DoSomethingAppJob extends DoSomethingPackageJob {
     use WithConfig; // Indicates that the job has its own config
 
+    #[Override]
     public function __invoke(): void {
         // our implementation
     }

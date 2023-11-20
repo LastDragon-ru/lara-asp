@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
+use Override;
 
 /**
  * Migration that contains data only.
@@ -18,6 +19,7 @@ abstract class RawDataMigration extends RawMigration {
     /**
      * Run the migrations.
      */
+    #[Override]
     public function up(): void {
         if ($this->isSeeded()) {
             parent::up();
@@ -27,6 +29,7 @@ abstract class RawDataMigration extends RawMigration {
     /**
      * Reverse the migrations.
      */
+    #[Override]
     public function down(): void {
         if ($this->isSeeded()) {
             parent::down();

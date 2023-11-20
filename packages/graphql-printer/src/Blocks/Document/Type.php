@@ -21,6 +21,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use Override;
 
 /**
  * @internal
@@ -41,6 +42,7 @@ class Type extends Block implements NamedBlock {
         parent::__construct($context);
     }
 
+    #[Override]
     public function getName(): string {
         return $this->getTypeName($this->getDefinition());
     }
@@ -52,6 +54,7 @@ class Type extends Block implements NamedBlock {
         return $this->definition;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         $definition = $this->getDefinition();
         $name       = $this->getName();

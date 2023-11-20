@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -33,6 +34,7 @@ class InlineFragment extends DefinitionBlock implements ExecutableDefinitionBloc
         $this->type = $definition->typeCondition ?? $this->type;
     }
 
+    #[Override]
     public function getName(): string {
         $name = '...';
         $type = $this->getDefinition()->typeCondition->name->value ?? null;
@@ -45,6 +47,7 @@ class InlineFragment extends DefinitionBlock implements ExecutableDefinitionBloc
         return $name;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         if (!$this->isTypeAllowed($this->type)) {
@@ -63,6 +66,7 @@ class InlineFragment extends DefinitionBlock implements ExecutableDefinitionBloc
         return $content;
     }
 
+    #[Override]
     protected function fields(bool $multiline): ?Block {
         return new SelectionSet(
             $this->getContext(),

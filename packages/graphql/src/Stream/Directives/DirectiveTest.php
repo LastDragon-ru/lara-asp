@@ -64,6 +64,7 @@ use Nuwave\Lighthouse\Scout\ScoutServiceProvider;
 use Nuwave\Lighthouse\Support\Contracts\Directive as DirectiveContract;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionClass;
 use stdClass;
@@ -88,6 +89,7 @@ class DirectiveTest extends TestCase {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
             ScoutServiceProvider::class,
@@ -115,10 +117,12 @@ class DirectiveTest extends TestCase {
     ): void {
         // Dependencies
         $encrypter = new class() implements StringEncrypter {
+            #[Override]
             public function encryptString(mixed $value): string {
                 return $value;
             }
 
+            #[Override]
             public function decryptString(mixed $payload): string {
                 return $payload;
             }
@@ -211,10 +215,12 @@ class DirectiveTest extends TestCase {
 
         // Dependencies
         $encrypter = new class() implements StringEncrypter {
+            #[Override]
             public function encryptString(mixed $value): string {
                 return $value;
             }
 
+            #[Override]
             public function decryptString(mixed $payload): string {
                 return $payload;
             }
@@ -315,6 +321,7 @@ class DirectiveTest extends TestCase {
         $directives = $this->app->make(DirectiveLocator::class);
         $factory    = Mockery::mock(StreamFactory::class);
         $directive  = new class($factory) extends StreamDirective {
+            #[Override]
             public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
                 return null;
             }
@@ -580,10 +587,12 @@ class DirectiveTest extends TestCase {
         $factory   = Mockery::mock(StreamFactory::class);
         $namespace = json_encode((new ReflectionClass(TestObject::class))->getNamespaceName(), JSON_THROW_ON_ERROR);
         $directive = new class($factory) extends Directive {
+            #[Override]
             public function name(): string {
                 return 'stream';
             }
 
+            #[Override]
             public function getResolverRelation(string $model, string $relation): ?Closure {
                 return parent::getResolverRelation($model, $relation);
             }
@@ -673,6 +682,7 @@ class DirectiveTest extends TestCase {
 
         $factory   = Mockery::mock(StreamFactory::class);
         $directive = new class($factory) extends Directive {
+            #[Override]
             public function name(): string {
                 return 'stream';
             }
@@ -680,6 +690,7 @@ class DirectiveTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getResolverQuery(string $type, string $field): ?array {
                 return parent::getResolverQuery($type, $field);
             }
@@ -716,10 +727,12 @@ class DirectiveTest extends TestCase {
         $factory   = Mockery::mock(StreamFactory::class);
         $namespace = json_encode((new ReflectionClass(TestObject::class))->getNamespaceName(), JSON_THROW_ON_ERROR);
         $directive = new class($factory) extends Directive {
+            #[Override]
             public function name(): string {
                 return 'stream';
             }
 
+            #[Override]
             public function getResolverModel(string $model): Closure {
                 return parent::getResolverModel($model);
             }
@@ -754,6 +767,7 @@ class DirectiveTest extends TestCase {
         $factory   = Mockery::mock(StreamFactory::class);
         $namespace = json_encode(__NAMESPACE__, JSON_THROW_ON_ERROR);
         $directive = new class($factory) extends Directive {
+            #[Override]
             public function name(): string {
                 return 'stream';
             }
@@ -761,6 +775,7 @@ class DirectiveTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getResolverClass(string $class): array {
                 return parent::getResolverClass($class);
             }
@@ -804,6 +819,7 @@ class DirectiveTest extends TestCase {
         $field       = $source->getField();
         $factory     = Mockery::mock(StreamFactory::class);
         $directive   = new class($factory) extends Directive {
+            #[Override]
             public function getArgKey(
                 AstManipulator $manipulator,
                 ObjectFieldSource|InterfaceFieldSource $source,
@@ -894,18 +910,22 @@ class DirectiveTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getItems(): iterable {
                 return [];
             }
 
+            #[Override]
             public function getLength(): ?int {
                 return null;
             }
 
+            #[Override]
             public function getNextOffset(): ?StreamOffset {
                 return null;
             }
 
+            #[Override]
             public function getPreviousOffset(): ?StreamOffset {
                 return null;
             }
@@ -1040,6 +1060,7 @@ class DirectiveTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getFieldValue(
                 string $directive,
                 AstManipulator $manipulator,
@@ -1060,6 +1081,7 @@ class DirectiveTest extends TestCase {
             // empty
         };
         $markerB     = new class() extends DirectiveTest_Directive {
+            #[Override]
             public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
                 return parent::getFieldArgumentValue($info, $value) ?? 'default-b';
             }
@@ -1126,6 +1148,7 @@ class DirectiveTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getFieldValue(
                 string $directive,
                 AstManipulator $manipulator,
@@ -1180,6 +1203,7 @@ class DirectiveTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getFieldValue(
                 string $directive,
                 AstManipulator $manipulator,
@@ -1711,10 +1735,12 @@ class DirectiveTest extends TestCase {
  * @implements FieldArgumentDirective<mixed>
  */
 abstract class DirectiveTest_Directive implements DirectiveContract, FieldArgumentDirective {
+    #[Override]
     public static function definition(): string {
         throw new Exception('Should not be called.');
     }
 
+    #[Override]
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
         return $value;
     }

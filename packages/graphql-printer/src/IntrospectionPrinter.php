@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\IntrospectionContext;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
+use Override;
 
 /**
  * Introspection schema printer.
@@ -22,6 +23,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
  * - {@see Settings::isPrintDirectiveDefinitions}
  */
 class IntrospectionPrinter extends Printer {
+    #[Override]
     public function setSettings(?Settings $settings): static {
         $settings ??= new DefaultSettings();
         $filter     = new IntrospectionFilter();
@@ -37,6 +39,7 @@ class IntrospectionPrinter extends Printer {
         );
     }
 
+    #[Override]
     protected function getContext(?Schema $schema): Context {
         return new IntrospectionContext($this->getSettings(), $this->getDirectiveResolver(), $schema);
     }

@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -94,6 +95,7 @@ class DirectiveTest extends TestCase {
                 // empty
             }
 
+            #[Override]
             public function getDefinition(string $name): ?GraphQLDirective {
                 return $this->directive->name === $name
                     ? $this->directive
@@ -103,6 +105,7 @@ class DirectiveTest extends TestCase {
             /**
              * @inheritDoc
              */
+            #[Override]
             public function getDefinitions(): array {
                 return [];
             }

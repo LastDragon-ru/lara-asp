@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Date;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use Mockery;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -43,6 +44,7 @@ class WithDateSerializationTest extends TestCase {
 
         // Carbon/JsonSerializable but not a string
         $date = new class() extends DateTime implements JsonSerializable {
+            #[Override]
             public function jsonSerialize(): mixed {
                 return ['json'];
             }

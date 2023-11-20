@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Dev\PhpStan\Extensions\Container;
 
 use Illuminate\Contracts\Container\Container;
 use NunoMaduro\Larastan\Concerns\HasContainer;
+use Override;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -26,15 +27,18 @@ use function is_object;
 final class ContainerExtension implements DynamicMethodReturnTypeExtension {
     use HasContainer;
 
+    #[Override]
     public function getClass(): string {
         return Container::class;
     }
 
+    #[Override]
     public function isMethodSupported(MethodReflection $methodReflection): bool {
         return $methodReflection->getName() === 'make'
             || $methodReflection->getName() === 'get';
     }
 
+    #[Override]
     public function getTypeFromMethodCall(
         MethodReflection $methodReflection,
         MethodCall $methodCall,

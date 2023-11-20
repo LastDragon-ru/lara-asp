@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToDeserialize;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToSerialize;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Stringable;
 use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
@@ -357,10 +358,12 @@ class ProviderTest__Simple implements Serializable, Stringable, JsonSerializable
         $this->e = $e;
     }
 
+    #[Override]
     public function __toString(): string {
         return $this->d;
     }
 
+    #[Override]
     public function jsonSerialize(): mixed {
         return [
             'c' => $this->c,

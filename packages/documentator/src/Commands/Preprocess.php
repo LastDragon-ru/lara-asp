@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
+use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -97,6 +98,7 @@ class Preprocess extends Command {
         }
     }
 
+    #[Override]
     public function getProcessedHelp(): string {
         $preprocessor = Container::getInstance()->make(Preprocessor::class);
 

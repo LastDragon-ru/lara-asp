@@ -9,6 +9,7 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function implode;
@@ -90,6 +91,7 @@ class BuilderTest extends TestCase {
                         /**
                          * @inheritDoc
                          */
+                        #[Override]
                         public function getField(Model $model, Property $property): string {
                             return 'properties/'.implode('/', $property->getPath());
                         }

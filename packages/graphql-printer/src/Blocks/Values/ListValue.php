@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Value;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -28,18 +29,22 @@ class ListValue extends ListBlock {
         parent::__construct($context, $definition->values);
     }
 
+    #[Override]
     protected function getPrefix(): string {
         return '[';
     }
 
+    #[Override]
     protected function getSuffix(): string {
         return ']';
     }
 
+    #[Override]
     protected function getEmptyValue(): string {
         return "{$this->getPrefix()}{$this->getSuffix()}";
     }
 
+    #[Override]
     protected function block(string|int $key, mixed $item): Block {
         return new Value($this->getContext(), $item, $this->type);
     }

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values\StringValue;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 use function preg_replace;
 use function rtrim;
@@ -26,10 +27,12 @@ class DescriptionBlock extends StringValue {
         return $this->getSettings()->isNormalizeDescription();
     }
 
+    #[Override]
     protected function isBlock(): bool {
         return true;
     }
 
+    #[Override]
     protected function getString(): string {
         // Normalize
         $string = parent::getString();
@@ -46,6 +49,7 @@ class DescriptionBlock extends StringValue {
         return $string;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         $content = parent::content($collector, $level, $used);
 

@@ -9,16 +9,20 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 
 class NotBetween extends Between {
+    #[Override]
     public static function getName(): string {
         return 'notBetween';
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'Outside a range.';
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);

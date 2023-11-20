@@ -15,6 +15,7 @@ use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\Values\FieldValue;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Override;
 
 use function hash;
 
@@ -32,6 +33,7 @@ class ExposeBuilderDirective extends BaseDirective implements FieldResolver, Bui
      */
     public static QueryBuilder|EloquentBuilder|ScoutBuilder|Relation|null $result = null;
 
+    #[Override]
     public static function definition(): string {
         $name = static::getName();
 
@@ -44,10 +46,12 @@ class ExposeBuilderDirective extends BaseDirective implements FieldResolver, Bui
         return '@exposeBuilder'.hash('sha256', static::class);
     }
 
+    #[Override]
     public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
         return BuilderInfo::create(static::$builder::class);
     }
 
+    #[Override]
     public function resolveField(FieldValue $fieldValue): callable {
         return static function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): array {
             static::$result = $resolveInfo->enhanceBuilder(

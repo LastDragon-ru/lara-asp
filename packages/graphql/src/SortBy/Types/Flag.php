@@ -10,16 +10,19 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
+use Override;
 
 class Flag implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
+    #[Override]
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         return Directive::Name.'TypeFlag';
     }
 
+    #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,

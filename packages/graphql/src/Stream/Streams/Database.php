@@ -8,6 +8,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
+use Override;
 use stdClass;
 
 use function max;
@@ -29,10 +30,12 @@ class Database extends Stream {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getItems(): iterable {
         return $this->getCollection();
     }
 
+    #[Override]
     public function getLength(): ?int {
         if ($this->length === null) {
             $this->length = max(0, $this->builder->count());
@@ -41,12 +44,14 @@ class Database extends Stream {
         return $this->length;
     }
 
+    #[Override]
     public function getNextOffset(): ?Offset {
         return $this->getCollection()->count() >= $this->limit
             ? new Offset($this->offset->path, (int) $this->offset->offset + $this->limit, $this->offset->cursor)
             : null;
     }
 
+    #[Override]
     public function getPreviousOffset(): ?Offset {
         return (int) $this->offset->offset > 0
             ? new Offset($this->offset->path, 0, $this->offset->cursor)

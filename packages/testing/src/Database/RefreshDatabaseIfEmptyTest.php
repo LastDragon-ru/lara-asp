@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Database;
 
 use Exception;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -29,6 +30,7 @@ class RefreshDatabaseIfEmptyTest extends TestCase {
 class RefreshDatabaseIfEmptyTest_Impl extends TestCase {
     use RefreshDatabaseIfEmpty;
 
+    #[Override]
     public function createApplication(): HttpKernelInterface {
         throw new Exception('Not implemented.');
     }

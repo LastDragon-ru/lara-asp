@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
+use Override;
 
 /**
  * @see https://github.com/laravel/framework/issues/26877
@@ -12,6 +13,7 @@ trait WithoutQueueableRelations {
     /**
      * @return list<string>
      */
+    #[Override]
     public function getQueueableRelations(): array {
         // Usually, there are no reasons to save relations while serialization
         // of `Queueable`, also, relations may create circular dependency, and

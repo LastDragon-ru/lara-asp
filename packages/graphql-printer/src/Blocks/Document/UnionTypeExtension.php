@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UnionDefinitionBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use Override;
 
 /**
  * @internal
@@ -22,6 +23,7 @@ class UnionTypeExtension extends UnionDefinitionBlock implements ExtensionDefini
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function prefix(): ?string {
         return 'extend union';
     }

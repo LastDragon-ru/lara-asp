@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function implode;
@@ -162,6 +163,7 @@ class NotInTest extends TestCase {
                             /**
                              * @inheritDoc
                              */
+                            #[Override]
                             public function getField(Model $model, Property $property): string {
                                 return 'properties/'.implode('/', $property->getPath());
                             }
@@ -182,10 +184,12 @@ class NotInTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class NotInTest_Operator extends NotIn {
+    #[Override]
     public function isScoutSupported(): bool {
         return parent::isScoutSupported();
     }
 
+    #[Override]
     public function getScoutVersion(): ?string {
         return parent::getScoutVersion();
     }

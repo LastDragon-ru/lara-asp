@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function mb_strlen;
@@ -33,6 +34,7 @@ class PropertyBlockTest extends TestCase {
                 parent::__construct($context);
             }
 
+            #[Override]
             protected function content(Collector $collector, int $level, int $used): string {
                 return $this->serialized;
             }
@@ -47,6 +49,7 @@ class PropertyBlockTest extends TestCase {
                 parent::__construct($context, $name, $block);
             }
 
+            #[Override]
             protected function getSeparator(): string {
                 return $this->separator;
             }

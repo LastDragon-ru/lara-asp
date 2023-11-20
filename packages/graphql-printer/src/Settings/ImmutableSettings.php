@@ -6,6 +6,7 @@ use Closure;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
+use Override;
 
 abstract class ImmutableSettings implements Settings {
     protected string           $space                             = ' ';
@@ -39,6 +40,7 @@ abstract class ImmutableSettings implements Settings {
         // empty
     }
 
+    #[Override]
     public function getSpace(): string {
         return $this->space;
     }
@@ -49,6 +51,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function getIndent(): string {
         return $this->indent;
     }
@@ -59,6 +62,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function getFileEnd(): string {
         return $this->fileEnd;
     }
@@ -69,6 +73,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function getLineEnd(): string {
         return $this->lineEnd;
     }
@@ -79,6 +84,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function getLineLength(): int {
         return $this->lineLength;
     }
@@ -89,6 +95,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isPrintUnusedDefinitions(): bool {
         return $this->printUnusedDefinitions;
     }
@@ -99,6 +106,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isPrintDirectives(): bool {
         return $this->printDirectives;
     }
@@ -109,6 +117,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isPrintDirectiveDefinitions(): bool {
         return $this->printDirectiveDefinitions;
     }
@@ -119,6 +128,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeDefinitions(): bool {
         return $this->normalizeDefinitions;
     }
@@ -129,6 +139,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeUnions(): bool {
         return $this->normalizeUnions;
     }
@@ -139,6 +150,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeEnums(): bool {
         return $this->normalizeEnums;
     }
@@ -149,6 +161,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeInterfaces(): bool {
         return $this->normalizeInterfaces;
     }
@@ -159,6 +172,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeFields(): bool {
         return $this->normalizeFields;
     }
@@ -169,6 +183,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeArguments(): bool {
         return $this->normalizeArguments;
     }
@@ -179,6 +194,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeDescription(): bool {
         return $this->normalizeDescription;
     }
@@ -189,6 +205,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeDirectives(): bool {
         return $this->normalizeDirectives;
     }
@@ -199,6 +216,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isNormalizeDirectiveLocations(): bool {
         return $this->normalizeDirectiveLocations;
     }
@@ -209,6 +227,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isAlwaysMultilineUnions(): bool {
         return $this->alwaysMultilineUnions;
     }
@@ -219,6 +238,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isAlwaysMultilineArguments(): bool {
         return $this->alwaysMultilineArguments;
     }
@@ -229,6 +249,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isAlwaysMultilineInterfaces(): bool {
         return $this->alwaysMultilineInterfaces;
     }
@@ -239,6 +260,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isAlwaysMultilineDirectives(): bool {
         return $this->alwaysMultilineDirectives;
     }
@@ -249,6 +271,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function isAlwaysMultilineDirectiveLocations(): bool {
         return $this->alwaysMultilineDirectiveLocations;
     }
@@ -259,6 +282,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function getDirectiveFilter(): ?DirectiveFilter {
         return $this->directiveFilter;
     }
@@ -269,6 +293,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function getTypeFilter(): ?TypeFilter {
         return $this->typeFilter;
     }
@@ -279,6 +304,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function getTypeDefinitionFilter(): ?TypeFilter {
         return $this->typeDefinitionFilter;
     }
@@ -289,6 +315,7 @@ abstract class ImmutableSettings implements Settings {
         });
     }
 
+    #[Override]
     public function getDirectiveDefinitionFilter(): ?DirectiveFilter {
         return $this->directiveDefinitionFilter;
     }

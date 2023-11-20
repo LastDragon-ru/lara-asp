@@ -6,6 +6,7 @@ use GraphQL\Language\AST\NameNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\UsageList;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 /**
  * @internal
@@ -24,6 +25,7 @@ class DirectiveLocations extends UsageList {
         parent::__construct($context, $items, $isAlwaysMultiline);
     }
 
+    #[Override]
     protected function block(string|int $key, mixed $item): Block {
         return new DirectiveLocation(
             $this->getContext(),
@@ -31,18 +33,22 @@ class DirectiveLocations extends UsageList {
         );
     }
 
+    #[Override]
     protected function separator(): string {
         return '|';
     }
 
+    #[Override]
     protected function prefix(): string {
         return ($this->repeatable ? "repeatable{$this->space()}" : '').'on';
     }
 
+    #[Override]
     protected function isNormalized(): bool {
         return $this->getSettings()->isNormalizeDirectiveLocations();
     }
 
+    #[Override]
     protected function isAlwaysMultiline(): bool {
         return parent::isAlwaysMultiline()
             || $this->getSettings()->isAlwaysMultilineDirectiveLocations();

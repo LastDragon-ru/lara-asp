@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Database\QueryLog;
 use Countable;
 use Illuminate\Database\Connection;
 use LogicException;
+use Override;
 
 use function count;
 use function sprintf;
@@ -44,6 +45,7 @@ class QueryLog implements Countable {
         return $this;
     }
 
+    #[Override]
     public function count(): int {
         return count($this->getConnection()->getQueryLog());
     }

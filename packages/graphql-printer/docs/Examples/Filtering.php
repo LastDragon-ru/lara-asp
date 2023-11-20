@@ -9,11 +9,13 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
 $typeFilter      = new class() implements TypeFilter {
+    #[Override]
     public function isAllowedType(string $type, bool $isStandard): bool {
         return $type !== 'Forbidden';
     }
 };
 $directiveFilter = new class() implements DirectiveFilter {
+    #[Override]
     public function isAllowedDirective(string $directive, bool $isStandard): bool {
         return $directive !== 'forbidden';
     }

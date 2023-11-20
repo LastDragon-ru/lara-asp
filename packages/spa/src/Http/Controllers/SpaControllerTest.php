@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
@@ -29,6 +30,7 @@ class SpaControllerTest extends TestCase {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);
 
@@ -144,6 +146,7 @@ class SpaControllerTest extends TestCase {
     // =========================================================================
     protected function loadRoutes(): void {
         (new class($this->app) extends Provider {
+            #[Override]
             public function bootRoutes(): void {
                 parent::bootRoutes();
             }

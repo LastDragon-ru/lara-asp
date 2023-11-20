@@ -21,6 +21,7 @@ use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
+use Override;
 
 use function array_map;
 use function config;
@@ -46,6 +47,7 @@ class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirec
         ];
     }
 
+    #[Override]
     public static function definition(): string {
         $name = DirectiveLocator::directiveName(static::class);
 
@@ -54,6 +56,7 @@ class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirec
         GRAPHQL;
     }
 
+    #[Override]
     public function manipulateArgDefinition(
         DocumentAST &$documentAST,
         InputValueDefinitionNode &$argDefinition,
@@ -82,6 +85,7 @@ class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirec
         );
     }
 
+    #[Override]
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
         $path = $this->getPath($info);
 

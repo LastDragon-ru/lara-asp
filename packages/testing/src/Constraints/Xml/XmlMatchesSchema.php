@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileRelaxNgSchemaM
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers\XmlFileXsdSchemaMatcher;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use LibXMLError;
+use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 use SplFileInfo;
 
@@ -36,6 +37,7 @@ class XmlMatchesSchema extends Constraint {
 
     // <editor-fold desc="\PHPUnit\Framework\Constraint\Constraint">
     // =========================================================================
+    #[Override]
     public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
         if ($other instanceof SplFileInfo) {
             $other = Args::getFile($other);
@@ -46,6 +48,7 @@ class XmlMatchesSchema extends Constraint {
         return parent::evaluate($other, $description, $returnResult);
     }
 
+    #[Override]
     protected function matches(mixed $other): bool {
         // Create constraint
         $isRelaxNg  = strtolower($this->schema->getExtension()) === 'rng';
@@ -79,6 +82,7 @@ class XmlMatchesSchema extends Constraint {
         return $matches;
     }
 
+    #[Override]
     protected function additionalFailureDescription(mixed $other): string {
         $description = parent::additionalFailureDescription($other);
         $levels      = [
@@ -97,6 +101,7 @@ class XmlMatchesSchema extends Constraint {
         return $description;
     }
 
+    #[Override]
     public function toString(): string {
         return "matches schema {$this->schema->getPathname()}";
     }

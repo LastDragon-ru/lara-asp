@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentJsonSchema;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use Override;
 use stdClass;
 
 class JsonSchemaValue implements JsonSchema {
@@ -17,6 +18,7 @@ class JsonSchemaValue implements JsonSchema {
         // empty
     }
 
+    #[Override]
     public function getSchema(): stdClass {
         $schema = Args::getJson($this->json);
 

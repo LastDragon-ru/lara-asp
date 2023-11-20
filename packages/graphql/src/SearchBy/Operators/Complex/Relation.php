@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentVal
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
+use Override;
 
 use function array_merge;
 use function is_a;
@@ -33,6 +34,7 @@ class Relation extends BaseOperator {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected static function getDirectiveLocations(): array {
         return array_merge(parent::getDirectiveLocations(), [
             DirectiveLocation::FIELD_DEFINITION,
@@ -42,22 +44,27 @@ class Relation extends BaseOperator {
 
     // <editor-fold desc="Operator">
     // =========================================================================
+    #[Override]
     public static function getName(): string {
         return 'relation';
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         return $provider->getType(RelationType::class, $source);
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         return 'Relationship condition.';
     }
 
+    #[Override]
     public function isBuilderSupported(string $builder): bool {
         return is_a($builder, EloquentBuilder::class, true);
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         // Supported?
         if (!($builder instanceof EloquentBuilder)) {

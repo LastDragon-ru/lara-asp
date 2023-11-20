@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
+use Override;
 use Traversable;
 
 use function iterator_to_array;
@@ -25,6 +26,7 @@ class TraversableDataProvider extends BaseDataProvider {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getData(bool $raw = false): array {
         return $this->replaceExpectedValues(iterator_to_array($this->traversable), $raw);
     }

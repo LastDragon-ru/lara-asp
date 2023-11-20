@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function assert;
@@ -62,6 +63,7 @@ class ListBlockTest extends TestCase {
             new ListBlockTest__StatisticsBlock(['tb'], ['db']),
         ];
         $list      = new class($context, $items) extends ListBlock {
+            #[Override]
             protected function block(string|int $key, mixed $item): Block {
                 assert($item instanceof Block);
 
@@ -738,30 +740,37 @@ class ListBlockTest__ListBlock extends ListBlock {
         parent::__construct($context, $items);
     }
 
+    #[Override]
     protected function isWrapped(): bool {
         return $this->wrapped;
     }
 
+    #[Override]
     protected function isNormalized(): bool {
         return $this->normalized;
     }
 
+    #[Override]
     protected function getPrefix(): string {
         return $this->prefix;
     }
 
+    #[Override]
     protected function getSuffix(): string {
         return $this->suffix;
     }
 
+    #[Override]
     protected function getSeparator(): string {
         return $this->separator;
     }
 
+    #[Override]
     protected function getMultilineItemPrefix(): string {
         return $this->multilineSeparator;
     }
 
+    #[Override]
     protected function block(string|int $key, mixed $item): Block {
         return $item;
     }
@@ -778,6 +787,7 @@ class ListBlockTest__Block extends Block {
         parent:: __construct(new Context(new TestSettings(), null, null));
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         return $this->serialized;
     }
@@ -802,14 +812,17 @@ class ListBlockTest__NamedBlock extends PropertyBlock {
         );
     }
 
+    #[Override]
     public function getName(): string {
         return $this->name;
     }
 
+    #[Override]
     protected function getBlock(): Block {
         return new ListBlockTest__Block($this->serialized);
     }
 
+    #[Override]
     protected function space(): string {
         return ' ';
     }
@@ -831,6 +844,7 @@ class ListBlockTest__StatisticsBlock extends Block {
         parent:: __construct(new Context(new TestSettings(), null, null));
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         foreach ($this->types as $type) {
             $collector->addUsedType($type);

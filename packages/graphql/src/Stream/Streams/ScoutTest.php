@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_slice;
@@ -32,6 +33,7 @@ class ScoutTest extends TestCase {
     /**
      * @inheritDoc
      */
+    #[Override]
     protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);
 

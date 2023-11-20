@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function implode;
@@ -259,6 +260,7 @@ class AllOfTest extends TestCase {
                             /**
                              * @inheritDoc
                              */
+                            #[Override]
                             public function getField(Model $model, Property $property): string {
                                 return 'properties/'.implode('/', $property->getPath());
                             }

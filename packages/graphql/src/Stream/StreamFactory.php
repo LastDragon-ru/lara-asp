@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Database;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Scout;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Override;
 
 use function is_a;
 
@@ -25,6 +26,7 @@ class StreamFactory implements StreamFactoryContract {
         // empty
     }
 
+    #[Override]
     public function isSupported(object|string $builder): bool {
         return is_a($builder, EloquentBuilder::class, true)
             || is_a($builder, QueryBuilder::class, true)
@@ -34,6 +36,7 @@ class StreamFactory implements StreamFactoryContract {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function enhance(
         object $builder,
         mixed $root,
@@ -49,6 +52,7 @@ class StreamFactory implements StreamFactoryContract {
         return $builder;
     }
 
+    #[Override]
     public function create(object $builder, string $key, int $limit, Offset $offset): StreamContract {
         return $builder instanceof ScoutBuilder
             ? new Scout($builder, $key, $limit, $offset)

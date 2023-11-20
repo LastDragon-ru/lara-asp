@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\Rule as RuleContract;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Spa\Package;
+use Override;
 use ReflectionClass;
 
 use function preg_replace;
@@ -23,6 +24,7 @@ abstract class Rule implements RuleContract {
     /**
      * @return array<array-key, mixed>|string
      */
+    #[Override]
     public function message(): array|string {
         $replace     = $this->getMessageReplace();
         $variants    = $this->getMessageVariants();

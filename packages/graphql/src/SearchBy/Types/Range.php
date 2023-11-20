@@ -10,12 +10,14 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use Override;
 
 class Range implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
+    #[Override]
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $typeName      = $source->getTypeName();
         $directiveName = Directive::Name;
@@ -23,6 +25,7 @@ class Range implements TypeDefinition {
         return "{$directiveName}TypeRange{$typeName}";
     }
 
+    #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,

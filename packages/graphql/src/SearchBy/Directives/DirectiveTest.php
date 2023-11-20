@@ -53,6 +53,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
@@ -402,24 +403,29 @@ class DirectiveTest extends TestCase {
                 static function (TestCase $test): void {
                     $locator   = $test->app->make(DirectiveLocator::class);
                     $directive = new class() extends BaseOperator implements TypeDefinition {
+                        #[Override]
                         public static function getName(): string {
                             return 'custom';
                         }
 
+                        #[Override]
                         public function getFieldType(TypeProvider $provider, TypeSource $source): string {
                             return $provider->getType(static::class, $provider->getTypeSource(Type::int()));
                         }
 
+                        #[Override]
                         public function getFieldDescription(): string {
                             return 'Custom condition.';
                         }
 
+                        #[Override]
                         public static function definition(): string {
                             return <<<'GRAPHQL'
                                 directive @customComplexOperator(value: String) on INPUT_FIELD_DEFINITION
                             GRAPHQL;
                         }
 
+                        #[Override]
                         public function call(
                             Handler $handler,
                             object $builder,
@@ -429,6 +435,7 @@ class DirectiveTest extends TestCase {
                             throw new Exception('should not be called');
                         }
 
+                        #[Override]
                         public function getTypeName(
                             Manipulator $manipulator,
                             BuilderInfo $builder,
@@ -440,6 +447,7 @@ class DirectiveTest extends TestCase {
                             return "{$directiveName}ComplexCustom{$typeName}";
                         }
 
+                        #[Override]
                         public function getTypeDefinition(
                             Manipulator $manipulator,
                             string $name,
@@ -768,6 +776,7 @@ class DirectiveTest extends TestCase {
                             /**
                              * @inheritDoc
                              */
+                            #[Override]
                             public function getField(
                                 EloquentModel $model,
                                 Property $property,

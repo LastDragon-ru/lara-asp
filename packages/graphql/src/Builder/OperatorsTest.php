@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -31,6 +32,7 @@ class OperatorsTest extends TestCase {
                 ],
             ];
 
+            #[Override]
             public function getScope(): string {
                 return Scope::class;
             }
@@ -81,6 +83,7 @@ class OperatorsTest extends TestCase {
                 $this->default = $default;
             }
 
+            #[Override]
             public function getScope(): string {
                 return Scope::class;
             }
@@ -115,6 +118,7 @@ class OperatorsTest extends TestCase {
 
     public function testGetOperatorsUnknownType(): void {
         $operators = new class() extends Operators {
+            #[Override]
             public function getScope(): string {
                 return Scope::class;
             }
@@ -153,26 +157,32 @@ class OperatorsTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 abstract class OperatorsTest__Operator implements Operator {
+    #[Override]
     public static function definition(): string {
         throw new Exception('Should not be called');
     }
 
+    #[Override]
     public static function getName(): string {
         throw new Exception('Should not be called');
     }
 
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
         throw new Exception('Should not be called');
     }
 
+    #[Override]
     public function getFieldDescription(): string {
         throw new Exception('Should not be called');
     }
 
+    #[Override]
     public function isBuilderSupported(string $builder): bool {
         throw new Exception('Should not be called');
     }
 
+    #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         throw new Exception('Should not be called');
     }

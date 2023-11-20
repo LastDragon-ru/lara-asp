@@ -25,6 +25,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use Override;
 
 use function is_string;
 use function mb_strlen;
@@ -48,6 +49,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         parent::__construct($context);
     }
 
+    #[Override]
     public function getName(): string {
         $name   = $this->name();
         $prefix = $this->prefix();
@@ -73,6 +75,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         return $this->definition;
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         // Allowed?
         if (!$this->isDefinitionAllowed()) {

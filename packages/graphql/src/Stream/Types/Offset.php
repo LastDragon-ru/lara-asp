@@ -23,6 +23,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use Override;
 
 use function filter_var;
 use function is_int;
@@ -58,6 +59,7 @@ class Offset extends ScalarType implements TypeDefinition {
     /**
      * @return string|int<0, max>
      */
+    #[Override]
     public function serialize(mixed $value): string|int {
         $value = $this->validate($value, InvariantViolation::class);
 
@@ -72,6 +74,7 @@ class Offset extends ScalarType implements TypeDefinition {
     /**
      * @return StreamOffset|int<0, max>
      */
+    #[Override]
     public function parseValue(mixed $value): StreamOffset|int {
         if (is_string($value)) {
             try {
@@ -91,6 +94,7 @@ class Offset extends ScalarType implements TypeDefinition {
      * @inheritDoc
      * @return StreamOffset|int<0, max>
      */
+    #[Override]
     public function parseLiteral(Node $valueNode, array $variables = null): StreamOffset|int {
         $value = null;
 
@@ -148,10 +152,12 @@ class Offset extends ScalarType implements TypeDefinition {
 
     // <editor-fold desc="TypeDefinition">
     // =========================================================================
+    #[Override]
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         return $this->name();
     }
 
+    #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,

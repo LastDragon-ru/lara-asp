@@ -18,6 +18,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use Override;
 
 /**
  * @internal
@@ -35,12 +36,14 @@ class InputValueDefinition extends DefinitionBlock {
         parent::__construct($context, $definition);
     }
 
+    #[Override]
     protected function content(Collector $collector, int $level, int $used): string {
         return $this->isTypeAllowed($this->getType())
             ? parent::content($collector, $level, $used)
             : '';
     }
 
+    #[Override]
     protected function type(bool $multiline): ?Block {
         return new Type(
             $this->getContext(),
@@ -48,6 +51,7 @@ class InputValueDefinition extends DefinitionBlock {
         );
     }
 
+    #[Override]
     protected function value(bool $multiline): ?Block {
         $type       = null;
         $value      = null;

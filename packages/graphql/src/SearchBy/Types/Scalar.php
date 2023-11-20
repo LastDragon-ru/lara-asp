@@ -11,12 +11,14 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+use Override;
 
 class Scalar implements TypeDefinition {
     public function __construct() {
         // empty
     }
 
+    #[Override]
     public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
         $directiveName = Directive::Name;
         $builderName   = $builder->getName();
@@ -29,6 +31,7 @@ class Scalar implements TypeDefinition {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         string $name,

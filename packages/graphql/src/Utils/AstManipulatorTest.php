@@ -34,6 +34,7 @@ use Nuwave\Lighthouse\Schema\Directives\AllDirective;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
@@ -1178,6 +1179,7 @@ class AstManipulatorTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class AstManipulatorTest_ADirective implements Directive {
+    #[Override]
     public static function definition(): string {
         return 'directive @astManipulatorTest_A(a: Int, b: String) on OBJECT | SCALAR';
     }
@@ -1188,6 +1190,7 @@ class AstManipulatorTest_ADirective implements Directive {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class AstManipulatorTest_BDirective implements Directive {
+    #[Override]
     public static function definition(): string {
         return 'directive @astManipulatorTest_B on OBJECT | SCALAR';
     }
@@ -1198,6 +1201,7 @@ class AstManipulatorTest_BDirective implements Directive {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class AstManipulatorTest_CDirective implements Directive {
+    #[Override]
     public static function definition(): string {
         return 'directive @astManipulatorTest_C on OBJECT | SCALAR';
     }

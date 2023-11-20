@@ -5,8 +5,10 @@ namespace LastDragon_ru\LaraASP\Queue;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
+use Override;
 
 class Provider extends ServiceProvider {
+    #[Override]
     public function register(): void {
         parent::register();
 

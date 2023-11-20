@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
+use Override;
 
 #[AllowDynamicProperties]
 abstract class Listener implements ShouldQueue, ConfigurableQueueable {
@@ -22,6 +23,7 @@ abstract class Listener implements ShouldQueue, ConfigurableQueueable {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [];
     }
