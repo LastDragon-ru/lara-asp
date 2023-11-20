@@ -59,6 +59,7 @@ use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Queue\QueueableConfigurator;
 use LastDragon_ru\LaraASP\Queue\Queueables\Job;
+use Override;
 
 class MyJobWithConfig extends Job {
     /**
@@ -66,6 +67,7 @@ class MyJobWithConfig extends Job {
      *
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [
                 'queue'    => 'queue',
@@ -147,11 +149,13 @@ Creating the cron jobs is similar. They just have two additional settings:
 namespace App\Jobs;
 
 use LastDragon_ru\LaraASP\Queue\Queueables\CronJob;
+use Override;
 
 class MyCronJob extends CronJob {
     /**
      * @inheritDoc
      */
+    #[Override]
     public function getQueueConfig(): array {
         return [
                 'cron'    => '0 * * * *', // Cron expression
@@ -182,6 +186,7 @@ use App\Jobs\MyCronJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use LastDragon_ru\LaraASP\Queue\Concerns\ConsoleKernelWithSchedule;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
+use Override;
 
 use function base_path;
 
@@ -202,6 +207,7 @@ class Kernel extends ConsoleKernel {
     /**
      * Register the commands for the application.
      */
+    #[Override]
     protected function commands(): void {
         $this->load(__DIR__.'/Commands');
 
@@ -293,9 +299,11 @@ then inside the app
 
 namespace App\Jobs;
 
+use Override;
 use Package\Jobs\DoSomethingPackageJob;
 
 class DoSomethingAppJob extends DoSomethingPackageJob {
+    #[Override]
     public function __invoke(): void {
         // our implementation
     }
@@ -317,12 +325,14 @@ namespace App\Providers;
 
 use App\Jobs\DoSomethingAppJob;
 use Illuminate\Support\ServiceProvider;
+use Override;
 use Package\Jobs\DoSomethingPackageJob;
 
 class AppServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
      */
+    #[Override]
     public function register(): void {
         $this->app->bind(DoSomethingAppJob::class, DoSomethingPackageJob::class);
     }
@@ -345,11 +355,13 @@ The `CustomUpdateSomethingJob` will use the same settings name in `config/queue.
 namespace App\Jobs;
 
 use LastDragon_ru\LaraASP\Queue\Concerns\WithConfig;
+use Override;
 use Package\Jobs\DoSomethingPackageJob;
 
 class DoSomethingAppJob extends DoSomethingPackageJob {
     use WithConfig; // Indicates that the job has its own config
 
+    #[Override]
     public function __invoke(): void {
         // our implementation
     }
