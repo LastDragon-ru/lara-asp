@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -42,9 +43,9 @@ class FieldTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
     ): void {
-        $operator  = $this->app->make(Field::class);
+        $operator  = Container::getInstance()->make(Field::class);
         $argument  = $argumentFactory($this);
-        $directive = $this->app->make(Directive::class);
+        $directive = Container::getInstance()->make(Directive::class);
         $builder   = $builderFactory($this);
         $builder   = $operator->call($directive, $builder, $property, $argument);
 
@@ -62,9 +63,9 @@ class FieldTest extends TestCase {
         $this->override(QueryHandler::class);
         $this->override(ScoutHandler::class);
 
-        $directive = $this->app->make(Directive::class);
+        $directive = Container::getInstance()->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(Field::class);
+        $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',
@@ -86,9 +87,9 @@ class FieldTest extends TestCase {
         });
         $this->override(ScoutHandler::class);
 
-        $directive = $this->app->make(Directive::class);
+        $directive = Container::getInstance()->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(Field::class);
+        $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',
@@ -109,9 +110,9 @@ class FieldTest extends TestCase {
                 ->once();
         });
 
-        $directive = $this->app->make(Directive::class);
+        $directive = Container::getInstance()->make(Directive::class);
         $property  = new Property();
-        $operator  = $this->app->make(Field::class);
+        $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             'asc',

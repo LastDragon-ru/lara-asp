@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -52,8 +53,13 @@ class BuilderInfoDetectorTest extends TestCase {
      * @param Closure(DirectiveLocator, AstManipulator): (InterfaceFieldArgumentSource|ObjectFieldArgumentSource|ObjectFieldSource|InterfaceFieldSource) $sourceFactory
      */
     public function testGetNodeBuilderInfo(array $expected, Closure $sourceFactory): void {
-        $manipulator = $this->app->make(AstManipulator::class, ['document' => Mockery::mock(DocumentAST::class)]);
-        $locator     = $this->app->make(DirectiveLocator::class);
+        $manipulator = Container::getInstance()->make(
+            AstManipulator::class,
+            [
+                'document' => Mockery::mock(DocumentAST::class),
+            ],
+        );
+        $locator     = Container::getInstance()->make(DirectiveLocator::class);
         $source      = $sourceFactory($locator, $manipulator);
         $directive   = new class() extends BuilderInfoDetector {
             #[Override]

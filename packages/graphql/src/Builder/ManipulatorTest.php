@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ObjectType;
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -52,8 +53,8 @@ class ManipulatorTest extends TestCase {
      */
     public function testGetPlaceholderTypeDefinitionNode(?string $expected, string $graphql): void {
         $ast         = Mockery::mock(DocumentAST::class);
-        $types       = $this->app->make(TypeRegistry::class);
-        $directives  = $this->app->make(DirectiveLocator::class);
+        $types       = Container::getInstance()->make(TypeRegistry::class);
+        $directives  = Container::getInstance()->make(DirectiveLocator::class);
         $manipulator = new class($directives, $types, $ast) extends Manipulator {
             /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct(
@@ -109,7 +110,7 @@ class ManipulatorTest extends TestCase {
         $cOperator = ManipulatorTest_OperatorC::class;
 
         // Types
-        $types = $this->app->make(TypeRegistry::class);
+        $types = Container::getInstance()->make(TypeRegistry::class);
 
         $types->register(
             new CustomScalarType([
@@ -128,7 +129,7 @@ class ManipulatorTest extends TestCase {
         );
 
         // Directives
-        $directives = $this->app->make(DirectiveLocator::class);
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
 
         $directives->setResolved('operators', ManipulatorTest_Operators::class);
         $directives->setResolved('aOperator', $aOperator);
@@ -189,8 +190,8 @@ class ManipulatorTest extends TestCase {
         };
 
         // Manipulator
-        $document    = $this->app->make(ASTBuilder::class)->documentAST();
-        $manipulator = $this->app->make(Manipulator::class, [
+        $document    = Container::getInstance()->make(ASTBuilder::class)->documentAST();
+        $manipulator = Container::getInstance()->make(Manipulator::class, [
             'document'    => $document,
             'builderInfo' => new BuilderInfo($builder::class, $builder::class),
         ]);

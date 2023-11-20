@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
 
 use Closure;
 use Exception;
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
@@ -40,7 +41,7 @@ class BuilderTest extends TestCase {
         }
 
         $builder = $builder($this);
-        $builder = $this->app->make(Builder::class)->handle($builder, $property, $direction);
+        $builder = Container::getInstance()->make(Builder::class)->handle($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);

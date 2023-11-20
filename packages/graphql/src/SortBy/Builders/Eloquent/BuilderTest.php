@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
 
 use Closure;
 use Exception;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -57,7 +58,7 @@ class BuilderTest extends TestCase {
         }
 
         $builder = $builder($this);
-        $builder = $this->app->make(Builder::class)->handle($builder, $property, $direction);
+        $builder = Container::getInstance()->make(Builder::class)->handle($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);

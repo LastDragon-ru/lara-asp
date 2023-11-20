@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
@@ -18,8 +19,8 @@ class ResolverRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testPasses(): void {
-        $translator = $this->app->make(Translator::class);
-        $router     = $this->app->make(Router::class);
+        $translator = Container::getInstance()->make(Translator::class);
+        $router     = Container::getInstance()->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
              * @inheritDoc
@@ -35,8 +36,8 @@ class ResolverRuleTest extends TestCase {
     }
 
     public function testPassesUnresolved(): void {
-        $translator = $this->app->make(Translator::class);
-        $router     = $this->app->make(Router::class);
+        $translator = Container::getInstance()->make(Translator::class);
+        $router     = Container::getInstance()->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
              * @inheritDoc
@@ -52,8 +53,8 @@ class ResolverRuleTest extends TestCase {
     }
 
     public function testMessage(): void {
-        $translator = $this->app->make(Translator::class);
-        $router     = $this->app->make(Router::class);
+        $translator = Container::getInstance()->make(Translator::class);
+        $router     = Container::getInstance()->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
              * @inheritDoc

@@ -304,7 +304,7 @@ class DirectiveTest extends TestCase {
             ],
         ]);
 
-        $directives = $this->app->make(DirectiveLocator::class);
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -318,7 +318,7 @@ class DirectiveTest extends TestCase {
         self::expectException(BuilderUnknown::class);
         self::expectExceptionMessage('Impossible to determine builder type for `type Query { field }`.');
 
-        $directives = $this->app->make(DirectiveLocator::class);
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
         $factory    = Mockery::mock(StreamFactory::class);
         $directive  = new class($factory) extends StreamDirective {
             #[Override]
@@ -348,7 +348,7 @@ class DirectiveTest extends TestCase {
             'The `type Test { field }` is not a list.',
         );
 
-        $directives = $this->app->make(DirectiveLocator::class);
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -369,7 +369,7 @@ class DirectiveTest extends TestCase {
         self::expectException(ArgumentAlreadyDefined::class);
         self::expectExceptionMessage('Argument `type Test { field(where) }` already defined.');
 
-        $directives = $this->app->make(DirectiveLocator::class);
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -392,7 +392,7 @@ class DirectiveTest extends TestCase {
             'The `type Subscription { field }` is a Subscription. Subscriptions are not supported.',
         );
 
-        $directives = $this->app->make(DirectiveLocator::class);
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -411,7 +411,7 @@ class DirectiveTest extends TestCase {
             'The `type Query { field }` us a union. Unions are not supported.',
         );
 
-        $directives = $this->app->make(DirectiveLocator::class);
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 

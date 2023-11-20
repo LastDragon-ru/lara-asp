@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 use Mockery;
@@ -27,7 +28,7 @@ class IncludeExampleTest extends TestCase {
             ->shouldReceive('run')
             ->never();
 
-        $instance = $this->app->make(IncludeExample::class, [
+        $instance = Container::getInstance()->make(IncludeExample::class, [
             'process' => $process,
         ]);
 
@@ -53,7 +54,7 @@ class IncludeExampleTest extends TestCase {
             ->once()
             ->andReturn($output);
 
-        $instance = $this->app->make(IncludeExample::class, [
+        $instance = Container::getInstance()->make(IncludeExample::class, [
             'process' => $process,
         ]);
 
@@ -85,7 +86,7 @@ class IncludeExampleTest extends TestCase {
             ->once()
             ->andReturn($output);
 
-        $instance = $this->app->make(IncludeExample::class, [
+        $instance = Container::getInstance()->make(IncludeExample::class, [
             'process' => $process,
         ]);
 
@@ -119,7 +120,7 @@ class IncludeExampleTest extends TestCase {
             ->once()
             ->andReturn("<markdown>{$output}</markdown>");
 
-        $instance = $this->app->make(IncludeExample::class, [
+        $instance = Container::getInstance()->make(IncludeExample::class, [
             'process' => $process,
         ]);
 
@@ -147,7 +148,7 @@ class IncludeExampleTest extends TestCase {
             ->once()
             ->andReturn("<markdown>{$output}</markdown>");
 
-        $instance = $this->app->make(IncludeExample::class, [
+        $instance = Container::getInstance()->make(IncludeExample::class, [
             'process' => $process,
         ]);
 

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
+use Illuminate\Container\Container;
 use Illuminate\Foundation\Console\Kernel;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
@@ -13,7 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ConsoleKernelWithSchedule::class)]
 class ConsoleKernelWithScheduleTest extends TestCase {
     public function testImpl(): void {
-        self::assertNotEmpty($this->app->make(ConsoleKernelWithScheduleTest_Impl::class));
+        self::assertNotEmpty(Container::getInstance()->make(ConsoleKernelWithScheduleTest_Impl::class));
     }
 }
 

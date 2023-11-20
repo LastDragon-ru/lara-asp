@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Database\QueryLog;
 
+use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -58,7 +59,7 @@ trait WithQueryLog {
         } elseif ($connection instanceof ConnectionResolverInterface) {
             $connection = $connection->connection();
         } else {
-            $connection = $this->app->make(ConnectionResolverInterface::class)->connection($connection);
+            $connection = Container::getInstance()->make(ConnectionResolverInterface::class)->connection($connection);
         }
 
         // Valid?

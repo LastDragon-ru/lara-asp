@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -12,7 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 class IncludeFileTest extends TestCase {
     public function testProcessRelative(): void {
         $file     = self::getTestData()->file('.md');
-        $instance = $this->app->make(IncludeFile::class);
+        $instance = Container::getInstance()->make(IncludeFile::class);
         $expected = self::getTestData()->content('.md');
 
         self::assertEquals($expected, $instance->process($file->getPathname(), $file->getFilename()));
@@ -21,7 +22,7 @@ class IncludeFileTest extends TestCase {
     public function testProcessAbsolute(): void {
         $path     = 'invalid/directory';
         $file     = self::getTestData()->path('.md');
-        $instance = $this->app->make(IncludeFile::class);
+        $instance = Container::getInstance()->make(IncludeFile::class);
         $expected = self::getTestData()->content('.md');
 
         self::assertEquals($expected, $instance->process($path, $file));

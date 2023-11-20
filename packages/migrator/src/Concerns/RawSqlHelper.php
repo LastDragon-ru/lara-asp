@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Concerns;
 
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\SchemaState;
 use Illuminate\Filesystem\Filesystem;
@@ -47,7 +48,7 @@ trait RawSqlHelper {
         $connection = $this instanceof Migration
             ? $this->getConnection()
             : null;
-        $connection = Container::getInstance()->make('db')->connection($connection);
+        $connection = Container::getInstance()->make(DatabaseManager::class)->connection($connection);
 
         return $connection;
     }

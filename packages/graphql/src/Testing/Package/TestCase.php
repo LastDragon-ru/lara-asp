@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use GraphQL\Type\Schema;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -70,7 +71,7 @@ class TestCase extends PackageTestCase {
 
     protected function getGraphQLPrinter(Settings $settings = null): Printer {
         $settings ??= (new TestSettings())
-            ->setDirectiveDefinitionFilter($this->app->make(LighthouseDirectiveFilter::class));
+            ->setDirectiveDefinitionFilter(Container::getInstance()->make(LighthouseDirectiveFilter::class));
         $printer    = $this->getDefaultGraphQLPrinter($settings);
 
         return $printer;
@@ -86,7 +87,7 @@ class TestCase extends PackageTestCase {
                 $this->useGraphQLSchema($schema);
             }
 
-            $factory  = $this->app->make(ArgumentFactory::class);
+            $factory  = Container::getInstance()->make(ArgumentFactory::class);
             $argument = $factory->getArgument($type, $value);
 
             return $argument;
@@ -110,7 +111,7 @@ class TestCase extends PackageTestCase {
         $directive::$builder = $builder;
         $directive::$result  = $builder;
 
-        $this->app->make(DirectiveLocator::class)
+        Container::getInstance()->make(DirectiveLocator::class)
             ->setResolved(mb_substr($directive::getName(), 1), $directive::class);
 
         return $directive;

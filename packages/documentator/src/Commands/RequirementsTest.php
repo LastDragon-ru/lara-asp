@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
@@ -67,7 +68,7 @@ class RequirementsTest extends TestCase {
 
     public function testGetRequirements(): void {
         $metadata = self::getTestData()->content('.json');
-        $metadata = $this->app->make(Serializer::class)->deserialize(Metadata::class, $metadata);
+        $metadata = Container::getInstance()->make(Serializer::class)->deserialize(Metadata::class, $metadata);
         $packages = [
             'laravel/framework' => 'Laravel',
             'php'               => 'PHP',

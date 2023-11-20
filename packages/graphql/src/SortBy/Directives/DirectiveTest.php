@@ -7,6 +7,7 @@ use Exception;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -63,7 +64,7 @@ class DirectiveTest extends TestCase {
      * @param Closure(static): void|null       $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
-        $directives = $this->app->make(DirectiveLocator::class);
+        $directives = Container::getInstance()->make(DirectiveLocator::class);
 
         $directives->setResolved('search', SearchDirective::class);
 
@@ -149,7 +150,7 @@ class DirectiveTest extends TestCase {
             ],
         ]);
 
-        $registry = $this->app->make(TypeRegistry::class);
+        $registry = Container::getInstance()->make(TypeRegistry::class);
         $registry->register($a);
         $registry->register($b);
         $registry->register($c);
@@ -178,7 +179,7 @@ class DirectiveTest extends TestCase {
 
         self::expectExceptionObject(new TypeDefinitionImpossibleToCreateType(Clause::class, 'type TestType'));
 
-        $registry = $this->app->make(TypeRegistry::class);
+        $registry = Container::getInstance()->make(TypeRegistry::class);
         $registry->register($type);
 
         $this->useGraphQLSchema(
@@ -321,7 +322,7 @@ class DirectiveTest extends TestCase {
         $builder   = $builderFactory($this);
         $directive = $this->getExposeBuilderDirective($builder);
 
-        $this->app->make(DirectiveLocator::class)
+        Container::getInstance()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
 
         if ($fieldResolver) {

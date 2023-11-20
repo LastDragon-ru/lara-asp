@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotEqualDirective;
@@ -29,7 +30,7 @@ class OperatorsTest extends TestCase {
             ],
         ]);
 
-        $operators = $this->app->make(Operators::class);
+        $operators = Container::getInstance()->make(Operators::class);
 
         self::assertTrue($operators->hasOperators(Operators::ID));
         self::assertTrue($operators->hasOperators(Operators::Int));

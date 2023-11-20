@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
+use Illuminate\Container\Container;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Filesystem\Filesystem;
@@ -30,7 +31,7 @@ use function trim;
 #[CoversClass(Provider::class)]
 class SmartMigratorTest extends TestCase {
     public function testProvider(): void {
-        self::assertEquals(SmartMigrator::class, get_class($this->app->make('migrator')));
+        self::assertEquals(SmartMigrator::class, get_class(Container::getInstance()->make('migrator')));
     }
 
     public function testMigrate(): void {
@@ -80,8 +81,8 @@ class SmartMigratorTest extends TestCase {
         // Vars
         $migrator = new SmartMigrator(
             $repository,
-            $this->app->make(ConnectionResolverInterface::class),
-            $this->app->make(Filesystem::class),
+            Container::getInstance()->make(ConnectionResolverInterface::class),
+            Container::getInstance()->make(Filesystem::class),
         );
         $output   = new BufferedOutput();
 

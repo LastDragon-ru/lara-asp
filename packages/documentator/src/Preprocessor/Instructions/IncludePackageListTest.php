@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
@@ -18,7 +19,7 @@ class IncludePackageListTest extends TestCase {
     public function testProcess(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/packages'));
-        $instance = $this->app->make(IncludePackageList::class);
+        $instance = Container::getInstance()->make(IncludePackageList::class);
         $actual   = $instance->process($path, $target);
 
         self::assertEquals(
@@ -34,7 +35,7 @@ class IncludePackageListTest extends TestCase {
     public function testProcessNotAPackage(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/invalid'));
-        $instance = $this->app->make(IncludePackageList::class);
+        $instance = Container::getInstance()->make(IncludePackageList::class);
 
         self::expectExceptionObject(
             new PackageComposerJsonIsMissing(
@@ -50,7 +51,7 @@ class IncludePackageListTest extends TestCase {
     public function testProcessNoReadme(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no readme'));
-        $instance = $this->app->make(IncludePackageList::class);
+        $instance = Container::getInstance()->make(IncludePackageList::class);
 
         self::expectExceptionObject(
             new PackageReadmeIsMissing(
@@ -66,7 +67,7 @@ class IncludePackageListTest extends TestCase {
     public function testProcessNoTitle(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no title'));
-        $instance = $this->app->make(IncludePackageList::class);
+        $instance = Container::getInstance()->make(IncludePackageList::class);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(

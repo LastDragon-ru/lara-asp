@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 use Mockery;
@@ -25,7 +26,7 @@ class IncludeExecTest extends TestCase {
             ->once()
             ->andReturn($expected);
 
-        $instance = $this->app->make(IncludeExec::class, [
+        $instance = Container::getInstance()->make(IncludeExec::class, [
             'process' => $process,
         ]);
 

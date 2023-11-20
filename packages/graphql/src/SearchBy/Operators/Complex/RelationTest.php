@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use Closure;
 use Exception;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
@@ -43,9 +44,9 @@ class RelationTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $operator = $this->app->make(Relation::class);
+        $operator = Container::getInstance()->make(Relation::class);
         $argument = $argumentFactory($this);
-        $search   = $this->app->make(Directive::class);
+        $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
         $builder  = $operator->call($search, $builder, $property, $argument);
 

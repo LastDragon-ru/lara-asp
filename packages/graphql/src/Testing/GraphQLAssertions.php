@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\NodeList;
 use GraphQL\Type\Schema;
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions as PrinterGraphQLAssertions;
@@ -84,17 +85,18 @@ trait GraphQLAssertions {
     }
 
     protected function getGraphQLPrinter(Settings $settings = null): Printer {
-        return $this->app->make(Printer::class)->setSettings($settings ?? new TestSettings());
+        return Container::getInstance()->make(Printer::class)->setSettings($settings ?? new TestSettings());
     }
 
     protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {
         // Wrap
-        $builder = $this->app->resolved(SchemaBuilder::class)
-            ? $this->app->make(SchemaBuilder::class)
+        $container = Container::getInstance();
+        $builder   = $container->resolved(SchemaBuilder::class)
+            ? $container->make(SchemaBuilder::class)
             : null;
 
         if (!($builder instanceof SchemaBuilderWrapper)) {
-            $this->app->extend(
+            $container->extend(
                 SchemaBuilder::class,
                 static function (SchemaBuilder $builder): SchemaBuilder {
                     return new SchemaBuilderWrapper($builder);
@@ -103,7 +105,7 @@ trait GraphQLAssertions {
         }
 
         // Instance
-        $builder = $this->app->make(SchemaBuilder::class);
+        $builder = $container->make(SchemaBuilder::class);
 
         assert($builder instanceof SchemaBuilderWrapper);
 

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Queue\Concerns;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Container\Container;
 use Illuminate\Foundation\Console\Kernel;
 use LastDragon_ru\LaraASP\Queue\Contracts\Cronable;
 use LastDragon_ru\LaraASP\Queue\CronableRegistrator;
@@ -20,7 +21,7 @@ trait ConsoleKernelWithSchedule {
             throw new LogicException('Class does not have $schedule property, please add it.');
         }
 
-        $registrator = $this->app->make(CronableRegistrator::class);
+        $registrator = Container::getInstance()->make(CronableRegistrator::class);
 
         foreach ($this->schedule as $job) {
             $registrator->register($this->app, $schedule, $job);

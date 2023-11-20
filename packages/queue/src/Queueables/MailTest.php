@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Queue\Queueables;
 
 use Exception;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Mail\Factory as MailFactory;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use LastDragon_ru\LaraASP\Queue\Contracts\Initializable;
@@ -22,19 +23,19 @@ class MailTest extends TestCase {
     public function testQueueUninitializedInitializable(): void {
         self::expectExceptionObject($this->getException());
 
-        (new MailTest_Mail())->queue($this->app->make(QueueFactory::class));
+        (new MailTest_Mail())->queue(Container::getInstance()->make(QueueFactory::class));
     }
 
     public function testLaterUninitializedInitializable(): void {
         self::expectExceptionObject($this->getException());
 
-        (new MailTest_Mail())->later(10, $this->app->make(QueueFactory::class));
+        (new MailTest_Mail())->later(10, Container::getInstance()->make(QueueFactory::class));
     }
 
     public function testSendUninitializedInitializable(): void {
         self::expectExceptionObject($this->getException());
 
-        (new MailTest_Mail())->send($this->app->make(MailFactory::class));
+        (new MailTest_Mail())->send(Container::getInstance()->make(MailFactory::class));
     }
 
     public function testRenderUninitializedInitializable(): void {

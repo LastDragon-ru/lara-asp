@@ -67,7 +67,7 @@ class PrinterTest extends TestCase {
     ): void {
         $schema    = $schemaFactory($this);
         $schema    = $this->useGraphQLSchema($schema)->getGraphQLSchema();
-        $printer   = $this->app->make(Printer::class)->setSettings($settings);
+        $printer   = Container::getInstance()->make(Printer::class)->setSettings($settings);
         $type      = $typeFactory ? $typeFactory($this, $schema) : null;
         $printable = $printableFactory($this, $schema);
         $actual    = $printer->print($printable, $level, $used, $type);
@@ -95,7 +95,7 @@ class PrinterTest extends TestCase {
     ): void {
         $schema     = $schemaFactory($this);
         $schema     = $this->useGraphQLSchema($schema)->getGraphQLSchema();
-        $printer    = $this->app->make(Printer::class)->setSettings($settings);
+        $printer    = Container::getInstance()->make(Printer::class)->setSettings($settings);
         $type       = $typeFactory ? $typeFactory($this, $schema) : null;
         $exportable = $exportableFactory($this, $schema);
         $actual     = $printer->export($exportable, $level, $used, $type);

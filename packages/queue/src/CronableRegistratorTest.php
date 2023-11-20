@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Queue;
 
 use Closure;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Queue;
 use LastDragon_ru\LaraASP\Queue\Configs\CronableConfig;
@@ -74,8 +75,8 @@ class CronableRegistratorTest extends TestCase {
 
         Queue::fake();
 
-        $schedule    = $this->app->make(Schedule::class);
-        $registrator = $this->app->make(CronableRegistrator::class);
+        $schedule    = Container::getInstance()->make(Schedule::class);
+        $registrator = Container::getInstance()->make(CronableRegistrator::class);
 
         $registrator->register($this->app, $schedule, $cronable::class);
 
@@ -102,7 +103,7 @@ class CronableRegistratorTest extends TestCase {
             ->once()
             ->andReturn(false);
 
-        $schedule    = $this->app->make(Schedule::class);
+        $schedule    = Container::getInstance()->make(Schedule::class);
         $registrator = new class() extends CronableRegistrator {
             /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct() {
@@ -132,8 +133,8 @@ class CronableRegistratorTest extends TestCase {
             CronableConfig::Enabled => false,
         ]);
 
-        $schedule    = $this->app->make(Schedule::class);
-        $registrator = $this->app->make(CronableRegistrator::class);
+        $schedule    = Container::getInstance()->make(Schedule::class);
+        $registrator = Container::getInstance()->make(CronableRegistrator::class);
 
         $registrator->register($this->app, $schedule, $cronable::class);
     }
@@ -160,8 +161,8 @@ class CronableRegistratorTest extends TestCase {
             CronableConfig::Enabled => true,
         ]);
 
-        $schedule    = $this->app->make(Schedule::class);
-        $registrator = $this->app->make(CronableRegistrator::class);
+        $schedule    = Container::getInstance()->make(Schedule::class);
+        $registrator = Container::getInstance()->make(CronableRegistrator::class);
 
         $registrator->register($this->app, $schedule, $cronable::class);
     }

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -35,7 +36,7 @@ class GreaterThanOrEqualTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
     ): void {
-        $operator = $this->app->make(GreaterThanOrEqual::class);
+        $operator = Container::getInstance()->make(GreaterThanOrEqual::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = Mockery::mock(Handler::class);

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
 
 use function in_array;
@@ -56,7 +57,7 @@ class SeederService {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function getConnection(): Connection {
-        return Container::getInstance()->make('db')->connection();
+        return Container::getInstance()->make(DatabaseManager::class)->connection();
     }
     // </editor-fold>
 }

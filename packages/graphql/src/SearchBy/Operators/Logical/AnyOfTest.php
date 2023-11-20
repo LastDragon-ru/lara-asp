@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Closure;
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -37,10 +38,10 @@ class AnyOfTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
     ): void {
-        $operator = $this->app->make(AnyOf::class);
+        $operator = Container::getInstance()->make(AnyOf::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
-        $search   = $this->app->make(Directive::class);
+        $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
         $builder  = $operator->call($search, $builder, $property, $argument);
 

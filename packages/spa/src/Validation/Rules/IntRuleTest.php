@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,14 +21,14 @@ class IntRuleTest extends TestCase {
      * @dataProvider dataProviderPasses
      */
     public function testPasses(bool $expected, mixed $value): void {
-        $translator = $this->app->make(Translator::class);
+        $translator = Container::getInstance()->make(Translator::class);
         $rule       = new IntRule($translator);
 
         self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
     public function testMessage(): void {
-        $translator = $this->app->make(Translator::class);
+        $translator = Container::getInstance()->make(Translator::class);
         $rule       = new IntRule($translator);
 
         self::assertEquals('The :attribute is not an integer.', $rule->message());

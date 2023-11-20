@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
 use Composer\InstalledVersions;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -44,7 +45,7 @@ class NotInTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
     ): void {
-        $operator = $this->app->make(NotIn::class);
+        $operator = Container::getInstance()->make(NotIn::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = Mockery::mock(Handler::class);
@@ -75,7 +76,7 @@ class NotInTest extends TestCase {
         }
 
         // Supported?
-        $operator = $this->app->make(NotInTest_Operator::class);
+        $operator = Container::getInstance()->make(NotInTest_Operator::class);
 
         if (!$operator->isScoutSupported()) {
             self::markTestSkipped(sprintf(

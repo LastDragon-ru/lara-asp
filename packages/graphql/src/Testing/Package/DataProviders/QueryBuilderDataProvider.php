@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders;
 
 use Illuminate\Container\Container;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
@@ -16,7 +17,7 @@ class QueryBuilderDataProvider extends ArrayDataProvider {
             'Builder' => [
                 new UnknownValue(),
                 static function (): QueryBuilder {
-                    return Container::getInstance()->make('db')->table('test_objects');
+                    return Container::getInstance()->make(DatabaseManager::class)->table('test_objects');
                 },
             ],
         ]);

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
 
 use Closure;
 use Exception;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
@@ -42,13 +43,13 @@ class BuilderTest extends TestCase {
             $this->override(FieldResolver::class, $resolver);
         }
 
-        $builder = $this->app->make(ScoutBuilder::class, [
+        $builder = Container::getInstance()->make(ScoutBuilder::class, [
             'query' => '',
             'model' => new class() extends Model {
                 // empty
             },
         ]);
-        $builder = $this->app->make(Builder::class)->handle($builder, $property, $direction);
+        $builder = Container::getInstance()->make(Builder::class)->handle($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertScoutQueryEquals($expected, $builder);

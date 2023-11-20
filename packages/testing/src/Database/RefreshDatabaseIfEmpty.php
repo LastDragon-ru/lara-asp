@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Database;
 
+use Illuminate\Container\Container;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
@@ -24,7 +26,7 @@ trait RefreshDatabaseIfEmpty {
 
     protected function refreshTestDatabase(): void {
         if (!RefreshDatabaseState::$migrated) {
-            $connection = $this->app->make('db')->connection();
+            $connection = Container::getInstance()->make(DatabaseManager::class)->connection();
             $tables     = $connection->getDoctrineSchemaManager()->listTableNames();
 
             if ($tables) {

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
@@ -52,7 +53,7 @@ class NotContainsTest extends TestCase {
             $builder->grammar = $grammar;
         }
 
-        $operator = $this->app->make(NotContains::class);
+        $operator = Container::getInstance()->make(NotContains::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = Mockery::mock(Handler::class);

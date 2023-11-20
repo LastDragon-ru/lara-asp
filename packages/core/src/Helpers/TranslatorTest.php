@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Core\Helpers;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Core\Helpers\Translator as PackageTranslator;
 use LastDragon_ru\LaraASP\Core\Package;
@@ -35,7 +36,7 @@ class TranslatorTest extends TestCase {
     ): void {
         $this->setTranslations($translations);
 
-        $implementation = $this->app->make(Translator::class);
+        $implementation = Container::getInstance()->make(Translator::class);
         $translator     = new class($implementation, Package::Name, null) extends PackageTranslator {
             // empty
         };
@@ -59,7 +60,7 @@ class TranslatorTest extends TestCase {
     ): void {
         $this->setTranslations($translations);
 
-        $implementation = $this->app->make(Translator::class);
+        $implementation = Container::getInstance()->make(Translator::class);
         $translator     = new class($implementation, Package::Name, null) extends PackageTranslator {
             // empty
         };

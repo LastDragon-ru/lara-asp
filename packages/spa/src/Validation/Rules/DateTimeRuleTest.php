@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
@@ -22,14 +23,14 @@ class DateTimeRuleTest extends TestCase {
      * @dataProvider dataProviderPasses
      */
     public function testPasses(bool $expected, string $value): void {
-        $translator = $this->app->make(Translator::class);
+        $translator = Container::getInstance()->make(Translator::class);
         $rule       = new DateTimeRule($translator);
 
         self::assertEquals($expected, $rule->passes('attribute', $value));
     }
 
     public function testMessage(): void {
-        $translator = $this->app->make(Translator::class);
+        $translator = Container::getInstance()->make(Translator::class);
         $rule       = new DateTimeRule($translator);
 
         self::assertEquals('The :attribute is not a valid datetime.', $rule->message());
@@ -46,7 +47,7 @@ class DateTimeRuleTest extends TestCase {
             self::expectExceptionMessageMatches($expected['message']);
         }
 
-        $translator = $this->app->make(Translator::class);
+        $translator = Container::getInstance()->make(Translator::class);
         $rule       = new DateTimeRule($translator);
 
         config([

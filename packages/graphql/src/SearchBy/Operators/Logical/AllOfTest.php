@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
@@ -44,10 +45,10 @@ class AllOfTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
     ): void {
-        $operator = $this->app->make(AllOf::class);
+        $operator = Container::getInstance()->make(AllOf::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
-        $search   = $this->app->make(Directive::class);
+        $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
         $builder  = $operator->call($search, $builder, $property, $argument);
 
@@ -73,10 +74,10 @@ class AllOfTest extends TestCase {
             $this->override(FieldResolver::class, $resolver);
         }
 
-        $operator = $this->app->make(AllOf::class);
+        $operator = Container::getInstance()->make(AllOf::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
-        $search   = $this->app->make(Directive::class);
+        $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
         $builder  = $operator->call($search, $builder, $property, $argument);
 

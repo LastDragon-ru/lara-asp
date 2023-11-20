@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Routing\Redirector;
@@ -18,8 +19,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Request::class)]
 class RequestTest extends TestCase {
     public function testValidated(): void {
-        $router        = $this->app->make(Router::class);
-        $translator    = $this->app->make(Translator::class);
+        $router        = Container::getInstance()->make(Router::class);
+        $translator    = Container::getInstance()->make(Translator::class);
         $resolverRuleA = new ResolverRule(
             $translator,
             new class($router) extends Resolver {
@@ -107,8 +108,8 @@ class RequestTest extends TestCase {
             ],
         ]);
 
-        $request->setContainer($this->app);
-        $request->setRedirector($this->app->make(Redirector::class));
+        $request->setContainer(Container::getInstance());
+        $request->setRedirector(Container::getInstance()->make(Redirector::class));
 
         self::assertEquals([
             'rule'              => true,

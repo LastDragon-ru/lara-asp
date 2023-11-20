@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Container\Container;
 use Illuminate\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
@@ -56,9 +57,9 @@ trait CronableAssertions {
      * @param class-string<Cronable> $cronable
      */
     protected function isCronableRegistered(string $cronable): bool {
-        $schedule = $this->app->make(Schedule::class);
+        $schedule = Container::getInstance()->make(Schedule::class);
         $expected = method_exists($cronable, 'displayName')
-            ? $this->app->make($cronable)->displayName()
+            ? Container::getInstance()->make($cronable)->displayName()
             : $cronable;
         $events   = array_filter($schedule->events(), static function (Event $event) use ($expected): bool {
             return str_contains("{$event->description}", $expected);

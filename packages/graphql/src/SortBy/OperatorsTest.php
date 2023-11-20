@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -25,7 +26,7 @@ class OperatorsTest extends TestCase {
             ],
         ]);
 
-        $operators = $this->app->make(Operators::class);
+        $operators = Container::getInstance()->make(Operators::class);
 
         self::assertTrue($operators->hasOperators(Operators::Extra));
         self::assertFalse($operators->hasOperators('unknown'));

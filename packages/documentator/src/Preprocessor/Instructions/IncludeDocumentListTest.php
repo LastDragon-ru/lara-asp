@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,7 +17,7 @@ class IncludeDocumentListTest extends TestCase {
     public function testProcessSameDirectory(): void {
         $path     = self::getTestData()->file('Document.md');
         $params   = new IncludeDocumentListParameters();
-        $instance = $this->app->make(IncludeDocumentList::class);
+        $instance = Container::getInstance()->make(IncludeDocumentList::class);
         $actual   = $instance->process($path->getPathname(), './', $params);
 
         self::assertEquals(
@@ -32,7 +33,7 @@ class IncludeDocumentListTest extends TestCase {
     public function testProcessAnotherDirectory(): void {
         $path     = self::getTestData()->file('~AnotherDirectory.md');
         $params   = new IncludeDocumentListParameters();
-        $instance = $this->app->make(IncludeDocumentList::class);
+        $instance = Container::getInstance()->make(IncludeDocumentList::class);
         $actual   = $instance->process($path->getPathname(), basename(self::getTestData()->path('/')), $params);
 
         self::assertEquals(
@@ -48,7 +49,7 @@ class IncludeDocumentListTest extends TestCase {
     public function testProcessNestedDirectories(): void {
         $path     = self::getTestData()->file('nested/Document.md');
         $params   = new IncludeDocumentListParameters(null);
-        $instance = $this->app->make(IncludeDocumentList::class);
+        $instance = Container::getInstance()->make(IncludeDocumentList::class);
         $actual   = $instance->process($path->getPathname(), './', $params);
 
         self::assertEquals(
@@ -65,7 +66,7 @@ class IncludeDocumentListTest extends TestCase {
         $path     = self::getTestData()->file('invalid/Document.md');
         $target   = './';
         $params   = new IncludeDocumentListParameters();
-        $instance = $this->app->make(IncludeDocumentList::class);
+        $instance = Container::getInstance()->make(IncludeDocumentList::class);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(

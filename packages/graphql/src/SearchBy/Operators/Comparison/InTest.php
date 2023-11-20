@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -42,7 +43,7 @@ class InTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
     ): void {
-        $operator = $this->app->make(In::class);
+        $operator = Container::getInstance()->make(In::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = Mockery::mock(Handler::class);
@@ -71,7 +72,7 @@ class InTest extends TestCase {
             $this->override(FieldResolver::class, $resolver);
         }
 
-        $operator = $this->app->make(In::class);
+        $operator = Container::getInstance()->make(In::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
         $search   = Mockery::mock(Handler::class);

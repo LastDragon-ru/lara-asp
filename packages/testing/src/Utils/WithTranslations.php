@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Utils;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Foundation\Testing\TestCase as IlluminateTestCase;
 use Illuminate\Translation\Translator as TranslatorImpl;
@@ -24,7 +25,7 @@ trait WithTranslations {
      */
     public function setTranslations(callable|array|null $translations): void {
         // Translator
-        $translator = $this->app->make(Translator::class);
+        $translator = Container::getInstance()->make(Translator::class);
 
         if (!($translator instanceof TranslatorImpl)) {
             throw new TranslatorUnsupported($translator::class);

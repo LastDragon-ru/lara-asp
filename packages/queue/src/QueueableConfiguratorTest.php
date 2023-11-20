@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Queue;
 use AllowDynamicProperties;
 use DateInterval;
 use Illuminate\Bus\Queueable;
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
 use Override;
@@ -16,7 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(QueueableConfigurator::class)]
 class QueueableConfiguratorTest extends TestCase {
     public function testConfigure(): void {
-        $configurator = $this->app->make(QueueableConfigurator::class);
+        $configurator = Container::getInstance()->make(QueueableConfigurator::class);
         $queueable    = new QueueableConfiguratorTest_ConfigurableQueueable();
 
         $this->setQueueableConfig($queueable, [

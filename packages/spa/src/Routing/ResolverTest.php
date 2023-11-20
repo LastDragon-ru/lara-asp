@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Routing;
 
+use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
@@ -15,7 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Resolver::class)]
 class ResolverTest extends TestCase {
     public function testGet(): void {
-        $router   = $this->app->make(Router::class);
+        $router   = Container::getInstance()->make(Router::class);
         $resolver = new class($router) extends Resolver {
             /**
              * @inheritDoc
@@ -52,7 +53,7 @@ class ResolverTest extends TestCase {
     public function testGetUnresolvedValue(): void {
         self::expectException(UnresolvedValueException::class);
 
-        $router   = $this->app->make(Router::class);
+        $router   = Container::getInstance()->make(Router::class);
         $resolver = new class($router) extends Resolver {
             /**
              * @inheritDoc
