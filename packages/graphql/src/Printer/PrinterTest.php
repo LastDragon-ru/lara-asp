@@ -20,6 +20,7 @@ use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
+use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -841,8 +842,8 @@ class PrinterTest extends TestCase {
     private static function getSchemaFactory(): Closure {
         return static function (TestCase $test): SplFileInfo {
             // Types
-            $directives = $test->getContainer()->make(DirectiveLocator::class);
-            $registry   = $test->getContainer()->make(TypeRegistry::class);
+            $directives = Container::getInstance()->make(DirectiveLocator::class);
+            $registry   = Container::getInstance()->make(TypeRegistry::class);
             $directive  = (new class() extends BaseDirective {
                 #[Override]
                 public static function definition(): string {

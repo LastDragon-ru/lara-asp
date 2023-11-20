@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use GraphQL\Type\Schema;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -67,11 +66,6 @@ class TestCase extends PackageTestCase {
                 (new ReflectionClass(TestObject::class))->getNamespaceName(),
             ],
         ]);
-    }
-
-    #[Override]
-    public function getContainer(): Container {
-        return parent::getContainer();
     }
 
     protected function getGraphQLPrinter(Settings $settings = null): Printer {

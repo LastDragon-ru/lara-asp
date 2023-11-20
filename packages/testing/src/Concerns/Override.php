@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use Closure;
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Container\Container;
 use Illuminate\Foundation\Testing\TestCase;
 use LogicException;
 use Mockery;
@@ -89,7 +89,7 @@ trait Override {
             return $mock;
         });
 
-        $this->getContainer()->bind(
+        Container::getInstance()->bind(
             $class,
             Closure::fromCallable($this->overrides[$class]),
         );
@@ -97,6 +97,4 @@ trait Override {
         // Return
         return $mock;
     }
-
-    abstract protected function getContainer(): Container;
 }
