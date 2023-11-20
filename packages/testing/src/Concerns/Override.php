@@ -12,7 +12,10 @@ use OutOfBoundsException;
 use Override as OverrideAttribute;
 
 use function is_callable;
+use function is_string;
 use function sprintf;
+
+// @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
  * @mixin TestCase
@@ -53,11 +56,12 @@ trait Override {
 
     /**
      * @template T
+     * @template TMock of T&MockInterface
      *
-     * @param class-string<T>                                                                                   $class
-     * @param callable(T&MockInterface,static=):void|callable(T&MockInterface,static=):T|(T&MockInterface)|null $factory
+     * @param class-string<T>                                                                                                   $class
+     * @param callable(TMock,static=):void|callable(TMock,static=):TMock|callable(TMock,static=):T|TMock|T|class-string<T>|null $factory
      *
-     * @return T&MockInterface
+     * @return TMock|T
      */
     protected function override(string $class, mixed $factory = null): mixed {
         // Overridden?
@@ -71,14 +75,16 @@ trait Override {
         }
 
         // Mock
-        /** @var T&MockInterface $mock */
-        $mock = Mockery::mock($class);
+        /** @var TMock|T $mock */
+        $mock = is_callable($factory) || $factory === null
+            ? Mockery::mock($class)
+            : $factory;
 
         if (is_callable($factory)) {
-            /** @phpstan-ignore-next-line (void) is fine here */
+            /** @phpstan-ignore-next-line it may return `void` so it is fine here */
             $mock = $factory($mock, $this) ?: $mock;
-        } elseif ($factory) {
-            $mock = $factory;
+        } elseif (is_string($factory)) {
+            $mock = Container::getInstance()->make($factory);
         } else {
             // empty
         }

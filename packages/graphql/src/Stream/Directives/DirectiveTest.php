@@ -116,19 +116,9 @@ class DirectiveTest extends TestCase {
         string|int|null $offset,
     ): void {
         // Dependencies
-        $encrypter = new class() implements StringEncrypter {
-            #[Override]
-            public function encryptString(mixed $value): string {
-                return $value;
-            }
-
-            #[Override]
-            public function decryptString(mixed $payload): string {
-                return $payload;
-            }
-        };
-
-        $this->app->bind(StringEncrypter::class, $encrypter::class);
+        if (!is_string($expected)) {
+            $this->override(StringEncrypter::class, DirectiveTest_Encrypter::class);
+        }
 
         // Prepare
         $path = is_string($expected) ? 'errors.0.message' : 'data.test';
@@ -214,19 +204,9 @@ class DirectiveTest extends TestCase {
         ]);
 
         // Dependencies
-        $encrypter = new class() implements StringEncrypter {
-            #[Override]
-            public function encryptString(mixed $value): string {
-                return $value;
-            }
-
-            #[Override]
-            public function decryptString(mixed $payload): string {
-                return $payload;
-            }
-        };
-
-        $this->app->bind(StringEncrypter::class, $encrypter::class);
+        if (!is_string($expected)) {
+            $this->override(StringEncrypter::class, DirectiveTest_Encrypter::class);
+        }
 
         // Prepare
         $path = is_string($expected) ? 'errors.0.message' : 'data.test';
@@ -1743,5 +1723,21 @@ abstract class DirectiveTest_Directive implements DirectiveContract, FieldArgume
     #[Override]
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
         return $value;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest_Encrypter implements StringEncrypter {
+    #[Override]
+    public function encryptString(mixed $value): string {
+        return $value;
+    }
+
+    #[Override]
+    public function decryptString(mixed $payload): string {
+        return $payload;
     }
 }
