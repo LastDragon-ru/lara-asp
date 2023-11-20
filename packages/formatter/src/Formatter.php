@@ -24,10 +24,10 @@ use function is_int;
 use function is_null;
 use function is_string;
 use function json_encode;
+use function mb_str_pad;
 use function mb_strlen;
 use function mb_substr;
 use function sprintf;
-use function str_pad;
 use function str_replace;
 use function trim;
 
@@ -366,17 +366,17 @@ class Formatter {
         $hidden = $length - $show;
 
         if ($length <= $show) {
-            $value = str_pad('*', $length, '*');
+            $value = mb_str_pad('*', $length, '*');
         } elseif ($hidden < $show) {
             $value = str_replace(
                 mb_substr($value, 0, $show),
-                str_pad('*', $show, '*'),
+                mb_str_pad('*', $show, '*'),
                 $value,
             );
         } else {
             $value = str_replace(
                 mb_substr($value, 0, $hidden),
-                str_pad('*', $hidden, '*'),
+                mb_str_pad('*', $hidden, '*'),
                 $value,
             );
         }
