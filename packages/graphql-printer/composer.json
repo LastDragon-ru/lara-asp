@@ -19,7 +19,8 @@
   "require": {
     "php": "^8.1|^8.2|^8.3",
     "ext-mbstring": "*",
-    "webonyx/graphql-php": "^15.4.0"
+    "webonyx/graphql-php": "^15.4.0",
+    "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {
     "composer/class-map-generator": "^1.0",
