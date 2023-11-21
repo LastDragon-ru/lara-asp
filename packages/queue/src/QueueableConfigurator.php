@@ -82,18 +82,25 @@ class QueueableConfigurator {
      */
     protected function getQueueableProperties(): array {
         // TODO [laravel] [update] Check available queue properties.
-        /** SEE {@link https://laravel.com/docs/queues} */
+        /**
+         * SEE {@link https://laravel.com/docs/queues}
+         *
+         * * `deleteWhenMissingModels` - allow deleting the job if the model does
+         *      not exist anymore. Unfortunately cannot be set outside the class.
+         *      ```
+         *      (new ReflectionClass($class))->getDefaultProperties()['deleteWhenMissingModels']
+         *      ```
+         */
         return [
-            'connection'              => null,  // Connection name for the job
-            'queue'                   => null,  // Queue name for the job
-            'timeout'                 => null,  // Number of seconds the job can run
-            'tries'                   => null,  // Number of times the job may be attempted
-            'maxExceptions'           => null,  // Number of exceptions allowed for the job before fail
-            'backoff'                 => null,  // Retry delay for the failed job
-            'deleteWhenMissingModels' => null,  // Allow deleting the job if the model does not exist anymore
-            'retryUntil'              => null,  // The \DateTime indicating when the job should timeout
-            'afterCommit'             => null,  // The job should be dispatched after commit
-            'delay'                   => null,  // Dispatching delay
+            'connection'    => null,  // Connection name for the job
+            'queue'         => null,  // Queue name for the job
+            'timeout'       => null,  // Number of seconds the job can run
+            'tries'         => null,  // Number of times the job may be attempted
+            'maxExceptions' => null,  // Number of exceptions allowed for the job before fail
+            'backoff'       => null,  // Retry delay for the failed job
+            'retryUntil'    => null,  // The \DateTime indicating when the job should timeout
+            'afterCommit'   => null,  // The job should be dispatched after commit
+            'delay'         => null,  // Dispatching delay
         ];
     }
 }
