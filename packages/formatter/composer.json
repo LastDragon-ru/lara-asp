@@ -22,7 +22,8 @@
     "ext-intl": "*",
     "ext-mbstring": "*",
     "laravel/framework": "^9.21.0|^10.0.0",
-    "lastdragon-ru/lara-asp-core": "self.version"
+    "lastdragon-ru/lara-asp-core": "self.version",
+    "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {
     "lastdragon-ru/lara-asp-testing": "self.version",
