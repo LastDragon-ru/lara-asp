@@ -97,6 +97,7 @@ class QueueableConfigurator {
             'timeout'       => null,  // Number of seconds the job can run
             'tries'         => null,  // Number of times the job may be attempted
             'maxExceptions' => null,  // Number of exceptions allowed for the job before fail
+            'failOnTimeout' => null,  // Indicates that the job should be marked as failed on timeout.
             'backoff'       => null,  // Retry delay for the failed job
             'retryUntil'    => null,  // The \DateTime indicating when the job should timeout
             'afterCommit'   => null,  // The job should be dispatched after commit

@@ -15,6 +15,7 @@ class MailableConfig extends QueueableConfig {
 
         unset($config['retryUntil']);
         unset($config['maxExceptions']);
+        unset($config['failOnTimeout']);
 
         return $config;
     }
