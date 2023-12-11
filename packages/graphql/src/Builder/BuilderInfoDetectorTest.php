@@ -367,7 +367,7 @@ class BuilderInfoDetectorTest extends TestCase {
                             }
 
                             #[Override]
-                            public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
+                            public function getBuilderInfo(TypeSource $source): BuilderInfo {
                                 return new BuilderInfo('Custom', BuilderInfoProvider::class);
                             }
                         })::class,

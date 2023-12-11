@@ -31,21 +31,6 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Method class@anonymous/packages/graphql/src/Builder/BuilderInfoDetectorTest\\.php\\:358\\:\\:getBuilderInfo\\(\\) never returns null so it can be removed from the return type\\.$#"
-			count: 1
-			path: packages/graphql/src/Builder/BuilderInfoDetectorTest.php
-
-		-
-			message: "#^Method class@anonymous/packages/graphql/src/SearchBy/Directives/DirectiveTest\\.php\\:406\\:\\:getTypeDefinition\\(\\) never returns GraphQL\\\\Type\\\\Definition\\\\NamedType&GraphQL\\\\Type\\\\Definition\\\\Type so it can be removed from the return type\\.$#"
-			count: 1
-			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
-
-		-
-			message: "#^Method class@anonymous/packages/graphql/src/SearchBy/Directives/DirectiveTest\\.php\\:406\\:\\:getTypeDefinition\\(\\) never returns null so it can be removed from the return type\\.$#"
-			count: 1
-			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$builder of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Eloquent\\\\Builder\\:\\:handle\\(\\) expects Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder given\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Builders/Eloquent/BuilderTest.php

@@ -6,6 +6,7 @@ use Closure;
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Exception;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
@@ -453,7 +454,7 @@ class DirectiveTest extends TestCase {
                             Manipulator $manipulator,
                             string $name,
                             TypeSource $source,
-                        ): TypeDefinitionNode|Type|null {
+                        ): TypeDefinitionNode&Node {
                             return Parser::inputObjectTypeDefinition(
                                 <<<GRAPHQL
                                 """
