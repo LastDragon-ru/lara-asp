@@ -173,6 +173,15 @@ class Formatter {
 
     /**
      * Options:
+     * - `int`: fraction digits
+     *
+     * Locales options:
+     * - none
+     */
+    public const Disksize = 'disksize';
+
+    /**
+     * Options:
      * - `int`: how many characters should be shown
      *
      * Locales options:
@@ -328,32 +337,52 @@ class Formatter {
         return $this->formatDateTime(self::DateTime, $value, $format, $timezone);
     }
 
+    /**
+     * Formats number of bytes into units based on powers of 2 (kibibyte, mebibyte, etc).
+     */
     public function filesize(?int $bytes, int $decimals = null): string {
-        // Round
-        $bytes    = (int) $bytes;
-        $unit     = 0;
-        $units    = [
-            $this->getTranslation(['filesize.B', 'B']),
-            $this->getTranslation(['filesize.KiB', 'KiB']),
-            $this->getTranslation(['filesize.MiB', 'MiB']),
-            $this->getTranslation(['filesize.GiB', 'GiB']),
-            $this->getTranslation(['filesize.TiB', 'TiB']),
-            $this->getTranslation(['filesize.PiB', 'PiB']),
-            $this->getTranslation(['filesize.EiB', 'EiB']),
-            $this->getTranslation(['filesize.ZiB', 'ZiB']),
-            $this->getTranslation(['filesize.YiB', 'YiB']),
-        ];
-        $decimals = $decimals ?: Cast::toInt($this->getOptions(static::Filesize, 2));
+        return $this->formatFilesize(
+            $bytes,
+            $decimals ?: Cast::toInt($this->getOptions(static::Filesize, 2)),
+            1024,
+            [
+                $this->getTranslation(['filesize.B', 'B']),
+                $this->getTranslation(['filesize.KiB', 'KiB']),
+                $this->getTranslation(['filesize.MiB', 'MiB']),
+                $this->getTranslation(['filesize.GiB', 'GiB']),
+                $this->getTranslation(['filesize.TiB', 'TiB']),
+                $this->getTranslation(['filesize.PiB', 'PiB']),
+                $this->getTranslation(['filesize.EiB', 'EiB']),
+                $this->getTranslation(['filesize.ZiB', 'ZiB']),
+                $this->getTranslation(['filesize.YiB', 'YiB']),
+            ],
+        );
+    }
 
-        while ($bytes >= 1024) {
-            $bytes /= 1024;
-            $unit++;
-        }
-
-        // Format
-        return $unit === 0
-            ? $this->integer($bytes)." {$units[$unit]}"
-            : $this->decimal($bytes, $decimals)." {$units[$unit]}";
+    /**
+     * Formats number of bytes into units based on powers of 10 (kilobyte, megabyte, etc).
+     *
+     * @param numeric-string|float|int<0, max>|null $bytes
+     */
+    public function disksize(string|float|int|null $bytes, int $decimals = null): string {
+        return $this->formatFilesize(
+            $bytes,
+            $decimals ?: Cast::toInt($this->getOptions(static::Disksize, 2)),
+            1000,
+            [
+                $this->getTranslation(['disksize.B', 'B']),
+                $this->getTranslation(['disksize.kB', 'kB']),
+                $this->getTranslation(['disksize.MB', 'MB']),
+                $this->getTranslation(['disksize.GB', 'GB']),
+                $this->getTranslation(['disksize.TB', 'TB']),
+                $this->getTranslation(['disksize.PB', 'PB']),
+                $this->getTranslation(['disksize.EB', 'EB']),
+                $this->getTranslation(['disksize.ZB', 'ZB']),
+                $this->getTranslation(['disksize.YB', 'YB']),
+                $this->getTranslation(['disksize.RB', 'RB']),
+                $this->getTranslation(['disksize.QB', 'QB']),
+            ],
+        );
     }
 
     public function secret(?string $value, int $show = null): string {
@@ -458,6 +487,25 @@ class Formatter {
         }
 
         return $value;
+    }
+
+    /**
+     * @param numeric-string|float|int<0, max>|null $bytes
+     * @param array<int<0, max>, string>            $units
+     */
+    protected function formatFilesize(string|float|int|null $bytes, int $decimals, int $base, array $units): string {
+        $bytes = (float) $bytes;
+        $unit  = 0;
+
+        while ($bytes >= $base) {
+            $bytes /= $base;
+            $unit++;
+        }
+
+        // Format
+        return $unit === 0
+            ? $this->integer($bytes)." {$units[$unit]}"
+            : $this->decimal($bytes, $decimals)." {$units[$unit]}";
     }
     // </editor-fold>
 

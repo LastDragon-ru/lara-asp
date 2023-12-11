@@ -12,4 +12,17 @@ return [
         'ZiB' => 'ZiB',
         'YiB' => 'YiB',
     ],
+    'disksize' => [
+        'B'  => 'B',
+        'kB' => 'kB',
+        'MB' => 'MB',
+        'GB' => 'GB',
+        'TB' => 'TB',
+        'PB' => 'PB',
+        'EB' => 'EB',
+        'ZB' => 'ZB',
+        'YB' => 'YB',
+        'RB' => 'RB',
+        'QB' => 'QB',
+    ],
 ];

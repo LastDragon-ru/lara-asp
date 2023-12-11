@@ -13,6 +13,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use function config;
 use function str_replace;
 
+use const PHP_INT_MAX;
+
 /**
  * @internal
  */
@@ -268,6 +270,19 @@ class FormatterTest extends TestCase {
         self::assertEquals('0 B', $this->formatter->filesize(0));
         self::assertEquals('10 B', $this->formatter->filesize(10));
         self::assertEquals('10.33 MiB', $this->formatter->filesize(10 * 1024 * 1024 + 1024 * 334));
+        self::assertEquals('10.00 GiB', $this->formatter->filesize(10 * 1024 * 1024 * 1024, 2));
+        self::assertEquals('8.00 EiB', $this->formatter->filesize(PHP_INT_MAX, 2));
+    }
+
+    public function testDisksize(): void {
+        self::assertEquals('0 B', $this->formatter->disksize(null));
+        self::assertEquals('0 B', $this->formatter->disksize(0));
+        self::assertEquals('10 B', $this->formatter->disksize(10));
+        self::assertEquals('10.83 MB', $this->formatter->disksize(10 * 1024 * 1024 + 1024 * 334));
+        self::assertEquals('10.00 GB', $this->formatter->disksize(10 * 1000 * 1000 * 1000, 2));
+        self::assertEquals('9.22 EB', $this->formatter->disksize(PHP_INT_MAX, 2));
+        self::assertEquals('10.00 QB', $this->formatter->disksize(10_000_000_000_000_000_000_000_000_000_000, 2));
+        self::assertEquals('10.00 QB', $this->formatter->disksize('10000000000000000000000000000000', 2));
     }
 
     public function testCurrency(): void {
