@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Dev\PhpStan\Extensions\Container;
 
 use Illuminate\Contracts\Container\Container;
-use NunoMaduro\Larastan\Concerns\HasContainer;
+use Larastan\Larastan\Concerns\HasContainer;
 use Override;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;

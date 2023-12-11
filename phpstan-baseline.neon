@@ -31,6 +31,21 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
+			message: "#^Method class@anonymous/packages/graphql/src/Builder/BuilderInfoDetectorTest\\.php\\:358\\:\\:getBuilderInfo\\(\\) never returns null so it can be removed from the return type\\.$#"
+			count: 1
+			path: packages/graphql/src/Builder/BuilderInfoDetectorTest.php
+
+		-
+			message: "#^Method class@anonymous/packages/graphql/src/SearchBy/Directives/DirectiveTest\\.php\\:406\\:\\:getTypeDefinition\\(\\) never returns GraphQL\\\\Type\\\\Definition\\\\NamedType&GraphQL\\\\Type\\\\Definition\\\\Type so it can be removed from the return type\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
+
+		-
+			message: "#^Method class@anonymous/packages/graphql/src/SearchBy/Directives/DirectiveTest\\.php\\:406\\:\\:getTypeDefinition\\(\\) never returns null so it can be removed from the return type\\.$#"
+			count: 1
+			path: packages/graphql/src/SearchBy/Directives/DirectiveTest.php
+
+		-
 			message: "#^Parameter \\#1 \\$builder of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Builders\\\\Eloquent\\\\Builder\\:\\:handle\\(\\) expects Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder given\\.$#"
 			count: 1
 			path: packages/graphql/src/SortBy/Builders/Eloquent/BuilderTest.php
@@ -81,27 +96,7 @@ parameters:
 			path: packages/spa/src/Http/Controllers/SpaController.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Request\\:\\:validated\\(\\) has parameter \\$key with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: packages/spa/src/Http/Request.php
-
-		-
-			message: "#^Parameter \\#1 \\$array of static method Illuminate\\\\Support\\\\Arr\\:\\:get\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
-			count: 1
-			path: packages/spa/src/Http/Request.php
-
-		-
-			message: "#^Parameter \\#1 \\$array of static method Illuminate\\\\Support\\\\Arr\\:\\:has\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
-			count: 1
-			path: packages/spa/src/Http/Request.php
-
-		-
 			message: "#^Parameter \\#3 \\$path of method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\:\\:mapResourceValue\\(\\) expects array\\<string\\>, array given\\.$#"
-			count: 1
-			path: packages/spa/src/Http/Resources/Resource.php
-
-		-
-			message: "#^Return type \\(static\\(LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\)\\) of method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\:\\:additional\\(\\) should be covariant with return type \\(\\$this\\(Illuminate\\\\Http\\\\Resources\\\\Json\\\\JsonResource\\)\\) of method Illuminate\\\\Http\\\\Resources\\\\Json\\\\JsonResource\\:\\:additional\\(\\)$#"
 			count: 1
 			path: packages/spa/src/Http/Resources/Resource.php
 

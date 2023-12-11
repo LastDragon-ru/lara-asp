@@ -25,7 +25,7 @@ includes:
     - ./vendor/phpstan/phpstan-phpunit/extension.neon
     - ./vendor/phpstan/phpstan-phpunit/rules.neon
     - ./vendor/phpstan/phpstan-strict-rules/rules.neon
-    - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/larastan/larastan/extension.neon
     - ./vendor/spaze/phpstan-disallowed-calls/extension.neon
     - ./vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
     - ./vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
