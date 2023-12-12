@@ -7,6 +7,7 @@ use DateTimeInterface;
 use DateTimeZone;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
 use IntlTimeZone;
@@ -19,7 +20,10 @@ use NumberFormatter;
 use OutOfBoundsException;
 
 use function abs;
+use function bccomp;
+use function bcdiv;
 use function config;
+use function is_float;
 use function is_int;
 use function is_null;
 use function is_string;
@@ -494,18 +498,26 @@ class Formatter {
      * @param array<int<0, max>, string>            $units
      */
     protected function formatFilesize(string|float|int|null $bytes, int $decimals, int $base, array $units): string {
-        $bytes = (float) $bytes;
         $unit  = 0;
+        $base  = (string) $base;
+        $scale = 2 * $decimals;
+        $bytes = match (true) {
+            is_float($bytes) => sprintf('%0.0f', $bytes),
+            default => (string) $bytes,
+        };
+        $length = static function (string $bytes): int {
+            return mb_strlen(Str::before($bytes, '.'));
+        };
 
-        while ($bytes >= $base) {
-            $bytes /= $base;
+        while ((bccomp($bytes, $base, $scale) >= 0 || $length($bytes) > 2) && isset($units[$unit + 1])) {
+            $bytes = bcdiv($bytes, $base, $scale);
             $unit++;
         }
 
         // Format
         return $unit === 0
-            ? $this->integer($bytes)." {$units[$unit]}"
-            : $this->decimal($bytes, $decimals)." {$units[$unit]}";
+            ? $this->integer((int) $bytes)." {$units[$unit]}"
+            : $this->decimal((float) $bytes, $decimals)." {$units[$unit]}";
     }
     // </editor-fold>
 
