@@ -343,8 +343,10 @@ class Formatter {
 
     /**
      * Formats number of bytes into units based on powers of 2 (kibibyte, mebibyte, etc).
+     *
+     * @param numeric-string|float|int<0, max>|null $bytes
      */
-    public function filesize(?int $bytes, int $decimals = null): string {
+    public function filesize(string|float|int|null $bytes, int $decimals = null): string {
         return $this->formatFilesize(
             $bytes,
             $decimals ?: Cast::toInt($this->getOptions(static::Filesize, 2)),
@@ -359,6 +361,8 @@ class Formatter {
                 $this->getTranslation(['filesize.EiB', 'EiB']),
                 $this->getTranslation(['filesize.ZiB', 'ZiB']),
                 $this->getTranslation(['filesize.YiB', 'YiB']),
+                $this->getTranslation(['filesize.RiB', 'RiB']),
+                $this->getTranslation(['filesize.QiB', 'QiB']),
             ],
         );
     }

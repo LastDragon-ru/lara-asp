@@ -11,6 +11,8 @@ return [
         'EiB' => 'EiB',
         'ZiB' => 'ZiB',
         'YiB' => 'YiB',
+        'RiB' => 'RiB',
+        'QiB' => 'QiB',
     ],
     'disksize' => [
         'B'  => 'B',
