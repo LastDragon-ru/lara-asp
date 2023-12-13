@@ -352,7 +352,7 @@ class DirectiveTest extends TestCase {
                         return InstalledVersions::satisfies(new VersionParser(), 'laravel/scout', $version);
                     };
                     $file      = match (true) {
-                        $satisfies('>=10.3.0') => '~full-expected-scout≥10.3.0.graphql',
+                        $satisfies('>=10.3.0') => '~full-expected-scout-v10.3.0.graphql',
                         default                => '~full-expected.graphql',
                     };
 
