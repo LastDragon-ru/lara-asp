@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 use DateTimeInterface;
 use Exception;
 use Illuminate\Support\Facades\Date;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\Traits\WithDefaultContext;
 use Override;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
@@ -47,9 +48,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     /**
      * @param array<string, mixed> $defaultContext
      */
-    public function __construct(
-        array $defaultContext = [],
-    ) {
+    public function __construct(array $defaultContext = []) {
         $this->setDefaultContext($defaultContext);
     }
 
@@ -78,7 +77,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
         }
 
         return $object->format(
-            $this->getContextOption($context, self::ContextFormat, self::ContextFormatDefault),
+            $this->getContextOptionFormat($context),
         );
     }
 
@@ -114,8 +113,8 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
         }
 
         // Facade is called to make sure that the expected DateTime class will be used.
-        $fallback = $this->getContextOption($context, self::ContextFallback, self::ContextFallbackDefault);
-        $format   = $this->getContextOption($context, self::ContextFormat, self::ContextFormatDefault);
+        $fallback = $this->getContextOptionFallback($context);
+        $format   = $this->getContextOptionFormat($context);
         $result   = null;
         $error    = null;
 
@@ -152,5 +151,19 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     #[Override]
     public function supportsDenormalization(mixed $data, string $type, string $format = null): bool {
         return is_a($type, DateTimeInterface::class, true);
+    }
+
+    /**
+     * @param array<array-key, mixed> $context
+     */
+    protected function getContextOptionFormat(array $context): string {
+        return Cast::toString($this->getContextOption($context, self::ContextFormat, self::ContextFormatDefault));
+    }
+
+    /**
+     * @param array<array-key, mixed> $context
+     */
+    protected function getContextOptionFallback(array $context): bool {
+        return Cast::toBool($this->getContextOption($context, self::ContextFallback, self::ContextFallbackDefault));
     }
 }

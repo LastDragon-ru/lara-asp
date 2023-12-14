@@ -74,7 +74,7 @@
     "nikic/php-parser": "^4.15",
     "larastan/larastan": "2.7.0",
     "orchestra/testbench": "^7.0.0|^8.0.0",
-    "phpstan/phpstan": "1.10.48",
+    "phpstan/phpstan": "1.10.50",
     "phpstan/phpstan-mockery": "^1.0.0",
     "phpstan/phpstan-phpunit": "^1.0.0",
     "phpstan/phpstan-strict-rules": "^1.1.0",

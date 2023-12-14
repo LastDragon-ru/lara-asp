@@ -29,12 +29,7 @@ trait WithDefaultContext {
     }
 
     /**
-     * @template T
-     *
      * @param array<array-key, mixed> $context
-     * @param T|null                  $default
-     *
-     * @return ($default is null ? mixed : T)
      */
     public function getContextOption(array $context, string $option, mixed $default): mixed {
         return $this->getContext($context)[$option] ?? $default;
