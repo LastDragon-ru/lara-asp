@@ -5,6 +5,7 @@
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
+  "abandoned": "lastdragon-ru/lara-asp-core",
   "keywords": [
     "queue",
     "laravel-queue",

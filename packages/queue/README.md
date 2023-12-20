@@ -1,6 +1,10 @@
-# Queue Helpers
+# Queue Helpers 💀
 
 This package provides additional capabilities for queued jobs and queued listeners like multilevel configuration support, job overriding (very useful for package development to provide base implementation and allow the application to extend it), easy define for cron jobs, and DI in constructor support.
+
+> [!WARNING]
+>
+> The package is marked as deprecated because of its complexity and support difficulties. Please use the [core][pkg:core] package instead, that provides similar but simplified features.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
 [//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
@@ -379,3 +383,11 @@ class DoSomethingAppJob extends DoSomethingPackageJob {
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
 [//]: # (end: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+
+[include:file]: ../../docs/Shared/Links.md
+[//]: # (start: 6c180b37114202a8766bad1a59a3c0699948cc875617c85fd14a024e3bca64fe)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[pkg:core]:            https://github.com/LastDragon-ru/lara-asp/tree/main/packages/core
+
+[//]: # (end: 6c180b37114202a8766bad1a59a3c0699948cc875617c85fd14a024e3bca64fe)

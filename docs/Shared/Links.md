@@ -9,3 +9,5 @@
 [pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
 
 [pkg:serializer]:      https://github.com/LastDragon-ru/lara-asp/tree/main/packages/serializer
+
+[pkg:core]:            https://github.com/LastDragon-ru/lara-asp/tree/main/packages/core
