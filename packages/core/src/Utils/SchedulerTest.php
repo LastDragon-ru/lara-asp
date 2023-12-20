@@ -29,6 +29,7 @@ class SchedulerTest extends TestCase {
                     'cron'               => '* * * * *',
                     'enabled'            => true,
                     'timezone'           => 'Europe/Moscow',
+                    'inMaintenanceMode'  => true,
                     'withoutOverlapping' => 123,
                 ];
             }
@@ -53,6 +54,10 @@ class SchedulerTest extends TestCase {
             $schedule
                 ->shouldReceive('withoutOverlapping')
                 ->with(123)
+                ->once()
+                ->andReturnSelf();
+            $schedule
+                ->shouldReceive('evenInMaintenanceMode')
                 ->once()
                 ->andReturnSelf();
         });
@@ -96,6 +101,9 @@ class SchedulerTest extends TestCase {
                 ->never();
             $schedule
                 ->shouldReceive('withoutOverlapping')
+                ->never();
+            $schedule
+                ->shouldReceive('evenInMaintenanceMode')
                 ->never();
         });
 

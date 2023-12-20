@@ -16,6 +16,7 @@ use function is_int;
  *      cron: string,
  *      enabled?: bool,
  *      timezone?: DateTimeZone|string|null,
+ *      inMaintenanceMode?: bool|null,
  *      withoutOverlapping?: int<0, max>|true|null,
  *      }
  */
@@ -48,6 +49,10 @@ class Scheduler {
             $event->timezone($settings['timezone']);
         }
 
+        if (isset($settings['inMaintenanceMode']) && $settings['inMaintenanceMode']) {
+            $event->evenInMaintenanceMode();
+        }
+
         if (isset($settings['withoutOverlapping'])) {
             if (is_int($settings['withoutOverlapping'])) {
                 $event->withoutOverlapping($settings['withoutOverlapping']);
@@ -70,6 +75,7 @@ class Scheduler {
             'cron'               => '',
             'enabled'            => true,
             'timezone'           => null,
+            'inMaintenanceMode'  => false,
             'withoutOverlapping' => null,
         ];
         $settings = $instance instanceof Schedulable ? $instance->getSchedule() : [];
