@@ -123,6 +123,7 @@ These assertions can be used without Laravel at all (#4).
 | [`assertScoutQueryEquals()`](./src/Assertions/ScoutAssertions.php)                      | Asserts that Scout Query equals Scout Query.                         |
 | [`assertCronableRegistered()`](./src/Assertions/Application/CronableAssertions.php#L30) | Asserts that [Cronable](../queue/README.md#cron-jobs) is registered. |
 | [`assertQueryLogEquals()`](./src/Database/QueryLog/WithQueryLog.php)                    | Asserts that `QueryLog` equals `QueryLog`.                           |
+| [`assertScheduled()`](./src/Assertions/Application/ScheduleAssertions.php)              | Asserts that Schedule contains task.                                 |
 
 # Laravel Response Testing
 
