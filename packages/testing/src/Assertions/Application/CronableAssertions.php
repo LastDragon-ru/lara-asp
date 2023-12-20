@@ -20,6 +20,8 @@ use function sprintf;
 use function str_contains;
 
 /**
+ * @deprecated 5.3.1 Please use {@link ScheduleAssertions} instead.
+ *
  * @required {@link \Illuminate\Foundation\Testing\TestCase}
  *
  * @property-read Application $app
@@ -29,6 +31,8 @@ use function str_contains;
 trait CronableAssertions {
     /**
      * Asserts that {@link \LastDragon_ru\LaraASP\Queue\Contracts\Cronable} is registered.
+     *
+     * @deprecated 5.3.1 Please use {@link ScheduleAssertions::assertScheduled()} instead.
      *
      * @param class-string<Cronable> $cronable
      */
@@ -40,6 +44,8 @@ trait CronableAssertions {
     }
 
     /**
+     * @deprecated 5.3.1
+     *
      * @param ConfigurableQueueable|class-string<ConfigurableQueueable> $queueable
      * @param array<string, mixed>                                      $settings
      */
@@ -54,6 +60,8 @@ trait CronableAssertions {
     }
 
     /**
+     * @deprecated 5.3.1
+     *
      * @param class-string<Cronable> $cronable
      */
     protected function isCronableRegistered(string $cronable): bool {
