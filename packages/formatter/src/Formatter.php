@@ -454,7 +454,7 @@ class Formatter {
     }
 
     /**
-     * @param Closure(string, ?int):?int|null $closure
+     * @param Closure(string, ?int):(int|null)|null $closure
      */
     protected function formatValue(
         string $type,
@@ -598,7 +598,7 @@ class Formatter {
     }
 
     /**
-     * @param Closure(string, ?int):?int|null $closure
+     * @param Closure(string, ?int):(int|null)|null $closure
      */
     private function getIntlNumberFormatter(
         string $type,
@@ -618,7 +618,7 @@ class Formatter {
     }
 
     /**
-     * @param Closure(string, ?int):?int|null $closure
+     * @param Closure(string, ?int):(int|null)|null $closure
      */
     private function createIntlNumberFormatter(
         string $type,
