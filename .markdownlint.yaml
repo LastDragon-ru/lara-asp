@@ -258,4 +258,5 @@ MD053:
     "include:file",
     "include:package-list",
     "include:template",
+    "include:docblock",
   ]

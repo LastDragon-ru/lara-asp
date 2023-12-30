@@ -29,6 +29,17 @@ Where:
 
 ## Instructions
 
+### `[include:docblock]: <target> <parameters>`
+
+* `<target>` - File path.
+* `<parameters>` - additional parameters
+  * `summary` - Include the class summary? (default `false`)
+  * `description` - Include the class description? (default `true`)
+
+Includes the docblock of the first PHP class/interface/trait/enum/etc
+from `<target>` file. Inline tags include as is. Other tags are
+ignored.
+
 ### `[include:document-list]: <target> <parameters>`
 
 * `<target>` - Directory path.

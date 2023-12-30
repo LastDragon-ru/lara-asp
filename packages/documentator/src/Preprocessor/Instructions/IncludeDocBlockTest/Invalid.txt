@@ -1,0 +1,10 @@
+<?php declare(strict_types = 1);
+
+/**
+ * Description description description description description description
+ * description description description description description description
+ * description description description description description description
+ */
+A {
+    // empty
+}

@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec;
@@ -88,6 +89,7 @@ class Preprocessor {
         $this->addInstruction(IncludeExec::class);
         $this->addInstruction(IncludeExample::class);
         $this->addInstruction(IncludeTemplate::class);
+        $this->addInstruction(IncludeDocBlock::class);
         $this->addInstruction(IncludePackageList::class);
         $this->addInstruction(IncludeDocumentList::class);
     }
