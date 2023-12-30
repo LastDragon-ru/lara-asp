@@ -20,6 +20,16 @@ class DurationFormatterTest extends TestCase {
     public function testGetTimestamp(float $expected, DateInterval $interval): void {
         self::assertEquals($expected, DurationFormatter::getTimestamp($interval));
     }
+
+    /**
+     * @dataProvider dataProviderFormat
+     */
+    public function testFormat(string $expected, string $format, float|int $duration): void {
+        $formatter = new DurationFormatter($format);
+        $actual    = $formatter->format($duration);
+
+        self::assertEquals($expected, $actual);
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -39,6 +49,33 @@ class DurationFormatterTest extends TestCase {
                     new DateTime('2023-12-11T11:22:45.000605+04:00'),
                 ),
             ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, float|int}>
+     */
+    public static function dataProviderFormat(): array {
+        $duration = static function (string $interval): float {
+            return DurationFormatter::getTimestamp(new DateInterval($interval));
+        };
+
+        return [
+            'S'                   => ['3', 'S', 12.345678],
+            'SS'                  => ['35', 'SS', 12.345678],
+            'SSS'                 => ['346', 'SSS', 12.345678],
+            's.SSS'               => ['1.230', 's.SSS', 1.23],
+            'ss.SS'               => ['123.45', 'ss.SS', 123.45],
+            'ss.SSS'              => ['01.230', 'ss.SSS', 1.23],
+            'm:ss'                => ['3:00', 'm:ss', 180],
+            'mm:ss'               => ['03:00', 'mm:ss', -180],
+            'zmm:ss'              => ['-03:00', 'zmm:ss', -180],
+            'H:m:s'               => ['5:3:0', 'H:m:s', 5 * 60 * 60 + 180],
+            'HH:mm:ss'            => ['05:03:00', 'HH:mm:ss', 5 * 60 * 60 + 180],
+            'y:M:d:H:m:s'         => ['1:2:3:1:2:5', 'y:M:d:H:m:s', $duration('P1Y2M3DT1H2M5S')],
+            'yyy:MM:dd:HH:mm:ss'  => ['001:02:03:01:02:05', 'yyy:MM:dd:HH:mm:ss', $duration('P1Y2M3DT1H2M5S')],
+            "y:M:d:'H':m:s"       => ['1:2:3:H:62:5', "y:M:d:'H':m:s", $duration('P1Y2M3DT1H2M5S')],
+            "y:'M':d:'H':m:s.SSS" => ['2:M:298:H:62:5.000', "y:'M':d:'H':m:s.SSS", $duration('P1Y22M3DT1H2M5S')],
         ];
     }
     // </editor-fold>
