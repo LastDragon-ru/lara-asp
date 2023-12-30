@@ -129,7 +129,7 @@ class Preprocess extends Command {
                 }
 
                 $prefix      = '  * ';
-                $parameters  = $prefix.implode($prefix, $parameters);
+                $parameters  = $prefix.implode("\n{$prefix}", $parameters);
                 $help[$name] = <<<HELP
                     ### `[{$name}]: <target> <parameters>`
 
