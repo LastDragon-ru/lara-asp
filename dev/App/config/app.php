@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Dev\App\Provider;
 use LastDragon_ru\LaraASP\Documentator\Provider as DocumentatorProvider;
+use LastDragon_ru\LaraASP\Formatter\Provider as FormatterProvider;
 use LastDragon_ru\LaraASP\GraphQL\Provider as GraphQLProvider;
 use LastDragon_ru\LaraASP\Migrator\Provider as MigratorProvider;
 use LastDragon_ru\LaraASP\Serializer\Provider as SerializerProvider;
@@ -32,7 +33,7 @@ return [
     | services the application utilizes. Set this in your ".env" file.
     |
     */
-    'env'             => env('APP_ENV', 'production'),
+    'env'             => env('APP_ENV', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -154,6 +155,7 @@ return [
         DocumentatorProvider::class,
         MigratorProvider::class,
         GraphQLProvider::class,
+        FormatterProvider::class,
     ])->toArray(),
 
     /*

@@ -3,7 +3,10 @@
 namespace LastDragon_ru\LaraASP\Dev\App;
 
 use Illuminate\Console\Command;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LogicException;
 use PhpParser\ErrorHandler\Collecting;
 use PhpParser\Node;
@@ -18,6 +21,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 
 use function array_map;
 use function array_slice;
+use function config;
 use function debug_backtrace;
 use function end;
 use function file;
@@ -58,8 +62,12 @@ final class Example extends Command {
     }
 
     public function __invoke(Dumper $dumper): void {
-        $file         = Cast::toString($this->argument('file'));
         self::$dumper = $dumper;
+        $container    = Container::getInstance();
+        $config       = $container->make(Repository::class);
+        $file         = Cast::toString($this->argument('file'));
+
+        $container[Repository::class] = clone $config;
 
         try {
             // Run
@@ -75,7 +83,10 @@ final class Example extends Command {
                 $this->output->writeln("<markdown>{$output}</markdown>");
             }
         } finally {
-            self::$dumper = null;
+            Container::setInstance($container);
+
+            $container[Repository::class] = $config;
+            self::$dumper                 = null;
         }
     }
 
@@ -85,6 +96,22 @@ final class Example extends Command {
 
     public static function raw(Stringable|string $value, string $type, string $expression = null): void {
         self::getDumper()->raw($value, $expression ?? self::getExpression(__FUNCTION__), $type);
+    }
+
+    /**
+     * @param array<string, mixed> $settings
+     */
+    public static function config(string $root, array $settings): void {
+        // Example?
+        self::getDumper();
+
+        // Update
+        $config = (array) config($root, []);
+        $config = (new ConfigMerger())->merge([ConfigMerger::Strict => false], $config, $settings);
+
+        config([
+            $root => $config,
+        ]);
     }
 
     private static function getExpression(string $method): ?string {
