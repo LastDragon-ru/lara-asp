@@ -82,6 +82,70 @@ The `$locale->decimal(123.454321)` is:
 
 Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
+# Duration
+
+To format duration you can use built-in Intl formatter, but it doesn't support fraction seconds and have different format between locales (for example, `12345` seconds is `3:25:45` in `en_US` locale, and `12 345` in `ru_RU`). These reasons make difficult to use it in real applications. To make `duration()` more useful, the alternative syntax was added.
+
+[include:docblock]: ./src/Utils/DurationFormatter.php
+[//]: # (start: 8e359fc1ea71d4c4b58c4acdcd3289f180a89cbd39ebdbd10422908bd66b0268)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax).
+
+| Symbol | Meaning                       |
+|--------|-------------------------------|
+| `y`    | years                         |
+| `M`    | months                        |
+| `d`    | days                          |
+| `H`    | hours                         |
+| `m`    | minutes                       |
+| `s`    | seconds                       |
+| `S`    | fractional seconds            |
+| `z`    | negative sign (default `-`)   |
+| `'`    | escape for text               |
+| `''`   | two single quotes produce one |
+
+[//]: # (end: 8e359fc1ea71d4c4b58c4acdcd3289f180a89cbd39ebdbd10422908bd66b0268)
+
+[include:example]: ./docs/Examples/Duration.php
+[//]: # (start: bb574f6b1315aa7b33a56d897b23ecc4d18dece9ea201b85b54154e144931d3b)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\Formatter\Formatter;
+
+$default = Container::getInstance()->make(Formatter::class); // For default app locale
+$locale  = $default->forLocale('ru_RU');                     // For ru_RU locale
+
+Example::dump($default->duration(123.454321));
+Example::dump($locale->duration(123.4543));
+Example::dump($locale->duration(1_234_543));
+```
+
+The `$default->duration(123.454321)` is:
+
+```plain
+"00:02:03.454"
+```
+
+The `$locale->duration(123.4543)` is:
+
+```plain
+"00:02:03.454"
+```
+
+The `$locale->duration(1234543)` is:
+
+```plain
+"342:55:43.000"
+```
+
+[//]: # (end: bb574f6b1315aa7b33a56d897b23ecc4d18dece9ea201b85b54154e144931d3b)
+
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
 [//]: # (warning: Generated automatically. Do not edit.)
