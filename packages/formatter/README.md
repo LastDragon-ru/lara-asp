@@ -82,6 +82,82 @@ The `$locale->decimal(123.454321)` is:
 
 Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
+# Formats
+
+Some methods like as `date()`/`datetime()`/etc have `$format` argument. The argument specifies not the format but the format name. So you can use the names and do not worry about real formats. It is very important when application big/grow. To specify available names and formats the package config should be published and customized.
+
+```shell
+php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Formatter\\Provider --tag=config
+```
+
+[include:example]: ./docs/Examples/Config.php
+[//]: # (start: a0315c77f2fd2868ad7a67f118ff4816a93add9ae6e7d35899828ddc32cfac37)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Date;
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\LaraASP\Formatter\Package;
+
+Example::config(Package::Name, [
+    'options' => [
+        Formatter::Date => 'default',
+    ],
+    'all'     => [
+        Formatter::Date => [
+            'default' => 'd MMM yyyy',
+            'custom'  => 'yyyy/MM/dd',
+        ],
+    ],
+    'locales' => [
+        'ru_RU' => [
+            Formatter::Date => [
+                'custom' => 'dd.MM.yyyy',
+            ],
+        ],
+    ],
+]);
+
+$datetime = Date::make('2023-12-30T20:41:40.000018+04:00');
+$default  = Container::getInstance()->make(Formatter::class);
+$locale   = $default->forLocale('ru_RU');
+
+Example::dump($default->date($datetime));
+Example::dump($default->date($datetime, 'custom'));
+Example::dump($locale->date($datetime));
+Example::dump($locale->date($datetime, 'custom'));
+```
+
+The `$default->date($datetime)` is:
+
+```plain
+"30 Dec 2023"
+```
+
+The `$default->date($datetime, 'custom')` is:
+
+```plain
+"2023/12/30"
+```
+
+The `$locale->date($datetime)` is:
+
+```plain
+"30 дек. 2023"
+```
+
+The `$locale->date($datetime, 'custom')` is:
+
+```plain
+"30.12.2023"
+```
+
+[//]: # (end: a0315c77f2fd2868ad7a67f118ff4816a93add9ae6e7d35899828ddc32cfac37)
+
 # Duration
 
 To format duration you can use built-in Intl formatter, but it doesn't support fraction seconds and have different format between locales (for example, `12345` seconds is `3:25:45` in `en_US` locale, and `12 345` in `ru_RU`). These reasons make difficult to use it in real applications. To make `duration()` more useful, the alternative syntax was added.
