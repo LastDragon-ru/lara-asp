@@ -12,8 +12,6 @@ use Mockery;
 use Mockery\Matcher\IsEqual;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 #[CoversClass(Preprocessor::class)]
 class PreprocessorTest extends TestCase {
     public function testProcess(): void {

@@ -17,30 +17,42 @@ return [
      * @see Formatter
      */
     'options' => [
-        // This value has no effect inside the published config.
+        /**
+         * This value has no effect inside the published config.
+         */
         ConfigMerger::Strict      => false,
 
-        // Fraction digits for decimal()
+        /**
+         * Fraction digits for {@link Formatter::decimal()}
+         */
         // Formatter::Decimal => 2,
 
-        // Default custom time format, you can also use
-        // - {@link \IntlDateFormatter::SHORT} (default)
-        // - {@link \IntlDateFormatter::FULL}
-        // - {@link \IntlDateFormatter::LONG}
-        // - {@link \IntlDateFormatter::MEDIUM}
+        /**
+         * Default custom time format name, you can also use
+         * - {@link IntlDateFormatter::SHORT} (default)
+         * - {@link IntlDateFormatter::FULL}
+         * - {@link IntlDateFormatter::LONG}
+         * - {@link IntlDateFormatter::MEDIUM}
+         */
         // Formatter::Time => 'custom',
 
-        // Global Attributes for {@link \NumberFormatter::setAttribute()}
+        /**
+         * Global Attributes for {@link NumberFormatter::setAttribute}
+         */
         Formatter::IntlAttributes => [
             NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
         ],
 
-        // Global Symbols for {@link \NumberFormatter::setSymbol()}
+        /**
+         * Global Symbols for {@link NumberFormatter::setSymbol}
+         */
         // Formatter::IntlSymbols => [
         //     // ...
         // ],
 
-        // Global Attributes for {@link \NumberFormatter::setTextAttribute()}
+        /**
+         * Global Attributes for {@link NumberFormatter::setTextAttribute}
+         */
         // Formatter::IntlTextAttributes => [
         //     // ...
         // ],
@@ -55,15 +67,21 @@ return [
      * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates-and-times
      */
     'all'     => [
-        // This value has no effect inside the published config.
+        /**
+         * This value has no effect inside the published config.
+         */
         ConfigMerger::Strict => false,
 
-        // Custom time format for all locales
-        // Formatter::Time        => [
+        /**
+         * Custom time format for all locales
+         */
+        // Formatter::Time => [
         //     'custom' => 'HH:mm:ss.SSS',
         // ],
 
-        // Intl properties for all locales (will be merged with `options`)
+        /**
+         * Intl properties for all locales (will be merged with `options`)
+         */
         // Formatter::Decimal => [
         //     Formatter::IntlSymbols        => [],
         //     Formatter::IntlAttributes     => [],
@@ -78,7 +96,9 @@ return [
      * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates-and-times
      */
     'locales' => [
-        // This value has no effect inside the published config.
+        /**
+         * This value has no effect inside the published config.
+         */
         ConfigMerger::Strict => false,
 
         // 'ru_RU' => [

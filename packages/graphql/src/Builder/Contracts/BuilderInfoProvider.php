@@ -8,7 +8,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
- * Can be used with a directive to define the builder type in case when auto-detection doesn't work.
+ * Can be used with a directive to define the builder type in case when
+ * auto-detection doesn't work.
  *
  * @see BuilderUnknown
  */
