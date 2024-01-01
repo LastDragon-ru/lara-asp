@@ -340,7 +340,7 @@ class Formatter {
 
     public function time(
         ?DateTimeInterface $value,
-        string|int $format = null,
+        string $format = null,
         IntlTimeZone|DateTimeZone|string $timezone = null,
     ): string {
         return $this->formatDateTime(self::Time, $value, $format, $timezone);
@@ -348,7 +348,7 @@ class Formatter {
 
     public function date(
         ?DateTimeInterface $value,
-        string|int $format = null,
+        string $format = null,
         IntlTimeZone|DateTimeZone|string $timezone = null,
     ): string {
         return $this->formatDateTime(self::Date, $value, $format, $timezone);
@@ -356,7 +356,7 @@ class Formatter {
 
     public function datetime(
         ?DateTimeInterface $value,
-        string|int $format = null,
+        string $format = null,
         IntlTimeZone|DateTimeZone|string $timezone = null,
     ): string {
         return $this->formatDateTime(self::DateTime, $value, $format, $timezone);
@@ -501,7 +501,7 @@ class Formatter {
     protected function formatDateTime(
         string $type,
         ?DateTimeInterface $value,
-        string|int $format = null,
+        string $format = null,
         IntlTimeZone|DateTimeZone|string $timezone = null,
     ): string {
         if (is_null($value)) {
@@ -548,10 +548,7 @@ class Formatter {
 
     // <editor-fold desc="Internal">
     // =========================================================================
-    private function getIntlDateFormatter(
-        string $type,
-        string|int $format = null,
-    ): IntlDateFormatter {
+    private function getIntlDateFormatter(string $type, string $format = null): IntlDateFormatter {
         $key       = json_encode([$type, $format], JSON_THROW_ON_ERROR);
         $formatter = $this->dateFormatters[$key] ?? $this->createIntlDateFormatter($type, $format);
 
@@ -564,10 +561,7 @@ class Formatter {
         return $formatter;
     }
 
-    private function createIntlDateFormatter(
-        string $type,
-        string|int $format = null,
-    ): ?IntlDateFormatter {
+    private function createIntlDateFormatter(string $type, string $format = null): ?IntlDateFormatter {
         $formatter = null;
         $pattern   = '';
         $default   = IntlDateFormatter::SHORT;
