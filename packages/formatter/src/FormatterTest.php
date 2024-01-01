@@ -126,8 +126,28 @@ class FormatterTest extends TestCase {
     }
 
     public function testDuration(): void {
+        self::assertEquals('03:25:45.120', $this->formatter->duration(12_345.12));
+        self::assertEquals('03:25:45.001', $this->formatter->forLocale('ru_RU')->duration(12_345.0005));
+    }
+
+    public function testDurationConfig(): void {
+        config([
+            Package::Name.'.options.'.Formatter::Duration => NumberFormatter::DURATION,
+        ]);
+
         self::assertEquals('3:25:45', $this->formatter->duration(12_345));
         self::assertEquals("12\u{00A0}345", $this->formatter->forLocale('ru_RU')->duration(12_345));
+    }
+
+    public function testDurationCustomFormat(): void {
+        config([
+            Package::Name.'.options.'.Formatter::Duration        => 'custom',
+            Package::Name.'.all.'.Formatter::Duration.'.custom'  => 'mm:ss',
+            Package::Name.'.all.'.Formatter::Duration.'.custom2' => 'H:mm:ss.SSS',
+        ]);
+
+        self::assertEquals('02:03', $this->formatter->duration(123.456));
+        self::assertEquals('0:02:03.456', $this->formatter->duration(123.456, 'custom2'));
     }
 
     public function testTime(): void {

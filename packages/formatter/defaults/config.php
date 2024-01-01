@@ -2,6 +2,7 @@
 
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
 
 /**
  * -----------------------------------------------------------------------------
@@ -35,6 +36,12 @@ return [
          * - {@link IntlDateFormatter::MEDIUM}
          */
         // Formatter::Time => 'custom',
+
+        /**
+         * Default custom duration format name, you can also use
+         * {@link NumberFormatter::DURATION} for built-in Intl format.
+         */
+        // Formatter::Duration => 'custom',
 
         /**
          * Global Attributes for {@link NumberFormatter::setAttribute}
@@ -80,6 +87,15 @@ return [
         // ],
 
         /**
+         * Custom duration format for all locales
+         *
+         * @see DurationFormatter
+         */
+         // Formatter::Duration => [
+         //     'custom' => 'HH:mm:ss.SSS',
+         // ],
+
+        /**
          * Intl properties for all locales (will be merged with `options`)
          */
         // Formatter::Decimal => [
@@ -104,6 +120,11 @@ return [
         // 'ru_RU' => [
         //     // Custom time format for specific Locale
         //     Formatter::Time => [
+        //         'custom' => 'HH:mm:ss',
+        //     ],
+        //
+        //     // Custom duration format for specific Locale
+        //     Formatter::Duration => [
         //         'custom' => 'HH:mm:ss',
         //     ],
         //

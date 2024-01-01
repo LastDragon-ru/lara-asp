@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Formatter;
 
 use Closure;
+use DateInterval;
 use DateTimeInterface;
 use DateTimeZone;
 use Illuminate\Container\Container;
@@ -15,6 +16,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateNumberFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatValue;
+use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
 use Locale;
 use NumberFormatter;
 use OutOfBoundsException;
@@ -100,13 +102,18 @@ class Formatter {
     public const Ordinal = 'ordinal';
 
     /**
-     * Options:
-     * - none
+     * Options (one of):
+     *  - `int`: {@link NumberFormatter::DURATION}
+     *  - `string`: the name of custom format
      *
      * Locales options:
      * - {@link Formatter::IntlTextAttributes}
      * - {@link Formatter::IntlAttributes}
      * - {@link Formatter::IntlSymbols}
+     * - `string`: available only for custom formats: locale specific pattern
+     *       (key: `locales.<locale>.duration.<format>` and/or default pattern
+     *       (key: `all.duration.<format>`)
+     *       {@link DurationFormatter}
      */
     public const Duration = 'duration';
 
@@ -313,8 +320,22 @@ class Formatter {
         return $this->formatValue(static::Ordinal, $value);
     }
 
-    public function duration(?int $value): string {
-        return $this->formatValue(static::Duration, $value);
+    public function duration(DateInterval|float|int|null $value, string $format = null): string {
+        $type     = static::Duration;
+        $format   = $format ?: $this->getOptions($type);
+        $format   = is_string($format)
+            ? Cast::toString($this->getLocaleOptions($type, $format))
+            : $format;
+        $format ??= 'HH:mm:ss.SSS';
+        $value  ??= 0;
+        $value    = $value instanceof DateInterval
+            ? DurationFormatter::getTimestamp($value)
+            : $value;
+        $value    = is_string($format)
+            ? (new DurationFormatter($format))->format($value)
+            : $this->formatValue($type, $value);
+
+        return $value;
     }
 
     public function time(

@@ -82,6 +82,146 @@ The `$locale->decimal(123.454321)` is:
 
 Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
+# Formats
+
+Some methods like as `date()`/`datetime()`/etc have `$format` argument. The argument specifies not the format but the format name. So you can use the names and do not worry about real formats. It is very important when application big/grow. To specify available names and formats the package config should be published and customized.
+
+```shell
+php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Formatter\\Provider --tag=config
+```
+
+[include:example]: ./docs/Examples/Config.php
+[//]: # (start: a0315c77f2fd2868ad7a67f118ff4816a93add9ae6e7d35899828ddc32cfac37)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Date;
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\LaraASP\Formatter\Package;
+
+Example::config(Package::Name, [
+    'options' => [
+        Formatter::Date => 'default',
+    ],
+    'all'     => [
+        Formatter::Date => [
+            'default' => 'd MMM yyyy',
+            'custom'  => 'yyyy/MM/dd',
+        ],
+    ],
+    'locales' => [
+        'ru_RU' => [
+            Formatter::Date => [
+                'custom' => 'dd.MM.yyyy',
+            ],
+        ],
+    ],
+]);
+
+$datetime = Date::make('2023-12-30T20:41:40.000018+04:00');
+$default  = Container::getInstance()->make(Formatter::class);
+$locale   = $default->forLocale('ru_RU');
+
+Example::dump($default->date($datetime));
+Example::dump($default->date($datetime, 'custom'));
+Example::dump($locale->date($datetime));
+Example::dump($locale->date($datetime, 'custom'));
+```
+
+The `$default->date($datetime)` is:
+
+```plain
+"30 Dec 2023"
+```
+
+The `$default->date($datetime, 'custom')` is:
+
+```plain
+"2023/12/30"
+```
+
+The `$locale->date($datetime)` is:
+
+```plain
+"30 дек. 2023"
+```
+
+The `$locale->date($datetime, 'custom')` is:
+
+```plain
+"30.12.2023"
+```
+
+[//]: # (end: a0315c77f2fd2868ad7a67f118ff4816a93add9ae6e7d35899828ddc32cfac37)
+
+# Duration
+
+To format duration you can use built-in Intl formatter, but it doesn't support fraction seconds and have different format between locales (for example, `12345` seconds is `3:25:45` in `en_US` locale, and `12 345` in `ru_RU`). These reasons make difficult to use it in real applications. To make `duration()` more useful, the alternative syntax was added.
+
+[include:docblock]: ./src/Utils/DurationFormatter.php
+[//]: # (start: 8e359fc1ea71d4c4b58c4acdcd3289f180a89cbd39ebdbd10422908bd66b0268)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax).
+
+| Symbol | Meaning                       |
+|--------|-------------------------------|
+| `y`    | years                         |
+| `M`    | months                        |
+| `d`    | days                          |
+| `H`    | hours                         |
+| `m`    | minutes                       |
+| `s`    | seconds                       |
+| `S`    | fractional seconds            |
+| `z`    | negative sign (default `-`)   |
+| `'`    | escape for text               |
+| `''`   | two single quotes produce one |
+
+[//]: # (end: 8e359fc1ea71d4c4b58c4acdcd3289f180a89cbd39ebdbd10422908bd66b0268)
+
+[include:example]: ./docs/Examples/Duration.php
+[//]: # (start: bb574f6b1315aa7b33a56d897b23ecc4d18dece9ea201b85b54154e144931d3b)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\Formatter\Formatter;
+
+$default = Container::getInstance()->make(Formatter::class); // For default app locale
+$locale  = $default->forLocale('ru_RU');                     // For ru_RU locale
+
+Example::dump($default->duration(123.454321));
+Example::dump($locale->duration(123.4543));
+Example::dump($locale->duration(1_234_543));
+```
+
+The `$default->duration(123.454321)` is:
+
+```plain
+"00:02:03.454"
+```
+
+The `$locale->duration(123.4543)` is:
+
+```plain
+"00:02:03.454"
+```
+
+The `$locale->duration(1234543)` is:
+
+```plain
+"342:55:43.000"
+```
+
+[//]: # (end: bb574f6b1315aa7b33a56d897b23ecc4d18dece9ea201b85b54154e144931d3b)
+
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
 [//]: # (warning: Generated automatically. Do not edit.)
