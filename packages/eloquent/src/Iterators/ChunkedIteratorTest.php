@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
+use Illuminate\Container\Container;
 use Illuminate\Database\ConnectionResolverInterface;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
@@ -28,7 +29,7 @@ class ChunkedIteratorTest extends TestCase {
 
         $spyBefore = Mockery::spy(static fn() => null);
         $spyAfter  = Mockery::spy(static fn() => null);
-        $db        = $this->app->make(ConnectionResolverInterface::class);
+        $db        = Container::getInstance()->make(ConnectionResolverInterface::class);
         $log       = $this->getQueryLog($db);
         $query     = TestObject::query()->orderByDesc('value');
         $expected  = (clone $query)->get()->all();

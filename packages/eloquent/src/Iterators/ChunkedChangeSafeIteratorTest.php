@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -35,7 +36,7 @@ class ChunkedChangeSafeIteratorTest extends TestCase {
 
         $spyBefore = Mockery::spy(static fn () => null);
         $spyAfter  = Mockery::spy(static fn () => null);
-        $db        = $this->app->make(ConnectionResolverInterface::class);
+        $db        = Container::getInstance()->make(ConnectionResolverInterface::class);
         $log       = $this->getQueryLog($db);
         $query     = TestObject::query()->orderByDesc('value');
         $count     = count($log);

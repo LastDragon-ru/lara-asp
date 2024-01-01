@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
-use LastDragon_ru\LaraASP\Testing\Assertions\Application\CronableAssertions;
 use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions;
 
 trait Assertions {
@@ -10,7 +9,6 @@ trait Assertions {
     use JsonAssertions;
     use ScoutAssertions;
     use ScheduleAssertions;
-    use CronableAssertions;
     use ResponseAssertions;
     use DatabaseAssertions;
 }

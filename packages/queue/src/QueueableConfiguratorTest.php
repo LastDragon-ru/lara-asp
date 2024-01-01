@@ -8,6 +8,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Queue\Contracts\ConfigurableQueueable;
 use LastDragon_ru\LaraASP\Queue\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Queue\Testing\Package\WithQueueableConfig;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -16,6 +17,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(QueueableConfigurator::class)]
 class QueueableConfiguratorTest extends TestCase {
+    use WithQueueableConfig;
+
     public function testConfigure(): void {
         $configurator = Container::getInstance()->make(QueueableConfigurator::class);
         $queueable    = new QueueableConfiguratorTest_ConfigurableQueueable();

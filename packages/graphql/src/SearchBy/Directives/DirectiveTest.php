@@ -402,8 +402,8 @@ class DirectiveTest extends TestCase {
                     ));
                 },
                 '~custom-complex-operators.graphql',
-                static function (TestCase $test): void {
-                    $locator   = $test->app->make(DirectiveLocator::class);
+                static function (): void {
+                    $locator   = Container::getInstance()->make(DirectiveLocator::class);
                     $directive = new class() extends BaseOperator implements TypeDefinition {
                         #[Override]
                         public static function getName(): string {

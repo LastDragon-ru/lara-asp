@@ -23,6 +23,8 @@ class RawSeederTest extends TestCase {
         self::assertCount(0, $finder->files());
 
         // Redefine path where files will be generated.
+        self::assertNotNull($this->app);
+
         $this->app->useDatabasePath($path);
 
         // Call
