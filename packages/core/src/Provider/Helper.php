@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Core\Provider;
 
-use Closure;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use ReflectionClass;
 
@@ -27,18 +25,5 @@ trait Helper {
         $path  = dirname((string) $class->getFileName()).'/'.ltrim($path, '/');
 
         return $path;
-    }
-
-    /**
-     * @deprecated 5.2.0 Not used anymore and will be removed soon.
-     *
-     * @param Closure(mixed...): mixed $callback
-     */
-    protected function callAfterBoot(Closure $callback): void {
-        if ($this->app instanceof Application && $this->app->isBooted()) {
-            $this->app->call($callback);
-        } else {
-            $this->booted($callback);
-        }
     }
 }
