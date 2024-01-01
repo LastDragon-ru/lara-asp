@@ -31,7 +31,6 @@ parameters:
         -
             message: "#^Variable property access on .+?\\.$#"
             paths:
-                - packages/queue/src/QueueableConfigurator.php
                 - packages/serializer/src/Normalizers/SerializableNormalizer.php
 
         # False positive

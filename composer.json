@@ -101,7 +101,6 @@
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\": "packages/core/src/",
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/",
-      "LastDragon_ru\\LaraASP\\Queue\\": "packages/queue/src/",
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
@@ -114,7 +113,6 @@
     "exclude-from-classmap": [
       "packages/core/src/**Test.php",
       "packages/migrator/src/**Test.php",
-      "packages/queue/src/**Test.php",
       "packages/testing/src/**Test.php",
       "packages/eloquent/src/**Test.php",
       "packages/formatter/src/**Test.php",
@@ -137,7 +135,6 @@
         "LastDragon_ru\\LaraASP\\Formatter\\Provider",
         "LastDragon_ru\\LaraASP\\Spa\\Provider",
         "LastDragon_ru\\LaraASP\\GraphQL\\Provider",
-        "LastDragon_ru\\LaraASP\\Queue\\Provider",
         "LastDragon_ru\\LaraASP\\Serializer\\Provider",
         "LastDragon_ru\\LaraASP\\Documentator\\Provider"
       ]
@@ -188,7 +185,6 @@
   "replace": {
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-migrator": "self.version",
-    "lastdragon-ru/lara-asp-queue": "self.version",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",

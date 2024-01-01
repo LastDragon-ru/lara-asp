@@ -83,12 +83,6 @@ This package improves standard laravel migrations to add support for raw SQL fil
 
 [Read more](<packages/migrator/README.md>).
 
-## Queue Helpers 💀
-
-This package provides additional capabilities for queued jobs and queued listeners like multilevel configuration support, job overriding (very useful for package development to provide base implementation and allow the application to extend it), easy define for cron jobs, and DI in constructor support.
-
-[Read more](<packages/queue/README.md>).
-
 ## SPA Helpers
 
 [Read more](<packages/spa/README.md>).

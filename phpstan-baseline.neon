@@ -61,16 +61,6 @@ parameters:
 			path: packages/graphql/src/Utils/AstManipulator.php
 
 		-
-			message: "#^Parameter \\#1 \\$expression of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:cron\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: packages/queue/src/CronableRegistrator.php
-
-		-
-			message: "#^Parameter \\#1 \\$timezone of method Illuminate\\\\Console\\\\Scheduling\\\\Event\\:\\:timezone\\(\\) expects DateTimeZone\\|string, mixed given\\.$#"
-			count: 1
-			path: packages/queue/src/CronableRegistrator.php
-
-		-
 			message: "#^Parameter \\#2 \\.\\.\\.\\$configs of method LastDragon_ru\\\\LaraASP\\\\Core\\\\Utils\\\\ConfigMerger\\:\\:merge\\(\\) expects array, mixed given\\.$#"
 			count: 1
 			path: packages/spa/src/Http/Controllers/SpaController.php

@@ -15,9 +15,6 @@
         <testsuite name="migrator">
             <directory suffix="Test.php">./packages/migrator/src</directory>
         </testsuite>
-        <testsuite name="queue">
-            <directory suffix="Test.php">./packages/queue/src</directory>
-        </testsuite>
         <testsuite name="testing">
             <directory suffix="Test.php">./packages/testing/src</directory>
         </testsuite>
@@ -48,7 +45,6 @@
             <directory suffix=".php">./dev</directory>
             <directory suffix=".php">./packages/core/src</directory>
             <directory suffix=".php">./packages/migrator/src</directory>
-            <directory suffix=".php">./packages/queue/src</directory>
             <directory suffix=".php">./packages/testing/src</directory>
             <directory suffix=".php">./packages/eloquent/src</directory>
             <directory suffix=".php">./packages/formatter/src</directory>
@@ -62,7 +58,6 @@
             <directory suffix="Test.php">./dev</directory>
             <directory suffix="Test.php">./packages/core/src</directory>
             <directory suffix="Test.php">./packages/migrator/src</directory>
-            <directory suffix="Test.php">./packages/queue/src</directory>
             <directory suffix="Test.php">./packages/testing/src</directory>
             <directory suffix="Test.php">./packages/eloquent/src</directory>
             <directory suffix="Test.php">./packages/formatter/src</directory>

@@ -8,7 +8,9 @@
   "keywords": [
     "laravel-package",
     "laravel",
-    "php"
+    "php",
+    "queue",
+    "laravel-queue"
   ],
   "support": {
     "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
