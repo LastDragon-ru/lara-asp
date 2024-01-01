@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -48,6 +49,22 @@ class ResolverTest extends TestCase {
         self::assertEquals(123, $a->id);
         self::assertSame($a, $b);
         self::assertNotSame($a, $c);
+    }
+
+    public function testGetCached(): void {
+        $route    = Mockery::mock(Route::class);
+        $request  = Mockery::mock(Request::class);
+        $resolver = Mockery::mock(Resolver::class);
+        $resolver->shouldAllowMockingProtectedMethods();
+        $resolver->makePartial();
+
+        $resolver
+            ->shouldReceive('resolve')
+            ->once()
+            ->andReturn('value');
+
+        $resolver->get(123, $request, $route);
+        $resolver->get(123, $request, $route);
     }
 
     public function testGetUnresolvedValue(): void {
