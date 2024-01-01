@@ -8,6 +8,8 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidP
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function str_replace;
+
 /**
  * @internal
  */
@@ -70,7 +72,10 @@ class IncludeDocBlockTest extends TestCase {
                 new IncludeDocBlockParameters(),
             ],
             'invalid'      => [
-                new TargetIsNotValidPhpFile(__DIR__.'/IncludeDocBlockTest/Invalid.txt', 'Invalid.txt'),
+                new TargetIsNotValidPhpFile(
+                    str_replace('\\', '/', __DIR__.'/IncludeDocBlockTest/Invalid.txt'),
+                    'Invalid.txt',
+                ),
                 'Invalid.txt',
                 new IncludeDocBlockParameters(),
             ],
