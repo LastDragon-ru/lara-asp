@@ -11,6 +11,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
+use function pow;
 use function str_replace;
 
 use const PHP_INT_MAX;
@@ -274,6 +275,13 @@ class FormatterTest extends TestCase {
         self::assertEquals('10.00 GiB', $this->formatter->filesize(10 * 1024 * 1024 * 1024, 2));
         self::assertEquals('0.87 EiB', $this->formatter->filesize(999_999_999_999_999_999, 2));
         self::assertEquals('8.00 EiB', $this->formatter->filesize(PHP_INT_MAX, 2));
+        self::assertEquals('10.00 QiB', $this->formatter->filesize(10 * pow(2, 100), 2));
+        self::assertEquals('10.00 QiB', $this->formatter->filesize('12676506002282294014967032053760', 2));
+        self::assertEquals('100.00 QiB', $this->formatter->filesize('126765060022822940149670320537699', 2));
+        self::assertEquals(
+            '10,000.00 QiB',
+            $this->formatter->filesize(10 * 1000 * pow(2, 100), 2),
+        );
     }
 
     public function testDisksize(): void {
