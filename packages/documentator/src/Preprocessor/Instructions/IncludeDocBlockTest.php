@@ -65,8 +65,8 @@ class IncludeDocBlockTest extends TestCase {
                 new IncludeDocBlockParameters(summary: true, description: false),
             ],
             'no docblock'  => [
-                'NoDocblockExpected.txt',
-                'NoDocblock.txt',
+                'NoDocBlockExpected.txt',
+                'NoDocBlock.txt',
                 new IncludeDocBlockParameters(),
             ],
             'invalid'      => [
