@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
 use Illuminate\Database\Migrations\Migrator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use Override;
@@ -41,16 +39,6 @@ class SmartMigrator extends Migrator {
         }
 
         return parent::getMigrationFiles($paths);
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Helpers">
-    // =========================================================================
-    /**
-     * @deprecated 5.2.0 Not used anymore and will be removed soon.
-     */
-    public static function isAnonymousMigrationsSupported(): bool {
-        return InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=8.40.0');
     }
     // </editor-fold>
 }
