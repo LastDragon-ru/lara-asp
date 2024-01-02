@@ -35,7 +35,7 @@
     "mockery/mockery": "^1.6.2",
     "phpunit/phpunit": "^10.1.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
-    "orchestra/testbench": "^7.0.0|^8.0.0"
+    "orchestra/testbench": "^8.0.0"
   },
   "suggest": {
     "ext-fileinfo": "Required for league/flysystem",

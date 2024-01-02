@@ -41,7 +41,7 @@
   "require-dev": {
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "phpunit/phpunit": "^10.1.0",
-    "orchestra/testbench": "^7.0.0|^8.0.0"
+    "orchestra/testbench": "^8.0.0"
   },
   "conflict": {
     "phpunit/phpunit": "<9.0"
