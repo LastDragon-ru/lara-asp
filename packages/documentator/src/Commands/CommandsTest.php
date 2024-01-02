@@ -128,13 +128,6 @@ class CommandsTest_CommandB extends Command {
      */
     protected $aliases = ['command-b-alias'];
 
-    public function __construct() {
-        parent::__construct();
-
-        // @phpstan-ignore-next-line Required for Laravel v9
-        $this->setAliases((array) $this->aliases);
-    }
-
     public function __invoke(): void {
         throw new Exception('Should not be called.');
     }

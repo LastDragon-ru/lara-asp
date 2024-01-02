@@ -28,7 +28,7 @@
     "doctrine/dbal": "^3.1.4",
     "doctrine/sql-formatter": "^1.1",
     "http-interop/http-factory-guzzle": "^1.0.0",
-    "laravel/framework": "^9.21.0|^10.0.0",
+    "laravel/framework": "^10.0.0",
     "mockery/mockery": "^1.6.2",
     "opis/json-schema": "^2.3.0",
     "psr/http-message": "^1.0.0|^2.0.0",
@@ -40,8 +40,8 @@
   },
   "require-dev": {
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
-    "phpunit/phpunit": "^9.5.0|^10.1.0",
-    "orchestra/testbench": "^7.0.0|^8.0.0"
+    "phpunit/phpunit": "^10.1.0",
+    "orchestra/testbench": "^8.0.0"
   },
   "conflict": {
     "phpunit/phpunit": "<9.0"

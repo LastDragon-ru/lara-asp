@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
 use Illuminate\Container\Container;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
@@ -43,25 +41,8 @@ class SmartMigratorTest extends TestCase {
             ['migration' => '2021_05_09_055655_raw_migration_b'],
             ['migration' => '2021_05_09_055650_anonymous'],
         ];
-        $expectedUp   = '9.0+up.txt';
-        $expectedDown = '9.0+down.txt';
-
-        if (InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=9.26.0')) {
-            # Since v9.26.0 commands output was slightly changed
-            #
-            # https://github.com/laravel/framework/pull/43769
-            $expectedUp   = '9.26+up.txt';
-            $expectedDown = '9.26+down.txt';
-        } elseif (InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=9.21.0')) {
-            # Since v9.21.0 commands output was changed
-            #
-            # https://github.com/laravel/framework/releases/tag/v9.21.0
-            # https://github.com/laravel/framework/pull/43065
-            $expectedUp   = '9.21+up.txt';
-            $expectedDown = '9.21+down.txt';
-        } else {
-            // empty
-        }
+        $expectedUp   = 'up.txt';
+        $expectedDown = 'down.txt';
 
         // Mocks
         $repository = Mockery::mock(MigrationRepositoryInterface::class);

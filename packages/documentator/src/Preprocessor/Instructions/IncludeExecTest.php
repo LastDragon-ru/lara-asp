@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Illuminate\Container\Container;
+use Illuminate\Process\PendingProcess;
+use Illuminate\Support\Facades\Process;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Utils\Process;
-use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function dirname;
@@ -19,17 +19,18 @@ class IncludeExecTest extends TestCase {
         $path     = 'current/working/directory/file.md';
         $expected = 'result';
         $command  = 'command to execute';
-        $process  = Mockery::mock(Process::class);
-        $process
-            ->shouldReceive('run')
-            ->with('command to execute', dirname($path))
-            ->once()
-            ->andReturn($expected);
+        $instance = Container::getInstance()->make(IncludeExec::class);
 
-        $instance = Container::getInstance()->make(IncludeExec::class, [
-            'process' => $process,
+        Process::preventStrayProcesses();
+        Process::fake([
+            $command => Process::result($expected),
         ]);
 
         self::assertEquals($expected, $instance->process($path, $command));
+
+        Process::assertRan(static function (PendingProcess $process) use ($path, $command): bool {
+            return $process->path === dirname($path)
+                && $process->command === $command;
+        });
     }
 }

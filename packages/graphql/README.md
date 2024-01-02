@@ -17,7 +17,7 @@ This package provides highly powerful `@searchBy` and `@sortBy`  directives for 
 |  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
 |  | `>=8.0.0` |   `0.11.0 ⋯ 0.5.0`   |
 |  Laravel  | `^10.0.0` |   `HEAD ⋯ 2.1.0`   |
-|  | `^9.21.0` |   `HEAD ⋯ 5.0.0-beta.1`   |
+|  | `^9.21.0` |   `5.4.0 ⋯ 5.0.0-beta.1`   |
 |  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.5.0`   |
 |  Lighthouse  | `^6.5.0` |   `HEAD ⋯ 5.0.0-beta.0`   |
@@ -173,8 +173,6 @@ class CustomDirective implements Directive, BuilderInfoProvider {
     }
 
     public function __invoke(): mixed {
-        // TODO: Implement __invoke() method.
-
         return null;
     }
 }

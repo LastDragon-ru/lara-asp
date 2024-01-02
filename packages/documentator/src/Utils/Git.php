@@ -2,14 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
+use Illuminate\Support\Facades\Process;
+
 use function array_filter;
 use function array_values;
 use function explode;
+use function trim;
 
 class Git {
-    public function __construct(
-        protected readonly Process $process,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -19,7 +20,7 @@ class Git {
      * @return list<string>
      */
     public function getTags(callable $filter = null, string $root = null): array {
-        $tags = $this->process->run(['git', 'tag', '--list'], $root);
+        $tags = $this->run(['git', 'tag', '--list'], $root);
         $tags = explode("\n", $tags);
         $tags = $filter ? array_filter($tags, $filter) : $tags;
         $tags = array_values($tags);
@@ -28,14 +29,25 @@ class Git {
     }
 
     public function getFile(string $path, string $revision = 'HEAD', string $root = null): string {
-        return $this->process->run(['git', 'show', "{$revision}:{$path}"], $root);
+        return $this->run(['git', 'show', "{$revision}:{$path}"], $root);
     }
 
     public function getBranch(string $root = null): string {
-        return $this->process->run(['git', 'rev-parse', '--abbrev-ref=HEAD'], $root);
+        return $this->run(['git', 'rev-parse', '--abbrev-ref=HEAD'], $root);
     }
 
     public function getRoot(string $root = null): string {
-        return $this->process->run(['git', 'rev-parse', '--show-toplevel'], $root);
+        return $this->run(['git', 'rev-parse', '--show-toplevel'], $root);
+    }
+
+    /**
+     * @param array<array-key, string>|string $command
+     */
+    private function run(array|string $command, string $root = null): string {
+        $process = $root !== null ? Process::path($root) : Process::command('');
+        $output  = $process->run($command)->throw()->output();
+        $output  = trim($output);
+
+        return $output;
     }
 }

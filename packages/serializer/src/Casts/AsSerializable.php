@@ -4,13 +4,12 @@ namespace LastDragon_ru\LaraASP\Serializer\Casts;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToCast;
 use Override;
 
 use function is_string;
-
-// todo(laravel): [update] Update methods signatures after remove v9.x support.
 
 /**
  * @template TGet of object
@@ -37,7 +36,7 @@ class AsSerializable implements CastsAttributes {
      * @inheritDoc
      */
     #[Override]
-    public function get(mixed $model, string $key, mixed $value, array $attributes): ?object {
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?object {
         if ($value === null || $value instanceof $this->class) {
             // no action
         } elseif (is_string($value)) {
@@ -58,7 +57,7 @@ class AsSerializable implements CastsAttributes {
      * @inheritDoc
      */
     #[Override]
-    public function set(mixed $model, string $key, mixed $value, array $attributes): mixed {
+    public function set(Model $model, string $key, mixed $value, array $attributes): mixed {
         if ($value !== null) {
             $value = Container::getInstance()->make(Serializer::class)->serialize(
                 $value,

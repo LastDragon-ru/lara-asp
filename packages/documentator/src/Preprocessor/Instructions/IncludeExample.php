@@ -3,11 +3,11 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
+use Illuminate\Support\Facades\Process;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 use Override;
 
 use function dirname;
@@ -26,9 +26,7 @@ class IncludeExample implements ProcessableInstruction {
     public const    Limit          = 50;
     protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
 
-    public function __construct(
-        protected readonly Process $process,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -78,7 +76,7 @@ class IncludeExample implements ProcessableInstruction {
         if ($command) {
             // Call
             try {
-                $output = $this->process->run($command, dirname($path));
+                $output = Process::path(dirname($path))->run($command)->throw()->output();
                 $output = trim($output);
             } catch (Exception $exception) {
                 throw new TargetExecFailed($path, $target, $exception);
@@ -144,16 +142,13 @@ class IncludeExample implements ProcessableInstruction {
         return pathinfo($target, PATHINFO_EXTENSION);
     }
 
-    /**
-     * @return list<string>
-     */
-    protected function getCommand(string $path, string $target): ?array {
+    protected function getCommand(string $path, string $target): ?string {
         $info    = pathinfo($target);
         $file    = isset($info['dirname'])
             ? Path::join($info['dirname'], "{$info['filename']}.run")
             : "{$info['filename']}.run";
         $command = Path::getPath(dirname($path), $file);
-        $command = is_file($command) ? [$command] : null;
+        $command = is_file($command) ? $command : null;
 
         return $command;
     }
