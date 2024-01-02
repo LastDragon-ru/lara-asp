@@ -9,7 +9,7 @@ use Symfony\Component\Finder\Finder;
 
 use function is_string;
 
-// TODO [laravel] [update] \Illuminate\Database\Migrations\Migrator
+// todo(migrator): [laravel] [update] \Illuminate\Database\Migrations\Migrator
 
 /**
  * Extends standard migrator.
