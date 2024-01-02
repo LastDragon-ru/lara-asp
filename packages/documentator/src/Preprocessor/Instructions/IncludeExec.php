@@ -3,17 +3,16 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
+use Illuminate\Support\Facades\Process;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
-use LastDragon_ru\LaraASP\Documentator\Utils\Process;
 use Override;
 
 use function dirname;
+use function trim;
 
 class IncludeExec implements ProcessableInstruction {
-    public function __construct(
-        protected readonly Process $process,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -35,7 +34,7 @@ class IncludeExec implements ProcessableInstruction {
     #[Override]
     public function process(string $path, string $target): string {
         try {
-            return $this->process->run($target, dirname($path));
+            return trim(Process::path(dirname($path))->run($target)->throw()->output());
         } catch (Exception $exception) {
             throw new TargetExecFailed($path, $target, $exception);
         }
