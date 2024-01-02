@@ -21,8 +21,6 @@ class CustomDirective implements Directive, BuilderInfoProvider {
     }
 
     public function __invoke(): mixed {
-        // TODO: Implement __invoke() method.
-
         return null;
     }
 }
