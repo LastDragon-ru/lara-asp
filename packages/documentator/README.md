@@ -14,7 +14,7 @@ This package provides various utilities for documentation generation.
 |  | `^8.2` |   `HEAD ⋯ 5.0.0-beta.1`   |
 |  | `^8.1` |   `HEAD ⋯ 5.0.0-beta.1`   |
 |  Laravel  | `^10.0.0` |   `HEAD ⋯ 5.0.0-beta.1`   |
-|  | `^9.21.0` |   `HEAD ⋯ 5.0.0-beta.1`   |
+|  | `^9.21.0` |   `5.4.0 ⋯ 5.0.0-beta.1`   |
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
