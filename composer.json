@@ -46,7 +46,7 @@
     "doctrine/sql-formatter": "^1.1",
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "http-interop/http-factory-guzzle": "^1.0.0",
-    "laravel/framework": "^9.21.0|^10.0.0",
+    "laravel/framework": "^10.0.0",
     "league/commonmark": "^2.4",
     "nuwave/lighthouse": "^6.5.0",
     "opis/json-schema": "^2.3.0",
