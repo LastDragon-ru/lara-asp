@@ -13,9 +13,6 @@ use function array_column;
 use function array_flip;
 use function array_unique;
 use function array_values;
-use function assert;
-use function is_bool;
-use function is_float;
 use function natsort;
 use function preg_match_all;
 use function str_replace;
@@ -35,24 +32,17 @@ class DatabaseQueryComparator extends ObjectComparator {
     }
 
     /**
-     * @inheritDoc
-     *
      * @param array<array-key, mixed> $processed
      */
     #[Override]
     public function assertEquals(
         mixed $expected,
         mixed $actual,
-        mixed $delta = 0.0,
-        mixed $canonicalize = false,
-        mixed $ignoreCase = false,
+        float $delta = 0.0,
+        bool $canonicalize = false,
+        bool $ignoreCase = false,
         array &$processed = [],
     ): void {
-        // todo(testing): Update method signature after PHPUnit v9.5 removal.
-        assert(is_float($delta));
-        assert(is_bool($canonicalize));
-        assert(is_bool($ignoreCase));
-
         // If classes different we just call parent to fail
         if (!($actual instanceof Query) || !($expected instanceof Query) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);

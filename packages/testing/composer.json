@@ -40,7 +40,7 @@
   },
   "require-dev": {
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
-    "phpunit/phpunit": "^9.5.0|^10.1.0",
+    "phpunit/phpunit": "^10.1.0",
     "orchestra/testbench": "^7.0.0|^8.0.0"
   },
   "conflict": {

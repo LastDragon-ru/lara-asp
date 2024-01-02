@@ -7,9 +7,6 @@ use Override;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ObjectComparator;
 
-use function assert;
-use function is_bool;
-use function is_float;
 use function substr_replace;
 
 /**
@@ -31,24 +28,17 @@ class EloquentModelComparator extends ObjectComparator {
     }
 
     /**
-     * @inheritDoc
-     *
      * @param array<array-key, mixed> $processed
      */
     #[Override]
     public function assertEquals(
         mixed $expected,
         mixed $actual,
-        mixed $delta = 0.0,
-        mixed $canonicalize = false,
-        mixed $ignoreCase = false,
+        float $delta = 0.0,
+        bool $canonicalize = false,
+        bool $ignoreCase = false,
         array &$processed = [],
     ): void {
-        // todo(testing): Update method signature after PHPUnit v9.5 removal.
-        assert(is_float($delta));
-        assert(is_bool($canonicalize));
-        assert(is_bool($ignoreCase));
-
         // If classes different we just call parent to fail
         if (!($actual instanceof Model) || !($expected instanceof Model) || $actual::class !== $expected::class) {
             parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
