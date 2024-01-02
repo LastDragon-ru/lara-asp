@@ -22,7 +22,6 @@
   "require": {
     "php": "^8.1|^8.2|^8.3",
     "ext-json": "*",
-    "composer/semver": "^3.2",
     "laravel/framework": "^10.0.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "symfony/filesystem": "^6.3.0",
@@ -32,6 +31,7 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
+    "composer/semver": "^3.2",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.2",
     "orchestra/testbench": "^8.0.0",
