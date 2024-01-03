@@ -176,6 +176,16 @@ The `$user->getAttributes()` is:
 
 [//]: # (end: 17152ed9d4094e5a2bb12c34f6fdb2f223a90f75c9ae440580dded1082fe6dec)
 
+[include:file]: ../../docs/Shared/Upgrading.md
+[//]: # (start: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Upgrading
+
+Please follow [Upgrade Guide](UPGRADE.md).
+
+[//]: # (end: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
 [//]: # (warning: Generated automatically. Do not edit.)
