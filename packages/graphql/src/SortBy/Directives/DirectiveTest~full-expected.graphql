@@ -400,12 +400,6 @@ input SortByScoutClauseNested {
     @sortByOperatorProperty
 
     """
-    By random
-    """
-    random: SortByTypeFlag
-    @sortByOperatorRandom
-
-    """
     Property clause.
     """
     value: SortByTypeDirection
@@ -478,12 +472,6 @@ input SortByScoutClauseProperties {
     """
     nestedNotNull: SortByScoutClauseNested
     @sortByOperatorProperty
-
-    """
-    By random
-    """
-    random: SortByTypeFlag
-    @sortByOperatorRandom
 }
 
 interface Eloquent
