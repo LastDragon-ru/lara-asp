@@ -226,7 +226,12 @@ enum EnumIgnored
 }
 
 enum SearchByTypeFlag {
+    Yes
+
     yes
+    @deprecated(
+        reason: "Please use `Yes` instead."
+    )
 }
 
 """
