@@ -3,11 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 
 use GraphQL\Language\AST\TypeDefinitionNode;
-use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\PhpEnumType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Enums\Flag as FlagEnum;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use Override;
@@ -28,12 +29,6 @@ class Flag implements TypeDefinition {
         string $name,
         TypeSource $source,
     ): TypeDefinitionNode|Type|null {
-        return Parser::enumTypeDefinition(
-            <<<GRAPHQL
-            enum {$name} {
-                yes
-            }
-            GRAPHQL,
-        );
+        return new PhpEnumType(FlagEnum::class, $name);
     }
 }
