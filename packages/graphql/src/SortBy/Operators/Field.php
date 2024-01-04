@@ -11,10 +11,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder as EloquentHandler;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query\Builder as QueryHandler;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder as ScoutHandler;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction as DirectionType;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
@@ -34,7 +35,7 @@ class Field extends BaseOperator {
 
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return $provider->getType(Direction::class, $source);
+        return $provider->getType(DirectionType::class, $source);
     }
 
     #[Override]
@@ -44,7 +45,7 @@ class Field extends BaseOperator {
 
     #[Override]
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
-        $direction = Cast::toString($argument->value);
+        $direction = Cast::to(Direction::class, $argument->value);
 
         if ($builder instanceof EloquentBuilder) {
             $this->eloquent->handle($builder, $property, $direction);

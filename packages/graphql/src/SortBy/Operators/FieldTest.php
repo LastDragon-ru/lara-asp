@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent\Builder as EloquentHandler;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query\Builder as QueryHandler;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout\Builder as ScoutHandler;
@@ -68,7 +69,7 @@ class FieldTest extends TestCase {
         $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
-            'asc',
+            Direction::asc,
             'enum Test { asc }',
         );
         $builder   = Mockery::mock(EloquentBuilder::class);
@@ -92,7 +93,7 @@ class FieldTest extends TestCase {
         $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
-            'asc',
+            Direction::asc,
         );
         $builder   = Mockery::mock(QueryBuilder::class);
 
@@ -115,7 +116,7 @@ class FieldTest extends TestCase {
         $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
-            'asc',
+            Direction::asc,
             'enum Test { asc }',
         );
         $builder   = Mockery::mock(ScoutBuilder::class);
@@ -146,7 +147,7 @@ class FieldTest extends TestCase {
 
             return $test->getGraphQLArgument(
                 'SortByTypeDirection!',
-                'desc',
+                Direction::desc,
             );
         };
 

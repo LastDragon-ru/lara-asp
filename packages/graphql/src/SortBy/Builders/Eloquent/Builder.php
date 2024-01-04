@@ -19,6 +19,7 @@ use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LogicException;
 
@@ -55,7 +56,7 @@ class Builder {
      *
      * @return EloquentBuilder<Model>
      */
-    public function handle(EloquentBuilder $builder, Property $property, string $direction): EloquentBuilder {
+    public function handle(EloquentBuilder $builder, Property $property, Direction $direction): EloquentBuilder {
         // Column
         $path     = $property->getPath();
         $column   = Cast::toString(end($path));
@@ -66,13 +67,7 @@ class Builder {
         }
 
         // Order
-        if ($direction) {
-            $builder = $builder->orderBy($column, $direction);
-        } else {
-            $builder = $builder->orderBy($column);
-        }
-
-        return $builder;
+        return $this->processColumn($builder, $column, $direction);
     }
     // </editor-fold>
 
@@ -88,7 +83,7 @@ class Builder {
         EloquentBuilder $builder,
         array $relations,
         string $column,
-        ?string $direction,
+        Direction $direction,
     ): EloquentBuilder {
         // Unfortunately `Builder::withAggregate()` doesn't supported nested
         // relations...
@@ -112,22 +107,28 @@ class Builder {
 
         // We need only one row
         $qualified = "{$alias}.{$column}";
-        $query     = $query
-            ->select($qualified)
-            ->reorder()
-            ->when(
-                $direction,
-                static function (EloquentBuilder $builder, string $direction) use ($qualified): EloquentBuilder {
-                    return $builder->orderBy($qualified, $direction);
-                },
-                static function (EloquentBuilder $builder) use ($qualified): EloquentBuilder {
-                    return $builder->orderBy($qualified);
-                },
-            )
-            ->limit(1);
+        $query     = $query->select($qualified)->reorder()->limit(1);
+        $query     = $this->processColumn($query, $qualified, $direction);
 
         // Return
         return $query;
+    }
+
+    /**
+     * @param EloquentBuilder<Model>        $builder
+     * @param EloquentBuilder<Model>|string $column
+     *
+     * @return EloquentBuilder<Model>
+     */
+    protected function processColumn(
+        EloquentBuilder $builder,
+        EloquentBuilder|string $column,
+        Direction $direction,
+    ): EloquentBuilder {
+        return match ($direction) {
+            Direction::asc  => $builder->orderBy($column, 'asc'),
+            Direction::desc => $builder->orderBy($column, 'desc'),
+        };
     }
     // </editor-fold>
 

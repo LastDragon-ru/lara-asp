@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
@@ -51,7 +52,7 @@ class BuilderTest extends TestCase {
         array|Exception $expected,
         Closure $builder,
         Property $property,
-        string $direction,
+        Direction $direction,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -84,7 +85,7 @@ class BuilderTest extends TestCase {
                             'bindings' => [],
                         ],
                         new Property('name'),
-                        'desc',
+                        Direction::desc,
                     ],
                 ]),
             )),
@@ -95,7 +96,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('unknown', 'name'),
-                    'asc',
+                    Direction::asc,
                 ],
                 'unsupported'         => [
                     new RelationUnsupported(
@@ -117,7 +118,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('unsupported', 'id'),
-                    'asc',
+                    Direction::asc,
                 ],
                 BelongsTo::class      => [
                     [
@@ -157,7 +158,7 @@ class BuilderTest extends TestCase {
                         return Car::query();
                     },
                     new Property('user', 'organization', 'name'),
-                    'desc',
+                    Direction::desc,
                 ],
                 HasOne::class         => [
                     [
@@ -199,7 +200,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('car', 'engine', 'id'),
-                    'asc',
+                    Direction::asc,
                 ],
                 HasMany::class        => [
                     [
@@ -232,7 +233,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('cars', 'name'),
-                    'asc',
+                    Direction::asc,
                 ],
                 MorphOne::class       => [
                     [
@@ -266,7 +267,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('avatar', 'id'),
-                    'asc',
+                    Direction::asc,
                 ],
                 HasOneThrough::class  => [
                     [
@@ -309,7 +310,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('role', 'user', 'name'),
-                    'desc',
+                    Direction::desc,
                 ],
                 BelongsToMany::class  => [
                     [
@@ -353,7 +354,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('roles', 'users', 'name'),
-                    'desc',
+                    Direction::desc,
                 ],
                 MorphToMany::class    => [
                     [
@@ -395,7 +396,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('tags', 'users', 'name'),
-                    'asc',
+                    Direction::asc,
                 ],
                 HasManyThrough::class => [
                     [
@@ -429,7 +430,7 @@ class BuilderTest extends TestCase {
                         return CarEngine::query();
                     },
                     new Property('users', 'name'),
-                    'asc',
+                    Direction::asc,
                 ],
                 MorphMany::class      => [
                     [
@@ -463,7 +464,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('images', 'id'),
-                    'asc',
+                    Direction::asc,
                 ],
             ])),
         ]))->getData();

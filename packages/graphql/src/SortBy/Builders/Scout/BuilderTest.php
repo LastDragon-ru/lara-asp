@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -32,7 +33,7 @@ class BuilderTest extends TestCase {
     public function testHandle(
         array|Exception $expected,
         Property $property,
-        string $direction,
+        Direction $direction,
         Closure $resolver = null,
     ): void {
         if ($expected instanceof Exception) {
@@ -74,7 +75,7 @@ class BuilderTest extends TestCase {
                     ],
                 ],
                 new Property('c', 'd', 'e'),
-                'desc',
+                Direction::desc,
             ],
             'clause with resolver' => [
                 [
@@ -86,7 +87,7 @@ class BuilderTest extends TestCase {
                     ],
                 ],
                 new Property('a', 'b'),
-                'asc',
+                Direction::asc,
                 static function (): FieldResolver {
                     return new class() implements FieldResolver {
                         /**

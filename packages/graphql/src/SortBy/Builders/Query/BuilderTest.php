@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -34,7 +35,7 @@ class BuilderTest extends TestCase {
         array|Exception $expected,
         Closure $builder,
         Property $property,
-        string $direction,
+        Direction $direction,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -66,7 +67,7 @@ class BuilderTest extends TestCase {
                         'bindings' => [],
                     ],
                     new Property('a'),
-                    'asc',
+                    Direction::asc,
                 ],
                 'nested not supported' => [
                     [
@@ -74,7 +75,7 @@ class BuilderTest extends TestCase {
                         'bindings' => [],
                     ],
                     new Property('test', 'name'),
-                    'asc',
+                    Direction::asc,
                 ],
             ]),
         ))->getData();
