@@ -69,7 +69,7 @@ class FieldTest extends TestCase {
         $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
-            Direction::asc,
+            Direction::Asc,
             'enum Test { asc }',
         );
         $builder   = Mockery::mock(EloquentBuilder::class);
@@ -93,7 +93,7 @@ class FieldTest extends TestCase {
         $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
-            Direction::asc,
+            Direction::Asc,
         );
         $builder   = Mockery::mock(QueryBuilder::class);
 
@@ -116,7 +116,7 @@ class FieldTest extends TestCase {
         $operator  = Container::getInstance()->make(Field::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
-            Direction::asc,
+            Direction::Asc,
             'enum Test { asc }',
         );
         $builder   = Mockery::mock(ScoutBuilder::class);
@@ -147,7 +147,7 @@ class FieldTest extends TestCase {
 
             return $test->getGraphQLArgument(
                 'SortByTypeDirection!',
-                Direction::desc,
+                Direction::Desc,
             );
         };
 

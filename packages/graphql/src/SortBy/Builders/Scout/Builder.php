@@ -17,8 +17,8 @@ class Builder {
     public function handle(ScoutBuilder $builder, Property $property, Direction $direction): ScoutBuilder {
         $field   = $this->fieldResolver->getField($builder->model, $property);
         $builder = match ($direction) {
-            Direction::asc  => $builder->orderBy($field, 'asc'),
-            Direction::desc => $builder->orderBy($field, 'desc'),
+            Direction::Asc, Direction::asc   => $builder->orderBy($field, 'asc'),
+            Direction::Desc, Direction::desc => $builder->orderBy($field, 'desc'),
         };
 
         return $builder;

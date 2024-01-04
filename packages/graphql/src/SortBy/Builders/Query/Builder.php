@@ -27,8 +27,8 @@ class Builder {
         Direction $direction,
     ): QueryBuilder {
         return match ($direction) {
-            Direction::asc  => $builder->orderBy($column, 'asc'),
-            Direction::desc => $builder->orderBy($column, 'desc'),
+            Direction::Asc, Direction::asc   => $builder->orderBy($column, 'asc'),
+            Direction::Desc, Direction::desc => $builder->orderBy($column, 'desc'),
         };
     }
 }

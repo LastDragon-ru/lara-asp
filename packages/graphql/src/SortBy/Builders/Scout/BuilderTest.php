@@ -75,7 +75,7 @@ class BuilderTest extends TestCase {
                     ],
                 ],
                 new Property('c', 'd', 'e'),
-                Direction::desc,
+                Direction::Desc,
             ],
             'clause with resolver' => [
                 [
@@ -87,7 +87,7 @@ class BuilderTest extends TestCase {
                     ],
                 ],
                 new Property('a', 'b'),
-                Direction::asc,
+                Direction::Asc,
                 static function (): FieldResolver {
                     return new class() implements FieldResolver {
                         /**

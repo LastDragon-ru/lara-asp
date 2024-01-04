@@ -126,8 +126,8 @@ class Builder {
         Direction $direction,
     ): EloquentBuilder {
         return match ($direction) {
-            Direction::asc  => $builder->orderBy($column, 'asc'),
-            Direction::desc => $builder->orderBy($column, 'desc'),
+            Direction::Asc, Direction::asc   => $builder->orderBy($column, 'asc'),
+            Direction::Desc, Direction::desc => $builder->orderBy($column, 'desc'),
         };
     }
     // </editor-fold>

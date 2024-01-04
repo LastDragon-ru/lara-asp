@@ -67,7 +67,7 @@ class BuilderTest extends TestCase {
                         'bindings' => [],
                     ],
                     new Property('a'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
                 'nested not supported' => [
                     [
@@ -75,7 +75,7 @@ class BuilderTest extends TestCase {
                         'bindings' => [],
                     ],
                     new Property('test', 'name'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
             ]),
         ))->getData();

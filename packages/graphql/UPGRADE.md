@@ -46,3 +46,4 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 ## `@sortBy`
 
 * [ ] `enum SortByTypeFlag { yes }` => `enum SortByTypeFlag { Yes }`. 🤝
+* [ ] `enum SortByTypeDirection { asc, desc }` => `enum SortByTypeDirection { Asc, Desc }`. 🤝

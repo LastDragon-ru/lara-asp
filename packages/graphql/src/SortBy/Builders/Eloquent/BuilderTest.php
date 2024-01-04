@@ -85,7 +85,7 @@ class BuilderTest extends TestCase {
                             'bindings' => [],
                         ],
                         new Property('name'),
-                        Direction::desc,
+                        Direction::Desc,
                     ],
                 ]),
             )),
@@ -96,7 +96,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('unknown', 'name'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
                 'unsupported'         => [
                     new RelationUnsupported(
@@ -118,7 +118,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('unsupported', 'id'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
                 BelongsTo::class      => [
                     [
@@ -158,7 +158,7 @@ class BuilderTest extends TestCase {
                         return Car::query();
                     },
                     new Property('user', 'organization', 'name'),
-                    Direction::desc,
+                    Direction::Desc,
                 ],
                 HasOne::class         => [
                     [
@@ -200,7 +200,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('car', 'engine', 'id'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
                 HasMany::class        => [
                     [
@@ -233,7 +233,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('cars', 'name'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
                 MorphOne::class       => [
                     [
@@ -267,7 +267,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('avatar', 'id'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
                 HasOneThrough::class  => [
                     [
@@ -310,7 +310,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('role', 'user', 'name'),
-                    Direction::desc,
+                    Direction::Desc,
                 ],
                 BelongsToMany::class  => [
                     [
@@ -354,7 +354,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('roles', 'users', 'name'),
-                    Direction::desc,
+                    Direction::Desc,
                 ],
                 MorphToMany::class    => [
                     [
@@ -396,7 +396,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('tags', 'users', 'name'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
                 HasManyThrough::class => [
                     [
@@ -430,7 +430,7 @@ class BuilderTest extends TestCase {
                         return CarEngine::query();
                     },
                     new Property('users', 'name'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
                 MorphMany::class      => [
                     [
@@ -464,7 +464,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('images', 'id'),
-                    Direction::asc,
+                    Direction::Asc,
                 ],
             ])),
         ]))->getData();
