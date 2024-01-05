@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -18,7 +17,7 @@ class Range implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
         $typeName      = $source->getTypeName();
         $directiveName = Directive::Name;
 
@@ -28,8 +27,8 @@ class Range implements TypeDefinition {
     #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
-        string $name,
         TypeSource $source,
+        string $name,
     ): TypeDefinitionNode|Type|null {
         return Parser::inputObjectTypeDefinition(
             <<<GRAPHQL

@@ -50,3 +50,5 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] `enum SortByTypeDirection { asc, desc }` => `enum SortByTypeDirection { Asc, Desc }`. 🤝
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`.
+
+* [ ] Update `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition` implementations.

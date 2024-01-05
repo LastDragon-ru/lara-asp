@@ -50,8 +50,8 @@ abstract class InputObject implements TypeDefinition {
     #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
-        string $name,
         TypeSource $source,
+        string $name,
     ): TypeDefinitionNode|Type|null {
         // Source?
         if (

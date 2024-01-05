@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\PhpEnumType;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Enums\Flag as FlagEnum;
@@ -19,15 +18,15 @@ class Flag implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
         return Directive::Name.'TypeFlag';
     }
 
     #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
-        string $name,
         TypeSource $source,
+        string $name,
     ): TypeDefinitionNode|Type|null {
         return new PhpEnumType(FlagEnum::class, $name);
     }

@@ -88,7 +88,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Exists?
-        $name = $instance->getTypeName($this, $this->getBuilderInfo(), $source);
+        $name = $instance->getTypeName($this, $source);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
@@ -98,7 +98,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $this->addFakeTypeDefinition($name);
 
         // Create new
-        $node = $instance->getTypeDefinition($this, $name, $source);
+        $node = $instance->getTypeDefinition($this, $source, $name);
 
         if (!$node) {
             throw new TypeDefinitionImpossibleToCreateType($definition, $source);
