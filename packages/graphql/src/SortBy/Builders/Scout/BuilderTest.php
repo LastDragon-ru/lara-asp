@@ -25,12 +25,12 @@ class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderHandle
+     * @dataProvider dataProviderSort
      *
      * @param array<string, mixed>|Exception $expected
      * @param Closure():FieldResolver|null   $resolver
      */
-    public function testHandle(
+    public function testSort(
         array|Exception $expected,
         Property $property,
         Direction $direction,
@@ -50,7 +50,7 @@ class BuilderTest extends TestCase {
                 // empty
             },
         ]);
-        $builder = Container::getInstance()->make(Builder::class)->handle($builder, $property, $direction);
+        $builder = Container::getInstance()->make(Builder::class)->sort($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertScoutQueryEquals($expected, $builder);
@@ -63,7 +63,7 @@ class BuilderTest extends TestCase {
     /**
      * @return array<array-key, mixed>
      */
-    public static function dataProviderHandle(): array {
+    public static function dataProviderSort(): array {
         return [
             'clause'               => [
                 [

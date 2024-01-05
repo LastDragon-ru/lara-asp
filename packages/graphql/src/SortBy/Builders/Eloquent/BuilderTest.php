@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,7 +20,6 @@ use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\CarEngine;
@@ -35,20 +35,18 @@ use function is_array;
 
 /**
  * @internal
- *
- * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(Builder::class)]
 class BuilderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderHandle
+     * @dataProvider dataProviderSort
      *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
-     * @param BuilderFactory                                                    $builder
+     * @param Closure(static): EloquentBuilder<EloquentModel>                   $builder
      */
-    public function testHandle(
+    public function testSort(
         array|Exception $expected,
         Closure $builder,
         Property $property,
@@ -59,7 +57,7 @@ class BuilderTest extends TestCase {
         }
 
         $builder = $builder($this);
-        $builder = Container::getInstance()->make(Builder::class)->handle($builder, $property, $direction);
+        $builder = Container::getInstance()->make(Builder::class)->sort($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -74,7 +72,7 @@ class BuilderTest extends TestCase {
     /**
      * @return array<array-key, mixed>
      */
-    public static function dataProviderHandle(): array {
+    public static function dataProviderSort(): array {
         return (new MergeDataProvider([
             'Both'     => (new CompositeDataProvider(
                 new EloquentBuilderDataProvider(),

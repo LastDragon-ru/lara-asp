@@ -6,15 +6,21 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Sorter;
+use Override;
 
-class Builder {
+/**
+ * @implements Sorter<ScoutBuilder>
+ */
+class Builder implements Sorter {
     public function __construct(
         protected FieldResolver $fieldResolver,
     ) {
         // empty
     }
 
-    public function handle(ScoutBuilder $builder, Property $property, Direction $direction): ScoutBuilder {
+    #[Override]
+    public function sort(object $builder, Property $property, Direction $direction): object {
         $field   = $this->fieldResolver->getField($builder->model, $property);
         $builder = match ($direction) {
             Direction::Asc, Direction::asc   => $builder->orderBy($field, 'asc'),

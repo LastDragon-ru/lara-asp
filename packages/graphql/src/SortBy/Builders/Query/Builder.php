@@ -5,15 +5,21 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Sorter;
+use Override;
 
 use function implode;
 
-class Builder {
+/**
+ * @implements Sorter<QueryBuilder>
+ */
+class Builder implements Sorter {
     public function __construct() {
         // empty
     }
 
-    public function handle(QueryBuilder $builder, Property $property, Direction $direction): QueryBuilder {
+    #[Override]
+    public function sort(object $builder, Property $property, Direction $direction): object {
         $path    = $property->getPath();
         $column  = implode('.', $path);
         $builder = $this->processColumn($builder, $column, $direction);

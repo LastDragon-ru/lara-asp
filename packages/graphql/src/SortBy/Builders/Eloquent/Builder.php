@@ -20,8 +20,10 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Sorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LogicException;
+use Override;
 
 use function array_shift;
 use function array_slice;
@@ -29,7 +31,10 @@ use function end;
 use function implode;
 use function is_a;
 
-class Builder {
+/**
+ * @implements Sorter<EloquentBuilder<Model>>
+ */
+class Builder implements Sorter {
     /**
      * @var list<class-string<Relation<Model>>>
      */
@@ -51,12 +56,8 @@ class Builder {
 
     // <editor-fold desc="API">
     // =========================================================================
-    /**
-     * @param EloquentBuilder<Model> $builder
-     *
-     * @return EloquentBuilder<Model>
-     */
-    public function handle(EloquentBuilder $builder, Property $property, Direction $direction): EloquentBuilder {
+    #[Override]
+    public function sort(object $builder, Property $property, Direction $direction): object {
         // Column
         $path     = $property->getPath();
         $column   = Cast::toString(end($path));
