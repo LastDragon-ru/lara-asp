@@ -55,8 +55,9 @@ class EloquentSorterTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
+        $sorter  = Container::getInstance()->make(EloquentSorter::class);
         $builder = $builder($this);
-        $builder = Container::getInstance()->make(EloquentSorter::class)->sort($builder, $property, $direction);
+        $builder = $sorter->sort($builder, $property, $direction, null);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);

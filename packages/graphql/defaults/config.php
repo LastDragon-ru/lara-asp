@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
 
 /**
  * -----------------------------------------------------------------------------
@@ -18,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *      },
  *      sort_by: array{
  *          operators: array<string, list<string|class-string<Operator>>>,
+ *          nulls: ?Nulls,
  *      },
  *      stream: array{
  *          search: array{
@@ -78,6 +80,19 @@ $settings = [
         'operators' => [
             // empty
         ],
+
+        /**
+         * NULLs
+         *
+         * ---------------------------------------------------------------------
+         *
+         * Determines how the `NULL` values should be treatment. By default,
+         * there is no any processing, so the order of `NULL` depends on the
+         * database. You can change it if needed.
+         *
+         * @see Nulls
+         */
+        'nulls'     => null,
     ],
 
     /**

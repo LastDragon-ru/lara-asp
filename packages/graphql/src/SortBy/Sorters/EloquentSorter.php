@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
 use LogicException;
 use Override;
 
@@ -55,7 +56,7 @@ class EloquentSorter implements Sorter {
     // <editor-fold desc="API">
     // =========================================================================
     #[Override]
-    public function sort(object $builder, Property $property, Direction $direction): object {
+    public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
         // Column
         $path     = $property->getPath();
         $column   = Cast::toString(end($path));

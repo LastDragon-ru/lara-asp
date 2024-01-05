@@ -38,8 +38,9 @@ class QuerySorterTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
+        $sorter  = Container::getInstance()->make(QuerySorter::class);
         $builder = $builder($this);
-        $builder = Container::getInstance()->make(QuerySorter::class)->sort($builder, $property, $direction);
+        $builder = $sorter->sort($builder, $property, $direction, null);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);

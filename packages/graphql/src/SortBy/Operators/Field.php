@@ -57,9 +57,10 @@ class Field extends BaseOperator {
     public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
         $direction = Cast::to(Direction::class, $argument->value);
         $sorter    = $this->getSorter($builder);
+        $nulls     = null;
 
         if ($sorter) {
-            $sorter->sort($builder, $property, $direction);
+            $sorter->sort($builder, $property, $direction, $nulls);
         } else {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }

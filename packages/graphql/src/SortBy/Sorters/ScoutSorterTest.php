@@ -43,13 +43,14 @@ class ScoutSorterTest extends TestCase {
             $this->override(FieldResolver::class, $resolver);
         }
 
+        $sorter  = Container::getInstance()->make(ScoutSorter::class);
         $builder = Container::getInstance()->make(ScoutBuilder::class, [
             'query' => '',
             'model' => new class() extends Model {
                 // empty
             },
         ]);
-        $builder = Container::getInstance()->make(ScoutSorter::class)->sort($builder, $property, $direction);
+        $builder = $sorter->sort($builder, $property, $direction, null);
 
         if (is_array($expected)) {
             self::assertScoutQueryEquals($expected, $builder);

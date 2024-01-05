@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
 use Override;
 
 /**
@@ -18,7 +20,11 @@ class ScoutSorter implements Sorter {
     }
 
     #[Override]
-    public function sort(object $builder, Property $property, Direction $direction): object {
+    public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
+        if ($nulls) {
+            throw new NotImplemented('NULLs ordering');
+        }
+
         $field   = $this->fieldResolver->getField($builder->model, $property);
         $builder = match ($direction) {
             Direction::Asc, Direction::asc   => $builder->orderBy($field, 'asc'),

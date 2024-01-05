@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
 use Override;
 
 use function implode;
@@ -17,7 +18,7 @@ class QuerySorter implements Sorter {
     }
 
     #[Override]
-    public function sort(object $builder, Property $property, Direction $direction): object {
+    public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
         $path    = $property->getPath();
         $column  = implode('.', $path);
         $builder = $this->processColumn($builder, $column, $direction);
