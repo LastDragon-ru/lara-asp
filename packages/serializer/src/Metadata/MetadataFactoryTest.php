@@ -161,11 +161,9 @@ class MetadataFactoryTest_A implements JsonSerializable {
  */
 class MetadataFactoryTest_B extends MetadataFactoryTest_A {
     /**
-     * @phpstan-ignore-next-line required for tests
-     *
      * @var array<array-key, MetadataFactoryTest_A>
      */
-    public array $array;
+    public array $array; // @phpstan-ignore-line required for tests
 
     /**
      * @param array<int, MetadataFactoryTest_B> $promoted

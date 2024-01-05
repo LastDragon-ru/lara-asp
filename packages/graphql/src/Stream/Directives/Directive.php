@@ -540,10 +540,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $method   = '__invoke';
         $value    = new class($type, $field) extends FieldValue {
             /**
-             * @noinspection             PhpMissingParentConstructorInspection
-             * @phpstan-ignore-next-line no need to call parent `__construct`
+             * @noinspection PhpMissingParentConstructorInspection
              */
-            public function __construct(
+            public function __construct( // @phpstan-ignore-line no need to call parent `__construct`
                 private readonly string $typeName,
                 private readonly string $fieldName,
             ) {
