@@ -7,7 +7,6 @@ use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -18,8 +17,6 @@ use function is_array;
 
 /**
  * @internal
- *
- * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(QuerySorter::class)]
 class QuerySorterTest extends TestCase {
