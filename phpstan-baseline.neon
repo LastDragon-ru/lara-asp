@@ -33,7 +33,7 @@ parameters:
 		-
 			message: "#^Parameter \\#2 \\$relationClass of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Exceptions\\\\RelationUnsupported constructor expects class\\-string\\<Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\>, 'LastDragon_ru\\\\\\\\LaraASP\\\\\\\\GraphQL\\\\\\\\Testing\\\\\\\\Package\\\\\\\\Models\\\\\\\\Relations\\\\\\\\Unsupported' given\\.$#"
 			count: 1
-			path: packages/graphql/src/SortBy/Builders/Eloquent/BuilderTest.php
+			path: packages/graphql/src/SortBy/Sorters/EloquentSorterTest.php
 
 		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\:\\:imageable\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Role\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\User, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\>\\.$#"

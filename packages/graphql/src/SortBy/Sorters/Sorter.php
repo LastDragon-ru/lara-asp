@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 

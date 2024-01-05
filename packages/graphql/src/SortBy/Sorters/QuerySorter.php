@@ -1,11 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Sorter;
 use Override;
 
 use function implode;
@@ -13,7 +11,7 @@ use function implode;
 /**
  * @implements Sorter<QueryBuilder>
  */
-class Builder implements Sorter {
+class QuerySorter implements Sorter {
     public function __construct() {
         // empty
     }

@@ -1,13 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -22,8 +21,8 @@ use function is_array;
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
-#[CoversClass(Builder::class)]
-class BuilderTest extends TestCase {
+#[CoversClass(QuerySorter::class)]
+class QuerySorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -43,7 +42,7 @@ class BuilderTest extends TestCase {
         }
 
         $builder = $builder($this);
-        $builder = Container::getInstance()->make(Builder::class)->sort($builder, $property, $direction);
+        $builder = Container::getInstance()->make(QuerySorter::class)->sort($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);

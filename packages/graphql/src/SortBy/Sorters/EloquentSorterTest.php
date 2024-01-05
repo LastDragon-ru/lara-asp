@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
@@ -36,8 +35,8 @@ use function is_array;
 /**
  * @internal
  */
-#[CoversClass(Builder::class)]
-class BuilderTest extends TestCase {
+#[CoversClass(EloquentSorter::class)]
+class EloquentSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -57,7 +56,7 @@ class BuilderTest extends TestCase {
         }
 
         $builder = $builder($this);
-        $builder = Container::getInstance()->make(Builder::class)->sort($builder, $property, $direction);
+        $builder = Container::getInstance()->make(EloquentSorter::class)->sort($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);

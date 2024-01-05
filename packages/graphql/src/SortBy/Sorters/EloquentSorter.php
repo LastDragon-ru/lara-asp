@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -19,8 +19,6 @@ use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Sorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LogicException;
 use Override;
@@ -34,7 +32,7 @@ use function is_a;
 /**
  * @implements Sorter<EloquentBuilder<Model>>
  */
-class Builder implements Sorter {
+class EloquentSorter implements Sorter {
     /**
      * @var list<class-string<Relation<Model>>>
      */

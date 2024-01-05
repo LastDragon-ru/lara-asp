@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,8 +19,8 @@ use function is_array;
 /**
  * @internal
  */
-#[CoversClass(Builder::class)]
-class BuilderTest extends TestCase {
+#[CoversClass(ScoutSorter::class)]
+class ScoutSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -50,7 +49,7 @@ class BuilderTest extends TestCase {
                 // empty
             },
         ]);
-        $builder = Container::getInstance()->make(Builder::class)->sort($builder, $property, $direction);
+        $builder = Container::getInstance()->make(ScoutSorter::class)->sort($builder, $property, $direction);
 
         if (is_array($expected)) {
             self::assertScoutQueryEquals($expected, $builder);

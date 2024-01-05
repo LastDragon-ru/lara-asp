@@ -46,4 +46,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 ## `@sortBy`
 
 * [ ] `enum SortByTypeFlag { yes }` => `enum SortByTypeFlag { Yes }`. 🤝
+
 * [ ] `enum SortByTypeDirection { asc, desc }` => `enum SortByTypeDirection { Asc, Desc }`. 🤝
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`.
