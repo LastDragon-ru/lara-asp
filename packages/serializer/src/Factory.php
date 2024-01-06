@@ -11,10 +11,12 @@ use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizerContextBu
 use LastDragon_ru\LaraASP\Serializer\Normalizers\UnitEnumNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\UnitEnumNormalizerContextBuilder;
 use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
+use Symfony\Component\Serializer\Context\Normalizer\BackedEnumNormalizerContextBuilder;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -203,6 +205,9 @@ class Factory {
             DateTimeZoneNormalizer::class => [],
             DateIntervalNormalizer::class => [],
             UnitEnumNormalizer::class     => (new UnitEnumNormalizerContextBuilder())
+                ->withAllowInvalidValues(false)
+                ->toArray(),
+            BackedEnumNormalizer::class   => (new BackedEnumNormalizerContextBuilder())
                 ->withAllowInvalidValues(false)
                 ->toArray(),
             SerializableNormalizer::class => (new SerializableNormalizerContextBuilder())
