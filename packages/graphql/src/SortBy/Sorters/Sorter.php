@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
 
 /**

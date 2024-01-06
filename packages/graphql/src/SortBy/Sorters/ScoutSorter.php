@@ -6,6 +6,7 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
 use Override;
 

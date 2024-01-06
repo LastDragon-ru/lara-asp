@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\EloquentSorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\QuerySorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\ScoutSorter;

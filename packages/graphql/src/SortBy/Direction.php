@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
 use GraphQL\Type\Definition\Deprecated;
 use GraphQL\Type\Definition\Description;
