@@ -101,7 +101,7 @@ Out of the box, the package supports only the following objects (see [`Factory`]
 * Any object that implement `\DateTimeInterface` (see [`DateTimeNormalizer`](./src/Normalizers/DateTimeNormalizer.php))
 * `\DateTimeZone`
 * `\DateInterval`
-* `\UnitEnum`
+* PHP Enums
 
 Publish the config and add normalizers/denormalizers if you need more:
 

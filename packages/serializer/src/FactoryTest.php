@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DataUriNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer;
@@ -73,6 +74,7 @@ class FactoryTest extends TestCase {
                             'csv encoder option'                          => 'call',
                             'json_encode_options'                         => 4_197_698,
                             'json_decode_options'                         => 4_194_304,
+                            'allow_invalid_values'                        => false,
                             DateTimeNormalizer::ContextFormat             => 'Y-m-d\TH:i:s.vP',
                             UnitEnumNormalizer::ContextAllowInvalidValues => false,
                         ],
@@ -93,6 +95,7 @@ class FactoryTest extends TestCase {
                             ArrayDenormalizer::class,
                             DateIntervalNormalizer::class,
                             UnitEnumNormalizer::class,
+                            BackedEnumNormalizer::class,
                         ],
                         $normalizers,
                     );
