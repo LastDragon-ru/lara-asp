@@ -127,7 +127,8 @@ class ProviderTest extends TestCase {
             }
         };
         $datetime     = Carbon::make('2023-08-11T10:45:00');
-        $serializable = new ProviderTest__Simple($datetime);
+        $unitEnum     = ProviderTest__UnitEnum::A;
+        $serializable = new ProviderTest__Simple($datetime, $unitEnum);
         $curcular     = new class() implements Serializable {
             public Serializable $a; // @phpstan-ignore-line required for tests
         };
@@ -142,7 +143,8 @@ class ProviderTest extends TestCase {
                 <<<'JSON'
                 {
                     "a": 123,
-                    "e": "2023-08-11T10:45:00.000+00:00"
+                    "e": "2023-08-11T10:45:00.000+00:00",
+                    "f": "A"
                 }
                 JSON,
                 $serializable,
@@ -155,13 +157,15 @@ class ProviderTest extends TestCase {
                     "datetime": "2023-08-11T10:45:00.000+00:00",
                     "nested": {
                         "a": 123,
-                        "e": "2023-08-11T10:45:00.000+00:00"
+                        "e": "2023-08-11T10:45:00.000+00:00",
+                        "f": "A"
                     },
                     "array": ["2023-08-11T10:45:00.000+00:00","2023-08-11T10:45:00.000+00:00"],
-                    "nullable": null
+                    "nullable": null,
+                    "unitEnum":"A"
                 }
                 JSON,
-                new ProviderTest__Complex($datetime, $serializable, [$datetime, $datetime], null),
+                new ProviderTest__Complex($datetime, $serializable, [$datetime, $datetime], null, $unitEnum),
             ],
             'unsupported object'              => [
                 new FailedToSerialize($invalid, 'json', [], new NotNormalizableValueException(
@@ -217,7 +221,8 @@ class ProviderTest extends TestCase {
             }
         };
         $datetime     = Carbon::make('2023-08-11T10:45:00');
-        $serializable = new ProviderTest__Simple($datetime);
+        $unitEnum     = ProviderTest__UnitEnum::B;
+        $serializable = new ProviderTest__Simple($datetime, $unitEnum);
 
         return [
             'empty object'                       => [
@@ -231,12 +236,19 @@ class ProviderTest extends TestCase {
                 <<<'JSON'
                 {
                     "a": 123,
-                    "e": "2023-08-11T10:45:00.000+00:00"
+                    "e": "2023-08-11T10:45:00.000+00:00",
+                    "f": "B"
                 }
                 JSON,
             ],
             'complex object'                     => [
-                new ProviderTest__Complex($datetime, new ProviderTest__Simple(), [$datetime, $datetime], null),
+                new ProviderTest__Complex(
+                    $datetime,
+                    new ProviderTest__Simple(),
+                    [$datetime, $datetime],
+                    null,
+                    $unitEnum,
+                ),
                 ProviderTest__Complex::class,
                 <<<'JSON'
                 {
@@ -245,7 +257,8 @@ class ProviderTest extends TestCase {
                     "nested": {"a":123},
                     "flags": [1, 2, 3],
                     "array": ["2023-08-11T10:45:00.000+00:00","2023-08-11T10:45:00.000+00:00"],
-                    "nullable": null
+                    "nullable": null,
+                    "unitEnum": "B"
                 }
                 JSON,
             ],
@@ -348,14 +361,16 @@ class ProviderTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class ProviderTest__Simple implements Serializable, Stringable, JsonSerializable {
-    public int                $a = 123;
-    public bool               $b; // @phpstan-ignore-line required for tests
-    protected string          $c = 'should be ignored';
-    private string            $d = 'should be ignored';
-    public ?DateTimeInterface $e = null;
+    public int                     $a = 123;
+    public bool                    $b; // @phpstan-ignore-line required for tests
+    protected string               $c = 'should be ignored';
+    private string                 $d = 'should be ignored';
+    public ?DateTimeInterface      $e = null;
+    public ?ProviderTest__UnitEnum $f = null;
 
-    public function __construct(?DateTimeInterface $e = null) {
+    public function __construct(?DateTimeInterface $e = null, ?ProviderTest__UnitEnum $f = null) {
         $this->e = $e;
+        $this->f = $f;
     }
 
     #[Override]
@@ -393,6 +408,7 @@ class ProviderTest__Complex implements Serializable {
         public ProviderTest__Simple $nested,
         public array $array,
         public ?Carbon $nullable,
+        public ?ProviderTest__UnitEnum $unitEnum,
     ) {
         // empty
     }
@@ -463,4 +479,14 @@ class ProviderTest__C extends ProviderTest__Abstract {
     ) {
         parent::__construct($property);
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+enum ProviderTest__UnitEnum {
+    case A;
+    case B;
+    case C;
 }
