@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\UnitEnumNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -63,16 +64,17 @@ class FactoryTest extends TestCase {
                     self::assertEquals('format from config', $format);
                     self::assertEquals(
                         [
-                            'encoder option from config'      => 'encoder',
-                            'encoder option'                  => 'call',
-                            'normalizer option from config'   => 'normalizer',
-                            'normalizer option'               => 'call',
-                            'context option from config'      => 'context',
-                            'context option'                  => 'call',
-                            'csv encoder option'              => 'call',
-                            'json_encode_options'             => 4_197_698,
-                            'json_decode_options'             => 4_194_304,
-                            DateTimeNormalizer::ContextFormat => 'Y-m-d\TH:i:s.vP',
+                            'encoder option from config'                  => 'encoder',
+                            'encoder option'                              => 'call',
+                            'normalizer option from config'               => 'normalizer',
+                            'normalizer option'                           => 'call',
+                            'context option from config'                  => 'context',
+                            'context option'                              => 'call',
+                            'csv encoder option'                          => 'call',
+                            'json_encode_options'                         => 4_197_698,
+                            'json_decode_options'                         => 4_194_304,
+                            DateTimeNormalizer::ContextFormat             => 'Y-m-d\TH:i:s.vP',
+                            UnitEnumNormalizer::ContextAllowInvalidValues => false,
                         ],
                         $context,
                     );
@@ -90,6 +92,7 @@ class FactoryTest extends TestCase {
                             DataUriNormalizer::class,
                             ArrayDenormalizer::class,
                             DateIntervalNormalizer::class,
+                            UnitEnumNormalizer::class,
                         ],
                         $normalizers,
                     );
