@@ -2,6 +2,7 @@
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\Direction;
 
 /**
  * -----------------------------------------------------------------------------
@@ -19,7 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
  *      },
  *      sort_by: array{
  *          operators: array<string, list<string|class-string<Operator>>>,
- *          nulls: ?Nulls,
+ *          nulls: Nulls|non-empty-array<value-of<Direction>, Nulls>|null,
  *      },
  *      stream: array{
  *          search: array{
@@ -88,7 +89,9 @@ $settings = [
          *
          * Determines how the `NULL` values should be treatment. By default,
          * there is no any processing, so the order of `NULL` depends on the
-         * database. You can change it if needed.
+         * database. It may be set for all (if single value) or for each
+         * direction (if array). Not all databases may be supported.
+         * Please check the documentation for more details.
          *
          * @see Nulls
          */

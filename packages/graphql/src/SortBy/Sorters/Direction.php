@@ -6,21 +6,23 @@ use GraphQL\Type\Definition\Deprecated;
 use GraphQL\Type\Definition\Description;
 
 #[Description('Sort direction.')]
-enum Direction {
-    case Asc;
-    case Desc;
+enum Direction: string {
+    case Asc  = 'Asc';
+    case Desc = 'Desc';
 
     /**
+     * @internal
      * @deprecated 5.4.0 Please use {@link Direction::Asc} instead.
      */
     #[Deprecated('Please use `Asc` instead.')]
     #[Description('')]
-    case asc;
+    case asc = 'asc';
 
     /**
+     * @internal
      * @deprecated 5.4.0 Please use {@link Direction::Desc} instead.
      */
     #[Deprecated('Please use `Desc` instead.')]
     #[Description('')]
-    case desc;
+    case desc = 'desc';
 }
