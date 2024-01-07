@@ -90,7 +90,7 @@ $settings = [
          * Determines how the `NULL` values should be treatment. By default,
          * there is no any processing, so the order of `NULL` depends on the
          * database. It may be set for all (if single value) or for each
-         * direction (if array). Not all databases may be supported.
+         * direction (if array). Not all databases/builders may be supported.
          * Please check the documentation for more details.
          *
          * @see Nulls

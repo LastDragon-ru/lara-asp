@@ -12,8 +12,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Scout\DefaultFieldResolver as ScoutDef
 use LastDragon_ru\LaraASP\GraphQL\Printer\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators as SearchByOperators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory as SorterFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory as StreamFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\StreamFactory;
@@ -76,6 +78,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerBindings(): void {
+        $this->app->scopedIf(SorterFactoryContract::class, SorterFactory::class);
         $this->app->bindIf(StreamFactoryContract::class, StreamFactory::class);
     }
 
