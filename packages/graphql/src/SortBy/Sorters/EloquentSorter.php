@@ -58,6 +58,11 @@ class EloquentSorter implements Sorter {
     // <editor-fold desc="API">
     // =========================================================================
     #[Override]
+    public function isNullsSortable(): bool {
+        return true;
+    }
+
+    #[Override]
     public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
         // Column
         $path     = $property->getPath();

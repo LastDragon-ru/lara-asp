@@ -7,11 +7,17 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction as DirectionType;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
+
+use function config;
+use function is_array;
 
 class Field extends BaseOperator {
     /**
@@ -49,7 +55,7 @@ class Field extends BaseOperator {
 
         if ($sorter) {
             $direction = $argument->value instanceof Direction ? $argument->value : Direction::Asc;
-            $nulls     = null;
+            $nulls     = $this->getNulls($sorter, $property, $direction);
 
             $sorter->sort($builder, $property, $direction, $nulls);
         } else {
@@ -57,5 +63,29 @@ class Field extends BaseOperator {
         }
 
         return $builder;
+    }
+
+    /**
+     * @param Sorter<object> $sorter
+     */
+    protected function getNulls(Sorter $sorter, Property $property, Direction $direction): ?Nulls {
+        // Sortable?
+        if (!$sorter->isNullsSortable()) {
+            return null;
+        }
+
+        // Default
+        $nulls  = null;
+        $config = config(Package::Name.'.sort_by.nulls');
+
+        if (is_array($config) && isset($config[$direction->value])) {
+            $config = $config[$direction->value];
+        }
+
+        if ($config instanceof Nulls) {
+            $nulls = $config;
+        }
+
+        return $nulls;
     }
 }

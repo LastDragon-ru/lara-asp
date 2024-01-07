@@ -20,6 +20,11 @@ class QuerySorter implements Sorter {
     }
 
     #[Override]
+    public function isNullsSortable(): bool {
+        return true;
+    }
+
+    #[Override]
     public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
         $path    = $property->getPath();
         $column  = implode('.', $path);
