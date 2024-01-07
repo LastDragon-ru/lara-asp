@@ -3,6 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
 enum Nulls {
-    case AsPositiveInfinity;
-    case AsNegativeInfinity;
+    case First;
+    case Last;
 }
