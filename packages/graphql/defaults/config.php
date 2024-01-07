@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Direction;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Nulls;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 
 /**
  * -----------------------------------------------------------------------------
