@@ -65,7 +65,7 @@ class FieldTest extends TestCase {
 
         $this->override(EloquentSorter::class, static function (MockInterface $mock): void {
             $mock
-                ->shouldReceive('isNullsSortable')
+                ->shouldReceive('isNullsSupported')
                 ->once()
                 ->andReturn(false);
             $mock
@@ -92,7 +92,7 @@ class FieldTest extends TestCase {
 
         $this->override(QuerySorter::class, static function (MockInterface $mock): void {
             $mock
-                ->shouldReceive('isNullsSortable')
+                ->shouldReceive('isNullsSupported')
                 ->once()
                 ->andReturn(false);
             $mock
@@ -117,7 +117,7 @@ class FieldTest extends TestCase {
 
         $this->override(ScoutSorter::class, static function (MockInterface $mock): void {
             $mock
-                ->shouldReceive('isNullsSortable')
+                ->shouldReceive('isNullsSupported')
                 ->once()
                 ->andReturn(false);
             $mock
@@ -215,7 +215,7 @@ class FieldTest extends TestCase {
                     }
 
                     #[Override]
-                    public function isNullsSortable(): bool {
+                    public function isNullsSupported(): bool {
                         return $this->nullsSortable;
                     }
 

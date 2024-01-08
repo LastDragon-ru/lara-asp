@@ -33,7 +33,7 @@ abstract class DatabaseSorter implements Sorter {
     }
 
     #[Override]
-    public function isNullsSortable(): bool {
+    public function isNullsSupported(): bool {
         return true;
     }
 

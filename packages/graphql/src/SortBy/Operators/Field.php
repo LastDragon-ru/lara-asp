@@ -70,7 +70,7 @@ class Field extends BaseOperator {
      */
     protected function getNulls(Sorter $sorter, Property $property, Direction $direction): ?Nulls {
         // Sortable?
-        if (!$sorter->isNullsSortable()) {
+        if (!$sorter->isNullsSupported()) {
             return null;
         }
 

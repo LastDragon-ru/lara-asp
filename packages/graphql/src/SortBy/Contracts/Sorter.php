@@ -10,7 +10,10 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
  * @template TBuilder of object
  */
 interface Sorter {
-    public function isNullsSortable(): bool;
+    /**
+     * Should return `true` if Sorter can handle {@see Nulls}.
+     */
+    public function isNullsSupported(): bool;
 
     /**
      * @param TBuilder $builder

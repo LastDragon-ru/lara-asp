@@ -22,7 +22,7 @@ class ScoutSorter implements Sorter {
     }
 
     #[Override]
-    public function isNullsSortable(): bool {
+    public function isNullsSupported(): bool {
         return false;
     }
 
