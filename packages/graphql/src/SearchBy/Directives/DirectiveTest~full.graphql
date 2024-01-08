@@ -103,12 +103,12 @@ scalar ScalarCustom
 @searchByOperatorLessThanOrEqual
 
 enum EnumA {
-    one
-    two
+    One
+    Two
 }
 
 enum EnumIgnored @searchByIgnored {
-    one
+    One
 }
 
 interface ObjectInterface {

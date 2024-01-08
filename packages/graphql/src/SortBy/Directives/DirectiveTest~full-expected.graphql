@@ -39,7 +39,7 @@ on
 enum EnumIgnored
 @sortByIgnored
 {
-    one
+    One
 }
 
 """
@@ -70,8 +70,8 @@ enum SortByTypeFlag {
 }
 
 enum Value {
-    one
-    two
+    One
+    Two
 }
 
 """

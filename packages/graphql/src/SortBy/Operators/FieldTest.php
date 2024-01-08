@@ -80,7 +80,7 @@ class FieldTest extends TestCase {
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
-            'enum Test { asc }',
+            'enum Test { Asc }',
         );
         $builder   = Mockery::mock(EloquentBuilder::class);
 
@@ -131,7 +131,7 @@ class FieldTest extends TestCase {
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
-            'enum Test { asc }',
+            'enum Test { Asc }',
         );
         $builder   = Mockery::mock(ScoutBuilder::class);
 

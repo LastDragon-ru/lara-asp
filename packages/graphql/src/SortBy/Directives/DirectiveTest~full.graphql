@@ -70,12 +70,12 @@ scalar DateIgnored
 @sortByIgnored
 
 enum Value {
-    one
-    two
+    One
+    Two
 }
 
 enum EnumIgnored @sortByIgnored {
-    one
+    One
 }
 
 interface ObjectInterface {

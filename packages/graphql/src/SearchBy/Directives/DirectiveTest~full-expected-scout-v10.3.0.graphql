@@ -215,14 +215,14 @@ on
     | SCALAR
 
 enum EnumA {
-    one
-    two
+    One
+    Two
 }
 
 enum EnumIgnored
 @searchByIgnored
 {
-    one
+    One
 }
 
 enum SearchByTypeFlag {
