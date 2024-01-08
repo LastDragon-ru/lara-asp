@@ -143,3 +143,57 @@ query {
     ])
 }
 ```
+
+### NULLs ordering
+
+`NULL`s order different in different databases. Sometimes you may to change it. There is no default/built-it support in Laravel nor Lighthouse, but you can do it! :) Please note, not all databases have native `NULLS FIRST`/`NULLS LAST` support (eg MySQL and SQL Server doesn't). The additional `ORDER BY` clause with `CASE WHEN` will be used for these databases. It may be slow for big datasets.
+
+Default ordering can be changed via config. You may set it for all directions if single value used, in this case NULL always be first/last:
+
+```php
+<?php declare(strict_types = 1);
+
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
+
+/**
+ * @var array{
+ *      sort_by: array{
+ *          nulls: Nulls|non-empty-array<value-of<Direction>, Nulls>|null,
+ *      },
+ *      } $settings
+ */
+$settings = [
+    'sort_by' => [
+        'nulls' => Nulls::First,
+    ],
+];
+
+return $settings;
+```
+
+Or individually for each direction:
+
+```php
+<?php declare(strict_types = 1);
+
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
+
+/**
+ * @var array{
+ *      sort_by: array{
+ *          nulls: Nulls|non-empty-array<value-of<Direction>, Nulls>|null,
+ *      },
+ *      } $settings
+ */
+$settings = [
+    'sort_by' => [
+        'nulls' => [
+            Direction::Asc->value  => Nulls::First,
+            Direction::Desc->value => Nulls::Last,
+        ],
+    ],
+];
+
+return $settings;
+```
