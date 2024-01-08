@@ -1,6 +1,8 @@
 <?php declare(strict_types = 1);
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 
 /**
  * -----------------------------------------------------------------------------
@@ -18,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *      },
  *      sort_by: array{
  *          operators: array<string, list<string|class-string<Operator>>>,
+ *          nulls: Nulls|non-empty-array<value-of<Direction>, Nulls>|null,
  *      },
  *      stream: array{
  *          search: array{
@@ -78,6 +81,21 @@ $settings = [
         'operators' => [
             // empty
         ],
+
+        /**
+         * NULLs
+         *
+         * ---------------------------------------------------------------------
+         *
+         * Determines how the `NULL` values should be treatment. By default,
+         * there is no any processing, so the order of `NULL` depends on the
+         * database. It may be set for all (if single value) or for each
+         * direction (if array). Not all databases/builders may be supported.
+         * Please check the documentation for more details.
+         *
+         * @see Nulls
+         */
+        'nulls'     => null,
     ],
 
     /**

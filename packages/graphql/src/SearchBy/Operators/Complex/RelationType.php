@@ -6,7 +6,6 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -21,9 +20,9 @@ class RelationType implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
         $typeName      = $source->getTypeName();
-        $builderName   = $builder->getName();
+        $builderName   = $manipulator->getBuilderInfo()->getName();
         $operatorName  = Str::studly(Relation::getName());
         $directiveName = Directive::Name;
 
@@ -33,8 +32,8 @@ class RelationType implements TypeDefinition {
     #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
-        string $name,
         TypeSource $source,
+        string $name,
     ): TypeDefinitionNode|Type|null {
         $count = $manipulator->getType(Scalar::class, $manipulator->getTypeSource(Type::nonNull(Type::int())));
         $where = $manipulator->getType(Condition::class, $source);

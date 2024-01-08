@@ -6,17 +6,20 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver as ScoutFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver as ScoutFieldResolverContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Scout\DefaultFieldResolver as ScoutDefaultFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Scout\DefaultFieldResolver as ScoutFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Printer\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators as SearchByOperators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory as SorterFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory as StreamFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\StreamFactory;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Definitions\LaraAspAsEnumDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver as DirectiveResolverContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings as SettingsContract;
@@ -43,37 +46,31 @@ class Provider extends ServiceProvider {
         parent::register();
 
         $this->registerBindings();
-        $this->registerDirectives();
+        $this->registerOperators();
         $this->registerSchemaPrinter();
     }
 
     protected function bootDirectives(Dispatcher $dispatcher): void {
         $dispatcher->listen(
             RegisterDirectiveNamespaces::class,
-            static function (): string {
-                return implode('\\', array_slice(explode('\\', SearchByDirective::class), 0, -1));
-            },
-        );
-        $dispatcher->listen(
-            RegisterDirectiveNamespaces::class,
-            static function (): string {
-                return implode('\\', array_slice(explode('\\', SortByDirective::class), 0, -1));
-            },
-        );
-        $dispatcher->listen(
-            RegisterDirectiveNamespaces::class,
-            static function (): string {
-                return implode('\\', array_slice(explode('\\', StreamDirective::class), 0, -1));
+            static function (): array {
+                return [
+                    implode('\\', array_slice(explode('\\', SearchByDirective::class), 0, -1)),
+                    implode('\\', array_slice(explode('\\', SortByDirective::class), 0, -1)),
+                    implode('\\', array_slice(explode('\\', StreamDirective::class), 0, -1)),
+                    implode('\\', array_slice(explode('\\', LaraAspAsEnumDirective::class), 0, -1)),
+                ];
             },
         );
     }
 
     protected function registerBindings(): void {
-        $this->app->bindIf(StreamFactoryContract::class, StreamFactory::class);
+        $this->app->scopedIf(SorterFactoryContract::class, SorterFactory::class);
+        $this->app->scopedIf(StreamFactoryContract::class, StreamFactory::class);
+        $this->app->scopedIf(ScoutFieldResolverContract::class, ScoutFieldResolver::class);
     }
 
-    protected function registerDirectives(): void {
-        $this->app->bindIf(ScoutFieldResolver::class, ScoutDefaultFieldResolver::class);
+    protected function registerOperators(): void {
         $this->callAfterResolving(
             Manipulator::class,
             static function (Manipulator $manipulator): void {

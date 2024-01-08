@@ -1,12 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Query;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
 use Illuminate\Container\Container;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
@@ -17,31 +18,30 @@ use function is_array;
 
 /**
  * @internal
- *
- * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
-#[CoversClass(Builder::class)]
-class BuilderTest extends TestCase {
+#[CoversClass(QuerySorter::class)]
+class QuerySorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderHandle
+     * @dataProvider dataProviderSort
      *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
-     * @param BuilderFactory                                                    $builder
+     * @param Closure(static): QueryBuilder                                     $builder
      */
-    public function testHandle(
+    public function testSort(
         array|Exception $expected,
         Closure $builder,
         Property $property,
-        string $direction,
+        Direction $direction,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
+        $sorter  = Container::getInstance()->make(QuerySorter::class);
         $builder = $builder($this);
-        $builder = Container::getInstance()->make(Builder::class)->handle($builder, $property, $direction);
+        $builder = $sorter->sort($builder, $property, $direction, null);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -56,7 +56,7 @@ class BuilderTest extends TestCase {
     /**
      * @return array<array-key, mixed>
      */
-    public static function dataProviderHandle(): array {
+    public static function dataProviderSort(): array {
         return (new CompositeDataProvider(
             new QueryBuilderDataProvider(),
             new ArrayDataProvider([
@@ -66,7 +66,7 @@ class BuilderTest extends TestCase {
                         'bindings' => [],
                     ],
                     new Property('a'),
-                    'asc',
+                    Direction::Asc,
                 ],
                 'nested not supported' => [
                     [
@@ -74,7 +74,7 @@ class BuilderTest extends TestCase {
                         'bindings' => [],
                     ],
                     new Property('test', 'name'),
-                    'asc',
+                    Direction::Asc,
                 ],
             ]),
         ))->getData();

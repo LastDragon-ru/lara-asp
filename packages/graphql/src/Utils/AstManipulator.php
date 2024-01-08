@@ -36,6 +36,7 @@ use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\NullableType;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\PhpEnumType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
@@ -45,6 +46,7 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeUnexpected;
+use LastDragon_ru\LaraASP\GraphQL\Utils\Definitions\LaraAspAsEnumDirective;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -246,6 +248,17 @@ class AstManipulator {
             $scalar = Parser::scalarTypeDefinition(
                 <<<GRAPHQL
                 scalar {$name} @scalar(class: {$class})
+                GRAPHQL,
+            );
+
+            $this->getDocument()->setTypeDefinition($scalar);
+        } elseif ($definition instanceof PhpEnumType) {
+            $enum   = DirectiveLocator::directiveName(LaraAspAsEnumDirective::class);
+            $class  = PhpEnumTypeHelper::getEnumClass($definition);
+            $class  = json_encode($class, JSON_THROW_ON_ERROR);
+            $scalar = Parser::scalarTypeDefinition(
+                <<<GRAPHQL
+                scalar {$name} @{$enum}(class: {$class})
                 GRAPHQL,
             );
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Scout;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -19,20 +20,20 @@ use function is_array;
 /**
  * @internal
  */
-#[CoversClass(Builder::class)]
-class BuilderTest extends TestCase {
+#[CoversClass(ScoutSorter::class)]
+class ScoutSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderHandle
+     * @dataProvider dataProviderSort
      *
      * @param array<string, mixed>|Exception $expected
      * @param Closure():FieldResolver|null   $resolver
      */
-    public function testHandle(
+    public function testSort(
         array|Exception $expected,
         Property $property,
-        string $direction,
+        Direction $direction,
         Closure $resolver = null,
     ): void {
         if ($expected instanceof Exception) {
@@ -43,13 +44,14 @@ class BuilderTest extends TestCase {
             $this->override(FieldResolver::class, $resolver);
         }
 
+        $sorter  = Container::getInstance()->make(ScoutSorter::class);
         $builder = Container::getInstance()->make(ScoutBuilder::class, [
             'query' => '',
             'model' => new class() extends Model {
                 // empty
             },
         ]);
-        $builder = Container::getInstance()->make(Builder::class)->handle($builder, $property, $direction);
+        $builder = $sorter->sort($builder, $property, $direction, null);
 
         if (is_array($expected)) {
             self::assertScoutQueryEquals($expected, $builder);
@@ -62,7 +64,7 @@ class BuilderTest extends TestCase {
     /**
      * @return array<array-key, mixed>
      */
-    public static function dataProviderHandle(): array {
+    public static function dataProviderSort(): array {
         return [
             'clause'               => [
                 [
@@ -74,7 +76,7 @@ class BuilderTest extends TestCase {
                     ],
                 ],
                 new Property('c', 'd', 'e'),
-                'desc',
+                Direction::Desc,
             ],
             'clause with resolver' => [
                 [
@@ -86,7 +88,7 @@ class BuilderTest extends TestCase {
                     ],
                 ],
                 new Property('a', 'b'),
-                'asc',
+                Direction::Asc,
                 static function (): FieldResolver {
                     return new class() implements FieldResolver {
                         /**

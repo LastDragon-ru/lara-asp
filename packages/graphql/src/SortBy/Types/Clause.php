@@ -9,7 +9,6 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -36,9 +35,9 @@ use const SORT_REGULAR;
 
 class Clause extends InputObject {
     #[Override]
-    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
         $directiveName = Directive::Name;
-        $builderName   = $builder->getName();
+        $builderName   = $manipulator->getBuilderInfo()->getName();
         $typeName      = $source->getTypeName();
 
         return "{$directiveName}{$builderName}Clause{$typeName}";

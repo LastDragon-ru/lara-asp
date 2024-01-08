@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -16,19 +16,23 @@ use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\JoinClause;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LogicException;
+use Override;
 
 use function array_shift;
 use function array_slice;
-use function end;
 use function implode;
 use function is_a;
 
-class Builder {
+/**
+ * @extends DatabaseSorter<EloquentBuilder<Model>>
+ */
+class EloquentSorter extends DatabaseSorter {
     /**
      * @var list<class-string<Relation<Model>>>
      */
@@ -44,35 +48,21 @@ class Builder {
         HasManyThrough::class,
     ];
 
-    public function __construct() {
-        // empty
-    }
-
     // <editor-fold desc="API">
     // =========================================================================
-    /**
-     * @param EloquentBuilder<Model> $builder
-     *
-     * @return EloquentBuilder<Model>
-     */
-    public function handle(EloquentBuilder $builder, Property $property, string $direction): EloquentBuilder {
+    #[Override]
+    public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
         // Column
         $path     = $property->getPath();
-        $column   = Cast::toString(end($path));
+        $column   = $property->getName();
         $relation = array_slice($path, 0, -1);
 
         if ($relation) {
-            $column = $this->processRelation($builder, $relation, $column, $direction);
+            $column = $this->getRelationColumn($builder, $relation, $column, $direction);
         }
 
         // Order
-        if ($direction) {
-            $builder = $builder->orderBy($column, $direction);
-        } else {
-            $builder = $builder->orderBy($column);
-        }
-
-        return $builder;
+        return $this->sortByColumn($builder, $column, $direction, $nulls);
     }
     // </editor-fold>
 
@@ -84,11 +74,11 @@ class Builder {
      *
      * @return EloquentBuilder<Model>
      */
-    protected function processRelation(
+    protected function getRelationColumn(
         EloquentBuilder $builder,
         array $relations,
         string $column,
-        ?string $direction,
+        Direction $direction,
     ): EloquentBuilder {
         // Unfortunately `Builder::withAggregate()` doesn't supported nested
         // relations...
@@ -112,19 +102,8 @@ class Builder {
 
         // We need only one row
         $qualified = "{$alias}.{$column}";
-        $query     = $query
-            ->select($qualified)
-            ->reorder()
-            ->when(
-                $direction,
-                static function (EloquentBuilder $builder, string $direction) use ($qualified): EloquentBuilder {
-                    return $builder->orderBy($qualified, $direction);
-                },
-                static function (EloquentBuilder $builder) use ($qualified): EloquentBuilder {
-                    return $builder->orderBy($qualified);
-                },
-            )
-            ->limit(1);
+        $query     = $query->select($qualified)->reorder()->limit(1);
+        $query     = $this->sortByColumn($query, $qualified, $direction);
 
         // Return
         return $query;

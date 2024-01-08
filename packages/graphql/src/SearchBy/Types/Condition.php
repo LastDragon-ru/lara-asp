@@ -13,7 +13,6 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
-use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -41,9 +40,9 @@ use const SORT_REGULAR;
 
 class Condition extends InputObject {
     #[Override]
-    public function getTypeName(Manipulator $manipulator, BuilderInfo $builder, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
         $typeName      = $source->getTypeName();
-        $builderName   = $builder->getName();
+        $builderName   = $manipulator->getBuilderInfo()->getName();
         $directiveName = Directive::Name;
 
         return "{$directiveName}{$builderName}Condition{$typeName}";

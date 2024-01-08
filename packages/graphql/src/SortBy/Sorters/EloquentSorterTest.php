@@ -1,11 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\Eloquent;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\CarEngine;
@@ -34,31 +35,30 @@ use function is_array;
 
 /**
  * @internal
- *
- * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
-#[CoversClass(Builder::class)]
-class BuilderTest extends TestCase {
+#[CoversClass(EloquentSorter::class)]
+class EloquentSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderHandle
+     * @dataProvider dataProviderSort
      *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
-     * @param BuilderFactory                                                    $builder
+     * @param Closure(static): EloquentBuilder<EloquentModel>                   $builder
      */
-    public function testHandle(
+    public function testSort(
         array|Exception $expected,
         Closure $builder,
         Property $property,
-        string $direction,
+        Direction $direction,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
+        $sorter  = Container::getInstance()->make(EloquentSorter::class);
         $builder = $builder($this);
-        $builder = Container::getInstance()->make(Builder::class)->handle($builder, $property, $direction);
+        $builder = $sorter->sort($builder, $property, $direction, null);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -73,7 +73,7 @@ class BuilderTest extends TestCase {
     /**
      * @return array<array-key, mixed>
      */
-    public static function dataProviderHandle(): array {
+    public static function dataProviderSort(): array {
         return (new MergeDataProvider([
             'Both'     => (new CompositeDataProvider(
                 new EloquentBuilderDataProvider(),
@@ -84,7 +84,7 @@ class BuilderTest extends TestCase {
                             'bindings' => [],
                         ],
                         new Property('name'),
-                        'desc',
+                        Direction::Desc,
                     ],
                 ]),
             )),
@@ -95,7 +95,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('unknown', 'name'),
-                    'asc',
+                    Direction::Asc,
                 ],
                 'unsupported'         => [
                     new RelationUnsupported(
@@ -117,7 +117,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('unsupported', 'id'),
-                    'asc',
+                    Direction::Asc,
                 ],
                 BelongsTo::class      => [
                     [
@@ -157,7 +157,7 @@ class BuilderTest extends TestCase {
                         return Car::query();
                     },
                     new Property('user', 'organization', 'name'),
-                    'desc',
+                    Direction::Desc,
                 ],
                 HasOne::class         => [
                     [
@@ -199,7 +199,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('car', 'engine', 'id'),
-                    'asc',
+                    Direction::Asc,
                 ],
                 HasMany::class        => [
                     [
@@ -232,7 +232,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('cars', 'name'),
-                    'asc',
+                    Direction::Asc,
                 ],
                 MorphOne::class       => [
                     [
@@ -266,7 +266,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('avatar', 'id'),
-                    'asc',
+                    Direction::Asc,
                 ],
                 HasOneThrough::class  => [
                     [
@@ -309,7 +309,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('role', 'user', 'name'),
-                    'desc',
+                    Direction::Desc,
                 ],
                 BelongsToMany::class  => [
                     [
@@ -353,7 +353,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('roles', 'users', 'name'),
-                    'desc',
+                    Direction::Desc,
                 ],
                 MorphToMany::class    => [
                     [
@@ -395,7 +395,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('tags', 'users', 'name'),
-                    'asc',
+                    Direction::Asc,
                 ],
                 HasManyThrough::class => [
                     [
@@ -429,7 +429,7 @@ class BuilderTest extends TestCase {
                         return CarEngine::query();
                     },
                     new Property('users', 'name'),
-                    'asc',
+                    Direction::Asc,
                 ],
                 MorphMany::class      => [
                     [
@@ -463,7 +463,7 @@ class BuilderTest extends TestCase {
                         return User::query();
                     },
                     new Property('images', 'id'),
-                    'asc',
+                    Direction::Asc,
                 ],
             ])),
         ]))->getData();

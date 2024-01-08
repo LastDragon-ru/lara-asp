@@ -63,6 +63,10 @@ parameters:
             message: "#^Call to protected method getResolver\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
             paths:
                 - packages/graphql/src/Stream/Directives/DirectiveTest.php
+        -
+            message: "#^Call to protected method getNulls\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Operators\\\\Field\\.$#"
+            paths:
+                - packages/graphql/src/SortBy/Operators/FieldTest.php
 
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149
@@ -75,3 +79,9 @@ parameters:
             message: "#^PHPDoc tag @var with type Illuminate\\\\Testing\\\\TestResponse is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\TestResponseMixin\\)\\.$#"
             paths:
                 - packages/testing/src/Mixins/TestResponseMixin.php
+
+        # False positive for non-initialized properties (Laravel specific)
+        # https://github.com/phpstan/phpstan/issues/10305
+        - "#^Property Illuminate\\\\Database\\\\Query\\\\Builder::\\$columns \\(array\\) on left side of \\?\\? is not nullable\\.$#"
+        - "#^Property Illuminate\\\\Database\\\\Query\\\\Builder::\\$orders \\(array\\) on left side of \\?\\? is not nullable\\.$#"
+        - "#^Property Illuminate\\\\Database\\\\Query\\\\Builder::\\$unionOrders \\(array\\) on left side of \\?\\? is not nullable\\.$#"

@@ -171,11 +171,10 @@ class ModelHelperTest extends TestCase {
  */
 class ModelHelperTest__Model extends Model {
     /**
-     * @noinspection             PhpMissingReturnTypeInspection
-     * @phpcsSuppress            SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint
-     * @phpstan-ignore-next-line Required for test
+     * @noinspection  PhpMissingReturnTypeInspection
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint
      */
-    public function noTypeHint() {
+    public function noTypeHint() /* @phpstan-ignore-line Required for test */ {
         return $this->belongsTo(self::class);
     }
 

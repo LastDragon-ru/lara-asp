@@ -29,6 +29,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v5
 
+## General
+
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
 [//]: # (start: fd146cf51ef5a8d9d13e0317c09860f472c63cb3d60d02f4d95deb3e12cae73d)
 [//]: # (warning: Generated automatically. Do not edit.)
@@ -36,3 +38,17 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
 [//]: # (end: fd146cf51ef5a8d9d13e0317c09860f472c63cb3d60d02f4d95deb3e12cae73d)
+
+## `@searchBy`
+
+* [ ] `enum SearchByTypeFlag { yes }` => `enum SearchByTypeFlag { Yes }`. 🤝
+
+## `@sortBy`
+
+* [ ] `enum SortByTypeFlag { yes }` => `enum SortByTypeFlag { Yes }`. 🤝
+
+* [ ] `enum SortByTypeDirection { asc, desc }` => `enum SortByTypeDirection { Asc, Desc }`. 🤝
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`.
+
+* [ ] Update `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition` implementations.
