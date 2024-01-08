@@ -19,6 +19,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
@@ -502,6 +504,39 @@ class DirectiveTest extends TestCase {
                                 Operators::Extra => [
                                     SortByOperatorRandomDirective::class,
                                 ],
+                            ],
+                        ]);
+                    },
+                ],
+                'nulls ordering'      => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                            order by
+                                "id" ASC NULLS LAST,
+                                "renamed" DESC NULLS FIRST
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            'id' => 'asc',
+                        ],
+                        [
+                            'value' => 'desc',
+                        ],
+                    ],
+                    static function (): void {
+                        $package = Package::Name;
+
+                        config([
+                            "{$package}.sort_by.nulls" => [
+                                Direction::Asc->value  => Nulls::Last,
+                                Direction::Desc->value => Nulls::First,
                             ],
                         ]);
                     },

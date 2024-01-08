@@ -233,13 +233,13 @@ class FieldTest extends TestCase {
         };
 
         return [
-            'default'                       => [
+            'default'                                    => [
                 null,
                 null,
                 $getSorterFactory(true),
                 Direction::Asc,
             ],
-            'nulls are not sortable'        => [
+            'nulls are not sortable'                     => [
                 null,
                 [
                     $key => Nulls::First,
@@ -247,7 +247,7 @@ class FieldTest extends TestCase {
                 $getSorterFactory(false),
                 Direction::Asc,
             ],
-            'nulls are sortable (asc)'      => [
+            'nulls are sortable (asc)'                   => [
                 Nulls::Last,
                 [
                     $key => Nulls::Last,
@@ -255,7 +255,7 @@ class FieldTest extends TestCase {
                 $getSorterFactory(true),
                 Direction::Asc,
             ],
-            'nulls are sortable (desc)'     => [
+            'nulls are sortable (desc)'                  => [
                 Nulls::Last,
                 [
                     $key => Nulls::Last,
@@ -263,7 +263,7 @@ class FieldTest extends TestCase {
                 $getSorterFactory(true),
                 Direction::Desc,
             ],
-            'nulls are sortable (separate)' => [
+            'nulls are sortable (separate)'              => [
                 Nulls::First,
                 [
                     $key => [
@@ -273,6 +273,33 @@ class FieldTest extends TestCase {
                 ],
                 $getSorterFactory(true),
                 Direction::Desc,
+            ],
+            '(deprecated) nulls are sortable (asc)'      => [
+                Nulls::Last,
+                [
+                    $key => Nulls::Last,
+                ],
+                $getSorterFactory(true),
+                Direction::asc,
+            ],
+            '(deprecated) nulls are sortable (desc)'     => [
+                Nulls::Last,
+                [
+                    $key => Nulls::Last,
+                ],
+                $getSorterFactory(true),
+                Direction::desc,
+            ],
+            '(deprecated) nulls are sortable (separate)' => [
+                Nulls::First,
+                [
+                    $key => [
+                        Direction::Asc->value  => Nulls::Last,
+                        Direction::Desc->value => Nulls::First,
+                    ],
+                ],
+                $getSorterFactory(true),
+                Direction::desc,
             ],
         ];
     }

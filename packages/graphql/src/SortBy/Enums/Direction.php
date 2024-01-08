@@ -11,16 +11,16 @@ enum Direction: string {
     case Desc = 'Desc';
 
     /**
-     * @internal
      * @deprecated 5.4.0 Please use {@link Direction::Asc} instead.
+     * @internal
      */
     #[Deprecated('Please use `Asc` instead.')]
     #[Description('')]
     case asc = 'asc';
 
     /**
-     * @internal
      * @deprecated 5.4.0 Please use {@link Direction::Desc} instead.
+     * @internal
      */
     #[Deprecated('Please use `Desc` instead.')]
     #[Description('')]
