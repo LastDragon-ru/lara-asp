@@ -16,10 +16,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\JoinClause;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
@@ -28,14 +26,13 @@ use Override;
 
 use function array_shift;
 use function array_slice;
-use function end;
 use function implode;
 use function is_a;
 
 /**
- * @implements Sorter<EloquentBuilder<Model>>
+ * @extends DatabaseSorter<EloquentBuilder<Model>>
  */
-class EloquentSorter implements Sorter {
+class EloquentSorter extends DatabaseSorter {
     /**
      * @var list<class-string<Relation<Model>>>
      */
@@ -51,30 +48,21 @@ class EloquentSorter implements Sorter {
         HasManyThrough::class,
     ];
 
-    public function __construct() {
-        // empty
-    }
-
     // <editor-fold desc="API">
     // =========================================================================
-    #[Override]
-    public function isNullsSortable(): bool {
-        return true;
-    }
-
     #[Override]
     public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
         // Column
         $path     = $property->getPath();
-        $column   = Cast::toString(end($path));
+        $column   = $property->getName();
         $relation = array_slice($path, 0, -1);
 
         if ($relation) {
-            $column = $this->processRelation($builder, $relation, $column, $direction);
+            $column = $this->getRelationColumn($builder, $relation, $column, $direction);
         }
 
         // Order
-        return $this->processColumn($builder, $column, $direction);
+        return $this->sortByColumn($builder, $column, $direction, $nulls);
     }
     // </editor-fold>
 
@@ -86,7 +74,7 @@ class EloquentSorter implements Sorter {
      *
      * @return EloquentBuilder<Model>
      */
-    protected function processRelation(
+    protected function getRelationColumn(
         EloquentBuilder $builder,
         array $relations,
         string $column,
@@ -115,27 +103,10 @@ class EloquentSorter implements Sorter {
         // We need only one row
         $qualified = "{$alias}.{$column}";
         $query     = $query->select($qualified)->reorder()->limit(1);
-        $query     = $this->processColumn($query, $qualified, $direction);
+        $query     = $this->sortByColumn($query, $qualified, $direction);
 
         // Return
         return $query;
-    }
-
-    /**
-     * @param EloquentBuilder<Model>        $builder
-     * @param EloquentBuilder<Model>|string $column
-     *
-     * @return EloquentBuilder<Model>
-     */
-    protected function processColumn(
-        EloquentBuilder $builder,
-        EloquentBuilder|string $column,
-        Direction $direction,
-    ): EloquentBuilder {
-        return match ($direction) {
-            Direction::Asc, Direction::asc   => $builder->orderBy($column, 'asc'),
-            Direction::Desc, Direction::desc => $builder->orderBy($column, 'desc'),
-        };
     }
     // </editor-fold>
 
