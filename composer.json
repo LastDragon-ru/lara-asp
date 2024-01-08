@@ -71,7 +71,7 @@
     "icanhazstring/composer-unused": "^0.8.10",
     "laravel/scout": "^9.8.0|^10.0.0",
     "mockery/mockery": "^1.6.2",
-    "nikic/php-parser": "^4.15",
+    "nikic/php-parser": "^4.18",
     "larastan/larastan": "2.8.0",
     "orchestra/testbench": "^8.0.0",
     "phpstan/phpstan": "1.10.55",

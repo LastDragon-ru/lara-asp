@@ -125,7 +125,7 @@ final class Example extends Command {
 
         // Extract first arg
         $code   = implode("\n", array_slice((array) file($context['file']), $context['line'] - 1));
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $stmts  = (array) $parser->parse("<?php\n{$code}", new Collecting());
         $call   = (new NodeFinder())->findFirst($stmts, static function (Node $node) use ($method): bool {
             return $node instanceof StaticCall
