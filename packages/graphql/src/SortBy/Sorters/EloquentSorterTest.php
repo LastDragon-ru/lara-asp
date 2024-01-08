@@ -129,7 +129,7 @@ class EloquentSorterTest extends TestCase {
                             order by
                                 (
                                     select
-                                        "sort_by_organization"."name"
+                                        "lara_asp_graphql__sort_by__0__relation_0"."name"
                                     from
                                         "users"
                                         inner join (
@@ -137,13 +137,14 @@ class EloquentSorterTest extends TestCase {
                                                 *
                                             from
                                                 "organizations"
-                                        ) as "sort_by_organization"
-                                            on "sort_by_organization"."ownerKey" = "users"."foreignKey"
+                                        ) as "lara_asp_graphql__sort_by__0__relation_0"
+                                            on "lara_asp_graphql__sort_by__0__relation_0"."ownerKey"
+                                                = "users"."foreignKey"
                                     where
                                         "cars"."foreignKey" = "users"."ownerKey"
                                         and "deleted_at" is null
                                     order by
-                                        "sort_by_organization"."name" desc
+                                        "lara_asp_graphql__sort_by__0__relation_0"."name" desc
                                     limit
                                         1
                                 ) desc
@@ -169,7 +170,7 @@ class EloquentSorterTest extends TestCase {
                             order by
                                 (
                                     select
-                                        "sort_by_engine"."id"
+                                        "lara_asp_graphql__sort_by__0__relation_0"."id"
                                     from
                                         "cars"
                                         inner join (
@@ -179,12 +180,14 @@ class EloquentSorterTest extends TestCase {
                                                 "car_engines"
                                             where
                                                 "installed" = ?
-                                        ) as "sort_by_engine" on "sort_by_engine"."foreignKey" = "cars"."localKey"
+                                        ) as "lara_asp_graphql__sort_by__0__relation_0"
+                                            on "lara_asp_graphql__sort_by__0__relation_0"."foreignKey"
+                                                = "cars"."localKey"
                                     where
                                         "users"."localKey" = "cars"."foreignKey"
                                         and "favorite" = ?
                                     order by
-                                        "sort_by_engine"."id" asc
+                                        "lara_asp_graphql__sort_by__0__relation_0"."id" asc
                                     limit
                                         1
                                 ) asc
@@ -278,24 +281,26 @@ class EloquentSorterTest extends TestCase {
                             order by
                                 (
                                     select
-                                        "sort_by_user"."name"
+                                        "lara_asp_graphql__sort_by__0__relation_0"."name"
                                     from
                                         "roles"
                                         inner join "user_roles" on "user_roles"."secondLocalKey" = "roles"."secondKey"
                                         inner join (
                                             select
-                                                "user_roles"."id" as "sort_by_user_key",
+                                                "user_roles"."id" as "lara_asp_graphql__sort_by__0__relation_0_key",
                                                 "users".*
                                             from
                                                 "users"
                                                 inner join "user_roles"
                                                     on "user_roles"."secondLocalKey" = "users"."secondKey"
-                                        ) as "sort_by_user" on "sort_by_user"."sort_by_user_key" = "roles"."localKey"
+                                        ) as "lara_asp_graphql__sort_by__0__relation_0"
+                                            on "lara_asp_graphql__sort_by__0__relation_0"
+                                                ."lara_asp_graphql__sort_by__0__relation_0_key" = "roles"."localKey"
                                     where
                                         "users"."localKey" = "user_roles"."firstKey"
                                         and "deleted_at" is null
                                     order by
-                                        "sort_by_user"."name" desc
+                                        "lara_asp_graphql__sort_by__0__relation_0"."name" desc
                                     limit
                                         1
                                 ) desc
@@ -321,7 +326,7 @@ class EloquentSorterTest extends TestCase {
                             order by
                                 (
                                     select
-                                        "sort_by_users"."name"
+                                        "lara_asp_graphql__sort_by__0__relation_0"."name"
                                     from
                                         "roles"
                                         inner join "user_roles" on "roles"."relatedKey" = "user_roles"."relatedPivotKey"
@@ -334,12 +339,14 @@ class EloquentSorterTest extends TestCase {
                                                     on "users"."relatedKey" = "user_roles"."relatedPivotKey"
                                             where
                                                 "deleted_at" is null
-                                        ) as "sort_by_users" on "sort_by_users"."parentKey" = "roles"."relatedKey"
+                                        ) as "lara_asp_graphql__sort_by__0__relation_0"
+                                            on "lara_asp_graphql__sort_by__0__relation_0"
+                                                ."parentKey" = "roles"."relatedKey"
                                     where
                                         "users"."parentKey" = "user_roles"."foreignPivotKey"
                                         and "deleted_at" is null
                                     order by
-                                        "sort_by_users"."name" desc
+                                        "lara_asp_graphql__sort_by__0__relation_0"."name" desc
                                     limit
                                         1
                                 ) desc
@@ -365,7 +372,7 @@ class EloquentSorterTest extends TestCase {
                             order by
                                 (
                                     select
-                                        "sort_by_users"."name"
+                                        "lara_asp_graphql__sort_by__0__relation_0"."name"
                                     from
                                         "tags"
                                         inner join "taggables" on "tags"."relatedKey" = "taggables"."relatedPivotKey"
@@ -376,12 +383,14 @@ class EloquentSorterTest extends TestCase {
                                                 "users"
                                                 inner join "taggables"
                                                     on "users"."relatedKey" = "taggables"."relatedPivotKey"
-                                        ) as "sort_by_users" on "sort_by_users"."parentKey" = "tags"."relatedKey"
+                                        ) as "lara_asp_graphql__sort_by__0__relation_0"
+                                            on "lara_asp_graphql__sort_by__0__relation_0"
+                                                ."parentKey" = "tags"."relatedKey"
                                     where
                                         "users"."parentKey" = "taggables"."foreignPivotKey"
                                         and "taggables"."taggable_type" = ?
                                     order by
-                                        "sort_by_users"."name" asc
+                                        "lara_asp_graphql__sort_by__0__relation_0"."name" asc
                                     limit
                                         1
                                 ) asc

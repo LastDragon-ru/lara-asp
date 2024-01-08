@@ -90,14 +90,17 @@ class EloquentSorter extends DatabaseSorter {
             ->mergeConstraintsFrom($relation->getQuery());
         $alias    = $related->getTable();
         $stack    = [$root];
-        $current  = 'sort_by';
+        $index    = 0;
+        $prefix   = $this->getAlias($builder);
 
         foreach ($relations as $name) {
             $stack[]  = $name;
-            $current  = "{$current}_{$name}";
+            $current  = "{$prefix}__relation_{$index}";
             $relation = $this->getRelation($relation->getRelated()->newQuery(), $name, $stack);
             $query    = $this->joinRelation($query, $relation, $alias, $current);
             $alias    = $current;
+
+            $index++;
         }
 
         // We need only one row

@@ -52,3 +52,5 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`.
 
 * [ ] Update `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition` implementations.
+
+* [ ] If you are testing generated queries, you need to update `sort_by_*` alias to `lara_asp_graphql__sort_by__*`.
