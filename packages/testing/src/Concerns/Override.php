@@ -100,6 +100,6 @@ trait Override {
         );
 
         // Return
-        return $mock;
+        return $mock; // @phpstan-ignore-line `ContainerExtension` is not so smart yet.
     }
 }

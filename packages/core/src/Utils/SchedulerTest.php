@@ -33,6 +33,10 @@ class SchedulerTest extends TestCase {
                     'withoutOverlapping' => 123,
                 ];
             }
+
+            public function __invoke(): void {
+                // empty
+            }
         };
 
         $this->override(Schedule::class, static function (MockInterface $schedule) use ($job): void {

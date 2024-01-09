@@ -250,7 +250,7 @@ class AstManipulatorTest extends TestCase {
         // Field
         $schema   = Container::getInstance()->make(SchemaBuilder::class)->schema();
         $query    = $schema->getQueryType();
-        $field    = $manipulator->getField($query, 'test');
+        $field    = $query ? $manipulator->getField($query, 'test') : null;
         $expected = [
             AllDirective::class,
             AstManipulatorTest_BDirective::class,

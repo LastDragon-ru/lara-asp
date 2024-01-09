@@ -24,7 +24,6 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
@@ -80,15 +79,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // =========================================================================
     #[Override]
     public function getType(string $definition, TypeSource $source): string {
-        // Instance (phpstan is not so smart yet...)
-        $instance = Container::getInstance()->make($definition);
-
-        if (!($instance instanceof TypeDefinition)) {
-            throw new TypeDefinitionImpossibleToCreateType($definition, $source);
-        }
-
         // Exists?
-        $name = $instance->getTypeName($this, $source);
+        $instance = Container::getInstance()->make($definition);
+        $name     = $instance->getTypeName($this, $source);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;

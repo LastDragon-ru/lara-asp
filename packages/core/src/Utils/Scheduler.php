@@ -6,10 +6,13 @@ use DateTimeZone;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Contracts\Schedulable;
 
 use function array_intersect_key;
+use function is_callable;
 use function is_int;
+use function sprintf;
 
 /**
  * @phpstan-type SchedulableSettings array{
@@ -39,9 +42,16 @@ class Scheduler {
         }
 
         // Register
-        $event = $instance instanceof ShouldQueue
-            ? $schedule->job($instance)
-            : $schedule->call($instance);
+        $event = match (true) {
+            $instance instanceof ShouldQueue => $schedule->job($instance),
+            is_callable($instance)           => $schedule->call($instance),
+            default                          => throw new InvalidArgumentException(
+                sprintf(
+                    'The `%s` must be a callable.',
+                    $class,
+                ),
+            ),
+        };
 
         $event->cron($settings['cron']);
 

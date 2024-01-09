@@ -34,7 +34,7 @@ class OffsetTest extends TestCase {
 
         $scalar = new Offset();
         $actual = $scalar->serialize($value);
-        $actual = is_string($expected)
+        $actual = is_string($actual)
             ? Container::getInstance()->make(Encrypter::class)->decrypt($actual, false)
             : $actual;
 

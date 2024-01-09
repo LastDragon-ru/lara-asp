@@ -124,8 +124,14 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "LastDragon_ru\\LaraASP\\Dev\\": "dev"
-    }
+      "LastDragon_ru\\LaraASP\\Dev\\App\\": "dev/App",
+      "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\": "dev/PhpStan",
+      "Larastan\\Larastan\\": "dev/Larastan"
+    },
+    "exclude-from-classmap": [
+      "vendor/larastan/larastan/src/ReturnTypes/ContainerArrayAccessDynamicMethodReturnTypeExtension.php",
+      "vendor/larastan/larastan/src/ReturnTypes/ContainerMakeDynamicReturnTypeExtension.php"
+    ]
   },
   "extra": {
     "laravel": {

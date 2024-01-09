@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Connection;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +22,7 @@ class SeederService {
         $seeded  = false;
         $tables  = $this->getConnection()->getDoctrineSchemaManager()->listTableNames();
         $skipped = [
-            Container::getInstance()->make('config')->get('database.migrations'),
+            Container::getInstance()->make(Repository::class)->get('database.migrations'),
         ];
 
         foreach ($tables as $table) {

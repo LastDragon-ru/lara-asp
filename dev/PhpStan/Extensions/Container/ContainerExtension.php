@@ -2,40 +2,40 @@
 
 namespace LastDragon_ru\LaraASP\Dev\PhpStan\Extensions\Container;
 
-use Illuminate\Contracts\Container\Container;
-use Larastan\Larastan\Concerns\HasContainer;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Container\Container as ContainerContract;
 use Override;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
-use PHPStan\Type\ErrorType;
-use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use Throwable;
 
+use function count;
+use function in_array;
 use function is_object;
 
 /**
  * @internal
  */
 final class ContainerExtension implements DynamicMethodReturnTypeExtension {
-    use HasContainer;
+    public function __construct() {
+        // empty
+    }
 
     #[Override]
     public function getClass(): string {
-        return Container::class;
+        return ContainerContract::class;
     }
 
     #[Override]
     public function isMethodSupported(MethodReflection $methodReflection): bool {
-        return $methodReflection->getName() === 'make'
-            || $methodReflection->getName() === 'get';
+        return in_array($methodReflection->getName(), ['make', 'makeWith', 'resolve'], true);
     }
 
     #[Override]
@@ -43,30 +43,54 @@ final class ContainerExtension implements DynamicMethodReturnTypeExtension {
         MethodReflection $methodReflection,
         MethodCall $methodCall,
         Scope $scope,
-    ): Type {
-        $arg  = $methodCall->args[0] ?? null;
-        $expr = $arg instanceof Arg ? $arg->value : null;
+    ): ?Type {
+        // Type?
+        $arg     = $methodCall->args[0] ?? null;
+        $argExpr = $arg instanceof Arg ? $arg->value : null;
+        $argType = $argExpr instanceof Expr ? $scope->getType($argExpr) : null;
 
-        if ($expr instanceof String_) {
+        if ($argType === null) {
+            return null;
+        }
+
+        // Return
+        return match (true) {
+            $argType->isClassStringType()->yes()  => $argType->getClassStringObjectType(),
+            $argType->getConstantStrings() !== [] => $this->getFromContainer($argType->getConstantStrings()),
+            default                               => null,
+        };
+    }
+
+    /**
+     * @param list<ConstantStringType> $constants
+     */
+    protected function getFromContainer(array $constants): ?ObjectType {
+        // Unions are not supported
+        if (count($constants) !== 1) {
+            return null;
+        }
+
+        // In the most cases, `$abstract` is the class/interface, but there are
+        // few of them which are not.
+        $abstract = $constants[0]->getValue();
+        $strings  = [
+            'migration.repository',
+            'migrator',
+        ];
+        $type     = null;
+
+        if (in_array($abstract, $strings, true)) {
             try {
-                $resolved = $this->resolve($expr->value);
+                $concrete = Container::getInstance()->make($abstract);
 
-                if ($resolved === null) {
-                    return new ErrorType();
+                if (is_object($concrete)) {
+                    $type = new ObjectType($concrete::class);
                 }
-
-                return is_object($resolved)
-                    ? new ObjectType($resolved::class)
-                    : new ErrorType();
-            } catch (Throwable) {
-                return new ErrorType();
+            } catch (BindingResolutionException) {
+                // ignore
             }
         }
 
-        if ($expr instanceof ClassConstFetch && $expr->class instanceof FullyQualified) {
-            return new ObjectType($expr->class->toString());
-        }
-
-        return new NeverType();
+        return $type;
     }
 }

@@ -26,7 +26,6 @@ use Symfony\Component\Serializer\Serializer as SymfonySerializer;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
-use function array_map;
 use function config;
 
 use const JSON_BIGINT_AS_STRING;
@@ -72,12 +71,20 @@ class Factory {
         array $context,
         string $format,
     ): SerializerContract {
-        $factory     = static fn ($class) => Container::getInstance()->make($class);
-        $encoders    = array_map($factory, $encoders);
-        $normalizers = array_map($factory, $normalizers);
+        $container           = Container::getInstance();
+        $encoderInstances    = [];
+        $normalizerInstances = [];
+
+        foreach ($encoders as $class) {
+            $encoderInstances[] = $container->make($class);
+        }
+
+        foreach ($normalizers as $class) {
+            $normalizerInstances[] = $container->make($class);
+        }
 
         return new Serializer(
-            new SymfonySerializer($normalizers, $encoders),
+            new SymfonySerializer($normalizerInstances, $encoderInstances),
             $format,
             $context,
         );
