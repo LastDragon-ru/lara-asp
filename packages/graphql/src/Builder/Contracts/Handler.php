@@ -13,5 +13,5 @@ interface Handler {
      *
      * @return TBuilder
      */
-    public function handle(object $builder, Property $property, ArgumentSet $conditions): object;
+    public function handle(Context $context, object $builder, Property $property, ArgumentSet $conditions): object;
 }

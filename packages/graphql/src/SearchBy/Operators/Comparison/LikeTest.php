@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -39,9 +40,10 @@ class LikeTest extends TestCase {
         $operator = Container::getInstance()->make(Like::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
+        $context  = new Context();
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument);
+        $builder  = $operator->call($search, $context, $builder, $property, $argument);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }

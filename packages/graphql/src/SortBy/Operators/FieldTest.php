@@ -8,6 +8,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
@@ -54,8 +55,9 @@ class FieldTest extends TestCase {
         $operator  = Container::getInstance()->make(Field::class);
         $argument  = $argumentFactory($this);
         $directive = Container::getInstance()->make(Directive::class);
+        $context   = new Context();
         $builder   = $builderFactory($this);
-        $builder   = $operator->call($directive, $builder, $property, $argument);
+        $builder   = $operator->call($directive, $context, $builder, $property, $argument);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -82,9 +84,10 @@ class FieldTest extends TestCase {
             Direction::Asc,
             'enum Test { Asc }',
         );
+        $context   = new Context();
         $builder   = Mockery::mock(EloquentBuilder::class);
 
-        $operator->call($directive, $builder, $property, $argument);
+        $operator->call($directive, $context, $builder, $property, $argument);
     }
 
     public function testCallQueryBuilder(): void {
@@ -107,9 +110,10 @@ class FieldTest extends TestCase {
             'Test',
             Direction::Asc,
         );
+        $context   = new Context();
         $builder   = Mockery::mock(QueryBuilder::class);
 
-        $operator->call($directive, $builder, $property, $argument);
+        $operator->call($directive, $context, $builder, $property, $argument);
     }
 
     public function testCallScoutBuilder(): void {
@@ -133,9 +137,10 @@ class FieldTest extends TestCase {
             Direction::Asc,
             'enum Test { Asc }',
         );
+        $context   = new Context();
         $builder   = Mockery::mock(ScoutBuilder::class);
 
-        $operator->call($directive, $builder, $property, $argument);
+        $operator->call($directive, $context, $builder, $property, $argument);
     }
 
     /**

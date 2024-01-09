@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
@@ -48,9 +49,10 @@ class AllOfTest extends TestCase {
         $operator = Container::getInstance()->make(AllOf::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
+        $context  = new Context();
         $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument);
+        $builder  = $operator->call($search, $context, $builder, $property, $argument);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -77,9 +79,10 @@ class AllOfTest extends TestCase {
         $operator = Container::getInstance()->make(AllOf::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
+        $context  = new Context();
         $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument);
+        $builder  = $operator->call($search, $context, $builder, $property, $argument);
 
         self::assertScoutQueryEquals($expected, $builder);
     }

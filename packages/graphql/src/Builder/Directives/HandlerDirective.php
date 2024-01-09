@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -87,7 +89,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      *
      * @return T
      */
-    protected function handleAnyBuilder(object $builder, mixed $value): object {
+    protected function handleAnyBuilder(object $builder, mixed $value, ContextContract $context = null): object {
         if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
             $argument   = !($value instanceof Argument)
                 ? $this->getFactory()->getArgument($this->definitionNode, $value)
@@ -99,7 +101,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
             foreach ($conditions as $condition) {
                 if ($condition instanceof ArgumentSet) {
-                    $builder = $this->handle($builder, new Property(), $condition);
+                    $builder = $this->handle($context ?? new Context(), $builder, new Property(), $condition);
                 } else {
                     throw new HandlerInvalidConditions($this);
                 }
@@ -117,7 +119,12 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      * @return T
      */
     #[Override]
-    public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
+    public function handle(
+        ContextContract $context,
+        object $builder,
+        Property $property,
+        ArgumentSet $conditions,
+    ): object {
         // Empty?
         if (count($conditions->arguments) === 0) {
             return $builder;
@@ -131,7 +138,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Call
-        return $this->call($builder, $property, $conditions);
+        return $this->call($context, $builder, $property, $conditions);
     }
 
     /**
@@ -141,7 +148,12 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      *
      * @return T
      */
-    protected function call(object $builder, Property $property, ArgumentSet $operator): object {
+    protected function call(
+        ContextContract $context,
+        object $builder,
+        Property $property,
+        ArgumentSet $operator,
+    ): object {
         // Arguments?
         if (count($operator->arguments) > 1) {
             throw new ConditionTooManyOperators(
@@ -184,7 +196,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Return
-        return $op->call($this, $builder, $property, $value);
+        return $op->call($this, $context, $builder, $property, $value);
     }
     // </editor-fold>
 

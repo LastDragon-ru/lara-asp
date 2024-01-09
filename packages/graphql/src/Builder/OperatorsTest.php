@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use Exception;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -183,7 +184,13 @@ abstract class OperatorsTest__Operator implements Operator {
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        Context $context,
+        object $builder,
+        Property $property,
+        Argument $argument,
+    ): object {
         throw new Exception('Should not be called');
     }
 }

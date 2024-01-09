@@ -31,5 +31,11 @@ interface Operator extends Directive {
      *
      * @return TBuilder
      */
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object;
+    public function call(
+        Handler $handler,
+        Context $context,
+        object $builder,
+        Property $property,
+        Argument $argument,
+    ): object;
 }

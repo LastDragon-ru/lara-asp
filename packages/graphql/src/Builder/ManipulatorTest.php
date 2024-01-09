@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -395,7 +396,13 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        Context $context,
+        object $builder,
+        Property $property,
+        Argument $argument,
+    ): object {
         return $builder;
     }
 }
@@ -426,7 +433,13 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        Context $context,
+        object $builder,
+        Property $property,
+        Argument $argument,
+    ): object {
         return $builder;
     }
 }
@@ -457,7 +470,13 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        Context $context,
+        object $builder,
+        Property $property,
+        Argument $argument,
+    ): object {
         return $builder;
     }
 }

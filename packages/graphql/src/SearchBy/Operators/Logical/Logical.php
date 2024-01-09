@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -27,13 +28,19 @@ abstract class Logical extends BaseOperator {
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        Context $context,
+        object $builder,
+        Property $property,
+        Argument $argument,
+    ): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
         $builder->where(
-            function (EloquentBuilder|QueryBuilder $builder) use ($handler, $property, $argument): void {
+            function (EloquentBuilder|QueryBuilder $builder) use ($handler, $context, $property, $argument): void {
                 // The last item is the name of the operator not a property
                 $property   = $property->getParent();
                 $conditions = $this->getConditions($argument);
@@ -42,10 +49,11 @@ abstract class Logical extends BaseOperator {
                     $builder->where(
                         static function (EloquentBuilder|QueryBuilder $builder) use (
                             $handler,
+                            $context,
                             $arguments,
-                            $property
+                            $property,
                         ): void {
-                            $handler->handle($builder, $property, $arguments);
+                            $handler->handle($context, $builder, $property, $arguments);
                         },
                         null,
                         null,
