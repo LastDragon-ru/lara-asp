@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -27,12 +28,18 @@ class Between extends BaseOperator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return $provider->getType(Range::class, $source);
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+        return $provider->getType(Range::class, $source, $context);
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        object $builder,
+        Property $property,
+        Argument $argument,
+        Context $context,
+    ): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }

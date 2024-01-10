@@ -6,6 +6,7 @@ use Closure;
 use GraphQL\Language\DirectiveLocation;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -50,8 +51,8 @@ class Relation extends BaseOperator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return $provider->getType(RelationType::class, $source);
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+        return $provider->getType(RelationType::class, $source, $context);
     }
 
     #[Override]
@@ -65,7 +66,13 @@ class Relation extends BaseOperator {
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        object $builder,
+        Property $property,
+        Argument $argument,
+        Context $context,
+    ): object {
         // Supported?
         if (!($builder instanceof EloquentBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
@@ -95,7 +102,7 @@ class Relation extends BaseOperator {
 
         if ($hasCount instanceof Argument) {
             $query    = $builder->getQuery()->newQuery();
-            $query    = $this->property->call($handler, $query, new Property(), $hasCount);
+            $query    = $this->property->call($handler, $query, new Property(), $hasCount, $context);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;
@@ -112,13 +119,13 @@ class Relation extends BaseOperator {
             $property,
             $operator,
             $count,
-            static function (EloquentBuilder $builder) use ($relation, $handler, $alias, $has): void {
+            static function (EloquentBuilder $builder) use ($context, $relation, $handler, $alias, $has): void {
                 if (!$alias || $alias === $relation->getRelationCountHash(false)) {
                     $alias = $builder->getModel()->getTable();
                 }
 
                 if ($has instanceof Argument && $has->value instanceof ArgumentSet) {
-                    $handler->handle($builder, new Property($alias), $has->value);
+                    $handler->handle($builder, new Property($alias), $has->value, $context);
                 }
             },
         );

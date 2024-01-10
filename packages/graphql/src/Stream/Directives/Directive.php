@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
@@ -218,6 +219,10 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             throw new FieldIsUnion($source);
         }
 
+        // Builder?
+        Container::getInstance()->make(BuilderInfoDetector::class)
+            ->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
+
         // Searchable?
         $searchable = Cast::toBool(
             $this->directiveArgValue(self::ArgSearchable)
@@ -281,10 +286,8 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         );
 
         // Update type
-        $detector = Container::getInstance()->make(BuilderInfoDetector::class);
-        $builder  = $detector->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
-        $type     = $this->getManipulator($documentAST, $builder)->getType(StreamType::class, $source);
-        $type     = Parser::typeReference("{$type}!");
+        $type = $this->getAstManipulator($documentAST)->getType(StreamType::class, $source, new Context());
+        $type = Parser::typeReference("{$type}!");
 
         $manipulator->setFieldType(
             $parentType,
@@ -421,8 +424,6 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         return $type;
     }
-
-
     // </editor-fold>
 
     // <editor-fold desc="FieldResolver">

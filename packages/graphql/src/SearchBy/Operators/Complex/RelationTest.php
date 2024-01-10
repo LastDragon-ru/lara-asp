@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
@@ -46,9 +47,10 @@ class RelationTest extends TestCase {
 
         $operator = Container::getInstance()->make(Relation::class);
         $argument = $argumentFactory($this);
+        $context  = new Context();
         $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);

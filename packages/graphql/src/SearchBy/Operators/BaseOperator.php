@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -15,7 +16,7 @@ use function is_a;
 
 abstract class BaseOperator extends OperatorDirective implements Operator, Marker {
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
         return $source->getTypeName();
     }
 

@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -18,9 +20,9 @@ class Enumeration implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
+    public function getTypeName(TypeSource $source, Context $context): string {
         $directiveName = Directive::Name;
-        $builderName   = $manipulator->getBuilderInfo()->getName();
+        $builderName   = $context->get(AstManipulation::class)?->builderInfo->getName() ?? 'Unknown';
         $typeName      = $source->getTypeName();
         $nullable      = $source->isNullable() ? 'OrNull' : '';
 
@@ -34,20 +36,21 @@ class Enumeration implements TypeDefinition {
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
+        Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
         // Operators
         $scope     = Directive::getScope();
         $extras    = $source->isNullable() ? [Operators::Null] : [];
-        $operators = $manipulator->getTypeOperators($scope, $source->getTypeName(), ...$extras)
-            ?: $manipulator->getTypeOperators($scope, Operators::Enum, ...$extras);
+        $operators = $manipulator->getTypeOperators($scope, $source->getTypeName(), $context, ...$extras)
+            ?: $manipulator->getTypeOperators($scope, Operators::Enum, $context, ...$extras);
 
         if (!$operators) {
             return null;
         }
 
         // Definition
-        $content    = $manipulator->getOperatorsFields($operators, $source);
+        $content    = $manipulator->getOperatorsFields($operators, $source, $context);
         $typeName   = $manipulator->getTypeFullName($source->getType());
         $definition = Parser::inputObjectTypeDefinition(
             <<<GRAPHQL

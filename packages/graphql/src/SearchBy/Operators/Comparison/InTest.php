@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
@@ -46,9 +47,10 @@ class InTest extends TestCase {
         $operator = Container::getInstance()->make(In::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
+        $context  = new Context();
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -75,9 +77,10 @@ class InTest extends TestCase {
         $operator = Container::getInstance()->make(In::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
+        $context  = new Context();
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertScoutQueryEquals($expected, $builder);
     }

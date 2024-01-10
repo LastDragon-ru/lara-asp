@@ -7,6 +7,7 @@ use Composer\InstalledVersions;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
@@ -48,9 +49,10 @@ class NotInTest extends TestCase {
         $operator = Container::getInstance()->make(NotIn::class);
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
+        $context  = new Context();
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -89,9 +91,10 @@ class NotInTest extends TestCase {
         // Test
         $property = $property->getChild('operator name should be ignored');
         $argument = $argumentFactory($this);
+        $context  = new Context();
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertScoutQueryEquals($expected, $builder);
     }

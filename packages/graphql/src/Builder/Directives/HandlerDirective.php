@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -41,6 +44,9 @@ use function count;
 use function is_array;
 use function reset;
 
+/**
+ * @see AstManipulation
+ */
 abstract class HandlerDirective extends BaseDirective implements Handler {
     use WithManipulator;
     use WithSource;
@@ -87,7 +93,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      *
      * @return T
      */
-    protected function handleAnyBuilder(object $builder, mixed $value): object {
+    protected function handleAnyBuilder(object $builder, mixed $value, ContextContract $context = null): object {
         if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
             $argument   = !($value instanceof Argument)
                 ? $this->getFactory()->getArgument($this->definitionNode, $value)
@@ -99,7 +105,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
             foreach ($conditions as $condition) {
                 if ($condition instanceof ArgumentSet) {
-                    $builder = $this->handle($builder, new Property(), $condition);
+                    $builder = $this->handle($builder, new Property(), $condition, $context ?? new Context());
                 } else {
                     throw new HandlerInvalidConditions($this);
                 }
@@ -117,7 +123,12 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      * @return T
      */
     #[Override]
-    public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
+    public function handle(
+        object $builder,
+        Property $property,
+        ArgumentSet $conditions,
+        ContextContract $context,
+    ): object {
         // Empty?
         if (count($conditions->arguments) === 0) {
             return $builder;
@@ -131,7 +142,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Call
-        return $this->call($builder, $property, $conditions);
+        return $this->call($builder, $property, $conditions, $context);
     }
 
     /**
@@ -141,7 +152,12 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      *
      * @return T
      */
-    protected function call(object $builder, Property $property, ArgumentSet $operator): object {
+    protected function call(
+        object $builder,
+        Property $property,
+        ArgumentSet $operator,
+        ContextContract $context,
+    ): object {
         // Arguments?
         if (count($operator->arguments) > 1) {
             throw new ConditionTooManyOperators(
@@ -184,7 +200,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Return
-        return $op->call($this, $builder, $property, $value);
+        return $op->call($this, $builder, $property, $value, $context);
     }
     // </editor-fold>
 
@@ -199,15 +215,20 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         // Converted?
         $detector    = Container::getInstance()->make(BuilderInfoDetector::class);
         $builder     = $detector->getFieldArgumentBuilderInfo($documentAST, $parentType, $parentField, $argDefinition);
-        $manipulator = $this->getManipulator($documentAST, $builder);
+        $manipulator = $this->getAstManipulator($documentAST);
 
         if ($this->isTypeName($manipulator->getTypeName($argDefinition))) {
             return;
         }
 
         // Argument
-        $source = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
-        $type   = $this->getArgDefinitionType($manipulator, $documentAST, $source);
+        $context = (new Context())->override([
+            AstManipulation::class => new AstManipulation(
+                builderInfo: $builder,
+            ),
+        ]);
+        $source  = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+        $type    = $this->getArgDefinitionType($manipulator, $documentAST, $source, $context);
 
         $manipulator->setArgumentType(
             $parentType,
@@ -226,6 +247,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         Manipulator $manipulator,
         DocumentAST $document,
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
+        ContextContract $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode;
 
     /**
@@ -236,6 +258,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         DocumentAST $document,
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
         string $operator,
+        ContextContract $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         $type       = null;
         $definition = $manipulator->isPlaceholder($argument->getArgument())
@@ -245,7 +268,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         if ($definition) {
             $operator = $manipulator->getOperator(static::getScope(), $operator);
             $node     = $manipulator->getTypeSource($definition);
-            $type     = $operator->getFieldType($manipulator, $node);
+            $type     = $operator->getFieldType($manipulator, $node, $context);
             $type     = Parser::typeReference($type);
         }
 

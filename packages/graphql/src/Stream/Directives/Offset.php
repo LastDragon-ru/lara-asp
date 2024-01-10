@@ -7,9 +7,8 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
@@ -63,11 +62,10 @@ class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirec
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
-        $detector    = Container::getInstance()->make(BuilderInfoDetector::class);
-        $builder     = $detector->getFieldBuilderInfo($documentAST, $parentType, $parentField);
-        $manipulator = $this->getManipulator($documentAST, $builder);
+        $manipulator = $this->getAstManipulator($documentAST);
+        $context     = new Context();
         $source      = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
-        $type        = Parser::typeReference($manipulator->getType(OffsetType::class, $source));
+        $type        = Parser::typeReference($manipulator->getType(OffsetType::class, $source, $context));
 
         $manipulator->setArgumentType(
             $parentType,

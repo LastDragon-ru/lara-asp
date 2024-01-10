@@ -13,7 +13,7 @@ interface Operator extends Directive {
      */
     public static function getName(): string;
 
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string;
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string;
 
     public function getFieldDescription(): string;
 
@@ -31,5 +31,11 @@ interface Operator extends Directive {
      *
      * @return TBuilder
      */
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object;
+    public function call(
+        Handler $handler,
+        object $builder,
+        Property $property,
+        Argument $argument,
+        Context $context,
+    ): object;
 }

@@ -6,6 +6,7 @@ use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
@@ -59,12 +60,14 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         Manipulator $manipulator,
         DocumentAST $document,
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
+        Context $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
             $manipulator,
             $document,
             $argument,
             SearchByOperatorConditionDirective::class,
+            $context,
         );
 
         if (!$type) {
@@ -78,7 +81,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     // <editor-fold desc="Handle">
     // =========================================================================
     #[Override]
-    public function handle(object $builder, Property $property, ArgumentSet $conditions): object {
+    public function handle(object $builder, Property $property, ArgumentSet $conditions, Context $context): object {
         // Some relations (eg `HasManyThrough`) require a table name prefix to
         // avoid "SQLSTATE[23000]: Integrity constraint violation: 1052 Column
         // 'xxx' in where clause is ambiguous" error.
@@ -87,7 +90,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         }
 
         // Return
-        return parent::handle($builder, $property, $conditions);
+        return parent::handle($builder, $property, $conditions, $context);
     }
     // </editor-fold>
 }

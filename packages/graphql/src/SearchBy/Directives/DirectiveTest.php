@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
@@ -410,8 +411,12 @@ class DirectiveTest extends TestCase {
                         }
 
                         #[Override]
-                        public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-                            return $provider->getType(static::class, $provider->getTypeSource(Type::int()));
+                        public function getFieldType(
+                            TypeProvider $provider,
+                            TypeSource $source,
+                            Context $context,
+                        ): string {
+                            return $provider->getType(static::class, $provider->getTypeSource(Type::int()), $context);
                         }
 
                         #[Override]
@@ -432,15 +437,13 @@ class DirectiveTest extends TestCase {
                             object $builder,
                             Property $property,
                             Argument $argument,
+                            Context $context,
                         ): object {
                             throw new Exception('should not be called');
                         }
 
                         #[Override]
-                        public function getTypeName(
-                            Manipulator $manipulator,
-                            TypeSource $source,
-                        ): string {
+                        public function getTypeName(TypeSource $source, Context $context): string {
                             $directiveName = Directive::Name;
                             $typeName      = Str::studly($source->getTypeName());
 
@@ -451,6 +454,7 @@ class DirectiveTest extends TestCase {
                         public function getTypeDefinition(
                             Manipulator $manipulator,
                             TypeSource $source,
+                            Context $context,
                             string $name,
                         ): TypeDefinitionNode&Node {
                             return Parser::inputObjectTypeDefinition(

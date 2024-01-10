@@ -16,6 +16,7 @@ use GraphQL\Utils\Utils;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Encryption\StringEncrypter;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -152,7 +153,7 @@ class Offset extends ScalarType implements TypeDefinition {
     // <editor-fold desc="TypeDefinition">
     // =========================================================================
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
+    public function getTypeName(TypeSource $source, Context $context): string {
         return $this->name();
     }
 
@@ -160,6 +161,7 @@ class Offset extends ScalarType implements TypeDefinition {
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
+        Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
         return $this;

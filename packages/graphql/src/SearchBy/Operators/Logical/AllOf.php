@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -29,8 +30,8 @@ class AllOf extends Logical {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return "[{$provider->getType(Condition::class, $source)}!]";
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+        return "[{$provider->getType(Condition::class, $source, $context)}!]";
     }
 
     #[Override]
@@ -39,10 +40,16 @@ class AllOf extends Logical {
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        object $builder,
+        Property $property,
+        Argument $argument,
+        Context $context,
+    ): object {
         // Scout?
         if (!($builder instanceof ScoutBuilder)) {
-            return parent::call($handler, $builder, $property, $argument);
+            return parent::call($handler, $builder, $property, $argument, $context);
         }
 
         // Build
@@ -50,7 +57,7 @@ class AllOf extends Logical {
         $conditions = $this->getConditions($argument);
 
         foreach ($conditions as $arguments) {
-            $handler->handle($builder, $property, $arguments);
+            $handler->handle($builder, $property, $arguments, $context);
         }
 
         // Return

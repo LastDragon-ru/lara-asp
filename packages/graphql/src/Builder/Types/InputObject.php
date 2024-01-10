@@ -9,6 +9,8 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
@@ -42,6 +44,7 @@ abstract class InputObject implements TypeDefinition {
     abstract protected function getDescription(
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
+        Context $context,
     ): string;
 
     /**
@@ -51,6 +54,7 @@ abstract class InputObject implements TypeDefinition {
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
+        Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
         // Source?
@@ -61,9 +65,9 @@ abstract class InputObject implements TypeDefinition {
         }
 
         // Type
-        $description = $this->getDescription($manipulator, $source);
+        $description = $this->getDescription($manipulator, $source, $context);
         $description = BlockString::print($description);
-        $operators   = $this->getOperators($manipulator, $source);
+        $operators   = $this->getOperators($manipulator, $source, $context);
         $definition  = Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
             {$description}
@@ -73,7 +77,7 @@ abstract class InputObject implements TypeDefinition {
                 """
                 dummy: ID
 
-                {$manipulator->getOperatorsFields($operators, $source)}
+                {$manipulator->getOperatorsFields($operators, $source, $context)}
             }
             GRAPHQL,
         );
@@ -95,12 +99,12 @@ abstract class InputObject implements TypeDefinition {
             // Field & Type
             $fieldSource = $source->getField($field);
 
-            if (!$this->isFieldConvertable($manipulator, $fieldSource)) {
+            if (!$this->isFieldConvertable($manipulator, $fieldSource, $context)) {
                 continue;
             }
 
             // Add
-            $fieldDefinition = $this->getFieldDefinition($manipulator, $fieldSource);
+            $fieldDefinition = $this->getFieldDefinition($manipulator, $fieldSource, $context);
 
             if ($fieldDefinition) {
                 $definition->fields[] = $fieldDefinition;
@@ -125,6 +129,7 @@ abstract class InputObject implements TypeDefinition {
     protected function getOperators(
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
+        Context $context,
     ): array {
         return [];
     }
@@ -132,6 +137,7 @@ abstract class InputObject implements TypeDefinition {
     protected function isFieldConvertable(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): bool {
         // Args? (in general case we don't know how they should be converted)
         if ($field->hasArguments()) {
@@ -146,7 +152,7 @@ abstract class InputObject implements TypeDefinition {
         // Resolver?
         $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
 
-        if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $resolver)) {
+        if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $resolver, $context)) {
             return false;
         }
 
@@ -157,10 +163,19 @@ abstract class InputObject implements TypeDefinition {
     protected function getFieldDefinition(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
-    ): InputValueDefinitionNode|null {
-        [$operator, $type] = $this->getFieldOperator($manipulator, $field) ?? [null, null];
+        Context $context,
+    ): ?InputValueDefinitionNode {
+        // Builder?
+        $builder = $context->get(AstManipulation::class)?->builderInfo->getBuilder();
 
-        if ($operator === null || !$operator->isBuilderSupported($manipulator->getBuilderInfo()->getBuilder())) {
+        if (!$builder) {
+            return null;
+        }
+
+        // Operator?
+        [$operator, $type] = $this->getFieldOperator($manipulator, $field, $context) ?? [null, null];
+
+        if ($operator === null || !$operator->isBuilderSupported($builder)) {
             return null;
         }
 
@@ -168,10 +183,18 @@ abstract class InputObject implements TypeDefinition {
             $type = $manipulator->getTypeSource($field->getTypeDefinition());
         }
 
+        // Field
         $fieldName       = $manipulator->getName($field->getField());
-        $fieldDesc       = $this->getFieldDescription($manipulator, $field);
-        $fieldDirectives = $this->getFieldDirectives($manipulator, $field);
-        $fieldDefinition = $manipulator->getOperatorField($operator, $type, $fieldName, $fieldDesc, $fieldDirectives);
+        $fieldDesc       = $this->getFieldDescription($manipulator, $field, $context);
+        $fieldDirectives = $this->getFieldDirectives($manipulator, $field, $context);
+        $fieldDefinition = $manipulator->getOperatorField(
+            $operator,
+            $type,
+            $context,
+            $fieldName,
+            $fieldDesc,
+            $fieldDirectives,
+        );
 
         return Parser::inputValueDefinition($fieldDefinition);
     }
@@ -182,6 +205,7 @@ abstract class InputObject implements TypeDefinition {
     abstract protected function getFieldOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): ?array;
 
     /**
@@ -195,10 +219,17 @@ abstract class InputObject implements TypeDefinition {
         string $directive,
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): ?Operator {
+        // Builder?
+        $builder = $context->get(AstManipulation::class)?->builderInfo->getBuilder();
+
+        if (!$builder) {
+            return null;
+        }
+
         // Directive?
         $operator = null;
-        $builder  = $manipulator->getBuilderInfo()->getBuilder();
         $nodes    = [$field->getField(), $field->getTypeDefinition()];
 
         foreach ($nodes as $node) {
@@ -222,6 +253,7 @@ abstract class InputObject implements TypeDefinition {
     protected function getFieldDescription(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): string|null {
         $description = null;
 
@@ -246,11 +278,12 @@ abstract class InputObject implements TypeDefinition {
     protected function getFieldDirectives(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): array {
         $directives = [];
 
         foreach ($manipulator->getDirectives($field->getField()) as $directive) {
-            if ($this->isFieldDirectiveAllowed($manipulator, $directive)) {
+            if ($this->isFieldDirectiveAllowed($manipulator, $directive, $context)) {
                 $node = $manipulator->getDirectiveNode($directive);
 
                 if ($node) {
@@ -262,7 +295,11 @@ abstract class InputObject implements TypeDefinition {
         return $directives;
     }
 
-    protected function isFieldDirectiveAllowed(Manipulator $manipulator, Directive $directive): bool {
+    protected function isFieldDirectiveAllowed(
+        Manipulator $manipulator,
+        Directive $directive,
+        Context $context,
+    ): bool {
         return $directive instanceof Operator
             || $directive instanceof RenameDirective;
     }

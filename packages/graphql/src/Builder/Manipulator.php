@@ -22,6 +22,8 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -39,9 +41,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Pagination\PaginationType;
-use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Override;
 
 use function array_map;
@@ -59,29 +59,13 @@ class Manipulator extends AstManipulator implements TypeProvider {
      */
     private array $operators = [];
 
-    public function __construct(
-        DirectiveLocator $directives,
-        DocumentAST $document,
-        TypeRegistry $types,
-        private BuilderInfo $builderInfo,
-    ) {
-        parent::__construct($directives, $document, $types);
-    }
-
-    // <editor-fold desc="Getters / Setters">
-    // =========================================================================
-    public function getBuilderInfo(): BuilderInfo {
-        return $this->builderInfo;
-    }
-    // </editor-fold>
-
     // <editor-fold desc="TypeProvider">
     // =========================================================================
     #[Override]
-    public function getType(string $definition, TypeSource $source): string {
+    public function getType(string $definition, TypeSource $source, Context $context): string {
         // Exists?
         $instance = Container::getInstance()->make($definition);
-        $name     = $instance->getTypeName($this, $source);
+        $name     = $instance->getTypeName($source, $context);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
@@ -91,14 +75,14 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $this->addFakeTypeDefinition($name);
 
         // Create new
-        $node = $instance->getTypeDefinition($this, $source, $name);
+        $node = $instance->getTypeDefinition($this, $source, $context, $name);
 
         if (!$node) {
-            throw new TypeDefinitionImpossibleToCreateType($definition, $source);
+            throw new TypeDefinitionImpossibleToCreateType($definition, $source, $context);
         }
 
         if ($name !== $this->getName($node)) {
-            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getName($node));
+            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getName($node), $context);
         }
 
         // Save
@@ -154,11 +138,18 @@ class Manipulator extends AstManipulator implements TypeProvider {
      *
      * @return list<Operator>
      */
-    public function getTypeOperators(string $scope, string $type, string ...$extras): array {
+    public function getTypeOperators(string $scope, string $type, Context $context, string ...$extras): array {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
         if (!$provider) {
+            return [];
+        }
+
+        // Builder?
+        $builder = $context->get(AstManipulation::class)?->builderInfo->getBuilder();
+
+        if (!$builder) {
             return [];
         }
 
@@ -174,7 +165,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                     $directiveType = $directive->getType();
 
                     if ($type !== $directiveType) {
-                        array_push($operators, ...$this->getTypeOperators($scope, $directiveType));
+                        array_push($operators, ...$this->getTypeOperators($scope, $directiveType, $context));
                     } else {
                         array_push($operators, ...$provider->getOperators($type));
                     }
@@ -196,12 +187,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Extra
         foreach ($extras as $extra) {
-            array_push($operators, ...$this->getTypeOperators($scope, $extra));
+            array_push($operators, ...$this->getTypeOperators($scope, $extra, $context));
         }
 
         // Unique
-        $builder = $this->getBuilderInfo()->getBuilder();
-        $unique  = [];
+        $unique = [];
 
         foreach ($operators as $operator) {
             if (isset($unique[$operator::class])) {
@@ -227,6 +217,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     public function getOperatorField(
         Operator $operator,
         TypeSource $source,
+        Context $context,
         ?string $field,
         ?string $description = null,
         array $directives = [],
@@ -247,7 +238,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Definition
-        $type        = $operator->getFieldType($this, $source);
+        $type        = $operator->getFieldType($this, $source, $context);
         $field       = $field ?: $operator::getName();
         $directives  = implode(
             "\n",
@@ -269,12 +260,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @param list<Operator> $operators
      */
-    public function getOperatorsFields(array $operators, TypeSource $source): string {
+    public function getOperatorsFields(array $operators, TypeSource $source, Context $context): string {
         return implode(
             "\n",
             array_map(
-                function (Operator $operator) use ($source): string {
-                    return $this->getOperatorField($operator, $source, null);
+                function (Operator $operator) use ($source, $context): string {
+                    return $this->getOperatorField($operator, $source, $context, null);
                 },
                 $operators,
             ),

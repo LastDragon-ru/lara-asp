@@ -347,7 +347,7 @@ class DirectiveTest extends TestCase {
 
     public function testManipulateFieldDefinitionArgumentAlreadyDefined(): void {
         self::expectException(ArgumentAlreadyDefined::class);
-        self::expectExceptionMessage('Argument `type Test { field(where) }` already defined.');
+        self::expectExceptionMessage('Argument `type Query { field(where) }` already defined.');
 
         $directives = Container::getInstance()->make(DirectiveLocator::class);
 
@@ -356,11 +356,11 @@ class DirectiveTest extends TestCase {
         $this->useGraphQLSchema(
             <<<'GRAPHQL'
             type Query {
-                field: Test
+                field(where: Int): [TestObject] @stream
             }
 
-            type Test {
-                field(where: Int): [Test] @stream
+            type TestObject {
+                id: ID!
             }
             GRAPHQL,
         );

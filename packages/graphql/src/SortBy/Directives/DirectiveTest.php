@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
@@ -179,7 +180,9 @@ class DirectiveTest extends TestCase {
             ],
         ]);
 
-        self::expectExceptionObject(new TypeDefinitionImpossibleToCreateType(Clause::class, 'type TestType'));
+        self::expectExceptionObject(
+            new TypeDefinitionImpossibleToCreateType(Clause::class, 'type TestType', new Context()),
+        );
 
         $registry = Container::getInstance()->make(TypeRegistry::class);
         $registry->register($type);

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -23,7 +24,7 @@ abstract class PropertyDirective extends OperatorDirective {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
         return $source->getTypeName();
     }
 
@@ -33,7 +34,13 @@ abstract class PropertyDirective extends OperatorDirective {
     }
 
     #[Override]
-    public function call(Handler $handler, object $builder, Property $property, Argument $argument): object {
+    public function call(
+        Handler $handler,
+        object $builder,
+        Property $property,
+        Argument $argument,
+        Context $context,
+    ): object {
         if (!($argument->value instanceof ArgumentSet)) {
             throw new HandlerInvalidConditions($handler);
         }
@@ -51,6 +58,6 @@ abstract class PropertyDirective extends OperatorDirective {
         }
 
         // Apply
-        return $handler->handle($builder, $property, $argument->value);
+        return $handler->handle($builder, $property, $argument->value, $context);
     }
 }
