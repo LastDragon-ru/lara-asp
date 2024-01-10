@@ -78,7 +78,7 @@ class IncludeDocBlock implements ParameterizableInstruction {
         // Class?
         try {
             $class  = null;
-            $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+            $parser = (new ParserFactory())->createForNewestSupportedVersion();
             $stmts  = (array) $parser->parse($content);
             $finder = new NodeFinder();
             $class  = $finder->findFirst($stmts, static function (Node $node): bool {
