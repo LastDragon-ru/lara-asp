@@ -4,6 +4,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
 interface Context {
     /**
+     * @param class-string $key
+     */
+    public function has(string $key): bool;
+
+    /**
      * @template T of object
      *
      * @param class-string<T> $key

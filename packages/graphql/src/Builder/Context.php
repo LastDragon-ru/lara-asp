@@ -19,6 +19,11 @@ class Context implements ContextContract {
     }
 
     #[Override]
+    public function has(string $key): bool {
+        return isset($this->context[$key]) && $this->context[$key] instanceof $key;
+    }
+
+    #[Override]
     public function get(string $key): mixed {
         return isset($this->context[$key]) && $this->context[$key] instanceof $key
             ? $this->context[$key]
