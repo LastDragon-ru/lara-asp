@@ -50,7 +50,7 @@ class RelationTest extends TestCase {
         $context  = new Context();
         $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $context, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);

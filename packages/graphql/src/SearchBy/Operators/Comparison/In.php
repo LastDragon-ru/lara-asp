@@ -37,10 +37,10 @@ class In extends BaseOperator {
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         $property = $property->getParent();
         $value    = (array) $argument->toPlain();

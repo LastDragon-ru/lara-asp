@@ -59,7 +59,7 @@ class ContainsTest extends TestCase {
         $argument = $argumentFactory($this);
         $context  = new Context();
         $search   = Mockery::mock(Handler::class);
-        $builder  = $operator->call($search, $context, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }

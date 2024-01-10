@@ -68,10 +68,10 @@ class Relation extends BaseOperator {
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         // Supported?
         if (!($builder instanceof EloquentBuilder)) {
@@ -102,7 +102,7 @@ class Relation extends BaseOperator {
 
         if ($hasCount instanceof Argument) {
             $query    = $builder->getQuery()->newQuery();
-            $query    = $this->property->call($handler, $context, $query, new Property(), $hasCount);
+            $query    = $this->property->call($handler, $query, new Property(), $hasCount, $context);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;
@@ -125,7 +125,7 @@ class Relation extends BaseOperator {
                 }
 
                 if ($has instanceof Argument && $has->value instanceof ArgumentSet) {
-                    $handler->handle($context, $builder, new Property($alias), $has->value);
+                    $handler->handle($builder, new Property($alias), $has->value, $context);
                 }
             },
         );

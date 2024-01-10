@@ -42,14 +42,14 @@ class AllOf extends Logical {
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         // Scout?
         if (!($builder instanceof ScoutBuilder)) {
-            return parent::call($handler, $context, $builder, $property, $argument);
+            return parent::call($handler, $builder, $property, $argument, $context);
         }
 
         // Build
@@ -57,7 +57,7 @@ class AllOf extends Logical {
         $conditions = $this->getConditions($argument);
 
         foreach ($conditions as $arguments) {
-            $handler->handle($context, $builder, $property, $arguments);
+            $handler->handle($builder, $property, $arguments, $context);
         }
 
         // Return

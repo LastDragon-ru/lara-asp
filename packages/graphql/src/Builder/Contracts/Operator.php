@@ -33,9 +33,9 @@ interface Operator extends Directive {
      */
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object;
 }

@@ -57,7 +57,7 @@ class FieldTest extends TestCase {
         $directive = Container::getInstance()->make(Directive::class);
         $context   = new Context();
         $builder   = $builderFactory($this);
-        $builder   = $operator->call($directive, $context, $builder, $property, $argument);
+        $builder   = $operator->call($directive, $builder, $property, $argument, $context);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -87,7 +87,7 @@ class FieldTest extends TestCase {
         $context   = new Context();
         $builder   = Mockery::mock(EloquentBuilder::class);
 
-        $operator->call($directive, $context, $builder, $property, $argument);
+        $operator->call($directive, $builder, $property, $argument, $context);
     }
 
     public function testCallQueryBuilder(): void {
@@ -113,7 +113,7 @@ class FieldTest extends TestCase {
         $context   = new Context();
         $builder   = Mockery::mock(QueryBuilder::class);
 
-        $operator->call($directive, $context, $builder, $property, $argument);
+        $operator->call($directive, $builder, $property, $argument, $context);
     }
 
     public function testCallScoutBuilder(): void {
@@ -140,7 +140,7 @@ class FieldTest extends TestCase {
         $context   = new Context();
         $builder   = Mockery::mock(ScoutBuilder::class);
 
-        $operator->call($directive, $context, $builder, $property, $argument);
+        $operator->call($directive, $builder, $property, $argument, $context);
     }
 
     /**

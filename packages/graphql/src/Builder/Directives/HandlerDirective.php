@@ -101,7 +101,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
             foreach ($conditions as $condition) {
                 if ($condition instanceof ArgumentSet) {
-                    $builder = $this->handle($context ?? new Context(), $builder, new Property(), $condition);
+                    $builder = $this->handle($builder, new Property(), $condition, $context ?? new Context());
                 } else {
                     throw new HandlerInvalidConditions($this);
                 }
@@ -120,10 +120,10 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      */
     #[Override]
     public function handle(
-        ContextContract $context,
         object $builder,
         Property $property,
         ArgumentSet $conditions,
+        ContextContract $context,
     ): object {
         // Empty?
         if (count($conditions->arguments) === 0) {
@@ -138,7 +138,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Call
-        return $this->call($context, $builder, $property, $conditions);
+        return $this->call($builder, $property, $conditions, $context);
     }
 
     /**
@@ -149,10 +149,10 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      * @return T
      */
     protected function call(
-        ContextContract $context,
         object $builder,
         Property $property,
         ArgumentSet $operator,
+        ContextContract $context,
     ): object {
         // Arguments?
         if (count($operator->arguments) > 1) {
@@ -196,7 +196,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Return
-        return $op->call($this, $context, $builder, $property, $value);
+        return $op->call($this, $builder, $property, $value, $context);
     }
     // </editor-fold>
 

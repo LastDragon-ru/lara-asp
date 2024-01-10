@@ -81,7 +81,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     // <editor-fold desc="Handle">
     // =========================================================================
     #[Override]
-    public function handle(Context $context, object $builder, Property $property, ArgumentSet $conditions): object {
+    public function handle(object $builder, Property $property, ArgumentSet $conditions, Context $context): object {
         // Some relations (eg `HasManyThrough`) require a table name prefix to
         // avoid "SQLSTATE[23000]: Integrity constraint violation: 1052 Column
         // 'xxx' in where clause is ambiguous" error.
@@ -90,7 +90,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         }
 
         // Return
-        return parent::handle($context, $builder, $property, $conditions);
+        return parent::handle($builder, $property, $conditions, $context);
     }
     // </editor-fold>
 }

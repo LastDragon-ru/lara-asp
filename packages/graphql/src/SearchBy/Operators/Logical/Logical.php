@@ -30,10 +30,10 @@ abstract class Logical extends BaseOperator {
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         if (!($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder)) {
             throw new OperatorUnsupportedBuilder($this, $builder);
@@ -53,7 +53,7 @@ abstract class Logical extends BaseOperator {
                             $arguments,
                             $property,
                         ): void {
-                            $handler->handle($context, $builder, $property, $arguments);
+                            $handler->handle($builder, $property, $arguments, $context);
                         },
                         null,
                         null,

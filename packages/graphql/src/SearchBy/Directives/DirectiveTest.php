@@ -434,10 +434,10 @@ class DirectiveTest extends TestCase {
                         #[Override]
                         public function call(
                             Handler $handler,
-                            Context $context,
                             object $builder,
                             Property $property,
                             Argument $argument,
+                            Context $context,
                         ): object {
                             throw new Exception('should not be called');
                         }

@@ -36,10 +36,10 @@ abstract class PropertyDirective extends OperatorDirective {
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         if (!($argument->value instanceof ArgumentSet)) {
             throw new HandlerInvalidConditions($handler);
@@ -58,6 +58,6 @@ abstract class PropertyDirective extends OperatorDirective {
         }
 
         // Apply
-        return $handler->handle($context, $builder, $property, $argument->value);
+        return $handler->handle($builder, $property, $argument->value, $context);
     }
 }

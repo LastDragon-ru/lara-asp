@@ -398,10 +398,10 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         return $builder;
     }
@@ -435,10 +435,10 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         return $builder;
     }
@@ -472,10 +472,10 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         return $builder;
     }

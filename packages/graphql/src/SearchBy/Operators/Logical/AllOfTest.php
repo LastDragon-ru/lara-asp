@@ -52,7 +52,7 @@ class AllOfTest extends TestCase {
         $context  = new Context();
         $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $context, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -82,7 +82,7 @@ class AllOfTest extends TestCase {
         $context  = new Context();
         $search   = Container::getInstance()->make(Directive::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $context, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertScoutQueryEquals($expected, $builder);
     }

@@ -186,10 +186,10 @@ abstract class OperatorsTest__Operator implements Operator {
     #[Override]
     public function call(
         Handler $handler,
-        Context $context,
         object $builder,
         Property $property,
         Argument $argument,
+        Context $context,
     ): object {
         throw new Exception('Should not be called');
     }

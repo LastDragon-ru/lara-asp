@@ -50,7 +50,7 @@ class InTest extends TestCase {
         $context  = new Context();
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $context, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertDatabaseQueryEquals($expected, $builder);
     }
@@ -80,7 +80,7 @@ class InTest extends TestCase {
         $context  = new Context();
         $search   = Mockery::mock(Handler::class);
         $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $context, $builder, $property, $argument);
+        $builder  = $operator->call($search, $builder, $property, $argument, $context);
 
         self::assertScoutQueryEquals($expected, $builder);
     }
