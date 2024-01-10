@@ -72,7 +72,7 @@ class Clause extends InputObject {
             array_unique(
                 array_merge(
                     parent::getOperators($manipulator, $source, $context),
-                    $manipulator->getTypeOperators($this->getScope(), Operators::Extra),
+                    $manipulator->getTypeOperators($this->getScope(), Operators::Extra, $context),
                 ),
                 SORT_REGULAR,
             ),

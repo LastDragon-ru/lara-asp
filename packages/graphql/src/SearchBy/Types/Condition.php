@@ -37,6 +37,7 @@ use function array_merge;
 use function array_unique;
 use function array_values;
 use function is_string;
+use function reset;
 
 use const SORT_REGULAR;
 
@@ -76,7 +77,7 @@ class Condition extends InputObject {
         return array_values(array_unique(
             array_merge(
                 parent::getOperators($manipulator, $source, $context),
-                $manipulator->getTypeOperators($this->getScope(), Operators::Extra),
+                $manipulator->getTypeOperators($this->getScope(), Operators::Extra, $context),
             ),
             SORT_REGULAR,
         ));
@@ -166,16 +167,8 @@ class Condition extends InputObject {
         }
 
         // Condition
-        $builder   = $manipulator->getBuilderInfo()->getBuilder();
-        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Condition);
-        $condition = null;
-
-        foreach ($operators as $operator) {
-            if ($operator->isBuilderSupported($builder)) {
-                $condition = $operator;
-                break;
-            }
-        }
+        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Condition, $context);
+        $condition = reset($operators) ?: null;
 
         return $condition;
     }

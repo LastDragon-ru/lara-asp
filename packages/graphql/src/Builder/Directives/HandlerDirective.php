@@ -215,7 +215,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         // Converted?
         $detector    = Container::getInstance()->make(BuilderInfoDetector::class);
         $builder     = $detector->getFieldArgumentBuilderInfo($documentAST, $parentType, $parentField, $argDefinition);
-        $manipulator = $this->getManipulator($documentAST, $builder);
+        $manipulator = $this->getAstManipulator($documentAST);
 
         if ($this->isTypeName($manipulator->getTypeName($argDefinition))) {
             return;

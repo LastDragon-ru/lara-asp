@@ -219,6 +219,10 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             throw new FieldIsUnion($source);
         }
 
+        // Builder?
+        Container::getInstance()->make(BuilderInfoDetector::class)
+            ->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
+
         // Searchable?
         $searchable = Cast::toBool(
             $this->directiveArgValue(self::ArgSearchable)
@@ -282,11 +286,8 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         );
 
         // Update type
-        $detector = Container::getInstance()->make(BuilderInfoDetector::class);
-        $context  = new Context();
-        $builder  = $detector->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
-        $type     = $this->getManipulator($documentAST, $builder)->getType(StreamType::class, $source, $context);
-        $type     = Parser::typeReference("{$type}!");
+        $type = $this->getAstManipulator($documentAST)->getType(StreamType::class, $source, new Context());
+        $type = Parser::typeReference("{$type}!");
 
         $manipulator->setFieldType(
             $parentType,
@@ -423,8 +424,6 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         return $type;
     }
-
-
     // </editor-fold>
 
     // <editor-fold desc="FieldResolver">

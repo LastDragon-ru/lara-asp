@@ -5,7 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Container\Container;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -191,10 +192,14 @@ class ManipulatorTest extends TestCase {
         };
 
         // Manipulator
+        $context     = (new Context())->override([
+            AstManipulation::class => new AstManipulation(
+                builderInfo: new BuilderInfo($builder::class, $builder::class),
+            ),
+        ]);
         $document    = Container::getInstance()->make(ASTBuilder::class)->documentAST();
         $manipulator = Container::getInstance()->make(Manipulator::class, [
-            'document'    => $document,
-            'builderInfo' => new BuilderInfo($builder::class, $builder::class),
+            'document' => $document,
         ]);
 
         $manipulator->addOperators($operators);
@@ -208,39 +213,42 @@ class ManipulatorTest extends TestCase {
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID)),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, $context)),
         );
         self::assertEquals(
             [
                 $aOperator,
                 $cOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, Operators::Int)),
+            array_map(
+                $map,
+                $manipulator->getTypeOperators($operators->getScope(), Operators::ID, $context, Operators::Int),
+            ),
         );
         self::assertEquals(
             [
                 // empty (another scope)
             ],
-            array_map($map, $manipulator->getTypeOperators($scope::class, Operators::ID)),
+            array_map($map, $manipulator->getTypeOperators($scope::class, Operators::ID, $context)),
         );
         self::assertEquals(
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestScalar')),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestScalar', $context)),
         );
         self::assertEquals(
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestOperators')),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestOperators', $context)),
         );
         self::assertEquals(
             [
                 $cOperator,
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestBuiltinOperators')),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestBuiltinOperators', $context)),
         );
     }
     // </editor-fold>
@@ -381,7 +389,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
         return $source->getTypeName();
     }
 
@@ -401,7 +409,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
         object $builder,
         Property $property,
         Argument $argument,
-        Context $context,
+        ContextContract $context,
     ): object {
         return $builder;
     }
@@ -418,7 +426,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
         return $source->getTypeName();
     }
 
@@ -438,7 +446,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
         object $builder,
         Property $property,
         Argument $argument,
-        Context $context,
+        ContextContract $context,
     ): object {
         return $builder;
     }
@@ -455,7 +463,7 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
         return $source->getTypeName();
     }
 
@@ -475,7 +483,7 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
         object $builder,
         Property $property,
         Argument $argument,
-        Context $context,
+        ContextContract $context,
     ): object {
         return $builder;
     }

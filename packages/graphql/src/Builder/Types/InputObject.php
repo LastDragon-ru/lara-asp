@@ -9,6 +9,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -163,10 +164,18 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
-    ): InputValueDefinitionNode|null {
+    ): ?InputValueDefinitionNode {
+        // Builder?
+        $builder = $context->get(AstManipulation::class)?->builderInfo->getBuilder();
+
+        if (!$builder) {
+            return null;
+        }
+
+        // Operator?
         [$operator, $type] = $this->getFieldOperator($manipulator, $field, $context) ?? [null, null];
 
-        if ($operator === null || !$operator->isBuilderSupported($manipulator->getBuilderInfo()->getBuilder())) {
+        if ($operator === null || !$operator->isBuilderSupported($builder)) {
             return null;
         }
 
@@ -174,6 +183,7 @@ abstract class InputObject implements TypeDefinition {
             $type = $manipulator->getTypeSource($field->getTypeDefinition());
         }
 
+        // Field
         $fieldName       = $manipulator->getName($field->getField());
         $fieldDesc       = $this->getFieldDescription($manipulator, $field, $context);
         $fieldDirectives = $this->getFieldDirectives($manipulator, $field, $context);
@@ -211,9 +221,15 @@ abstract class InputObject implements TypeDefinition {
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): ?Operator {
+        // Builder?
+        $builder = $context->get(AstManipulation::class)?->builderInfo->getBuilder();
+
+        if (!$builder) {
+            return null;
+        }
+
         // Directive?
         $operator = null;
-        $builder  = $manipulator->getBuilderInfo()->getBuilder();
         $nodes    = [$field->getField(), $field->getTypeDefinition()];
 
         foreach ($nodes as $node) {
