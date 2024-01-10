@@ -443,11 +443,7 @@ class DirectiveTest extends TestCase {
                         }
 
                         #[Override]
-                        public function getTypeName(
-                            Manipulator $manipulator,
-                            TypeSource $source,
-                            Context $context,
-                        ): string {
+                        public function getTypeName(TypeSource $source, Context $context): string {
                             $directiveName = Directive::Name;
                             $typeName      = Str::studly($source->getTypeName());
 

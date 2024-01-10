@@ -86,7 +86,7 @@ class JsonStringType extends StringType implements TypeDefinition {
     // <editor-fold desc="TypeDefinition">
     // =========================================================================
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
+    public function getTypeName(TypeSource $source, Context $context): string {
         return $this->name();
     }
 

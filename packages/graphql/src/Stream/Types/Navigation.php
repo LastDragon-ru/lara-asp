@@ -18,7 +18,7 @@ class Navigation implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
+    public function getTypeName(TypeSource $source, Context $context): string {
         return Directive::Name.'Navigation';
     }
 

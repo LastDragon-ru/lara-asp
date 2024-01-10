@@ -82,7 +82,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     public function getType(string $definition, TypeSource $source, Context $context): string {
         // Exists?
         $instance = Container::getInstance()->make($definition);
-        $name     = $instance->getTypeName($this, $source, $context);
+        $name     = $instance->getTypeName($source, $context);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;

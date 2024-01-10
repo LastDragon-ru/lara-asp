@@ -37,7 +37,7 @@ use const SORT_REGULAR;
 
 class Clause extends InputObject {
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
+    public function getTypeName(TypeSource $source, Context $context): string {
         $directiveName = Directive::Name;
         $builderName   = $context->get(AstManipulation::class)?->builderInfo->getName() ?? 'Unknown';
         $typeName      = $source->getTypeName();

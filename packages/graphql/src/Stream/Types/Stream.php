@@ -31,7 +31,7 @@ class Stream implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
+    public function getTypeName(TypeSource $source, Context $context): string {
         return Str::plural(Str::studly($source->getTypeName())).Directive::Name;
     }
 

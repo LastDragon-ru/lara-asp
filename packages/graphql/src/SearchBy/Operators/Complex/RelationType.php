@@ -22,7 +22,7 @@ class RelationType implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
+    public function getTypeName(TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
         $builderName   = $context->get(AstManipulation::class)?->builderInfo->getName() ?? 'Unknown';
         $operatorName  = Str::studly(Relation::getName());
