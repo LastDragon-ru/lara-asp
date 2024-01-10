@@ -13,6 +13,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -40,7 +41,7 @@ use const SORT_REGULAR;
 
 class Condition extends InputObject {
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
         $builderName   = $manipulator->getBuilderInfo()->getName();
         $directiveName = Directive::Name;
@@ -57,6 +58,7 @@ class Condition extends InputObject {
     protected function getDescription(
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
+        Context $context,
     ): string {
         return "Available conditions for `{$source}` (only one property allowed at a time).";
     }
@@ -68,10 +70,11 @@ class Condition extends InputObject {
     protected function getOperators(
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
+        Context $context,
     ): array {
         return array_values(array_unique(
             array_merge(
-                parent::getOperators($manipulator, $source),
+                parent::getOperators($manipulator, $source, $context),
                 $manipulator->getTypeOperators($this->getScope(), Operators::Extra),
             ),
             SORT_REGULAR,
@@ -82,9 +85,10 @@ class Condition extends InputObject {
     protected function isFieldConvertable(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): bool {
         // Parent?
-        if (!parent::isFieldConvertable($manipulator, $field)) {
+        if (!parent::isFieldConvertable($manipulator, $field, $context)) {
             return false;
         }
 
@@ -111,6 +115,7 @@ class Condition extends InputObject {
     protected function getFieldOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): ?array {
         $fieldType = $field->getTypeDefinition();
         $operator  = match (true) {
@@ -126,7 +131,7 @@ class Condition extends InputObject {
                 $fieldType instanceof ObjectType,
                 $fieldType instanceof InterfaceTypeDefinitionNode,
                 $fieldType instanceof InterfaceType
-                    => $this->getObjectDefaultOperator($manipulator, $field),
+                    => $this->getObjectDefaultOperator($manipulator, $field, $context),
             default
                     => null,
         };
@@ -139,7 +144,7 @@ class Condition extends InputObject {
         $source = null;
 
         if (is_string($operator)) {
-            $type     = $manipulator->getType($operator, $field);
+            $type     = $manipulator->getType($operator, $field, $context);
             $source   = $manipulator->getTypeSource(Parser::typeReference($type));
             $operator = $manipulator->getOperator($this->getScope(), SearchByOperatorPropertyDirective::class);
         }
@@ -150,9 +155,10 @@ class Condition extends InputObject {
     protected function getObjectDefaultOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): ?OperatorContract {
         // Directive?
-        $directive = parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field);
+        $directive = parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $context);
 
         if ($directive) {
             return $directive;

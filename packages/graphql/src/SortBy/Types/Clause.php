@@ -9,6 +9,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -35,7 +36,7 @@ use const SORT_REGULAR;
 
 class Clause extends InputObject {
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
         $directiveName = Directive::Name;
         $builderName   = $manipulator->getBuilderInfo()->getName();
         $typeName      = $source->getTypeName();
@@ -52,6 +53,7 @@ class Clause extends InputObject {
     protected function getDescription(
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
+        Context $context,
     ): string {
         return "Sort clause for `{$source}` (only one property allowed at a time).";
     }
@@ -63,11 +65,12 @@ class Clause extends InputObject {
     protected function getOperators(
         Manipulator $manipulator,
         InputSource|ObjectSource|InterfaceSource $source,
+        Context $context,
     ): array {
         return array_values(
             array_unique(
                 array_merge(
-                    parent::getOperators($manipulator, $source),
+                    parent::getOperators($manipulator, $source, $context),
                     $manipulator->getTypeOperators($this->getScope(), Operators::Extra),
                 ),
                 SORT_REGULAR,
@@ -79,9 +82,10 @@ class Clause extends InputObject {
     protected function isFieldConvertable(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): bool {
         // Parent?
-        if (!parent::isFieldConvertable($manipulator, $field)) {
+        if (!parent::isFieldConvertable($manipulator, $field, $context)) {
             return false;
         }
 
@@ -113,6 +117,7 @@ class Clause extends InputObject {
     protected function getFieldOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): ?array {
         $fieldType = $field->getTypeDefinition();
         $isNested  = $fieldType instanceof InputObjectTypeDefinitionNode
@@ -125,9 +130,9 @@ class Clause extends InputObject {
         $source    = null;
 
         if ($isNested) {
-            $operator = $this->getObjectDefaultOperator($manipulator, $field);
+            $operator = $this->getObjectDefaultOperator($manipulator, $field, $context);
         } else {
-            $type     = $manipulator->getType(Direction::class, $field);
+            $type     = $manipulator->getType(Direction::class, $field, $context);
             $source   = $manipulator->getTypeSource(Parser::typeReference($type));
             $operator = $manipulator->getOperator($this->getScope(), SortByOperatorFieldDirective::class);
         }
@@ -138,8 +143,9 @@ class Clause extends InputObject {
     protected function getObjectDefaultOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
     ): OperatorContract {
-        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field)
+        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $context)
             ?? $manipulator->getOperator($this->getScope(), SortByOperatorPropertyDirective::class);
     }
 }

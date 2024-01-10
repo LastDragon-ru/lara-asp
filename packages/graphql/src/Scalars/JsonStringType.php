@@ -12,6 +12,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\Utils;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -85,7 +86,7 @@ class JsonStringType extends StringType implements TypeDefinition {
     // <editor-fold desc="TypeDefinition">
     // =========================================================================
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
         return $this->name();
     }
 
@@ -93,6 +94,7 @@ class JsonStringType extends StringType implements TypeDefinition {
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
+        Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
         return $this;

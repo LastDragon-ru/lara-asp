@@ -60,12 +60,14 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         Manipulator $manipulator,
         DocumentAST $document,
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
+        Context $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
             $manipulator,
             $document,
             $argument,
             SearchByOperatorConditionDirective::class,
+            $context,
         );
 
         if (!$type) {

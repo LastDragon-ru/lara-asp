@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
@@ -56,12 +57,14 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         Manipulator $manipulator,
         DocumentAST $document,
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
+        Context $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode(
             $manipulator,
             $document,
             $argument,
             SortByOperatorClauseDirective::class,
+            $context,
         );
 
         if (!$type) {

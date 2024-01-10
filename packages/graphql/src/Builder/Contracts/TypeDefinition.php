@@ -12,7 +12,7 @@ interface TypeDefinition {
     /**
      * Returns the type name for given Builder and Source.
      */
-    public function getTypeName(Manipulator $manipulator, TypeSource $source): string;
+    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string;
 
     /**
      * Returns the type definition for given Source if possible. The name must be equal to `$name`.
@@ -22,6 +22,7 @@ interface TypeDefinition {
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
+        Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null;
 }

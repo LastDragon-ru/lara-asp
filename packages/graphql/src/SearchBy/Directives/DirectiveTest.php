@@ -411,8 +411,12 @@ class DirectiveTest extends TestCase {
                         }
 
                         #[Override]
-                        public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-                            return $provider->getType(static::class, $provider->getTypeSource(Type::int()));
+                        public function getFieldType(
+                            TypeProvider $provider,
+                            TypeSource $source,
+                            Context $context,
+                        ): string {
+                            return $provider->getType(static::class, $provider->getTypeSource(Type::int()), $context);
                         }
 
                         #[Override]
@@ -442,6 +446,7 @@ class DirectiveTest extends TestCase {
                         public function getTypeName(
                             Manipulator $manipulator,
                             TypeSource $source,
+                            Context $context,
                         ): string {
                             $directiveName = Directive::Name;
                             $typeName      = Str::studly($source->getTypeName());
@@ -453,6 +458,7 @@ class DirectiveTest extends TestCase {
                         public function getTypeDefinition(
                             Manipulator $manipulator,
                             TypeSource $source,
+                            Context $context,
                             string $name,
                         ): TypeDefinitionNode&Node {
                             return Parser::inputObjectTypeDefinition(

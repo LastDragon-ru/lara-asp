@@ -46,8 +46,8 @@ class Random extends BaseOperator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return $provider->getType(Flag::class, $source);
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+        return $provider->getType(Flag::class, $source, $context);
     }
 
     #[Override]

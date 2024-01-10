@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions;
 
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use Throwable;
 
@@ -15,6 +16,7 @@ class TypeDefinitionInvalidTypeName extends BuilderException {
         protected string $type,
         protected string $expected,
         protected string $actual,
+        protected Context $context,
         Throwable $previous = null,
     ) {
         parent::__construct(
@@ -41,5 +43,9 @@ class TypeDefinitionInvalidTypeName extends BuilderException {
 
     public function getActual(): string {
         return $this->actual;
+    }
+
+    public function getContext(): Context {
+        return $this->context;
     }
 }

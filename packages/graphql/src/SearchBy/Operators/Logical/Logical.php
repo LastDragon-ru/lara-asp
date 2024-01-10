@@ -23,8 +23,8 @@ use function is_array;
 
 abstract class Logical extends BaseOperator {
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return $provider->getType(Condition::class, $source);
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+        return $provider->getType(Condition::class, $source, $context);
     }
 
     #[Override]

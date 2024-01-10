@@ -30,7 +30,7 @@ class NotIn extends BaseOperator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
         return "[{$source->getTypeName()}!]";
     }
 

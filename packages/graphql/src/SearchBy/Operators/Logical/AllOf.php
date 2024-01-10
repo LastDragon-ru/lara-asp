@@ -30,8 +30,8 @@ class AllOf extends Logical {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return "[{$provider->getType(Condition::class, $source)}!]";
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+        return "[{$provider->getType(Condition::class, $source, $context)}!]";
     }
 
     #[Override]

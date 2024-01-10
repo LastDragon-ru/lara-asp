@@ -51,8 +51,8 @@ class Relation extends BaseOperator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
-        return $provider->getType(RelationType::class, $source);
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+        return $provider->getType(RelationType::class, $source, $context);
     }
 
     #[Override]

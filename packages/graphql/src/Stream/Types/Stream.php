@@ -6,6 +6,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -30,7 +31,7 @@ class Stream implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
         return Str::plural(Str::studly($source->getTypeName())).Directive::Name;
     }
 
@@ -38,10 +39,11 @@ class Stream implements TypeDefinition {
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
+        Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
         $type       = $source->getTypeName();
-        $navigation = $manipulator->getType(Navigation::class, $source);
+        $navigation = $manipulator->getType(Navigation::class, $source, $context);
 
         return Parser::objectTypeDefinition(
             <<<GRAPHQL

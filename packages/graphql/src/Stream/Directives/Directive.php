@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
@@ -282,8 +283,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
         // Update type
         $detector = Container::getInstance()->make(BuilderInfoDetector::class);
+        $context  = new Context();
         $builder  = $detector->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
-        $type     = $this->getManipulator($documentAST, $builder)->getType(StreamType::class, $source);
+        $type     = $this->getManipulator($documentAST, $builder)->getType(StreamType::class, $source, $context);
         $type     = Parser::typeReference("{$type}!");
 
         $manipulator->setFieldType(

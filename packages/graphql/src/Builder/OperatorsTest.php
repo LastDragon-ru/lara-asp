@@ -169,7 +169,7 @@ abstract class OperatorsTest__Operator implements Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
         throw new Exception('Should not be called');
     }
 

@@ -22,6 +22,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -78,10 +79,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="TypeProvider">
     // =========================================================================
     #[Override]
-    public function getType(string $definition, TypeSource $source): string {
+    public function getType(string $definition, TypeSource $source, Context $context): string {
         // Exists?
         $instance = Container::getInstance()->make($definition);
-        $name     = $instance->getTypeName($this, $source);
+        $name     = $instance->getTypeName($this, $source, $context);
 
         if ($this->isTypeDefinitionExists($name)) {
             return $name;
@@ -91,14 +92,14 @@ class Manipulator extends AstManipulator implements TypeProvider {
         $this->addFakeTypeDefinition($name);
 
         // Create new
-        $node = $instance->getTypeDefinition($this, $source, $name);
+        $node = $instance->getTypeDefinition($this, $source, $context, $name);
 
         if (!$node) {
-            throw new TypeDefinitionImpossibleToCreateType($definition, $source);
+            throw new TypeDefinitionImpossibleToCreateType($definition, $source, $context);
         }
 
         if ($name !== $this->getName($node)) {
-            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getName($node));
+            throw new TypeDefinitionInvalidTypeName($definition, $name, $this->getName($node), $context);
         }
 
         // Save
@@ -227,6 +228,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     public function getOperatorField(
         Operator $operator,
         TypeSource $source,
+        Context $context,
         ?string $field,
         ?string $description = null,
         array $directives = [],
@@ -247,7 +249,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Definition
-        $type        = $operator->getFieldType($this, $source);
+        $type        = $operator->getFieldType($this, $source, $context);
         $field       = $field ?: $operator::getName();
         $directives  = implode(
             "\n",
@@ -269,12 +271,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @param list<Operator> $operators
      */
-    public function getOperatorsFields(array $operators, TypeSource $source): string {
+    public function getOperatorsFields(array $operators, TypeSource $source, Context $context): string {
         return implode(
             "\n",
             array_map(
-                function (Operator $operator) use ($source): string {
-                    return $this->getOperatorField($operator, $source, null);
+                function (Operator $operator) use ($source, $context): string {
+                    return $this->getOperatorField($operator, $source, $context, null);
                 },
                 $operators,
             ),

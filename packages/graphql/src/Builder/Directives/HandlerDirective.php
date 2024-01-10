@@ -218,8 +218,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Argument
-        $source = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
-        $type   = $this->getArgDefinitionType($manipulator, $documentAST, $source);
+        $context = new Context();
+        $source  = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
+        $type    = $this->getArgDefinitionType($manipulator, $documentAST, $source, $context);
 
         $manipulator->setArgumentType(
             $parentType,
@@ -238,6 +239,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         Manipulator $manipulator,
         DocumentAST $document,
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
+        ContextContract $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode;
 
     /**
@@ -248,6 +250,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         DocumentAST $document,
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
         string $operator,
+        ContextContract $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         $type       = null;
         $definition = $manipulator->isPlaceholder($argument->getArgument())
@@ -257,7 +260,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         if ($definition) {
             $operator = $manipulator->getOperator(static::getScope(), $operator);
             $node     = $manipulator->getTypeSource($definition);
-            $type     = $operator->getFieldType($manipulator, $node);
+            $type     = $operator->getFieldType($manipulator, $node, $context);
             $type     = Parser::typeReference($type);
         }
 

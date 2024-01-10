@@ -6,6 +6,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -20,7 +21,7 @@ class RelationType implements TypeDefinition {
     }
 
     #[Override]
-    public function getTypeName(Manipulator $manipulator, TypeSource $source): string {
+    public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
         $builderName   = $manipulator->getBuilderInfo()->getName();
         $operatorName  = Str::studly(Relation::getName());
@@ -33,10 +34,12 @@ class RelationType implements TypeDefinition {
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
+        Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
-        $count = $manipulator->getType(Scalar::class, $manipulator->getTypeSource(Type::nonNull(Type::int())));
-        $where = $manipulator->getType(Condition::class, $source);
+        $int   = $manipulator->getTypeSource(Type::nonNull(Type::int()));
+        $count = $manipulator->getType(Scalar::class, $int, $context);
+        $where = $manipulator->getType(Condition::class, $source, $context);
 
         return Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
