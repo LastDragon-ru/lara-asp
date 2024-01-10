@@ -49,8 +49,30 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] `enum SortByTypeDirection { asc, desc }` => `enum SortByTypeDirection { Asc, Desc }`. 🤝
 
-* [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`.
-
-* [ ] Update `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition` implementations.
-
 * [ ] If you are testing generated queries, you need to update `sort_by_*` alias to `lara_asp_graphql__sort_by__*`.
+
+## API
+
+This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition`.
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator` (removed `BuilderInfo`)
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`
+
+* [ ] To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead of `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`:
+
+  ```php
+  $context->get(\LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation\AstManipulation::class)?->builderInfo
+  ```
