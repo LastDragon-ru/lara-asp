@@ -9,6 +9,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -38,7 +39,7 @@ class Clause extends InputObject {
     #[Override]
     public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
         $directiveName = Directive::Name;
-        $builderName   = $manipulator->getBuilderInfo()->getName();
+        $builderName   = $context->get(AstManipulation::class)?->builderInfo->getName() ?? 'Unknown';
         $typeName      = $source->getTypeName();
 
         return "{$directiveName}{$builderName}Clause{$typeName}";

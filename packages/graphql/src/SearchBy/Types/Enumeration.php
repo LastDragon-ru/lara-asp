@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -21,7 +22,7 @@ class Enumeration implements TypeDefinition {
     #[Override]
     public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
         $directiveName = Directive::Name;
-        $builderName   = $manipulator->getBuilderInfo()->getName();
+        $builderName   = $context->get(AstManipulation::class)?->builderInfo->getName() ?? 'Unknown';
         $typeName      = $source->getTypeName();
         $nullable      = $source->isNullable() ? 'OrNull' : '';
 

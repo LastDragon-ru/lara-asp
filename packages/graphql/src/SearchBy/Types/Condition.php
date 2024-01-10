@@ -13,6 +13,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -43,7 +44,7 @@ class Condition extends InputObject {
     #[Override]
     public function getTypeName(Manipulator $manipulator, TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
-        $builderName   = $manipulator->getBuilderInfo()->getName();
+        $builderName   = $context->get(AstManipulation::class)?->builderInfo->getName() ?? 'Unknown';
         $directiveName = Directive::Name;
 
         return "{$directiveName}{$builderName}Condition{$typeName}";

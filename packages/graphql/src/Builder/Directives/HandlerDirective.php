@@ -17,6 +17,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -43,6 +44,9 @@ use function count;
 use function is_array;
 use function reset;
 
+/**
+ * @see AstManipulation
+ */
 abstract class HandlerDirective extends BaseDirective implements Handler {
     use WithManipulator;
     use WithSource;
@@ -218,7 +222,11 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Argument
-        $context = new Context();
+        $context = (new Context())->override([
+            AstManipulation::class => new AstManipulation(
+                builderInfo: $builder,
+            ),
+        ]);
         $source  = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
         $type    = $this->getArgDefinitionType($manipulator, $documentAST, $source, $context);
 
