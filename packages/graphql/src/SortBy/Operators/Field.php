@@ -62,7 +62,7 @@ class Field extends BaseOperator {
 
         if ($sorter) {
             $direction = $argument->value instanceof Direction ? $argument->value : Direction::Asc;
-            $nulls     = $this->getNulls($sorter, $property, $direction);
+            $nulls     = $this->getNulls($sorter, $context, $direction);
 
             $sorter->sort($builder, $property, $direction, $nulls);
         } else {
@@ -75,10 +75,15 @@ class Field extends BaseOperator {
     /**
      * @param Sorter<object> $sorter
      */
-    protected function getNulls(Sorter $sorter, Property $property, Direction $direction): ?Nulls {
+    protected function getNulls(Sorter $sorter, Context $context, Direction $direction): ?Nulls {
         // Sortable?
         if (!$sorter->isNullsSupported()) {
             return null;
+        }
+
+        // Explicit?
+        if ($context->has(FieldContext::class)) {
+            return $context->get(FieldContext::class)?->nulls;
         }
 
         // Default
