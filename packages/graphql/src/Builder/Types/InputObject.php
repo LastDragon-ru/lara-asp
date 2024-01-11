@@ -9,7 +9,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -166,7 +166,7 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
     ): ?InputValueDefinitionNode {
         // Builder?
-        $builder = $context->get(AstManipulation::class)?->builderInfo->getBuilder();
+        $builder = $context->get(AstManipulationBuilderInfo::class)?->value->getBuilder();
 
         if (!$builder) {
             return null;
@@ -222,7 +222,7 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
     ): ?Operator {
         // Builder?
-        $builder = $context->get(AstManipulation::class)?->builderInfo->getBuilder();
+        $builder = $context->get(AstManipulationBuilderInfo::class)?->value->getBuilder();
 
         if (!$builder) {
             return null;

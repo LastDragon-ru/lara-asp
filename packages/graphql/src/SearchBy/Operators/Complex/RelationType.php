@@ -6,7 +6,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -24,7 +24,7 @@ class RelationType implements TypeDefinition {
     #[Override]
     public function getTypeName(TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
-        $builderName   = $context->get(AstManipulation::class)?->builderInfo->getName() ?? 'Unknown';
+        $builderName   = $context->get(AstManipulationBuilderInfo::class)?->value->getName() ?? 'Unknown';
         $operatorName  = Str::studly(Relation::getName());
         $directiveName = Directive::Name;
 

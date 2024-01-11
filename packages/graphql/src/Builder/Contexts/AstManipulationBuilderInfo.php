@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contexts;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 
-class AstManipulation {
+class AstManipulationBuilderInfo {
     public function __construct(
-        public readonly BuilderInfo $builderInfo,
+        public readonly BuilderInfo $value,
     ) {
         // empty
     }

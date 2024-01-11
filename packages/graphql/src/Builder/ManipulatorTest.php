@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Container\Container;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -193,8 +193,8 @@ class ManipulatorTest extends TestCase {
 
         // Manipulator
         $context     = (new Context())->override([
-            AstManipulation::class => new AstManipulation(
-                builderInfo: new BuilderInfo($builder::class, $builder::class),
+            AstManipulationBuilderInfo::class => new AstManipulationBuilderInfo(
+                new BuilderInfo($builder::class, $builder::class),
             ),
         ]);
         $document    = Container::getInstance()->make(ASTBuilder::class)->documentAST();
