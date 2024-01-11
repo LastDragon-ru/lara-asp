@@ -222,7 +222,7 @@ class FieldTest extends TestCase {
                     $factory,
                     static function (): Context {
                         return (new Context())->override([
-                            FieldContext::class => new FieldContext(nulls: Nulls::First),
+                            FieldContextNulls::class => new FieldContextNulls(Nulls::First),
                         ]);
                     },
                 ],
@@ -356,7 +356,7 @@ class FieldTest extends TestCase {
                 $getSorterFactory(true),
                 static function (): Context {
                     return (new Context())->override([
-                        FieldContext::class => new FieldContext(nulls: null),
+                        FieldContextNulls::class => new FieldContextNulls(null),
                     ]);
                 },
                 Direction::Desc,
@@ -369,7 +369,7 @@ class FieldTest extends TestCase {
                 $getSorterFactory(true),
                 static function (): Context {
                     return (new Context())->override([
-                        FieldContext::class => new FieldContext(nulls: Nulls::First),
+                        FieldContextNulls::class => new FieldContextNulls(Nulls::First),
                     ]);
                 },
                 Direction::Desc,

@@ -82,8 +82,8 @@ class Field extends BaseOperator {
         }
 
         // Explicit?
-        if ($context->has(FieldContext::class)) {
-            return $context->get(FieldContext::class)?->nulls;
+        if ($context->has(FieldContextNulls::class)) {
+            return $context->get(FieldContextNulls::class)?->value;
         }
 
         // Default
