@@ -6,6 +6,7 @@ use Closure;
 use GraphQL\Language\DirectiveLocation;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -26,8 +27,9 @@ use function reset;
 class Relation extends BaseOperator {
     public function __construct(
         protected SearchByOperatorPropertyDirective $property,
+        BuilderPropertyResolver $resolver,
     ) {
-        parent::__construct();
+        parent::__construct($resolver);
     }
 
     // <editor-fold desc="Directive">

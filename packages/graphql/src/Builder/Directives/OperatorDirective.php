@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use GraphQL\Language\DirectiveLocation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -13,7 +14,9 @@ use function implode;
 use function is_a;
 
 abstract class OperatorDirective extends BaseDirective implements Operator {
-    public function __construct() {
+    public function __construct(
+        protected readonly BuilderPropertyResolver $resolver,
+    ) {
         // empty
     }
 

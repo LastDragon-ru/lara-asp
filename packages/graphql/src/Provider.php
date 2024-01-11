@@ -6,7 +6,9 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver as BuilderPropertyResolverContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver as ScoutFieldResolverContract;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Defaults\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scout\DefaultFieldResolver as ScoutFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Printer\DirectiveResolver;
@@ -68,6 +70,7 @@ class Provider extends ServiceProvider {
         $this->app->scopedIf(SorterFactoryContract::class, SorterFactory::class);
         $this->app->scopedIf(StreamFactoryContract::class, StreamFactory::class);
         $this->app->scopedIf(ScoutFieldResolverContract::class, ScoutFieldResolver::class);
+        $this->app->scopedIf(BuilderPropertyResolverContract::class, BuilderPropertyResolver::class);
     }
 
     protected function registerOperators(): void {

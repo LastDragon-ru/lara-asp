@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
@@ -404,7 +405,8 @@ class DirectiveTest extends TestCase {
                 '~custom-complex-operators.graphql',
                 static function (): void {
                     $locator   = Container::getInstance()->make(DirectiveLocator::class);
-                    $directive = new class() extends BaseOperator implements TypeDefinition {
+                    $resolver  = Container::getInstance()->make(BuilderPropertyResolver::class);
+                    $directive = new class($resolver) extends BaseOperator implements TypeDefinition {
                         #[Override]
                         public static function getName(): string {
                             return 'custom';
