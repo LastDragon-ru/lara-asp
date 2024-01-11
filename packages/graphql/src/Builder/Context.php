@@ -10,7 +10,7 @@ use Override;
  */
 class Context implements ContextContract {
     /**
-     * @var array<class-string, object|null>
+     * @var array<class-string, object>
      */
     private array $context = [];
 
@@ -38,7 +38,11 @@ class Context implements ContextContract {
         $overridden = clone $this;
 
         foreach ($context as $key => $value) {
-            $overridden->context[$key] = $value;
+            if ($value !== null) {
+                $overridden->context[$key] = $value;
+            } else {
+                unset($overridden->context[$key]);
+            }
         }
 
         return $overridden;
