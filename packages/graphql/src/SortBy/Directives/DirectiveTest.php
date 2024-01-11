@@ -289,7 +289,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 id: Int!
-                value: String @rename(attribute: "renamed")
+                value: String @rename(attribute: "renamed.field")
             }
             GRAPHQL,
         );
@@ -350,7 +350,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 a: Int!
-                b: String @rename(attribute: "renamed")
+                b: String @rename(attribute: "renamed.field")
                 c: Test
             }
             GRAPHQL,
@@ -491,7 +491,7 @@ class DirectiveTest extends TestCase {
                                 "test_objects"
                             order by
                                 "id" asc,
-                                "renamed" desc,
+                                "renamed"."field" desc,
                                 RANDOM()
                         SQL
                         ,
@@ -529,7 +529,7 @@ class DirectiveTest extends TestCase {
                                 "test_objects"
                             order by
                                 "id" ASC NULLS LAST,
-                                "renamed" DESC NULLS FIRST
+                                "renamed"."field" DESC NULLS FIRST
                         SQL
                         ,
                         'bindings' => [],
@@ -562,7 +562,7 @@ class DirectiveTest extends TestCase {
                                 "test_objects"
                             order by
                                 "id" DESC NULLS FIRST,
-                                "renamed" asc
+                                "renamed"."field" asc
                         SQL
                         ,
                         'bindings' => [],
@@ -588,7 +588,7 @@ class DirectiveTest extends TestCase {
                                 "test_objects"
                             order by
                                 "id" ASC NULLS LAST,
-                                "renamed" desc
+                                "renamed"."field" desc
                         SQL
                         ,
                         'bindings' => [],
@@ -665,7 +665,7 @@ class DirectiveTest extends TestCase {
                                 'direction' => 'desc',
                             ],
                             [
-                                'column'    => 'renamed',
+                                'column'    => 'renamed.field',
                                 'direction' => 'desc',
                             ],
                         ],
@@ -697,7 +697,7 @@ class DirectiveTest extends TestCase {
                                 'direction' => 'desc',
                             ],
                             [
-                                'column'    => 'properties/renamed',
+                                'column'    => 'properties/renamed.field',
                                 'direction' => 'desc',
                             ],
                         ],

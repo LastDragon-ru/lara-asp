@@ -250,7 +250,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 id: Int!
-                value: String @rename(attribute: "renamed")
+                value: String @rename(attribute: "renamed.field")
             }
             GRAPHQL,
         );
@@ -311,7 +311,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 a: Int!
-                b: String @rename(attribute: "renamed")
+                b: String @rename(attribute: "renamed.field")
                 c: Test
             }
             GRAPHQL,
@@ -560,7 +560,7 @@ class DirectiveTest extends TestCase {
                                                 and (
                                                     (
                                                         ("id" = ?)
-                                                        or ("renamed" != ?)
+                                                        or ("renamed"."field" != ?)
                                                     )
                                                 )
                                             )
@@ -616,7 +616,7 @@ class DirectiveTest extends TestCase {
                                                 and (
                                                     (
                                                         ("test_objects"."id" = ?)
-                                                        or ("test_objects"."renamed" != ?)
+                                                        or ("test_objects"."renamed"."field" != ?)
                                                     )
                                                 )
                                             )
@@ -718,7 +718,7 @@ class DirectiveTest extends TestCase {
                             'c.a' => 2,
                         ],
                         'whereIns' => [
-                            'renamed' => ['a', 'b', 'c'],
+                            'renamed.field' => ['a', 'b', 'c'],
                         ],
                     ],
                     [
@@ -751,7 +751,7 @@ class DirectiveTest extends TestCase {
                             'properties/c/a' => 2,
                         ],
                         'whereIns' => [
-                            'properties/renamed' => ['a', 'b', 'c'],
+                            'properties/renamed.field' => ['a', 'b', 'c'],
                         ],
                     ],
                     [

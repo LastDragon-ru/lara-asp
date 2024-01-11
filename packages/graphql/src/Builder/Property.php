@@ -8,7 +8,6 @@ use Stringable;
 use function array_slice;
 use function array_values;
 use function end;
-use function explode;
 use function implode;
 
 class Property implements Stringable {
@@ -37,7 +36,7 @@ class Property implements Stringable {
     }
 
     public function getChild(string $name): static {
-        return new static(...$this->path, ...explode(static::Separator, $name));
+        return new static(...$this->path, ...[$name]);
     }
 
     public function getParent(): static {
