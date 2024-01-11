@@ -398,6 +398,7 @@ class DirectiveTest extends TestCase {
                     config([
                         "{$package}.sort_by.operators" => [
                             Operators::Extra => [
+                                Operators::Extra,
                                 SortByOperatorRandomDirective::class,
                             ],
                         ],

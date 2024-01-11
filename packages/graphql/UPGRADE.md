@@ -51,6 +51,21 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] If you are testing generated queries, you need to update `sort_by_*` alias to `lara_asp_graphql__sort_by__*`.
 
+* [ ] If you are overriding Extra operators, you may need to add `SortByOperators::Extra` to use new built-in:
+
+    ```php
+    $settings = [
+        'sort_by'   => [
+            'operators' => [
+                SortByOperators::Extra => [
+                    SortByOperators::Extra,
+                    SortByOperatorRandomDirective::class,
+                ],
+            ],
+        ],
+    ];
+    ```
+
 ## API
 
 This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):
@@ -73,6 +88,6 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead of `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`:
 
-  ```php
-  $context->get(\LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation\AstManipulation::class)?->builderInfo
-  ```
+    ```php
+    $context->get(\LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation\AstManipulation::class)?->builderInfo
+    ```
