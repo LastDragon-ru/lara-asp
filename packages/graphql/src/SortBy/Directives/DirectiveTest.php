@@ -578,6 +578,32 @@ class DirectiveTest extends TestCase {
                     ],
                     null,
                 ],
+                'nullsLast'           => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                            order by
+                                "id" ASC NULLS LAST,
+                                "renamed" desc
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            'nullsLast' => [
+                                'id' => 'Asc',
+                            ],
+                        ],
+                        [
+                            'value' => 'Desc',
+                        ],
+                    ],
+                    null,
+                ],
             ]),
         ))->getData();
     }

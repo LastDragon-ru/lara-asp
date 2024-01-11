@@ -54,6 +54,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 """
 Splits list of items into the chunks and returns one chunk specified
 by an offset or a cursor.
@@ -203,6 +209,12 @@ input SortByClauseTestObject {
     """
     nullsFirst: SortByClauseTestObject
     @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseTestObject
+    @sortByOperatorNullsLast
 }
 
 """
@@ -220,6 +232,12 @@ input SortByScoutClauseTestObject {
     """
     nullsFirst: SortByScoutClauseTestObject
     @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByScoutClauseTestObject
+    @sortByOperatorNullsLast
 }
 
 """
