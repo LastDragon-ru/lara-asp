@@ -45,17 +45,19 @@ class FieldTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context                                $contextFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        Closure $contextFactory,
     ): void {
         $operator  = Container::getInstance()->make(Field::class);
         $argument  = $argumentFactory($this);
         $directive = Container::getInstance()->make(Directive::class);
-        $context   = new Context();
+        $context   = $contextFactory($this);
         $builder   = $builderFactory($this);
         $builder   = $operator->call($directive, $builder, $property, $argument, $context);
 
@@ -148,19 +150,26 @@ class FieldTest extends TestCase {
      *
      * @param array<string, mixed>            $config
      * @param Closure(static): Sorter<object> $sorterFactory
+     * @param Closure(static): Context        $contextFactory
      */
-    public function testGetNulls(?Nulls $expected, ?array $config, Closure $sorterFactory, Direction $direction): void {
+    public function testGetNulls(
+        ?Nulls $expected,
+        ?array $config,
+        Closure $sorterFactory,
+        Closure $contextFactory,
+        Direction $direction,
+    ): void {
         if ($config) {
             config($config);
         }
 
         $sorter   = $sorterFactory($this);
-        $property = new Property();
+        $context  = $contextFactory($this);
         $operator = Mockery::mock(Field::class);
         $operator->shouldAllowMockingProtectedMethods();
         $operator->makePartial();
 
-        self::assertSame($expected, $operator->getNulls($sorter, $property, $direction));
+        self::assertSame($expected, $operator->getNulls($sorter, $context, $direction));
     }
     // </editor-fold>
 
@@ -193,23 +202,48 @@ class FieldTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'property' => [
+                'property'           => [
                     [
                         'query'    => 'select * from "test_objects" order by "a" desc',
                         'bindings' => [],
                     ],
                     new Property('a'),
                     $factory,
+                    static function (): Context {
+                        return new Context();
+                    },
+                ],
+                'nulls from Context' => [
+                    [
+                        'query'    => 'select * from "test_objects" order by "a" DESC NULLS FIRST',
+                        'bindings' => [],
+                    ],
+                    new Property('a'),
+                    $factory,
+                    static function (): Context {
+                        return (new Context())->override([
+                            FieldContextNulls::class => new FieldContextNulls(Nulls::First),
+                        ]);
+                    },
                 ],
             ]),
         ))->getData();
     }
 
     /**
-     * @return array<string, array{?Nulls, ?array<string, mixed>, Closure(static): Sorter<object>, Direction}>
+     * @return array<string, array{
+     *      ?Nulls,
+     *      ?array<string, mixed>,
+     *      Closure(static): Sorter<object>,
+     *      Closure(static): Context,
+     *      Direction,
+     *      }>
      */
     public static function dataProviderGetNulls(): array {
         $key              = Package::Name.'.sort_by.nulls';
+        $contextFactory   = static function (): Context {
+            return new Context();
+        };
         $getSorterFactory = static function (bool $nullsSortable): Closure {
             return static function () use ($nullsSortable): Sorter {
                 return new class($nullsSortable) implements Sorter {
@@ -242,6 +276,7 @@ class FieldTest extends TestCase {
                 null,
                 null,
                 $getSorterFactory(true),
+                $contextFactory,
                 Direction::Asc,
             ],
             'nulls are not sortable'                     => [
@@ -250,6 +285,7 @@ class FieldTest extends TestCase {
                     $key => Nulls::First,
                 ],
                 $getSorterFactory(false),
+                $contextFactory,
                 Direction::Asc,
             ],
             'nulls are sortable (asc)'                   => [
@@ -258,6 +294,7 @@ class FieldTest extends TestCase {
                     $key => Nulls::Last,
                 ],
                 $getSorterFactory(true),
+                $contextFactory,
                 Direction::Asc,
             ],
             'nulls are sortable (desc)'                  => [
@@ -266,6 +303,7 @@ class FieldTest extends TestCase {
                     $key => Nulls::Last,
                 ],
                 $getSorterFactory(true),
+                $contextFactory,
                 Direction::Desc,
             ],
             'nulls are sortable (separate)'              => [
@@ -277,6 +315,7 @@ class FieldTest extends TestCase {
                     ],
                 ],
                 $getSorterFactory(true),
+                $contextFactory,
                 Direction::Desc,
             ],
             '(deprecated) nulls are sortable (asc)'      => [
@@ -285,6 +324,7 @@ class FieldTest extends TestCase {
                     $key => Nulls::Last,
                 ],
                 $getSorterFactory(true),
+                $contextFactory,
                 Direction::asc,
             ],
             '(deprecated) nulls are sortable (desc)'     => [
@@ -293,6 +333,7 @@ class FieldTest extends TestCase {
                     $key => Nulls::Last,
                 ],
                 $getSorterFactory(true),
+                $contextFactory,
                 Direction::desc,
             ],
             '(deprecated) nulls are sortable (separate)' => [
@@ -304,7 +345,34 @@ class FieldTest extends TestCase {
                     ],
                 ],
                 $getSorterFactory(true),
+                $contextFactory,
                 Direction::desc,
+            ],
+            'nulls are sortable (Context null)'          => [
+                null,
+                [
+                    $key => Nulls::Last,
+                ],
+                $getSorterFactory(true),
+                static function (): Context {
+                    return (new Context())->override([
+                        FieldContextNulls::class => new FieldContextNulls(null),
+                    ]);
+                },
+                Direction::Desc,
+            ],
+            'nulls are sortable (Context first)'         => [
+                Nulls::First,
+                [
+                    $key => Nulls::Last,
+                ],
+                $getSorterFactory(true),
+                static function (): Context {
+                    return (new Context())->override([
+                        FieldContextNulls::class => new FieldContextNulls(Nulls::First),
+                    ]);
+                },
+                Direction::Desc,
             ],
         ];
     }

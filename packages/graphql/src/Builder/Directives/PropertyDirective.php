@@ -6,18 +6,14 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\PropertyOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
-use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Override;
 
-use function count;
-
 abstract class PropertyDirective extends OperatorDirective {
+    use PropertyOperator;
+
     #[Override]
     public static function getName(): string {
         return 'property';
@@ -41,23 +37,6 @@ abstract class PropertyDirective extends OperatorDirective {
         Argument $argument,
         Context $context,
     ): object {
-        if (!($argument->value instanceof ArgumentSet)) {
-            throw new HandlerInvalidConditions($handler);
-        }
-
-        // Empty?
-        if (count($argument->value->arguments) === 0) {
-            throw new ConditionEmpty();
-        }
-
-        // Valid?
-        if (count($argument->value->arguments) > 1) {
-            throw new ConditionTooManyOperators(
-                ArgumentFactory::getArgumentsNames($argument->value),
-            );
-        }
-
-        // Apply
-        return $handler->handle($builder, $property, $argument->value, $context);
+        return $this->handle($handler, $builder, $property, $argument, $context);
     }
 }

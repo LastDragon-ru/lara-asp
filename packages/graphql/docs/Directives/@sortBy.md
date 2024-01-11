@@ -197,3 +197,15 @@ $settings = [
 
 return $settings;
 ```
+
+The query is also supported and have highest priority (will override default settings):
+
+```graphql
+query {
+    # ORDER BY user.name ASC NULLS FIRST, text DESC
+    comments(order: [
+        {nullsFirst: {user: {name: asc}}}
+        {text: desc}
+    ])
+}
+```

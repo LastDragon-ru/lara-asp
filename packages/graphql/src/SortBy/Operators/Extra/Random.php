@@ -17,7 +17,6 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
 use function array_merge;
-use function is_a;
 
 class Random extends BaseOperator {
     // <editor-fold desc="Directive">
@@ -48,12 +47,6 @@ class Random extends BaseOperator {
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
         return $provider->getType(Flag::class, $source, $context);
-    }
-
-    #[Override]
-    public function isBuilderSupported(string $builder): bool {
-        return is_a($builder, EloquentBuilder::class, true)
-            || is_a($builder, QueryBuilder::class, true);
     }
 
     #[Override]

@@ -23,6 +23,18 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorProperty
 on
     | ENUM
@@ -83,6 +95,18 @@ input SortByClauseNested {
     """
     nested: SortByClauseNested
     @sortByOperatorProperty
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseNested
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseNested
+    @sortByOperatorNullsLast
 
     """
     By random
@@ -165,6 +189,18 @@ input SortByClauseObject {
     @sortByOperatorProperty
 
     """
+    NULLs first
+    """
+    nullsFirst: SortByClauseObject
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseObject
+    @sortByOperatorNullsLast
+
+    """
     By random
     """
     random: SortByTypeFlag
@@ -239,6 +275,18 @@ input SortByClauseObjectInterface {
     @sortByOperatorProperty
 
     """
+    NULLs first
+    """
+    nullsFirst: SortByClauseObjectInterface
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseObjectInterface
+    @sortByOperatorNullsLast
+
+    """
     By random
     """
     random: SortByTypeFlag
@@ -254,6 +302,18 @@ input SortByClauseObjectNested {
     """
     nested: SortByClauseObjectNested
     @sortByOperatorProperty
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseObjectNested
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseObjectNested
+    @sortByOperatorNullsLast
 
     """
     By random
@@ -336,6 +396,18 @@ input SortByClauseProperties {
     @sortByOperatorProperty
 
     """
+    NULLs first
+    """
+    nullsFirst: SortByClauseProperties
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseProperties
+    @sortByOperatorNullsLast
+
+    """
     By random
     """
     random: SortByTypeFlag
@@ -398,6 +470,18 @@ input SortByQueryClauseProperties {
     @sortByOperatorField
 
     """
+    NULLs first
+    """
+    nullsFirst: SortByQueryClauseProperties
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByQueryClauseProperties
+    @sortByOperatorNullsLast
+
+    """
     By random
     """
     random: SortByTypeFlag
@@ -413,6 +497,18 @@ input SortByScoutClauseNested {
     """
     nested: SortByScoutClauseNested
     @sortByOperatorProperty
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByScoutClauseNested
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByScoutClauseNested
+    @sortByOperatorNullsLast
 
     """
     Property clause.
@@ -487,6 +583,18 @@ input SortByScoutClauseProperties {
     """
     nestedNotNull: SortByScoutClauseNested
     @sortByOperatorProperty
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByScoutClauseProperties
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByScoutClauseProperties
+    @sortByOperatorNullsLast
 }
 
 interface Eloquent

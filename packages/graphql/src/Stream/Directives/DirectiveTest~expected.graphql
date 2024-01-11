@@ -48,6 +48,18 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 """
 Splits list of items into the chunks and returns one chunk specified
 by an offset or a cursor.
@@ -191,6 +203,18 @@ input SortByClauseTestObject {
     """
     id: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseTestObject
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseTestObject
+    @sortByOperatorNullsLast
 }
 
 """
@@ -202,6 +226,18 @@ input SortByScoutClauseTestObject {
     """
     id: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByScoutClauseTestObject
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByScoutClauseTestObject
+    @sortByOperatorNullsLast
 }
 
 """

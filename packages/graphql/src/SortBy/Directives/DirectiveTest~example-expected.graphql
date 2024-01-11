@@ -11,6 +11,18 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorProperty
 on
     | ENUM
@@ -40,6 +52,18 @@ Sort clause for `type Comment` (only one property allowed at a time).
 """
 input SortByClauseComment {
     """
+    NULLs first
+    """
+    nullsFirst: SortByClauseComment
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseComment
+    @sortByOperatorNullsLast
+
+    """
     Property clause.
     """
     text: SortByTypeDirection
@@ -67,6 +91,18 @@ input SortByClauseUser {
     """
     name: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseUser
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseUser
+    @sortByOperatorNullsLast
 }
 
 """
@@ -84,6 +120,18 @@ input SortByClauseUsersSort {
     """
     name: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseUsersSort
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseUsersSort
+    @sortByOperatorNullsLast
 }
 
 type Comment {

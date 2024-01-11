@@ -170,6 +170,14 @@ class DirectiveTest extends TestCase {
     }
 
     public function testManipulateArgDefinitionTypeRegistryEmpty(): void {
+        config([
+            Package::Name.'.sort_by.operators' => [
+                Operators::Extra => [
+                    // empty
+                ],
+            ],
+        ]);
+
         $type = new ObjectType([
             'name'   => 'TestType',
             'fields' => [
@@ -390,6 +398,7 @@ class DirectiveTest extends TestCase {
                     config([
                         "{$package}.sort_by.operators" => [
                             Operators::Extra => [
+                                Operators::Extra,
                                 SortByOperatorRandomDirective::class,
                             ],
                         ],
@@ -543,6 +552,58 @@ class DirectiveTest extends TestCase {
                             ],
                         ]);
                     },
+                ],
+                'nullsFirst'          => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                            order by
+                                "id" DESC NULLS FIRST,
+                                "renamed" asc
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            'nullsFirst' => [
+                                'id' => 'desc',
+                            ],
+                        ],
+                        [
+                            'value' => 'asc',
+                        ],
+                    ],
+                    null,
+                ],
+                'nullsLast'           => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                            order by
+                                "id" ASC NULLS LAST,
+                                "renamed" desc
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            'nullsLast' => [
+                                'id' => 'Asc',
+                            ],
+                        ],
+                        [
+                            'value' => 'Desc',
+                        ],
+                    ],
+                    null,
                 ],
             ]),
         ))->getData();
