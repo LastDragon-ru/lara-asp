@@ -11,6 +11,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorProperty
 on
     | ENUM
@@ -50,6 +56,12 @@ input SortByClauseA {
     """
     name: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseA
+    @sortByOperatorNullsFirst
 }
 
 """
@@ -67,6 +79,12 @@ input SortByClauseB {
     """
     name: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseB
+    @sortByOperatorNullsFirst
 }
 
 """
@@ -84,6 +102,12 @@ input SortByClauseC {
     """
     name: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseC
+    @sortByOperatorNullsFirst
 }
 
 """
@@ -95,6 +119,12 @@ input SortByClauseD {
     """
     child: SortByClauseC
     @sortByOperatorProperty
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseD
+    @sortByOperatorNullsFirst
 }
 
 type C {
