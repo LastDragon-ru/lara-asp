@@ -3,19 +3,18 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -28,7 +27,9 @@ use function implode;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(Equal::class)]
-class EqualTest extends TestCase {
+final class EqualTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -37,22 +38,16 @@ class EqualTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context|null                           $contextFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
     ): void {
-        $operator = Container::getInstance()->make(Equal::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Mockery::mock(Handler::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
 
     /**
@@ -62,27 +57,21 @@ class EqualTest extends TestCase {
      * @param Closure(static): ScoutBuilder $builderFactory
      * @param Closure(static): Argument     $argumentFactory
      * @param Closure():FieldResolver|null  $resolver
+     * @param Closure(static): Context|null $contextFactory
      */
     public function testCallScout(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
         Closure $resolver = null,
     ): void {
         if ($resolver) {
             $this->override(FieldResolver::class, $resolver);
         }
 
-        $operator = Container::getInstance()->make(Equal::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Mockery::mock(Handler::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertScoutQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
     // </editor-fold>
 
@@ -100,20 +89,22 @@ class EqualTest extends TestCase {
                         'query'    => 'select * from "test_objects" where "property" = ?',
                         'bindings' => ['abc'],
                     ],
-                    new Property('property'),
+                    new Property('property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', 'abc');
                     },
+                    null,
                 ],
                 'property.path' => [
                     [
                         'query'    => 'select * from "test_objects" where "path"."to"."property" = ?',
                         'bindings' => [123],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('Int!', 123);
                     },
+                    null,
                 ],
             ]),
         ))->getData();
@@ -132,10 +123,11 @@ class EqualTest extends TestCase {
                             'path.to.property' => 'abc',
                         ],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', 'abc');
                     },
+                    null,
                     null,
                 ],
                 'property with resolver' => [
@@ -144,10 +136,11 @@ class EqualTest extends TestCase {
                             'properties/path/to/property' => 'abc',
                         ],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', 'abc');
                     },
+                    null,
                     static function (): FieldResolver {
                         return new class() implements FieldResolver {
                             /**

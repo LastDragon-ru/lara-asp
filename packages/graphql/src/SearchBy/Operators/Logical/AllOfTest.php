@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Closure;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
@@ -14,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvi
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -30,7 +30,9 @@ use function implode;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(AllOf::class)]
-class AllOfTest extends TestCase {
+final class AllOfTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -39,22 +41,16 @@ class AllOfTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context|null                           $contextFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
     ): void {
-        $operator = Container::getInstance()->make(AllOf::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Container::getInstance()->make(Directive::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
 
     /**
@@ -63,6 +59,7 @@ class AllOfTest extends TestCase {
      * @param array<string, mixed>          $expected
      * @param Closure(static): ScoutBuilder $builderFactory
      * @param Closure(static): Argument     $argumentFactory
+     * @param Closure(static): Context|null $contextFactory
      * @param Closure():FieldResolver|null  $resolver
      */
     public function testCallScout(
@@ -70,21 +67,14 @@ class AllOfTest extends TestCase {
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
         Closure $resolver = null,
     ): void {
         if ($resolver) {
             $this->override(FieldResolver::class, $resolver);
         }
 
-        $operator = Container::getInstance()->make(AllOf::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Container::getInstance()->make(Directive::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertScoutQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
     // </editor-fold>
 
@@ -137,8 +127,9 @@ class AllOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property(),
+                        new Property('operator name should be ignored'),
                         $factory,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -151,8 +142,9 @@ class AllOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('alias'),
+                        new Property('alias', 'operator name should be ignored'),
                         $factory,
+                        null,
                     ],
                 ]),
             ),
@@ -172,8 +164,9 @@ class AllOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property(),
+                        new Property('operator name should be ignored'),
                         $factory,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -186,8 +179,9 @@ class AllOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('alias'),
+                        new Property('alias', 'operator name should be ignored'),
                         $factory,
+                        null,
                     ],
                 ]),
             ),
@@ -243,8 +237,9 @@ class AllOfTest extends TestCase {
                             'path.to.property.b' => [1, 2, 3],
                         ],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     $factory,
+                    null,
                     null,
                 ],
                 'property with resolver' => [
@@ -257,8 +252,9 @@ class AllOfTest extends TestCase {
                             'properties/path/to/property/b' => [1, 2, 3],
                         ],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     $factory,
+                    null,
                     static function (): FieldResolver {
                         return new class() implements FieldResolver {
                             /**

@@ -8,15 +8,15 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -30,7 +30,9 @@ use function sprintf;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(NotIn::class)]
-class NotInTest extends TestCase {
+final class NotInTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -39,22 +41,16 @@ class NotInTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context|null                           $contextFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
     ): void {
-        $operator = Container::getInstance()->make(NotIn::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Mockery::mock(Handler::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
 
     /**
@@ -63,6 +59,7 @@ class NotInTest extends TestCase {
      * @param array<string, mixed>          $expected
      * @param Closure(static): ScoutBuilder $builderFactory
      * @param Closure(static): Argument     $argumentFactory
+     * @param Closure(static): Context|null $contextFactory
      * @param Closure():FieldResolver|null  $resolver
      */
     public function testCallScout(
@@ -70,6 +67,7 @@ class NotInTest extends TestCase {
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
         Closure $resolver = null,
     ): void {
         // Prepare
@@ -81,22 +79,17 @@ class NotInTest extends TestCase {
         $operator = Container::getInstance()->make(NotInTest_Operator::class);
 
         if (!$operator->isScoutSupported()) {
-            self::markTestSkipped(sprintf(
-                'Minimum version of `laravel/scout` should be `%s`, `%s` installed.',
-                $operator->getScoutVersion(),
-                InstalledVersions::getPrettyVersion('laravel/scout'),
-            ));
+            self::markTestSkipped(
+                sprintf(
+                    'Minimum version of `laravel/scout` should be `%s`, `%s` installed.',
+                    $operator->getScoutVersion(),
+                    InstalledVersions::getPrettyVersion('laravel/scout'),
+                ),
+            );
         }
 
         // Test
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Mockery::mock(Handler::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertScoutQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
     // </editor-fold>
 
@@ -114,20 +107,22 @@ class NotInTest extends TestCase {
                         'query'    => 'select * from "test_objects" where "property" not in (?, ?, ?)',
                         'bindings' => [1, 2, 3],
                     ],
-                    new Property('property'),
+                    new Property('property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
+                    null,
                 ],
                 'property.path' => [
                     [
                         'query'    => 'select * from "test_objects" where "path"."to"."property" not in (?, ?, ?)',
                         'bindings' => ['a', 'b', 'c'],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[String!]!', ['a', 'b', 'c']);
                     },
+                    null,
                 ],
             ]),
         ))->getData();
@@ -146,10 +141,11 @@ class NotInTest extends TestCase {
                             'path.to.property' => [1, 2, 3],
                         ],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
+                    null,
                     null,
                 ],
                 'property with resolver' => [
@@ -158,10 +154,11 @@ class NotInTest extends TestCase {
                             'properties/path/to/property' => [1, 2, 3],
                         ],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
+                    null,
                     static function (): FieldResolver {
                         return new class() implements FieldResolver {
                             /**

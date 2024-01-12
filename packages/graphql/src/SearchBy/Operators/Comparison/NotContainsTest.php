@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
@@ -11,13 +10,13 @@ use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Database\Query\Grammars\SQLiteGrammar;
 use Illuminate\Database\Query\Grammars\SqlServerGrammar;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -27,7 +26,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(NotContains::class)]
-class NotContainsTest extends TestCase {
+final class NotContainsTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -37,6 +38,7 @@ class NotContainsTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param class-string<Grammar>                                   $grammar
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context|null                           $contextFactory
      */
     public function testCall(
         array $expected,
@@ -44,24 +46,23 @@ class NotContainsTest extends TestCase {
         string $grammar,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
     ): void {
-        $builder = $builderFactory($this);
-        $grammar = new $grammar();
+        $self           = $this;
+        $builderFactory = static function () use ($self, $builderFactory, $grammar): mixed {
+            $builder = $builderFactory($self);
+            $grammar = new $grammar();
 
-        if ($builder instanceof EloquentBuilder) {
-            $builder->getQuery()->grammar = $grammar;
-        } else {
-            $builder->grammar = $grammar;
-        }
+            if ($builder instanceof EloquentBuilder) {
+                $builder->getQuery()->grammar = $grammar;
+            } else {
+                $builder->grammar = $grammar;
+            }
 
-        $operator = Container::getInstance()->make(NotContains::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Mockery::mock(Handler::class);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
+            return $builder;
+        };
 
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
     // </editor-fold>
 
@@ -80,10 +81,11 @@ class NotContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     MySqlGrammar::class,
-                    new Property('property'),
+                    new Property('property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
+                    null,
                 ],
                 SQLiteGrammar::class    => [
                     [
@@ -91,10 +93,11 @@ class NotContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     SQLiteGrammar::class,
-                    new Property('property'),
+                    new Property('property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
+                    null,
                 ],
                 PostgresGrammar::class  => [
                     [
@@ -102,10 +105,11 @@ class NotContainsTest extends TestCase {
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     PostgresGrammar::class,
-                    new Property('property'),
+                    new Property('property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
+                    null,
                 ],
                 SqlServerGrammar::class => [
                     [
@@ -113,10 +117,11 @@ class NotContainsTest extends TestCase {
                         'bindings' => ['%!%a![!_!]c!!!%%'],
                     ],
                     SqlServerGrammar::class,
-                    new Property('property'),
+                    new Property('property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
+                    null,
                 ],
             ]),
         ))->getData();

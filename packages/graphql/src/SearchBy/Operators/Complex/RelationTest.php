@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 
 use Closure;
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
@@ -13,11 +12,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
-
-use function is_array;
 
 /**
  * @internal
@@ -25,7 +23,9 @@ use function is_array;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(Relation::class)]
-class RelationTest extends TestCase {
+final class RelationTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -34,29 +34,16 @@ class RelationTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param BuilderFactory                                                    $builderFactory
      * @param Closure(static): Argument                                         $argumentFactory
+     * @param Closure(static): Context|null                                     $contextFactory
      */
     public function testCall(
         array|Exception $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
     ): void {
-        if ($expected instanceof Exception) {
-            self::expectExceptionObject($expected);
-        }
-
-        $operator = Container::getInstance()->make(Relation::class);
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Container::getInstance()->make(Directive::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        if (is_array($expected)) {
-            self::assertDatabaseQueryEquals($expected, $builder);
-        } else {
-            self::fail('Something wrong...');
-        }
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
     // </editor-fold>
 
@@ -117,6 +104,7 @@ class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
             ],
             '{exists: true}'                                 => [
                 [
@@ -139,6 +127,7 @@ class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
             ],
             '{notExists: true}'                              => [
                 [
@@ -161,6 +150,7 @@ class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
             ],
             '{relation: {property: {equal: 1}}}'             => [
                 [
@@ -192,6 +182,7 @@ class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
             ],
             '{count: {equal: 1}}'                            => [
                 [
@@ -221,6 +212,7 @@ class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
             ],
             '{count: { multiple operators }}'                => [
                 new ConditionTooManyOperators(['lessThan', 'equal']),
@@ -240,6 +232,7 @@ class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
             ],
             '{where: {{property: {equal: 1}}}} (own)'        => [
                 [
@@ -271,6 +264,7 @@ class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
             ],
             '{relation: {relation: {property: {equal: 1}}}}' => [
                 [
@@ -324,6 +318,7 @@ class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
             ],
         ];
     }

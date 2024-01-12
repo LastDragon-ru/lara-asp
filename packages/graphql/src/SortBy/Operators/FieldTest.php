@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\EloquentSorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\QuerySorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\ScoutSorter;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -36,7 +37,9 @@ use function config;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(Field::class)]
-class FieldTest extends TestCase {
+final class FieldTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -45,23 +48,16 @@ class FieldTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
-     * @param Closure(static): Context                                $contextFactory
+     * @param Closure(static): Context|null                           $contextFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
-        Closure $contextFactory,
+        ?Closure $contextFactory,
     ): void {
-        $operator  = Container::getInstance()->make(Field::class);
-        $argument  = $argumentFactory($this);
-        $directive = Container::getInstance()->make(Directive::class);
-        $context   = $contextFactory($this);
-        $builder   = $builderFactory($this);
-        $builder   = $operator->call($directive, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
 
     public function testCallEloquentBuilder(): void {
@@ -212,6 +208,7 @@ class FieldTest extends TestCase {
                     static function (): Context {
                         return new Context();
                     },
+                    null,
                 ],
                 'nulls from Context' => [
                     [
@@ -225,6 +222,7 @@ class FieldTest extends TestCase {
                             FieldContextNulls::class => new FieldContextNulls(Nulls::First),
                         ]);
                     },
+                    null,
                 ],
             ]),
         ))->getData();

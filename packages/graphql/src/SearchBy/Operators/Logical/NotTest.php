@@ -3,13 +3,13 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Closure;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -23,7 +23,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(Not::class)]
-class NotTest extends TestCase {
+final class NotTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -32,22 +34,16 @@ class NotTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context|null                           $contextFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
     ): void {
-        $operator = Container::getInstance()->make(Not::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Container::getInstance()->make(Directive::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
     // </editor-fold>
 
@@ -100,8 +96,9 @@ class NotTest extends TestCase {
                                 2,
                             ],
                         ],
-                        new Property(),
+                        new Property('operator name should be ignored'),
                         $factory,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -110,8 +107,9 @@ class NotTest extends TestCase {
                                 2,
                             ],
                         ],
-                        new Property('alias'),
+                        new Property('alias', 'operator name should be ignored'),
                         $factory,
+                        null,
                     ],
                 ]),
             ),
@@ -125,8 +123,9 @@ class NotTest extends TestCase {
                                 2,
                             ],
                         ],
-                        new Property(),
+                        new Property('operator name should be ignored'),
                         $factory,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -135,8 +134,9 @@ class NotTest extends TestCase {
                                 2,
                             ],
                         ],
-                        new Property('alias'),
+                        new Property('alias', 'operator name should be ignored'),
                         $factory,
+                        null,
                     ],
                 ]),
             ),

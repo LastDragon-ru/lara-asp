@@ -3,12 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra;
 
 use Closure;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -21,7 +21,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(NullsLast::class)]
-class NullsLastTest extends TestCase {
+final class NullsLastTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -30,22 +32,16 @@ class NullsLastTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context|null                           $contextFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
     ): void {
-        $operator = Container::getInstance()->make(NullsLast::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $handler  = Container::getInstance()->make(Directive::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($handler, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
     // </editor-fold>
 
@@ -86,6 +82,7 @@ class NullsLastTest extends TestCase {
                             ],
                         );
                     },
+                    null,
                 ],
             ]),
         ))->getData();

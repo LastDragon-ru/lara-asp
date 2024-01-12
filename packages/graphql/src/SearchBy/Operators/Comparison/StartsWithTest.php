@@ -3,15 +3,14 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -21,7 +20,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(StartsWith::class)]
-class StartsWithTest extends TestCase {
+final class StartsWithTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -30,22 +31,16 @@ class StartsWithTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context|null                           $contextFactory
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
     ): void {
-        $operator = Container::getInstance()->make(StartsWith::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Mockery::mock(Handler::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
     }
     // </editor-fold>
 
@@ -63,20 +58,22 @@ class StartsWithTest extends TestCase {
                         'query'    => 'select * from "test_objects" where "property" LIKE ? ESCAPE \'!\'',
                         'bindings' => ['!%a[!_]c!!!%%'],
                     ],
-                    new Property('property'),
+                    new Property('property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
+                    null,
                 ],
                 'property.path' => [
                     [
                         'query'    => 'select * from "test_objects" where "path"."to"."property" LIKE ? ESCAPE \'!\'',
                         'bindings' => ['abc%'],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', 'abc');
                     },
+                    null,
                 ],
             ]),
         ))->getData();
