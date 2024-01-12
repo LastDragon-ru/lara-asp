@@ -33,6 +33,7 @@ final class NullsFirstTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
@@ -40,8 +41,17 @@ final class NullsFirstTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
     // </editor-fold>
 
@@ -82,6 +92,7 @@ final class NullsFirstTest extends TestCase {
                             ],
                         );
                     },
+                    null,
                     null,
                 ],
             ]),

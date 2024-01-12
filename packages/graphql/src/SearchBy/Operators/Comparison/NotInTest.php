@@ -42,6 +42,7 @@ final class NotInTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
@@ -49,18 +50,28 @@ final class NotInTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
 
     /**
      * @dataProvider dataProviderCallScout
      *
-     * @param array<string, mixed>          $expected
-     * @param Closure(static): ScoutBuilder $builderFactory
-     * @param Closure(static): Argument     $argumentFactory
-     * @param Closure(static): Context|null $contextFactory
-     * @param Closure():FieldResolver|null  $resolver
+     * @param array<string, mixed>                   $expected
+     * @param Closure(static): ScoutBuilder          $builderFactory
+     * @param Closure(static): Argument              $argumentFactory
+     * @param Closure(static): Context|null          $contextFactory
+     * @param Closure(object, Property): string|null $resolver
+     * @param Closure():FieldResolver|null           $fieldResolver
      */
     public function testCallScout(
         array $expected,
@@ -68,11 +79,12 @@ final class NotInTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
-        Closure $resolver = null,
+        ?Closure $resolver,
+        ?Closure $fieldResolver,
     ): void {
         // Prepare
-        if ($resolver) {
-            $this->override(FieldResolver::class, $resolver);
+        if ($fieldResolver) {
+            $this->override(FieldResolver::class, $fieldResolver);
         }
 
         // Supported?
@@ -89,7 +101,15 @@ final class NotInTest extends TestCase {
         }
 
         // Test
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
     // </editor-fold>
 
@@ -112,6 +132,7 @@ final class NotInTest extends TestCase {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
                     null,
+                    null,
                 ],
                 'property.path' => [
                     [
@@ -123,6 +144,21 @@ final class NotInTest extends TestCase {
                         return $test->getGraphQLArgument('[String!]!', ['a', 'b', 'c']);
                     },
                     null,
+                    null,
+                ],
+                'resolver'      => [
+                    [
+                        'query'    => 'select * from "test_objects" where "path__to__property" not in (?, ?, ?)',
+                        'bindings' => ['a', 'b', 'c'],
+                    ],
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('[String!]!', ['a', 'b', 'c']);
+                    },
+                    null,
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
                 ],
             ]),
         ))->getData();
@@ -147,6 +183,7 @@ final class NotInTest extends TestCase {
                     },
                     null,
                     null,
+                    null,
                 ],
                 'property with resolver' => [
                     [
@@ -158,6 +195,7 @@ final class NotInTest extends TestCase {
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
+                    null,
                     null,
                     static function (): FieldResolver {
                         return new class() implements FieldResolver {

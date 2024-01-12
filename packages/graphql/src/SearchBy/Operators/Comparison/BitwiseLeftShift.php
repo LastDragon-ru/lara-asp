@@ -35,7 +35,7 @@ class BitwiseLeftShift extends BaseOperator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = (string) $property->getParent();
+        $property = $this->resolver->getProperty($builder, $property->getParent());
         $value    = $argument->toPlain();
         $builder  = $builder->where($property, '<<', $value);
 

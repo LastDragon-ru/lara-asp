@@ -49,6 +49,7 @@ final class FieldTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
@@ -56,8 +57,17 @@ final class FieldTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
 
     public function testCallEloquentBuilder(): void {
@@ -209,6 +219,7 @@ final class FieldTest extends TestCase {
                         return new Context();
                     },
                     null,
+                    null,
                 ],
                 'nulls from Context' => [
                     [
@@ -222,6 +233,7 @@ final class FieldTest extends TestCase {
                             FieldContextNulls::class => new FieldContextNulls(Nulls::First),
                         ]);
                     },
+                    null,
                     null,
                 ],
             ]),

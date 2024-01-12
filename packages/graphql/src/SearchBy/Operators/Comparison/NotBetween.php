@@ -35,7 +35,7 @@ class NotBetween extends Between {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = (string) $property->getParent();
+        $property = $this->resolver->getProperty($builder, $property->getParent());
         $value    = Cast::toIterable($argument->toPlain());
 
         $builder->whereNotBetween($property, $value);

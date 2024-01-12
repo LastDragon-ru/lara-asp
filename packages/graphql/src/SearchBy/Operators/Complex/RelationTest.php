@@ -35,6 +35,7 @@ final class RelationTest extends TestCase {
      * @param BuilderFactory                                                    $builderFactory
      * @param Closure(static): Argument                                         $argumentFactory
      * @param Closure(static): Context|null                                     $contextFactory
+     * @param Closure(object, Property): string|null                            $resolver
      */
     public function testCall(
         array|Exception $expected,
@@ -42,8 +43,17 @@ final class RelationTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
     // </editor-fold>
 
@@ -105,6 +115,7 @@ final class RelationTest extends TestCase {
                     );
                 },
                 null,
+                null,
             ],
             '{exists: true}'                                 => [
                 [
@@ -128,6 +139,7 @@ final class RelationTest extends TestCase {
                     );
                 },
                 null,
+                null,
             ],
             '{notExists: true}'                              => [
                 [
@@ -150,6 +162,7 @@ final class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
                 null,
             ],
             '{relation: {property: {equal: 1}}}'             => [
@@ -183,6 +196,7 @@ final class RelationTest extends TestCase {
                     );
                 },
                 null,
+                null,
             ],
             '{count: {equal: 1}}'                            => [
                 [
@@ -213,6 +227,7 @@ final class RelationTest extends TestCase {
                     );
                 },
                 null,
+                null,
             ],
             '{count: { multiple operators }}'                => [
                 new ConditionTooManyOperators(['lessThan', 'equal']),
@@ -232,6 +247,7 @@ final class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
                 null,
             ],
             '{where: {{property: {equal: 1}}}} (own)'        => [
@@ -264,6 +280,7 @@ final class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
                 null,
             ],
             '{relation: {relation: {property: {equal: 1}}}}' => [
@@ -318,6 +335,7 @@ final class RelationTest extends TestCase {
                         $graphql,
                     );
                 },
+                null,
                 null,
             ],
         ];

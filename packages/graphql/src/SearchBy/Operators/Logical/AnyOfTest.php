@@ -17,6 +17,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function implode;
+
 /**
  * @internal
  *
@@ -35,6 +37,7 @@ final class AnyOfTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
@@ -42,8 +45,17 @@ final class AnyOfTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
     // </editor-fold>
 
@@ -99,6 +111,7 @@ final class AnyOfTest extends TestCase {
                         new Property('operator name should be ignored'),
                         $factory,
                         null,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -114,6 +127,25 @@ final class AnyOfTest extends TestCase {
                         new Property('alias', 'operator name should be ignored'),
                         $factory,
                         null,
+                        null,
+                    ],
+                    'resolver'   => [
+                        [
+                            'query'    => <<<'SQL'
+                                select * from "test_objects" where (("alias__a" = ?) or ("alias__b" != ?))
+                            SQL
+                            ,
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
+                        ],
+                        new Property('alias', 'operator name should be ignored'),
+                        $factory,
+                        null,
+                        static function (object $builder, Property $property): string {
+                            return implode('__', $property->getPath());
+                        },
                     ],
                 ]),
             ),
@@ -136,6 +168,7 @@ final class AnyOfTest extends TestCase {
                         new Property('operator name should be ignored'),
                         $factory,
                         null,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -151,6 +184,25 @@ final class AnyOfTest extends TestCase {
                         new Property('alias', 'operator name should be ignored'),
                         $factory,
                         null,
+                        null,
+                    ],
+                    'resolver'   => [
+                        [
+                            'query'    => <<<'SQL'
+                                select * from "test_objects" where (("alias__a" = ?) or ("alias__b" != ?))
+                            SQL
+                            ,
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
+                        ],
+                        new Property('alias', 'operator name should be ignored'),
+                        $factory,
+                        null,
+                        static function (object $builder, Property $property): string {
+                            return implode('__', $property->getPath());
+                        },
                     ],
                 ]),
             ),

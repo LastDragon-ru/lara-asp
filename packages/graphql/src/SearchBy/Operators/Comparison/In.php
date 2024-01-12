@@ -46,7 +46,7 @@ class In extends BaseOperator {
         $value    = (array) $argument->toPlain();
 
         if ($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder) {
-            $builder->whereIn((string) $property, $value);
+            $builder->whereIn($this->resolver->getProperty($builder, $property), $value);
         } elseif ($builder instanceof ScoutBuilder) {
             $property = $this->getFieldResolver()->getField($builder->model, $property);
 

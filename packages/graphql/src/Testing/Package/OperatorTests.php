@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LogicException;
+use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionAttribute;
@@ -37,11 +39,12 @@ trait OperatorTests {
      * PHPStorm or PHPUnit issue). Anyway, this approach requires less
      * copy-pasting.
      *
-     * @param class-string<Handler>             $directive
-     * @param array<array-key, mixed>|Exception $expected
-     * @param Closure(static): object           $builderFactory
-     * @param Closure(static): Argument         $argumentFactory
-     * @param Closure(static): Context|null     $contextFactory
+     * @param class-string<Handler>                  $directive
+     * @param array<array-key, mixed>|Exception      $expected
+     * @param Closure(static): object                $builderFactory
+     * @param Closure(static): Argument              $argumentFactory
+     * @param Closure(static): Context|null          $contextFactory
+     * @param Closure(object, Property): string|null $resolver
      */
     private function testOperator(
         string $directive,
@@ -50,9 +53,23 @@ trait OperatorTests {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
+        }
+
+        if ($resolver) {
+            $this->override(
+                BuilderPropertyResolver::class,
+                static function (MockInterface $mock) use ($resolver): void {
+                    $mock
+                        ->shouldReceive('getProperty')
+                        ->atLeast()
+                        ->once()
+                        ->andReturnUsing($resolver);
+                },
+            );
         }
 
         $operator = Container::getInstance()->make($this->getOperator());

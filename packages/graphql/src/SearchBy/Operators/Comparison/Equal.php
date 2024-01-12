@@ -39,7 +39,7 @@ class Equal extends BaseOperator {
         $value    = $argument->toPlain();
 
         if ($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder) {
-            $builder->where((string) $property, '=', $value);
+            $builder->where($this->resolver->getProperty($builder, $property), '=', $value);
         } elseif ($builder instanceof ScoutBuilder) {
             $property = $this->getFieldResolver()->getField($builder->model, $property);
 

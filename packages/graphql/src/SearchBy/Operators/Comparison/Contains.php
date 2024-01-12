@@ -41,7 +41,8 @@ class Contains extends BaseOperator {
         }
 
         $character = $this->getEscapeCharacter();
-        $property  = $builder->getGrammar()->wrap((string) $property->getParent());
+        $property  = $this->resolver->getProperty($builder, $property->getParent());
+        $property  = $builder->getGrammar()->wrap($property);
         $value     = (string) Cast::toStringable($argument->toPlain());
         $not       = $this->isNegated() ? ' NOT' : '';
 

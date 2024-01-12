@@ -50,7 +50,7 @@ class NotIn extends BaseOperator {
         $value    = (array) $argument->toPlain();
 
         if ($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder) {
-            $builder->whereNotIn((string) $property, $value);
+            $builder->whereNotIn($this->resolver->getProperty($builder, $property), $value);
         } elseif ($builder instanceof ScoutBuilder) {
             $property = $this->getFieldResolver()->getField($builder->model, $property);
 

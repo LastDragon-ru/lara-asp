@@ -42,6 +42,7 @@ final class AllOfTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
@@ -49,18 +50,28 @@ final class AllOfTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
 
     /**
      * @dataProvider dataProviderCallScout
      *
-     * @param array<string, mixed>          $expected
-     * @param Closure(static): ScoutBuilder $builderFactory
-     * @param Closure(static): Argument     $argumentFactory
-     * @param Closure(static): Context|null $contextFactory
-     * @param Closure():FieldResolver|null  $resolver
+     * @param array<string, mixed>                   $expected
+     * @param Closure(static): ScoutBuilder          $builderFactory
+     * @param Closure(static): Argument              $argumentFactory
+     * @param Closure(static): Context|null          $contextFactory
+     * @param Closure(object, Property): string|null $resolver
+     * @param Closure():FieldResolver|null           $fieldResolver
      */
     public function testCallScout(
         array $expected,
@@ -68,13 +79,22 @@ final class AllOfTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
-        Closure $resolver = null,
+        ?Closure $resolver,
+        ?Closure $fieldResolver,
     ): void {
-        if ($resolver) {
-            $this->override(FieldResolver::class, $resolver);
+        if ($fieldResolver) {
+            $this->override(FieldResolver::class, $fieldResolver);
         }
 
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
     // </editor-fold>
 
@@ -130,6 +150,7 @@ final class AllOfTest extends TestCase {
                         new Property('operator name should be ignored'),
                         $factory,
                         null,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -145,6 +166,25 @@ final class AllOfTest extends TestCase {
                         new Property('alias', 'operator name should be ignored'),
                         $factory,
                         null,
+                        null,
+                    ],
+                    'resolver'   => [
+                        [
+                            'query'    => <<<'SQL'
+                                select * from "test_objects" where (("alias__a" = ?) and ("alias__b" != ?))
+                            SQL
+                            ,
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
+                        ],
+                        new Property('alias', 'operator name should be ignored'),
+                        $factory,
+                        null,
+                        static function (object $builder, Property $property): string {
+                            return implode('__', $property->getPath());
+                        },
                     ],
                 ]),
             ),
@@ -167,6 +207,7 @@ final class AllOfTest extends TestCase {
                         new Property('operator name should be ignored'),
                         $factory,
                         null,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -182,6 +223,25 @@ final class AllOfTest extends TestCase {
                         new Property('alias', 'operator name should be ignored'),
                         $factory,
                         null,
+                        null,
+                    ],
+                    'resolver'   => [
+                        [
+                            'query'    => <<<'SQL'
+                                select * from "test_objects" where (("alias__a" = ?) and ("alias__b" != ?))
+                            SQL
+                            ,
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
+                        ],
+                        new Property('alias', 'operator name should be ignored'),
+                        $factory,
+                        null,
+                        static function (object $builder, Property $property): string {
+                            return implode('__', $property->getPath());
+                        },
                     ],
                 ]),
             ),
@@ -241,6 +301,7 @@ final class AllOfTest extends TestCase {
                     $factory,
                     null,
                     null,
+                    null,
                 ],
                 'property with resolver' => [
                     [
@@ -254,6 +315,7 @@ final class AllOfTest extends TestCase {
                     ],
                     new Property('path', 'to', 'property', 'operator name should be ignored'),
                     $factory,
+                    null,
                     null,
                     static function (): FieldResolver {
                         return new class() implements FieldResolver {

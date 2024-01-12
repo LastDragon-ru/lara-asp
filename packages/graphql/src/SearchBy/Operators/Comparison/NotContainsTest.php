@@ -20,6 +20,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function implode;
+
 /**
  * @internal
  *
@@ -39,6 +41,7 @@ final class NotContainsTest extends TestCase {
      * @param class-string<Grammar>                                   $grammar
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
@@ -47,6 +50,7 @@ final class NotContainsTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
         $self           = $this;
         $builderFactory = static function () use ($self, $builderFactory, $grammar): mixed {
@@ -62,7 +66,15 @@ final class NotContainsTest extends TestCase {
             return $builder;
         };
 
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
     // </editor-fold>
 
@@ -86,6 +98,7 @@ final class NotContainsTest extends TestCase {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
                     null,
+                    null,
                 ],
                 SQLiteGrammar::class    => [
                     [
@@ -97,6 +110,7 @@ final class NotContainsTest extends TestCase {
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
+                    null,
                     null,
                 ],
                 PostgresGrammar::class  => [
@@ -110,6 +124,7 @@ final class NotContainsTest extends TestCase {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
                     null,
+                    null,
                 ],
                 SqlServerGrammar::class => [
                     [
@@ -122,6 +137,38 @@ final class NotContainsTest extends TestCase {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
                     null,
+                    null,
+                ],
+                'property.path'         => [
+                    [
+                        'query'    => <<<'SQL'
+                            select * from "test_objects" where "path"."to"."property" NOT LIKE ? ESCAPE '!'
+                            SQL
+                        ,
+                        'bindings' => ['%!%a[!_]c!!!%%'],
+                    ],
+                    SQLiteGrammar::class,
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('String!', '%a[_]c!%');
+                    },
+                    null,
+                    null,
+                ],
+                'resolver'              => [
+                    [
+                        'query'    => 'select * from "test_objects" where "path__to__property" NOT LIKE ? ESCAPE \'!\'',
+                        'bindings' => ['%!%a[!_]c!!!%%'],
+                    ],
+                    SQLiteGrammar::class,
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('String!', '%a[_]c!%');
+                    },
+                    null,
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
                 ],
             ]),
         ))->getData();

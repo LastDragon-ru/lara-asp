@@ -14,6 +14,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function implode;
+
 /**
  * @internal
  *
@@ -32,6 +34,7 @@ final class BetweenTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
@@ -39,8 +42,17 @@ final class BetweenTest extends TestCase {
         Property $property,
         Closure $argumentFactory,
         ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $this->testOperator(Directive::class, $expected, $builderFactory, $property, $argumentFactory, $contextFactory);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
     // </editor-fold>
 
@@ -63,6 +75,7 @@ final class BetweenTest extends TestCase {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
                     null,
+                    null,
                 ],
                 'property.path' => [
                     [
@@ -74,6 +87,21 @@ final class BetweenTest extends TestCase {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
                     null,
+                    null,
+                ],
+                'resolver'      => [
+                    [
+                        'query'    => 'select * from "test_objects" where "path__to__property" between ? and ?',
+                        'bindings' => [1, 2],
+                    ],
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
+                    },
+                    null,
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
                 ],
             ]),
         ))->getData();
