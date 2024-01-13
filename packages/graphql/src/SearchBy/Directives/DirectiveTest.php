@@ -376,7 +376,7 @@ class DirectiveTest extends TestCase {
                     return new GraphQLExpected($test::getTestData()->file($file));
                 },
                 '~full.graphql',
-                static function (TestCase $test): void {
+                static function (): void {
                     $package = Package::Name;
 
                     config([
@@ -393,7 +393,7 @@ class DirectiveTest extends TestCase {
                     ));
                 },
                 '~example.graphql',
-                static function (TestCase $test): void {
+                static function (): void {
                     $package = Package::Name;
 
                     config([

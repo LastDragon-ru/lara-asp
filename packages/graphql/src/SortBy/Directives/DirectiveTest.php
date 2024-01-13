@@ -525,7 +525,7 @@ class DirectiveTest extends TestCase {
                             'random' => 'yes',
                         ],
                     ],
-                    static function (TestCase $test): void {
+                    static function (): void {
                         $package = Package::Name;
 
                         config([
