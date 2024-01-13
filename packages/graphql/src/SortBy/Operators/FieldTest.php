@@ -30,6 +30,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
+use function implode;
 
 /**
  * @internal
@@ -235,6 +236,20 @@ final class FieldTest extends TestCase {
                     },
                     null,
                     null,
+                ],
+                'resolver'           => [
+                    [
+                        'query'    => 'select * from "test_objects" order by "resolved__a" desc',
+                        'bindings' => [],
+                    ],
+                    new Property('a'),
+                    $factory,
+                    static function (): Context {
+                        return new Context();
+                    },
+                    static function (object $builder, Property $property): string {
+                        return 'resolved__'.implode('__', $property->getPath());
+                    },
                 ],
             ]),
         ))->getData();

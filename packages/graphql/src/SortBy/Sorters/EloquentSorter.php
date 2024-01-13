@@ -25,7 +25,6 @@ use LogicException;
 use Override;
 
 use function array_shift;
-use function array_slice;
 use function implode;
 use function is_a;
 
@@ -53,12 +52,13 @@ class EloquentSorter extends DatabaseSorter {
     #[Override]
     public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
         // Column
-        $path     = $property->getPath();
-        $column   = $property->getName();
-        $relation = array_slice($path, 0, -1);
+        $relation = $property->getParent()->getPath();
 
         if ($relation) {
+            $column = $property->getName();
             $column = $this->getRelationColumn($builder, $relation, $column, $direction);
+        } else {
+            $column = $this->resolver->getProperty($builder, $property);
         }
 
         // Order
@@ -104,7 +104,7 @@ class EloquentSorter extends DatabaseSorter {
         }
 
         // We need only one row
-        $qualified = "{$alias}.{$column}";
+        $qualified = $this->resolver->getProperty($relation->getQuery(), new Property($alias, $column));
         $query     = $query->select($qualified)->reorder()->limit(1);
         $query     = $this->sortByColumn($query, $qualified, $direction);
 

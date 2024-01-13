@@ -15,6 +15,8 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function implode;
+
 /**
  * @internal
  *
@@ -61,6 +63,29 @@ final class NullsLastTest extends TestCase {
      * @return array<array-key, mixed>
      */
     public static function dataProviderCall(): array {
+        $argument = static function (self $test): Argument {
+            $test->useGraphQLSchema(
+                <<<'GRAPHQL'
+                type Query {
+                    test(input: Test @sortBy): String! @all
+                }
+
+                input Test {
+                    a: String
+                }
+                GRAPHQL,
+            );
+
+            return $test->getGraphQLArgument(
+                'SortByClauseTest!',
+                [
+                    'nullsLast' => [
+                        'a' => Direction::Asc,
+                    ],
+                ],
+            );
+        };
+
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
@@ -69,31 +94,22 @@ final class NullsLastTest extends TestCase {
                         'query'    => 'select * from "test_objects" order by "a" ASC NULLS LAST',
                         'bindings' => [],
                     ],
-                    new Property(),
-                    static function (self $test): Argument {
-                        $test->useGraphQLSchema(
-                            <<<'GRAPHQL'
-                            type Query {
-                                test(input: Test @sortBy): String! @all
-                            }
-
-                            input Test {
-                                a: String
-                            }
-                            GRAPHQL,
-                        );
-
-                        return $test->getGraphQLArgument(
-                            'SortByClauseTest!',
-                            [
-                                'nullsLast' => [
-                                    'a' => Direction::Asc,
-                                ],
-                            ],
-                        );
+                    new Property('operator name should be ignored'),
+                    $argument,
+                    null,
+                    null,
+                ],
+                'resolver' => [
+                    [
+                        'query'    => 'select * from "test_objects" order by "resolved__a" ASC NULLS LAST',
+                        'bindings' => [],
+                    ],
+                    new Property('operator name should be ignored'),
+                    $argument,
+                    null,
+                    static function (object $builder, Property $property): string {
+                        return 'resolved__'.implode('__', $property->getPath());
                     },
-                    null,
-                    null,
                 ],
             ]),
         ))->getData();
