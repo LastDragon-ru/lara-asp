@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
@@ -50,6 +51,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -250,7 +252,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 id: Int!
-                value: String @rename(attribute: "renamed")
+                value: String @rename(attribute: "renamed.field")
             }
             GRAPHQL,
         );
@@ -283,21 +285,36 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderHandleScoutBuilder
      *
-     * @param array<string, mixed>|Exception $expected
-     * @param Closure(static): ScoutBuilder  $builderFactory
-     * @param Closure():FieldResolver|null   $fieldResolver
+     * @param array<string, mixed>|Exception         $expected
+     * @param Closure(static): ScoutBuilder          $builderFactory
+     * @param Closure(object, Property): string|null $resolver
+     * @param Closure():FieldResolver|null           $fieldResolver
      */
     public function testHandleScoutBuilder(
         array|Exception $expected,
         Closure $builderFactory,
         mixed $value,
-        Closure $fieldResolver = null,
+        ?Closure $resolver,
+        ?Closure $fieldResolver,
     ): void {
         $builder   = $builderFactory($this);
         $directive = $this->getExposeBuilderDirective($builder);
 
         Container::getInstance()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
+
+        if ($resolver) {
+            $this->override(
+                BuilderPropertyResolver::class,
+                static function (MockInterface $mock) use ($resolver): void {
+                    $mock
+                        ->shouldReceive('getProperty')
+                        ->atLeast()
+                        ->once()
+                        ->andReturnUsing($resolver);
+                },
+            );
+        }
 
         if ($fieldResolver) {
             $this->override(FieldResolver::class, $fieldResolver);
@@ -311,7 +328,7 @@ class DirectiveTest extends TestCase {
 
             input Test {
                 a: Int!
-                b: String @rename(attribute: "renamed")
+                b: String @rename(attribute: "renamed.field")
                 c: Test
             }
             GRAPHQL,
@@ -404,7 +421,8 @@ class DirectiveTest extends TestCase {
                 '~custom-complex-operators.graphql',
                 static function (): void {
                     $locator   = Container::getInstance()->make(DirectiveLocator::class);
-                    $directive = new class() extends BaseOperator implements TypeDefinition {
+                    $resolver  = Container::getInstance()->make(BuilderPropertyResolver::class);
+                    $directive = new class($resolver) extends BaseOperator implements TypeDefinition {
                         #[Override]
                         public static function getName(): string {
                             return 'custom';
@@ -560,7 +578,7 @@ class DirectiveTest extends TestCase {
                                                 and (
                                                     (
                                                         ("id" = ?)
-                                                        or ("renamed" != ?)
+                                                        or ("renamed"."field" != ?)
                                                     )
                                                 )
                                             )
@@ -616,7 +634,7 @@ class DirectiveTest extends TestCase {
                                                 and (
                                                     (
                                                         ("test_objects"."id" = ?)
-                                                        or ("test_objects"."renamed" != ?)
+                                                        or ("test_objects"."renamed"."field" != ?)
                                                     )
                                                 )
                                             )
@@ -672,6 +690,7 @@ class DirectiveTest extends TestCase {
                         // empty
                     ],
                     null,
+                    null,
                 ],
                 'empty operators'        => [
                     new ConditionEmpty(),
@@ -680,6 +699,7 @@ class DirectiveTest extends TestCase {
                             // empty
                         ],
                     ],
+                    null,
                     null,
                 ],
                 'too many properties'    => [
@@ -693,6 +713,7 @@ class DirectiveTest extends TestCase {
                         ],
                     ],
                     null,
+                    null,
                 ],
                 'too many operators'     => [
                     new ConditionTooManyOperators(['equal', 'in']),
@@ -703,11 +724,13 @@ class DirectiveTest extends TestCase {
                         ],
                     ],
                     null,
+                    null,
                 ],
                 'null'                   => [
                     [
                         // empty
                     ],
+                    null,
                     null,
                     null,
                 ],
@@ -718,7 +741,7 @@ class DirectiveTest extends TestCase {
                             'c.a' => 2,
                         ],
                         'whereIns' => [
-                            'renamed' => ['a', 'b', 'c'],
+                            'renamed.field' => ['a', 'b', 'c'],
                         ],
                     ],
                     [
@@ -743,15 +766,16 @@ class DirectiveTest extends TestCase {
                         ],
                     ],
                     null,
+                    null,
                 ],
-                'custom field resolver'  => [
+                'resolver (deprecated)'  => [
                     [
                         'wheres'   => [
                             'properties/a'   => 1,
                             'properties/c/a' => 2,
                         ],
                         'whereIns' => [
-                            'properties/renamed' => ['a', 'b', 'c'],
+                            'properties/renamed.field' => ['a', 'b', 'c'],
                         ],
                     ],
                     [
@@ -775,6 +799,7 @@ class DirectiveTest extends TestCase {
                             ],
                         ],
                     ],
+                    null,
                     static function (): FieldResolver {
                         return new class() implements FieldResolver {
                             /**
@@ -789,6 +814,42 @@ class DirectiveTest extends TestCase {
                             }
                         };
                     },
+                ],
+                'resolver'               => [
+                    [
+                        'wheres'   => [
+                            'a'    => 1,
+                            'c__a' => 2,
+                        ],
+                        'whereIns' => [
+                            'renamed.field' => ['a', 'b', 'c'],
+                        ],
+                    ],
+                    [
+                        'allOf' => [
+                            [
+                                'a' => [
+                                    'equal' => 1,
+                                ],
+                            ],
+                            [
+                                'b' => [
+                                    'in' => ['a', 'b', 'c'],
+                                ],
+                            ],
+                            [
+                                'c' => [
+                                    'a' => [
+                                        'equal' => 2,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
+                    null,
                 ],
             ]),
         ))->getData();

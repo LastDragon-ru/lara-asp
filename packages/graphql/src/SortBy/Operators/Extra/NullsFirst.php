@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra;
 
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -24,8 +25,9 @@ class NullsFirst extends BaseOperator {
      */
     public function __construct(
         protected readonly SorterFactory $factory,
+        BuilderPropertyResolver $resolver,
     ) {
-        parent::__construct();
+        parent::__construct($resolver);
     }
 
     #[Override]

@@ -35,14 +35,12 @@ class Equal extends BaseOperator {
         Argument $argument,
         Context $context,
     ): object {
-        $property = $property->getParent();
+        $property = $this->resolver->getProperty($builder, $property->getParent());
         $value    = $argument->toPlain();
 
         if ($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder) {
-            $builder->where((string) $property, '=', $value);
+            $builder->where($property, '=', $value);
         } elseif ($builder instanceof ScoutBuilder) {
-            $property = $this->getFieldResolver()->getField($builder->model, $property);
-
             $builder->where($property, $value);
         } else {
             throw new OperatorUnsupportedBuilder($this, $builder);

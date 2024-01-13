@@ -102,14 +102,18 @@ Represents [JSON](https://json.org) string.
 
 # Scout
 
-[Scout](https://laravel.com/docs/scout) is also supported 🤩. By default `@searchBy`/`@sortBy` will convert nested/related properties into dot string: eg `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`FieldResolver`](./src/Builder/Contracts/Scout/FieldResolver.php):
+[Scout](https://laravel.com/docs/scout) is also supported 🤩. You just need to add [`@search`](https://lighthouse-php.com/master/api-reference/directives.html#search) directive to an argument.
+
+# Builder property name
+
+By default `@searchBy`/`@sortBy` will convert nested/related properties into dot string: eg `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`BuilderPropertyResolver`](./src/Builder/Contracts/BuilderPropertyResolver.php):
 
 ```php
 // AppProvider
 
 $this->app->bind(
-    LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver::class,
-    MyScoutColumnResolver::class,
+    LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver::class,
+    MyBuilderPropertyResolver::class,
 );
 ```
 

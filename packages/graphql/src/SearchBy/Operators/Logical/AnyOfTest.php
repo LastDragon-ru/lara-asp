@@ -3,13 +3,13 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Closure;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -17,13 +17,17 @@ use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function implode;
+
 /**
  * @internal
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(AnyOf::class)]
-class AnyOfTest extends TestCase {
+final class AnyOfTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -32,22 +36,26 @@ class AnyOfTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
+     * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
+        ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $operator = Container::getInstance()->make(AnyOf::class);
-        $property = $property->getChild('operator name should be ignored');
-        $argument = $argumentFactory($this);
-        $context  = new Context();
-        $search   = Container::getInstance()->make(Directive::class);
-        $builder  = $builderFactory($this);
-        $builder  = $operator->call($search, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
     // </editor-fold>
 
@@ -100,8 +108,10 @@ class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property(),
+                        new Property('operator name should be ignored'),
                         $factory,
+                        null,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -114,8 +124,28 @@ class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('alias'),
+                        new Property('alias', 'operator name should be ignored'),
                         $factory,
+                        null,
+                        null,
+                    ],
+                    'resolver'   => [
+                        [
+                            'query'    => <<<'SQL'
+                                select * from "test_objects" where (("alias__a" = ?) or ("alias__b" != ?))
+                            SQL
+                            ,
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
+                        ],
+                        new Property('alias', 'operator name should be ignored'),
+                        $factory,
+                        null,
+                        static function (object $builder, Property $property): string {
+                            return implode('__', $property->getPath());
+                        },
                     ],
                 ]),
             ),
@@ -135,8 +165,10 @@ class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property(),
+                        new Property('operator name should be ignored'),
                         $factory,
+                        null,
+                        null,
                     ],
                     'with alias' => [
                         [
@@ -149,8 +181,28 @@ class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('alias'),
+                        new Property('alias', 'operator name should be ignored'),
                         $factory,
+                        null,
+                        null,
+                    ],
+                    'resolver'   => [
+                        [
+                            'query'    => <<<'SQL'
+                                select * from "test_objects" where (("alias__a" = ?) or ("alias__b" != ?))
+                            SQL
+                            ,
+                            'bindings' => [
+                                2,
+                                22,
+                            ],
+                        ],
+                        new Property('alias', 'operator name should be ignored'),
+                        $factory,
+                        null,
+                        static function (object $builder, Property $property): string {
+                            return implode('__', $property->getPath());
+                        },
                     ],
                 ]),
             ),

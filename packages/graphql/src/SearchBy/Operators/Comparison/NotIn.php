@@ -46,14 +46,12 @@ class NotIn extends BaseOperator {
         Argument $argument,
         Context $context,
     ): object {
-        $property = $property->getParent();
+        $property = $this->resolver->getProperty($builder, $property->getParent());
         $value    = (array) $argument->toPlain();
 
         if ($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder) {
-            $builder->whereNotIn((string) $property, $value);
+            $builder->whereNotIn($property, $value);
         } elseif ($builder instanceof ScoutBuilder) {
-            $property = $this->getFieldResolver()->getField($builder->model, $property);
-
             $builder->whereNotIn($property, $value);
         } else {
             throw new OperatorUnsupportedBuilder($this, $builder);

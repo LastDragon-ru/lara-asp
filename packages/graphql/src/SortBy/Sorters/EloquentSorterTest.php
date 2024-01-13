@@ -17,20 +17,25 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\CarEngine;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Relations\Unsupported;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Role;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function implode;
 use function is_array;
 
 /**
@@ -45,20 +50,35 @@ class EloquentSorterTest extends TestCase {
      *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param Closure(static): EloquentBuilder<EloquentModel>                   $builder
+     * @param Closure(object, Property): string|null                            $resolver
      */
     public function testSort(
         array|Exception $expected,
         Closure $builder,
         Property $property,
         Direction $direction,
+        ?Nulls $nulls,
+        ?Closure $resolver,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
+        if ($resolver) {
+            $this->override(
+                BuilderPropertyResolver::class,
+                static function (MockInterface $mock) use ($resolver): void {
+                    $mock
+                        ->shouldReceive('getProperty')
+                        ->once()
+                        ->andReturnUsing($resolver);
+                },
+            );
+        }
+
         $sorter  = Container::getInstance()->make(EloquentSorter::class);
         $builder = $builder($this);
-        $builder = $sorter->sort($builder, $property, $direction, null);
+        $builder = $sorter->sort($builder, $property, $direction, $nulls);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -85,6 +105,8 @@ class EloquentSorterTest extends TestCase {
                         ],
                         new Property('name'),
                         Direction::Desc,
+                        null,
+                        null,
                     ],
                 ]),
             )),
@@ -96,6 +118,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('unknown', 'name'),
                     Direction::Asc,
+                    null,
+                    null,
                 ],
                 'unsupported'         => [
                     new RelationUnsupported(
@@ -118,6 +142,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('unsupported', 'id'),
                     Direction::Asc,
+                    null,
+                    null,
                 ],
                 BelongsTo::class      => [
                     [
@@ -159,6 +185,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('user', 'organization', 'name'),
                     Direction::Desc,
+                    null,
+                    null,
                 ],
                 HasOne::class         => [
                     [
@@ -203,6 +231,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('car', 'engine', 'id'),
                     Direction::Asc,
+                    null,
+                    null,
                 ],
                 HasMany::class        => [
                     [
@@ -236,6 +266,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('cars', 'name'),
                     Direction::Asc,
+                    null,
+                    null,
                 ],
                 MorphOne::class       => [
                     [
@@ -270,6 +302,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('avatar', 'id'),
                     Direction::Asc,
+                    null,
+                    null,
                 ],
                 HasOneThrough::class  => [
                     [
@@ -315,6 +349,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('role', 'user', 'name'),
                     Direction::Desc,
+                    null,
+                    null,
                 ],
                 BelongsToMany::class  => [
                     [
@@ -361,6 +397,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('roles', 'users', 'name'),
                     Direction::Desc,
+                    null,
+                    null,
                 ],
                 MorphToMany::class    => [
                     [
@@ -405,6 +443,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('tags', 'users', 'name'),
                     Direction::Asc,
+                    null,
+                    null,
                 ],
                 HasManyThrough::class => [
                     [
@@ -439,6 +479,8 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('users', 'name'),
                     Direction::Asc,
+                    null,
+                    null,
                 ],
                 MorphMany::class      => [
                     [
@@ -473,6 +515,121 @@ class EloquentSorterTest extends TestCase {
                     },
                     new Property('images', 'id'),
                     Direction::Asc,
+                    null,
+                    null,
+                ],
+                'nulls'               => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                "name" DESC NULLS FIRST
+                            SQL
+                        ,
+                        'bindings' => [
+                            // empty
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    new Property('name'),
+                    Direction::Desc,
+                    Nulls::First,
+                    null,
+                ],
+                'resolver'            => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                "resolved__name" asc
+                            SQL
+                        ,
+                        'bindings' => [
+                            // empty
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    new Property('name'),
+                    Direction::Asc,
+                    null,
+                    static function (object $builder, Property $property): string {
+                        self::assertInstanceOf(EloquentBuilder::class, $builder);
+                        self::assertInstanceOf(User::class, $builder->getModel());
+
+                        return 'resolved__'.implode('__', $property->getPath());
+                    },
+                ],
+                'resolver (relation)' => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "users"
+                            order by
+                                (
+                                    select
+                                        "lara_asp_graphql__sort_by__0__relation_1"."resolved__name"
+                                    from
+                                        "cars"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "users"
+                                            where
+                                                "deleted_at" is null
+                                        ) as "lara_asp_graphql__sort_by__0__relation_0"
+                                            on "lara_asp_graphql__sort_by__0__relation_0"."ownerKey"
+                                                = "cars"."foreignKey"
+                                        inner join (
+                                            select
+                                                *
+                                            from
+                                                "roles"
+                                                inner join "user_roles"
+                                                    on "roles"."relatedKey" = "user_roles"."relatedPivotKey"
+                                            where
+                                                "deleted_at" is null
+                                        ) as "lara_asp_graphql__sort_by__0__relation_1"
+                                            on "lara_asp_graphql__sort_by__0__relation_1"."parentKey"
+                                                = "lara_asp_graphql__sort_by__0__relation_0"."relatedKey"
+                                    where
+                                        "users"."localKey" = "cars"."foreignKey"
+                                        and "deleted_at" is null
+                                    order by
+                                        "lara_asp_graphql__sort_by__0__relation_1"."resolved__name" asc
+                                    limit
+                                        1
+                                ) asc
+                            SQL
+                        ,
+                        'bindings' => [
+                            // empty
+                        ],
+                    ],
+                    static function (): EloquentBuilder {
+                        return User::query();
+                    },
+                    new Property('cars', 'user', 'roles', 'name'),
+                    Direction::Asc,
+                    null,
+                    static function (object $builder, Property $property): string {
+                        self::assertInstanceOf(EloquentBuilder::class, $builder);
+                        self::assertInstanceOf(Role::class, $builder->getModel());
+
+                        return implode('.', $property->getParent()->getPath()).'.resolved__'.$property->getName();
+                    },
                 ],
             ])),
         ]))->getData();

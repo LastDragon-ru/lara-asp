@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\EloquentSorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\QuerySorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\ScoutSorter;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -29,6 +30,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
+use function implode;
 
 /**
  * @internal
@@ -36,7 +38,9 @@ use function config;
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
 #[CoversClass(Field::class)]
-class FieldTest extends TestCase {
+final class FieldTest extends TestCase {
+    use OperatorTests;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -45,23 +49,26 @@ class FieldTest extends TestCase {
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
-     * @param Closure(static): Context                                $contextFactory
+     * @param Closure(static): Context|null                           $contextFactory
+     * @param Closure(object, Property): string|null                  $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         Property $property,
         Closure $argumentFactory,
-        Closure $contextFactory,
+        ?Closure $contextFactory,
+        ?Closure $resolver,
     ): void {
-        $operator  = Container::getInstance()->make(Field::class);
-        $argument  = $argumentFactory($this);
-        $directive = Container::getInstance()->make(Directive::class);
-        $context   = $contextFactory($this);
-        $builder   = $builderFactory($this);
-        $builder   = $operator->call($directive, $builder, $property, $argument, $context);
-
-        self::assertDatabaseQueryEquals($expected, $builder);
+        $this->testOperator(
+            Directive::class,
+            $expected,
+            $builderFactory,
+            $property,
+            $argumentFactory,
+            $contextFactory,
+            $resolver,
+        );
     }
 
     public function testCallEloquentBuilder(): void {
@@ -212,6 +219,8 @@ class FieldTest extends TestCase {
                     static function (): Context {
                         return new Context();
                     },
+                    null,
+                    null,
                 ],
                 'nulls from Context' => [
                     [
@@ -224,6 +233,22 @@ class FieldTest extends TestCase {
                         return (new Context())->override([
                             FieldContextNulls::class => new FieldContextNulls(Nulls::First),
                         ]);
+                    },
+                    null,
+                    null,
+                ],
+                'resolver'           => [
+                    [
+                        'query'    => 'select * from "test_objects" order by "resolved__a" desc',
+                        'bindings' => [],
+                    ],
+                    new Property('a'),
+                    $factory,
+                    static function (): Context {
+                        return new Context();
+                    },
+                    static function (object $builder, Property $property): string {
+                        return 'resolved__'.implode('__', $property->getPath());
                     },
                 ],
             ]),

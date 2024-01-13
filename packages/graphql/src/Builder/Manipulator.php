@@ -22,7 +22,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -147,7 +147,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Builder?
-        $builder = $context->get(AstManipulation::class)?->builderInfo->getBuilder();
+        $builder = $context->get(AstManipulationBuilderInfo::class)?->value->getBuilder();
 
         if (!$builder) {
             return [];

@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
@@ -16,6 +17,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
+use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -44,14 +46,16 @@ class DatabaseSorterTest extends TestCase {
         Direction $direction,
         ?Nulls $nulls,
     ): void {
-        $builder = $builderFactory($this);
-        $column  = is_string($columnFactory) ? $columnFactory : $columnFactory($this);
-        $sorter  = new class($nullsDefault, $nullsOrderable) extends DatabaseSorter {
+        $resolver = Mockery::mock(BuilderPropertyResolver::class);
+        $builder  = $builderFactory($this);
+        $column   = is_string($columnFactory) ? $columnFactory : $columnFactory($this);
+        $sorter   = new class($nullsDefault, $nullsOrderable, $resolver) extends DatabaseSorter {
             public function __construct(
                 private readonly Nulls $nullsDefault,
                 private readonly bool $nullsOrderable,
+                BuilderPropertyResolver $resolver,
             ) {
-                parent::__construct();
+                parent::__construct($resolver);
             }
 
             #[Override]
@@ -89,8 +93,9 @@ class DatabaseSorterTest extends TestCase {
     }
 
     public function testGetAlias(): void {
-        $builder = User::query()->where('name', '=', 'name');
-        $sorter  = new class() extends DatabaseSorter {
+        $resolver = Mockery::mock(BuilderPropertyResolver::class);
+        $builder  = User::query()->where('name', '=', 'name');
+        $sorter   = new class($resolver) extends DatabaseSorter {
             #[Override]
             public function sort(
                 object $builder,
