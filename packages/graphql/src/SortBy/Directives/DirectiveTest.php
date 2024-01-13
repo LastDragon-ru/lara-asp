@@ -803,6 +803,6 @@ class DirectiveTest extends TestCase {
  */
 class DirectiveTest__QueryBuilderResolver {
     public function __invoke(): QueryBuilder {
-        throw new Exception('should not be called.');
+        throw new Exception('Should not be called.');
     }
 }

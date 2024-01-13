@@ -290,7 +290,7 @@ final class FieldTest extends TestCase {
                         Direction $direction,
                         Nulls $nulls = null,
                     ): object {
-                        throw new Exception('should not be called.');
+                        throw new Exception('Should not be called.');
                     }
                 };
             };

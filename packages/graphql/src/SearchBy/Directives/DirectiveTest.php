@@ -457,7 +457,7 @@ class DirectiveTest extends TestCase {
                             Argument $argument,
                             Context $context,
                         ): object {
-                            throw new Exception('should not be called');
+                            throw new Exception('Should not be called');
                         }
 
                         #[Override]
@@ -866,6 +866,6 @@ class DirectiveTest extends TestCase {
  */
 class DirectiveTest__Resolver {
     public function __invoke(): mixed {
-        throw new Exception('should not be called.');
+        throw new Exception('Should not be called.');
     }
 }
