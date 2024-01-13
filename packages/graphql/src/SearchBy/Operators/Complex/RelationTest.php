@@ -17,6 +17,8 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function implode;
+
 /**
  * @internal
  *
@@ -337,6 +339,41 @@ final class RelationTest extends TestCase {
                 },
                 null,
                 null,
+            ],
+            'resolver'                                       => [
+                [
+                    'query'    => <<<'SQL'
+                        select * from "users" where exists (
+                            select *
+                            from "users" as "laravel_reserved_0"
+                            where "users"."localKey" = "laravel_reserved_0"."foreignKey"
+                                and "laravel_reserved_0"."resolved__property" = ?
+                        )
+                    SQL
+                    ,
+                    'bindings' => [123],
+                ],
+                static function (): EloquentBuilder {
+                    return User::query();
+                },
+                new Property('parent'),
+                static function (self $test) use ($graphql): Argument {
+                    return $test->getGraphQLArgument(
+                        'TestRelation',
+                        [
+                            'where' => [
+                                'property' => [
+                                    'equal' => 123,
+                                ],
+                            ],
+                        ],
+                        $graphql,
+                    );
+                },
+                null,
+                static function (object $builder, Property $property): string {
+                    return implode('.', $property->getParent()->getPath()).'.resolved__'.$property->getName();
+                },
             ],
         ];
     }
