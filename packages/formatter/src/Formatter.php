@@ -152,8 +152,8 @@ class Formatter {
 
     /**
      * Options (one of):
-     * - `int`: {@link \IntlDateFormatter::SHORT}, {@link \IntlDateFormatter::FULL},
-     *      {@link \IntlDateFormatter::LONG} or {@link \IntlDateFormatter::MEDIUM}
+     * - `int`: {@link IntlDateFormatter::SHORT}, {@link IntlDateFormatter::FULL},
+     *      {@link IntlDateFormatter::LONG} or {@link IntlDateFormatter::MEDIUM}
      * - `string`: the name of custom format
      *
      * Locales options:

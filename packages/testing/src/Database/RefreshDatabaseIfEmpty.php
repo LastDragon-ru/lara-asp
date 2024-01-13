@@ -10,10 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unlike {@link \Illuminate\Foundation\Testing\RefreshDatabase} will refresh
- * the database only if it empty (very useful for local testing).
- *
- * @required {@link \Illuminate\Foundation\Testing\TestCase}
+ * Unlike {@link RefreshDatabase} will refresh the database only if it empty
+ * (very useful for local testing).
  *
  * @property-read Application $app
  *
