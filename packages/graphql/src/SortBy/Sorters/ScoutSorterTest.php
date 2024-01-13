@@ -7,10 +7,12 @@ use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery\MockInterface;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -27,21 +29,36 @@ class ScoutSorterTest extends TestCase {
     /**
      * @dataProvider dataProviderSort
      *
-     * @param array<string, mixed>|Exception $expected
-     * @param Closure():FieldResolver|null   $resolver
+     * @param array<string, mixed>|Exception         $expected
+     * @param Closure(object, Property): string|null $resolver
+     * @param Closure():FieldResolver|null           $fieldResolver
      */
     public function testSort(
         array|Exception $expected,
         Property $property,
         Direction $direction,
-        Closure $resolver = null,
+        ?Closure $resolver,
+        ?Closure $fieldResolver,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
         if ($resolver) {
-            $this->override(FieldResolver::class, $resolver);
+            $this->override(
+                BuilderPropertyResolver::class,
+                static function (MockInterface $mock) use ($resolver): void {
+                    $mock
+                        ->shouldReceive('getProperty')
+                        ->atLeast()
+                        ->once()
+                        ->andReturnUsing($resolver);
+                },
+            );
+        }
+
+        if ($fieldResolver) {
+            $this->override(FieldResolver::class, $fieldResolver);
         }
 
         $sorter  = Container::getInstance()->make(ScoutSorter::class);
@@ -66,7 +83,7 @@ class ScoutSorterTest extends TestCase {
      */
     public static function dataProviderSort(): array {
         return [
-            'clause'               => [
+            'clause'                => [
                 [
                     'orders' => [
                         [
@@ -77,8 +94,10 @@ class ScoutSorterTest extends TestCase {
                 ],
                 new Property('c', 'd', 'e'),
                 Direction::Desc,
+                null,
+                null,
             ],
-            'clause with resolver' => [
+            'resolver (deprecated)' => [
                 [
                     'orders' => [
                         [
@@ -89,6 +108,7 @@ class ScoutSorterTest extends TestCase {
                 ],
                 new Property('a', 'b'),
                 Direction::Asc,
+                null,
                 static function (): FieldResolver {
                     return new class() implements FieldResolver {
                         /**
@@ -100,6 +120,22 @@ class ScoutSorterTest extends TestCase {
                         }
                     };
                 },
+            ],
+            'resolver'              => [
+                [
+                    'orders' => [
+                        [
+                            'column'    => 'a__b',
+                            'direction' => 'asc',
+                        ],
+                    ],
+                ],
+                new Property('a', 'b'),
+                Direction::Asc,
+                static function (object $builder, Property $property): string {
+                    return implode('__', $property->getPath());
+                },
+                null,
             ],
         ];
     }

@@ -66,6 +66,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
     ];
     ```
 
+* [ ] If you are using `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver`, use `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver` instead. 🤝
+
 ## API
 
 This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):

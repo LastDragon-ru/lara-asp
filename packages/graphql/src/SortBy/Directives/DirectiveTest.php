@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
@@ -36,6 +37,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Mockery\MockInterface;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
@@ -322,21 +324,36 @@ class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderHandleScoutBuilder
      *
-     * @param array<string, mixed>|Exception $expected
-     * @param Closure(static): ScoutBuilder  $builderFactory
-     * @param Closure():FieldResolver|null   $fieldResolver
+     * @param array<string, mixed>|Exception         $expected
+     * @param Closure(static): ScoutBuilder          $builderFactory
+     * @param Closure(object, Property): string|null $resolver
+     * @param Closure():FieldResolver|null           $fieldResolver
      */
     public function testHandleScoutBuilder(
         array|Exception $expected,
         Closure $builderFactory,
         mixed $value,
-        Closure $fieldResolver = null,
+        ?Closure $resolver,
+        ?Closure $fieldResolver,
     ): void {
         $builder   = $builderFactory($this);
         $directive = $this->getExposeBuilderDirective($builder);
 
         Container::getInstance()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
+
+        if ($resolver) {
+            $this->override(
+                BuilderPropertyResolver::class,
+                static function (MockInterface $mock) use ($resolver): void {
+                    $mock
+                        ->shouldReceive('getProperty')
+                        ->atLeast()
+                        ->once()
+                        ->andReturnUsing($resolver);
+                },
+            );
+        }
 
         if ($fieldResolver) {
             $this->override(FieldResolver::class, $fieldResolver);
@@ -624,6 +641,7 @@ class DirectiveTest extends TestCase {
                         // empty
                     ],
                     null,
+                    null,
                 ],
                 'empty operators'        => [
                     [
@@ -635,6 +653,7 @@ class DirectiveTest extends TestCase {
                         ],
                     ],
                     null,
+                    null,
                 ],
                 'too many properties'    => [
                     new ConditionTooManyProperties(['a', 'b']),
@@ -645,11 +664,13 @@ class DirectiveTest extends TestCase {
                         ],
                     ],
                     null,
+                    null,
                 ],
                 'null'                   => [
                     [
                         // empty
                     ],
+                    null,
                     null,
                     null,
                 ],
@@ -684,8 +705,9 @@ class DirectiveTest extends TestCase {
                         ],
                     ],
                     null,
+                    null,
                 ],
-                'custom field resolver'  => [
+                'resolver (deprecated)'  => [
                     [
                         'orders' => [
                             [
@@ -715,6 +737,7 @@ class DirectiveTest extends TestCase {
                             'b' => 'desc',
                         ],
                     ],
+                    null,
                     static function (): FieldResolver {
                         return new class() implements FieldResolver {
                             /**
@@ -729,6 +752,41 @@ class DirectiveTest extends TestCase {
                             }
                         };
                     },
+                ],
+                'resolver'               => [
+                    [
+                        'orders' => [
+                            [
+                                'column'    => 'a',
+                                'direction' => 'asc',
+                            ],
+                            [
+                                'column'    => 'c__a',
+                                'direction' => 'desc',
+                            ],
+                            [
+                                'column'    => 'renamed.field',
+                                'direction' => 'desc',
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'a' => 'asc',
+                        ],
+                        [
+                            'c' => [
+                                'a' => 'desc',
+                            ],
+                        ],
+                        [
+                            'b' => 'desc',
+                        ],
+                    ],
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
+                    null,
                 ],
             ]),
         ))->getData();

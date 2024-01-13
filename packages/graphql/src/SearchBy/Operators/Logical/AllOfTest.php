@@ -287,7 +287,7 @@ final class AllOfTest extends TestCase {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([
-                'property'               => [
+                'property'              => [
                     [
                         'wheres'   => [
                             'path.to.property.a' => 'aaa',
@@ -303,7 +303,7 @@ final class AllOfTest extends TestCase {
                     null,
                     null,
                 ],
-                'property with resolver' => [
+                'resolver (deprecated)' => [
                     [
                         'wheres'   => [
                             'properties/path/to/property/a' => 'aaa',
@@ -328,6 +328,24 @@ final class AllOfTest extends TestCase {
                             }
                         };
                     },
+                ],
+                'resolver'              => [
+                    [
+                        'wheres'   => [
+                            'path__to__property__a' => 'aaa',
+                            'path__to__property__b' => 'bbb',
+                        ],
+                        'whereIns' => [
+                            'path__to__property__b' => [1, 2, 3],
+                        ],
+                    ],
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    $factory,
+                    null,
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
+                    null,
                 ],
             ]),
         ))->getData();

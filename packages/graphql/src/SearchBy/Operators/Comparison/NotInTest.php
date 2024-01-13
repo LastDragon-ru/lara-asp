@@ -171,7 +171,7 @@ final class NotInTest extends TestCase {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([
-                'property'               => [
+                'property'              => [
                     [
                         'whereNotIns' => [
                             'path.to.property' => [1, 2, 3],
@@ -185,7 +185,7 @@ final class NotInTest extends TestCase {
                     null,
                     null,
                 ],
-                'property with resolver' => [
+                'resolver (deprecated)' => [
                     [
                         'whereNotIns' => [
                             'properties/path/to/property' => [1, 2, 3],
@@ -208,6 +208,22 @@ final class NotInTest extends TestCase {
                             }
                         };
                     },
+                ],
+                'resolver'              => [
+                    [
+                        'whereNotIns' => [
+                            'path__to__property' => [1, 2, 3],
+                        ],
+                    ],
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
+                    },
+                    null,
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
+                    null,
                 ],
             ]),
         ))->getData();

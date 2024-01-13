@@ -153,7 +153,7 @@ final class EqualTest extends TestCase {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([
-                'property'               => [
+                'property'              => [
                     [
                         'wheres' => [
                             'path.to.property' => 'abc',
@@ -167,7 +167,7 @@ final class EqualTest extends TestCase {
                     null,
                     null,
                 ],
-                'property with resolver' => [
+                'resolver (deprecated)' => [
                     [
                         'wheres' => [
                             'properties/path/to/property' => 'abc',
@@ -187,6 +187,22 @@ final class EqualTest extends TestCase {
                             }
                         };
                     },
+                ],
+                'resolver'              => [
+                    [
+                        'wheres' => [
+                            'path__to__property' => 'abc',
+                        ],
+                    ],
+                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    static function (self $test): Argument {
+                        return $test->getGraphQLArgument('String!', 'abc');
+                    },
+                    null,
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
+                    null,
                 ],
             ]),
         ))->getData();

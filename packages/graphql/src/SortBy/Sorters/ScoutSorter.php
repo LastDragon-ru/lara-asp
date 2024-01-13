@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
@@ -16,7 +16,7 @@ use Override;
  */
 class ScoutSorter implements Sorter {
     public function __construct(
-        protected FieldResolver $fieldResolver,
+        protected readonly BuilderPropertyResolver $resolver,
     ) {
         // empty
     }
@@ -32,7 +32,7 @@ class ScoutSorter implements Sorter {
             throw new NotImplemented('NULLs ordering');
         }
 
-        $field   = $this->fieldResolver->getField($builder->model, $property);
+        $field   = $this->resolver->getProperty($builder, $property);
         $builder = match ($direction) {
             Direction::Asc, Direction::asc   => $builder->orderBy($field, 'asc'),
             Direction::Desc, Direction::desc => $builder->orderBy($field, 'desc'),

@@ -42,14 +42,12 @@ class In extends BaseOperator {
         Argument $argument,
         Context $context,
     ): object {
-        $property = $property->getParent();
+        $property = $this->resolver->getProperty($builder, $property->getParent());
         $value    = (array) $argument->toPlain();
 
         if ($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder) {
-            $builder->whereIn($this->resolver->getProperty($builder, $property), $value);
+            $builder->whereIn($property, $value);
         } elseif ($builder instanceof ScoutBuilder) {
-            $property = $this->getFieldResolver()->getField($builder->model, $property);
-
             $builder->whereIn($property, $value);
         } else {
             throw new OperatorUnsupportedBuilder($this, $builder);
