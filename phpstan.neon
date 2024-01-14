@@ -17,6 +17,13 @@ parameters:
     checkBenevolentUnionTypes: true
     checkUninitializedProperties: true
 
+    # Package
+    classMustBeInternal:
+        classes:
+            - PHPUnit\Framework\TestCase
+        ignored:
+            - LastDragon_ru\LaraASP\Testing\TestCase
+
 includes:
     # Vendor
     - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
@@ -33,6 +40,7 @@ includes:
 
     # Package
     - ./dev/PhpStan/Container/extension.neon
+    - ./dev/PhpStan/ClassMustBeInternal/extension.neon
 
     # Baseline
     - phpstan-baseline-well-known.neon

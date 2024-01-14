@@ -12,6 +12,9 @@ use Mockery;
 use Mockery\Matcher\IsEqual;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+/**
+ * @internal
+ */
 #[CoversClass(Preprocessor::class)]
 class PreprocessorTest extends TestCase {
     public function testProcess(): void {
