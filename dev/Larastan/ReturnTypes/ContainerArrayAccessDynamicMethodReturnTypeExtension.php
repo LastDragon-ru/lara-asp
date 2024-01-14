@@ -3,6 +3,7 @@
 namespace Larastan\Larastan\ReturnTypes;
 
 use Illuminate\Contracts\Container\Container;
+use LastDragon_ru\LaraASP\Dev\PhpStan\Container\Extension;
 use Override;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
@@ -15,7 +16,7 @@ use PHPStan\Type\Type;
  *
  * @internal
  *
- * @see ContainerExtension
+ * @see Extension
  */
 class ContainerArrayAccessDynamicMethodReturnTypeExtension implements DynamicMethodReturnTypeExtension {
     public function __construct(
