@@ -1,0 +1,15 @@
+parameters:
+    classMustBeFinal: []
+
+parametersSchema:
+    classMustBeFinal: structure({
+        classes: listOf(string())
+    })
+
+services:
+    -
+        class: LastDragon_ru\LaraASP\Dev\PhpStan\ClassMustBeFinal\Rule
+        arguments:
+            classes: %classMustBeFinal.classes%
+        tags:
+            - phpstan.rules.rule
