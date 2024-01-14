@@ -42,7 +42,7 @@ final class CommandsTest extends TestCase {
         $directory = Path::normalize(self::getTempDirectory());
 
         self::assertNotFalse(
-            file_put_contents(Path::join($directory, 'file.txt'), static::class),
+            file_put_contents(Path::join($directory, 'file.txt'), self::class),
         );
 
         $result = $this

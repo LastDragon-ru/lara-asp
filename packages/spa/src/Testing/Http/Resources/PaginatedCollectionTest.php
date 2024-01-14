@@ -22,7 +22,7 @@ final class PaginatedCollectionTest extends TestCase {
      * @param array<array-key, mixed> $json
      */
     public function testSchema(bool $expected, array $json): void {
-        $schema     = new PaginatedCollection(static::class);
+        $schema     = new PaginatedCollection(self::class);
         $constraint = new JsonMatchesSchema($schema);
         $message    = '';
         $actual     = null;

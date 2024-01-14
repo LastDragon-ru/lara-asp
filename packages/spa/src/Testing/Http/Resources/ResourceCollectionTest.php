@@ -22,7 +22,7 @@ final class ResourceCollectionTest extends TestCase {
      * @param array<array-key, mixed> $json
      */
     public function testSchema(bool $expected, array $json): void {
-        $schema     = new ResourceCollection(static::class);
+        $schema     = new ResourceCollection(self::class);
         $constraint = new JsonMatchesSchema($schema);
         $message    = '';
         $actual     = null;
