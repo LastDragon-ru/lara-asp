@@ -29,17 +29,17 @@ parameters:
 
 includes:
     # Vendor
-    - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
-    - ./vendor/phpstan/phpstan-mockery/extension.neon
-    - ./vendor/phpstan/phpstan-phpunit/extension.neon
-    - ./vendor/phpstan/phpstan-phpunit/rules.neon
-    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
-    - ./vendor/larastan/larastan/extension.neon
-    - ./vendor/spaze/phpstan-disallowed-calls/extension.neon
-    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
-    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
-    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
-    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
+    - ./vendor-bin/phpstan/vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - ./vendor-bin/phpstan/vendor/phpstan/phpstan-mockery/extension.neon
+    - ./vendor-bin/phpstan/vendor/phpstan/phpstan-phpunit/extension.neon
+    - ./vendor-bin/phpstan/vendor/phpstan/phpstan-phpunit/rules.neon
+    - ./vendor-bin/phpstan/vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor-bin/phpstan/vendor/larastan/larastan/extension.neon
+    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
+    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
 
     # Package
     - ./dev/PhpStan/Container/extension.neon
