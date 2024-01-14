@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Page::class)]
-class PageTest extends TestCase {
+final class PageTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

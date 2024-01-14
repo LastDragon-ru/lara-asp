@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(IteratorImpl::class)]
-class IteratorImplTest extends TestCase {
+final class IteratorImplTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

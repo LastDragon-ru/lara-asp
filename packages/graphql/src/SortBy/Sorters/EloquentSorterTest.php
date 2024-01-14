@@ -42,7 +42,7 @@ use function is_array;
  * @internal
  */
 #[CoversClass(EloquentSorter::class)]
-class EloquentSorterTest extends TestCase {
+final class EloquentSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

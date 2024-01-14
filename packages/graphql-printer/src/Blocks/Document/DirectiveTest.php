@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Directive::class)]
-class DirectiveTest extends TestCase {
+final class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

@@ -4,17 +4,14 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers;
 
 use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchemaTest;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(XmlFileXsdSchemaMatcher::class)]
-class XmlFileXsdSchemaMatcherTest extends TestCase {
-    use WithTestData;
-
+final class XmlFileXsdSchemaMatcherTest extends TestCase {
     public function testEvaluateValid(): void {
         $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.xsd');
         $xml    = self::getTestData(XmlMatchesSchemaTest::class)->file('.xml');

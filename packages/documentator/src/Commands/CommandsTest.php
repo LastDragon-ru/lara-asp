@@ -22,7 +22,7 @@ use function iterator_to_array;
  * @internal
  */
 #[CoversClass(Commands::class)]
-class CommandsTest extends TestCase {
+final class CommandsTest extends TestCase {
     // <editor-fold desc="Prepare">
     // =========================================================================
     /**

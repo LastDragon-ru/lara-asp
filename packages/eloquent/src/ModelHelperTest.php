@@ -23,7 +23,7 @@ use function is_string;
  * @internal
  */
 #[CoversClass(ModelHelper::class)]
-class ModelHelperTest extends TestCase {
+final class ModelHelperTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

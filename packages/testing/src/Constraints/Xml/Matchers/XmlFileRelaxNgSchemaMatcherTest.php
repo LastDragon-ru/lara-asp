@@ -4,17 +4,14 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml\Matchers;
 
 use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchemaTest;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(XmlFileRelaxNgSchemaMatcher::class)]
-class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
-    use WithTestData;
-
+final class XmlFileRelaxNgSchemaMatcherTest extends TestCase {
     public function testEvaluateValid(): void {
         $schema = self::getTestData(XmlMatchesSchemaTest::class)->file('.rng');
         $xml    = self::getTestData(XmlMatchesSchemaTest::class)->file('.xml');

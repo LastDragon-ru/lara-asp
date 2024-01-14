@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(StringResource::class)]
-class StringResourceTest extends TestCase {
+final class StringResourceTest extends TestCase {
     public function testToResponse(): void {
         Route::get(__METHOD__, static function (): mixed {
             return new StringResource('123');

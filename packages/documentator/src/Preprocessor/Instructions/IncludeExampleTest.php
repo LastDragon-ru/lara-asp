@@ -18,7 +18,7 @@ use function trim;
  * @internal
  */
 #[CoversClass(IncludeFile::class)]
-class IncludeExampleTest extends TestCase {
+final class IncludeExampleTest extends TestCase {
     public function testProcessNoRun(): void {
         $path     = self::getTestData()->path('~example.md');
         $file     = basename(self::getTestData()->path('~example.md'));

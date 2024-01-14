@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
 use Illuminate\Database\Eloquent\Model;
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\Factory;
 use stdClass;
@@ -13,7 +13,7 @@ use stdClass;
  * @internal
  */
 #[CoversClass(EloquentModelComparator::class)]
-class EloquentModelComparatorTest extends TestCase {
+final class EloquentModelComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

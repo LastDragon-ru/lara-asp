@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(ErrorResponse::class)]
-class ErrorResponseTest extends TestCase {
+final class ErrorResponseTest extends TestCase {
     public function testEvaluate(): void {
         $response   = Factory::make($this->getJson(__FUNCTION__));
         $constraint = new ErrorResponse(new NotFound());

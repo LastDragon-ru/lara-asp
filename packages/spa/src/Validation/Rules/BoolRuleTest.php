@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(BoolRule::class)]
-class BoolRuleTest extends TestCase {
+final class BoolRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

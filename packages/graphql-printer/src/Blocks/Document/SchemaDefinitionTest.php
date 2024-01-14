@@ -22,7 +22,7 @@ use function str_starts_with;
 #[CoversClass(SchemaDefinition::class)]
 #[CoversClass(RootOperationTypeDefinition::class)]
 #[CoversClass(RootOperationTypesDefinition::class)]
-class SchemaDefinitionTest extends TestCase {
+final class SchemaDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

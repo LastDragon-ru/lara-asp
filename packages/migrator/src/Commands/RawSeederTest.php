@@ -13,7 +13,7 @@ use Symfony\Component\Finder\Finder;
  * @internal
  */
 #[CoversClass(RawSeeder::class)]
-class RawSeederTest extends TestCase {
+final class RawSeederTest extends TestCase {
     public function testHandle(): void {
         // Pre test
         $pkg    = Package::Name;

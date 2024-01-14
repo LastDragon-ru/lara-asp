@@ -2,14 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(ArrayDataProvider::class)]
-class ArrayDataProviderTest extends TestCase {
+final class ArrayDataProviderTest extends TestCase {
     public function testGetData(): void {
         $f = new ExpectedFinal('expected final');
         $a = [

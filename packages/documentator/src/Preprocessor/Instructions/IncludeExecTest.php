@@ -14,7 +14,7 @@ use function dirname;
  * @internal
  */
 #[CoversClass(IncludeFile::class)]
-class IncludeExecTest extends TestCase {
+final class IncludeExecTest extends TestCase {
     public function testProcess(): void {
         $path     = 'current/working/directory/file.md';
         $expected = 'result';

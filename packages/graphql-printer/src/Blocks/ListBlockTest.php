@@ -18,7 +18,7 @@ use function assert;
  * @internal
  */
 #[CoversClass(ListBlock::class)]
-class ListBlockTest extends TestCase {
+final class ListBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

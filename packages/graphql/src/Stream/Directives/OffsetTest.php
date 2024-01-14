@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Offset::class)]
-class OffsetTest extends TestCase {
+final class OffsetTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

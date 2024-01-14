@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @phpstan-import-type TranslationsFactory from WithTranslations
  */
 #[CoversClass(Translator::class)]
-class TranslatorTest extends TestCase {
+final class TranslatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

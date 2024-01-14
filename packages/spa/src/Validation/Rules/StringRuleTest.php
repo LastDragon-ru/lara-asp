@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(StringRule::class)]
-class StringRuleTest extends TestCase {
+final class StringRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

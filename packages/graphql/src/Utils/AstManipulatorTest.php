@@ -50,7 +50,7 @@ use function is_string;
  * @internal
  */
 #[CoversClass(AstManipulator::class)]
-class AstManipulatorTest extends TestCase {
+final class AstManipulatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testGetInterfaces(): void {

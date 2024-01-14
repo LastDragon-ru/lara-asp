@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Argument::class)]
-class ArgumentTest extends TestCase {
+final class ArgumentTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

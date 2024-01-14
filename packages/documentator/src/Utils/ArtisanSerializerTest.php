@@ -14,7 +14,7 @@ use function reset;
  * @internal
  */
 #[CoversClass(ArtisanSerializer::class)]
-class ArtisanSerializerTest extends TestCase {
+final class ArtisanSerializerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Mapping\AttributeMetadata;
  * @internal
  */
 #[CoversClass(MetadataFactory::class)]
-class MetadataFactoryTest extends TestCase {
+final class MetadataFactoryTest extends TestCase {
     public function testHasMetadataFor(): void {
         $factory = new MetadataFactory();
 

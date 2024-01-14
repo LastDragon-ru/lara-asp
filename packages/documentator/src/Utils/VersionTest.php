@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Version::class)]
-class VersionTest extends TestCase {
+final class VersionTest extends TestCase {
     public function testCompare(): void {
         self::assertEquals(0, Version::compare('1.2.3', '1.2.3'));
         self::assertEquals(0, Version::compare('v1.2.3', '1.2.3'));

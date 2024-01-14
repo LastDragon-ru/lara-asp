@@ -9,7 +9,7 @@ use Override;
 /**
  * @internal
  */
-class TestCase extends PackageTestCase {
+abstract class TestCase extends PackageTestCase {
     /**
      * @inheritDoc
      */

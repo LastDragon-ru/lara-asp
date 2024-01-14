@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$translations of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase\\:\\:setTranslations\\(\\) expects array\\<string, array\\<string, string\\>\\>\\|\\(callable\\(LastDragon_ru\\\\LaraASP\\\\Core\\\\Helpers\\\\TranslatorTest, string, string\\)\\: array\\<string, array\\<string, string\\>\\>\\)\\|null, array\\<string, array\\<string, string\\>\\>\\|\\(callable\\(static, string, string\\)\\: array\\<string, array\\<string, string\\>\\>\\)\\|null given\\.$#"
-			count: 2
-			path: packages/core/src/Helpers/TranslatorTest.php
-
-		-
 			message: "#^Cannot call method once\\(\\) on mixed\\.$#"
 			count: 1
 			path: packages/core/src/Observer/DispatcherTest.php

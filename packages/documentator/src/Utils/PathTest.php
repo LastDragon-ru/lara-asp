@@ -12,7 +12,7 @@ use function str_replace;
  * @internal
  */
 #[CoversClass(Path::class)]
-class PathTest extends TestCase {
+final class PathTest extends TestCase {
     public function testGetPath(): void {
         self::assertEquals('/absolute/path/to/file', Path::getPath('any/path', '/absolute/path/./to/file'));
         self::assertEquals('/absolute/path/to/file', Path::getPath('/absolute/path', 'to/./file'));

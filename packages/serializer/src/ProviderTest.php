@@ -32,7 +32,7 @@ use function sprintf;
 #[CoversClass(Provider::class)]
 #[CoversClass(Serializer::class)]
 #[CoversClass(SerializableNormalizer::class)]
-class ProviderTest extends TestCase {
+final class ProviderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testRegister(): void {

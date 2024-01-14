@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Field::class)]
-class FieldTest extends TestCase {
+final class FieldTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

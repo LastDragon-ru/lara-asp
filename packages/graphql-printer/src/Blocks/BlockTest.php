@@ -39,7 +39,7 @@ use function sort;
  * @internal
  */
 #[CoversClass(Block::class)]
-class BlockTest extends TestCase {
+final class BlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[CoversNothing]

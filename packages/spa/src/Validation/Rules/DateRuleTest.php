@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(DateRule::class)]
-class DateRuleTest extends TestCase {
+final class DateRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

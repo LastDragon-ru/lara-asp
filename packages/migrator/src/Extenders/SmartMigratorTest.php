@@ -27,7 +27,7 @@ use function trim;
  */
 #[CoversClass(SmartMigrator::class)]
 #[CoversClass(Provider::class)]
-class SmartMigratorTest extends TestCase {
+final class SmartMigratorTest extends TestCase {
     public function testProvider(): void {
         self::assertEquals(SmartMigrator::class, get_class(Container::getInstance()->make('migrator')));
     }

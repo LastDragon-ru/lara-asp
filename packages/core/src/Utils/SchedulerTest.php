@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Scheduler::class)]
-class SchedulerTest extends TestCase {
+final class SchedulerTest extends TestCase {
     public function testRegisterClass(): void {
         // Mocks
         $job = new class() implements Schedulable {

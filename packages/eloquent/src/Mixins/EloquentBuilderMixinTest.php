@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(EloquentBuilderMixin::class)]
-class EloquentBuilderMixinTest extends TestCase {
+final class EloquentBuilderMixinTest extends TestCase {
     use WithTestObject;
 
     public function testIterator(): void {

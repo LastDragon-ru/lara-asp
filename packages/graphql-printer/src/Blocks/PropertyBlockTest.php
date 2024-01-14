@@ -15,7 +15,7 @@ use function mb_strlen;
  * @internal
  */
 #[CoversClass(PropertyBlock::class)]
-class PropertyBlockTest extends TestCase {
+final class PropertyBlockTest extends TestCase {
     public function testSerialize(): void {
         $name      = 'name';
         $used      = 123;

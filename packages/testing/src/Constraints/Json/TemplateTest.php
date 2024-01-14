@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use Exception;
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 
 use function json_decode;
 
@@ -13,7 +13,7 @@ use function json_decode;
  * @internal
  */
 #[CoversClass(Template::class)]
-class TemplateTest extends TestCase {
+final class TemplateTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(JsonStringType::class)]
-class JsonStringTypeTest extends TestCase {
+final class JsonStringTypeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

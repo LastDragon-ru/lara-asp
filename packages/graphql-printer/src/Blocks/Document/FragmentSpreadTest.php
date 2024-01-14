@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(FragmentSpread::class)]
-class FragmentSpreadTest extends TestCase {
+final class FragmentSpreadTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

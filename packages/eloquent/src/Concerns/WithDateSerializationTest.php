@@ -15,7 +15,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(WithDateSerialization::class)]
-class WithDateSerializationTest extends TestCase {
+final class WithDateSerializationTest extends TestCase {
     public function testSerializeDate(): void {
         // Prepare
         $trait = new class() extends Model {

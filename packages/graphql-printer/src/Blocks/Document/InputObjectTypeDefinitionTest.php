@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(InputObjectTypeDefinition::class)]
 #[CoversClass(InputFieldsDefinition::class)]
-class InputObjectTypeDefinitionTest extends TestCase {
+final class InputObjectTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

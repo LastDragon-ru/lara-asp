@@ -26,7 +26,7 @@ use function json_decode;
  * @internal
  */
 #[CoversClass(Resource::class)]
-class ResourceTest extends TestCase {
+final class ResourceTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

@@ -21,7 +21,7 @@ use function is_string;
  * @internal
  */
 #[CoversClass(Offset::class)]
-class OffsetTest extends TestCase {
+final class OffsetTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

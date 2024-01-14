@@ -14,7 +14,7 @@ use function str_replace;
  * @internal
  */
 #[CoversClass(IncludeDocBlock::class)]
-class IncludeDocBlockTest extends TestCase {
+final class IncludeDocBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

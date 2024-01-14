@@ -34,7 +34,7 @@ use function is_a;
  * @internal
  */
 #[CoversClass(Manipulator::class)]
-class ManipulatorTest extends TestCase {
+final class ManipulatorTest extends TestCase {
     // <editor-fold desc="Prepare">
     // =========================================================================
     /**

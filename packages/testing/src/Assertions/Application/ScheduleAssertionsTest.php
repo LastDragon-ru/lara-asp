@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(ScheduleAssertions::class)]
-class ScheduleAssertionsTest extends TestCase {
+final class ScheduleAssertionsTest extends TestCase {
     public function testGetScheduleEvents(): void {
         $schedule        = Container::getInstance()->make(Schedule::class);
         $assertions      = new class() {

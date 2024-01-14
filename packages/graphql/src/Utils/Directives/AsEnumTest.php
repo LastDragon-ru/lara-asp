@@ -19,7 +19,7 @@ use const JSON_THROW_ON_ERROR;
  * @internal
  */
 #[CoversClass(AsEnum::class)]
-class AsEnumTest extends TestCase {
+final class AsEnumTest extends TestCase {
     public function testResolveNode(): void {
         $class = AsEnumTest_Enum::class;
         $enum  = json_encode($class, JSON_THROW_ON_ERROR);

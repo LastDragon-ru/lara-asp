@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Provider::class)]
-class ProviderTest extends TestCase {
+final class ProviderTest extends TestCase {
     public function testRegister(): void {
         self::assertSame(
             Container::getInstance()->make(Formatter::class),

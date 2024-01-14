@@ -13,7 +13,7 @@ use function basename;
  * @internal
  */
 #[CoversClass(IncludeDocumentList::class)]
-class IncludeDocumentListTest extends TestCase {
+final class IncludeDocumentListTest extends TestCase {
     public function testProcessSameDirectory(): void {
         $path     = self::getTestData()->file('Document.md');
         $params   = new IncludeDocumentListParameters();

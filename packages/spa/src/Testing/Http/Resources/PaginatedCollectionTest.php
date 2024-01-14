@@ -2,16 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Testing\Http\Resources;
 
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\ExpectationFailedException;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(PaginatedCollection::class)]
-class PaginatedCollectionTest extends TestCase {
+final class PaginatedCollectionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -32,6 +32,7 @@ class PaginatedCollectionTest extends TestCase {
             $actual = true;
         } catch (ExpectationFailedException $exception) {
             $message = $exception->getMessage();
+            $actual  = false;
         }
 
         self::assertEquals($expected, $actual, $message);

@@ -43,7 +43,7 @@ use const JSON_THROW_ON_ERROR;
  * @internal
  */
 #[CoversClass(BuilderInfoDetector::class)]
-class BuilderInfoDetectorTest extends TestCase {
+final class BuilderInfoDetectorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

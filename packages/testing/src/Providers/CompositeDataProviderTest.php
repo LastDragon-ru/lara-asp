@@ -2,14 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(CompositeDataProvider::class)]
-class CompositeDataProviderTest extends TestCase {
+final class CompositeDataProviderTest extends TestCase {
     public function testGetData(): void {
         $a = [
             ['expected a', 'value a'],

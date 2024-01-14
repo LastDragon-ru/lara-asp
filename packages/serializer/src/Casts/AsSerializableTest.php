@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(AsSerializable::class)]
-class AsSerializableTest extends TestCase {
+final class AsSerializableTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

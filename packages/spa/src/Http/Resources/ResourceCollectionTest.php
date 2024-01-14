@@ -18,7 +18,7 @@ use function sprintf;
  * @internal
  */
 #[CoversClass(ResourceCollection::class)]
-class ResourceCollectionTest extends TestCase {
+final class ResourceCollectionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

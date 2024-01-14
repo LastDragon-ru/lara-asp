@@ -80,7 +80,7 @@ use const JSON_THROW_ON_ERROR;
  * @internal
  */
 #[CoversClass(Directive::class)]
-class DirectiveTest extends TestCase {
+final class DirectiveTest extends TestCase {
     use WithTestObject;
     use MakesGraphQLRequests;
 

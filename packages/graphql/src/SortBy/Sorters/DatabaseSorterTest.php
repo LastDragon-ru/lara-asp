@@ -27,7 +27,7 @@ use function is_string;
  * @internal
  */
 #[CoversClass(DatabaseSorter::class)]
-class DatabaseSorterTest extends TestCase {
+final class DatabaseSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

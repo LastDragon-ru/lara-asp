@@ -15,7 +15,7 @@ use function basename;
  * @internal
  */
 #[CoversClass(IncludePackageList::class)]
-class IncludePackageListTest extends TestCase {
+final class IncludePackageListTest extends TestCase {
     public function testProcess(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/packages'));

@@ -19,7 +19,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(SchemaExtension::class)]
 #[CoversClass(RootOperationTypeDefinition::class)]
 #[CoversClass(RootOperationTypesDefinition::class)]
-class SchemaExtensionTest extends TestCase {
+final class SchemaExtensionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

@@ -16,7 +16,7 @@ use function implode;
  * @internal
  */
 #[CoversClass(DescriptionBlock::class)]
-class DescriptionBlockTest extends TestCase {
+final class DescriptionBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

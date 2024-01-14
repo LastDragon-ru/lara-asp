@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(IncludeTemplate::class)]
-class IncludeTemplateTest extends TestCase {
+final class IncludeTemplateTest extends TestCase {
     public function testProcessRelative(): void {
         $file     = self::getTestData()->file('.md');
         $params   = new IncludeTemplateParameters([

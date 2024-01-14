@@ -13,7 +13,7 @@ use ReflectionMethod;
  * @internal
  */
 #[CoversClass(ImmutableSettings::class)]
-class ImmutableSettingsTest extends TestCase {
+final class ImmutableSettingsTest extends TestCase {
     public function testCreateFrom(): void {
         $methods  = (new ReflectionClass(Settings::class))->getMethods(ReflectionMethod::IS_PUBLIC);
         $settings = Mockery::mock(Settings::class);

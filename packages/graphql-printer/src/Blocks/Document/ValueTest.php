@@ -33,7 +33,7 @@ use function assert;
  * @internal
  */
 #[CoversClass(Value::class)]
-class ValueTest extends TestCase {
+final class ValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
