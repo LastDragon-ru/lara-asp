@@ -20,7 +20,7 @@ use function usort;
  * @internal
  */
 #[CoversClass(Database::class)]
-class DatabaseTest extends TestCase {
+final class DatabaseTest extends TestCase {
     use WithFaker;
     use WithQueryLog;
     use WithTestObject;

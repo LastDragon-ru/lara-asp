@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(FieldDefinition::class)]
 #[CoversClass(ArgumentsDefinition::class)]
-class FieldDefinitionTest extends TestCase {
+final class FieldDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

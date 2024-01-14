@@ -6,7 +6,9 @@ use LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator as Compara
 use PHPUnit\Framework\Test;
 
 /**
- * Adds {@link \LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator}
+ * Adds {@link Comparator}
+ *
+ * @see Comparator
  *
  * @mixin Test
  */

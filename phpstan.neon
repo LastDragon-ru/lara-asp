@@ -17,6 +17,16 @@ parameters:
     checkBenevolentUnionTypes: true
     checkUninitializedProperties: true
 
+    # Package
+    classMustBeFinal:
+        classes:
+            - PHPUnit\Framework\TestCase
+    classMustBeInternal:
+        classes:
+            - PHPUnit\Framework\TestCase
+        ignored:
+            - LastDragon_ru\LaraASP\Testing\TestCase
+
 includes:
     # Vendor
     - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
@@ -32,7 +42,9 @@ includes:
     - ./vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
 
     # Package
-    - ./dev/PhpStan/Extensions/Container/extension.neon
+    - ./dev/PhpStan/Container/extension.neon
+    - ./dev/PhpStan/ClassMustBeFinal/extension.neon
+    - ./dev/PhpStan/ClassMustBeInternal/extension.neon
 
     # Baseline
     - phpstan-baseline-well-known.neon

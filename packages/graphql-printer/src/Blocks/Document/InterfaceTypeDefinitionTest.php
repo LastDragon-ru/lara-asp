@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(InterfaceTypeDefinition::class)]
-class InterfaceTypeDefinitionTest extends TestCase {
+final class InterfaceTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

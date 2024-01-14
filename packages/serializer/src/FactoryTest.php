@@ -24,7 +24,7 @@ use function config;
  * @internal
  */
 #[CoversClass(Factory::class)]
-class FactoryTest extends TestCase {
+final class FactoryTest extends TestCase {
     public function testCreate(): void {
         config([
             Package::Name => [

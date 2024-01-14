@@ -14,7 +14,7 @@ use function sprintf;
  * @internal
  */
 #[CoversClass(UnitEnumNormalizer::class)]
-class UnitEnumNormalizerTest extends TestCase {
+final class UnitEnumNormalizerTest extends TestCase {
     public function testNormalize(): void {
         $normalizer = new UnitEnumNormalizer();
         $enumAA     = UnitEnumNormalizerTest__EnumA::A;

@@ -10,8 +10,8 @@ use Override;
  * Migration that contains data only.
  *
  * This migration is useful to insert data into the existing working application
- * and unlike {@link \LastDragon_ru\LaraASP\Migrator\Migrations\RawMigration} it
- * will be applied only if the database already seeded.
+ * and unlike {@link RawMigration} it will be applied only if the database
+ * already seeded.
  */
 abstract class RawDataMigration extends RawMigration {
     // <editor-fold desc="Migration">

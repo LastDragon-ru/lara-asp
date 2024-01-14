@@ -43,7 +43,7 @@ use const JSON_THROW_ON_ERROR;
  * @internal
  */
 #[CoversClass(BuilderInfoDetector::class)]
-class BuilderInfoDetectorTest extends TestCase {
+final class BuilderInfoDetectorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -257,7 +257,7 @@ class BuilderInfoDetectorTest extends TestCase {
 
                             #[Override]
                             public static function definition(): string {
-                                throw new Exception('should not be called.');
+                                throw new Exception('Should not be called.');
                             }
                         })::class,
                     );
@@ -363,7 +363,7 @@ class BuilderInfoDetectorTest extends TestCase {
 
                             #[Override]
                             public static function definition(): string {
-                                throw new Exception('should not be called.');
+                                throw new Exception('Should not be called.');
                             }
 
                             #[Override]
@@ -394,7 +394,7 @@ class BuilderInfoDetectorTest extends TestCase {
  */
 class BuilderInfoDetectorTest__QueryBuilderResolver {
     public function __invoke(): QueryBuilder {
-        throw new Exception('should not be called.');
+        throw new Exception('Should not be called.');
     }
 }
 
@@ -404,7 +404,7 @@ class BuilderInfoDetectorTest__QueryBuilderResolver {
  */
 class BuilderInfoDetectorTest__CustomBuilderResolver {
     public function __invoke(): BuilderInfoDetectorTest__CustomBuilder {
-        throw new Exception('should not be called.');
+        throw new Exception('Should not be called.');
     }
 }
 
@@ -414,7 +414,7 @@ class BuilderInfoDetectorTest__CustomBuilderResolver {
  */
 class BuilderInfoDetectorTest__PaginatorResolver {
     public function __invoke(): mixed {
-        throw new Exception('should not be called.');
+        throw new Exception('Should not be called.');
     }
 }
 

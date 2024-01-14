@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Markdown::class)]
-class MarkdownTest extends TestCase {
+final class MarkdownTest extends TestCase {
     public function testGetTitle(): void {
         self::assertNull(
             Markdown::getTitle(

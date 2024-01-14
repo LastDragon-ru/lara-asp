@@ -15,7 +15,7 @@ use function config;
  * @internal
  */
 #[CoversClass(Operators::class)]
-class OperatorsTest extends TestCase {
+final class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testConstructor(): void {

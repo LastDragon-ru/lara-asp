@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Dev\PhpStan\Extensions\Container;
+namespace LastDragon_ru\LaraASP\Dev\PhpStan\Container;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -21,9 +21,16 @@ use function in_array;
 use function is_object;
 
 /**
+ * Provides proper return types for {@see Container::make()} without resolving
+ * where possible.
+ *
+ * @see https://github.com/nunomaduro/larastan/pull/945
+ * @see https://github.com/nunomaduro/larastan/issues/941
+ * @see https://github.com/phpstan/phpstan/discussions/10410
+ *
  * @internal
  */
-final class ContainerExtension implements DynamicMethodReturnTypeExtension {
+final class Extension implements DynamicMethodReturnTypeExtension {
     public function __construct() {
         // empty
     }

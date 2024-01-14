@@ -2,16 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Testing\Http\Resources;
 
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\ExpectationFailedException;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(ResourceCollection::class)]
-class ResourceCollectionTest extends TestCase {
+final class ResourceCollectionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -22,7 +22,7 @@ class ResourceCollectionTest extends TestCase {
      * @param array<array-key, mixed> $json
      */
     public function testSchema(bool $expected, array $json): void {
-        $schema     = new ResourceCollection(static::class);
+        $schema     = new ResourceCollection(self::class);
         $constraint = new JsonMatchesSchema($schema);
         $message    = '';
         $actual     = null;
@@ -32,6 +32,7 @@ class ResourceCollectionTest extends TestCase {
             $actual = true;
         } catch (ExpectationFailedException $exception) {
             $message = $exception->getMessage();
+            $actual  = false;
         }
 
         self::assertEquals($expected, $actual, $message);

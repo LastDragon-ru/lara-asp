@@ -71,7 +71,7 @@ use const JSON_THROW_ON_ERROR;
  * @internal
  */
 #[CoversClass(Directive::class)]
-class DirectiveTest extends TestCase {
+final class DirectiveTest extends TestCase {
     use WithTestObject;
     use MakesGraphQLRequests;
 
@@ -376,7 +376,7 @@ class DirectiveTest extends TestCase {
                     return new GraphQLExpected($test::getTestData()->file($file));
                 },
                 '~full.graphql',
-                static function (TestCase $test): void {
+                static function (): void {
                     $package = Package::Name;
 
                     config([
@@ -393,7 +393,7 @@ class DirectiveTest extends TestCase {
                     ));
                 },
                 '~example.graphql',
-                static function (TestCase $test): void {
+                static function (): void {
                     $package = Package::Name;
 
                     config([
@@ -457,7 +457,7 @@ class DirectiveTest extends TestCase {
                             Argument $argument,
                             Context $context,
                         ): object {
-                            throw new Exception('should not be called');
+                            throw new Exception('Should not be called');
                         }
 
                         #[Override]
@@ -866,6 +866,6 @@ class DirectiveTest extends TestCase {
  */
 class DirectiveTest__Resolver {
     public function __invoke(): mixed {
-        throw new Exception('should not be called.');
+        throw new Exception('Should not be called.');
     }
 }

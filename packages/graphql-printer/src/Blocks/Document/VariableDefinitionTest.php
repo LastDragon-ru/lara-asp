@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(VariableDefinition::class)]
-class VariableDefinitionTest extends TestCase {
+final class VariableDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

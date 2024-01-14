@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(BoolResource::class)]
-class BoolResourceTest extends TestCase {
+final class BoolResourceTest extends TestCase {
     public function testToResponse(): void {
         Route::get(__METHOD__, static function (): mixed {
             return new BoolResource(true);

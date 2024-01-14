@@ -12,8 +12,11 @@ use Mockery;
 use Mockery\Matcher\IsEqual;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+/**
+ * @internal
+ */
 #[CoversClass(Preprocessor::class)]
-class PreprocessorTest extends TestCase {
+final class PreprocessorTest extends TestCase {
     public function testProcess(): void {
         $content                    = <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.

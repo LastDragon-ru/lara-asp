@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Request::class)]
-class RequestTest extends TestCase {
+final class RequestTest extends TestCase {
     public function testValidated(): void {
         $router        = Container::getInstance()->make(Router::class);
         $translator    = Container::getInstance()->make(Translator::class);

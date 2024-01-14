@@ -2,14 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(ExpectedValue::class)]
-class ExpectedValueTest extends TestCase {
+final class ExpectedValueTest extends TestCase {
     public function testGetValue(): void {
         self::assertEquals(1, (new ExpectedValue(1))->getValue());
     }

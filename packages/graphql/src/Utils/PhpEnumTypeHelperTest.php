@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(PhpEnumTypeHelper::class)]
-class PhpEnumTypeHelperTest extends TestCase {
+final class PhpEnumTypeHelperTest extends TestCase {
     public function testGetEnumClass(): void {
         $type     = new PhpEnumType(PhpEnumTypeHelperTest_Enum::class);
         $actual   = PhpEnumTypeHelper::getEnumClass($type);

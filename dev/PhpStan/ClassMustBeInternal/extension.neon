@@ -1,0 +1,17 @@
+parameters:
+    classMustBeInternal: []
+
+parametersSchema:
+    classMustBeInternal: structure({
+        classes: listOf(string())
+        ignored: listOf(string())
+    })
+
+services:
+    -
+        class: LastDragon_ru\LaraASP\Dev\PhpStan\ClassMustBeInternal\Rule
+        arguments:
+            classes: %classMustBeInternal.classes%
+            ignored: %classMustBeInternal.ignored%
+        tags:
+            - phpstan.rules.rule

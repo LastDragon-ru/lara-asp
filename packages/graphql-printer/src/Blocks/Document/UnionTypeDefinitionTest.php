@@ -19,7 +19,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(UnionTypeDefinition::class)]
 #[CoversClass(UnionMemberTypes::class)]
-class UnionTypeDefinitionTest extends TestCase {
+final class UnionTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

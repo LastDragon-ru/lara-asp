@@ -3,14 +3,14 @@
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
 use ArrayIterator;
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(TraversableDataProvider::class)]
-class TraversableDataProviderTest extends TestCase {
+final class TraversableDataProviderTest extends TestCase {
     public function testGetData(): void {
         $f = new ExpectedFinal('expected final');
         $a = new ArrayIterator([

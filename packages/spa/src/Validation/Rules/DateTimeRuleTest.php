@@ -16,7 +16,7 @@ use function is_array;
  * @internal
  */
 #[CoversClass(DateTimeRule::class)]
-class DateTimeRuleTest extends TestCase {
+final class DateTimeRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

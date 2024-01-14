@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(DurationFormatter::class)]
-class DurationFormatterTest extends TestCase {
+final class DurationFormatterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

@@ -6,7 +6,9 @@ use LastDragon_ru\LaraASP\Testing\Comparators\EloquentModelComparator;
 use PHPUnit\Framework\Test;
 
 /**
- * Adds {@link \LastDragon_ru\LaraASP\Testing\Comparators\EloquentModelComparator}
+ * Adds {@link EloquentModelComparator}
+ *
+ * @see EloquentModelComparator
  *
  * @mixin Test
  */

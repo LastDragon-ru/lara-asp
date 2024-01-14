@@ -44,7 +44,7 @@ use function str_starts_with;
  * @internal
  */
 #[CoversClass(Printer::class)]
-class PrinterTest extends TestCase {
+final class PrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

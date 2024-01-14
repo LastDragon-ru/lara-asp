@@ -4,14 +4,14 @@ namespace LastDragon_ru\LaraASP\Spa\Angular;
 
 use Exception;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 #[CoversClass(Url::class)]
-class UrlTest extends TestCase {
+final class UrlTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

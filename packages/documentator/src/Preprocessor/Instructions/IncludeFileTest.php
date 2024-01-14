@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(IncludeFile::class)]
-class IncludeFileTest extends TestCase {
+final class IncludeFileTest extends TestCase {
     public function testProcessRelative(): void {
         $file     = self::getTestData()->file('.md');
         $instance = Container::getInstance()->make(IncludeFile::class);

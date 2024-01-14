@@ -3,10 +3,9 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 
 use DOMDocument;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 use function is_string;
@@ -15,9 +14,7 @@ use function is_string;
  * @internal
  */
 #[CoversClass(XmlMatchesSchema::class)]
-class XmlMatchesSchemaTest extends TestCase {
-    use WithTestData;
-
+final class XmlMatchesSchemaTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

@@ -18,7 +18,7 @@ use function iterator_to_array;
  * @internal
  */
 #[CoversClass(ChunkedIterator::class)]
-class ChunkedIteratorTest extends TestCase {
+final class ChunkedIteratorTest extends TestCase {
     use WithTestObject;
     use WithQueryLog;
 

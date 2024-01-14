@@ -23,7 +23,7 @@ use function is_array;
  * @internal
  */
 #[CoversClass(ScoutSorter::class)]
-class ScoutSorterTest extends TestCase {
+final class ScoutSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

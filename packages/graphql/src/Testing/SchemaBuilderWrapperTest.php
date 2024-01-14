@@ -12,7 +12,7 @@ use ReflectionMethod;
  * @internal
  */
 #[CoversClass(SchemaBuilderWrapper::class)]
-class SchemaBuilderWrapperTest extends TestCase {
+final class SchemaBuilderWrapperTest extends TestCase {
     public function testWrappedSuccessfully(): void {
         $missed  = [];
         $origin  = new ReflectionClass(SchemaBuilder::class);

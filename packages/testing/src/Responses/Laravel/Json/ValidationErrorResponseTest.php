@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(ValidationErrorResponse::class)]
-class ValidationErrorResponseTest extends TestCase {
+final class ValidationErrorResponseTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

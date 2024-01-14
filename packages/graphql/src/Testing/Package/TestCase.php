@@ -35,7 +35,7 @@ use function mb_substr;
 /**
  * @internal
  */
-class TestCase extends PackageTestCase {
+abstract class TestCase extends PackageTestCase {
     use GraphQLAssertions {
         getGraphQLPrinter as private getDefaultGraphQLPrinter;
     }

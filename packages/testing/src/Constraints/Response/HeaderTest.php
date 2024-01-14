@@ -4,16 +4,16 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
 use GuzzleHttp\Psr7\Response;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentResponse;
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Constraint\IsEqual;
-use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
  * @internal
  */
 #[CoversClass(Header::class)]
-class HeaderTest extends TestCase {
+final class HeaderTest extends TestCase {
     public function testEvaluateInvalidArgument(): void {
         self::expectExceptionObject(new InvalidArgumentResponse('$response', new stdClass()));
 

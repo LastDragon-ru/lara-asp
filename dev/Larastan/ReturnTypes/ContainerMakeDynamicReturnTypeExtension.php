@@ -3,7 +3,7 @@
 namespace Larastan\Larastan\ReturnTypes;
 
 use Illuminate\Contracts\Container\Container;
-use LastDragon_ru\LaraASP\Dev\PhpStan\Extensions\Container\ContainerExtension;
+use LastDragon_ru\LaraASP\Dev\PhpStan\Container\Extension;
 use Override;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
@@ -14,9 +14,8 @@ use PHPStan\Type\Type;
 /**
  * Original class uses {@see Container::make()} it is slow and unwanted
  *
+ * @see Extension
  * @internal
- *
- * @see ContainerExtension
  */
 class ContainerMakeDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension {
     #[Override]

@@ -2,17 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
-use Override;
-use Stringable;
-
 use function array_slice;
 use function array_values;
 use function end;
-use function implode;
 
-class Property implements Stringable {
-    protected const Separator = '.';
-
+class Property {
     /**
      * @var list<string>
      */
@@ -44,10 +38,5 @@ class Property implements Stringable {
         $parent = new static(...$path);
 
         return $parent;
-    }
-
-    #[Override]
-    public function __toString(): string {
-        return implode(static::Separator, $this->path);
     }
 }

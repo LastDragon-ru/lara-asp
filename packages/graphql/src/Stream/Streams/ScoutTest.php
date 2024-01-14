@@ -23,7 +23,7 @@ use function usort;
  * @internal
  */
 #[CoversClass(Scout::class)]
-class ScoutTest extends TestCase {
+final class ScoutTest extends TestCase {
     use WithFaker;
     use WithQueryLog;
     use WithTestObject;

@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(OperationDefinition::class)]
-class OperationDefinitionTest extends TestCase {
+final class OperationDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

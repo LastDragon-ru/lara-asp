@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(EnumValueDefinition::class)]
-class EnumValueDefinitionTest extends TestCase {
+final class EnumValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

@@ -15,7 +15,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Resolver::class)]
-class ResolverTest extends TestCase {
+final class ResolverTest extends TestCase {
     public function testGet(): void {
         $router   = Container::getInstance()->make(Router::class);
         $resolver = new class($router) extends Resolver {

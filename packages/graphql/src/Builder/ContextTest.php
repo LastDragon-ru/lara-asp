@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Context::class)]
-class ContextTest extends TestCase {
+final class ContextTest extends TestCase {
     public function testContext(): void {
         $context = new Context();
         $class   = (new class('origin') {

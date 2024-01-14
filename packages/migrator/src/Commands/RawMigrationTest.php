@@ -21,7 +21,7 @@ use function implode;
  * @internal
  */
 #[CoversClass(RawMigration::class)]
-class RawMigrationTest extends TestCase {
+final class RawMigrationTest extends TestCase {
     public function testHandle(): void {
         // make:migration may also call dump-autoload we are no need this.
         $composer = Mockery::mock(Composer::class);

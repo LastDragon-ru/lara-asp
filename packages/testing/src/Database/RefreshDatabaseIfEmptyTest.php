@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @internal
  */
 #[CoversClass(RefreshDatabaseIfEmpty::class)]
-class RefreshDatabaseIfEmptyTest extends TestCase {
+final class RefreshDatabaseIfEmptyTest extends TestCase {
     public function testImpl(): void {
         self::assertNotEmpty(Container::getInstance()->make(RefreshDatabaseIfEmptyTest_Impl::class, [
             'name' => 'test',
@@ -28,7 +28,7 @@ class RefreshDatabaseIfEmptyTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class RefreshDatabaseIfEmptyTest_Impl extends TestCase {
+final class RefreshDatabaseIfEmptyTest_Impl extends TestCase {
     use RefreshDatabaseIfEmpty;
 
     #[Override]

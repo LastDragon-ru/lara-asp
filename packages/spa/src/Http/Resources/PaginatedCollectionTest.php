@@ -16,7 +16,7 @@ use function json_decode;
  */
 #[CoversClass(PaginatedCollection::class)]
 #[CoversClass(PaginatedResponse::class)]
-class PaginatedCollectionTest extends TestCase {
+final class PaginatedCollectionTest extends TestCase {
     public function testToResponseLengthAwarePaginator(): void {
         $total     = 123;
         $perPage   = 25;

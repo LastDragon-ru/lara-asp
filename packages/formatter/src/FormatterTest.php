@@ -20,7 +20,7 @@ use const PHP_INT_MAX;
  * @internal
  */
 #[CoversClass(Formatter::class)]
-class FormatterTest extends TestCase {
+final class FormatterTest extends TestCase {
     protected Formatter $formatter;
 
     // <editor-fold desc="Setup">

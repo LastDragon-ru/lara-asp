@@ -3,10 +3,9 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use Exception;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
+use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 use function array_map;
@@ -24,9 +23,7 @@ use const PHP_OS_FAMILY;
  * @internal
  */
 #[CoversClass(Protocol::class)]
-class ProtocolTest extends TestCase {
-    use WithTempFile;
-
+final class ProtocolTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

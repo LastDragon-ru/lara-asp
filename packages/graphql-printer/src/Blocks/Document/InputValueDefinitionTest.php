@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(InputValueDefinition::class)]
-class InputValueDefinitionTest extends TestCase {
+final class InputValueDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

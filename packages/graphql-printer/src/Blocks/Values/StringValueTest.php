@@ -17,7 +17,7 @@ use function implode;
  * @internal
  */
 #[CoversClass(StringValue::class)]
-class StringValueTest extends TestCase {
+final class StringValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

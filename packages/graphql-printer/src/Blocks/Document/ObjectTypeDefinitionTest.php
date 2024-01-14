@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(ObjectTypeDefinition::class)]
-class ObjectTypeDefinitionTest extends TestCase {
+final class ObjectTypeDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

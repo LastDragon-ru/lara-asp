@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Document::class)]
-class DocumentTest extends TestCase {
+final class DocumentTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

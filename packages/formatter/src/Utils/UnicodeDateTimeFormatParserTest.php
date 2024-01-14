@@ -12,7 +12,7 @@ use function iterator_to_array;
  * @internal
  */
 #[CoversClass(UnicodeDateTimeFormatParser::class)]
-class UnicodeDateTimeFormatParserTest extends TestCase {
+final class UnicodeDateTimeFormatParserTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

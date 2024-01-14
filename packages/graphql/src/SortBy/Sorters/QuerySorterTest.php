@@ -23,7 +23,7 @@ use function is_array;
  * @internal
  */
 #[CoversClass(QuerySorter::class)]
-class QuerySorterTest extends TestCase {
+final class QuerySorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

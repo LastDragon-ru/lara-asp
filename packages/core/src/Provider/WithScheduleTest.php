@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(WithSchedule::class)]
-class WithScheduleTest extends TestCase {
+final class WithScheduleTest extends TestCase {
     public function testRegistration(): void {
         $this->override(Scheduler::class, static function (MockInterface $mock): void {
             $mock

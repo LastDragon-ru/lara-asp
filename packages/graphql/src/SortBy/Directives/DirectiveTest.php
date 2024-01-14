@@ -56,7 +56,7 @@ use const JSON_THROW_ON_ERROR;
  * @internal
  */
 #[CoversClass(Directive::class)]
-class DirectiveTest extends TestCase {
+final class DirectiveTest extends TestCase {
     use WithTestObject;
     use MakesGraphQLRequests;
 
@@ -525,7 +525,7 @@ class DirectiveTest extends TestCase {
                             'random' => 'yes',
                         ],
                     ],
-                    static function (TestCase $test): void {
+                    static function (): void {
                         $package = Package::Name;
 
                         config([
@@ -803,6 +803,6 @@ class DirectiveTest extends TestCase {
  */
 class DirectiveTest__QueryBuilderResolver {
     public function __invoke(): QueryBuilder {
-        throw new Exception('should not be called.');
+        throw new Exception('Should not be called.');
     }
 }

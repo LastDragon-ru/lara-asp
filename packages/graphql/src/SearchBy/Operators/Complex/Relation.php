@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 use Closure;
 use GraphQL\Language\DirectiveLocation;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -137,7 +138,7 @@ class Relation extends BaseOperator {
     }
 
     /**
-     * @template TBuilder of EloquentBuilder<\Illuminate\Database\Eloquent\Model>
+     * @template TBuilder of EloquentBuilder<EloquentModel>
      *
      * @param TBuilder                $builder
      * @param Closure(TBuilder): void $closure

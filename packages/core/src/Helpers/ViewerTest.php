@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Viewer::class)]
-class ViewerTest extends TestCase {
+final class ViewerTest extends TestCase {
     public function testGet(): void {
         $view       = 'view';
         $data       = ['a' => 123];

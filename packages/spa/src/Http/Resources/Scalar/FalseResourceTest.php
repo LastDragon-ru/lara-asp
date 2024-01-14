@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(FalseResource::class)]
-class FalseResourceTest extends TestCase {
+final class FalseResourceTest extends TestCase {
     public function testToResponse(): void {
         Route::get(__METHOD__, static function (): mixed {
             return new FalseResource();

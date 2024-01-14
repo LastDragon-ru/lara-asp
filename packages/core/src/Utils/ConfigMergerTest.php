@@ -4,15 +4,15 @@ namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use Exception;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
  * @internal
  */
 #[CoversClass(ConfigMerger::class)]
-class ConfigMergerTest extends TestCase {
+final class ConfigMergerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

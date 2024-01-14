@@ -11,7 +11,7 @@ use stdClass;
  * @internal
  */
 #[CoversClass(Dispatcher::class)]
-class DispatcherTest extends TestCase {
+final class DispatcherTest extends TestCase {
     public function testSubject(): void {
         $spy      = Mockery::spy(static fn(stdClass $context) => null);
         $context  = new stdClass();

@@ -15,7 +15,7 @@ use stdClass;
  * @internal
  */
 #[CoversClass(ResolverRule::class)]
-class ResolverRuleTest extends TestCase {
+final class ResolverRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testPasses(): void {

@@ -26,7 +26,7 @@ use function config;
  * @internal
  */
 #[CoversClass(SpaController::class)]
-class SpaControllerTest extends TestCase {
+final class SpaControllerTest extends TestCase {
     // <editor-fold desc="Prepare">
     // =========================================================================
     /**

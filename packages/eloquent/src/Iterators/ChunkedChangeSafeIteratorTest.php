@@ -23,7 +23,7 @@ use function iterator_to_array;
  * @internal
  */
 #[CoversClass(ChunkedChangeSafeIterator::class)]
-class ChunkedChangeSafeIteratorTest extends TestCase {
+final class ChunkedChangeSafeIteratorTest extends TestCase {
     use WithTestObject;
     use WithQueryLog;
 

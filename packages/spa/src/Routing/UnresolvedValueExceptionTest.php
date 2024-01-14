@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(UnresolvedValueException::class)]
-class UnresolvedValueExceptionTest extends TestCase {
+final class UnresolvedValueExceptionTest extends TestCase {
     public function testHttpResponse(): void {
         Route::get(__FUNCTION__, static function (): void {
             throw new UnresolvedValueException(123);

@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(InlineFragment::class)]
-class InlineFragmentTest extends TestCase {
+final class InlineFragmentTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

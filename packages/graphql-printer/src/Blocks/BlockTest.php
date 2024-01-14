@@ -14,6 +14,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnresolvedFieldDefinition;
 use GraphQL\Type\Schema;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
@@ -38,7 +39,7 @@ use function sort;
  * @internal
  */
 #[CoversClass(Block::class)]
-class BlockTest extends TestCase {
+final class BlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[CoversNothing]
@@ -183,7 +184,7 @@ class BlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{bool, \LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings, string}>
+     * @return array<string, array{bool, Settings, string}>
      */
     public static function dataProviderIsMultiline(): array {
         $settings = new TestSettings();

@@ -14,7 +14,7 @@ use const NAN;
  * @internal
  */
 #[CoversClass(IntRule::class)]
-class IntRuleTest extends TestCase {
+final class IntRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

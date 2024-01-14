@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(NumberResource::class)]
-class NumberResourceTest extends TestCase {
+final class NumberResourceTest extends TestCase {
     public function testToResponse(): void {
         Route::get(__METHOD__, static function (): mixed {
             return new NumberResource(123);

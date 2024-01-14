@@ -22,7 +22,7 @@ use function iterator_to_array;
  * @internal
  */
 #[CoversClass(Commands::class)]
-class CommandsTest extends TestCase {
+final class CommandsTest extends TestCase {
     // <editor-fold desc="Prepare">
     // =========================================================================
     /**
@@ -42,7 +42,7 @@ class CommandsTest extends TestCase {
         $directory = Path::normalize(self::getTempDirectory());
 
         self::assertNotFalse(
-            file_put_contents(Path::join($directory, 'file.txt'), static::class),
+            file_put_contents(Path::join($directory, 'file.txt'), self::class),
         );
 
         $result = $this

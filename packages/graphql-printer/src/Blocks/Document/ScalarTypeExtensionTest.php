@@ -15,7 +15,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(ScalarTypeExtension::class)]
-class ScalarTypeExtensionTest extends TestCase {
+final class ScalarTypeExtensionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

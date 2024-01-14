@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Requirements::class)]
-class RequirementsTest extends TestCase {
+final class RequirementsTest extends TestCase {
     public function testGetMergedVersions(): void {
         $command  = new class() extends Requirements {
             /**
