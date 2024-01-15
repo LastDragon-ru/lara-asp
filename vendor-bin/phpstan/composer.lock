@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20aaf9c1e4e019d217f175a7770e8ccd",
+    "content-hash": "a1f7fc68a0021d79dff11f12b9ebbd22",
     "packages": [],
     "packages-dev": [
         {
@@ -1393,16 +1393,94 @@
             "time": "2024-02-21T19:25:27+00:00"
         },
         {
+            "name": "lastdragon-ru/lara-asp-core",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../packages/core",
+                "reference": "27679fa0bed97f910f4b69ab874bfaed1c31de43"
+            },
+            "require": {
+                "illuminate/console": "^10.34.0",
+                "illuminate/container": "^10.34.0",
+                "illuminate/contracts": "^10.34.0",
+                "php": "^8.1|^8.2|^8.3",
+                "symfony/filesystem": "^6.3.0",
+                "symfony/polyfill-php83": "^1.28"
+            },
+            "require-dev": {
+                "illuminate/support": "^10.34.0",
+                "lastdragon-ru/lara-asp-testing": "self.version",
+                "mockery/mockery": "^1.6.2",
+                "orchestra/testbench": "^8.0.0",
+                "phpunit/phpunit": "^10.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "lara-asp": {
+                    "ci": {
+                        "required-extensions": {
+                            "league/flysystem": [
+                                "ext-fileinfo"
+                            ],
+                            "illuminate/console": [
+                                "ext-mbstring"
+                            ]
+                        }
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LastDragon_ru\\LaraASP\\Core\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "src/**Test.php",
+                    "src/Testing/**.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "LastDragon_ru\\LaraASP\\Core\\Docs\\": "docs"
+                },
+                "exclude-from-classmap": [
+                    "docs/"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "The Awesome Set of Packages for Laravel - The Core.",
+            "homepage": "https://github.com/LastDragon-ru/lara-asp",
+            "keywords": [
+                "laravel",
+                "laravel-package",
+                "laravel-queue",
+                "php",
+                "queue"
+            ],
+            "support": {
+                "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+                "source": "https://github.com/LastDragon-ru/lara-asp",
+                "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+            },
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "lastdragon-ru/lara-asp-dev",
             "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "../../packages/dev",
-                "reference": "22ac6b72feab0c4c8234cf52c937697b44068889"
+                "reference": "6a462ef64e9b6d81cb6c2d245916ca474cdcf635"
             },
             "require": {
                 "ext-mbstring": "*",
                 "illuminate/container": "^10.0.0",
+                "lastdragon-ru/lara-asp-core": "self.version",
+                "nette/neon": "^3.4",
                 "php": "^8.1|^8.2|^8.3",
                 "phpstan/phpstan": "^1.10"
             },
@@ -1412,8 +1490,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "LastDragon_ru\\LaraASP\\Dev\\": "src/",
-                    "Larastan\\Larastan\\": "larastan/"
+                    "LastDragon_ru\\LaraASP\\Dev\\": "src/"
                 },
                 "exclude-from-classmap": [
                     "src/**Test.php"
@@ -1546,6 +1623,74 @@
                 }
             ],
             "time": "2024-01-25T10:35:09+00:00"
+        },
+        {
+            "name": "nette/neon",
+            "version": "v3.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nette/neon.git",
+                "reference": "457bfbf0560f600b30d9df4233af382a478bb44d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nette/neon/zipball/457bfbf0560f600b30d9df4233af382a478bb44d",
+                "reference": "457bfbf0560f600b30d9df4233af382a478bb44d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "8.0 - 8.3"
+            },
+            "require-dev": {
+                "nette/tester": "^2.4",
+                "phpstan/phpstan": "^1.0",
+                "tracy/tracy": "^2.7"
+            },
+            "bin": [
+                "bin/neon-lint"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.4-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0-only",
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                },
+                {
+                    "name": "Nette Community",
+                    "homepage": "https://nette.org/contributors"
+                }
+            ],
+            "description": "🍸 Nette NEON: encodes and decodes NEON file format.",
+            "homepage": "https://ne-on.org",
+            "keywords": [
+                "export",
+                "import",
+                "neon",
+                "nette",
+                "yaml"
+            ],
+            "support": {
+                "issues": "https://github.com/nette/neon/issues",
+                "source": "https://github.com/nette/neon/tree/v3.4.1"
+            },
+            "time": "2023-09-27T08:59:11+00:00"
         },
         {
             "name": "nunomaduro/termwind",
@@ -2643,6 +2788,69 @@
                 }
             ],
             "time": "2023-05-23T14:45:45+00:00"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v6.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "7f3b1755eb49297a0827a7575d5d2b2fd11cc9fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/7f3b1755eb49297a0827a7575d5d2b2fd11cc9fb",
+                "reference": "7f3b1755eb49297a0827a7575d5d2b2fd11cc9fb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/polyfill-ctype": "~1.8",
+                "symfony/polyfill-mbstring": "~1.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides basic utilities for the filesystem",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/filesystem/tree/v6.4.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-01-23T14:51:35+00:00"
         },
         {
             "name": "symfony/finder",
@@ -4177,6 +4385,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "lastdragon-ru/lara-asp-core": 20,
         "lastdragon-ru/lara-asp-dev": 20
     },
     "prefer-stable": false,
