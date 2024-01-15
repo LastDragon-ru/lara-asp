@@ -50,6 +50,12 @@ This package contains useful utilities and classes.
 
 [Read more](<packages/core/README.md>).
 
+## Dev 🐝
+
+Various tools and helpers to develop the package.
+
+[Read more](<packages/dev/README.md>).
+
 ## Documentator
 
 This package provides various utilities for documentation generation.

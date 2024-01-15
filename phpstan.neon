@@ -54,9 +54,9 @@ includes:
     - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
 
     # Package
-    - ./dev/PhpStan/Container/extension.neon
-    - ./dev/PhpStan/ClassMustBeFinal/extension.neon
-    - ./dev/PhpStan/ClassMustBeInternal/extension.neon
+    - ./packages/dev/src/PhpStan/Container/extension.neon
+    - ./packages/dev/src/PhpStan/ClassMustBeFinal/extension.neon
+    - ./packages/dev/src/PhpStan/ClassMustBeInternal/extension.neon
 
     # Baseline
     - phpstan-baseline-well-known.neon

@@ -34,6 +34,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [Core](<packages/core/UPGRADE.md>)
+* [Dev 🐝](<packages/dev/UPGRADE.md>)
 * [Documentator](<packages/documentator/UPGRADE.md>)
 * [Eloquent Helpers](<packages/eloquent/UPGRADE.md>)
 * [Formatter](<packages/formatter/UPGRADE.md>)
