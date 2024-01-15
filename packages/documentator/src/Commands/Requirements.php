@@ -27,6 +27,7 @@ use function assert;
 use function count;
 use function end;
 use function explode;
+use function file_get_contents;
 use function getcwd;
 use function is_array;
 use function json_decode;
@@ -45,7 +46,7 @@ use const JSON_THROW_ON_ERROR;
     description: 'Generates a table with the required versions of PHP/Laravel in Markdown format.',
 )]
 class Requirements extends Command {
-    public const Name  = Package::Name.':requirements';
+    public const  Name = Package::Name.':requirements';
     private const HEAD = 'HEAD';
 
     /**
@@ -175,10 +176,12 @@ class Requirements extends Command {
         try {
             $root    = Path::normalize($git->getRoot($cwd));
             $path    = Path::join($cwd, 'composer.json');
-            $path    = str_starts_with($path, $root)
+            $gitPath = str_starts_with($path, $root)
                 ? mb_substr($path, mb_strlen($root) + 1)
                 : $path;
-            $package = $git->getFile($path, $tag, $cwd);
+            $package = $tag !== self::HEAD
+                ? $git->getFile($gitPath, $tag, $cwd)
+                : (string) file_get_contents($path);
             $package = json_decode($package, true, flags: JSON_THROW_ON_ERROR);
 
             assert(is_array($package));
