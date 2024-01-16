@@ -7,7 +7,7 @@
          colors="true">
     <testsuites>
         <testsuite name="dev">
-            <directory suffix="Test.php">./dev</directory>
+            <directory suffix="Test.php">./dev/App</directory>
         </testsuite>
         <testsuite name="core">
             <directory suffix="Test.php">./packages/core/src</directory>

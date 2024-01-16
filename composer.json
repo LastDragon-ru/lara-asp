@@ -114,9 +114,6 @@
     ]
   },
   "autoload-dev": {
-    "files": [
-      "vendor-bin/phpstan/vendor/phpstan/phpstan/bootstrap.php"
-    ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Dev\\App\\": "dev/App",
       "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\": "dev/PhpStan",
