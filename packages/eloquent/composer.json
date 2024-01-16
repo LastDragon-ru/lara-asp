@@ -39,7 +39,8 @@
       "LastDragon_ru\\LaraASP\\Eloquent\\": "src/"
     },
     "exclude-from-classmap": [
-      "src/**Test.php"
+      "src/**Test.php",
+      "src/Testing/**.php"
     ]
   },
   "config": {

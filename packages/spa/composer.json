@@ -23,6 +23,7 @@
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "laravel/framework": "^10.0.0",
     "lastdragon-ru/lara-asp-core": "self.version",
+    "symfony/http-kernel": "^6.3.0",
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {
@@ -39,7 +40,8 @@
       "LastDragon_ru\\LaraASP\\Spa\\": "src/"
     },
     "exclude-from-classmap": [
-      "src/**Test.php"
+      "src/**Test.php",
+      "src/Testing/**.php"
     ]
   },
   "extra": {

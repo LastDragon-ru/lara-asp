@@ -37,6 +37,7 @@
     "ext-bcmath": "*",
     "ext-dom": "*",
     "ext-intl": "*",
+    "ext-filter": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-mbstring": "*",
@@ -48,14 +49,21 @@
     "http-interop/http-factory-guzzle": "^1.0.0",
     "laravel/framework": "^10.0.0",
     "league/commonmark": "^2.4",
+    "mockery/mockery": "^1.6.2",
+    "nikic/php-parser": "^4.18|^5.0",
     "nuwave/lighthouse": "^6.5.0",
     "opis/json-schema": "^2.3.0",
     "phpdocumentor/type-resolver": "^1.7",
     "phpstan/phpdoc-parser": "^1.25",
+    "phpunit/phpunit": "^10.1.0",
     "psr/http-message": "^1.0.0|^2.0.0",
+    "sebastian/comparator": "^5.0",
+    "sebastian/exporter": "^5.0",
+    "symfony/console": "^6.3.0",
     "symfony/filesystem": "^6.3.0",
     "symfony/finder": "^6.3.0",
     "symfony/http-foundation": "^6.3.0",
+    "symfony/http-kernel": "^6.3.0",
     "symfony/mime": "^6.3.0",
     "symfony/polyfill-php83": "^1.28",
     "symfony/property-access": "^6.3.0",
@@ -69,10 +77,7 @@
     "bamarni/composer-bin-plugin": "^1.8",
     "composer/class-map-generator": "^1.0",
     "laravel/scout": "^9.8.0|^10.0.0",
-    "mockery/mockery": "^1.6.2",
-    "nikic/php-parser": "^4.18|^5.0",
     "orchestra/testbench": "^8.0.0",
-    "phpunit/phpunit": "^10.1.0",
     "symfony/var-dumper": "^6.3.0"
   },
   "suggest": {
@@ -100,16 +105,10 @@
       "LastDragon_ru\\LaraASP\\Documentator\\": "packages/documentator/src/"
     },
     "exclude-from-classmap": [
-      "packages/core/src/**Test.php",
-      "packages/migrator/src/**Test.php",
-      "packages/testing/src/**Test.php",
-      "packages/eloquent/src/**Test.php",
-      "packages/formatter/src/**Test.php",
-      "packages/spa/src/**Test.php",
-      "packages/graphql/src/**Test.php",
-      "packages/graphql-printer/src/**Test.php",
-      "packages/serializer/src/**Test.php",
-      "packages/documentator/src/**Test.php"
+      "dev/**.php",
+      "packages/*/src/**Test.php",
+      "packages/*/src/Testing/**.php",
+      "packages/testing/src/Package/**.php"
     ]
   },
   "autoload-dev": {
@@ -145,7 +144,8 @@
     ],
     "validate:dependencies": [
       "@monorepo-builder",
-      "@composer-unused"
+      "@composer-unused",
+      "@composer-require-checker"
     ],
     "phpstan": [
       "./vendor-bin/phpstan/vendor/bin/phpstan analyse"
@@ -161,6 +161,9 @@
     ],
     "composer-unused": [
       "./vendor-bin/composer-unused/vendor/bin/composer-unused unused"
+    ],
+    "composer-require-checker": [
+      "./vendor-bin/composer-require-checker/vendor/bin/composer-require-checker check"
     ],
     "monorepo-builder": [
       "./vendor-bin/monorepo-builder/vendor/bin/monorepo-builder validate"
