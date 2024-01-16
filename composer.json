@@ -137,6 +137,9 @@
   "scripts": {
     "validate:release": [
       "@validate:dependencies",
+      "@validate:commit"
+    ],
+    "validate:commit": [
       "@phpstan",
       "@phpunit",
       "@phpcs",
