@@ -45,9 +45,6 @@
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "orchestra/testbench": "^8.0.0"
   },
-  "conflict": {
-    "phpunit/phpunit": "<9.0"
-  },
   "suggest": {
     "ext-fileinfo": "Required for league/flysystem",
     "orchestra/testbench": "For testing the packages which required Application."

@@ -84,9 +84,6 @@
     "ext-fileinfo": "Required for league/flysystem",
     "laravel/scout": "Required for the @sortBy directive to work with Scout Builder."
   },
-  "conflict": {
-    "phpunit/phpunit": "<9.0"
-  },
   "autoload": {
     "files": [
       "packages/eloquent/src/mixins.php",
