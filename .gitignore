@@ -1,6 +1,7 @@
 # General
 /node_modules
 /vendor
+/vendor-bin/**/vendor
 /tmp
 /.phpunit
 /.vagrant
@@ -26,5 +27,5 @@ Thumbs.db
 .history/*
 
 # Project
-composer.lock
-Vagrant.yml
+/composer.lock
+/Vagrant.yml

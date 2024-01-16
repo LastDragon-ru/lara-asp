@@ -1,0 +1,20 @@
+{
+  "require-dev": {
+    "larastan/larastan": "2.8.1",
+    "phpstan/phpstan": "1.10.55",
+    "phpstan/phpstan-mockery": "^1.1",
+    "phpstan/phpstan-phpunit": "^1.3",
+    "phpstan/phpstan-strict-rules": "^1.5",
+    "spaze/phpstan-disallowed-calls": "^3.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\": "../../dev/PhpStan",
+      "Larastan\\Larastan\\": "../../dev/Larastan"
+    },
+    "exclude-from-classmap": [
+      "vendor/larastan/larastan/src/ReturnTypes/ContainerArrayAccessDynamicMethodReturnTypeExtension.php",
+      "vendor/larastan/larastan/src/ReturnTypes/ContainerMakeDynamicReturnTypeExtension.php"
+    ]
+  }
+}
