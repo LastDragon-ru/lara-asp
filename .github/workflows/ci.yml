@@ -30,6 +30,9 @@ jobs:
       - name: Check package versions
         run: |
           composer run-script monorepo-builder
+      - name: Check packages
+        run: |
+          composer run-script composer-require-checker
       - name: Check unused packages
         run: |
           composer run-script composer-unused
@@ -63,6 +66,9 @@ jobs:
         uses: ramsey/composer-install@v2
         with:
           working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
+      - name: Check packages
+        run: |
+          composer run-script composer-require-checker -- "${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
       - name: Check unused packages
         run: |
           composer run-script composer-unused -- "${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
