@@ -132,7 +132,7 @@
       ]
     },
     "bamarni-bin": {
-      "bin-links": true,
+      "bin-links": false,
       "forward-command": true
     }
   },
@@ -145,20 +145,26 @@
       "@markdownlint"
     ],
     "validate:dependencies": [
-      "./vendor/bin/monorepo-builder validate",
-      "./vendor/bin/composer-unused"
+      "@monorepo-builder",
+      "@composer-unused"
     ],
     "phpstan": [
-      "@php ./vendor/bin/phpstan analyse"
+      "./vendor-bin/phpstan/vendor/bin/phpstan analyse"
     ],
     "phpunit": [
-      "@php ./vendor/bin/phpunit"
+      "./vendor/bin/phpunit"
     ],
     "phpcs": [
-      "@php ./vendor/bin/phpcs"
+      "./vendor-bin/phpcs/vendor/bin/phpcs"
     ],
     "markdownlint": [
       "npm run markdownlint"
+    ],
+    "composer-unused": [
+      "./vendor-bin/composer-unused/vendor/bin/composer-unused unused"
+    ],
+    "monorepo-builder": [
+      "./vendor-bin/monorepo-builder/vendor/bin/monorepo-builder validate"
     ],
     "coverage": [
       "@php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-html=.phpunit/coverage.html"

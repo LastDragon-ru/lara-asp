@@ -29,10 +29,10 @@ jobs:
         uses: ./.github/actions/php
       - name: Check package versions
         run: |
-          ./vendor/bin/monorepo-builder validate
+          composer run-script monorepo-builder
       - name: Check unused packages
         run: |
-          ./vendor/bin/composer-unused
+          composer run-script composer-unused
 
   dependencies-package:
     name: Dependencies checks
@@ -64,9 +64,8 @@ jobs:
         with:
           working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
       - name: Check unused packages
-        working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
         run: |
-          ../../vendor/bin/composer-unused
+          composer run-script composer-unused -- "${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
 
   phpcs:
     name: PHP CodeSniffer
@@ -78,7 +77,7 @@ jobs:
         uses: ./.github/actions/php
       - name: Execute
         run: |
-          ./vendor/bin/phpcs --report=checkstyle | cs2pr
+          composer run-script phpcs -- --report=checkstyle | cs2pr
 
   phpstan:
     name: PHPStan
@@ -90,7 +89,7 @@ jobs:
         uses: ./.github/actions/php
       - name: Execute
         run: |
-          ./vendor/bin/phpstan analyse
+          composer run-script phpstan -- --error-format=checkstyle | cs2pr
 
   phpunit:
     name: Tests
