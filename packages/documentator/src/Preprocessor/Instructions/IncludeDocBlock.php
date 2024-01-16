@@ -10,14 +10,22 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidP
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
-use phpDocumentor\Reflection\DocBlockFactory;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeFinder;
 use PhpParser\ParserFactory;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode as PhpDocBlockNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
+use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
+use PHPStan\PhpDocParser\Parser\TypeParser;
 
+use function array_slice;
 use function dirname;
 use function file_get_contents;
+use function implode;
 use function trim;
 
 /**
@@ -76,6 +84,49 @@ class IncludeDocBlock implements ParameterizableInstruction {
         }
 
         // Class?
+        $class = $this->getClass($content, $path, $target);
+
+        if (!$class) {
+            return '';
+        }
+
+        // DocBlock?
+        $node = $this->getDocNode($class);
+
+        if (!$node) {
+            return '';
+        }
+
+        // Parse
+        $eol    = "\n";
+        $text   = $this->getDocText($node);
+        $result = '';
+
+        if ($parameters->summary) {
+            $summary = trim(implode($eol.$eol, array_slice($text, 0, 1)));
+
+            if ($summary) {
+                $result .= $summary.$eol.$eol;
+            }
+        }
+
+        if ($parameters->description) {
+            $description = trim(implode($eol.$eol, array_slice($text, 1)));
+
+            if ($description) {
+                $result .= $description.$eol.$eol;
+            }
+        }
+
+        if ($result) {
+            $result = trim($result).$eol;
+        }
+
+        // Return
+        return $result;
+    }
+
+    private function getClass(string $content, string $path, string $target): ?ClassLike {
         try {
             $class  = null;
             $parser = (new ParserFactory())->createForNewestSupportedVersion();
@@ -89,43 +140,46 @@ class IncludeDocBlock implements ParameterizableInstruction {
         }
 
         if (!($class instanceof ClassLike)) {
-            return '';
+            $class = null;
         }
 
-        // DocBlock?
-        $comment = $class->getDocComment()?->getText();
+        return $class;
+    }
 
-        if (!$comment) {
-            return '';
+    private function getDocNode(ClassLike $class): ?PhpDocBlockNode {
+        // Comment?
+        $comment = $class->getDocComment();
+
+        if (!$comment || trim($comment->getText()) === '') {
+            return null;
         }
 
         // Parse
-        $eol      = "\n";
-        $result   = '';
-        $factory  = DocBlockFactory::createInstance();
-        $docblock = $factory->create($comment);
-
-        if ($parameters->summary) {
-            $summary = trim($docblock->getSummary());
-
-            if ($summary) {
-                $result .= $summary.$eol.$eol;
-            }
-        }
-
-        if ($parameters->description) {
-            $description = trim((string) $docblock->getDescription());
-
-            if ($description) {
-                $result .= $description.$eol.$eol;
-            }
-        }
-
-        if ($result) {
-            $result = trim($result).$eol;
-        }
+        $lexer  = new Lexer();
+        $parser = new PhpDocParser(new TypeParser(new ConstExprParser()), new ConstExprParser());
+        $tokens = new TokenIterator($lexer->tokenize($comment->getText()));
+        $node   = $parser->parse($tokens);
 
         // Return
-        return $result;
+        return $node;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function getDocText(PhpDocBlockNode $node): array {
+        $nodes = [];
+
+        foreach ($node->children as $child) {
+            if ($child instanceof PhpDocTextNode) {
+                if (trim($child->text) !== '') {
+                    $nodes[] = $child->text;
+                }
+            } else {
+                break;
+            }
+        }
+
+        return $nodes;
     }
 }
