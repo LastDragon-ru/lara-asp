@@ -1,0 +1,6 @@
+{
+  "symbol-whitelist": [
+    "Composer\\InstalledVersions",
+    "Laravel\\Scout\\Builder"
+  ]
+}
