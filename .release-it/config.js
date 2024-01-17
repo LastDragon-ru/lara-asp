@@ -107,8 +107,8 @@ const breakingMark = {
 
 module.exports = {
     npm:     false,
-    hooks: {
-        "after:bump": "composer run rebuild:docs",
+    hooks:   {
+        'after:bump': 'composer run rebuild:docs',
     },
     git:     {
         tagArgs:        '-s',
@@ -295,18 +295,25 @@ module.exports = {
                     // Cleanup subject (github adds #issue on the end of PR message, we are no need it)
                     commit.subject = commit.subject.trim().replace(/\.+$/, '').trim();
 
-                    for (let reference of commit.references) {
-                        let patterns = [
+                    for (let i = 0; i < commit.references.length; i++) {
+                        const reference = commit.references[i];
+                        const patterns  = [
                             `(${reference.prefix}${reference.issue})`,
+                            `(${reference.prefix}${reference.issue},`,
+                            `(${reference.prefix}${reference.issue}`,
+                            `${reference.prefix}${reference.issue})`,
                             `${reference.prefix}${reference.issue}`,
                         ];
 
                         for (let pattern of patterns) {
                             if (commit.subject.endsWith(pattern)) {
                                 commit.subject = commit.subject.slice(0, -pattern.length).trim();
+                                i              = -1;
                             }
                         }
                     }
+
+                    commit.subject = commit.subject.trim().replace(/\.+$/, '').trim();
 
                     // Custom
                     commit.mentions = []; // see https://github.com/conventional-changelog/conventional-changelog/issues/601
