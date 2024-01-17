@@ -40,8 +40,7 @@
     "orchestra/testbench": "^8.0.0"
   },
   "suggest": {
-    "ext-fileinfo": "Required for league/flysystem",
-    "laravel/scout": "Required for the @sortBy directive to work with Scout Builder."
+    "laravel/scout": "Can be used by @searchBy/@sortBy/etc directives to work with Scout Builder."
   },
   "autoload": {
     "psr-4": {
@@ -57,6 +56,20 @@
       "providers": [
         "LastDragon_ru\\LaraASP\\GraphQL\\Provider"
       ]
+    },
+    "lara-asp": {
+      "ci": {
+        "required-extensions": {
+          "league/flysystem": [
+            "ext-fileinfo"
+          ]
+        },
+        "optional-packages": {
+          "lastdragon-ru/lara-asp-graphql": [
+            "laravel/scout"
+          ]
+        }
+      }
     }
   },
   "config": {

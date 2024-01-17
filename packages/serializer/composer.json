@@ -46,6 +46,15 @@
       "providers": [
         "LastDragon_ru\\LaraASP\\Serializer\\Provider"
       ]
+    },
+    "lara-asp": {
+      "ci": {
+        "required-extensions": {
+          "league/flysystem": [
+            "ext-fileinfo"
+          ]
+        }
+      }
     }
   },
   "config": {

@@ -32,9 +32,6 @@
     "symfony/filesystem": "^6.3.0",
     "orchestra/testbench": "^8.0.0"
   },
-  "suggest": {
-    "ext-fileinfo": "Required for league/flysystem"
-  },
   "autoload": {
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Spa\\": "src/"
@@ -49,6 +46,15 @@
       "providers": [
         "LastDragon_ru\\LaraASP\\Spa\\Provider"
       ]
+    },
+    "lara-asp": {
+      "ci": {
+        "required-extensions": {
+          "league/flysystem": [
+            "ext-fileinfo"
+          ]
+        }
+      }
     }
   },
   "config": {

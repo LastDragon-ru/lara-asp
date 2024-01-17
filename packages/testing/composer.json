@@ -45,10 +45,6 @@
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "orchestra/testbench": "^8.0.0"
   },
-  "suggest": {
-    "ext-fileinfo": "Required for league/flysystem",
-    "orchestra/testbench": "For testing the packages which required Application."
-  },
   "autoload": {
     "files": [
       "src/mixins.php"
@@ -60,6 +56,17 @@
       "src/**Test.php",
       "src/Package/**.php"
     ]
+  },
+  "extra": {
+    "lara-asp": {
+      "ci": {
+        "required-extensions": {
+          "league/flysystem": [
+            "ext-fileinfo"
+          ]
+        }
+      }
+    }
   },
   "config": {
     "sort-packages": true,

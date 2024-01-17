@@ -33,7 +33,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        echo "value=$(jq '[."require", ."require-dev", ."suggest"] | add | to_entries | map(select(.key | match("ext-";"i"))) | map(.key | sub("ext-"; "")) | sort' -r -c composer.json)" >> $GITHUB_OUTPUT
+        echo "value=$(jq '( (."require" // [] | keys) + (."require-dev" // [] | keys) + (.["extra"]["lara-asp"]["ci"]["required-extensions"] // [] | flatten) ) | map(select(.|startswith("ext-"))) | map(. | sub("ext-"; "")) | unique | sort ' -r -c composer.json)" >> $GITHUB_OUTPUT
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
