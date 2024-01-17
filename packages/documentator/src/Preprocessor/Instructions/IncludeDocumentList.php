@@ -59,7 +59,8 @@ class IncludeDocumentList implements ParameterizableInstruction {
     #[Override]
     public static function getParametersDescription(): array {
         return [
-            'depth' => 'Default is `0` (no nested directories). The `null` removes limits.',
+            'depth'    => 'Default is `0` (no nested directories). The `null` removes limits.',
+            'template' => 'Blade template',
         ];
     }
 
@@ -121,7 +122,8 @@ class IncludeDocumentList implements ParameterizableInstruction {
         });
 
         // Render
-        $list = $this->viewer->render('document-list.markdown', [
+        $template = 'document-list.'.($parameters->template ?: 'markdown');
+        $list     = $this->viewer->render($template, [
             'documents' => $documents,
         ]);
 

@@ -45,6 +45,7 @@ ignored.
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
   * `depth` - Default is `0` (no nested directories). The `null` removes limits.
+  * `template` - Blade template
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph
