@@ -4,13 +4,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
 
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Path;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use Symfony\Component\Finder\Finder;
 
@@ -27,7 +28,10 @@ use function usort;
 
 use const JSON_THROW_ON_ERROR;
 
-class IncludePackageList implements ProcessableInstruction {
+/**
+ * @implements ParameterizableInstruction<IncludePackageListParameters>
+ */
+class IncludePackageList implements ParameterizableInstruction {
     public function __construct(
         protected readonly PackageViewer $viewer,
     ) {
@@ -53,7 +57,22 @@ class IncludePackageList implements ProcessableInstruction {
     }
 
     #[Override]
-    public function process(string $path, string $target): string {
+    public static function getParameters(): string {
+        return IncludePackageListParameters::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public static function getParametersDescription(): array {
+        return [
+            'template' => 'Blade template',
+        ];
+    }
+
+    #[Override]
+    public function process(string $path, string $target, Serializable $parameters): string {
         // Directory?
         $root = Path::getPath(dirname($path), $target);
 
@@ -116,7 +135,8 @@ class IncludePackageList implements ProcessableInstruction {
         });
 
         // Render
-        $list = $this->viewer->render('package-list.markdown', [
+        $template = 'package-list.'.($parameters->template ?: 'markdown');
+        $list     = $this->viewer->render($template, [
             'packages' => $packages,
         ]);
 

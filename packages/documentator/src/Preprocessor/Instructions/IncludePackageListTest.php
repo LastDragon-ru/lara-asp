@@ -19,8 +19,9 @@ final class IncludePackageListTest extends TestCase {
     public function testProcess(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/packages'));
+        $params   = new IncludePackageListParameters();
         $instance = Container::getInstance()->make(IncludePackageList::class);
-        $actual   = $instance->process($path, $target);
+        $actual   = $instance->process($path, $target, $params);
 
         self::assertEquals(
             self::getTestData()->content('.md'),
@@ -35,6 +36,7 @@ final class IncludePackageListTest extends TestCase {
     public function testProcessNotAPackage(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/invalid'));
+        $params   = new IncludePackageListParameters();
         $instance = Container::getInstance()->make(IncludePackageList::class);
 
         self::expectExceptionObject(
@@ -45,12 +47,13 @@ final class IncludePackageListTest extends TestCase {
             ),
         );
 
-        $instance->process($path, $target);
+        $instance->process($path, $target, $params);
     }
 
     public function testProcessNoReadme(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no readme'));
+        $params   = new IncludePackageListParameters();
         $instance = Container::getInstance()->make(IncludePackageList::class);
 
         self::expectExceptionObject(
@@ -61,12 +64,13 @@ final class IncludePackageListTest extends TestCase {
             ),
         );
 
-        $instance->process($path, $target);
+        $instance->process($path, $target, $params);
     }
 
     public function testProcessNoTitle(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no title'));
+        $params   = new IncludePackageListParameters();
         $instance = Container::getInstance()->make(IncludePackageList::class);
 
         self::expectExceptionObject(
@@ -77,6 +81,6 @@ final class IncludePackageListTest extends TestCase {
             ),
         );
 
-        $instance->process($path, $target);
+        $instance->process($path, $target, $params);
     }
 }

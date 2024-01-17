@@ -75,9 +75,11 @@ Executes the `<target>` and returns result.
 
 Includes the `<target>` file.
 
-### `[include:package-list]: <target>`
+### `[include:package-list]: <target> <parameters>`
 
 * `<target>` - Directory path.
+* `<parameters>` - additional parameters
+  * `template` - Blade template
 
 Generates package list from `<target>` directory. The readme file will be
 used to determine package name and summary.
