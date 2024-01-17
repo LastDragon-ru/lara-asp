@@ -1,4 +1,4 @@
-## {{#if release.name}}{{release.name}}{{else}}Release v{{version}} ({{date}}){{/if}}
+# {{#if release.name}}{{release.name}}{{else}}Release v{{version}} ({{date}}){{/if}}
 
 {{#if summary}}
 | Mark | Type | Count | Packages |
@@ -13,10 +13,10 @@
 
 {{/if}}
 {{#each packages}}
-### {{#if name}}Package `{{name}}`{{else}}All packages{{/if}}
+## {{#if name}}Package `{{name}}`{{else}}All packages{{/if}}
 
 {{#each types}}
-#### {{name}}{{#if mark}} {{mark}}{{/if}}
+### {{name}}{{#if mark}} {{mark}}{{/if}}
 
 {{#each commits}}
 {{> commit root=@root}}
