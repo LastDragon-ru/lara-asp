@@ -97,8 +97,8 @@ final class InstructionTest extends TestCase {
      */
     public static function dataProviderProcess(): array {
         return [
-            'default' => ['~default.md', 'default'],
-            'upgrade' => ['~upgrade.md', 'upgrade'],
+            'default'    => ['~default.md', 'default'],
+            'upgradable' => ['~upgradable.md', 'upgradable'],
         ];
     }
     // </editor-fold>

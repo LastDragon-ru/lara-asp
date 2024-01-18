@@ -28,9 +28,6 @@
     "orchestra/testbench": "^8.0.0",
     "phpunit/phpunit": "^10.1.0"
   },
-  "suggest": {
-    "ext-fileinfo": "Required for league/flysystem"
-  },
   "autoload": {
     "files": [
       "src/mixins.php"
@@ -39,8 +36,20 @@
       "LastDragon_ru\\LaraASP\\Eloquent\\": "src/"
     },
     "exclude-from-classmap": [
-      "src/**Test.php"
+      "src/**Test.php",
+      "src/Testing/**.php"
     ]
+  },
+  "extra": {
+    "lara-asp": {
+      "ci": {
+        "required-extensions": {
+          "league/flysystem": [
+            "ext-fileinfo"
+          ]
+        }
+      }
+    }
   },
   "config": {
     "sort-packages": true,

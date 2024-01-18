@@ -107,8 +107,8 @@ const breakingMark = {
 
 module.exports = {
     npm:     false,
-    hooks: {
-        "after:bump": "composer run rebuild:docs",
+    hooks:   {
+        'after:bump': 'composer run rebuild:docs',
     },
     git:     {
         tagArgs:        '-s',
@@ -182,15 +182,11 @@ module.exports = {
                         // Comment may have multiple scopes (separated by `,`),
                         // each scope may have component (after `/`).
                         const pkgs   = [];
-                        const scopes = (commit.scope || '')
-                            .split(',')
-                            .map(scope => scope.trim())
-                            .filter((v, i, a) => a.indexOf(v) === i);
+                        const scopes = getScopes(commit.scope);
 
                         for (let scope of scopes) {
-                            const parts     = scope.split('/');
-                            const package   = parts[0].trim() || all;
-                            const component = parts.slice(1).join('/').trim() || null;
+                            const package   = scope.package || all;
+                            const component = scope.component;
                             const byPackage = packages[package] = packages[package] || {
                                 name:  package,
                                 types: {},
@@ -292,21 +288,43 @@ module.exports = {
                         return null;
                     }
 
+                    // Cleanup scopes
+                    const scopes = getScopes(commit.scope);
+
+                    for (let scope of scopes) {
+                        if ((scope.component || '').startsWith('@')) {
+                            scope.component = `\`${scope.component}\``;
+                        }
+                    }
+
+                    if (scopes.length) {
+                        commit.scope = scopes
+                            .map(s => [s.package, s.component].filter(v => !!v).join('/'))
+                            .join(',');
+                    }
+
                     // Cleanup subject (github adds #issue on the end of PR message, we are no need it)
                     commit.subject = commit.subject.trim().replace(/\.+$/, '').trim();
 
-                    for (let reference of commit.references) {
-                        let patterns = [
+                    for (let i = 0; i < commit.references.length; i++) {
+                        const reference = commit.references[i];
+                        const patterns  = [
                             `(${reference.prefix}${reference.issue})`,
+                            `(${reference.prefix}${reference.issue},`,
+                            `(${reference.prefix}${reference.issue}`,
+                            `${reference.prefix}${reference.issue})`,
                             `${reference.prefix}${reference.issue}`,
                         ];
 
                         for (let pattern of patterns) {
                             if (commit.subject.endsWith(pattern)) {
                                 commit.subject = commit.subject.slice(0, -pattern.length).trim();
+                                i              = -1;
                             }
                         }
                     }
+
+                    commit.subject = commit.subject.trim().replace(/\.+$/, '').trim();
 
                     // Custom
                     commit.mentions = []; // see https://github.com/conventional-changelog/conventional-changelog/issues/601
@@ -327,7 +345,7 @@ module.exports = {
 };
 
 // Helpers
-const compareStrings  = (a, b, trim = /^[*`_~]+/g) => {
+const compareStrings = (a, b, trim = /^[*`_~]+/g) => {
     // The strings may contain the markdown, so we are
     // removing "invisible" chars before comparing.
     a = (a || '').trimStart().replace(trim, '');
@@ -335,9 +353,31 @@ const compareStrings  = (a, b, trim = /^[*`_~]+/g) => {
 
     return a.localeCompare(b);
 };
+
 const comparePriority = (a, b, d) => {
     a = a && Number.isInteger(a.priority) ? a.priority : d;
     b = b && Number.isInteger(b.priority) ? b.priority : d;
 
     return a - b;
+};
+
+const getScopes = (string) => {
+    let parsed   = [];
+    const scopes = (string || '')
+        .split(',')
+        .map(scope => scope.trim())
+        .filter((v, i, a) => a.indexOf(v) === i);
+
+    for (let scope of scopes) {
+        const parts     = scope.split('/');
+        const package   = parts[0].trim() || null;
+        const component = parts.slice(1).join('/').trim() || null;
+
+        parsed.push({
+            package:   package,
+            component: component,
+        })
+    }
+
+    return parsed;
 };

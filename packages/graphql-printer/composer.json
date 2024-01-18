@@ -33,7 +33,8 @@
       "LastDragon_ru\\LaraASP\\GraphQLPrinter\\": "src/"
     },
     "exclude-from-classmap": [
-      "src/**Test.php"
+      "src/**Test.php",
+      "src/Testing/**.php"
     ]
   },
   "config": {

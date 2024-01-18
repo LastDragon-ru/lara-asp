@@ -31,15 +31,13 @@
     "orchestra/testbench": "^8.0.0",
     "phpunit/phpunit": "^10.1.0"
   },
-  "suggest": {
-    "ext-fileinfo": "Required for league/flysystem"
-  },
   "autoload": {
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Formatter\\": "src/"
     },
     "exclude-from-classmap": [
-      "src/**Test.php"
+      "src/**Test.php",
+      "src/Testing/**.php"
     ]
   },
   "extra": {
@@ -47,6 +45,15 @@
       "providers": [
         "LastDragon_ru\\LaraASP\\Formatter\\Provider"
       ]
+    },
+    "lara-asp": {
+      "ci": {
+        "required-extensions": {
+          "league/flysystem": [
+            "ext-fileinfo"
+          ]
+        }
+      }
     }
   },
   "config": {
