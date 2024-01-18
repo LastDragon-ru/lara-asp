@@ -193,7 +193,8 @@
     "optimize-autoloader": true,
     "allow-plugins": {
       "composer/package-versions-deprecated": true,
-      "bamarni/composer-bin-plugin": true
+      "bamarni/composer-bin-plugin": true,
+      "dealerdirect/phpcodesniffer-composer-installer": false
     }
   },
   "replace": {
