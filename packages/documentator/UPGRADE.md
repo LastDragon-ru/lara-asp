@@ -42,3 +42,5 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] Use [`Illuminate\Support\Facades\Process`](https://laravel.com/docs/processes) instead of `LastDragon_ru\LaraASP\Documentator\Utils\Process`.
 
 * [ ] If you are extending built-in instructions, their classes were moved to `LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\<name>\Instruction` namespace.
+
+* [ ] If you are extending built-in templates, they were renamed from `markdown.blade.php` to `default.blade.php`.

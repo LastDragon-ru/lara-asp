@@ -21,7 +21,7 @@ final class InstructionTest extends TestCase {
     /**
      * @dataProvider dataProviderProcess
      */
-    public function testProcess(string $expected, ?string $template): void {
+    public function testProcess(string $expected, string $template): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/packages'));
         $params   = new Parameters(template: $template);
@@ -97,9 +97,8 @@ final class InstructionTest extends TestCase {
      */
     public static function dataProviderProcess(): array {
         return [
-            'no template' => ['~markdown.md', null],
-            'markdown'    => ['~markdown.md', 'markdown'],
-            'upgrade'     => ['~upgrade.md', 'upgrade'],
+            'default' => ['~default.md', 'default'],
+            'upgrade' => ['~upgrade.md', 'upgrade'],
         ];
     }
     // </editor-fold>

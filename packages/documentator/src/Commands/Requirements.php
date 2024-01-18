@@ -145,7 +145,7 @@ class Requirements extends Command {
         $requirements = $this->getRequirements($packages, $metadata);
 
         // Render
-        $output = $viewer->render('requirements.markdown', [
+        $output = $viewer->render('requirements.default', [
             'packages'     => $packages,
             'requirements' => $requirements,
         ]);

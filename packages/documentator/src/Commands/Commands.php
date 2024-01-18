@@ -86,7 +86,7 @@ class Commands extends Command {
                     // Render
                     $name    = Str::after((string) $command->getName(), "{$namespace}:");
                     $path    = Path::getPath($target, "{$name}.md");
-                    $content = $viewer->render('commands.markdown', [
+                    $content = $viewer->render('commands.default', [
                         'serializer' => $serializer,
                         'command'    => $command,
                     ]);

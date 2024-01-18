@@ -12,7 +12,7 @@ class Parameters implements Serializable {
          * @var array<array-key, string|int>|string|int|null
          */
         public readonly array|string|int|null $depth = 0,
-        public readonly ?string $template = null,
+        public readonly string $template = 'default',
     ) {
         // empty
     }

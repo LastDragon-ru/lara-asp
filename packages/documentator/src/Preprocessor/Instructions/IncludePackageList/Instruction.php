@@ -141,7 +141,7 @@ class Instruction implements ParameterizableInstruction {
         });
 
         // Render
-        $template = 'package-list.'.($parameters->template ?: 'markdown');
+        $template = "package-list.{$parameters->template}";
         $list     = $this->viewer->render($template, [
             'packages' => $packages,
         ]);

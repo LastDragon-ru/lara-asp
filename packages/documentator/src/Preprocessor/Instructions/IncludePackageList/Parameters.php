@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 
 class Parameters implements Serializable {
     public function __construct(
-        public readonly ?string $template = null,
+        public readonly string $template = 'default',
     ) {
         // empty
     }
