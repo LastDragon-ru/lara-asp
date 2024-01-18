@@ -114,10 +114,16 @@ class IncludePackageList implements ParameterizableInstruction {
             $readmePath   = Path::join($target, $package->getFilename(), $readme);
 
             if ($packageTitle) {
+                $upgrade     = $this->getPackageUpgrade($packagePath, $packageInfo);
+                $upgradePath = $upgrade
+                    ? Path::join($target, $package->getFilename(), $upgrade)
+                    : null;
+
                 $packages[] = [
                     'path'    => $readmePath,
                     'title'   => $packageTitle,
                     'summary' => Markdown::getSummary($content),
+                    'upgrade' => $upgradePath,
                 ];
             } else {
                 throw new DocumentTitleIsMissing($path, $target, $readmePath);
@@ -167,19 +173,34 @@ class IncludePackageList implements ParameterizableInstruction {
      * @param array<array-key, mixed> $package
      */
     protected function getPackageReadme(string $path, array $package): ?string {
-        $readme   = null;
-        $variants = [
+        return $this->getPackageFile($path, [
             $package['readme'] ?? null,
             'README.md',
-        ];
+        ]);
+    }
+
+    /**
+     * @param array<array-key, mixed> $package
+     */
+    protected function getPackageUpgrade(string $path, array $package): ?string {
+        return $this->getPackageFile($path, [
+            'UPGRADE.md',
+        ]);
+    }
+
+    /**
+     * @param array<array-key, mixed> $variants
+     */
+    private function getPackageFile(string $path, array $variants): ?string {
+        $file = null;
 
         foreach ($variants as $variant) {
             if ($variant && is_string($variant) && is_file(Path::getPath($path, $variant))) {
-                $readme = $variant;
+                $file = $variant;
                 break;
             }
         }
 
-        return $readme;
+        return $file;
     }
 }

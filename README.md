@@ -38,7 +38,7 @@ composer require lastdragon-ru/lara-asp-core
 # Packages
 
 [include:package-list]: ./packages
-[//]: # (start: 157880c5194e7203b2fa2be487292ca79231698a26623d4ca6431196b3f64d0f)
+[//]: # (start: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## Core
@@ -99,4 +99,4 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 [Read more](<packages/testing/README.md>).
 
-[//]: # (end: 157880c5194e7203b2fa2be487292ca79231698a26623d4ca6431196b3f64d0f)
+[//]: # (end: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)

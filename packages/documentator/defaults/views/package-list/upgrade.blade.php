@@ -5,14 +5,7 @@
 
 ?>
 @foreach ($packages as $package)
-## {!! $package['title'] !!}
-@if($package['summary'])
-
-{!! $package['summary'] !!}
-@endif
-
-[Read more](<{{ $package['path'] }}>).
-@if (!$loop->last)
-
+@if ($package['upgrade'])
+* [{!! $package['title'] !!}](<{{ $package['upgrade'] }}>)
 @endif
 @endforeach
