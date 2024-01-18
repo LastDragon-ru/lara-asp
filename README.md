@@ -27,15 +27,17 @@ The set provides best practices to make development more fun and classes/service
 
 # Installation
 
-```shell
-# Everything
-composer require lastdragon-ru/lara-asp
+Installation of the root `lastdragon-ru/lara-asp` package is not recommended because it will install all packages, but some of them are intended to use while dev only (and may want dependencies like `phpunit`/`phpstan`/etc). So select the desired package and install it. You can find requirements and installation instructions (if any) inside package documentation.
 
-# Specific package (where "core" the package name)
-composer require lastdragon-ru/lara-asp-core
+```shell
+# General case (where "<package>" the package name).
+composer require lastdragon-ru/lara-asp-<package>
 ```
 
 # Packages
+
+| 🐝 | Package intended to use in dev. |
+|:--:|---------------------------------|
 
 [include:package-list]: ./packages
 [//]: # (start: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)
@@ -93,7 +95,7 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 
 [Read more](<packages/serializer/README.md>).
 
-## Testing Helpers
+## Testing Helpers 🐝
 
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and alternative solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 

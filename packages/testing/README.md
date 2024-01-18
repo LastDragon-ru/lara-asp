@@ -1,4 +1,4 @@
-# Testing Helpers
+# Testing Helpers 🐝
 
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and alternative solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 
@@ -25,17 +25,21 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "testing"}})
-[//]: # (start: 5a3ab424b5419398e67a76495351503570fa33421481357861dc96f3ac4d841d)
+[include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "testing"}})
+[//]: # (start: 9c57d43303e5ef82308c0c83e328e2a47be808a50cd12d6fc5bcfd9229e2fa7c)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
 
+> [!NOTE]
+>
+> The package intended to use in dev.
+
 ```shell
-composer require lastdragon-ru/lara-asp-testing
+composer require --dev lastdragon-ru/lara-asp-testing
 ```
 
-[//]: # (end: 5a3ab424b5419398e67a76495351503570fa33421481357861dc96f3ac4d841d)
+[//]: # (end: 9c57d43303e5ef82308c0c83e328e2a47be808a50cd12d6fc5bcfd9229e2fa7c)
 
 # Usage
 
