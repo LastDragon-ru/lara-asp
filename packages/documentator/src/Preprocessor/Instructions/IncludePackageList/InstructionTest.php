@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
@@ -14,8 +14,8 @@ use function basename;
 /**
  * @internal
  */
-#[CoversClass(IncludePackageList::class)]
-final class IncludePackageListTest extends TestCase {
+#[CoversClass(Instruction::class)]
+final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -24,8 +24,8 @@ final class IncludePackageListTest extends TestCase {
     public function testProcess(string $expected, ?string $template): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/packages'));
-        $params   = new IncludePackageListParameters(template: $template);
-        $instance = Container::getInstance()->make(IncludePackageList::class);
+        $params   = new Parameters(template: $template);
+        $instance = Container::getInstance()->make(Instruction::class);
         $actual   = $instance->process($path, $target, $params);
 
         self::assertEquals(
@@ -41,8 +41,8 @@ final class IncludePackageListTest extends TestCase {
     public function testProcessNotAPackage(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/invalid'));
-        $params   = new IncludePackageListParameters();
-        $instance = Container::getInstance()->make(IncludePackageList::class);
+        $params   = new Parameters();
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::expectExceptionObject(
             new PackageComposerJsonIsMissing(
@@ -58,8 +58,8 @@ final class IncludePackageListTest extends TestCase {
     public function testProcessNoReadme(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no readme'));
-        $params   = new IncludePackageListParameters();
-        $instance = Container::getInstance()->make(IncludePackageList::class);
+        $params   = new Parameters();
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::expectExceptionObject(
             new PackageReadmeIsMissing(
@@ -75,8 +75,8 @@ final class IncludePackageListTest extends TestCase {
     public function testProcessNoTitle(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no title'));
-        $params   = new IncludePackageListParameters();
-        $instance = Container::getInstance()->make(IncludePackageList::class);
+        $params   = new Parameters();
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(

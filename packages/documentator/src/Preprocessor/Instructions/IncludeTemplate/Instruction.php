@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
@@ -23,9 +23,9 @@ use function rtrim;
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
- * @implements ParameterizableInstruction<IncludeTemplateParameters>
+ * @implements ParameterizableInstruction<Parameters>
  */
-class IncludeTemplate implements ParameterizableInstruction {
+class Instruction implements ParameterizableInstruction {
     public function __construct() {
         // empty
     }
@@ -47,7 +47,7 @@ class IncludeTemplate implements ParameterizableInstruction {
 
     #[Override]
     public static function getParameters(): string {
-        return IncludeTemplateParameters::class;
+        return Parameters::class;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
@@ -11,7 +11,7 @@ use function dirname;
 use function file_get_contents;
 use function rtrim;
 
-class IncludeFile implements ProcessableInstruction {
+class Instruction implements ProcessableInstruction {
     public function __construct() {
         // empty
     }

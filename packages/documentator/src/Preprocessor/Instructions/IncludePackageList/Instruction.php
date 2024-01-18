@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
@@ -29,9 +29,9 @@ use function usort;
 use const JSON_THROW_ON_ERROR;
 
 /**
- * @implements ParameterizableInstruction<IncludePackageListParameters>
+ * @implements ParameterizableInstruction<Parameters>
  */
-class IncludePackageList implements ParameterizableInstruction {
+class Instruction implements ParameterizableInstruction {
     public function __construct(
         protected readonly PackageViewer $viewer,
     ) {
@@ -58,7 +58,7 @@ class IncludePackageList implements ParameterizableInstruction {
 
     #[Override]
     public static function getParameters(): string {
-        return IncludePackageListParameters::class;
+        return Parameters::class;
     }
 
     /**

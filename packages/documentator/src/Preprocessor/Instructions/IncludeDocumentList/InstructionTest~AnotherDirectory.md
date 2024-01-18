@@ -4,16 +4,16 @@
 
 Document summary.
 
-[Read more](<IncludeDocumentListTest/Document.md>).
+[Read more](<InstructionTest/Document.md>).
 
 ## Document A
 
 Summary text with special characters `<`, `>`, `&`.
 
-[Read more](<IncludeDocumentListTest/Document A.md>).
+[Read more](<InstructionTest/Document A.md>).
 
 ## `<` Document B `>`
 
 Summary text.
 
-[Read more](<IncludeDocumentListTest/Document B.md>).
+[Read more](<InstructionTest/Document B.md>).

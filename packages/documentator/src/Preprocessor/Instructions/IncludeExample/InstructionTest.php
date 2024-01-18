@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 
 use Illuminate\Container\Container;
 use Illuminate\Process\PendingProcess;
@@ -17,13 +17,13 @@ use function trim;
 /**
  * @internal
  */
-#[CoversClass(IncludeFile::class)]
-final class IncludeExampleTest extends TestCase {
+#[CoversClass(Instruction::class)]
+final class InstructionTest extends TestCase {
     public function testProcessNoRun(): void {
         $path     = self::getTestData()->path('~example.md');
         $file     = basename(self::getTestData()->path('~example.md'));
         $expected = trim(self::getTestData()->content('~example.md'));
-        $instance = Container::getInstance()->make(IncludeExample::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         Process::preventStrayProcesses();
         Process::fake();
@@ -46,7 +46,7 @@ final class IncludeExampleTest extends TestCase {
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim(self::getTestData()->content('~runnable.md'));
         $output   = 'command output';
-        $instance = Container::getInstance()->make(IncludeExample::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         Process::preventStrayProcesses();
         Process::fake([
@@ -79,8 +79,8 @@ final class IncludeExampleTest extends TestCase {
         $file     = self::getTestData()->path('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim(self::getTestData()->content('~runnable.md'));
-        $output   = implode("\n", range(0, IncludeExample::Limit + 1));
-        $instance = Container::getInstance()->make(IncludeExample::class);
+        $output   = implode("\n", range(0, Instruction::Limit + 1));
+        $instance = Container::getInstance()->make(Instruction::class);
 
         Process::preventStrayProcesses();
         Process::fake([
@@ -116,7 +116,7 @@ final class IncludeExampleTest extends TestCase {
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim(self::getTestData()->content('~runnable.md'));
         $output   = 'command output';
-        $instance = Container::getInstance()->make(IncludeExample::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         Process::preventStrayProcesses();
         Process::fake([
@@ -145,8 +145,8 @@ final class IncludeExampleTest extends TestCase {
         $file     = self::getTestData()->path('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim(self::getTestData()->content('~runnable.md'));
-        $output   = implode("\n", range(0, IncludeExample::Limit + 1));
-        $instance = Container::getInstance()->make(IncludeExample::class);
+        $output   = implode("\n", range(0, Instruction::Limit + 1));
+        $instance = Container::getInstance()->make(Instruction::class);
 
         Process::preventStrayProcesses();
         Process::fake([

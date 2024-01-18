@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
@@ -12,12 +12,12 @@ use function basename;
 /**
  * @internal
  */
-#[CoversClass(IncludeDocumentList::class)]
-final class IncludeDocumentListTest extends TestCase {
+#[CoversClass(Instruction::class)]
+final class InstructionTest extends TestCase {
     public function testProcessSameDirectory(): void {
         $path     = self::getTestData()->file('Document.md');
-        $params   = new IncludeDocumentListParameters();
-        $instance = Container::getInstance()->make(IncludeDocumentList::class);
+        $params   = new Parameters();
+        $instance = Container::getInstance()->make(Instruction::class);
         $actual   = $instance->process($path->getPathname(), './', $params);
 
         self::assertEquals(
@@ -32,8 +32,8 @@ final class IncludeDocumentListTest extends TestCase {
 
     public function testProcessAnotherDirectory(): void {
         $path     = self::getTestData()->file('~AnotherDirectory.md');
-        $params   = new IncludeDocumentListParameters();
-        $instance = Container::getInstance()->make(IncludeDocumentList::class);
+        $params   = new Parameters();
+        $instance = Container::getInstance()->make(Instruction::class);
         $actual   = $instance->process($path->getPathname(), basename(self::getTestData()->path('/')), $params);
 
         self::assertEquals(
@@ -48,8 +48,8 @@ final class IncludeDocumentListTest extends TestCase {
 
     public function testProcessNestedDirectories(): void {
         $path     = self::getTestData()->file('nested/Document.md');
-        $params   = new IncludeDocumentListParameters(null);
-        $instance = Container::getInstance()->make(IncludeDocumentList::class);
+        $params   = new Parameters(null);
+        $instance = Container::getInstance()->make(Instruction::class);
         $actual   = $instance->process($path->getPathname(), './', $params);
 
         self::assertEquals(
@@ -65,8 +65,8 @@ final class IncludeDocumentListTest extends TestCase {
     public function testProcessWithoutTitle(): void {
         $path     = self::getTestData()->file('invalid/Document.md');
         $target   = './';
-        $params   = new IncludeDocumentListParameters();
-        $instance = Container::getInstance()->make(IncludeDocumentList::class);
+        $params   = new Parameters();
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(

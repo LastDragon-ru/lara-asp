@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec;
 
 use Illuminate\Container\Container;
 use Illuminate\Process\PendingProcess;
@@ -13,13 +13,13 @@ use function dirname;
 /**
  * @internal
  */
-#[CoversClass(IncludeFile::class)]
-final class IncludeExecTest extends TestCase {
+#[CoversClass(Instruction::class)]
+final class InstructionTest extends TestCase {
     public function testProcess(): void {
         $path     = 'current/working/directory/file.md';
         $expected = 'result';
         $command  = 'command to execute';
-        $instance = Container::getInstance()->make(IncludeExec::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         Process::preventStrayProcesses();
         Process::fake([

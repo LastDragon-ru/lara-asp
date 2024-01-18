@@ -1,9 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
@@ -29,12 +28,10 @@ use function implode;
 use function trim;
 
 /**
- * @implements ParameterizableInstruction<IncludeDocBlockParameters>
+ * @implements ParameterizableInstruction<Parameters>
  */
-class IncludeDocBlock implements ParameterizableInstruction {
-    public function __construct(
-        protected readonly PackageViewer $viewer,
-    ) {
+class Instruction implements ParameterizableInstruction {
+    public function __construct() {
         // empty
     }
 
@@ -59,7 +56,7 @@ class IncludeDocBlock implements ParameterizableInstruction {
 
     #[Override]
     public static function getParameters(): string {
-        return IncludeDocBlockParameters::class;
+        return Parameters::class;
     }
 
     /**

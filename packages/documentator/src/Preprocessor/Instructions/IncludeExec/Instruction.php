@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec;
 
 use Exception;
 use Illuminate\Support\Facades\Process;
@@ -11,7 +11,7 @@ use Override;
 use function dirname;
 use function trim;
 
-class IncludeExec implements ProcessableInstruction {
+class Instruction implements ProcessableInstruction {
     public function __construct() {
         // empty
     }

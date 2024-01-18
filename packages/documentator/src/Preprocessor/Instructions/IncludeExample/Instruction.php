@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 
 use Exception;
 use Illuminate\Support\Facades\Process;
@@ -22,7 +22,7 @@ use function trim;
 use const PATHINFO_EXTENSION;
 use const PREG_UNMATCHED_AS_NULL;
 
-class IncludeExample implements ProcessableInstruction {
+class Instruction implements ProcessableInstruction {
     public const    Limit          = 50;
     protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
 

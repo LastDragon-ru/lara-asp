@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 
 use Exception;
 use Illuminate\Container\Container;
@@ -13,16 +13,16 @@ use function str_replace;
 /**
  * @internal
  */
-#[CoversClass(IncludeDocBlock::class)]
-final class IncludeDocBlockTest extends TestCase {
+#[CoversClass(Instruction::class)]
+final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
      * @dataProvider dataProviderProcess
      */
-    public function testProcess(Exception|string $expected, string $file, IncludeDocBlockParameters $params): void {
+    public function testProcess(Exception|string $expected, string $file, Parameters $params): void {
         $file     = self::getTestData()->file($file);
-        $instance = Container::getInstance()->make(IncludeDocBlock::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -36,8 +36,8 @@ final class IncludeDocBlockTest extends TestCase {
     public function testProcessAbsolute(): void {
         $path     = 'invalid/directory';
         $file     = self::getTestData()->path('Valid.txt');
-        $params   = new IncludeDocBlockParameters();
-        $instance = Container::getInstance()->make(IncludeDocBlock::class);
+        $params   = new Parameters();
+        $instance = Container::getInstance()->make(Instruction::class);
         $expected = self::getTestData()->content('ValidExpected.txt');
 
         self::assertEquals($expected, $instance->process($path, $file, $params));
@@ -47,37 +47,37 @@ final class IncludeDocBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{Exception|string, string, IncludeDocBlockParameters}>
+     * @return array<string, array{Exception|string, string, Parameters}>
      */
     public static function dataProviderProcess(): array {
         return [
             'default'      => [
                 'ValidExpected.txt',
                 'Valid.txt',
-                new IncludeDocBlockParameters(),
+                new Parameters(),
             ],
             'with summary' => [
                 'ValidWithSummaryExpected.txt',
                 'Valid.txt',
-                new IncludeDocBlockParameters(summary: true),
+                new Parameters(summary: true),
             ],
             'only summary' => [
                 'ValidOnlySummaryExpected.txt',
                 'Valid.txt',
-                new IncludeDocBlockParameters(summary: true, description: false),
+                new Parameters(summary: true, description: false),
             ],
             'no docblock'  => [
                 'NoDocBlockExpected.txt',
                 'NoDocBlock.txt',
-                new IncludeDocBlockParameters(),
+                new Parameters(),
             ],
             'invalid'      => [
                 new TargetIsNotValidPhpFile(
-                    str_replace('\\', '/', __DIR__.'/IncludeDocBlockTest/Invalid.txt'),
+                    str_replace('\\', '/', __DIR__.'/InstructionTest/Invalid.txt'),
                     'Invalid.txt',
                 ),
                 'Invalid.txt',
-                new IncludeDocBlockParameters(),
+                new Parameters(),
             ],
         ];
     }

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate;
 
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateDataMissed;
@@ -12,15 +12,15 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(IncludeTemplate::class)]
-final class IncludeTemplateTest extends TestCase {
+#[CoversClass(Instruction::class)]
+final class InstructionTest extends TestCase {
     public function testProcessRelative(): void {
         $file     = self::getTestData()->file('.md');
-        $params   = new IncludeTemplateParameters([
+        $params   = new Parameters([
             'a' => 'Relative',
             'b' => 'Inner reference ${a}',
         ]);
-        $instance = Container::getInstance()->make(IncludeTemplate::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::assertEquals(
             <<<'FILE'
@@ -37,11 +37,11 @@ final class IncludeTemplateTest extends TestCase {
     public function testProcessAbsolute(): void {
         $path     = 'invalid/directory';
         $file     = self::getTestData()->path('.md');
-        $params   = new IncludeTemplateParameters([
+        $params   = new Parameters([
             'a' => 'Absolute',
             'b' => 'Inner reference ${a}',
         ]);
-        $instance = Container::getInstance()->make(IncludeTemplate::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::assertEquals(
             <<<'FILE'
@@ -57,8 +57,8 @@ final class IncludeTemplateTest extends TestCase {
 
     public function testProcessNoData(): void {
         $file     = self::getTestData()->file('.md');
-        $params   = new IncludeTemplateParameters();
-        $instance = Container::getInstance()->make(IncludeTemplate::class);
+        $params   = new Parameters();
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateDataMissed(
@@ -72,13 +72,13 @@ final class IncludeTemplateTest extends TestCase {
 
     public function testProcessVariablesUnused(): void {
         $file     = self::getTestData()->file('.md');
-        $params   = new IncludeTemplateParameters([
+        $params   = new Parameters([
             'a' => 'A',
             'b' => 'B',
             'c' => 'C',
             'd' => 'D',
         ]);
-        $instance = Container::getInstance()->make(IncludeTemplate::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateVariablesUnused(
@@ -93,10 +93,10 @@ final class IncludeTemplateTest extends TestCase {
 
     public function testProcessVariablesMissed(): void {
         $file     = self::getTestData()->file('.md');
-        $params   = new IncludeTemplateParameters([
+        $params   = new Parameters([
             'a' => 'A',
         ]);
-        $instance = Container::getInstance()->make(IncludeTemplate::class);
+        $instance = Container::getInstance()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateVariablesMissed(

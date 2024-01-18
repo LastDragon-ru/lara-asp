@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
@@ -20,9 +20,9 @@ use function strcmp;
 use function usort;
 
 /**
- * @implements ParameterizableInstruction<IncludeDocumentListParameters>
+ * @implements ParameterizableInstruction<Parameters>
  */
-class IncludeDocumentList implements ParameterizableInstruction {
+class Instruction implements ParameterizableInstruction {
     public function __construct(
         protected readonly PackageViewer $viewer,
     ) {
@@ -50,7 +50,7 @@ class IncludeDocumentList implements ParameterizableInstruction {
 
     #[Override]
     public static function getParameters(): string {
-        return IncludeDocumentListParameters::class;
+        return Parameters::class;
     }
 
     /**
