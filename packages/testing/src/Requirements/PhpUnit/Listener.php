@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
 
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\Event;
-use PHPUnit\Event\Test\BeforeFirstTestMethodCalled;
 use PHPUnit\Event\Test\BeforeTestMethodCalled;
 use PHPUnit\Event\Test\PreConditionCalled;
 use PHPUnit\Event\Test\Prepared;
@@ -48,11 +47,7 @@ class Listener {
         $class  = null;
         $method = null;
 
-        if (
-            $event instanceof BeforeFirstTestMethodCalled
-            || $event instanceof BeforeTestMethodCalled
-            || $event instanceof PreConditionCalled
-        ) {
+        if ($event instanceof BeforeTestMethodCalled || $event instanceof PreConditionCalled) {
             $class = $event->testClassName();
         } elseif ($event instanceof Prepared) {
             $test = $event->test();

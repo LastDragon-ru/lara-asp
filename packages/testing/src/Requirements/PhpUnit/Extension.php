@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
 
 use LastDragon_ru\LaraASP\Testing\Requirements\Requirement;
 use Override;
-use PHPUnit\Event\Test\BeforeFirstTestMethodCalledSubscriber;
 use PHPUnit\Event\Test\BeforeTestMethodCalledSubscriber;
 use PHPUnit\Event\Test\PreConditionCalledSubscriber;
 use PHPUnit\Event\Test\PreparedSubscriber;
@@ -28,9 +27,6 @@ class Extension implements PHPUnitExtension {
         $checker = new Checker();
 
         $facade->registerSubscribers(
-            new class ($checker) extends Listener implements BeforeFirstTestMethodCalledSubscriber {
-                // empty
-            },
             new class ($checker) extends Listener implements BeforeTestMethodCalledSubscriber {
                 // empty
             },
