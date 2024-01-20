@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\PhpUnit\Requirements;
+namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
 
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use Mockery;

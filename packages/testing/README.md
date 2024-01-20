@@ -649,7 +649,7 @@ You need to [register extension](https://docs.phpunit.de/en/main/extending-phpun
 
 ```xml
 <extensions>
-    <bootstrap class="LastDragon_ru\LaraASP\Testing\PhpUnit\Requirements\Extension"/>
+    <bootstrap class="LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"/>
 </extensions>
 ```
 
@@ -658,7 +658,7 @@ And then
 ```php
 <?php declare(strict_types = 1);
 
-use LastDragon_ru\LaraASP\Testing\Requirements\RequiresComposerPackage;
+use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
 use PHPUnit\Framework\TestCase;
 
 class SomePackageTest extends TestCase {

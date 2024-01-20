@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\PhpUnit\Requirements;
+namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
 
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\Event;

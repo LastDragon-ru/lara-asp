@@ -1,7 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\PhpUnit\Requirements;
+namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
 
+use LastDragon_ru\LaraASP\Testing\Requirements\Requirement;
 use Override;
 use PHPUnit\Event\Test\BeforeFirstTestMethodCalledSubscriber;
 use PHPUnit\Event\Test\BeforeTestMethodCalledSubscriber;

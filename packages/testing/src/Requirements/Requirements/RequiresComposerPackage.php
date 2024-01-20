@@ -1,12 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Requirements;
+namespace LastDragon_ru\LaraASP\Testing\Requirements\Requirements;
 
 use Attribute;
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
-use LastDragon_ru\LaraASP\Testing\PhpUnit\Requirements\Extension;
-use LastDragon_ru\LaraASP\Testing\PhpUnit\Requirements\Requirement;
+use LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension;
+use LastDragon_ru\LaraASP\Testing\Requirements\Requirement;
 use Override;
 
 use function sprintf;
