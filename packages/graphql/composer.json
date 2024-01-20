@@ -64,11 +64,9 @@
             "ext-fileinfo"
           ]
         },
-        "optional-packages": {
-          "lastdragon-ru/lara-asp-graphql": [
-            "laravel/scout"
-          ]
-        }
+        "optional-packages": [
+          "laravel/scout"
+        ]
       }
     }
   },
