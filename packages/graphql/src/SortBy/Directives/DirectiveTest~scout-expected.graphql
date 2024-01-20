@@ -488,6 +488,115 @@ input SortByQueryClauseProperties {
     @sortByOperatorRandom
 }
 
+"""
+Sort clause for `input Nested` (only one property allowed at a time).
+"""
+input SortByScoutClauseNested {
+    """
+    Property clause.
+    """
+    nested: SortByScoutClauseNested
+    @sortByOperatorProperty
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByScoutClauseNested
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByScoutClauseNested
+    @sortByOperatorNullsLast
+
+    """
+    Property clause.
+    """
+    value: SortByTypeDirection
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `input Properties` (only one property allowed at a time).
+"""
+input SortByScoutClauseProperties {
+    """
+    Property clause.
+    """
+    customScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    customScalarNonNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Description should be used.
+    """
+    description: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enum: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    enumNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    fieldRenamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property clause.
+    """
+    idScalar: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    idScalarNotNull: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    nested: SortByScoutClauseNested
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    nestedNotNull: SortByScoutClauseNested
+    @sortByOperatorProperty
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByScoutClauseProperties
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByScoutClauseProperties
+    @sortByOperatorNullsLast
+}
+
 interface Eloquent
 implements
     & Placeholder
@@ -555,6 +664,13 @@ interface Placeholder {
         @sortBy
     ): Object!
     @all
+}
+
+interface Scout {
+    scout(
+        search: String
+        order: [SortByScoutClauseProperties!]
+    ): ID!
 }
 
 scalar Date
@@ -637,6 +753,7 @@ type ObjectNested {
 type Query
 implements
     & Eloquent
+    & Scout
 {
     eloquent(
         order: [SortByClauseProperties!]
@@ -663,6 +780,15 @@ implements
     @all(
         builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
     )
+
+    scout(
+        search: String
+        @search
+
+        order: [SortByScoutClauseProperties!]
+        @sortBy
+    ): ID!
+    @all
 }
 
 union ObjectUnion =

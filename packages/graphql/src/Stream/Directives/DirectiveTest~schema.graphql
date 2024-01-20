@@ -45,8 +45,6 @@ type Query implements InterfaceA & InterfaceB {
     @stream(
         limit: 15
     )
-
-    fieldWithSearch(search: String! @search): [TestObject] @stream
 }
 
 type TestObject {

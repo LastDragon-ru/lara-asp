@@ -167,34 +167,6 @@ input SearchByScalarID {
 }
 
 """
-Available conditions for `type TestObject` (only one property allowed at a time).
-"""
-input SearchByScoutConditionTestObject {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutConditionTestObject!]
-    @searchByOperatorAllOf
-
-    """
-    Property condition.
-    """
-    id: SearchByScoutScalarID
-    @searchByOperatorProperty
-}
-
-"""
-Available operators for `scalar ID` (only one operator allowed at a time).
-"""
-input SearchByScoutScalarID {
-    """
-    Equal (`=`).
-    """
-    equal: ID
-    @searchByOperatorEqual
-}
-
-"""
 Sort clause for `type TestObject` (only one property allowed at a time).
 """
 input SortByClauseTestObject {
@@ -214,29 +186,6 @@ input SortByClauseTestObject {
     NULLs last
     """
     nullsLast: SortByClauseTestObject
-    @sortByOperatorNullsLast
-}
-
-"""
-Sort clause for `type TestObject` (only one property allowed at a time).
-"""
-input SortByScoutClauseTestObject {
-    """
-    Property clause.
-    """
-    id: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByScoutClauseTestObject
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByScoutClauseTestObject
     @sortByOperatorNullsLast
 }
 
@@ -495,34 +444,6 @@ implements
     @stream(
         limit: 15
     )
-    @validate
-
-    fieldWithSearch(
-        search: String!
-        @search
-
-        where: SearchByScoutConditionTestObject
-        @searchBy
-
-        order: [SortByScoutClauseTestObject!]
-        @sortBy
-
-        """
-        Maximum count of items to return. The value must be between `1` and `100`.
-        """
-        limit: Int! = 25
-        @streamLimit
-        @rules(
-            apply: ["integer", "min:1", "max:100"]
-        )
-
-        """
-        The cursor or offset within the stream to start.
-        """
-        offset: StreamOffset
-        @streamOffset
-    ): TestObjectsStream!
-    @stream
     @validate
 
     fieldWithoutArguments(

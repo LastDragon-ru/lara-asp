@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\QuerySorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\ScoutSorter;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -125,6 +126,7 @@ final class FieldTest extends TestCase {
         $operator->call($directive, $builder, $property, $argument, $context);
     }
 
+    #[RequiresLaravelScout]
     public function testCallScoutBuilder(): void {
         $this->useGraphQLSchema('type Query { test: String! @mock}');
 

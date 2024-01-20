@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutTimestamps;
 
 /**
@@ -13,7 +14,8 @@ use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutTimestamps;
  * @property string $id
  * @property string $value
  */
-class TestObject extends Model {
+class TestObjectSearchable extends Model {
+    use Searchable;
     use HasFactory;
     use WithoutTimestamps;
 
@@ -39,6 +41,6 @@ class TestObject extends Model {
      * @return Factory<self>
      */
     protected static function newFactory(): Factory {
-        return TestObjectFactory::new();
+        return TestObjectSearchableFactory::new();
     }
 }

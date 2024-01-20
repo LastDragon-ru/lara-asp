@@ -1,0 +1,11 @@
+type Query implements InterfaceA {
+    fieldWithSearch(search: String! @search): [TestObject] @stream
+}
+
+type TestObject {
+    id: ID!
+}
+
+interface InterfaceA {
+    fieldWithSearch(argument: String): [TestObject]
+}

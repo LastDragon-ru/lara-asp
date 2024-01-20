@@ -1,0 +1,1068 @@
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+"""
+Marks that field/definition should be excluded from search.
+"""
+directive @searchByIgnored
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
+
+directive @searchByOperatorAllOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorLessThan
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorLessThanOrEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Extends the list of operators by the operators from the specified `type`.
+"""
+directive @searchByOperators(
+    type: String!
+)
+on
+    | ENUM
+    | SCALAR
+
+enum EnumA {
+    One
+    Two
+}
+
+enum EnumIgnored
+@searchByIgnored
+{
+    One
+}
+
+"""
+Available conditions for `input InputA` (only one property allowed at a time).
+"""
+input SearchByScoutConditionInputA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionInputA!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScoutScalarBooleanOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScoutScalarBoolean
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalar: SearchByScoutScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarList: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarNonNull: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarOperators: SearchByScoutScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
+    Description should be used.
+    """
+    description: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enum: SearchByScoutEnumEnumAOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByScoutEnumEnumA
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    fieldRenamed: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScoutScalarFloatOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScoutScalarFloat
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalar: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScoutScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalar: SearchByScoutScalarIntOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalarNotNull: SearchByScoutScalarInt
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionNestedA
+    @searchByOperatorCondition
+
+    """
+    Property condition.
+    """
+    nestedNotNull: SearchByScoutConditionNestedA
+    @searchByOperatorCondition
+
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScoutScalarStringOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScoutScalarString
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `input InputB` (only one property allowed at a time).
+"""
+input SearchByScoutConditionInputB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionInputB!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    id: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `input NestedA` (only one property allowed at a time).
+"""
+input SearchByScoutConditionNestedA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionNestedA!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionNestedA
+    @searchByOperatorCondition
+
+    """
+    Property condition.
+    """
+    value: SearchByScoutScalarStringOrNull
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `input NestedB` (only one property allowed at a time).
+"""
+input SearchByScoutConditionNestedB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionNestedB!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionNestedC
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input NestedC` (only one property allowed at a time).
+"""
+input SearchByScoutConditionNestedC {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionNestedC!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionNestedB
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `type Object` (only one property allowed at a time).
+"""
+input SearchByScoutConditionObject {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionObject!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScoutScalarBooleanOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScoutScalarBoolean
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalar: SearchByScoutScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarList: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarNonNull: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarOperators: SearchByScoutScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    description: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enum: SearchByScoutEnumEnumAOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByScoutEnumEnumA
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    fieldRenamed: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScoutScalarFloatOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScoutScalarFloat
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalar: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScoutScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalar: SearchByScoutScalarIntOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalarNotNull: SearchByScoutScalarInt
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionObjectNested
+    @searchByOperatorCondition
+
+    """
+    Property condition.
+    """
+    nestedNotNull: SearchByScoutConditionObjectNested
+    @searchByOperatorCondition
+
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScoutScalarStringOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScoutScalarString
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `interface ObjectInterface` (only one property allowed at a time).
+"""
+input SearchByScoutConditionObjectInterface {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionObjectInterface!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    booleanScalar: SearchByScoutScalarBooleanOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    booleanScalarNotNull: SearchByScoutScalarBoolean
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalar: SearchByScoutScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarList: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarNonNull: SearchByScoutScalarDate
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    customScalarOperators: SearchByScoutScalarScalarCustomOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    description: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enum: SearchByScoutEnumEnumAOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    enumNotNull: SearchByScoutEnumEnumA
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    fieldRenamed: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Property condition.
+    """
+    floatScalar: SearchByScoutScalarFloatOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    floatScalarNotNull: SearchByScoutScalarFloat
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalar: SearchByScoutScalarIDOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    idScalarNotNull: SearchByScoutScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalar: SearchByScoutScalarIntOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    intScalarNotNull: SearchByScoutScalarInt
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionObjectNested
+    @searchByOperatorCondition
+
+    """
+    Property condition.
+    """
+    nestedNotNull: SearchByScoutConditionObjectNested
+    @searchByOperatorCondition
+
+    """
+    Property condition.
+    """
+    stringScalar: SearchByScoutScalarStringOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    stringScalarNotNull: SearchByScoutScalarString
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `type ObjectNested` (only one property allowed at a time).
+"""
+input SearchByScoutConditionObjectNested {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionObjectNested!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    nested: SearchByScoutConditionObjectNested
+    @searchByOperatorCondition
+
+    """
+    Property condition.
+    """
+    value: SearchByScoutScalarStringOrNull
+    @searchByOperatorProperty
+}
+
+"""
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByScoutEnumEnumA {
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByScoutEnumEnumAOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar Boolean` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarBoolean {
+    """
+    Equal (`=`).
+    """
+    equal: Boolean
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Boolean` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarBooleanOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Boolean
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Date` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarDate {
+    """
+    Equal (`=`).
+    """
+    equal: Date
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Date` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarDateOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Date
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar Float` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarFloat {
+    """
+    Equal (`=`).
+    """
+    equal: Float
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Float!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar Float` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarFloatOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Float
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Float!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarID {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [ID!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarIDOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [ID!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar Int` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarInt {
+    """
+    Equal (`=`).
+    """
+    equal: Int
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Int!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar Int` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarIntOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Int
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Int!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar ScalarCustom` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarScalarCustomOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ScalarCustom
+    @searchByOperatorEqual
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarString {
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarStringOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+}
+
+interface A
+implements
+    & C
+    & F
+{
+    a(
+        where: SearchByScoutConditionInputA
+    ): ID!
+}
+
+interface B {
+    b(
+        where: SearchByScoutConditionNestedA
+    ): ID!
+}
+
+interface C {
+    c(
+        where: SearchByScoutConditionInputB
+    ): ID!
+}
+
+interface F {
+    f(
+        search: String
+        @search
+
+        where: SearchByScoutConditionObject
+        @searchBy
+    ): Object!
+    @all
+}
+
+interface ObjectInterface {
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    customScalar: Date
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarOperators: ScalarCustom
+
+    """
+    Description should NOT be used.
+    """
+    description: ID
+
+    enum: EnumA
+    enumEnumIgnoredNotNull: EnumIgnored!
+    enumIgnored: EnumIgnored
+    enumNotNull: EnumA!
+
+    fieldRenamed: ID
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Should be ignored
+    """
+    fieldWithArguments(
+        arg: Int
+    ): Boolean
+
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: String
+    @searchByIgnored
+
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    intScalar: Int
+    intScalarNotNull: Int!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: Float
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    stringScalar: String
+    stringScalarNotNull: String!
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+}
+
+scalar Date
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+
+scalar DateIgnored
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@searchByIgnored
+
+scalar ScalarCustom
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@searchByOperators(
+    type: "Boolean"
+)
+@searchByOperatorLessThan
+@searchByOperatorLessThanOrEqual
+
+type Object
+implements
+    & ObjectInterface
+{
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    customScalar: Date
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarOperators: ScalarCustom
+
+    """
+    Description should NOT be used.
+    """
+    description: ID
+
+    enum: EnumA
+    enumEnumIgnoredNotNull: EnumIgnored!
+    enumIgnored: EnumIgnored
+    enumNotNull: EnumA!
+
+    fieldRenamed: ID
+    @rename(
+        attribute: "renamed"
+    )
+
+    """
+    Should be ignored
+    """
+    fieldWithArguments(
+        arg: Int
+    ): Boolean
+
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    idScalar: ID
+    idScalarNotNull: ID!
+
+    ignored: String
+    @searchByIgnored
+
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    intScalar: Int
+    intScalarNotNull: Int!
+    nested: ObjectNested
+    nestedNotNull: ObjectNested!
+
+    resolver: Float
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    stringScalar: String
+    stringScalarNotNull: String!
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+}
+
+type ObjectIgnored
+@searchByIgnored
+{
+    value: String
+}
+
+type ObjectNested {
+    nested: ObjectNested
+    value: String
+}
+
+type Query
+implements
+    & A
+    & B
+{
+    a(
+        search: String
+        @search
+
+        where: SearchByScoutConditionInputA
+        @searchBy
+    ): ID!
+    @all
+
+    b(
+        search: String
+        @search
+
+        where: SearchByScoutConditionNestedA
+        @searchBy
+    ): ID!
+    @all
+
+    c(
+        search: String
+        @search
+
+        where: SearchByScoutConditionInputB
+        @searchBy
+    ): ID!
+    @all
+
+    d(
+        search: String
+        @search
+
+        where: SearchByScoutConditionNestedB
+        @searchBy
+    ): ID!
+    @all
+
+    e(
+        search: String
+        @search
+
+        where: SearchByScoutConditionInputA
+        @searchBy
+    ): ID!
+    @all
+
+    f(
+        search: String
+        @search
+
+        where: SearchByScoutConditionObject
+        @searchBy
+    ): Object!
+    @all
+
+    g(
+        search: String
+        @search
+
+        where: SearchByScoutConditionObjectInterface
+        @searchBy
+    ): Object!
+    @all
+}
+
+union ObjectUnion =
+    | Object
+    | ObjectNested

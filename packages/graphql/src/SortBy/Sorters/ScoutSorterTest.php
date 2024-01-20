@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery\MockInterface;
 use Override;
@@ -23,6 +24,7 @@ use function is_array;
  * @internal
  */
 #[CoversClass(ScoutSorter::class)]
+#[RequiresLaravelScout]
 final class ScoutSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================

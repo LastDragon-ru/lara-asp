@@ -1,0 +1,270 @@
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Splits list of items into the chunks and returns one chunk specified
+by an offset or a cursor.
+"""
+directive @stream(
+    """
+    Overrides default searchable status.
+    """
+    searchable: Boolean
+
+    """
+    Overrides default sortable status.
+    """
+    sortable: Boolean
+
+    """
+    Overrides default builder. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the field and its type to determine the Builder to query.
+    """
+    builder: StreamBuilder
+
+    """
+    Overrides default limit.
+    """
+    limit: Int
+
+    """
+    Overrides default unique key. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the name of field with `ID!` type.
+    """
+    key: String
+)
+on
+    | FIELD_DEFINITION
+
+directive @streamLimit(
+    default: Int
+    max: Int
+)
+on
+    | ARGUMENT_DEFINITION
+
+directive @streamOffset
+on
+    | ARGUMENT_DEFINITION
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    Asc
+    Desc
+
+    asc
+    @deprecated(
+        reason: "Please use `Asc` instead."
+    )
+
+    desc
+    @deprecated(
+        reason: "Please use `Desc` instead."
+    )
+}
+
+"""
+Available conditions for `type TestObject` (only one property allowed at a time).
+"""
+input SearchByScoutConditionTestObject {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutConditionTestObject!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    id: SearchByScoutScalarID
+    @searchByOperatorProperty
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByScoutScalarID {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+}
+
+"""
+Sort clause for `type TestObject` (only one property allowed at a time).
+"""
+input SortByScoutClauseTestObject {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByScoutClauseTestObject
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByScoutClauseTestObject
+    @sortByOperatorNullsLast
+}
+
+"""
+Explicit builder. Only one of fields allowed.
+"""
+input StreamBuilder {
+    """
+    The reference to a function that provides a Builder instance.
+    """
+    builder: String
+
+    """
+    The class name of the model to query.
+    """
+    model: String
+
+    """
+    The relation name to query.
+    """
+    relation: String
+}
+
+interface InterfaceA {
+    fieldWithSearch(
+        argument: String
+        where: SearchByScoutConditionTestObject
+        order: [SortByScoutClauseTestObject!]
+        limit: Int!
+        offset: StreamOffset
+    ): TestObjectsStream!
+}
+
+"""
+Represents a offset for the `@stream` directive. The value can be a
+positive `Int` or a `String`. The `Int` value represents the offset
+(zero-based) to navigate to any position within the stream (= offset
+pagination). And the `String` value represents the cursor and allows
+navigation only to the previous/current/next pages (= cursor
+pagination).
+"""
+scalar StreamOffset
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Offset"
+)
+
+type Query
+implements
+    & InterfaceA
+{
+    fieldWithSearch(
+        search: String!
+        @search
+
+        where: SearchByScoutConditionTestObject
+        @searchBy
+
+        order: [SortByScoutClauseTestObject!]
+        @sortBy
+
+        """
+        Maximum count of items to return. The value must be between `1` and `100`.
+        """
+        limit: Int! = 25
+        @streamLimit
+        @rules(
+            apply: ["integer", "min:1", "max:100"]
+        )
+
+        """
+        The cursor or offset within the stream to start.
+        """
+        offset: StreamOffset
+        @streamOffset
+    ): TestObjectsStream!
+    @stream
+    @validate
+}
+
+type StreamNavigation {
+    current: StreamOffset!
+    next: StreamOffset
+    previous: StreamOffset
+}
+
+type TestObject {
+    id: ID!
+}
+
+type TestObjectsStream {
+    """
+    Requested items.
+    """
+    items: [TestObject!]!
+
+    """
+    Total number of items. Not recommended querying it in each query
+    due to performance.
+    """
+    length: Int
+
+    """
+    Offsets/Cursors to navigate within the stream.
+    """
+    navigation: StreamNavigation!
+}

@@ -6,8 +6,9 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Foundation\Testing\WithFaker;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Utils\Page;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObjectSearchable;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
@@ -23,6 +24,7 @@ use function usort;
  * @internal
  */
 #[CoversClass(Scout::class)]
+#[RequiresLaravelScout]
 final class ScoutTest extends TestCase {
     use WithFaker;
     use WithQueryLog;
@@ -48,17 +50,20 @@ final class ScoutTest extends TestCase {
     public function testGetItems(): void {
         $limit   = max(1, $this->faker->numberBetween(1, 4));
         $offset  = max(0, $this->faker->numberBetween(0, 2));
-        $builder = TestObject::search();
+        $builder = TestObjectSearchable::search();
         $stream  = new Scout($builder, $builder->model->getKeyName(), $limit, new Offset('path', $offset, null));
         $objects = [
-            TestObject::factory()->create(),
-            TestObject::factory()->create(),
-            TestObject::factory()->create(),
-            TestObject::factory()->create(),
-            TestObject::factory()->create(),
+            TestObjectSearchable::factory()->create(),
+            TestObjectSearchable::factory()->create(),
+            TestObjectSearchable::factory()->create(),
+            TestObjectSearchable::factory()->create(),
+            TestObjectSearchable::factory()->create(),
         ];
 
-        usort($objects, static fn (TestObject $a, TestObject $b): int => $a->getKey() <=> $b->getKey());
+        usort(
+            $objects,
+            static fn (TestObjectSearchable $a, TestObjectSearchable $b): int => $a->getKey() <=> $b->getKey(),
+        );
 
         $expected = array_slice($objects, $offset, $limit);
         $query    = $this->getQueryLog();
@@ -93,11 +98,11 @@ final class ScoutTest extends TestCase {
 
     public function testGetLength(): void {
         $count   = $this->faker->numberBetween(1, 5);
-        $builder = TestObject::search();
+        $builder = TestObjectSearchable::search();
         $stream  = new Scout($builder, $builder->model->getKeyName(), 1, new Offset('path', 0, null));
 
         for ($i = 0; $i < $count; $i++) {
-            TestObject::factory()->create();
+            TestObjectSearchable::factory()->create();
         }
 
         $query  = $this->getQueryLog();
@@ -128,7 +133,7 @@ final class ScoutTest extends TestCase {
     }
 
     public function testGetCurrentOffset(): void {
-        $builder = TestObject::search();
+        $builder = TestObjectSearchable::search();
         $offset  = new Offset('path', 0, null);
         $stream  = new Scout($builder, 'key', 2, $offset);
 
@@ -137,7 +142,7 @@ final class ScoutTest extends TestCase {
 
     public function testGetPreviousOffset(): void {
         // Offset = 0
-        $builder = TestObject::search();
+        $builder = TestObjectSearchable::search();
         $offset  = new Offset('path', 0, null);
         $stream  = new Scout($builder, 'key', 2, $offset);
 
@@ -155,7 +160,7 @@ final class ScoutTest extends TestCase {
 
     public function testGetNextOffset(): void {
         // Page.end = 0 & no more pages
-        $builder   = TestObject::search();
+        $builder   = TestObjectSearchable::search();
         $offset    = new Offset('path', 0, null);
         $paginator = Mockery::mock(LengthAwarePaginator::class);
         $paginator
@@ -173,7 +178,7 @@ final class ScoutTest extends TestCase {
         self::assertNull($stream->getNextOffset());
 
         // Page.end > 0 & no more pages
-        $builder = TestObject::search();
+        $builder = TestObjectSearchable::search();
         $offset  = new Offset('path', 1234, null);
         $stream  = Mockery::mock(Scout::class, [$builder, 'key', 123, $offset]);
         $stream->shouldAllowMockingProtectedMethods();
@@ -188,7 +193,7 @@ final class ScoutTest extends TestCase {
         );
 
         // Page.end = 0 & has more pages
-        $builder   = TestObject::search();
+        $builder   = TestObjectSearchable::search();
         $offset    = new Offset('path', 0, null);
         $paginator = Mockery::mock(LengthAwarePaginator::class);
         $paginator

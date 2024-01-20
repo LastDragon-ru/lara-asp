@@ -28,6 +28,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
@@ -69,10 +70,6 @@ final class DirectiveTest extends TestCase {
      * @param Closure(static): void|null       $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
-
-        $directives->setResolved('search', SearchDirective::class);
-
         if ($prepare) {
             $prepare($this);
         }
@@ -83,6 +80,29 @@ final class DirectiveTest extends TestCase {
 
         self::assertGraphQLSchemaEquals(
             $expected($this),
+        );
+    }
+
+    #[RequiresLaravelScout]
+    public function testManipulateArgDefinitionScoutBuilder(): void {
+        config([
+            Package::Name.'.sort_by.operators' => [
+                Operators::Extra => [
+                    Operators::Extra,
+                    SortByOperatorRandomDirective::class,
+                ],
+            ],
+        ]);
+
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        $this->useGraphQLSchema(
+            self::getTestData()->file('~scout.graphql'),
+        );
+
+        self::assertGraphQLSchemaEquals(
+            self::getTestData()->file('~scout-expected.graphql'),
         );
     }
 
@@ -329,6 +349,7 @@ final class DirectiveTest extends TestCase {
      * @param Closure(object, Property): string|null $resolver
      * @param Closure():FieldResolver|null           $fieldResolver
      */
+    #[RequiresLaravelScout]
     public function testHandleScoutBuilder(
         array|Exception $expected,
         Closure $builderFactory,
