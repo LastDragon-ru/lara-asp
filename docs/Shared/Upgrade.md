@@ -17,4 +17,4 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 ## Legend
 
 | 🤝 | Backward-compatible change. Please note that despite you can ignore it now, but it will be mandatory in the future. |
-|:--:|---------------------------------------------------------------------------------------------------------------------|
+|:--:|:--------------------------------------------------------------------------------------------------------------------|

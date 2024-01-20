@@ -102,3 +102,13 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 [Read more](<packages/testing/README.md>).
 
 [//]: # (end: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)
+
+[include:file]: ./docs/Shared/Upgrading.md
+[//]: # (start: 58c515c01daf29a92b704a09f78da2fa719462cc37e47d3abde0331a7b1da0a3)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Upgrading
+
+Please follow [Upgrade Guide](UPGRADE.md).
+
+[//]: # (end: 58c515c01daf29a92b704a09f78da2fa719462cc37e47d3abde0331a7b1da0a3)
