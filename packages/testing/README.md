@@ -636,6 +636,39 @@ class ExampleTest extends TestCase {
 
 Enjoy 😸
 
+# Custom Test Requirements
+
+Unfortunately, PHPUnit doesn't allow to add/extend existing requirements and probably will not:
+
+> I do not think that additional attributes for test requirements should be added. After all, the existing ones are only convenient syntax sugar. Simply check your custom requirements in a before-test method and call `markTestSkipped()` when they are not met.
+> [©](https://github.com/sebastianbergmann/phpunit/issues/5674#issuecomment-1899839119) @sebastianbergmann
+
+The extension listen several events and checks all attributes of test class/method which are implements [`Requirement`](./src/PhpUnit/Requirements/Requirement.php). If the requirements don't meet, the test will be marked as skipped. Please note that at least one "before" hook will be executed anyway (PHPUnit emits events after hook execution).
+
+You need to [register extension](https://docs.phpunit.de/en/main/extending-phpunit.html#registering-an-extension-from-a-composer-package) first:
+
+```xml
+<extensions>
+    <bootstrap class="LastDragon_ru\LaraASP\Testing\PhpUnit\Requirements\Extension"/>
+</extensions>
+```
+
+And then
+
+```php
+<?php declare(strict_types = 1);
+
+use LastDragon_ru\LaraASP\Testing\Requirements\RequiresComposerPackage;
+use PHPUnit\Framework\TestCase;
+
+class SomePackageTest extends TestCase {
+    #[RequiresComposerPackage('some/package')]
+    public function testSomePackage(): void {
+        // .....
+    }
+}
+```
+
 [include:file]: ../../docs/Shared/Upgrading.md
 [//]: # (start: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
 [//]: # (warning: Generated automatically. Do not edit.)
