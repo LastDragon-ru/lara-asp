@@ -48,6 +48,7 @@ jobs:
         with:
           working-directory: ${{ env.WORKING_DIRECTORY }}
           dependencies: false
+          tools: false
 
       - name: Collect Settings
         id: settings
@@ -111,6 +112,7 @@ jobs:
         with:
           version: ${{ matrix.php }}
           dependencies: false
+          tools: false
           working-directory: ${{ env.WORKING_DIRECTORY }}
 
       # Required to resolve packages correctly.
