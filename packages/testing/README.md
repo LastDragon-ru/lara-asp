@@ -107,8 +107,9 @@ Enables query log for the test case.
 
 # Assertions
 
-| :warning: | By default package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`. |
-|:---------:|:---------------------------------------------------------------------------------------------------------|
+> [!IMPORTANT]
+>
+> By default, package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
 
 ## General
 
@@ -478,7 +479,7 @@ Providers:
     ['expected d', 'value d'],
     ['expected e', 'value e'],
 ]
- *
+
 Merged:
 [
     '0 / 0 / 0' => ['expected d', 'value a', 'value b', 'value d'],

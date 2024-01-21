@@ -2,8 +2,9 @@
 
 This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
 
-| :warning: | The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details. |
-|:---------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+> [!IMPORTANT]
+>
+> The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
 [//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)

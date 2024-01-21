@@ -9,7 +9,8 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
  * GraphQL Settings
  * -----------------------------------------------------------------------------
  *
- * Note: You need to clear/rebuild the cached schema and IDE helper files after change.
+ * Note: You need to clear/rebuild the cached schema and IDE helper files after
+ * changing any of the settings.
  *
  * @see https://lighthouse-php.com/master/api-reference/commands.html#clear-cache
  * @see https://lighthouse-php.com/master/api-reference/commands.html#ide-helper
@@ -55,8 +56,6 @@ $settings = [
          * types here. Note that directives is the recommended way and have
          * priority over the array. Please see the documentation for more
          * details.
-         *
-         * @see ../README.md#type-operators
          */
         'operators' => [
             // empty
@@ -75,8 +74,6 @@ $settings = [
          * types here. Note that directives is the recommended way and have
          * priority over the array. Please see the documentation for more
          * details.
-         *
-         * @see ../README.md#operators-1
          */
         'operators' => [
             // empty
