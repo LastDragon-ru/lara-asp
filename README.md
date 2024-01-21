@@ -112,3 +112,24 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 Please follow [Upgrade Guide](UPGRADE.md).
 
 [//]: # (end: 58c515c01daf29a92b704a09f78da2fa719462cc37e47d3abde0331a7b1da0a3)
+
+[include:file]: ./docs/Legend.md
+[//]: # (start: a974316bcb5b40e0fcedb0c38b2c3c43c80c2cadfbf95a8caf27d6f163abff0d)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Legend
+
+| Icon | Place     | Description                                                      |
+|:----:|:----------|------------------------------------------------------------------|
+|  🧪  | Docs      | Experimental feature. Any feedback would be greatly appreciated. |
+|  🐝  | Docs      | Package intended to use in dev.                                  |
+|  🤝  | Changelog | Backward-compatible change.                                      |
+|  🡹  | CI        | The highest versions of dependencies are used.                   |
+|  🔒  | CI        | The locked versions of dependencies are used.                    |
+|  🡻  | CI        | The lowest versions of dependencies are used.                    |
+|  🪓  | CI        | The optional dependencies are removed.                           |
+|  🆄  | CI        | Running on Ubuntu                                                |
+|  🆆  | CI        | Running on Windows                                               |
+|  🅼  | CI        | Running on Mac OS X                                              |
+
+[//]: # (end: a974316bcb5b40e0fcedb0c38b2c3c43c80c2cadfbf95a8caf27d6f163abff0d)
