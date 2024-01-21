@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
@@ -70,7 +71,8 @@ final class InTest extends TestCase {
      * @param Closure(object, Property): string|null $resolver
      * @param Closure():FieldResolver|null           $fieldResolver
      */
-    public function testCallScout(
+    #[RequiresLaravelScout]
+    public function testCallScoutBuilder(
         array $expected,
         Closure $builderFactory,
         Property $property,

@@ -22,6 +22,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
@@ -47,6 +48,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType\Field;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\CarEngine;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
@@ -82,6 +84,7 @@ use const JSON_THROW_ON_ERROR;
 #[CoversClass(Directive::class)]
 final class DirectiveTest extends TestCase {
     use WithTestObject;
+    use WithManipulator;
     use MakesGraphQLRequests;
 
     // <editor-fold desc="Prepare">
@@ -190,6 +193,7 @@ final class DirectiveTest extends TestCase {
      * @param array<string, mixed>|null  $where
      * @param array<int, mixed>|null     $order
      */
+    #[RequiresLaravelScout]
     public function testDirectiveScout(
         array|string $expected,
         Closure $factory,
@@ -221,10 +225,10 @@ final class DirectiveTest extends TestCase {
             ->useGraphQLSchema(
                 <<<'GRAPHQL'
                 type Query {
-                    test(search: String! @search): [TestObject!]! @stream
+                    test(search: String! @search): [TestObjectSearchable!]! @stream
                 }
 
-                type TestObject {
+                type TestObjectSearchable {
                     id: ID!
                     value: String
                 }
@@ -234,8 +238,8 @@ final class DirectiveTest extends TestCase {
                 <<<'GRAPHQL'
                 query test(
                     $search: String!,
-                    $where: SearchByScoutConditionTestObject,
-                    $order: [SortByScoutClauseTestObject!],
+                    $where: SearchByScoutConditionTestObjectSearchable,
+                    $order: [SortByScoutClauseTestObjectSearchable!],
                     $limit: Int!,
                     $offset: StreamOffset,
                 ) {
@@ -284,13 +288,32 @@ final class DirectiveTest extends TestCase {
             ],
         ]);
 
+        $this->useGraphQLSchema(self::getTestData()->file('~schema.graphql'));
+        $this->assertGraphQLSchemaEquals(
+            self::getTestData()->file('~schema-expected.graphql'),
+        );
+    }
+
+    #[RequiresLaravelScout]
+    public function testManipulateFieldDefinitionScoutBuilder(): void {
+        config([
+            'lighthouse.namespaces.models'       => [
+                (new ReflectionClass(TestObject::class))->getNamespaceName(),
+            ],
+            Package::Name.'.search_by.operators' => [
+                Operators::ID => [
+                    SearchByOperatorEqualDirective::class,
+                ],
+            ],
+        ]);
+
         $directives = Container::getInstance()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
-        $this->useGraphQLSchema(self::getTestData()->file('~schema.graphql'));
+        $this->useGraphQLSchema(self::getTestData()->file('~scout.graphql'));
         $this->assertGraphQLSchemaEquals(
-            self::getTestData()->file('~expected.graphql'),
+            self::getTestData()->file('~scout-expected.graphql'),
         );
     }
 
@@ -429,9 +452,38 @@ final class DirectiveTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
+        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
+        $source      = $sourceFactory($manipulator);
+        $factory     = Container::getInstance()->make(StreamFactory::class);
+        $directive   = Mockery::mock(Directive::class, [$factory]);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+        $directive
+            ->shouldReceive('getResolver')
+            ->with($source)
+            ->once()
+            ->andReturn($resolver);
+
+        self::assertEquals($expected, $directive->getBuilderInfo($source));
+    }
+
+    /**
+     * @dataProvider dataProviderGetBuilderInfoScoutBuilder
+     *
+     * @param Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource) $sourceFactory
+     * @param Closure():mixed|array{class-string, string}|null                  $resolver
+     */
+    #[RequiresLaravelScout]
+    public function testGetBuilderInfoScoutBuilder(
+        Exception|BuilderInfo|null $expected,
+        Closure $sourceFactory,
+        Closure|array|null $resolver,
+    ): void {
+        if ($expected instanceof Exception) {
+            self::expectExceptionObject($expected);
+        }
+
+        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
         $source      = $sourceFactory($manipulator);
         $factory     = Container::getInstance()->make(StreamFactory::class);
         $directive   = Mockery::mock(Directive::class, [$factory]);
@@ -792,9 +844,7 @@ final class DirectiveTest extends TestCase {
         DirectiveNode $directiveNode,
         Closure $sourceFactory,
     ): void {
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
+        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
         $source      = $sourceFactory($manipulator);
         $field       = $source->getField();
         $factory     = Mockery::mock(StreamFactory::class);
@@ -1032,9 +1082,7 @@ final class DirectiveTest extends TestCase {
 
     public function testGetFieldValue(): void {
         // Prepare
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
+        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
         $factory     = Mockery::mock(StreamFactory::class);
         $directive   = new class($factory) extends Directive {
             /**
@@ -1120,9 +1168,7 @@ final class DirectiveTest extends TestCase {
             '/The `type Object { test }` must have at least one argument marked by `[^`]+` directive./',
         );
 
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
+        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
         $factory     = Mockery::mock(StreamFactory::class);
         $directive   = new class($factory) extends Directive {
             /**
@@ -1175,9 +1221,7 @@ final class DirectiveTest extends TestCase {
         self::expectException(ArgumentsMutuallyExclusive::class);
         self::expectExceptionMessage('The arguments `a`, `b` of `type Object { test }` are mutually exclusive.');
 
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
+        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
         $factory     = Mockery::mock(StreamFactory::class);
         $directive   = new class($factory) extends Directive {
             /**
@@ -1477,85 +1521,90 @@ final class DirectiveTest extends TestCase {
      *      }>
      */
     public static function dataProviderGetBuilderInfo(): array {
-        $class   = new class() {
-            /**
-             * @return EloquentBuilder<EloquentModel>
-             */
-            public function method(): EloquentBuilder {
-                throw new Exception('Should not be called.');
-            }
-
-            public function union(): stdClass|DirectiveTest {
-                throw new Exception('Should not be called.');
-            }
-        };
-        $factory = static function (bool $search): Closure {
-            return static function (AstManipulator $manipulator) use ($search): ObjectFieldSource {
-                return new ObjectFieldSource(
-                    $manipulator,
-                    new ObjectType(['name' => 'ObjectA', 'fields' => []]),
-                    $search
-                        ? Parser::fieldDefinition('test(search: String! @search): String')
-                        : Parser::fieldDefinition('test: String'),
-                );
-            };
+        $class   = new DirectiveTest_Model();
+        $factory = static function (AstManipulator $manipulator): ObjectFieldSource {
+            return new ObjectFieldSource(
+                $manipulator,
+                new ObjectType(['name' => 'ObjectA', 'fields' => []]),
+                Parser::fieldDefinition('test: String'),
+            );
         };
 
         return [
-            'null'                                   => [
+            'null'                        => [
                 null,
-                $factory(false),
+                $factory,
                 null,
             ],
-            'Closure(): mixed'                       => [
+            'Closure(): mixed'            => [
                 null,
-                $factory(false),
+                $factory,
                 static function (): mixed {
                     return null;
                 },
             ],
-            'Closure(): class'                       => [
+            'Closure(): class'            => [
                 BuilderInfo::create(EloquentBuilder::class),
-                $factory(false),
+                $factory,
                 static function (): EloquentBuilder {
                     throw new Exception('Should not be called.');
                 },
             ],
-            'Closure(): union'                       => [
+            'Closure(): union'            => [
                 null,
-                $factory(false),
+                $factory,
                 static function () use ($class): stdClass|self {
                     return $class->union();
                 },
             ],
-            'array(Unknown, method)'                 => [
+            'array(Unknown, method)'      => [
                 null,
-                $factory(false),
+                $factory,
                 ['Unknown', 'method'],
             ],
-            'array(Class, unknownMethod)'            => [
+            'array(Class, unknownMethod)' => [
                 null,
-                $factory(false),
+                $factory,
                 [stdClass::class, 'unknownMethod'],
             ],
-            'array(Class, method: union)'            => [
+            'array(Class, method: union)' => [
                 null,
-                $factory(false),
+                $factory,
                 [$class::class, 'union'],
             ],
-            'array(Class, method)'                   => [
+            'array(Class, method)'        => [
                 BuilderInfo::create(EloquentBuilder::class),
-                $factory(false),
+                $factory,
                 [$class::class, 'method'],
             ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{
+     *      Exception|BuilderInfo|null,
+     *      Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource),
+     *      Closure():mixed|array{string, string}|null
+     *      }>
+     */
+    public static function dataProviderGetBuilderInfoScoutBuilder(): array {
+        $factory = static function (AstManipulator $manipulator): ObjectFieldSource {
+            return new ObjectFieldSource(
+                $manipulator,
+                new ObjectType(['name' => 'ObjectA', 'fields' => []]),
+                Parser::fieldDefinition('test(search: String! @search): String'),
+            );
+        };
+
+        return [
             '@search/Eloquent: array(Class, method)' => [
                 BuilderInfo::create(ScoutBuilder::class),
-                $factory(true),
-                [$class::class, 'method'],
+                $factory,
+                [DirectiveTest_Model::class, 'method'],
             ],
             '@search: Closure(): class'              => [
                 null,
-                $factory(true),
+                $factory,
                 static function (): QueryBuilder {
                     throw new Exception('Should not be called.');
                 },
@@ -1739,5 +1788,22 @@ class DirectiveTest_Encrypter implements StringEncrypter {
     #[Override]
     public function decryptString(mixed $payload): string {
         return $payload;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest_Model {
+    /**
+     * @return EloquentBuilder<EloquentModel>
+     */
+    public function method(): EloquentBuilder {
+        throw new Exception('Should not be called.');
+    }
+
+    public function union(): stdClass|DirectiveTest {
+        throw new Exception('Should not be called.');
     }
 }

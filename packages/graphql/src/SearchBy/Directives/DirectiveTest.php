@@ -3,8 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
 use Exception;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
@@ -41,6 +39,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvi
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
@@ -84,10 +83,6 @@ final class DirectiveTest extends TestCase {
      * @param Closure(static): void|null       $prepare
      */
     public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
-
-        $directives->setResolved('search', SearchDirective::class);
-
         if ($prepare) {
             $prepare($this);
         }
@@ -98,6 +93,33 @@ final class DirectiveTest extends TestCase {
 
         self::assertGraphQLSchemaEquals(
             $expected($this),
+        );
+    }
+
+    #[RequiresLaravelScout]
+    public function testManipulateArgDefinitionScoutBuilder(): void {
+        config([
+            Package::Name.'.search_by.operators.Date' => [
+                SearchByOperatorEqualDirective::class,
+            ],
+        ]);
+
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        $this->useGraphQLSchema(
+            self::getTestData()->file('~scout.graphql'),
+        );
+
+        self::assertGraphQLSchemaEquals(
+            new GraphQLExpected(
+                static::getTestData()->file(
+                    match (true) {
+                        (new RequiresLaravelScout('>=10.3.0'))->isSatisfied() => '~scout-v10.3.0-expected.graphql',
+                        default                                               => '~scout-expected.graphql',
+                    },
+                ),
+            ),
         );
     }
 
@@ -290,6 +312,7 @@ final class DirectiveTest extends TestCase {
      * @param Closure(object, Property): string|null $resolver
      * @param Closure():FieldResolver|null           $fieldResolver
      */
+    #[RequiresLaravelScout]
     public function testHandleScoutBuilder(
         array|Exception $expected,
         Closure $builderFactory,
@@ -365,15 +388,9 @@ final class DirectiveTest extends TestCase {
         return [
             'full'                           => [
                 static function (self $test): GraphQLExpected {
-                    $satisfies = static function (string $version): bool {
-                        return InstalledVersions::satisfies(new VersionParser(), 'laravel/scout', $version);
-                    };
-                    $file      = match (true) {
-                        $satisfies('>=10.3.0') => '~full-expected-scout-v10.3.0.graphql',
-                        default                => '~full-expected.graphql',
-                    };
-
-                    return new GraphQLExpected($test::getTestData()->file($file));
+                    return (new GraphQLExpected(
+                        $test::getTestData()->file('~full-expected.graphql'),
+                    ));
                 },
                 '~full.graphql',
                 static function (): void {

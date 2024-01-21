@@ -1,9 +1,11 @@
-type Query implements Eloquent {
+type Query implements Eloquent & Scout {
     eloquent(order: Properties @sortBy): ID! @all
 
     query(order: Properties @sortBy): ID! @all(
         builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
     )
+
+    scout(search: String @search, order: Properties @sortBy): ID! @all
 
     placeholder(order: _ @sortBy): Object! @all
 
@@ -12,6 +14,10 @@ type Query implements Eloquent {
 
 interface Eloquent implements Placeholder {
     eloquent(order: Properties): ID!
+}
+
+interface Scout {
+    scout(search: String, order: TypeDoesntMatter): ID!
 }
 
 interface Placeholder {

@@ -4,6 +4,9 @@
          cacheDirectory=".phpunit/result.cache"
          executionOrder="random"
          colors="true">
+    <extensions>
+        <bootstrap class="LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"/>
+    </extensions>
     <testsuites>
         <testsuite name="package">
             <directory suffix="Test.php">./src</directory>
