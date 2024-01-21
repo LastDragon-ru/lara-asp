@@ -13,10 +13,10 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
@@ -45,7 +45,7 @@ class Condition extends InputObject {
     #[Override]
     public function getTypeName(TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
-        $builderName   = $context->get(AstManipulationBuilderInfo::class)?->value->getName() ?? 'Unknown';
+        $builderName   = $context->get(HandlerContextBuilderInfo::class)?->value->getName() ?? 'Unknown';
         $directiveName = Directive::Name;
 
         return "{$directiveName}{$builderName}Condition{$typeName}";
