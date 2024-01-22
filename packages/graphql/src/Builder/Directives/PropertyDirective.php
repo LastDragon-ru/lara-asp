@@ -25,7 +25,7 @@ abstract class PropertyDirective extends OperatorDirective {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, Context $context): bool {
         return true;
     }
 

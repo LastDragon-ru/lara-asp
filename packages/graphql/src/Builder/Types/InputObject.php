@@ -175,7 +175,7 @@ abstract class InputObject implements TypeDefinition {
         // Operator?
         [$operator, $type] = $this->getFieldOperator($manipulator, $field, $context) ?? [null, null];
 
-        if ($operator === null || !$operator->isBuilderSupported($builder)) {
+        if ($operator === null || !$operator->isAvailable($builder, $context)) {
             return null;
         }
 
@@ -236,8 +236,8 @@ abstract class InputObject implements TypeDefinition {
             $operator = $manipulator->getDirective(
                 $node,
                 $directive,
-                static function (Operator $operator) use ($builder): bool {
-                    return $operator->isBuilderSupported($builder);
+                static function (Operator $operator) use ($builder, $context): bool {
+                    return $operator->isAvailable($builder, $context);
                 },
             );
 

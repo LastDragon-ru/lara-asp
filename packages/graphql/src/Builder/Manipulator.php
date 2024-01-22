@@ -198,7 +198,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 continue;
             }
 
-            if (!$operator->isBuilderSupported($builder)) {
+            if (!$operator->isAvailable($builder, $context)) {
                 continue;
             }
 

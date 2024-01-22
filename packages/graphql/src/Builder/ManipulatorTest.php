@@ -399,7 +399,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, ContextContract $context): bool {
         return is_a($builder, stdClass::class, true);
     }
 
@@ -436,7 +436,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, ContextContract $context): bool {
         return false;
     }
 
@@ -473,7 +473,7 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, ContextContract $context): bool {
         return is_a($builder, stdClass::class, true);
     }
 

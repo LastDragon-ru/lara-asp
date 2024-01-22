@@ -26,7 +26,7 @@ class Property extends PropertyDirective implements Operator {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, Context $context): bool {
         return is_a($builder, EloquentBuilder::class, true)
             || is_a($builder, ScoutBuilder::class, true);
     }
