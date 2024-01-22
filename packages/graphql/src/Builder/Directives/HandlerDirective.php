@@ -45,6 +45,7 @@ use function reset;
 
 /**
  * @see HandlerContextBuilderInfo
+ * @see HandlerContextImplicit
  */
 abstract class HandlerDirective extends BaseDirective implements Handler {
     use WithManipulator;
@@ -223,6 +224,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         // Argument
         $context = (new Context())->override([
             HandlerContextBuilderInfo::class => new HandlerContextBuilderInfo($builder),
+            HandlerContextImplicit::class    => new HandlerContextImplicit(
+                $manipulator->isPlaceholder($argDefinition),
+            ),
         ]);
         $source  = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
         $type    = $this->getArgDefinitionType($manipulator, $documentAST, $source, $context);
@@ -258,7 +262,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         ContextContract $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         $type       = null;
-        $definition = $manipulator->isPlaceholder($argument->getArgument())
+        $definition = $context->get(HandlerContextImplicit::class)?->value
             ? $manipulator->getPlaceholderTypeDefinitionNode($argument->getField())
             : $argument->getTypeDefinition();
 
