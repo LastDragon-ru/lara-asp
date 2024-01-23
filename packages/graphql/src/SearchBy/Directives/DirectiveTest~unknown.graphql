@@ -1,7 +1,0 @@
-type Query {
-  test(where: Properties @searchBy): ID! @all
-}
-
-input Properties {
-  value: UnknownType
-}

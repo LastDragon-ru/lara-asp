@@ -1,0 +1,17 @@
+type Query {
+    a(where: _ @searchBy): [A!]! @all
+}
+
+type A {
+    "Description should be ignored."
+    id: ID!
+    name: String!
+    children: [B!]!
+}
+
+type B {
+    "Description should be ignored."
+    id: ID!
+    name: String
+    parent: A!
+}

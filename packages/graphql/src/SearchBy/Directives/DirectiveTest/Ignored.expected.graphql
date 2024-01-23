@@ -1,0 +1,187 @@
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+"""
+Marks that field/definition should be excluded from search.
+"""
+directive @searchByIgnored
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+enum IgnoredEnum
+@searchByIgnored
+{
+    One
+}
+
+input A {
+    """
+    Not ignored
+    """
+    a: String!
+
+    b: [String!]!
+
+    """
+    Marked by @searchByIgnored
+    """
+    c: IgnoredInput!
+
+    d: IgnoredDate!
+    e: [IgnoredDate!]!
+    f: IgnoredEnum!
+
+    g: String
+    @searchByIgnored
+}
+
+input IgnoredInput
+@searchByIgnored
+{
+    id: ID
+}
+
+input IgnoredType {
+    name: String!
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByConditionA {
+    """
+    Not ignored
+    """
+    a: SearchByScalarString
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    b: SearchByScalarString
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `interface B` (only one property allowed at a time).
+"""
+input SearchByConditionB {
+    """
+    Property condition.
+    """
+    a: SearchByScalarString
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    b: SearchByScalarString
+    @searchByOperatorProperty
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByScalarString {
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+}
+
+interface B {
+    """
+    Not ignored
+    """
+    a: String!
+
+    b: [String!]!
+
+    """
+    Marked by @searchByIgnored
+    """
+    c: IgnoredType!
+
+    d: IgnoredDate!
+    e: [IgnoredDate!]!
+    f: IgnoredEnum!
+
+    g: String
+    @searchByIgnored
+
+    """
+    Resolver
+    """
+    h: Float
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    """
+    Arguments
+    """
+    i(
+        arg: String
+    ): Int!
+
+    """
+    Union
+    """
+    j: ObjectUnion
+
+    k: [ObjectUnion!]
+}
+
+scalar IgnoredDate
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@searchByIgnored
+
+type ObjectA {
+    id: ID!
+}
+
+type ObjectB {
+    id: ID!
+}
+
+type Query {
+    a(
+        where: SearchByConditionA
+        @searchBy
+    ): A!
+    @all
+
+    b(
+        where: SearchByConditionB
+        @searchBy
+    ): B!
+    @all
+}
+
+union ObjectUnion =
+    | ObjectA
+    | ObjectB

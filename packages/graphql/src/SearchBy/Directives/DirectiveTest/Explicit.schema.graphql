@@ -1,0 +1,17 @@
+type Query {
+    a(where: A @searchBy): ID! @all
+}
+
+input A {
+    "Description should be copied."
+    id: ID!
+    name: String!
+    children: [B!]!
+}
+
+input B {
+    "Description should be copied."
+    id: ID!
+    name: String
+    parent: A!
+}

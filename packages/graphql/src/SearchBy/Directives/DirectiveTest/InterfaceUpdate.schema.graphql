@@ -1,0 +1,25 @@
+type Query implements QueryInterface {
+    a(where: A @searchBy): A! @all
+    b(where: _ @searchBy): B! @all
+}
+
+input A {
+    id: ID!
+}
+
+type B {
+    id: ID!
+}
+
+interface QueryInterface implements QueryInterfaceA & QueryInterfaceB {
+    a(where: A): A!
+    b(where: _): B!
+}
+
+interface QueryInterfaceA {
+    a(where: A): A!
+}
+
+interface QueryInterfaceB {
+    b(where: _): B!
+}

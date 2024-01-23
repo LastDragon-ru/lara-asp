@@ -63,7 +63,7 @@ input Comment {
 }
 ```
 
-That's all, just search 😃 (or look at [generated GraphQL schema](../../src/SearchBy/Directives/DirectiveTest~example-expected.graphql))
+That's all, just search 😃 (or look at [generated GraphQL schema](../../src/SearchBy/Directives/DirectiveTest/Example.expected.graphql))
 
 ```graphql
 query {

@@ -1,0 +1,218 @@
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIsNotNull
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIsNull
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorLessThan
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorLessThanOrEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Extends the list of operators by the operators from the specified `type`.
+"""
+directive @searchByOperators(
+    type: String!
+)
+on
+    | ENUM
+    | SCALAR
+
+enum EnumA
+@searchByOperatorIn
+{
+    A
+}
+
+enum SearchByTypeFlag {
+    Yes
+
+    yes
+    @deprecated(
+        reason: "Please use `Yes` instead."
+    )
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByConditionA {
+    """
+    Property condition.
+    """
+    a: SearchByScalarMixed
+    @searchByOperatorProperty
+
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionA!]
+    @searchByOperatorAllOf
+
+    """
+    Property condition.
+    """
+    b: SearchByScalarDateOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    c: SearchByEnumEnumAOrNull
+    @searchByOperatorProperty
+}
+
+"""
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByEnumEnumAOrNull {
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+}
+
+"""
+Available operators for `scalar Date` (only one operator allowed at a time).
+"""
+input SearchByScalarDateOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: Date
+    @searchByOperatorEqual
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+
+    """
+    Less than (`<`).
+    """
+    lessThan: Date
+    @searchByOperatorLessThan
+
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: Date
+    @searchByOperatorLessThanOrEqual
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Date
+    @searchByOperatorNotEqual
+}
+
+"""
+Available operators for `scalar Mixed` (only one operator allowed at a time).
+"""
+input SearchByScalarMixed {
+    """
+    Equal (`=`).
+    """
+    equal: Mixed
+    @searchByOperatorEqual
+}
+
+scalar Date
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@searchByOperators(
+    type: "Boolean"
+)
+@searchByOperatorLessThan
+@searchByOperatorLessThanOrEqual
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar Mixed
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
+@searchByOperatorEqual
+
+type Query {
+    test(
+        where: SearchByConditionA
+        @searchBy
+    ): ID!
+    @all
+}
