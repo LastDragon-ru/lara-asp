@@ -6,6 +6,7 @@ input A {
     "Description should be copied."
     id: ID!
     name: String!
+    child: B!
     children: [B!]!
 }
 

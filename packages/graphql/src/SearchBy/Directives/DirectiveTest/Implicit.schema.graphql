@@ -6,7 +6,10 @@ type A {
     "Description should be ignored."
     id: ID!
     name: String!
+    child: B!
     children: [B!]!
+    argument(arg: String): A!
+    arguments(arg: String): [A!]
 }
 
 type B {
@@ -14,4 +17,6 @@ type B {
     id: ID!
     name: String
     parent: A!
+    argument(arg: String): B!
+    arguments(arg: String): [B!]
 }

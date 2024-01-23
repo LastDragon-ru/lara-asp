@@ -272,6 +272,12 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
+    child: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
     children: SearchByComplexRelationB
     @searchByOperatorRelation
 

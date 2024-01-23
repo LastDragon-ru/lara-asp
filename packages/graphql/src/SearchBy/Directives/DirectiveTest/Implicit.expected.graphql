@@ -272,6 +272,12 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
+    child: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
     children: SearchByComplexRelationB
     @searchByOperatorRelation
 
@@ -631,6 +637,15 @@ input SearchByTypeRangeInt {
 }
 
 type A {
+    argument(
+        arg: String
+    ): A!
+
+    arguments(
+        arg: String
+    ): [A!]
+
+    child: B!
     children: [B!]!
 
     """
@@ -642,6 +657,14 @@ type A {
 }
 
 type B {
+    argument(
+        arg: String
+    ): B!
+
+    arguments(
+        arg: String
+    ): [B!]
+
     """
     Description should be ignored.
     """
