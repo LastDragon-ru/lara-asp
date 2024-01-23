@@ -1,0 +1,17 @@
+type Query {
+    a(order: _ @sortBy): [A!]! @all
+}
+
+type A {
+    "Description should be copied."
+    id: ID!
+    name: String!
+    child: B!
+}
+
+type B {
+    "Description should be copied."
+    id: ID!
+    name: String
+    parent: A!
+}

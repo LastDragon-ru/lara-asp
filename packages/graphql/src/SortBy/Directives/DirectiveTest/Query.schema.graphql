@@ -1,0 +1,32 @@
+type Query {
+    a(order: InputA @sortBy): ID! @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+    b(order: _ @sortBy): [TypeB!]! @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+}
+
+input InputA {
+    id: ID!
+    name: String!
+    child: InputB!
+}
+
+input InputB {
+    id: ID!
+    name: String
+    parent: InputA!
+}
+
+input TypeA {
+    id: ID!
+    name: String!
+    child: TypeB!
+}
+
+input TypeB {
+    id: ID!
+    name: String
+    parent: TypeA!
+}

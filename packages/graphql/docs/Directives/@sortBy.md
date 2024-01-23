@@ -19,7 +19,7 @@ on
 
 ## Basic usage
 
-How to use (and [generated GraphQL schema](../../src/SortBy/Directives/DirectiveTest~example-expected.graphql)):
+How to use (and [generated GraphQL schema](../../src/SortBy/Directives/DirectiveTest/Example.expected.graphql)):
 
 ```graphql
 type Query {

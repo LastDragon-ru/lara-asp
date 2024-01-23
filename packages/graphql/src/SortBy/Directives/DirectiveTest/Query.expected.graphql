@@ -1,0 +1,130 @@
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    Asc
+    Desc
+
+    asc
+    @deprecated(
+        reason: "Please use `Asc` instead."
+    )
+
+    desc
+    @deprecated(
+        reason: "Please use `Desc` instead."
+    )
+}
+
+"""
+Sort clause for `input InputA` (only one property allowed at a time).
+"""
+input SortByQueryClauseInputA {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByQueryClauseInputA
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByQueryClauseInputA
+    @sortByOperatorNullsLast
+}
+
+"""
+Sort clause for `input TypeB` (only one property allowed at a time).
+"""
+input SortByQueryClauseTypeB {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByQueryClauseTypeB
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByQueryClauseTypeB
+    @sortByOperatorNullsLast
+}
+
+input TypeA {
+    child: TypeB!
+    id: ID!
+    name: String!
+}
+
+input TypeB {
+    id: ID!
+    name: String
+    parent: TypeA!
+}
+
+type Query {
+    a(
+        order: [SortByQueryClauseInputA!]
+        @sortBy
+    ): ID!
+    @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+
+    b(
+        order: [SortByQueryClauseTypeB!]
+        @sortBy
+    ): [TypeB!]!
+    @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+}

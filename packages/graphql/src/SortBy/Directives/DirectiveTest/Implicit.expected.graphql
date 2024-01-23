@@ -1,0 +1,147 @@
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    Asc
+    Desc
+
+    asc
+    @deprecated(
+        reason: "Please use `Asc` instead."
+    )
+
+    desc
+    @deprecated(
+        reason: "Please use `Desc` instead."
+    )
+}
+
+"""
+Sort clause for `type A` (only one property allowed at a time).
+"""
+input SortByClauseA {
+    """
+    Property clause.
+    """
+    child: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseA
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseA
+    @sortByOperatorNullsLast
+}
+
+"""
+Sort clause for `type B` (only one property allowed at a time).
+"""
+input SortByClauseB {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseB
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseB
+    @sortByOperatorNullsLast
+
+    """
+    Property clause.
+    """
+    parent: SortByClauseA
+    @sortByOperatorProperty
+}
+
+type A {
+    child: B!
+
+    """
+    Description should be copied.
+    """
+    id: ID!
+
+    name: String!
+}
+
+type B {
+    """
+    Description should be copied.
+    """
+    id: ID!
+
+    name: String
+    parent: A!
+}
+
+type Query {
+    a(
+        order: [SortByClauseA!]
+        @sortBy
+    ): [A!]!
+    @all
+}
