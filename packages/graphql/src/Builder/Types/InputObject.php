@@ -152,7 +152,7 @@ abstract class InputObject implements TypeDefinition {
         // Resolver?
         $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
 
-        if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $resolver, $context)) {
+        if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $field, $context, $resolver)) {
             return false;
         }
 
@@ -283,7 +283,7 @@ abstract class InputObject implements TypeDefinition {
         $directives = [];
 
         foreach ($manipulator->getDirectives($field->getField()) as $directive) {
-            if ($this->isFieldDirectiveAllowed($manipulator, $directive, $context)) {
+            if ($this->isFieldDirectiveAllowed($manipulator, $field, $context, $directive)) {
                 $node = $manipulator->getDirectiveNode($directive);
 
                 if ($node) {
@@ -297,8 +297,9 @@ abstract class InputObject implements TypeDefinition {
 
     protected function isFieldDirectiveAllowed(
         Manipulator $manipulator,
-        Directive $directive,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
+        Directive $directive,
     ): bool {
         return $directive instanceof Operator
             || $directive instanceof RenameDirective;
