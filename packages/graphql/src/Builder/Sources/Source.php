@@ -77,6 +77,11 @@ class Source implements TypeSource {
     }
 
     #[Override]
+    public function isObject(): bool {
+        return $this->getManipulator()->isObject($this->getType());
+    }
+
+    #[Override]
     public function __toString(): string {
         return $this->getManipulator()->getTypeFullName($this->getType());
     }

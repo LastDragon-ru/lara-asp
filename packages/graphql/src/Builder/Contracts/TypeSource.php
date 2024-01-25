@@ -28,4 +28,6 @@ interface TypeSource extends Stringable {
     public function isList(): bool;
 
     public function isUnion(): bool;
+
+    public function isObject(): bool;
 }
