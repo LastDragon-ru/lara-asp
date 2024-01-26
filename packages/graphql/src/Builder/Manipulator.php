@@ -39,9 +39,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Utils\PaginateDirectiveHelper;
+use LastDragon_ru\LaraASP\GraphQL\Utils\RelationDirectiveHelper;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
-use Nuwave\Lighthouse\Pagination\PaginationType;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 
 use function array_map;
@@ -314,35 +317,35 @@ class Manipulator extends AstManipulator implements TypeProvider {
     ): TypeDefinitionNode|Type|null {
         $node       = $this->getTypeDefinition($field);
         $name       = $this->getTypeName($node);
-        $directives = [
-            StreamDirective::class,
-            PaginateDirective::class,
-        ];
+        $directives = $this->getDirectives($field, null, static function (Directive $directive): bool {
+            return $directive instanceof StreamDirective
+                || $directive instanceof PaginateDirective
+                || $directive instanceof RelationDirective;
+        });
 
         foreach ($directives as $directive) {
-            $directive = $this->getDirective($field, $directive);
-            $type      = null;
+            $type = null;
 
             if ($directive instanceof StreamDirective) {
                 $type = Str::singular(mb_substr($name, 0, -mb_strlen(StreamDirective::Name)));
-            } elseif ($directive instanceof PaginateDirective) {
-                $pagination = (new class() extends PaginateDirective {
-                    public function getPaginationType(PaginateDirective $directive): PaginationType {
-                        return $directive->paginationType();
-                    }
-                })->getPaginationType($directive);
+            } elseif ($directive instanceof PaginateDirective || $directive instanceof RelationDirective) {
+                $pagination = $directive instanceof PaginateDirective
+                    ? PaginateDirectiveHelper::getPaginationType($directive)
+                    : RelationDirectiveHelper::getPaginationType($directive);
 
-                if ($pagination->isPaginator()) {
-                    $type = mb_substr($name, 0, -mb_strlen('Paginator'));
-                } elseif ($pagination->isSimple()) {
-                    $type = mb_substr($name, 0, -mb_strlen('SimplePaginator'));
-                } elseif ($pagination->isConnection()) {
-                    $type = mb_substr($name, 0, -mb_strlen('Connection'));
-                } else {
-                    // empty
+                if ($pagination) {
+                    if ($pagination->isPaginator()) {
+                        $type = mb_substr($name, 0, -mb_strlen('Paginator'));
+                    } elseif ($pagination->isSimple()) {
+                        $type = mb_substr($name, 0, -mb_strlen('SimplePaginator'));
+                    } elseif ($pagination->isConnection()) {
+                        $type = mb_substr($name, 0, -mb_strlen('Connection'));
+                    } else {
+                        // empty
+                    }
                 }
             } else {
-                 // empty
+                // empty
             }
 
             if ($type) {

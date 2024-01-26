@@ -344,6 +344,37 @@ final class ManipulatorTest extends TestCase {
                 }
                 GRAPHQL,
             ],
+            '@hasOne'                     => [
+                'Test',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @hasOne(
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            '@hasMany(type: PAGINATOR)'   => [
+                'Test',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @hasMany(
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        type: PAGINATOR
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
             '@stream'                     => [
                 'Test',
                 <<<'GRAPHQL'
