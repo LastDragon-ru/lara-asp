@@ -93,5 +93,5 @@ This section is actual only if you are extending the package. Please review and 
 * [ ] To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead of `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`:
 
     ```php
-    $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerContextBuilderInfo::class)?->value
+    $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo::class)?->value
     ```
