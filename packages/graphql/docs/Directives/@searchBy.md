@@ -32,6 +32,10 @@ Out the box directives provides following features:
 
 Let's start:
 
+[include:example]: ../../src/SearchBy/Directives/DirectiveTest/Example.schema.graphql
+[//]: # (start: e552ccbddb2cf6a9dd4e14f9295ad974ca19c375ba683681d959d5190028ded4)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```graphql
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
@@ -58,10 +62,12 @@ type User {
 
 input Comment {
     text: String!
-    user: User
+    user: User @belongsTo
     date: Date
 }
 ```
+
+[//]: # (end: e552ccbddb2cf6a9dd4e14f9295ad974ca19c375ba683681d959d5190028ded4)
 
 That's all, just search 😃 (or look at [generated GraphQL schema](../../src/SearchBy/Directives/DirectiveTest/Example.expected.graphql))
 

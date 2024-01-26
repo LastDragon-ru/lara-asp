@@ -21,6 +21,10 @@ on
 
 How to use (and [generated GraphQL schema](../../src/SortBy/Directives/DirectiveTest/Example.expected.graphql)):
 
+[include:example]: ../../src/SortBy/Directives/DirectiveTest/Example.schema.graphql
+[//]: # (start: f4e6a88c853cd9b15aa5c3388c1b61148589eddbc18b410b0e846695c5765e4f)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```graphql
 type Query {
     "You can use normal input type"
@@ -37,7 +41,7 @@ input UsersSort {
 
 type Comment {
     text: String
-    user: User
+    user: User @belongsTo
 }
 
 type User {
@@ -45,6 +49,8 @@ type User {
     name: String!
 }
 ```
+
+[//]: # (end: f4e6a88c853cd9b15aa5c3388c1b61148589eddbc18b410b0e846695c5765e4f)
 
 And:
 
