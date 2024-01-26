@@ -16,39 +16,35 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\FieldArgument;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
- * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
+ * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type, ObjectFieldSource>
  */
 class ObjectFieldArgumentSource extends Source {
     use FieldArgument;
 
     public function __construct(
         AstManipulator $manipulator,
-        private ObjectTypeDefinitionNode|ObjectType $object,
-        private FieldDefinitionNode|FieldDefinition $field,
+        ObjectFieldSource $parent,
         private InputValueDefinitionNode|Argument $argument,
     ) {
-        parent::__construct($manipulator, $argument instanceof Argument ? $argument->getType() : $argument->type);
+        parent::__construct(
+            $manipulator,
+            $argument instanceof Argument ? $argument->getType() : $argument->type,
+            $parent,
+        );
     }
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     public function getObject(): ObjectTypeDefinitionNode|ObjectType {
-        return $this->object;
+        return $this->getParent()->getObject();
     }
 
     public function getField(): FieldDefinition|FieldDefinitionNode {
-        return $this->field;
+        return $this->getParent()->getField();
     }
 
     public function getArgument(): InputValueDefinitionNode|Argument {
         return $this->argument;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Helpers">
-    // =================================================================================================================
-    public function getParent(): ObjectFieldSource {
-        return new ObjectFieldSource($this->getManipulator(), $this->getObject(), $this->getField());
     }
     // </editor-fold>
 }

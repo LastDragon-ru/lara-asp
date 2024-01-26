@@ -8,10 +8,10 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 
 /**
- * @extends Source<InterfaceTypeDefinitionNode|InterfaceType>
+ * @extends Source<InterfaceTypeDefinitionNode|InterfaceType, null>
  */
 class InterfaceSource extends Source {
     public function getField(FieldDefinitionNode|FieldDefinition $field): InterfaceFieldSource {
-        return new InterfaceFieldSource($this->getManipulator(), $this->getType(), $field);
+        return new InterfaceFieldSource($this->getManipulator(), $this, $field);
     }
 }

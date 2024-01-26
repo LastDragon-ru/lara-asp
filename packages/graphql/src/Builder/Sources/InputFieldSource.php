@@ -17,23 +17,27 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\Field;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
- * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
+ * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type, InputSource>
  */
 class InputFieldSource extends Source {
     use Field;
 
     public function __construct(
         AstManipulator $manipulator,
-        private InputObjectTypeDefinitionNode|InputObjectType $object,
+        InputSource $parent,
         private InputValueDefinitionNode|InputObjectField $field,
     ) {
-        parent::__construct($manipulator, $field instanceof InputObjectField ? $field->getType() : $field->type);
+        parent::__construct(
+            $manipulator,
+            $field instanceof InputObjectField ? $field->getType() : $field->type,
+            $parent,
+        );
     }
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     public function getObject(): InputObjectTypeDefinitionNode|InputObjectType {
-        return $this->object;
+        return $this->getParent()->getType();
     }
 
     public function getField(): InputValueDefinitionNode|InputObjectField {

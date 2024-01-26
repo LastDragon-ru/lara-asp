@@ -14,14 +14,17 @@ use Override;
 
 /**
  * @template TType of (TypeDefinitionNode&Node)|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type
+ * @template TParent of TypeSource|null
  */
 class Source implements TypeSource {
     /**
-     * @param TType $type
+     * @param TType   $type
+     * @param TParent $parent
      */
     public function __construct(
         private AstManipulator $manipulator,
         private TypeDefinitionNode|Node|Type $type,
+        private TypeSource|null $parent = null,
     ) {
         // empty
     }
@@ -30,6 +33,13 @@ class Source implements TypeSource {
     // =========================================================================
     protected function getManipulator(): AstManipulator {
         return $this->manipulator;
+    }
+
+    /**
+     * @return TParent
+     */
+    public function getParent(): ?TypeSource {
+        return $this->parent;
     }
     // </editor-fold>
 

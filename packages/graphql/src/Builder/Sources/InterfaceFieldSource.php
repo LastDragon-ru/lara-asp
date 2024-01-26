@@ -16,23 +16,27 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\Field;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
- * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
+ * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type, InterfaceSource>
  */
 class InterfaceFieldSource extends Source {
     use Field;
 
     public function __construct(
         AstManipulator $manipulator,
-        private InterfaceTypeDefinitionNode|InterfaceType $object,
+        InterfaceSource $parent,
         private FieldDefinitionNode|FieldDefinition $field,
     ) {
-        parent::__construct($manipulator, $field instanceof FieldDefinition ? $field->getType() : $field->type);
+        parent::__construct(
+            $manipulator,
+            $field instanceof FieldDefinition ? $field->getType() : $field->type,
+            $parent,
+        );
     }
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     public function getObject(): InterfaceTypeDefinitionNode|InterfaceType {
-        return $this->object;
+        return $this->getParent()->getType();
     }
 
     public function getField(): FieldDefinition|FieldDefinitionNode {
@@ -42,17 +46,8 @@ class InterfaceFieldSource extends Source {
 
     // <editor-fold desc="Helpers">
     // =================================================================================================================
-    public function getParent(): InterfaceSource {
-        return new InterfaceSource($this->getManipulator(), $this->getObject());
-    }
-
     public function getArgument(InputValueDefinitionNode|Argument $argument): InterfaceFieldArgumentSource {
-        return new InterfaceFieldArgumentSource(
-            $this->getManipulator(),
-            $this->getObject(),
-            $this->getField(),
-            $argument,
-        );
+        return new InterfaceFieldArgumentSource($this->getManipulator(), $this, $argument);
     }
     // </editor-fold>
 }

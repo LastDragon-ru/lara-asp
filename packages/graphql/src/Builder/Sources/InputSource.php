@@ -8,10 +8,10 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 
 /**
- * @extends Source<InputObjectTypeDefinitionNode|InputObjectType>
+ * @extends Source<InputObjectTypeDefinitionNode|InputObjectType, null>
  */
 class InputSource extends Source {
     public function getField(InputValueDefinitionNode|InputObjectField $field): InputFieldSource {
-        return new InputFieldSource($this->getManipulator(), $this->getType(), $field);
+        return new InputFieldSource($this->getManipulator(), $this, $field);
     }
 }

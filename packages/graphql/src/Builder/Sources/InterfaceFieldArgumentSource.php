@@ -16,39 +16,35 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\FieldArgument;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
- * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
+ * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type, InterfaceFieldSource>
  */
 class InterfaceFieldArgumentSource extends Source {
     use FieldArgument;
 
     public function __construct(
         AstManipulator $manipulator,
-        private InterfaceTypeDefinitionNode|InterfaceType $object,
-        private FieldDefinitionNode|FieldDefinition $field,
+        InterfaceFieldSource $parent,
         private InputValueDefinitionNode|Argument $argument,
     ) {
-        parent::__construct($manipulator, $argument instanceof Argument ? $argument->getType() : $argument->type);
+        parent::__construct(
+            $manipulator,
+            $argument instanceof Argument ? $argument->getType() : $argument->type,
+            $parent,
+        );
     }
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     public function getObject(): InterfaceTypeDefinitionNode|InterfaceType {
-        return $this->object;
+        return $this->getParent()->getObject();
     }
 
     public function getField(): FieldDefinition|FieldDefinitionNode {
-        return $this->field;
+        return $this->getParent()->getField();
     }
 
     public function getArgument(): InputValueDefinitionNode|Argument {
         return $this->argument;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Helpers">
-    // =================================================================================================================
-    public function getParent(): InterfaceFieldSource {
-        return new InterfaceFieldSource($this->getManipulator(), $this->getObject(), $this->getField());
     }
     // </editor-fold>
 }

@@ -577,11 +577,11 @@ final class DirectiveTest extends TestCase {
         ]);
 
         $field     = Parser::fieldDefinition('test: String');
-        $source    = new ObjectFieldSource(
+        $object    = new ObjectSource(
             Mockery::mock(AstManipulator::class)->makePartial(),
             new ObjectType(['name' => 'Car', 'fields' => []]),
-            $field,
         );
+        $source    = $object->getField($field);
         $directive = Mockery::mock(Directive::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
@@ -1131,9 +1131,7 @@ final class DirectiveTest extends TestCase {
         $value = $directive->getFieldValue(
             DirectiveTest_Directive::class,
             $manipulator,
-            new ObjectFieldSource(
-                $manipulator,
-                $object,
+            (new ObjectSource($manipulator, $object))->getField(
                 Parser::fieldDefinition(
                     'test(d: Int @markerA, b: String @markerA @deprecated): String',
                 ),
@@ -1148,9 +1146,7 @@ final class DirectiveTest extends TestCase {
         $value = $directive->getFieldValue(
             DirectiveTest_Directive::class,
             $manipulator,
-            new ObjectFieldSource(
-                $manipulator,
-                $object,
+            (new ObjectSource($manipulator, $object))->getField(
                 Parser::fieldDefinition(
                     'test(a: String @markerA @deprecated, b: Int @markerB): String',
                 ),
@@ -1205,9 +1201,7 @@ final class DirectiveTest extends TestCase {
         $directive->getFieldValue(
             DirectiveTest_Directive::class,
             $manipulator,
-            new ObjectFieldSource(
-                $manipulator,
-                $object,
+            (new ObjectSource($manipulator, $object))->getField(
                 Parser::fieldDefinition(
                     'test(a: Int, b: String): String',
                 ),
@@ -1261,9 +1255,7 @@ final class DirectiveTest extends TestCase {
         $directive->getFieldValue(
             $marker::class,
             $manipulator,
-            new ObjectFieldSource(
-                $manipulator,
-                $object,
+            (new ObjectSource($manipulator, $object))->getField(
                 Parser::fieldDefinition(
                     'test(a: Int @marker, b: String @marker @deprecated): String',
                 ),
@@ -1523,11 +1515,10 @@ final class DirectiveTest extends TestCase {
     public static function dataProviderGetBuilderInfo(): array {
         $class   = new DirectiveTest_Model();
         $factory = static function (AstManipulator $manipulator): ObjectFieldSource {
-            return new ObjectFieldSource(
-                $manipulator,
-                new ObjectType(['name' => 'ObjectA', 'fields' => []]),
-                Parser::fieldDefinition('test: String'),
-            );
+            return (new ObjectSource($manipulator, new ObjectType(['name' => 'ObjectA', 'fields' => []])))
+                ->getField(
+                    Parser::fieldDefinition('test: String'),
+                );
         };
 
         return [
@@ -1589,11 +1580,10 @@ final class DirectiveTest extends TestCase {
      */
     public static function dataProviderGetBuilderInfoScoutBuilder(): array {
         $factory = static function (AstManipulator $manipulator): ObjectFieldSource {
-            return new ObjectFieldSource(
-                $manipulator,
-                new ObjectType(['name' => 'ObjectA', 'fields' => []]),
-                Parser::fieldDefinition('test(search: String! @search): String'),
-            );
+            return (new ObjectSource($manipulator, new ObjectType(['name' => 'ObjectA', 'fields' => []])))
+                ->getField(
+                    Parser::fieldDefinition('test(search: String! @search): String'),
+                );
         };
 
         return [
@@ -1682,11 +1672,10 @@ final class DirectiveTest extends TestCase {
             }
             GRAPHQL;
         $factory = static function (AstManipulator $manipulator): ObjectFieldSource {
-            return new ObjectFieldSource(
-                $manipulator,
-                new ObjectType(['name' => 'ObjectA', 'fields' => []]),
-                Parser::fieldDefinition('test: String'),
-            );
+            return (new ObjectSource($manipulator, new ObjectType(['name' => 'ObjectA', 'fields' => []])))
+                ->getField(
+                    Parser::fieldDefinition('test: String'),
+                );
         };
 
         return [
@@ -1707,11 +1696,10 @@ final class DirectiveTest extends TestCase {
                 $schema,
                 Parser::directive('@stream'),
                 static function (AstManipulator $manipulator): ObjectFieldSource {
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Object', 'fields' => []]),
-                        Parser::fieldDefinition('test: ObjectA'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Object', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('test: ObjectA'),
+                        );
                 },
             ],
             'Invalid type'       => [
@@ -1719,11 +1707,10 @@ final class DirectiveTest extends TestCase {
                 $schema,
                 Parser::directive('@stream'),
                 static function (AstManipulator $manipulator): ObjectFieldSource {
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'ObjectA', 'fields' => []]),
-                        Parser::fieldDefinition('test: ObjectB'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'ObjectA', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('test: ObjectB'),
+                        );
                 },
             ],
             'Converted'          => [
@@ -1731,11 +1718,10 @@ final class DirectiveTest extends TestCase {
                 $schema,
                 Parser::directive('@stream'),
                 static function (AstManipulator $manipulator): ObjectFieldSource {
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'ObjectB', 'fields' => []]),
-                        Parser::fieldDefinition('test: ObjectAsStream'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'ObjectB', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('test: ObjectAsStream'),
+                        );
                 },
             ],
             '@rename'            => [
@@ -1743,11 +1729,10 @@ final class DirectiveTest extends TestCase {
                 $schema,
                 Parser::directive('@stream'),
                 static function (AstManipulator $manipulator): ObjectFieldSource {
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'ObjectB', 'fields' => []]),
-                        Parser::fieldDefinition('test: ObjectC'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'ObjectB', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('test: ObjectC'),
+                        );
                 },
             ],
         ];

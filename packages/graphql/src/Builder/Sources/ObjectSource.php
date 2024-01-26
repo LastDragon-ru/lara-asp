@@ -8,10 +8,10 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
 
 /**
- * @extends Source<ObjectTypeDefinitionNode|ObjectType>
+ * @extends Source<ObjectTypeDefinitionNode|ObjectType, null>
  */
 class ObjectSource extends Source {
     public function getField(FieldDefinitionNode|FieldDefinition $field): ObjectFieldSource {
-        return new ObjectFieldSource($this->getManipulator(), $this->getType(), $field);
+        return new ObjectFieldSource($this->getManipulator(), $this, $field);
     }
 }
