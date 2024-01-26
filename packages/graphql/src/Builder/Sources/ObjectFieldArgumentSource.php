@@ -4,10 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
@@ -16,19 +15,23 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\FieldArgument;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
- * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type, ObjectFieldSource>
+ * @extends Source<(TypeNode&Node)|Type, ObjectFieldSource>
  */
 class ObjectFieldArgumentSource extends Source {
     use FieldArgument;
 
+    /**
+     * @param (TypeNode&Node)|Type|null $type
+     */
     public function __construct(
         AstManipulator $manipulator,
         ObjectFieldSource $parent,
         private InputValueDefinitionNode|Argument $argument,
+        TypeNode|Type|null $type = null,
     ) {
         parent::__construct(
             $manipulator,
-            $argument instanceof Argument ? $argument->getType() : $argument->type,
+            $type ?? ($argument instanceof Argument ? $argument->getType() : $argument->type),
             $parent,
         );
     }

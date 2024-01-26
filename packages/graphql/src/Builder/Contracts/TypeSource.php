@@ -2,19 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
 use Stringable;
 
 interface TypeSource extends Stringable {
     /**
-     * @return (TypeDefinitionNode&Node)|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type
+     * @return (TypeDefinitionNode&Node)|(TypeNode&Node)|Type
      */
-    public function getType(): TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type;
+    public function getType(): TypeDefinitionNode|TypeNode|Type;
 
     public function getTypeName(): string;
 
