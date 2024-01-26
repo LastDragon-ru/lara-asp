@@ -53,6 +53,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Nuwave\Lighthouse\Pagination\PaginationServiceProvider as LighthousePaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
@@ -60,6 +61,7 @@ use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function array_merge;
 use function config;
 use function implode;
 use function is_array;
@@ -74,6 +76,19 @@ use const JSON_THROW_ON_ERROR;
 final class DirectiveTest extends TestCase {
     use WithTestObject;
     use MakesGraphQLRequests;
+
+    // <editor-fold desc="Prepare">
+    // =========================================================================
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getPackageProviders(mixed $app): array {
+        return array_merge(parent::getPackageProviders($app), [
+            LighthousePaginationServiceProvider::class,
+        ]);
+    }
+    // </editor-fold>
 
     // <editor-fold desc="Tests">
     // =========================================================================

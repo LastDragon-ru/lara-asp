@@ -22,7 +22,6 @@ use LastDragon_ru\LaraASP\Serializer\Provider as SerializerProvider;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
-use Nuwave\Lighthouse\Pagination\PaginationServiceProvider as LighthousePaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthouseTestingServiceProvider;
 use Nuwave\Lighthouse\Validation\ValidationServiceProvider as LighthouseValidationServiceProvider;
@@ -53,7 +52,6 @@ abstract class TestCase extends PackageTestCase {
             LighthouseServiceProvider::class,
             LighthouseTestingServiceProvider::class,
             LighthouseValidationServiceProvider::class,
-            LighthousePaginationServiceProvider::class,
         ];
     }
 
