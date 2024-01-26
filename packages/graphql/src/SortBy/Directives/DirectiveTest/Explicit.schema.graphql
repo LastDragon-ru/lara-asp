@@ -1,17 +1,21 @@
 type Query {
     a(order: A @sortBy): ID! @all
+    b(where: A @sortBy): [A!]! @paginate(
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    )
 }
 
 input A {
-    "Description should be ignored."
+    # Should be processed
+    "Description should be copied."
     id: ID!
     name: String!
-    child: B!
-    children: [B!]!
+    field: B!
+    fields: [B!]!
 }
 
 input B {
-    "Description should be ignored."
+    "Description should be copied."
     id: ID!
     name: String
     parent: A!

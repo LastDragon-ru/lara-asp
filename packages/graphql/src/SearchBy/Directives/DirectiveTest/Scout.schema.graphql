@@ -11,7 +11,7 @@ type Query implements A & B {
 
     f(search: String @search, where: _ @searchBy): Object! @all
 
-    g(search: String @search, where: ObjectInterface @searchBy): Object! @all
+    g(search: String @search, where: _ @searchBy): ObjectInterface! @all
 }
 
 interface A implements C & F {
@@ -122,8 +122,8 @@ interface ObjectInterface {
     stringScalarNotNull: String!
     booleanScalar: Boolean
     booleanScalarNotNull: Boolean!
-    nested: ObjectNested
-    nestedNotNull: ObjectNested!
+    nested: ObjectNested @hasOne
+    nestedNotNull: ObjectNested! @hasOne
     enum: EnumA
     enumNotNull: EnumA!
     enumIgnored: EnumIgnored
@@ -155,7 +155,7 @@ interface ObjectInterface {
     fieldRenamed: ID @rename(attribute: "renamed")
 }
 
-type Object implements ObjectInterface{
+type Object implements ObjectInterface {
     idScalar: ID
     idScalarNotNull: ID!
     intScalar: Int
@@ -166,8 +166,8 @@ type Object implements ObjectInterface{
     stringScalarNotNull: String!
     booleanScalar: Boolean
     booleanScalarNotNull: Boolean!
-    nested: ObjectNested
-    nestedNotNull: ObjectNested!
+    nested: ObjectNested @hasOne
+    nestedNotNull: ObjectNested! @hasOne
     enum: EnumA
     enumNotNull: EnumA!
     enumIgnored: EnumIgnored

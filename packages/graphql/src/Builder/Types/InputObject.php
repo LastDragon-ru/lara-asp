@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerContextBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionFieldAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
@@ -23,6 +24,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use LastDragon_ru\LaraASP\GraphQL\Utils\RelationDirectiveHelper;
+use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
@@ -139,25 +142,54 @@ abstract class InputObject implements TypeDefinition {
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): bool {
-        // Args? (in general case we don't know how they should be converted)
-        if ($field->hasArguments()) {
-            return false;
-        }
-
-        // Union?
+        /**
+         * Union?
+         */
         if ($field->isUnion()) {
+            // todo(graphql): Would be nice to support Unions. Maybe just use
+            //      fields with same name and type for all members?
             return false;
         }
 
+        /**
+         * Explicit? We are expecting that the type created for the directive
+         * and all fields are valid and available. Also, keep in mind that the
+         * type is a `input` so it cannot have arguments, `FieldResolver`
+         * (if GraphQL Schema valid).
+         */
+        if (!$context->get(HandlerContextImplicit::class)?->value) {
+            return true;
+        }
+
+        /**
+         * Nope. Implicit type (=placeholder) is an `object`/`interface` and may
+         * contain fields with arguments and/or `FieldResolver` directive - these
+         * fields (most likely) cannot be used to modify the Builder.
+         */
         // Resolver?
         $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
 
-        if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $field, $context, $resolver)) {
+        if ($resolver && !$this->isFieldDirectiveConvertable($manipulator, $field, $context, $resolver)) {
+            return false;
+        }
+
+        // Object/Arguments allowed only if Resolver defined
+        if (($field->hasArguments() || $field->isObject()) && !$resolver) {
             return false;
         }
 
         // Ok
         return true;
+    }
+
+    protected function isFieldDirectiveConvertable(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
+        Directive $directive,
+    ): bool {
+        return ($directive instanceof RelationDirective && !RelationDirectiveHelper::getPaginationType($directive))
+            || $this->isFieldDirectiveAllowed($manipulator, $field, $context, $directive);
     }
 
     protected function getFieldDefinition(

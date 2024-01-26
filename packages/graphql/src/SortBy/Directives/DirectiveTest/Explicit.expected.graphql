@@ -47,6 +47,28 @@ enum SortByTypeDirection {
     )
 }
 
+input A {
+    field: B!
+    fields: [B!]!
+
+    """
+    Description should be copied.
+    """
+    id: ID!
+
+    name: String!
+}
+
+input B {
+    """
+    Description should be copied.
+    """
+    id: ID!
+
+    name: String
+    parent: A!
+}
+
 """
 Sort clause for `input A` (only one property allowed at a time).
 """
@@ -54,11 +76,11 @@ input SortByClauseA {
     """
     Property clause.
     """
-    child: SortByClauseB
+    field: SortByClauseB
     @sortByOperatorProperty
 
     """
-    Description should be ignored.
+    Description should be copied.
     """
     id: SortByTypeDirection
     @sortByOperatorField
@@ -87,7 +109,7 @@ Sort clause for `input B` (only one property allowed at a time).
 """
 input SortByClauseB {
     """
-    Description should be ignored.
+    Description should be copied.
     """
     id: SortByTypeDirection
     @sortByOperatorField
@@ -117,10 +139,98 @@ input SortByClauseB {
     @sortByOperatorProperty
 }
 
+"""
+A paginated list of A items.
+"""
+type APaginator
+@model(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+)
+{
+    """
+    A list of A items.
+    """
+    data: [A!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
+    )
+
+    """
+    Pagination information about the list of items.
+    """
+    paginatorInfo: PaginatorInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
+    )
+}
+
+"""
+Information about pagination using a fully featured paginator.
+"""
+type PaginatorInfo {
+    """
+    Number of items in the current page.
+    """
+    count: Int!
+
+    """
+    Index of the current page.
+    """
+    currentPage: Int!
+
+    """
+    Index of the first item in the current page.
+    """
+    firstItem: Int
+
+    """
+    Are there more pages after this one?
+    """
+    hasMorePages: Boolean!
+
+    """
+    Index of the last item in the current page.
+    """
+    lastItem: Int
+
+    """
+    Index of the last available page.
+    """
+    lastPage: Int!
+
+    """
+    Number of items per page.
+    """
+    perPage: Int!
+
+    """
+    Number of total available items.
+    """
+    total: Int!
+}
+
 type Query {
     a(
         order: [SortByClauseA!]
         @sortBy
     ): ID!
     @all
+
+    b(
+        where: [SortByClauseA!]
+        @sortBy
+
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): APaginator!
+    @paginate(
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    )
 }

@@ -1,22 +1,52 @@
 type Query {
     a(where: _ @searchBy): [A!]! @all
+    b(where: _ @searchBy): [A!]! @paginate(
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    )
+    c(where: _ @searchBy): [C!]! @all
 }
 
 type A {
+    # Should be processed
     "Description should be ignored."
     id: ID!
     name: String!
-    child: B!
-    children: [B!]!
-    argument(arg: String): A!
-    arguments(arg: String): [A!]
+    relation: B! @hasOne
+    relations: [B!]! @hasMany
+    relationWithArgs(arg: String): A! @hasOne
+    relationsWithArgs(arg: String): [A!] @hasMany
+
+    # Should be ignored
+    field: B!
+    fields: [B!]!
+    property(arg: String): Int!
+    resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver")
+    relationsPaginated: B! @hasMany(type: PAGINATOR)
+    relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
 }
 
 type B {
     "Description should be ignored."
     id: ID!
     name: String
-    parent: A!
-    argument(arg: String): B!
-    arguments(arg: String): [B!]
+    parent: A! @hasOne
+}
+
+interface C {
+    # Should be processed
+    "Description should be ignored."
+    id: ID!
+    name: String!
+    relation: B! @hasOne
+    relations: [B!]! @hasMany
+    relationWithArgs(arg: String): A! @hasOne
+    relationsWithArgs(arg: String): [A!] @hasMany
+
+    # Should be ignored
+    field: B!
+    fields: [B!]!
+    property(arg: String): Int!
+    resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver")
+    relationsPaginated: B! @hasMany(type: PAGINATOR)
+    relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
 }

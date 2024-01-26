@@ -204,6 +204,12 @@ input SearchByScoutConditionInputA {
     """
     Property condition.
     """
+    resolver: SearchByScoutScalarFloatOrNull
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
     stringScalar: SearchByScoutScalarStringOrNull
     @searchByOperatorProperty
 
@@ -569,12 +575,6 @@ input SearchByScoutConditionObjectNested {
     """
     Property condition.
     """
-    nested: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
-
-    """
-    Property condition.
-    """
     value: SearchByScoutScalarStringOrNull
     @searchByOperatorProperty
 }
@@ -883,8 +883,12 @@ interface ObjectInterface {
     ignoredTypeNonNull: ObjectIgnored!
     intScalar: Int
     intScalarNotNull: Int!
+
     nested: ObjectNested
+    @hasOne
+
     nestedNotNull: ObjectNested!
+    @hasOne
 
     resolver: Float
     @field(
@@ -968,8 +972,12 @@ implements
     ignoredTypeNonNull: ObjectIgnored!
     intScalar: Int
     intScalarNotNull: Int!
+
     nested: ObjectNested
+    @hasOne
+
     nestedNotNull: ObjectNested!
+    @hasOne
 
     resolver: Float
     @field(
@@ -1059,7 +1067,7 @@ implements
 
         where: SearchByScoutConditionObjectInterface
         @searchBy
-    ): Object!
+    ): ObjectInterface!
     @all
 }
 

@@ -13,7 +13,7 @@ input UsersSort {
 
 type Comment {
     text: String
-    user: User
+    user: User @belongsTo
 }
 
 type User {

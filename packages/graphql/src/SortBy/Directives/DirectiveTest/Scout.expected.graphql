@@ -298,12 +298,6 @@ Sort clause for `type ObjectNested` (only one property allowed at a time).
 """
 input SortByClauseObjectNested {
     """
-    Property clause.
-    """
-    nested: SortByClauseObjectNested
-    @sortByOperatorProperty
-
-    """
     NULLs first
     """
     nullsFirst: SortByClauseObjectNested
@@ -412,6 +406,12 @@ input SortByClauseProperties {
     """
     random: SortByTypeFlag
     @sortByOperatorRandom
+
+    """
+    Property clause.
+    """
+    resolver: SortByTypeDirection
+    @sortByOperatorField
 }
 
 """
@@ -486,6 +486,12 @@ input SortByQueryClauseProperties {
     """
     random: SortByTypeFlag
     @sortByOperatorRandom
+
+    """
+    Property clause.
+    """
+    resolver: SortByTypeDirection
+    @sortByOperatorField
 }
 
 """
@@ -595,6 +601,12 @@ input SortByScoutClauseProperties {
     """
     nullsLast: SortByScoutClauseProperties
     @sortByOperatorNullsLast
+
+    """
+    Property clause.
+    """
+    resolver: SortByTypeDirection
+    @sortByOperatorField
 }
 
 interface Eloquent
@@ -645,8 +657,12 @@ interface ObjectInterface {
     ignoredType: ObjectIgnored
     ignoredTypeList: [ObjectIgnored!]!
     ignoredTypeNonNull: ObjectIgnored!
+
     nested: ObjectNested
+    @hasOne
+
     nestedNotNull: ObjectNested!
+    @hasOne
 
     resolver: ID!
     @field(
@@ -726,8 +742,12 @@ implements
     ignoredType: ObjectIgnored
     ignoredTypeList: [ObjectIgnored!]!
     ignoredTypeNonNull: ObjectIgnored!
+
     nested: ObjectNested
+    @hasOne
+
     nestedNotNull: ObjectNested!
+    @hasOne
 
     resolver: ID!
     @field(
@@ -764,7 +784,7 @@ implements
     interface(
         order: [SortByClauseObjectInterface!]
         @sortBy
-    ): Object!
+    ): ObjectInterface!
     @all
 
     placeholder(

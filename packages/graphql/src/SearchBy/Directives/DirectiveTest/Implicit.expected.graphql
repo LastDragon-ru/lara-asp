@@ -186,6 +186,26 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+"""
+Options for the `type` argument of `@hasMany`.
+"""
+enum HasManyType {
+    """
+    Cursor-based pagination, compatible with the Relay specification.
+    """
+    CONNECTION
+
+    """
+    Offset-based pagination, similar to the Laravel default.
+    """
+    PAGINATOR
+
+    """
+    Offset-based pagination like the Laravel "Simple Pagination", which does not count the total number of records.
+    """
+    SIMPLE
+}
+
 enum SearchByTypeFlag {
     Yes
 
@@ -270,18 +290,6 @@ input SearchByConditionA {
     @searchByOperatorAnyOf
 
     """
-    Relationship condition.
-    """
-    child: SearchByComplexRelationB
-    @searchByOperatorRelation
-
-    """
-    Relationship condition.
-    """
-    children: SearchByComplexRelationB
-    @searchByOperatorRelation
-
-    """
     Property condition.
     """
     id: SearchByScalarID
@@ -298,6 +306,30 @@ input SearchByConditionA {
     """
     not: SearchByConditionA
     @searchByOperatorNot
+
+    """
+    Relationship condition.
+    """
+    relation: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relationWithArgs: SearchByComplexRelationA
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relations: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relationsWithArgs: SearchByComplexRelationA
+    @searchByOperatorRelation
 }
 
 """
@@ -338,6 +370,65 @@ input SearchByConditionB {
     Relationship condition.
     """
     parent: SearchByComplexRelationA
+    @searchByOperatorRelation
+}
+
+"""
+Available conditions for `interface C` (only one property allowed at a time).
+"""
+input SearchByConditionC {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionC!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionC!]
+    @searchByOperatorAnyOf
+
+    """
+    Property condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorProperty
+
+    """
+    Property condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorProperty
+
+    """
+    Not.
+    """
+    not: SearchByConditionC
+    @searchByOperatorNot
+
+    """
+    Relationship condition.
+    """
+    relation: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relationWithArgs: SearchByComplexRelationA
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relations: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relationsWithArgs: SearchByComplexRelationA
     @searchByOperatorRelation
 }
 
@@ -636,17 +727,9 @@ input SearchByTypeRangeInt {
     min: Int!
 }
 
-type A {
-    argument(
-        arg: String
-    ): A!
-
-    arguments(
-        arg: String
-    ): [A!]
-
-    child: B!
-    children: [B!]!
+interface C {
+    field: B!
+    fields: [B!]!
 
     """
     Description should be ignored.
@@ -654,24 +737,235 @@ type A {
     id: ID!
 
     name: String!
+
+    property(
+        arg: String
+    ): Int!
+
+    relation: B!
+    @hasOne
+
+    relationWithArgs(
+        arg: String
+    ): A!
+    @hasOne
+
+    relations: [B!]!
+    @hasMany
+
+    relationsPaginated(
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): BPaginator!
+    @hasMany(
+        type: PAGINATOR
+    )
+
+    relationsPaginatedWithArgs(
+        arg: String
+
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): BPaginator!
+    @hasMany(
+        type: PAGINATOR
+    )
+
+    relationsWithArgs(
+        arg: String
+    ): [A!]
+    @hasMany
+
+    resolver: Int!
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
 }
 
-type B {
-    argument(
-        arg: String
-    ): B!
-
-    arguments(
-        arg: String
-    ): [B!]
+type A {
+    field: B!
+    fields: [B!]!
 
     """
     Description should be ignored.
     """
     id: ID!
 
+    name: String!
+
+    property(
+        arg: String
+    ): Int!
+
+    relation: B!
+    @hasOne
+
+    relationWithArgs(
+        arg: String
+    ): A!
+    @hasOne
+
+    relations: [B!]!
+    @hasMany
+
+    relationsPaginated(
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): BPaginator!
+    @hasMany(
+        type: PAGINATOR
+    )
+
+    relationsPaginatedWithArgs(
+        arg: String
+
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): BPaginator!
+    @hasMany(
+        type: PAGINATOR
+    )
+
+    relationsWithArgs(
+        arg: String
+    ): [A!]
+    @hasMany
+
+    resolver: Int!
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+}
+
+"""
+A paginated list of A items.
+"""
+type APaginator
+@model(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+)
+{
+    """
+    A list of A items.
+    """
+    data: [A!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
+    )
+
+    """
+    Pagination information about the list of items.
+    """
+    paginatorInfo: PaginatorInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
+    )
+}
+
+type B {
+    """
+    Description should be ignored.
+    """
+    id: ID!
+
     name: String
+
     parent: A!
+    @hasOne
+}
+
+"""
+A paginated list of B items.
+"""
+type BPaginator {
+    """
+    A list of B items.
+    """
+    data: [B!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
+    )
+
+    """
+    Pagination information about the list of items.
+    """
+    paginatorInfo: PaginatorInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
+    )
+}
+
+"""
+Information about pagination using a fully featured paginator.
+"""
+type PaginatorInfo {
+    """
+    Number of items in the current page.
+    """
+    count: Int!
+
+    """
+    Index of the current page.
+    """
+    currentPage: Int!
+
+    """
+    Index of the first item in the current page.
+    """
+    firstItem: Int
+
+    """
+    Are there more pages after this one?
+    """
+    hasMorePages: Boolean!
+
+    """
+    Index of the last item in the current page.
+    """
+    lastItem: Int
+
+    """
+    Index of the last available page.
+    """
+    lastPage: Int!
+
+    """
+    Number of items per page.
+    """
+    perPage: Int!
+
+    """
+    Number of total available items.
+    """
+    total: Int!
 }
 
 type Query {
@@ -679,5 +973,29 @@ type Query {
         where: SearchByConditionA
         @searchBy
     ): [A!]!
+    @all
+
+    b(
+        where: SearchByConditionA
+        @searchBy
+
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): APaginator!
+    @paginate(
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    )
+
+    c(
+        where: SearchByConditionC
+        @searchBy
+    ): [C!]!
     @all
 }
