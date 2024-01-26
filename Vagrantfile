@@ -172,6 +172,7 @@ EOT
   config.vm.provision "composer install", type: "shell", privileged: false, inline: <<-SHELL
     if test -f "/project/composer.json"; then
       (cd /project && composer install)
+      (cs /project && composer bin all install)
     fi
   SHELL
 

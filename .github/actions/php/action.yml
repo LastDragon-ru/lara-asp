@@ -48,18 +48,18 @@ runs:
         coverage: none
         tools: cs2pr
 
-    - name: Disable tools
-      if: ${{ !(inputs.tools == 'true' || inputs.tools == 1) }} # https://github.com/actions/runner/issues/1483
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
-      run: |
-        composer remove --no-interaction --no-progress --ansi --no-update --dev "bamarni/composer-bin-plugin"
-
     - name: Install dependencies
       if: ${{ inputs.dependencies == 'true' || inputs.dependencies == 1 }} # https://github.com/actions/runner/issues/1483
       uses: ramsey/composer-install@v2
       with:
         working-directory: ${{ inputs.working-directory }}
+
+    - name: Install tools
+      if: ${{ inputs.tools == 'true' || inputs.tools == 1 }} # https://github.com/actions/runner/issues/1483
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        composer bin all install
 
     - name: Setup problem matchers
       shell: bash
