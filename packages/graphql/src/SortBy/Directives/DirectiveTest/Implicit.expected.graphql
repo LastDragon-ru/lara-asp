@@ -30,6 +30,54 @@ on
     | SCALAR
 
 """
+Splits list of items into the chunks and returns one chunk specified
+by an offset or a cursor.
+"""
+directive @stream(
+    """
+    Overrides default searchable status.
+    """
+    searchable: Boolean
+
+    """
+    Overrides default sortable status.
+    """
+    sortable: Boolean
+
+    """
+    Overrides default builder. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the field and its type to determine the Builder to query.
+    """
+    builder: StreamBuilder
+
+    """
+    Overrides default limit.
+    """
+    limit: Int
+
+    """
+    Overrides default unique key. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the name of field with `ID!` type.
+    """
+    key: String
+)
+on
+    | FIELD_DEFINITION
+
+directive @streamLimit(
+    default: Int
+    max: Int
+)
+on
+    | ARGUMENT_DEFINITION
+
+directive @streamOffset
+on
+    | ARGUMENT_DEFINITION
+
+"""
 Options for the `type` argument of `@hasMany`.
 """
 enum HasManyType {
@@ -184,6 +232,26 @@ input SortByClauseC {
     @sortByOperatorProperty
 }
 
+"""
+Explicit builder. Only one of fields allowed.
+"""
+input StreamBuilder {
+    """
+    The reference to a function that provides a Builder instance.
+    """
+    builder: String
+
+    """
+    The class name of the model to query.
+    """
+    model: String
+
+    """
+    The relation name to query.
+    """
+    relation: String
+}
+
 interface C {
     field: B!
     fields: [B!]!
@@ -251,7 +319,47 @@ interface C {
     @field(
         resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver"
     )
+
+    stream(
+        order: [SortByClauseA!]
+        @sortBy
+
+        """
+        Maximum count of items to return. The value must be between `1` and `100`.
+        """
+        limit: Int! = 25
+        @streamLimit
+        @rules(
+            apply: ["integer", "min:1", "max:100"]
+        )
+
+        """
+        The cursor or offset within the stream to start.
+        """
+        offset: StreamOffset
+        @streamOffset
+    ): ASStream!
+    @stream(
+        searchable: false
+        builder: {
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        }
+    )
+    @validate
 }
+
+"""
+Represents a offset for the `@stream` directive. The value can be a
+positive `Int` or a `String`. The `Int` value represents the offset
+(zero-based) to navigate to any position within the stream (= offset
+pagination). And the `String` value represents the cursor and allows
+navigation only to the previous/current/next pages (= cursor
+pagination).
+"""
+scalar StreamOffset
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Offset"
+)
 
 type A {
     field: B!
@@ -320,6 +428,33 @@ type A {
     @field(
         resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver"
     )
+
+    stream(
+        order: [SortByClauseA!]
+        @sortBy
+
+        """
+        Maximum count of items to return. The value must be between `1` and `100`.
+        """
+        limit: Int! = 25
+        @streamLimit
+        @rules(
+            apply: ["integer", "min:1", "max:100"]
+        )
+
+        """
+        The cursor or offset within the stream to start.
+        """
+        offset: StreamOffset
+        @streamOffset
+    ): ASStream!
+    @stream(
+        searchable: false
+        builder: {
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        }
+    )
+    @validate
 }
 
 """
@@ -345,6 +480,24 @@ type APaginator
     @field(
         resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
     )
+}
+
+type ASStream {
+    """
+    Requested items.
+    """
+    items: [A!]!
+
+    """
+    Total number of items. Not recommended querying it in each query
+    due to performance.
+    """
+    length: Int
+
+    """
+    Offsets/Cursors to navigate within the stream.
+    """
+    navigation: StreamNavigation!
 }
 
 type B {
@@ -455,4 +608,10 @@ type Query {
         @sortBy
     ): [C!]!
     @all
+}
+
+type StreamNavigation {
+    current: StreamOffset!
+    next: StreamOffset
+    previous: StreamOffset
 }

@@ -23,6 +23,12 @@ type A {
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver")
     relationsPaginated: B! @hasMany(type: PAGINATOR)
     relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
+    stream: [A!]! @stream(
+        searchable: false
+        builder: {
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        }
+    )
 }
 
 type B {
@@ -49,4 +55,10 @@ interface C {
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver")
     relationsPaginated: B! @hasMany(type: PAGINATOR)
     relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
+    stream: [A!]! @stream(
+        searchable: false
+        builder: {
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        }
+    )
 }
