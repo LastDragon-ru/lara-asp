@@ -3,25 +3,21 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
-use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
-use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -37,14 +33,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
-use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
-use LastDragon_ru\LaraASP\GraphQL\Utils\PaginateDirectiveHelper;
-use LastDragon_ru\LaraASP\GraphQL\Utils\RelationDirectiveHelper;
-use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
-use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 
 use function array_map;
@@ -53,8 +43,6 @@ use function array_unshift;
 use function array_values;
 use function count;
 use function implode;
-use function mb_strlen;
-use function mb_substr;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     /**
@@ -307,55 +295,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Remove
         $this->removeTypeDefinition($name);
-    }
-
-    /**
-     * @return (TypeDefinitionNode&Node)|Type|null
-     */
-    public function getPlaceholderTypeDefinitionNode(
-        FieldDefinitionNode|FieldDefinition $field,
-    ): TypeDefinitionNode|Type|null {
-        $node       = $this->getTypeDefinition($field);
-        $name       = $this->getTypeName($node);
-        $directives = $this->getDirectives($field, null, static function (Directive $directive): bool {
-            return $directive instanceof StreamDirective
-                || $directive instanceof PaginateDirective
-                || $directive instanceof RelationDirective;
-        });
-
-        foreach ($directives as $directive) {
-            $type = null;
-
-            if ($directive instanceof StreamDirective) {
-                $type = Str::singular(mb_substr($name, 0, -mb_strlen(StreamDirective::Name)));
-            } elseif ($directive instanceof PaginateDirective || $directive instanceof RelationDirective) {
-                $pagination = $directive instanceof PaginateDirective
-                    ? PaginateDirectiveHelper::getPaginationType($directive)
-                    : RelationDirectiveHelper::getPaginationType($directive);
-
-                if ($pagination) {
-                    if ($pagination->isPaginator()) {
-                        $type = mb_substr($name, 0, -mb_strlen('Paginator'));
-                    } elseif ($pagination->isSimple()) {
-                        $type = mb_substr($name, 0, -mb_strlen('SimplePaginator'));
-                    } elseif ($pagination->isConnection()) {
-                        $type = mb_substr($name, 0, -mb_strlen('Connection'));
-                    } else {
-                        // empty
-                    }
-                }
-            } else {
-                // empty
-            }
-
-            if ($type) {
-                $node = $this->getTypeDefinition($type);
-
-                break;
-            }
-        }
-
-        return $node;
     }
     // </editor-fold>
 }

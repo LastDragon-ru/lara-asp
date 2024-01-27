@@ -80,7 +80,15 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider`
 
-* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator` (removed `BuilderInfo`)
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`
+
+  * [ ] Removed `BuilderInfo`. To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead
+
+    ```php
+    $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo::class)?->value
+    ```
+
+  * [ ] Removed `getPlaceholderTypeDefinitionNode()` => `LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginTypeDefinition()`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
 
@@ -91,9 +99,3 @@ This section is actual only if you are extending the package. Please review and 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`
-
-* [ ] To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead of `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`:
-
-    ```php
-    $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo::class)?->value
-    ```

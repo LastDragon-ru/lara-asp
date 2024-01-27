@@ -41,17 +41,21 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
+use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeUnexpected;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Definitions\LaraAspAsEnumDirective;
+use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\Directives\DeprecatedDirective;
+use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
@@ -59,6 +63,8 @@ use function array_merge;
 use function assert;
 use function is_string;
 use function json_encode;
+use function mb_strlen;
+use function mb_substr;
 use function sprintf;
 use function trim;
 
@@ -287,6 +293,55 @@ class AstManipulator {
 
         // Remove
         unset($this->getDocument()->types[$name]);
+    }
+
+    /**
+     * @return (TypeDefinitionNode&Node)|Type
+     */
+    public function getOriginTypeDefinition(
+        FieldDefinitionNode|FieldDefinition|InputValueDefinitionNode|InputObjectField $field,
+    ): TypeDefinitionNode|Type {
+        $node       = $this->getTypeDefinition($field);
+        $name       = $this->getTypeName($node);
+        $directives = $this->getDirectives($field, null, static function (Directive $directive): bool {
+            return $directive instanceof StreamDirective
+                || $directive instanceof PaginateDirective
+                || $directive instanceof RelationDirective;
+        });
+
+        foreach ($directives as $directive) {
+            $type = null;
+
+            if ($directive instanceof StreamDirective) {
+                $type = Str::singular(mb_substr($name, 0, -mb_strlen(StreamDirective::Name)));
+            } elseif ($directive instanceof PaginateDirective || $directive instanceof RelationDirective) {
+                $pagination = $directive instanceof PaginateDirective
+                    ? PaginateDirectiveHelper::getPaginationType($directive)
+                    : RelationDirectiveHelper::getPaginationType($directive);
+
+                if ($pagination) {
+                    if ($pagination->isPaginator()) {
+                        $type = mb_substr($name, 0, -mb_strlen('Paginator'));
+                    } elseif ($pagination->isSimple()) {
+                        $type = mb_substr($name, 0, -mb_strlen('SimplePaginator'));
+                    } elseif ($pagination->isConnection()) {
+                        $type = mb_substr($name, 0, -mb_strlen('Connection'));
+                    } else {
+                        // empty
+                    }
+                }
+            } else {
+                // empty
+            }
+
+            if ($type) {
+                $node = $this->getTypeDefinition($type);
+
+                break;
+            }
+        }
+
+        return $node;
     }
 
     /**
