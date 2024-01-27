@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Relations\Unsupported;
 
 /**
  * @internal
@@ -129,12 +128,5 @@ class User extends Model {
             'parentKey',
             'relatedKey',
         );
-    }
-
-    /**
-     * @return Unsupported<Model>
-     */
-    public function unsupported(): Unsupported {
-        return new Unsupported();
     }
 }

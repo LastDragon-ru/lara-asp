@@ -21,11 +21,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\CarEngine;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Relations\Unsupported;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Role;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -117,30 +115,6 @@ final class EloquentSorterTest extends TestCase {
                         return User::query();
                     },
                     new Property('unknown', 'name'),
-                    Direction::Asc,
-                    null,
-                    null,
-                ],
-                'unsupported'         => [
-                    new RelationUnsupported(
-                        'unsupported',
-                        Unsupported::class,
-                        [
-                            BelongsTo::class,
-                            BelongsToMany::class,
-                            HasOne::class,
-                            HasMany::class,
-                            MorphOne::class,
-                            MorphMany::class,
-                            MorphToMany::class,
-                            HasOneThrough::class,
-                            HasManyThrough::class,
-                        ],
-                    ),
-                    static function (): EloquentBuilder {
-                        return User::query();
-                    },
-                    new Property('unsupported', 'id'),
                     Direction::Asc,
                     null,
                     null,

@@ -26,19 +26,9 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Parameter \\#2 \\$relationClass of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Exceptions\\\\RelationUnsupported constructor expects class\\-string\\<Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\>, 'LastDragon_ru\\\\\\\\LaraASP\\\\\\\\GraphQL\\\\\\\\Testing\\\\\\\\Package\\\\\\\\Models\\\\\\\\Relations\\\\\\\\Unsupported' given\\.$#"
-			count: 1
-			path: packages/graphql/src/SortBy/Sorters/EloquentSorterTest.php
-
-		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\:\\:imageable\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Role\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\User, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\>\\.$#"
 			count: 1
 			path: packages/graphql/src/Testing/Package/Models/Image.php
-
-		-
-			message: "#^Parameter \\#2 \\$results \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Concerns\\\\Model\\>\\) of method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Relations\\\\Unsupported\\:\\:match\\(\\) should be contravariant with parameter \\$results \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection\\) of method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<TModel of LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Concerns\\\\Model\\>\\:\\:match\\(\\)$#"
-			count: 1
-			path: packages/graphql/src/Testing/Package/Models/Relations/Unsupported.php
 
 		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\) should return TDefinition of \\(GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\)\\|\\(GraphQL\\\\Type\\\\Definition\\\\NamedType&GraphQL\\\\Type\\\\Definition\\\\Type\\) but returns GraphQL\\\\Type\\\\Definition\\\\PhpEnumType\\|GraphQL\\\\Type\\\\Definition\\\\ScalarType\\|TDefinition of GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\.$#"
