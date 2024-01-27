@@ -574,9 +574,9 @@ final class AstManipulatorTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetOriginTypeDefinition
+     * @dataProvider dataProviderGetOriginType
      */
-    public function testGetOriginTypeDefinition(string $expected, string $graphql): void {
+    public function testGetOriginType(string $expected, string $graphql): void {
         $ast         = Mockery::mock(DocumentAST::class);
         $types       = Container::getInstance()->make(TypeRegistry::class);
         $directives  = Container::getInstance()->make(DirectiveLocator::class);
@@ -590,9 +590,9 @@ final class AstManipulatorTest extends TestCase {
 
         self::assertNotNull($field);
 
-        $type = $manipulator->getOriginTypeDefinition($field);
+        $type = $manipulator->getOriginType($field);
 
-        self::assertEquals($expected, $manipulator->getName($type));
+        self::assertGraphQLPrintableEquals($expected, $type);
     }
     //</editor-fold>
 
@@ -1210,7 +1210,7 @@ final class AstManipulatorTest extends TestCase {
     /**
      * @return array<string, array{string,string}>
      */
-    public static function dataProviderGetOriginTypeDefinition(): array {
+    public static function dataProviderGetOriginType(): array {
         return [
             'field nullable'              => [
                 'Test',
@@ -1225,7 +1225,7 @@ final class AstManipulatorTest extends TestCase {
                 GRAPHQL,
             ],
             'field not null'              => [
-                'Test',
+                'Test!',
                 <<<'GRAPHQL'
                 type Query {
                     field: Test! @mock
@@ -1237,7 +1237,7 @@ final class AstManipulatorTest extends TestCase {
                 GRAPHQL,
             ],
             'list'                        => [
-                'Test',
+                '[Test]',
                 <<<'GRAPHQL'
                 type Query {
                     field: [Test] @mock
@@ -1249,7 +1249,7 @@ final class AstManipulatorTest extends TestCase {
                 GRAPHQL,
             ],
             '@paginate(type: PAGINATOR)'  => [
-                'Test',
+                '[Test!]!',
                 <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
@@ -1265,7 +1265,7 @@ final class AstManipulatorTest extends TestCase {
                 GRAPHQL,
             ],
             '@paginate(type: SIMPLE)'     => [
-                'Test',
+                '[Test!]!',
                 <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
@@ -1281,7 +1281,7 @@ final class AstManipulatorTest extends TestCase {
                 GRAPHQL,
             ],
             '@paginate(type: CONNECTION)' => [
-                'Test',
+                '[Test!]!',
                 <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
@@ -1297,7 +1297,7 @@ final class AstManipulatorTest extends TestCase {
                 GRAPHQL,
             ],
             '@hasOne'                     => [
-                'Test',
+                '[Test!]',
                 <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
@@ -1312,7 +1312,7 @@ final class AstManipulatorTest extends TestCase {
                 GRAPHQL,
             ],
             '@hasMany(type: PAGINATOR)'   => [
-                'Test',
+                '[Test!]!',
                 <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
@@ -1328,12 +1328,14 @@ final class AstManipulatorTest extends TestCase {
                 GRAPHQL,
             ],
             '@stream'                     => [
-                'Test',
+                '[Test!]!',
                 <<<'GRAPHQL'
                 type Query {
                     field: [Test!]
                     @stream(
                         key: "id"
+                        searchable: false
+                        sortable: false
                         builder: {
                             model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
                         }

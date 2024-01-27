@@ -88,7 +88,7 @@ This section is actual only if you are extending the package. Please review and 
     $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo::class)?->value
     ```
 
-  * [ ] Removed `getPlaceholderTypeDefinitionNode()` => `LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginTypeDefinition()`
+  * [ ] Removed `getPlaceholderTypeDefinitionNode()` => `LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
 

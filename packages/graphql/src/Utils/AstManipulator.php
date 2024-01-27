@@ -296,52 +296,49 @@ class AstManipulator {
     }
 
     /**
-     * @return (TypeDefinitionNode&Node)|Type
+     * @return (TypeNode&Node)|Type
      */
-    public function getOriginTypeDefinition(
+    public function getOriginType(
         FieldDefinitionNode|FieldDefinition|InputValueDefinitionNode|InputObjectField $field,
-    ): TypeDefinitionNode|Type {
-        $node       = $this->getTypeDefinition($field);
-        $name       = $this->getTypeName($node);
-        $directives = $this->getDirectives($field, null, static function (Directive $directive): bool {
+    ): TypeNode|Type {
+        $directive = $this->getDirective($field, Directive::class, static function (Directive $directive): bool {
             return $directive instanceof StreamDirective
                 || $directive instanceof PaginateDirective
                 || $directive instanceof RelationDirective;
         });
+        $origin    = $field instanceof FieldDefinition || $field instanceof InputObjectField
+            ? $field->getType()
+            : $field->type;
+        $name      = $this->getTypeName($origin);
+        $type      = null;
 
-        foreach ($directives as $directive) {
-            $type = null;
+        if ($directive instanceof StreamDirective) {
+            $type = Str::singular(mb_substr($name, 0, -mb_strlen(StreamDirective::Name)));
+        } elseif ($directive instanceof PaginateDirective || $directive instanceof RelationDirective) {
+            $pagination = $directive instanceof PaginateDirective
+                ? PaginateDirectiveHelper::getPaginationType($directive)
+                : RelationDirectiveHelper::getPaginationType($directive);
 
-            if ($directive instanceof StreamDirective) {
-                $type = Str::singular(mb_substr($name, 0, -mb_strlen(StreamDirective::Name)));
-            } elseif ($directive instanceof PaginateDirective || $directive instanceof RelationDirective) {
-                $pagination = $directive instanceof PaginateDirective
-                    ? PaginateDirectiveHelper::getPaginationType($directive)
-                    : RelationDirectiveHelper::getPaginationType($directive);
-
-                if ($pagination) {
-                    if ($pagination->isPaginator()) {
-                        $type = mb_substr($name, 0, -mb_strlen('Paginator'));
-                    } elseif ($pagination->isSimple()) {
-                        $type = mb_substr($name, 0, -mb_strlen('SimplePaginator'));
-                    } elseif ($pagination->isConnection()) {
-                        $type = mb_substr($name, 0, -mb_strlen('Connection'));
-                    } else {
-                        // empty
-                    }
+            if ($pagination) {
+                if ($pagination->isPaginator()) {
+                    $type = mb_substr($name, 0, -mb_strlen('Paginator'));
+                } elseif ($pagination->isSimple()) {
+                    $type = mb_substr($name, 0, -mb_strlen('SimplePaginator'));
+                } elseif ($pagination->isConnection()) {
+                    $type = mb_substr($name, 0, -mb_strlen('Connection'));
+                } else {
+                    // empty
                 }
-            } else {
-                // empty
             }
-
-            if ($type) {
-                $node = $this->getTypeDefinition($type);
-
-                break;
-            }
+        } else {
+            // empty
         }
 
-        return $node;
+        if ($type) {
+            $origin = Parser::typeReference("[{$type}!]!");
+        }
+
+        return $origin;
     }
 
     /**
