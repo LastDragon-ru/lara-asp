@@ -164,6 +164,18 @@ input SortByClauseA {
     """
     Property clause.
     """
+    relationsPaginated: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsPaginatedWithArgs: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
     relationsWithArgs: SortByClauseA
     @sortByOperatorProperty
 }
@@ -247,6 +259,18 @@ input SortByClauseC {
     Property clause.
     """
     relations: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsPaginated: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsPaginatedWithArgs: SortByClauseB
     @sortByOperatorProperty
 
     """

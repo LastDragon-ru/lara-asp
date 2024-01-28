@@ -47,14 +47,14 @@ interface C {
     relations: [B!]! @hasMany
     relationWithArgs(arg: String): A! @hasOne
     relationsWithArgs(arg: String): [A!] @hasMany
+    relationsPaginated: B! @hasMany(type: PAGINATOR)
+    relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
 
     # Should be ignored
     field: B!
     fields: [B!]!
     property(arg: String): Int!
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver")
-    relationsPaginated: B! @hasMany(type: PAGINATOR)
-    relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
     stream: [A!]! @stream(
         sortable: false
         builder: {

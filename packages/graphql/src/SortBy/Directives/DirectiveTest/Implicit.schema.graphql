@@ -48,6 +48,8 @@ interface C {
     relations: [B!]! @hasMany
     relationWithArgs(arg: String): A! @hasOne
     relationsWithArgs(arg: String): [A!] @hasMany
+    relationsPaginated: B! @hasMany(type: PAGINATOR)
+    relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
 
     # Should be ignored
     list: [String!]
@@ -55,8 +57,6 @@ interface C {
     fields: [B!]!
     property(arg: String): Int!
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver")
-    relationsPaginated: B! @hasMany(type: PAGINATOR)
-    relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
     stream: [A!]! @stream(
         searchable: false
         builder: {

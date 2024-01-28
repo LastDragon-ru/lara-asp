@@ -376,6 +376,18 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
+    relationsPaginated: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relationsPaginatedWithArgs: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
     relationsWithArgs: SearchByComplexRelationA
     @searchByOperatorRelation
 }
@@ -471,6 +483,18 @@ input SearchByConditionC {
     Relationship condition.
     """
     relations: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relationsPaginated: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    relationsPaginatedWithArgs: SearchByComplexRelationB
     @searchByOperatorRelation
 
     """

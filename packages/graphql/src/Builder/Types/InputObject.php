@@ -24,7 +24,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Utils\RelationDirectiveHelper;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
@@ -100,7 +99,7 @@ abstract class InputObject implements TypeDefinition {
             }
 
             // Field & Type
-            $fieldSource = $source->getField($field);
+            $fieldSource = $source->getField($field, $manipulator->getOriginType($field));
 
             if (!$this->isFieldConvertable($manipulator, $fieldSource, $context)) {
                 continue;
@@ -217,7 +216,7 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
         FieldResolver $directive,
     ): bool {
-        return ($directive instanceof RelationDirective && !RelationDirectiveHelper::getPaginationType($directive))
+        return $directive instanceof RelationDirective
             || $this->isFieldDirectiveAllowed($manipulator, $field, $context, $directive);
     }
 
