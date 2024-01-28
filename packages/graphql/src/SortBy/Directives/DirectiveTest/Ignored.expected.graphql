@@ -90,6 +90,12 @@ input SortByClauseA {
     """
     a: SortByTypeDirection
     @sortByOperatorField
+
+    """
+    List
+    """
+    b: SortByTypeDirection
+    @sortByOperatorField
 }
 
 """

@@ -80,6 +80,12 @@ input SortByClauseA {
     @sortByOperatorProperty
 
     """
+    Property clause.
+    """
+    fields: SortByClauseB
+    @sortByOperatorProperty
+
+    """
     Description should be copied.
     """
     id: SortByTypeDirection

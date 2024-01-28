@@ -154,6 +154,18 @@ input SortByClauseA {
     """
     relationWithArgs: SortByClauseA
     @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relations: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsWithArgs: SortByClauseA
+    @sortByOperatorProperty
 }
 
 """
@@ -230,6 +242,18 @@ input SortByClauseC {
     """
     relationWithArgs: SortByClauseA
     @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relations: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsWithArgs: SortByClauseA
+    @sortByOperatorProperty
 }
 
 """
@@ -261,6 +285,7 @@ interface C {
     """
     id: ID!
 
+    list: [String!]
     name: String!
 
     property(
@@ -370,6 +395,7 @@ type A {
     """
     id: ID!
 
+    list: [String!]
     name: String!
 
     property(

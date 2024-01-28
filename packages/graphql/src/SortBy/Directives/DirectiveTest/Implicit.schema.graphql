@@ -17,6 +17,7 @@ type A {
     relationsWithArgs(arg: String): [A!] @hasMany
 
     # Should be ignored
+    list: [String!]
     field: B!
     fields: [B!]!
     property(arg: String): Int!
@@ -49,6 +50,7 @@ interface C {
     relationsWithArgs(arg: String): [A!] @hasMany
 
     # Should be ignored
+    list: [String!]
     field: B!
     fields: [B!]!
     property(arg: String): Int!

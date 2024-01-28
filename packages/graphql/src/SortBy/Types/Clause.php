@@ -10,6 +10,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -90,8 +91,8 @@ class Clause extends InputObject {
             return false;
         }
 
-        // List?
-        if ($field->isList()) {
+        // List of scalars/enums?
+        if ($context->get(HandlerContextImplicit::class)?->value && $field->isList() && !$field->isObject()) {
             return false;
         }
 

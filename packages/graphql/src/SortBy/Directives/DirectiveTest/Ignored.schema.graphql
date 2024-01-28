@@ -4,12 +4,14 @@ type Query {
 }
 
 input A {
+    # Should be processed
     "Not ignored"
     a: String!
 
     "List"
     b: [String!]
 
+    # Should be ignored
     "Marked by @sortByIgnored"
     c: IgnoredInput!
     d: IgnoredDate!
@@ -19,9 +21,11 @@ input A {
 }
 
 interface B {
+    # Should be processed
     "Not ignored"
     a: String!
 
+    # Should be ignored
     "List"
     b: [String!]
 
