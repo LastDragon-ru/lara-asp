@@ -61,12 +61,7 @@ class Source implements TypeSource {
      */
     #[Override]
     public function getTypeDefinition(): TypeDefinitionNode|Type {
-        $type       = $this->getType();
-        $definition = !($type instanceof TypeDefinitionNode)
-            ? $this->getManipulator()->getTypeDefinition($type)
-            : $type;
-
-        return $definition;
+        return $this->getManipulator()->getTypeDefinition($this->getType());
     }
 
     #[Override]

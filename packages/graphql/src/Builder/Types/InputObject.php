@@ -137,43 +137,72 @@ abstract class InputObject implements TypeDefinition {
         return [];
     }
 
+    /**
+     * Determines if the field can be converted or not.
+     *
+     * Explicit and Implicit (=placeholder) types processing a bit differently,
+     * see {@see self::isFieldConvertableExplicit()} and {@see self::isFieldConvertableImplicit()}
+     * accordingly. Field also can be marked by a special marker (class/interface)
+     * as ignored, see {@see self::isFieldConvertableIgnored()} and
+     * {@see self::getFieldMarkerIgnored()}.
+     */
     protected function isFieldConvertable(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): bool {
-        /**
-         * Union?
-         */
+        // Union?
         if ($field->isUnion()) {
             // todo(graphql): Would be nice to support Unions. Maybe just use
             //      fields with same name and type for all members?
             return false;
         }
 
-        /**
-         * Explicit? We are expecting that the type created for the directive
-         * and all fields are valid and available. Also, keep in mind that the
-         * type is a `input` so it cannot have arguments, `FieldResolver`
-         * (if GraphQL Schema valid).
-         */
-        if (!$context->get(HandlerContextImplicit::class)?->value) {
-            return true;
-        }
+        // Convertable?
+        $convertable = $context->get(HandlerContextImplicit::class)?->value
+            ? $this->isFieldConvertableImplicit($manipulator, $field, $context)
+            : $this->isFieldConvertableExplicit($manipulator, $field, $context);
 
-        /**
-         * Nope. Implicit type (=placeholder) is an `object`/`interface` and may
-         * contain fields with arguments and/or `FieldResolver` directive - these
-         * fields (most likely) cannot be used to modify the Builder.
-         */
-        // Resolver?
-        $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
-
-        if ($resolver && !$this->isFieldDirectiveConvertable($manipulator, $field, $context, $resolver)) {
+        if (!$convertable) {
             return false;
         }
 
-        // Object/Arguments allowed only if Resolver defined
+        // Ignored?
+        if ($this->isFieldConvertableIgnored($manipulator, $field, $context)) {
+            return false;
+        }
+
+        // Ok
+        return true;
+    }
+
+    protected function isFieldConvertableExplicit(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
+    ): bool {
+        // Explicit type is an `input` and we are expecting this type was created
+        // for the directive, so all fields are valid and available.
+        return true;
+    }
+
+    protected function isFieldConvertableImplicit(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
+    ): bool {
+        // Implicit type (=placeholder) is an `object`/`interface` and may contain
+        // fields with arguments and/or `FieldResolver` directive - these fields
+        // (most likely) cannot be used to modify the Builder.
+
+        // Resolver?
+        $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
+
+        if ($resolver && !$this->isFieldConvertableResolver($manipulator, $field, $context, $resolver)) {
+            return false;
+        }
+
+        // Object/Arguments allowed only if Resolver defined and convertable
         if (($field->hasArguments() || $field->isObject()) && !$resolver) {
             return false;
         }
@@ -182,14 +211,51 @@ abstract class InputObject implements TypeDefinition {
         return true;
     }
 
-    protected function isFieldDirectiveConvertable(
+    protected function isFieldConvertableResolver(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
-        Directive $directive,
+        FieldResolver $directive,
     ): bool {
         return ($directive instanceof RelationDirective && !RelationDirectiveHelper::getPaginationType($directive))
             || $this->isFieldDirectiveAllowed($manipulator, $field, $context, $directive);
+    }
+
+    protected function isFieldConvertableIgnored(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
+    ): bool {
+        // Marker?
+        $marker = $this->getFieldMarkerIgnored();
+
+        if (!$marker) {
+            return false;
+        }
+
+        // Ignored?
+        if ($field instanceof $marker || $manipulator->getDirective($field->getField(), $marker) !== null) {
+            return true;
+        }
+
+        // Ignored type?
+        $fieldType = $field->getTypeDefinition();
+
+        if ($fieldType instanceof $marker || $manipulator->getDirective($fieldType, $marker) !== null) {
+            return true;
+        }
+
+        // Nope
+        return false;
+    }
+
+    /**
+     * @see self::isFieldConvertableIgnored()
+     *
+     * @return class-string|null
+     */
+    protected function getFieldMarkerIgnored(): ?string {
+        return null;
     }
 
     protected function getFieldDefinition(

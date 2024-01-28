@@ -84,30 +84,8 @@ class Condition extends InputObject {
     }
 
     #[Override]
-    protected function isFieldConvertable(
-        Manipulator $manipulator,
-        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
-        Context $context,
-    ): bool {
-        // Parent?
-        if (!parent::isFieldConvertable($manipulator, $field, $context)) {
-            return false;
-        }
-
-        // Ignored field?
-        if ($manipulator->getDirective($field->getField(), Ignored::class) !== null) {
-            return false;
-        }
-
-        // Ignored type?
-        $fieldType = $field->getTypeDefinition();
-
-        if ($fieldType instanceof Ignored || $manipulator->getDirective($fieldType, Ignored::class) !== null) {
-            return false;
-        }
-
-        // Ok
-        return true;
+    protected function getFieldMarkerIgnored(): ?string {
+        return Ignored::class;
     }
 
     /**
