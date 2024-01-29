@@ -24,8 +24,8 @@ use function implode;
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
-#[CoversClass(Relation::class)]
-final class RelationTest extends TestCase {
+#[CoversClass(Relationship::class)]
+final class RelationshipTest extends TestCase {
     use OperatorTests;
 
     // <editor-fold desc="Tests">
@@ -71,7 +71,7 @@ final class RelationTest extends TestCase {
                 @searchByOperatorProperty
 
                 user: TestRelation
-                @searchByOperatorRelation
+                @searchByOperatorRelationship
             }
 
             input TestOperators {

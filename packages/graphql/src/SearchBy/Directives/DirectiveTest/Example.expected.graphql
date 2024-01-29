@@ -173,7 +173,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorRelation
+directive @searchByOperatorRelationship
 on
     | ENUM
     | FIELD_DEFINITION
@@ -201,35 +201,6 @@ input Comment {
 
     user: User
     @belongsTo
-}
-
-"""
-Conditions for the related objects (`has()`/`doesntHave()`) for `input UsersQuery`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByComplexRelationUsersQuery {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionUsersQuery
 }
 
 """
@@ -269,8 +240,8 @@ input SearchByConditionCommentsQuery {
     """
     Relationship condition.
     """
-    user: SearchByComplexRelationUsersQuery
-    @searchByOperatorRelation
+    user: SearchByRelationshipRelationUsersQuery
+    @searchByOperatorRelationship
 }
 
 """
@@ -341,6 +312,35 @@ input SearchByConditionUsersQuery {
     """
     not: SearchByConditionUsersQuery
     @searchByOperatorNot
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `input UsersQuery`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationUsersQuery {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionUsersQuery
 }
 
 """

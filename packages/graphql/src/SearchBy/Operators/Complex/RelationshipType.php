@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
 use Override;
 
-class RelationType implements TypeDefinition {
+class RelationshipType implements TypeDefinition {
     public function __construct() {
         // empty
     }
@@ -25,10 +25,10 @@ class RelationType implements TypeDefinition {
     public function getTypeName(TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
         $builderName   = $context->get(HandlerContextBuilderInfo::class)?->value->getName() ?? 'Unknown';
-        $operatorName  = Str::studly(Relation::getName());
+        $operatorName  = Str::studly(Relationship::getName());
         $directiveName = Directive::Name;
 
-        return "{$directiveName}{$builderName}Complex{$operatorName}{$typeName}";
+        return "{$directiveName}{$builderName}Relationship{$operatorName}{$typeName}";
     }
 
     #[Override]
@@ -45,7 +45,7 @@ class RelationType implements TypeDefinition {
         return Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
             """
-            Conditions for the related objects (`has()`/`doesntHave()`) for `{$source}`.
+            Conditions for the relationship (`has()`/`doesntHave()`) for `{$source}`.
 
             See also:
             * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence

@@ -25,7 +25,7 @@ use function array_merge;
 use function is_a;
 use function reset;
 
-class Relation extends BaseOperator {
+class Relationship extends BaseOperator {
     public function __construct(
         protected SearchByOperatorPropertyDirective $property,
         BuilderPropertyResolver $resolver,
@@ -55,7 +55,7 @@ class Relation extends BaseOperator {
 
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
-        return $provider->getType(RelationType::class, $source, $context);
+        return $provider->getType(RelationshipType::class, $source, $context);
     }
 
     #[Override]

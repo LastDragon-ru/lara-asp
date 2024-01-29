@@ -153,7 +153,7 @@ Cursor pagination:
 * Explicit via `builder` argument
 * Query/Type/Resolver (see [resolver precedence](https://lighthouse-php.com/master/the-basics/fields.html#resolver-precedence))
 * Model (for the root query)
-* Relation (based on field and type names)
+* Relationship (based on field and type names)
 
 ## Scout
 

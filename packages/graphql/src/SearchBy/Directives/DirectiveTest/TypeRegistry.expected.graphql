@@ -173,7 +173,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorRelation
+directive @searchByOperatorRelationship
 on
     | ENUM
     | FIELD_DEFINITION
@@ -200,35 +200,6 @@ enum TestEnum {
     test property
     """
     property
-}
-
-"""
-Conditions for the related objects (`has()`/`doesntHave()`) for `input TestTypeA`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByComplexRelationTestTypeA {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionTestTypeA
 }
 
 """
@@ -291,8 +262,8 @@ input SearchByConditionTestTypeB {
     """
     Relationship condition.
     """
-    child: SearchByComplexRelationTestTypeA
-    @searchByOperatorRelation
+    child: SearchByRelationshipRelationTestTypeA
+    @searchByOperatorRelationship
 
     """
     Property condition.
@@ -346,6 +317,35 @@ input SearchByEnumTestEnumOrNull {
     """
     notIn: [TestEnum!]
     @searchByOperatorNotIn
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `input TestTypeA`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationTestTypeA {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionTestTypeA
 }
 
 """

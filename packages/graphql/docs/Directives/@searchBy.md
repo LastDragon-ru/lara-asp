@@ -116,7 +116,7 @@ query {
         id
     }
 
-    # Relation: WHERE EXIST (related table)
+    # Relationship: WHERE EXIST (related table)
     comments(where: {
         user: {
             where: {
@@ -127,7 +127,7 @@ query {
         id
     }
 
-    # Relation: WHERE COUNT (related table) = 2
+    # Relationship: WHERE COUNT (related table) = 2
     comments(where: {
         user: {
             where: {
@@ -175,7 +175,7 @@ There are three types of operators:
 
 * Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](../../src/Builder/Contracts/Operator.php) and add it to type(s);
 * Extra - used to add additional fields, by default package provides few Logical operators which allow you to do eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](../../src/Builder/Contracts/Operator.php) and add it to `Operators::Extra` type;
-* Condition - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. All the same, but these operators should be explicitly added to the fields/input types, by default the [`Relation`](../../src/SearchBy/Operators/Complex/Relation.php) operator will be used:
+* Condition - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. All the same, but these operators should be explicitly added to the fields/input types, by default the [`Relationship`](../../src/SearchBy/Operators/Complex/Relationship.php) operator will be used:
 
     ```graphql
     type Query {

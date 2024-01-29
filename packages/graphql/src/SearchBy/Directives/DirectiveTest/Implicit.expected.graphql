@@ -173,7 +173,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorRelation
+directive @searchByOperatorRelationship
 on
     | ENUM
     | FIELD_DEFINITION
@@ -264,64 +264,6 @@ enum SearchByTypeFlag {
 }
 
 """
-Conditions for the related objects (`has()`/`doesntHave()`) for `type A`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByComplexRelationA {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionA
-}
-
-"""
-Conditions for the related objects (`has()`/`doesntHave()`) for `type B`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByComplexRelationB {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionB
-}
-
-"""
 Available conditions for `type A` (only one property allowed at a time).
 """
 input SearchByConditionA {
@@ -358,50 +300,50 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
-    operator: SearchByComplexRelationB
-    @searchByOperatorRelation
+    operator: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    operators: SearchByComplexRelationB
-    @searchByOperatorRelation
+    operators: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relation: SearchByComplexRelationB
-    @searchByOperatorRelation
+    relation: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationWithArgs: SearchByComplexRelationA
-    @searchByOperatorRelation
+    relationWithArgs: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relations: SearchByComplexRelationB
-    @searchByOperatorRelation
+    relations: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginated: SearchByComplexRelationB
-    @searchByOperatorRelation
+    relationsPaginated: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginatedWithArgs: SearchByComplexRelationB
-    @searchByOperatorRelation
+    relationsPaginatedWithArgs: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsWithArgs: SearchByComplexRelationA
-    @searchByOperatorRelation
+    relationsWithArgs: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
 
     """
     Property condition.
@@ -459,8 +401,8 @@ input SearchByConditionB {
     """
     Relationship condition.
     """
-    parent: SearchByComplexRelationA
-    @searchByOperatorRelation
+    parent: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
 }
 
 """
@@ -500,50 +442,50 @@ input SearchByConditionC {
     """
     Relationship condition.
     """
-    operator: SearchByComplexRelationB
-    @searchByOperatorRelation
+    operator: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    operators: SearchByComplexRelationB
-    @searchByOperatorRelation
+    operators: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relation: SearchByComplexRelationB
-    @searchByOperatorRelation
+    relation: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationWithArgs: SearchByComplexRelationA
-    @searchByOperatorRelation
+    relationWithArgs: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relations: SearchByComplexRelationB
-    @searchByOperatorRelation
+    relations: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginated: SearchByComplexRelationB
-    @searchByOperatorRelation
+    relationsPaginated: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginatedWithArgs: SearchByComplexRelationB
-    @searchByOperatorRelation
+    relationsPaginatedWithArgs: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsWithArgs: SearchByComplexRelationA
-    @searchByOperatorRelation
+    relationsWithArgs: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
 
     """
     Property condition.
@@ -562,6 +504,64 @@ input SearchByConditionC {
     @rename(
         attribute: "internal"
     )
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `type A`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationA {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionA
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `type B`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationB {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionB
 }
 
 """
@@ -891,10 +891,10 @@ interface C {
     name: String!
 
     operator: B!
-    @searchByOperatorRelation
+    @searchByOperatorRelationship
 
     operators: [B!]
-    @searchByOperatorRelation
+    @searchByOperatorRelationship
 
     property(
         arg: String
@@ -1033,10 +1033,10 @@ type A {
     name: String!
 
     operator: B!
-    @searchByOperatorRelation
+    @searchByOperatorRelationship
 
     operators: [B!]
-    @searchByOperatorRelation
+    @searchByOperatorRelationship
 
     property(
         arg: String

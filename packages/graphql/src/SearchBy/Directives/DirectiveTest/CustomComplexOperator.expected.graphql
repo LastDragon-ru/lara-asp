@@ -179,7 +179,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorRelation
+directive @searchByOperatorRelationship
 on
     | ENUM
     | FIELD_DEFINITION
@@ -206,35 +206,6 @@ Custom operator
 """
 input SearchByComplexCustomInt {
     custom: Int
-}
-
-"""
-Conditions for the related objects (`has()`/`doesntHave()`) for `input Child`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByComplexRelationChild {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionChild
 }
 
 """
@@ -299,14 +270,43 @@ input SearchByConditionProperties {
     """
     Relationship condition.
     """
-    defaultOperator: SearchByComplexRelationChild
-    @searchByOperatorRelation
+    defaultOperator: SearchByRelationshipRelationChild
+    @searchByOperatorRelationship
 
     """
     Not.
     """
     not: SearchByConditionProperties
     @searchByOperatorNot
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `input Child`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationChild {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionChild
 }
 
 """

@@ -173,7 +173,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorRelation
+directive @searchByOperatorRelationship
 on
     | ENUM
     | FIELD_DEFINITION
@@ -218,64 +218,6 @@ input B {
 }
 
 """
-Conditions for the related objects (`has()`/`doesntHave()`) for `input A`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByComplexRelationA {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionA
-}
-
-"""
-Conditions for the related objects (`has()`/`doesntHave()`) for `input B`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByComplexRelationB {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionB
-}
-
-"""
 Available conditions for `input A` (only one property allowed at a time).
 """
 input SearchByConditionA {
@@ -294,14 +236,14 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
-    field: SearchByComplexRelationB
-    @searchByOperatorRelation
+    field: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    fields: SearchByComplexRelationB
-    @searchByOperatorRelation
+    fields: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
 
     """
     Description should be copied.
@@ -359,8 +301,66 @@ input SearchByConditionB {
     """
     Relationship condition.
     """
-    parent: SearchByComplexRelationA
-    @searchByOperatorRelation
+    parent: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `input A`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationA {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionA
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `input B`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationB {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionB
 }
 
 """

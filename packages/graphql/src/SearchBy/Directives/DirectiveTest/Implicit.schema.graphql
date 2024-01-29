@@ -11,8 +11,8 @@ type A {
     "Description should be ignored."
     id: ID!
     name: String!
-    operator: B! @searchByOperatorRelation
-    operators: [B!] @searchByOperatorRelation
+    operator: B! @searchByOperatorRelationship
+    operators: [B!] @searchByOperatorRelationship
     relation: B! @hasOne
     relations: [B!]! @hasMany
     relationWithArgs(arg: String): A! @hasOne
@@ -50,8 +50,8 @@ interface C {
     "Description should be ignored."
     id: ID!
     name: String!
-    operator: B! @searchByOperatorRelation
-    operators: [B!] @searchByOperatorRelation
+    operator: B! @searchByOperatorRelationship
+    operators: [B!] @searchByOperatorRelationship
     relation: B! @hasOne
     relations: [B!]! @hasMany
     relationWithArgs(arg: String): A! @hasOne
